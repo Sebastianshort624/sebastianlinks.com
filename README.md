@@ -1,7 +1,3 @@
-import{useState,useEffect,useCallback}from"react";
-
-async function sGet(k){try{const r=await window.storage.get(k);return r?JSON.parse(r.value):null;}catch{return null;}}
-async function sSet(k,v){try{await window.storage.set(k,JSON.stringify(v));}catch(e){console.error(e);}}
 
 const T={navy:'#0C447C',navyDk:'#042C53',navyLt:'#185FA5',blue:'#378ADD',b50:'#E6F1FB',b100:'#B5D4F4',b200:'#85B7EB',purple:'#7F77DD',purBg:'#EEEDFE',purDk:'#3C3489',teal:'#1D9E75',teaBg:'#E1F5EE',teaDk:'#085041',coral:'#D85A30',corBg:'#FAECE7',corDk:'#712B13',grn:'#639922',grnBg:'#EAF3DE',grnDk:'#27500A',amb:'#BA7517',ambBg:'#FAEEDA',ambDk:'#633806',red:'#E24B4A',redBg:'#FCEBEB',redDk:'#791F1F',gray:'#888780',gryBg:'#F1EFE8',gryDk:'#444441',pink:'#D4537E',pnkBg:'#FBEAF0',pnkDk:'#72243E',gold:'#D4A017'};
 
