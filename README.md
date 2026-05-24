@@ -1,7 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>⚡ Life OS — Sebastian S.</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{background:#f0f4fa;font-family:'Segoe UI',system-ui,sans-serif;padding:12px;min-height:100vh;}
+  :root{--font-sans:'Segoe UI',system-ui,sans-serif;}
+  input,select,textarea,button{font-family:inherit;}
+  a{text-decoration:none;}
+  ::-webkit-scrollbar{width:6px;height:6px;}
+  ::-webkit-scrollbar-track{background:#f0f4fa;}
+  ::-webkit-scrollbar-thumb{background:#b5d4f4;border-radius:3px;}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const{useState,useEffect,useCallback}=React;
+
+// ── STORAGE (localStorage) ──
+async function sGet(key){try{const v=localStorage.getItem(key);return v?JSON.parse(v):null;}catch{return null;}}
+async function sSet(key,val){try{localStorage.setItem(key,JSON.stringify(val));}catch{}}
 
 const T={navy:'#0C447C',navyDk:'#042C53',navyLt:'#185FA5',blue:'#378ADD',b50:'#E6F1FB',b100:'#B5D4F4',b200:'#85B7EB',purple:'#7F77DD',purBg:'#EEEDFE',purDk:'#3C3489',teal:'#1D9E75',teaBg:'#E1F5EE',teaDk:'#085041',coral:'#D85A30',corBg:'#FAECE7',corDk:'#712B13',grn:'#639922',grnBg:'#EAF3DE',grnDk:'#27500A',amb:'#BA7517',ambBg:'#FAEEDA',ambDk:'#633806',red:'#E24B4A',redBg:'#FCEBEB',redDk:'#791F1F',gray:'#888780',gryBg:'#F1EFE8',gryDk:'#444441',pink:'#D4537E',pnkBg:'#FBEAF0',pnkDk:'#72243E',gold:'#D4A017'};
 
-// ── NAPOLEON HILL 50 QUOTES ──
 const NH_QUOTES=[
   {title:"Definiteness of Purpose",quote:"There is one quality which one must possess to win, and that is definiteness of purpose, the knowledge of what one wants, and a burning desire to possess it."},
   {title:"Desire",quote:"The starting point of all achievement is DESIRE. Keep this constantly in mind. Weak desire brings weak results, just as a small fire makes a small amount of heat."},
@@ -56,32 +83,19 @@ const NH_QUOTES=[
   {title:"The Master Key",quote:"The key to success is to focus our conscious mind on things we desire, not things we fear. When you think about what you want and work toward it, you will attract it."},
 ];
 
-// ── LIFE BUCKS ──
 const LB_TIERS=[
-  {val:.25,label:'25¢',bg:'#f0fce8',tc:'#3a6b10'},
-  {val:.5,label:'50¢',bg:'#e5f8d4',tc:'#326010'},
-  {val:.75,label:'75¢',bg:'#d9f3c0',tc:'#2a5510'},
-  {val:1,label:'$1',bg:'#ceeead',tc:'#224a0e'},
-  {val:1.5,label:'$1.50',bg:'#c3e99a',tc:'#1a3f0c'},
-  {val:2,label:'$2',bg:'#b8e487',tc:'#143309'},
-  {val:3,label:'$3',bg:'#a9dc6e',tc:'#0e2807'},
-  {val:4,label:'$4',bg:'#98d255',tc:'#091e05'},
-  {val:5,label:'$5',bg:'#86c83c',tc:'#051303'},
-  {val:7.5,label:'$7.50',bg:'#72bb22',tc:'#030901'},
-  {val:10,label:'$10',bg:'#E6F1FB',tc:'#0C447C'},
-  {val:15,label:'$15',bg:'#cce3f7',tc:'#093d6e'},
-  {val:25,label:'$25',bg:'#b3d6f3',tc:'#063360'},
-  {val:50,label:'$50',bg:'#80b8eb',tc:'#042b52'},
-  {val:75,label:'$75',bg:'#4d9ae3',tc:'#022344'},
-  {val:100,label:'$100',bg:'#FAEEDA',tc:'#633806'},
-  {val:150,label:'$150',bg:'#f5e0b8',tc:'#5a3104'},
-  {val:200,label:'$200',bg:'#f0d296',tc:'#513003'},
-  {val:250,label:'$250',bg:'#ebc474',tc:'#482f02'},
-  {val:300,label:'$300',bg:'#e6b652',tc:'#3f2e01'},
-  {val:400,label:'$400',bg:'#e1a830',tc:'#362d00'},
-  {val:500,label:'$500',bg:'#dc9a0e',tc:'#2d2c00'},
-  {val:750,label:'$750',bg:'#d78c00',tc:'#241b00'},
-  {val:1000,label:'$1K',bg:'#c87f00',tc:'#1b0a00'},
+  {val:.25,label:'25¢',bg:'#f0fce8',tc:'#3a6b10'},{val:.5,label:'50¢',bg:'#e5f8d4',tc:'#326010'},
+  {val:.75,label:'75¢',bg:'#d9f3c0',tc:'#2a5510'},{val:1,label:'$1',bg:'#ceeead',tc:'#224a0e'},
+  {val:1.5,label:'$1.50',bg:'#c3e99a',tc:'#1a3f0c'},{val:2,label:'$2',bg:'#b8e487',tc:'#143309'},
+  {val:3,label:'$3',bg:'#a9dc6e',tc:'#0e2807'},{val:4,label:'$4',bg:'#98d255',tc:'#091e05'},
+  {val:5,label:'$5',bg:'#86c83c',tc:'#051303'},{val:7.5,label:'$7.50',bg:'#72bb22',tc:'#030901'},
+  {val:10,label:'$10',bg:'#E6F1FB',tc:'#0C447C'},{val:15,label:'$15',bg:'#cce3f7',tc:'#093d6e'},
+  {val:25,label:'$25',bg:'#b3d6f3',tc:'#063360'},{val:50,label:'$50',bg:'#80b8eb',tc:'#042b52'},
+  {val:75,label:'$75',bg:'#4d9ae3',tc:'#022344'},{val:100,label:'$100',bg:'#FAEEDA',tc:'#633806'},
+  {val:150,label:'$150',bg:'#f5e0b8',tc:'#5a3104'},{val:200,label:'$200',bg:'#f0d296',tc:'#513003'},
+  {val:250,label:'$250',bg:'#ebc474',tc:'#482f02'},{val:300,label:'$300',bg:'#e6b652',tc:'#3f2e01'},
+  {val:400,label:'$400',bg:'#e1a830',tc:'#362d00'},{val:500,label:'$500',bg:'#dc9a0e',tc:'#2d2c00'},
+  {val:750,label:'$750',bg:'#d78c00',tc:'#241b00'},{val:1000,label:'$1K',bg:'#c87f00',tc:'#1b0a00'},
   {val:2000,label:'$2K',bg:'#b87200',tc:'#120000'},
 ];
 const CAT_LB={SM:2,RR:3,WK:5,FM:1.5,EX:2,HC:.5,FR:1,SP:2.5,DR:1,MI:.25};
@@ -108,7 +122,6 @@ const REWARDS=[
   {ico:'🧖',name:'Spa Half Day',desc:'Spa treatment package',cost:120},
 ];
 
-// ── PURPOSE QUESTIONS ──
 const PURP_QS=[
   {id:'values',q:'What are your top 5 core values?',hint:'Faith, family, freedom, growth, integrity, service — what principles guide your decisions?'},
   {id:'gifts',q:'What are your unique gifts and natural strengths?',hint:'What do people always come to you for? What do you do better than most without much effort?'},
@@ -148,7 +161,6 @@ function getMon(ds){const d=new Date(ds||new Date());const day=d.getDay();const 
 function addWeeks(date,w){const d=new Date(date);d.setDate(d.getDate()+w*7);return d;}
 function fmtDate(d){try{return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}catch{return '';}}
 function fmtShort(d){try{return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric'});}catch{return '';}}
-function getPayFri(ds){const m=getMon(ds);return addWeeks(m,1.571);}// Mon+11days
 
 const AC_TZ={};
 [201,202,203,207,212,215,216,229,231,239,240,267,272,276,301,302,304,305,315,321,330,336,347,351,352,386,401,404,407,410,412,413,423,434,440,443,470,478,484,516,518,540,551,561,570,571,585,607,609,610,614,617,631,646,678,703,704,706,717,718,727,732,757,770,772,781,786,803,804,813,814,828,843,845,850,856,857,859,862,864,904,908,910,912,914,929,941,954,973,978,980,984].forEach(c=>AC_TZ[c]='EST');
@@ -160,7 +172,6 @@ function getTZ(p){const d=(p||'').replace(/\D/g,'');let a;if(d.startsWith('1')&&
 const TZ_CLR={EST:'#185FA5',CST:'#534AB7',MST:'#854F0B',PST:'#27500A',HST:'#085041',INT:'#5F5E5A'};
 function statusBg(s){return s==='Done'?{bg:'#E1F5EE',tc:'#085041'}:s==='Skipped'?{bg:'#FCEBEB',tc:'#791F1F'}:s==='In progress'?{bg:'#FAEEDA',tc:'#633806'}:{bg:'#F1EFE8',tc:'#444441'};}
 
-// ── SHARED UI ──
 function Btn({onClick,color,children,style={}}){return <button onClick={onClick} style={{fontSize:12,padding:'5px 12px',borderRadius:7,border:'none',background:color||T.navy,color:'white',cursor:'pointer',fontWeight:500,...style}}>{children}</button>;}
 function SlotSel({val,onChange}){return <select value={val} onChange={e=>onChange(+e.target.value)} style={{fontSize:11,padding:'3px 4px',borderRadius:6,border:'0.5px solid '+T.b100,background:'white',cursor:'pointer',width:'100%'}}>{SLOTS.map(s=><option key={s.id} value={s.id}>{s.label}·{s.time}</option>)}</select>;}
 function StatSel({val,onChange}){const c=statusBg(val);return <select value={val} onChange={e=>onChange(e.target.value)} style={{fontSize:11,padding:'3px 4px',borderRadius:6,border:'0.5px solid '+T.b100,background:c.bg,color:c.tc,cursor:'pointer',width:'100%'}}>{STAT_OPTS.map(s=><option key={s} value={s}>{s}</option>)}</select>;}
@@ -171,7 +182,7 @@ function ColHdr({cols,grid}){return <div style={{display:'grid',gridTemplateColu
 function ActionSel({catId,val,onChange,actionLists}){
   const list=actionLists[catId]||DEFAULT_ACTION_LISTS[catId]||[];
   const crmLeads=catId==='WK'?(window._crmLeads||[]).slice(0,50):[];
-  return <select value={val} onChange={e=>{if(e.target.value==='__add__'){const v=prompt('New action:');if(v&&v.trim()){onChange('__add__',v.trim());}}else onChange(e.target.value);}} style={{fontSize:11,padding:'3px 4px',borderRadius:6,border:'0.5px solid '+T.b100,borderLeft:'3px solid currentColor',background:'white',cursor:'pointer',width:'100%'}}>
+  return <select value={val} onChange={e=>{if(e.target.value==='__add__'){const v=prompt('New action:');if(v&&v.trim()){onChange('__add__',v.trim());}}else onChange(e.target.value);}} style={{fontSize:11,padding:'3px 4px',borderRadius:6,border:'0.5px solid '+T.b100,background:'white',cursor:'pointer',width:'100%'}}>
     <option value="">— select action</option>
     {list.map(a=><option key={a} value={a}>{a}</option>)}
     {crmLeads.length>0&&<optgroup label="CRM Clients">{crmLeads.map(n=><option key={n} value={'Follow up — '+n}>Follow up — {n}</option>)}</optgroup>}
@@ -194,7 +205,6 @@ function CatBlock({cat,updateCat,collapsed,toggleCollapse,actionLists,setActionL
   };
   const done=cat.tasks.filter(t=>t.status==='Done').length;
   const lbVal=CAT_LB[cat.id]||0.5;
-
   const rowStyle=(t)=>({display:'grid',alignItems:'center',padding:'5px 10px',borderTop:'0.5px solid '+T.b100,background:t.status==='Done'?'#f8fff8':t.status==='Skipped'?'#fff8f8':'white',gap:3,opacity:t.status==='Skipped'?.6:1});
 
   return <div id={'cat-'+cat.id} style={{marginBottom:10,borderRadius:12,border:'0.5px solid '+T.b100,overflow:'hidden',boxShadow:'0 1px 4px rgba(0,0,0,.04)'}}>
@@ -215,7 +225,6 @@ function CatBlock({cat,updateCat,collapsed,toggleCollapse,actionLists,setActionL
         <span style={{fontSize:11,color:T.grnDk}}>My weight today (lbs):</span>
         <input type="number" value={cat.myWeight||''} onChange={e=>updateCat({...cat,myWeight:e.target.value})} placeholder="—" style={{width:70,fontSize:11,padding:'3px 6px',borderRadius:5,border:'0.5px solid '+T.b100}}/>
       </div>}
-
       {(cat.type==='standard'||cat.type==='misc')&&<>
         <ColHdr cols={['Action','Time Slot','Apt Time','Date','Status','']} grid="38% 18% 12% 12% 15% 5%"/>
         {cat.tasks.map((t,i)=><div key={i} style={{...rowStyle(t),gridTemplateColumns:'38% 18% 12% 12% 15% 5%'}}>
@@ -229,7 +238,6 @@ function CatBlock({cat,updateCat,collapsed,toggleCollapse,actionLists,setActionL
           <button onClick={()=>removeTask(i)} style={{fontSize:10,color:'#ccc',border:'none',background:'none',cursor:'pointer',padding:0}}>✕</button>
         </div>)}
       </>}
-
       {cat.type==='family'&&<>
         <ColHdr cols={['Action','Who','Time Slot','Apt Time','Date','Status','']} grid="30% 18% 16% 10% 10% 11% 5%"/>
         {cat.tasks.map((t,i)=><div key={i} style={{...rowStyle(t),gridTemplateColumns:'30% 18% 16% 10% 10% 11% 5%'}}>
@@ -242,7 +250,6 @@ function CatBlock({cat,updateCat,collapsed,toggleCollapse,actionLists,setActionL
           <button onClick={()=>removeTask(i)} style={{fontSize:10,color:'#ccc',border:'none',background:'none',cursor:'pointer',padding:0}}>✕</button>
         </div>)}
       </>}
-
       {(cat.type==='friends'||cat.type==='sponsees')&&<>
         <ColHdr cols={['Action','Who','Time Slot','Apt Time','Date','Status','']} grid="30% 18% 16% 10% 10% 11% 5%"/>
         {cat.tasks.map((t,i)=><div key={i} style={{...rowStyle(t),gridTemplateColumns:'30% 18% 16% 10% 10% 11% 5%'}}>
@@ -255,7 +262,6 @@ function CatBlock({cat,updateCat,collapsed,toggleCollapse,actionLists,setActionL
           <button onClick={()=>removeTask(i)} style={{fontSize:10,color:'#ccc',border:'none',background:'none',cursor:'pointer',padding:0}}>✕</button>
         </div>)}
       </>}
-
       {cat.type==='exercise'&&<>
         <ColHdr cols={['Action','Sets','Reps','Lbs','Time Slot','Apt Time','Date','Status','']} grid="22% 7% 7% 7% 15% 10% 10% 17% 5%"/>
         {cat.tasks.map((t,i)=><div key={i} style={{...rowStyle(t),gridTemplateColumns:'22% 7% 7% 7% 15% 10% 10% 17% 5%'}}>
@@ -286,12 +292,11 @@ function DayBuildTab({cats,setCats,save,lb,setLb,actionLists,setActionLists}){
   const pct=total?Math.round(done/total*100):0;
   const bySlot={};SLOTS.forEach(s=>bySlot[s.id]=[]);
   cats.forEach(cat=>cat.tasks.forEach(t=>{if(bySlot[t.slot])bySlot[t.slot].push({name:t.name||'—',color:cat.color,status:t.status,time:t.exactTime,date:t.taskDate});}));
-
   return <div>
     <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:10,flexWrap:'wrap',gap:8}}>
       <div style={{display:'flex',alignItems:'center',gap:8}}>
         <span style={{fontSize:13,color:T.navyLt,fontWeight:500}}>{done}/{total} done ({pct}%)</span>
-        <div style={{width:90,height:7,background:'#e0e0e0',borderRadius:4,overflow:'hidden'}}><div style={{width:pct+'%',height:'100%',background:T.grn,borderRadius:4,transition:'width .3s'}}/></div>
+        <div style={{width:90,height:7,background:'#e0e0e0',borderRadius:4,overflow:'hidden'}}><div style={{width:pct+'%',height:'100%',background:T.grn,borderRadius:4}}/></div>
       </div>
       <div style={{display:'flex',alignItems:'center',gap:8}}>
         <span style={{fontSize:13,background:'#FFF8E1',color:'#B8860B',padding:'4px 10px',borderRadius:8,fontWeight:600}}>💎 {lb.balance.toFixed(2)} Life Bucks</span>
@@ -299,11 +304,11 @@ function DayBuildTab({cats,setCats,save,lb,setLb,actionLists,setActionLists}){
       </div>
     </div>
     <div style={{display:'flex',flexWrap:'wrap',gap:5,marginBottom:10}}>
-      {cats.map(cat=><button key={cat.id} onClick={()=>document.getElementById('cat-'+cat.id)?.scrollIntoView({behavior:'smooth'})} style={{fontSize:11,padding:'3px 10px',borderRadius:12,border:'0.5px solid '+cat.color,background:cat.bg,color:cat.tc,cursor:'pointer'}}>{cat.label}</button>)}
+      {cats.map(cat=><button key={cat.id} onClick={()=>document.getElementById('cat-'+cat.id)&&document.getElementById('cat-'+cat.id).scrollIntoView({behavior:'smooth'})} style={{fontSize:11,padding:'3px 10px',borderRadius:12,border:'0.5px solid '+cat.color,background:cat.bg,color:cat.tc,cursor:'pointer'}}>{cat.label}</button>)}
     </div>
     <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:7,marginBottom:14}}>
       {SLOTS.map(s=>{const items=bySlot[s.id]||[];
-        return <div key={s.id} onClick={()=>document.getElementById('cat-'+(items[0]?.cid||'SM'))?.scrollIntoView({behavior:'smooth'})} style={{background:s.id===6?'#FAEEDA':'white',border:'0.5px solid '+T.b100,borderRadius:9,padding:'8px 10px',minHeight:55,cursor:'pointer'}}>
+        return <div key={s.id} style={{background:s.id===6?'#FAEEDA':'white',border:'0.5px solid '+T.b100,borderRadius:9,padding:'8px 10px',minHeight:55}}>
           <div style={{fontSize:11,fontWeight:600,color:s.id===6?T.ambDk:T.navyLt,marginBottom:4,textTransform:'uppercase',letterSpacing:'.04em'}}>{s.label}·{s.time}</div>
           {items.length===0?<div style={{fontSize:10,color:'#bbb',fontStyle:'italic'}}>empty</div>:items.map((t,i)=><div key={i} style={{display:'flex',alignItems:'center',gap:4,marginBottom:2}}>
             <div style={{width:5,height:5,borderRadius:'50%',background:t.color,opacity:t.status==='Done'?.3:1,flexShrink:0}}/>
@@ -350,7 +355,6 @@ function CRMTab({leads,setLeads,notes,setNotes,saveLeads,saveNotes}){
   function deleteLead(idx){if(!confirm('Delete this lead?'))return;const nl=leads.filter((_,i)=>i!==idx);setLeads(nl);saveLeads(nl);if(selLead&&leads[idx]===selLead)setSelLead(null);}
   const tagClr=tag=>{const t=(tag||'').toUpperCase();if(t.includes('HOT'))return{bg:'#FCEBEB',tc:'#791F1F'};if(t.includes('WARM'))return{bg:'#EAF3DE',tc:'#27500A'};if(t.includes('DEAD'))return{bg:'#F1EFE8',tc:'#444441'};if(t.includes('COLD'))return{bg:'#E6F1FB',tc:'#0C447C'};if(t.includes('NO SHOW'))return{bg:'#FBEAF0',tc:'#72243E'};return{bg:'#E6F1FB',tc:'#0C447C'};};
   const callClr=s=>{const sl=(s||'').toLowerCase();if(sl.includes('canceled')||sl.includes('no show'))return{bg:'#FBEAF0',tc:'#72243E'};if(sl.includes('set'))return{bg:'#E1F5EE',tc:'#085041'};return{bg:'#FAEEDA',tc:'#633806'};};
-
   return <div>
     <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:8,marginBottom:12}}>
       {[['Total',leads.length,'#E6F1FB','#0C447C'],['HOT',hot,'#FCEBEB','#791F1F'],['Appt Set',appt,'#E1F5EE','#085041'],['Dead',dead,'#F1EFE8','#444441']].map(([l,v,bg,tc])=><div key={l} style={{background:bg,borderRadius:8,padding:'10px 12px',border:'0.5px solid '+tc+'33'}}><div style={{fontSize:11,color:tc,marginBottom:3}}>{l}</div><div style={{fontSize:22,fontWeight:600,color:tc}}>{v}</div></div>)}
@@ -431,14 +435,12 @@ function CommTab({deals,setDeals,saveDeals}){
   const rate=weekVol<12000?.15:weekVol<20000?.17:weekVol<30000?.20:weekVol<50000?.23:.25;
   const feeN=+fee||0;const net=feeN-1000-(vero?25:0);const comm=Math.max(0,net*rate);
   const ez70Date=addWeeks(payFriDate,13);
-
   function addDeal(){
     if(!fee||+fee<1000)return;
     const monKey=getMon(weekOf).toISOString().split('T')[0];
     const d={id:Date.now(),client:client||'—',fee:+fee,vero,payType,weekOf:monKey,net,comm,rate,payFri:payFriDate.toISOString(),ez70Date:ez70Date.toISOString(),now:payType==='Easy Pay'?+(comm*.3).toFixed(2):+comm.toFixed(2),later:payType==='Easy Pay'?+(comm*.7).toFixed(2):0};
     const nd=[...deals,d];setDeals(nd);saveDeals(nd);setFee('');setClient('');setVero(false);
   }
-
   return <div>
     <div style={{background:'linear-gradient(135deg,'+T.navyDk+','+T.navy+')',borderRadius:12,padding:'13px 17px',color:'white',marginBottom:14,display:'flex',justifyContent:'space-between',alignItems:'center'}}>
       <div><div style={{fontSize:11,color:T.b200}}>Pay Week</div><div style={{fontSize:16,fontWeight:700}}>{fmtShort(mon)} – {fmtShort(sun)}</div></div>
@@ -453,7 +455,7 @@ function CommTab({deals,setDeals,saveDeals}){
           <div><label style={{fontSize:11,color:T.navyLt,display:'block',marginBottom:3}}>Week of</label><input type="date" value={weekOf} onChange={e=>setWeekOf(e.target.value)} style={{width:'100%',fontSize:12,padding:'6px 8px',borderRadius:6,border:'0.5px solid '+T.b100}}/></div>
           <div><label style={{fontSize:11,color:T.navyLt,display:'block',marginBottom:3}}>Payment type</label><select value={payType} onChange={e=>setPayType(e.target.value)} style={{width:'100%',fontSize:12,padding:'7px 8px',borderRadius:6,border:'0.5px solid '+T.b100}}>{['UCFS','Affirm','Cash','Easy Pay'].map(p=><option key={p}>{p}</option>)}</select></div>
         </div>
-        <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}><input type="checkbox" checked={vero} onChange={e=>setVero(e.target.checked)} style={{width:14,height:14}}/><label style={{fontSize:12,color:T.navyLt,cursor:'pointer'}}>Afterhours Vero (-$25)</label></div>
+        <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}><input type="checkbox" checked={vero} onChange={e=>setVero(e.target.checked)} style={{width:14,height:14}}/><label style={{fontSize:12,color:T.navyLt}}>Afterhours Vero (-$25)</label></div>
         {feeN>=1000&&<div style={{background:'#E6F1FB',borderRadius:8,padding:12,marginBottom:10}}>
           {[['Fee','$'+feeN.toLocaleString()],['- Base deduct','-$1,000'],vero?['- Afterhours Vero','-$25']:null,['Net','$'+net.toLocaleString()],['Week volume','$'+weekVol.toLocaleString()],['Rate',(rate*100).toFixed(0)+'%'],['Gross commission','$'+comm.toFixed(2)]].filter(Boolean).map(([l,v],i)=><div key={i} style={{display:'flex',justifyContent:'space-between',fontSize:12,padding:'2px 0',borderBottom:i===5?'1px solid '+T.b100:'none'}}><span style={{color:'#555'}}>{l}</span><span style={{fontWeight:i===6?600:400,color:i===6?T.navy:'#333'}}>{v}</span></div>)}
           {payType==='Easy Pay'?<div style={{marginTop:8,padding:'8px',background:'#FAEEDA',borderRadius:6}}><div style={{fontSize:11,fontWeight:600,color:T.ambDk}}>Easy Pay split</div><div style={{fontSize:12,color:T.ambDk}}>30% now ({fmtDate(payFriDate)}): <strong>${(comm*.3).toFixed(2)}</strong></div><div style={{fontSize:12,color:T.ambDk}}>70% in 13 weeks ({fmtDate(ez70Date)}): <strong>${(comm*.7).toFixed(2)}</strong></div></div>
@@ -541,12 +543,12 @@ function RewardsTab({lb,setLb}){
         {LB_TIERS.map(l=><div key={l.val} style={{background:l.bg,borderRadius:7,padding:'7px 8px',textAlign:'center',border:'0.5px solid '+l.tc+'44'}}><div style={{fontSize:15,fontWeight:700,color:l.tc}}>{l.label}</div><div style={{fontSize:9,color:l.tc,opacity:.75,marginTop:1}}>{l.val<10?l.val<5?'chores':'tasks':l.val<100?'work':'milestone'}</div></div>)}
       </div>
       <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:5,marginBottom:14}}>
-        {Object.entries(CAT_LB).map(([id,val])=>{const cat=DEFAULT_CATS.find(c=>c.id===id);const tier=LB_TIERS.find(t=>t.val===val)||LB_TIERS[0];return<div key={id} style={{background:tier.bg,borderRadius:7,padding:'7px 8px',textAlign:'center',border:'0.5px solid '+tier.tc+'44'}}><div style={{fontSize:11,fontWeight:600,color:tier.tc}}>{cat?.label||id}</div><div style={{fontSize:14,fontWeight:700,color:tier.tc}}>💎 {val}</div></div>;})}
+        {Object.entries(CAT_LB).map(([id,val])=>{const cat=DEFAULT_CATS.find(c=>c.id===id);const tier=LB_TIERS.find(t=>t.val===val)||LB_TIERS[0];return<div key={id} style={{background:tier.bg,borderRadius:7,padding:'7px 8px',textAlign:'center',border:'0.5px solid '+tier.tc+'44'}}><div style={{fontSize:11,fontWeight:600,color:tier.tc}}>{cat&&cat.label||id}</div><div style={{fontSize:14,fontWeight:700,color:tier.tc}}>💎 {val}</div></div>;})}
       </div>
     </div>
     <div style={{fontSize:14,fontWeight:600,color:T.navy,marginBottom:10}}>🛍️ Reward Store</div>
     <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:10,marginBottom:14}}>
-      {REWARDS.map(r=>{const can=lb.balance>=r.cost;return<div key={r.name} style={{background:'white',borderRadius:12,border:'1.5px solid '+(can?T.grn:'#e0d0a0'),padding:14,transition:'all .2s',opacity:can?1:.85}}>
+      {REWARDS.map(r=>{const can=lb.balance>=r.cost;return<div key={r.name} style={{background:'white',borderRadius:12,border:'1.5px solid '+(can?T.grn:'#e0d0a0'),padding:14,opacity:can?1:.85}}>
         <div style={{fontSize:28,marginBottom:6}}>{r.ico}</div>
         <div style={{fontSize:13,fontWeight:700,color:'#333',marginBottom:3}}>{r.name}</div>
         <div style={{fontSize:11,color:T.gray,marginBottom:8}}>{r.desc}</div>
@@ -581,7 +583,7 @@ function PurposeTab({answers,setAnswers}){
       <div style={{fontSize:11,color:'rgba(255,255,255,.7)',marginBottom:4}}>Sebastian S. — Life Architecture</div>
       <div style={{fontSize:20,fontWeight:800,marginBottom:4}}>🧭 Purpose, Mission &amp; Values</div>
       <div style={{fontSize:13,opacity:.8}}>{ans}/{PURP_QS.length} questions answered</div>
-      <div style={{height:5,background:'rgba(255,255,255,.2)',borderRadius:3,overflow:'hidden',marginTop:10}}><div style={{width:(ans/PURP_QS.length*100)+'%',height:'100%',background:'white',borderRadius:3,transition:'width .3s'}}/></div>
+      <div style={{height:5,background:'rgba(255,255,255,.2)',borderRadius:3,overflow:'hidden',marginTop:10}}><div style={{width:(ans/PURP_QS.length*100)+'%',height:'100%',background:'white',borderRadius:3}}/></div>
     </div>
     <div style={{background:'white',borderRadius:12,border:'2px solid '+T.purple,padding:20,marginBottom:12}}>
       <div style={{fontSize:11,color:T.purDk,fontWeight:600,textTransform:'uppercase',letterSpacing:'.05em',marginBottom:5}}>Question {step+1} of {PURP_QS.length}</div>
@@ -621,10 +623,10 @@ function FavoritesTab({favs,setFavs}){
       </div>
       {favs.length===0?<div style={{color:'#aaa',fontStyle:'italic',fontSize:13}}>No links yet — add your favorites above</div>
         :<div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:9}}>
-          {favs.map((f,i)=><div key={i} style={{background:'white',border:'0.5px solid '+T.b100,borderRadius:9,padding:13,display:'flex',alignItems:'center',gap:9,transition:'all .15s'}}>
+          {favs.map((f,i)=><div key={i} style={{background:'white',border:'0.5px solid '+T.b100,borderRadius:9,padding:13,display:'flex',alignItems:'center',gap:9}}>
             <div style={{fontSize:22,flexShrink:0}}>{f.ico}</div>
             <div style={{flex:1,overflow:'hidden'}}>
-              <div style={{fontSize:12,fontWeight:700,color:T.navy,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}><a href={f.url} target="_blank" rel="noreferrer" style={{color:T.navy,textDecoration:'none'}}>{f.name}</a></div>
+              <div style={{fontSize:12,fontWeight:700,color:T.navy,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}><a href={f.url} target="_blank" rel="noreferrer" style={{color:T.navy}}>{f.name}</a></div>
               <div style={{fontSize:10,color:T.gray,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{f.url}</div>
             </div>
             <button onClick={()=>remove(i)} style={{fontSize:10,color:'#ccc',border:'none',background:'none',cursor:'pointer',padding:'2px 4px',borderRadius:3,flexShrink:0}}>✕</button>
@@ -656,7 +658,7 @@ function DashTab({tab,setTab,cats,leads,deals,lb,nhQuoteIdx,setNhQuoteIdx}){
       {q&&<><div style={{fontSize:14,fontStyle:'italic',lineHeight:1.6,color:'#E6F1FB'}}>"{q.quote}"</div><div style={{fontSize:11,color:T.b200,marginTop:6}}>— Napoleon Hill · {q.title}</div></>}
     </div>
     <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:10,marginBottom:14}}>
-      {cards.map(c=><div key={c.id} onClick={()=>setTab(c.id)} style={{background:'white',borderRadius:13,padding:16,border:'0.5px solid '+T.b100,cursor:'pointer',transition:'all .2s',position:'relative',overflow:'hidden'}}>
+      {cards.map(c=><div key={c.id} onClick={()=>setTab(c.id)} style={{background:'white',borderRadius:13,padding:16,border:'0.5px solid '+T.b100,cursor:'pointer',position:'relative',overflow:'hidden'}}>
         <div style={{position:'absolute',top:0,right:0,width:50,height:50,borderRadius:'0 13px 0 50px',background:c.color,opacity:.12}}/>
         <div style={{fontSize:28,marginBottom:6}}>{c.ico}</div>
         <div style={{fontSize:14,fontWeight:700,color:c.color,marginBottom:2}}>{c.title}</div>
@@ -672,7 +674,7 @@ function DashTab({tab,setTab,cats,leads,deals,lb,nhQuoteIdx,setNhQuoteIdx}){
   </div>;
 }
 
-export default function App(){
+function App(){
   const [tab,setTab]=useState('dash');
   const [cats,setCats]=useState(DEFAULT_CATS);
   const [leads,setLeads]=useState([]);
@@ -742,3 +744,9 @@ export default function App(){
     {tab==='favs'&&<FavoritesTab favs={favs} setFavs={setFavs}/>}
   </div>;
 }
+
+const root=ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App/>);
+</script>
+</body>
+</html>
