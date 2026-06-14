@@ -13,7 +13,6 @@
     --navy: #1B2A4A;
     --gold: #C8960C;
     --cream: #FAF8F4;
-    --soft: #E8E2D9;
     --muted: #9A9490;
   }
 
@@ -43,42 +42,37 @@
     font-family: 'Cormorant Garamond', serif;
     font-weight: 300;
     font-size: clamp(3rem, 9vw, 5.5rem);
-    color: #FFFFFF;
+    color: #fff;
     line-height: 1;
-    letter-spacing: 0.02em;
   }
 
-  h1 em {
-    color: var(--gold);
-    font-style: italic;
-  }
+  h1 em { color: var(--gold); font-style: italic; }
 
   .subtitle {
-    font-family: 'Cormorant Garamond', serif;
     font-style: italic;
-    font-size: 1.15rem;
-    color: rgba(255,255,255,0.45);
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.4);
     margin-top: 14px;
-    letter-spacing: 0.04em;
   }
 
-  /* MUSIC PLAYER */
+  /* MUSIC BAR */
   .music-bar {
-    background: #13203A;
-    padding: 16px 24px;
+    background: #0F1826;
+    padding: 18px 24px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 20px;
+    gap: 10px;
     flex-wrap: wrap;
   }
 
   .music-label {
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 11px;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
     color: var(--gold);
+    margin-right: 6px;
   }
 
   .track-btn {
@@ -86,12 +80,13 @@
     font-size: 12px;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    padding: 7px 16px;
-    border: 1px solid rgba(255,255,255,0.2);
+    padding: 8px 16px;
+    border: 1px solid rgba(255,255,255,0.18);
     background: transparent;
-    color: rgba(255,255,255,0.7);
+    color: rgba(255,255,255,0.65);
     cursor: pointer;
     transition: all 0.2s;
+    border-radius: 2px;
   }
 
   .track-btn:hover, .track-btn.active {
@@ -103,13 +98,22 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    color: rgba(255,255,255,0.5);
+    color: rgba(255,255,255,0.4);
     font-size: 14px;
+    margin-left: 10px;
   }
 
-  input[type=range] {
-    width: 80px;
-    accent-color: var(--gold);
+  input[type=range] { width: 80px; accent-color: var(--gold); }
+
+  /* NOTE */
+  .music-note {
+    width: 100%;
+    text-align: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: rgba(255,255,255,0.28);
+    margin-top: 8px;
   }
 
   /* CONTROLS */
@@ -123,7 +127,6 @@
 
   .btn {
     font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 400;
     font-size: 13px;
     letter-spacing: 0.15em;
     text-transform: uppercase;
@@ -140,8 +143,8 @@
   .hint {
     text-align: center;
     font-family: 'Barlow Condensed', sans-serif;
-    font-size: 12px;
-    letter-spacing: 0.12em;
+    font-size: 11px;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--muted);
     padding: 16px 24px 0;
@@ -174,7 +177,6 @@
   .word {
     font-family: 'Cormorant Garamond', serif;
     font-size: 1.3rem;
-    font-weight: 400;
     color: var(--navy);
     display: block;
     line-height: 1.2;
@@ -194,7 +196,7 @@
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(15, 24, 42, 0.97);
+    background: rgba(10, 18, 35, 0.97);
     z-index: 200;
     flex-direction: column;
     align-items: center;
@@ -206,7 +208,7 @@
 
   .spot-num {
     font-family: 'Barlow Condensed', sans-serif;
-    font-size: 12px;
+    font-size: 11px;
     letter-spacing: 0.25em;
     text-transform: uppercase;
     color: var(--gold);
@@ -220,18 +222,18 @@
     text-align: center;
     padding: 0 32px;
     line-height: 1;
-    animation: wordIn 0.5s ease;
+    animation: wordIn 0.6s ease;
   }
 
   @keyframes wordIn {
-    from { opacity: 0; transform: translateY(16px) scale(0.97); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
   .progress-bar {
     width: min(420px, 80vw);
     height: 1px;
-    background: rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.1);
     margin-top: 8px;
   }
 
@@ -243,7 +245,7 @@
 
   .spot-controls {
     display: flex;
-    gap: 14px;
+    gap: 12px;
     margin-top: 20px;
     flex-wrap: wrap;
     justify-content: center;
@@ -255,9 +257,9 @@
     letter-spacing: 0.15em;
     text-transform: uppercase;
     padding: 10px 20px;
-    border: 1px solid rgba(255,255,255,0.25);
+    border: 1px solid rgba(255,255,255,0.22);
     background: transparent;
-    color: rgba(255,255,255,0.8);
+    color: rgba(255,255,255,0.75);
     cursor: pointer;
     transition: all 0.15s;
   }
@@ -267,11 +269,13 @@
   footer {
     text-align: center;
     padding: 32px 24px;
-    font-family: 'Cormorant Garamond', serif;
     font-style: italic;
     color: var(--muted);
     font-size: 1rem;
   }
+
+  /* hidden YouTube iframe */
+  #yt-frame { position:fixed; width:1px; height:1px; opacity:0; pointer-events:none; left:-9999px; }
 </style>
 </head>
 <body>
@@ -284,17 +288,18 @@
 
 <!-- MUSIC BAR -->
 <div class="music-bar">
-  <span class="music-label">🎵 Música</span>
-  <button class="track-btn" onclick="playTrack(0, this)">🎋 Bambú</button>
-  <button class="track-btn" onclick="playTrack(1, this)">🌊 Río</button>
-  <button class="track-btn" onclick="playTrack(2, this)">🎵 Flauta</button>
-  <button class="track-btn" onclick="playTrack(3, this)">🌿 Meditación</button>
-  <button class="track-btn" onclick="stopMusic(this)">⏹ Silencio</button>
+  <span class="music-label">🎵 Música de fondo</span>
+  <button class="track-btn" id="btn-0" onclick="playTrack(0)">🎋 Bambú & Agua</button>
+  <button class="track-btn" id="btn-1" onclick="playTrack(1)">🌊 Río</button>
+  <button class="track-btn" id="btn-2" onclick="playTrack(2)">🎵 Flauta</button>
+  <button class="track-btn" id="btn-3" onclick="playTrack(3)">🔔 Cuencos</button>
+  <button class="track-btn" id="btn-stop" onclick="stopMusic()">⏹ Silencio</button>
   <div class="vol-wrap">
     🔈
-    <input type="range" id="vol" min="0" max="1" step="0.05" value="0.18" oninput="setVol(this.value)">
+    <input type="range" id="vol" min="0" max="100" step="5" value="20" oninput="setVol(this.value)">
     🔊
   </div>
+  <div class="music-note">La música no interrumpe la voz — corren juntas</div>
 </div>
 
 <div class="controls">
@@ -307,7 +312,6 @@
 
 <div class="grid" id="grid"></div>
 
-<!-- SPOTLIGHT -->
 <div class="spotlight" id="spotlight">
   <div class="spot-num" id="spotNum">1 / 333</div>
   <div class="spot-word" id="spotWord">Amor</div>
@@ -322,142 +326,54 @@
 
 <footer>Hecho con amor · sebastianlinks.com</footer>
 
-<!-- WEB AUDIO ENGINE -->
-<script>
-// ── AMBIENT MUSIC via Web Audio API ──────────────────────────────
-const AC = new (window.AudioContext || window.webkitAudioContext)();
-let masterGain = AC.createGain();
-masterGain.gain.value = 0.18;
-masterGain.connect(AC.destination);
+<!-- Hidden YouTube player for background music -->
+<div id="yt-frame"></div>
 
-let activeNodes = [];
+<script>
+// ── YouTube IFrame API ────────────────────────────────────────────
+// Calm ambient tracks (looping playlists / long ambient videos)
+const TRACKS = [
+  'jfKfPfyJRdk', // lofi / bamboo calm — Lofi Girl
+  'DWcJFNfaw9c', // river creek nature sounds
+  'AoHkBiSgXAc', // native american flute meditation
+  '77ZozI0rw7w', // tibetan singing bowls 8hr
+];
+
+let ytPlayer = null;
+let currentTrack = -1;
+
+function onYouTubeIframeAPIReady() {
+  ytPlayer = new YT.Player('yt-frame', {
+    height: '1', width: '1',
+    videoId: TRACKS[0],
+    playerVars: { autoplay: 0, loop: 1, controls: 0, mute: 0 },
+    events: { onReady: () => {} }
+  });
+}
+
+// Load YouTube API
+const tag = document.createElement('script');
+tag.src = 'https://www.youtube.com/iframe_api';
+document.head.appendChild(tag);
+
+function playTrack(i) {
+  document.querySelectorAll('.track-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-'+i).classList.add('active');
+  if (!ytPlayer) return;
+  currentTrack = i;
+  ytPlayer.loadVideoById({ videoId: TRACKS[i] });
+  ytPlayer.setVolume(parseInt(document.getElementById('vol').value));
+  ytPlayer.playVideo();
+}
 
 function stopMusic() {
-  activeNodes.forEach(n => { try { n.stop(); } catch(e){} });
-  activeNodes = [];
   document.querySelectorAll('.track-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-stop').classList.add('active');
+  if (ytPlayer) ytPlayer.pauseVideo();
 }
 
-function setVol(v) { masterGain.gain.value = parseFloat(v); }
-
-function noise(type='pink') {
-  const buf = AC.createBuffer(1, AC.sampleRate * 3, AC.sampleRate);
-  const d = buf.getChannelData(0);
-  let b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
-  for (let i=0; i<d.length; i++) {
-    const w = Math.random()*2-1;
-    if (type==='pink') {
-      b0=0.99886*b0+w*0.0555179; b1=0.99332*b1+w*0.0750759;
-      b2=0.96900*b2+w*0.1538520; b3=0.86650*b3+w*0.3104856;
-      b4=0.55000*b4+w*0.5329522; b5=-0.7616*b5-w*0.0168980;
-      d[i]=(b0+b1+b2+b3+b4+b5+b6+w*0.5362)*0.11; b6=w*0.115926;
-    } else { d[i]=w*0.05; }
-  }
-  return buf;
-}
-
-function loopNoise(buf, freq=null, q=null) {
-  const src = AC.createBufferSource();
-  src.buffer = buf; src.loop = true;
-  if (freq) {
-    const f = AC.createBiquadFilter();
-    f.type='bandpass'; f.frequency.value=freq; if(q) f.Q.value=q;
-    src.connect(f); f.connect(masterGain);
-  } else { src.connect(masterGain); }
-  src.start();
-  activeNodes.push(src);
-  return src;
-}
-
-function sineLoop(freq, vol=0.08, detune=0) {
-  const o = AC.createOscillator();
-  const g = AC.createGain();
-  g.gain.value = vol;
-  o.type='sine'; o.frequency.value=freq; o.detune.value=detune;
-  o.connect(g); g.connect(masterGain);
-  o.start(); activeNodes.push(o);
-  return {osc:o, gain:g};
-}
-
-function playTone(freq, startTime, dur, vol=0.06) {
-  const o = AC.createOscillator();
-  const g = AC.createGain();
-  o.type='sine'; o.frequency.value=freq;
-  g.gain.setValueAtTime(0, startTime);
-  g.gain.linearRampToValueAtTime(vol, startTime+0.08);
-  g.gain.setValueAtTime(vol, startTime+dur-0.3);
-  g.gain.linearRampToValueAtTime(0, startTime+dur);
-  o.connect(g); g.connect(masterGain);
-  o.start(startTime); o.stop(startTime+dur);
-  activeNodes.push(o);
-}
-
-// Track 0 — Bamboo (rhythmic noise bursts + low tone)
-function trackBamboo() {
-  const buf = noise('pink');
-  loopNoise(buf, 800, 3);
-  loopNoise(noise('white'), 2200, 8);
-  // bamboo strike rhythm
-  function strike() {
-    playTone(220, AC.currentTime, 1.2, 0.04);
-    playTone(330, AC.currentTime+0.05, 0.8, 0.025);
-    const next = 2.5 + Math.random()*3.5;
-    setTimeout(strike, next*1000);
-  }
-  strike();
-}
-
-// Track 1 — Creek (layered noise)
-function trackCreek() {
-  loopNoise(noise('pink'), 600, 2);
-  loopNoise(noise('pink'), 1200, 1.5);
-  loopNoise(noise('white'), 3000, 5);
-  // bubbles
-  function bubble() {
-    const f = 400 + Math.random()*600;
-    playTone(f, AC.currentTime, 0.3 + Math.random()*0.4, 0.03);
-    setTimeout(bubble, 300 + Math.random()*800);
-  }
-  bubble();
-}
-
-// Track 2 — Flute (pentatonic melody)
-function trackFlute() {
-  loopNoise(noise('pink'), 500, 1);
-  const penta = [261.63,293.66,329.63,392,440,523.25,587.33,659.25,783.99,880];
-  function note() {
-    const f = penta[Math.floor(Math.random()*penta.length)];
-    const oct = Math.random()>0.7 ? 2 : 1;
-    playTone(f*oct, AC.currentTime, 1.2+Math.random()*1.8, 0.045);
-    setTimeout(note, 1800 + Math.random()*3200);
-  }
-  note();
-}
-
-// Track 3 — Deep meditation (bowls + drone)
-function trackMeditation() {
-  sineLoop(80, 0.06);
-  sineLoop(160, 0.03, 3);
-  sineLoop(240, 0.02, -2);
-  loopNoise(noise('pink'), 400, 1);
-  const bowls = [174,285,396,417,528,639,741,852,963];
-  function bowl() {
-    const f = bowls[Math.floor(Math.random()*bowls.length)];
-    playTone(f, AC.currentTime, 4+Math.random()*3, 0.05);
-    playTone(f*2, AC.currentTime+0.1, 3+Math.random()*2, 0.025);
-    setTimeout(bowl, 4000+Math.random()*5000);
-  }
-  bowl();
-}
-
-const tracks = [trackBamboo, trackCreek, trackFlute, trackMeditation];
-
-function playTrack(i, btn) {
-  if (AC.state === 'suspended') AC.resume();
-  stopMusic();
-  document.querySelectorAll('.track-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  tracks[i]();
+function setVol(v) {
+  if (ytPlayer) ytPlayer.setVolume(parseInt(v));
 }
 
 // ── WORDS ────────────────────────────────────────────────────────
@@ -494,32 +410,67 @@ const WORDS = [
   "Solidez","Fundamento","Raíz","Origen","Principio","Inicio","Nacimiento",
   "Creación","Formación","Desarrollo","Florecimiento","Cosecha","Fruto","Resultado",
   "Recompensa","Premio","Validación","Afirmación","Aprobación","Apoyo","Aliento",
-  "Ánimo","Estímulo","Catalizador","Defensor","Protector","Salvador","Restaurador",
-  "Sanador","Maestro","Mentor","Consejero","Hermano","Compañero","Aliado","Equipo",
-  "Red","Pueblo","Humanidad","Universo","Cosmos","Tierra","Agua","Fuego","Aire",
-  "Calor","Abrigo","Hogar","Raíces","Herencia","Tradición","Cultura","Historia",
-  "Promesa","Pacto","Alianza","Misericordia","Justicia","Rectitud","Reposo",
-  "Descanso","Quietud","Silencio","Asombro","Admiración","Deleite","Placer",
-  "Satisfacción","Contentamiento","Felicidad","Dicha","Bienaventuranza","Todo",
-  "Completo","Perfecto","Bendito","Santo","Amado","Elegido","Ungido","Favorecido",
-  "Aceptado","Perdonado","Liberado","Adoptado","Heredero","Hijo","Hija","Testigo",
-  "Mensajero","Portador","Sal","Semilla","Árbol","Río","Manantial","Fuente",
-  "Eterno","Resurrección","Redención","Reconciliación","Restauración","Unción",
-  "Revelación","Manifestación","Preciosa","Querida","Especial","Única","Valiosa",
-  "Irremplazable","Necesaria","Recordada","Amada","Sostenida","Abrazada","Vista",
-  "Conocida","Escogida","Llamada","Cubierta","Guardada","Cuidada","Honrada",
-  "Celebrada","Apreciada","Atesorada","Reconocida","Admirada","Respetada","Adorada",
-  "Consolada","Fortalecida","Levantada","Sostenida","Completada","Plena","Suficiente",
-  "Digna","Noble","Pura","Santa","Gloriosa","Luminosa","Radiante","Floreciente",
-  "Tranquila","Serena","Entera","Segura","Confiada","Descansada","Libre","Perdonada",
-  "Nueva","Renovada","Transformada","Restaurada","Sanada","Absuelta","Liberada",
-  "Redimida","Rescatada","Elegida","Amada"
+  "Ánimo","Estímulo","Defensor","Protector","Salvador","Restaurador","Sanador",
+  "Maestro","Mentor","Consejero","Hermano","Compañero","Aliado","Equipo","Pueblo",
+  "Humanidad","Universo","Cosmos","Tierra","Agua","Fuego","Aire","Calor","Abrigo",
+  "Hogar","Raíces","Herencia","Tradición","Cultura","Historia","Promesa","Pacto",
+  "Alianza","Misericordia","Justicia","Rectitud","Reposo","Descanso","Quietud",
+  "Silencio","Asombro","Admiración","Deleite","Satisfacción","Contentamiento",
+  "Felicidad","Dicha","Bienaventuranza","Completo","Perfecto","Bendito","Santo",
+  "Amado","Elegido","Ungido","Favorecido","Aceptado","Perdonado","Liberado",
+  "Adoptado","Heredero","Testigo","Mensajero","Sal","Semilla","Árbol","Río",
+  "Manantial","Resurrección","Redención","Reconciliación","Restauración","Revelación",
+  "Preciosa","Querida","Especial","Única","Valiosa","Irremplazable","Necesaria",
+  "Recordada","Amada","Sostenida","Abrazada","Vista","Conocida","Escogida",
+  "Cubierta","Guardada","Cuidada","Honrada","Celebrada","Apreciada","Atesorada",
+  "Reconocida","Admirada","Respetada","Adorada","Consolada","Fortalecida",
+  "Levantada","Completada","Plena","Suficiente","Digna","Noble","Pura","Santa",
+  "Gloriosa","Luminosa","Radiante","Floreciente","Tranquila","Serena","Entera",
+  "Segura","Confiada","Descansada","Libre","Perdonada","Nueva","Renovada",
+  "Transformada","Restaurada","Sanada","Liberada","Redimida","Rescatada","Amada"
 ];
 
 let currentIndex = 0;
 let slideshowTimer = null;
 let voiceOn = false;
+let speaking = false;
 
+// ── VOICE ─────────────────────────────────────────────────────────
+// Pick best Spanish female voice available on device
+function getBestVoice() {
+  const voices = speechSynthesis.getVoices();
+  // Priority: es-US female, es-MX female, es-ES female, any es-
+  const prefer = [
+    v => v.lang === 'es-US' && v.name.toLowerCase().includes('paulina'),
+    v => v.lang === 'es-MX' && /female|woman|paulina|fernanda|renata/i.test(v.name),
+    v => v.lang === 'es-US',
+    v => v.lang === 'es-MX',
+    v => v.lang.startsWith('es'),
+  ];
+  for (const test of prefer) {
+    const found = voices.find(test);
+    if (found) return found;
+  }
+  return null;
+}
+
+function speakWord(word, onDone) {
+  if (!window.speechSynthesis) { if(onDone) onDone(); return; }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(word);
+  u.lang = 'es-US';
+  u.rate = 0.62;      // slow and deliberate
+  u.pitch = 1.05;     // slightly warm
+  u.volume = 1.0;
+  const v = getBestVoice();
+  if (v) u.voice = v;
+  u.onend = () => { speaking = false; if (onDone) onDone(); };
+  u.onerror = () => { speaking = false; if (onDone) onDone(); };
+  speaking = true;
+  speechSynthesis.speak(u);
+}
+
+// ── GRID ──────────────────────────────────────────────────────────
 function buildGrid() {
   const grid = document.getElementById('grid');
   grid.innerHTML = '';
@@ -533,6 +484,7 @@ function buildGrid() {
   });
 }
 
+// ── SPOTLIGHT ─────────────────────────────────────────────────────
 function openSpotlight(i) {
   currentIndex = i;
   updateSpotlight();
@@ -542,17 +494,15 @@ function openSpotlight(i) {
 function closeSpotlight() {
   document.getElementById('spotlight').classList.remove('active');
   stopSlideshow();
-  stopSpeech();
+  speechSynthesis.cancel();
 }
 
 function updateSpotlight() {
   const w = WORDS[currentIndex];
   const el = document.getElementById('spotWord');
-  el.style.animation = 'none';
-  el.offsetHeight;
-  el.style.animation = '';
+  el.style.animation = 'none'; el.offsetHeight; el.style.animation = '';
   el.textContent = w;
-  document.getElementById('spotNum').textContent = `${currentIndex + 1} / ${WORDS.length}`;
+  document.getElementById('spotNum').textContent = `${currentIndex+1} / ${WORDS.length}`;
   document.getElementById('progressFill').style.width = ((currentIndex+1)/WORDS.length*100)+'%';
   document.querySelectorAll('.word-card').forEach(c => c.classList.remove('playing'));
   const card = document.getElementById('card-'+currentIndex);
@@ -569,25 +519,38 @@ function prevWord() {
   if (currentIndex > 0) { currentIndex--; updateSpotlight(); }
 }
 
+// ── SLIDESHOW ─────────────────────────────────────────────────────
 function startSlideshow() {
   openSpotlight(0);
   stopSlideshow();
   slideshowTimer = setInterval(() => {
     if (currentIndex < WORDS.length-1) { nextWord(); }
     else { stopSlideshow(); }
-  }, 2400);
+  }, 2800);
 }
 
 function stopSlideshow() {
   if (slideshowTimer) { clearInterval(slideshowTimer); slideshowTimer = null; }
 }
 
-function speakWord(word) {
-  if (!window.speechSynthesis) return;
+// ── READ ALL — voice leads, waits between words ───────────────────
+function readAll() {
   speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(word);
-  u.lang = 'es-ES'; u.rate = 0.78; u.pitch = 1.0;
-  speechSynthesis.speak(u);
+  stopSlideshow();
+  openSpotlight(0);
+  let i = 0;
+
+  function sayNext() {
+    if (i >= WORDS.length) return;
+    currentIndex = i;
+    updateSpotlight();
+    speakWord(WORDS[i], () => {
+      i++;
+      // 1.1 second pause between words — feels meditative
+      setTimeout(sayNext, 1100);
+    });
+  }
+  sayNext();
 }
 
 function toggleVoice() {
@@ -598,30 +561,19 @@ function toggleVoice() {
   if (voiceOn) speakWord(WORDS[currentIndex]);
 }
 
-function readAll() {
-  if (!window.speechSynthesis) return;
-  stopSpeech();
-  let i = 0;
-  function sayNext() {
-    if (i >= WORDS.length) return;
-    const u = new SpeechSynthesisUtterance(WORDS[i]);
-    u.lang = 'es-ES'; u.rate = 0.75; u.pitch = 1.0;
-    u.onend = () => { i++; setTimeout(sayNext, 700); };
-    speechSynthesis.speak(u);
-  }
-  sayNext();
-}
-
-function stopSpeech() {
-  if (window.speechSynthesis) speechSynthesis.cancel();
-}
-
 function stopAll() {
-  stopSlideshow(); stopSpeech(); closeSpotlight();
+  stopSlideshow();
+  speechSynthesis.cancel();
+  closeSpotlight();
   document.querySelectorAll('.word-card').forEach(c => c.classList.remove('playing'));
 }
 
 buildGrid();
+
+// Preload voices
+if (speechSynthesis.onvoiceschanged !== undefined) {
+  speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
+}
 
 document.addEventListener('keydown', e => {
   if (!document.getElementById('spotlight').classList.contains('active')) return;
