@@ -387,6 +387,79 @@
   }
   footer strong { color: var(--gold); }
 
+
+  /* ── SAVE BUTTONS ── */
+  .group-header td { position: relative; }
+  .sec-save-btn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    background: var(--gold);
+    color: var(--navy);
+    border: none;
+    border-radius: 2px;
+    padding: 3px 10px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .sec-save-btn:hover { background: #FFE000; }
+  .sec-save-btn.saved { background: var(--green); color: white; }
+
+  /* ── SNAPSHOTS DRAWER ── */
+  .snapshots-bar {
+    background: #f0ede4;
+    border-bottom: 1px solid var(--border);
+    padding: 10px 48px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .snapshots-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+  .snapshot-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    color: var(--navy);
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .snapshot-chip:hover { border-color: var(--navy); }
+  .snapshot-chip .chip-x {
+    color: var(--red);
+    font-weight: 700;
+    margin-left: 2px;
+    font-size: 13px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .snapshot-chip .chip-x:hover { color: darkred; }
+  .no-snaps { font-size: 12px; color: var(--muted); font-style: italic; }
+
+  @media print {
+    .snapshots-bar { display: none !important; }
+    .sec-save-btn  { display: none !important; }
+  }
+
   @media (max-width: 700px) {
     header { grid-template-columns: 1fr; text-align: center; padding: 24px 16px; }
     .page-body { padding: 24px 12px; }
@@ -449,6 +522,13 @@
 
 </div>
 
+
+<!-- ══ SNAPSHOTS BAR ══ -->
+<div class="snapshots-bar">
+  <span class="snapshots-label">Saved Snapshots</span>
+  <div id="snapshotChips"><span class="no-snaps">No saves yet — use the Save buttons in each section</span></div>
+</div>
+
 <!-- ══ PAGE BODY ══ -->
 <div class="page-body">
 
@@ -492,7 +572,7 @@
     <tbody>
 
       <!-- HOUSING & FOOD -->
-      <tr class="group-header"><td colspan="5">Housing &amp; Food — Base Life</td></tr>
+      <tr class="group-header"><td colspan="5" style="position:relative;">Housing &amp; Food — Base Life<button class="sec-save-btn" onclick="saveSection('housing')" id="btn_housing">Save</button></td></tr>
       <tr>
         <td><div class="cat-name">Housing</div><div class="cat-note">Lives on base — BAH included</div></td>
         <td><input class="amt-input" type="number" id="housing" value="0" min="0" oninput="recalc()"></td>
@@ -509,7 +589,7 @@
       </tr>
 
       <!-- SAVINGS -->
-      <tr class="group-header"><td colspan="5">Savings &amp; Emergency</td></tr>
+      <tr class="group-header"><td colspan="5" style="position:relative;">Savings &amp; Emergency<button class="sec-save-btn" onclick="saveSection('savings')" id="btn_savings">Save</button></td></tr>
       <tr>
         <td><div class="cat-name">Car Down Payment Fund</div><div class="cat-note">Goal: $1,750</div></td>
         <td><input class="amt-input" type="number" id="carSavings" value="200" min="0" oninput="recalc()"></td>
@@ -533,7 +613,7 @@
       </tr>
 
       <!-- INVESTMENTS -->
-      <tr class="group-header"><td colspan="5">Investments &amp; Retirement</td></tr>
+      <tr class="group-header"><td colspan="5" style="position:relative;">Investments &amp; Retirement<button class="sec-save-btn" onclick="saveSection('investments')" id="btn_investments">Save</button></td></tr>
       <tr>
         <td><div class="cat-name">TSP (Thrift Savings Plan)</div><div class="cat-note">Army 401k — get the 5% match</div></td>
         <td><input class="amt-input" type="number" id="tsp" value="105" min="0" oninput="recalc()"></td>
@@ -557,7 +637,7 @@
       </tr>
 
       <!-- TRANSPORTATION -->
-      <tr class="group-header"><td colspan="5">Transportation</td></tr>
+      <tr class="group-header"><td colspan="5" style="position:relative;">Transportation<button class="sec-save-btn" onclick="saveSection('transportation')" id="btn_transportation">Save</button></td></tr>
       <tr>
         <td><div class="cat-name">Car Payment</div><div class="cat-note">Keep ≤ $250/mo</div></td>
         <td><input class="amt-input" type="number" id="carPayment" value="250" min="0" oninput="recalc()"></td>
@@ -588,7 +668,7 @@
       </tr>
 
       <!-- PERSONAL -->
-      <tr class="group-header"><td colspan="5">Personal &amp; Lifestyle</td></tr>
+      <tr class="group-header"><td colspan="5" style="position:relative;">Personal &amp; Lifestyle<button class="sec-save-btn" onclick="saveSection('personal')" id="btn_personal">Save</button></td></tr>
       <tr>
         <td><div class="cat-name">Personal Care</div><div class="cat-note">Haircuts, hygiene</div></td>
         <td><input class="amt-input" type="number" id="personal" value="75" min="0" oninput="recalc()"></td>
@@ -619,7 +699,7 @@
       </tr>
 
       <!-- GIVING -->
-      <tr class="group-header"><td colspan="5">Charity &amp; Giving</td></tr>
+      <tr class="group-header"><td colspan="5" style="position:relative;">Charity &amp; Giving<button class="sec-save-btn" onclick="saveSection('charity')" id="btn_charity">Save</button></td></tr>
       <tr>
         <td><div class="cat-name">Tithe / Donation</div><div class="cat-note">Give first</div></td>
         <td><input class="amt-input" type="number" id="charity" value="210" min="0" oninput="recalc()"></td>
@@ -669,6 +749,108 @@
 </footer>
 
 <script>
+// ── SECTION FIELD MAP ──
+const SECTION_FIELDS = {
+  housing:        ['housing','food'],
+  savings:        ['carSavings','emerg','carSaved','emergSaved'],
+  investments:    ['tsp','roth'],
+  transportation: ['carPayment','insurance','gas'],
+  personal:       ['personal','entertainment','phone','clothing'],
+  charity:        ['charity'],
+};
+
+// ── SAVE A SECTION SNAPSHOT ──
+function saveSection(key) {
+  const fields = SECTION_FIELDS[key];
+  const data = { income: document.getElementById('income').value };
+  fields.forEach(f => {
+    const el = document.getElementById(f);
+    if (el) data[f] = el.value;
+  });
+  const now = new Date();
+  const label = now.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'})
+              + ' ' + now.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'});
+  const snapId = key + '_' + now.getTime();
+  const snap = { id: snapId, section: key, label, data };
+
+  const all = JSON.parse(localStorage.getItem('joshua_snaps') || '[]');
+  all.unshift(snap); // newest first
+  // keep max 20
+  if (all.length > 20) all.pop();
+  localStorage.setItem('joshua_snaps', JSON.stringify(all));
+
+  // Flash button
+  const btn = document.getElementById('btn_' + key);
+  if (btn) {
+    btn.textContent = 'Saved ✓';
+    btn.classList.add('saved');
+    setTimeout(() => { btn.textContent = 'Save'; btn.classList.remove('saved'); }, 2000);
+  }
+  renderChips();
+}
+
+// ── LOAD A SNAPSHOT ──
+function loadSnapshot(snapId) {
+  const all = JSON.parse(localStorage.getItem('joshua_snaps') || '[]');
+  const snap = all.find(s => s.id === snapId);
+  if (!snap) return;
+  if (!confirm('Load snapshot "' + snap.label + '"? This will overwrite current values for the ' + snap.section + ' section.')) return;
+  Object.entries(snap.data).forEach(([k, v]) => {
+    const el = document.getElementById(k);
+    if (el) el.value = v;
+  });
+  recalc();
+  updateGoals();
+}
+
+// ── DELETE A SNAPSHOT ──
+function deleteSnapshot(snapId, e) {
+  e.stopPropagation();
+  const all = JSON.parse(localStorage.getItem('joshua_snaps') || '[]');
+  const updated = all.filter(s => s.id !== snapId);
+  localStorage.setItem('joshua_snaps', JSON.stringify(updated));
+  renderChips();
+}
+
+// ── RENDER CHIPS ──
+function renderChips() {
+  const all = JSON.parse(localStorage.getItem('joshua_snaps') || '[]');
+  const wrap = document.getElementById('snapshotChips');
+  if (!wrap) return;
+  if (all.length === 0) {
+    wrap.innerHTML = '<span class="no-snaps">No saves yet — use the Save buttons in each section</span>';
+    return;
+  }
+  wrap.innerHTML = all.map(s =>
+    `<span class="snapshot-chip" onclick="loadSnapshot('${s.id}')">
+      <span style="color:var(--muted);font-size:10px;margin-right:2px;">${s.section}</span>
+      ${s.label}
+      <span class="chip-x" onclick="deleteSnapshot('${s.id}', event)" title="Delete">×</span>
+    </span>`
+  ).join('');
+}
+
+// ── AUTO-SAVE ENTIRE BUDGET (on every change) ──
+function autoSave() {
+  const allFields = ['income','housing','food','carSavings','emerg','carSaved','emergSaved','tsp','roth','carPayment','insurance','gas','personal','entertainment','phone','clothing','charity'];
+  const data = {};
+  allFields.forEach(f => { const el = document.getElementById(f); if (el) data[f] = el.value; });
+  localStorage.setItem('joshua_autosave', JSON.stringify(data));
+}
+
+// ── LOAD AUTOSAVE ON PAGE OPEN ──
+function loadAutosave() {
+  const saved = localStorage.getItem('joshua_autosave');
+  if (!saved) return;
+  try {
+    const data = JSON.parse(saved);
+    Object.entries(data).forEach(([k, v]) => {
+      const el = document.getElementById(k);
+      if (el) el.value = v;
+    });
+  } catch(e) {}
+}
+
 // Recommended ranges [min%, max%] — null means fixed target
 const REC = {
   housing:       [0, 0],
@@ -778,6 +960,7 @@ function recalc() {
   document.getElementById('progressLabel').textContent = pctUsed + '%';
 
   updateGoals();
+  autoSave();
 }
 
 function updateGoals() {
@@ -804,8 +987,11 @@ function updateGoals() {
   if (totalRem <= 0) { moEl.textContent = '✓'; }
   else if (monthly > 0) { moEl.textContent = Math.ceil(totalRem / monthly); }
   else { moEl.textContent = '—'; }
+  autoSave();
 }
 
+loadAutosave();
+renderChips();
 recalc();
 </script>
 </body>
