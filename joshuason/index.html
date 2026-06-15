@@ -446,11 +446,7 @@
     <label>Weekly</label>
     <span id="weeklyIncome" style="font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:600; color:rgba(255,255,255,0.75);">$485</span>
   </div>
-  <div class="income-divider"></div>
-  <div class="income-field">
-    <label>Daily</label>
-    <span id="dailyIncome" style="font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:600; color:rgba(255,255,255,0.75);">$69</span>
-  </div>
+
 </div>
 
 <!-- ══ PAGE BODY ══ -->
@@ -711,7 +707,6 @@ function recalc() {
   const income = parseFloat(document.getElementById('income').value) || 0;
   document.getElementById('annualIncome').textContent = '$' + (income * 12).toLocaleString();
   document.getElementById('weeklyIncome').textContent = '$' + Math.round(income * 12 / 52).toLocaleString();
-  document.getElementById('dailyIncome').textContent = '$' + Math.round(income * 12 / 365).toLocaleString();
   document.getElementById('incomeLabel').textContent = '$' + income.toLocaleString() + ' / mo';
 
   const fields = Object.keys(REC);
