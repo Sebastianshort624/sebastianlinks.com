@@ -769,7 +769,10 @@
             </div>
             <div class="cel-amount" id="housingFreed">—<small>/ mo freed</small></div>
           </div></td>
-        <td><input class="amt-input" type="number" id="housing" value="0" min="0" oninput="recalc()"></td>
+        <td>
+          <input class="amt-input" type="number" id="housing" value="0" min="0" oninput="recalc()">
+          <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; color:var(--green); letter-spacing:1px; text-align:center; margin-top:3px;">~$1,500/mo freed</div>
+        </td>
         <td style="text-align:center;"><span id="w_housing" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
         <td class="pct-rec">0%</td>
         <td><span class="pct-badge green" id="housingPct">100%</span></td>
@@ -785,7 +788,10 @@
             </div>
             <div class="cel-amount" id="foodFreed">~$400<small>/ mo freed</small></div>
           </div></td>
-        <td><input class="amt-input" type="number" id="food" value="0" min="0" oninput="recalc()"></td>
+        <td>
+          <input class="amt-input" type="number" id="food" value="0" min="0" oninput="recalc()">
+          <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; color:var(--green); letter-spacing:1px; text-align:center; margin-top:3px;">~$400/mo freed</div>
+        </td>
         <td style="text-align:center;"><span id="w_food" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
         <td class="pct-rec">0%</td>
         <td><span class="pct-badge green" id="foodPct">100%</span></td>
@@ -1249,9 +1255,13 @@ function recalc() {
   if (rsRemPct) rsRemPct.textContent = Math.round(recRemPct * 100) + '%';
 
   // ── HOUSING/FOOD FREED AMOUNTS ──
-  const natRent = 1200; // approx national avg rent for single person
+  // National avg rent ~$1,500, food ~$400 — what Army saves Joshua
+  const natRent = 1500;
+  const natFood = 400;
   const hFree = document.getElementById('housingFreed');
   if (hFree) hFree.innerHTML = '~$' + natRent.toLocaleString() + '<small>/ mo freed</small>';
+  const fFree = document.getElementById('foodFreed');
+  if (fFree) fFree.innerHTML = '~$' + natFood.toLocaleString() + '<small>/ mo freed</small>';
 
   // ── RUNNING BALANCE ──
   const wk = n => Math.round(n * 12 / 52);
