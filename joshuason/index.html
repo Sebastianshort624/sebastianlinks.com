@@ -634,49 +634,64 @@
 </header>
 
 <!-- ══ RECOMMENDED ALLOCATION STRIP ══ -->
-<div class="rec-strip">
-  <div class="rec-item">
-    <div class="ri-label">Housing</div>
-    <div class="ri-pct" style="color:var(--green);">0% <span style="color:var(--muted); font-size:9px;">(std 25–30%)</span></div>
-    <div class="ri-amt" style="color:var(--green); font-size:0.85rem;" id="rs_housing_freed">~$525–630/mo</div>
-    <div style="font-family:'Barlow Condensed',sans-serif; font-size:9px; letter-spacing:1px; color:var(--red); text-transform:uppercase; margin-top:1px;">Army Freed ✓</div>
+<div class="rec-strip" style="flex-direction:column; gap:0; padding:0;">
+
+  <!-- ROW 1: Housing & Food (Army freed) -->
+  <div style="display:flex; align-items:stretch; border-bottom:1px solid var(--border); width:100%;">
+    <div class="rec-item" style="flex:1; border-right:1px solid var(--border);">
+      <div class="ri-label">Housing</div>
+      <div class="ri-pct" style="color:var(--muted);">Std 28%</div>
+      <div class="ri-amt" style="color:var(--green);" id="rs_housing_freed">$578</div>
+      <div style="font-family:'Barlow Condensed',sans-serif; font-size:9px; letter-spacing:1px; color:var(--red); text-transform:uppercase; margin-top:2px;">Army Freed ✓</div>
+    </div>
+    <div class="rec-item" style="flex:1;">
+      <div class="ri-label">Food</div>
+      <div class="ri-pct" style="color:var(--muted);">Std 13%</div>
+      <div class="ri-amt" style="color:var(--green);" id="rs_food_freed">$273</div>
+      <div style="font-family:'Barlow Condensed',sans-serif; font-size:9px; letter-spacing:1px; color:var(--red); text-transform:uppercase; margin-top:2px;">Army Freed ✓</div>
+    </div>
+    <div class="rec-item" style="flex:1; border-left:1px solid var(--border); background:#fffdf0;">
+      <div class="ri-label" style="color:var(--muted);">Total Freed</div>
+      <div class="ri-pct" style="color:var(--muted);">Std 41%</div>
+      <div class="ri-amt" style="color:var(--green); font-size:1.1rem;" id="rs_total_freed">$851</div>
+      <div style="font-family:'Barlow Condensed',sans-serif; font-size:9px; letter-spacing:1px; color:var(--red); text-transform:uppercase; margin-top:2px;">Army Advantage</div>
+    </div>
   </div>
-  <div class="rec-item">
-    <div class="ri-label">Food</div>
-    <div class="ri-pct" style="color:var(--green);">0% <span style="color:var(--muted); font-size:9px;">(std 10–15%)</span></div>
-    <div class="ri-amt" style="color:var(--green); font-size:0.85rem;" id="rs_food_freed">~$210–315/mo</div>
-    <div style="font-family:'Barlow Condensed',sans-serif; font-size:9px; letter-spacing:1px; color:var(--red); text-transform:uppercase; margin-top:1px;">Army Freed ✓</div>
+
+  <!-- ROW 2: All other categories -->
+  <div style="display:flex; align-items:stretch; width:100%;">
+    <div class="rec-item" style="flex:1; border-right:1px solid var(--border);">
+      <div class="ri-label">Savings</div>
+      <div class="ri-pct">10%</div>
+      <div class="ri-amt" id="rs_savings">$210</div>
+    </div>
+    <div class="rec-item" style="flex:1; border-right:1px solid var(--border);">
+      <div class="ri-label">Invest</div>
+      <div class="ri-pct">8%</div>
+      <div class="ri-amt" id="rs_invest">$168</div>
+    </div>
+    <div class="rec-item" style="flex:1; border-right:1px solid var(--border);">
+      <div class="ri-label">Transport</div>
+      <div class="ri-pct">19%</div>
+      <div class="ri-amt" id="rs_transp">$399</div>
+    </div>
+    <div class="rec-item" style="flex:1; border-right:1px solid var(--border);">
+      <div class="ri-label">Personal</div>
+      <div class="ri-pct">14%</div>
+      <div class="ri-amt" id="rs_personal">$294</div>
+    </div>
+    <div class="rec-item" style="flex:1; border-right:1px solid var(--border);">
+      <div class="ri-label">Giving</div>
+      <div class="ri-pct">3%</div>
+      <div class="ri-amt" id="rs_giving">$63</div>
+    </div>
+    <div class="rec-item" style="flex:1; background:#fffdf0;">
+      <div class="ri-label">Remaining</div>
+      <div class="ri-pct" id="rs_rem_pct">46%</div>
+      <div class="ri-amt" style="color:var(--green);" id="rs_rem_amt">$966</div>
+    </div>
   </div>
-  <div class="rec-item">
-    <div class="ri-label">Savings</div>
-    <div class="ri-pct">10%</div>
-    <div class="ri-amt" id="rs_savings">$210</div>
-  </div>
-  <div class="rec-item">
-    <div class="ri-label">Invest</div>
-    <div class="ri-pct">8%</div>
-    <div class="ri-amt" id="rs_invest">$168</div>
-  </div>
-  <div class="rec-item">
-    <div class="ri-label">Transport</div>
-    <div class="ri-pct">19%</div>
-    <div class="ri-amt" id="rs_transp">$399</div>
-  </div>
-  <div class="rec-item">
-    <div class="ri-label">Personal</div>
-    <div class="ri-pct">14%</div>
-    <div class="ri-amt" id="rs_personal">$294</div>
-  </div>
-  <div class="rec-item">
-    <div class="ri-label">Giving</div>
-    <div class="ri-pct">10%</div>
-    <div class="ri-amt" id="rs_giving">$210</div>
-  </div>
-  <div class="rec-item" style="border-left:2px solid var(--gold); margin-left:8px; padding-left:16px;">
-    <div class="ri-label">Remaining</div>
-    <div class="ri-pct" id="rs_rem_pct">39%</div>
-    <div class="ri-amt" style="color:var(--green);" id="rs_rem_amt">$819</div>
-  </div>
+
 </div>
 
 
@@ -737,14 +752,20 @@
       <div style="font-size:11px; color:rgba(255,255,255,0.5); margin-top:4px;">Tax · Tags · Insurance deposit secured</div>
     </div>
 
-    <!-- CARD 2: NEXT SAVINGS GOAL (unlocks after emergency + investing met) -->
-    <div class="goal-card" style="border-top-color: var(--gold);">
-      <div class="gc-label" style="color:var(--gold);">🎯 Next Savings Goal</div>
-      <div class="gc-goal-text">Unlocks after emergency fund &amp; investing</div>
-      <input class="gc-input" type="text" id="nextGoalName" placeholder="Name your goal (e.g. Vacation, PS5)" oninput="updateGoals()" style="margin-bottom:6px;">
-      <input class="gc-input" type="number" id="nextGoalAmt" value="500" min="0" placeholder="$ goal amount" oninput="updateGoals()">
-      <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; color:var(--muted); margin-top:4px; letter-spacing:1px;">Leftover after emergency &amp; investing flows here</div>
-      <div class="gc-pct-text" style="margin-top:6px;">Progress: <strong id="nextGoalPct">0%</strong> · <span id="nextGoalETA">—</span></div>
+    <!-- CARD 2: NEXT SAVINGS GOAL -->
+    <div class="goal-card" style="border-top-color: var(--gold); background: linear-gradient(135deg, #1B2A4A, #253d6b); color:white;">
+      <div class="gc-label" style="color:var(--gold); letter-spacing:3px;">🎯 Next Mission</div>
+      <input type="text" id="nextGoalName" placeholder="Name your goal" oninput="updateGoals()"
+        style="background:transparent; border:none; border-bottom:1px solid var(--gold); color:var(--gold); font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:700; width:100%; padding:4px 0; margin:6px 0 4px; outline:none;">
+      <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.5); margin-bottom:8px;">Goal Amount</div>
+      <input type="number" id="nextGoalAmt" value="500" min="0" oninput="updateGoals()"
+        style="background:transparent; border:none; border-bottom:1px solid rgba(255,255,255,0.3); color:white; font-family:'Cormorant Garamond',serif; font-size:1.6rem; font-weight:700; width:100%; padding:4px 0; margin-bottom:8px; outline:none;">
+      <div class="gc-progress-track" style="background:rgba(255,255,255,0.15);"><div class="gc-progress-fill" id="nextGoalBar" style="width:0%; background:var(--gold);"></div></div>
+      <div style="display:flex; justify-content:space-between; align-items:baseline; margin-top:6px;">
+        <span style="font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:700; color:rgba(255,255,255,0.3);" id="nextGoalSavedDisplay">$0</span>
+        <span style="font-family:'Barlow Condensed',sans-serif; font-size:10px; color:rgba(255,255,255,0.4); letter-spacing:1px;"><span id="nextGoalPct">0%</span> complete</span>
+      </div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.4); margin-top:4px;" id="nextGoalETA">Unlocks after emergency fund &amp; investing</div>
     </div>
 
     <!-- CARD 3: EMERGENCY FUND + INVESTING STACKED -->
@@ -776,6 +797,7 @@
         <th style="width:32%; text-align:left;">Category</th>
         <th>Monthly $</th>
         <th>Weekly $</th>
+        <th>Insight</th>
         <th>Rec %</th>
         <th>My %</th>
         <th>Status</th>
@@ -784,7 +806,7 @@
     <tbody>
 
       <!-- HOUSING & FOOD -->
-      <tr class="group-header"><td colspan="6" style="position:relative;">Housing &amp; Food — Base Life<button class="sec-save-btn" onclick="saveSection('housing')" id="btn_housing">Lock In</button></td></tr>
+      <tr class="group-header"><td colspan="7" style="position:relative;">Housing &amp; Food — Base Life<button class="sec-save-btn" onclick="saveSection('housing')" id="btn_housing">Lock In</button></td></tr>
       <tr>
         <td><div class="cat-name">Housing</div>
           <div class="celebrate-banner">
@@ -800,6 +822,7 @@
           <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; color:var(--green); letter-spacing:1px; text-align:center; margin-top:3px;">~$1,500/mo freed</div>
         </td>
         <td style="text-align:center;"><span id="w_housing" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
+        <td class="insight-cell" style="font-size:11px; color:var(--muted); text-align:center; max-width:100px;">—</td>
         <td class="pct-rec">0%</td>
         <td><span class="pct-badge green" id="housingPct">100%</span></td>
         <td><span id="housingStatus" style="font-size:11px; color:var(--green);">✓ Army Covered</span></td>
@@ -819,16 +842,17 @@
           <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; color:var(--green); letter-spacing:1px; text-align:center; margin-top:3px;">~$400/mo freed</div>
         </td>
         <td style="text-align:center;"><span id="w_food" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
+        <td class="insight-cell" style="font-size:11px; color:var(--muted); text-align:center; max-width:100px;">—</td>
         <td class="pct-rec">0%</td>
         <td><span class="pct-badge green" id="foodPct">100%</span></td>
         <td><span id="foodStatus" style="font-size:11px; color:var(--green);">✓ Army Covered</span></td>
       </tr>
 
-      <tr class="running-bar-row"><td colspan="6" style="padding:4px 14px;">
+      <tr class="running-bar-row"><td colspan="7" style="padding:4px 14px;">
         <div class="running-bar" id="rb_housing"><span class="rb-label">After Housing &amp; Food</span><span><span class="rb-amount" id="rb_housing_amt">—</span><span class="rb-weekly" id="rb_housing_wk"></span></span></div>
       </td></tr>
       <!-- SAVINGS -->
-      <tr class="group-header"><td colspan="6" style="position:relative;">Savings &amp; Emergency Fund<button class="sec-save-btn" onclick="saveSection('savings')" id="btn_savings">Lock In</button></td></tr>
+      <tr class="group-header"><td colspan="7" style="position:relative;">Savings &amp; Emergency Fund<button class="sec-save-btn" onclick="saveSection('savings')" id="btn_savings">Lock In</button></td></tr>
       <tr style="background:#f0fff4;">
         <td>
           <div class="cat-name" style="color:#2E6B3E;">🎉 Car Down Payment</div>
@@ -857,6 +881,7 @@
           <div style="font-size:10px; color:var(--muted); margin-top:2px;">auto-filled</div>
         </td>
         <td style="text-align:center;"><span id="w_emerg" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
+        <td class="insight-cell" style="font-size:11px; color:var(--muted); text-align:center; max-width:100px;">—</td>
         <td class="pct-rec">All leftover</td>
         <td><span class="pct-badge" id="emergPctBadge">—</span></td>
         <td><span id="emergStatus" style="font-size:11px;"></span></td>
@@ -868,6 +893,7 @@
         </td>
         <td style="text-align:center;"><span id="nextGoalAutoAmt" style="font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:700; color:var(--navy);">—</span></td>
         <td style="text-align:center;"><span id="w_nextGoal" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
+        <td class="insight-cell" style="font-size:11px; color:var(--muted); text-align:center; max-width:100px;">—</td>
         <td class="pct-rec">Leftover</td>
         <td><span class="pct-badge gold" id="nextGoalPctBadge">—</span></td>
         <td><span id="nextGoalStatus" style="font-size:11px; color:var(--green);">Auto ↑</span></td>
@@ -881,15 +907,16 @@
         <td></td>
       </tr>
 
-      <tr class="running-bar-row"><td colspan="6" style="padding:4px 14px;">
+      <tr class="running-bar-row"><td colspan="7" style="padding:4px 14px;">
         <div class="running-bar" id="rb_savings"><span class="rb-label">After Savings</span><span><span class="rb-amount" id="rb_savings_amt">—</span><span class="rb-weekly" id="rb_savings_wk"></span></span></div>
       </td></tr>
       <!-- INVESTMENTS -->
-      <tr class="group-header"><td colspan="6" style="position:relative;">Investments &amp; Retirement<button class="sec-save-btn" onclick="saveSection('investments')" id="btn_investments">Lock In</button></td></tr>
+      <tr class="group-header"><td colspan="7" style="position:relative;">Investments &amp; Retirement<button class="sec-save-btn" onclick="saveSection('investments')" id="btn_investments">Lock In</button></td></tr>
       <tr>
         <td><div class="cat-name">TSP (Thrift Savings Plan)</div><div class="cat-note">Army 401k — get the 5% match</div></td>
         <td><input class="amt-input" type="number" id="tsp" value="105" min="0" oninput="recalc()"></td>
         <td style="text-align:center;"><span id="w_tsp" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
+        <td class="insight-cell" style="font-size:11px; color:var(--muted); text-align:center; max-width:100px;">—</td>
         <td class="pct-rec">5% min</td>
         <td><span class="pct-badge gold" id="tspPct">5%</span></td>
         <td><span id="tspStatus" style="font-size:11px;"></span></td>
@@ -898,6 +925,7 @@
         <td><div class="cat-name">Roth IRA</div><div class="cat-note">Tax-free growth · $7k/yr max</div></td>
         <td><input class="amt-input" type="number" id="roth" value="100" min="0" oninput="recalc()"></td>
         <td style="text-align:center;"><span id="w_roth" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
+        <td class="insight-cell" style="font-size:11px; color:var(--muted); text-align:center; max-width:100px;">—</td>
         <td class="pct-rec">3–5%</td>
         <td><span class="pct-badge gold" id="rothPct">4.8%</span></td>
         <td><span id="rothStatus" style="font-size:11px;"></span></td>
@@ -911,15 +939,16 @@
         <td></td>
       </tr>
 
-      <tr class="running-bar-row"><td colspan="6" style="padding:4px 14px;">
+      <tr class="running-bar-row"><td colspan="7" style="padding:4px 14px;">
         <div class="running-bar" id="rb_invest"><span class="rb-label">After Investments</span><span><span class="rb-amount" id="rb_invest_amt">—</span><span class="rb-weekly" id="rb_invest_wk"></span></span></div>
       </td></tr>
       <!-- TRANSPORTATION -->
-      <tr class="group-header"><td colspan="6" style="position:relative;">Transportation<button class="sec-save-btn" onclick="saveSection('transportation')" id="btn_transportation">Lock In</button></td></tr>
+      <tr class="group-header"><td colspan="7" style="position:relative;">Transportation<button class="sec-save-btn" onclick="saveSection('transportation')" id="btn_transportation">Lock In</button></td></tr>
       <tr>
         <td><div class="cat-name">Car Payment</div><div class="cat-note">Keep ≤ $250/mo</div></td>
         <td><input class="amt-input" type="number" id="carPayment" value="250" min="0" oninput="recalc()"></td>
         <td style="text-align:center;"><span id="w_carPayment" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
+        <td class="insight-cell" style="font-size:11px; color:var(--muted); text-align:center; max-width:100px;">—</td>
         <td class="pct-rec">≤ 12%</td>
         <td><span class="pct-badge" id="carPaymentPct">11.9%</span></td>
         <td><span id="carPaymentStatus" style="font-size:11px;"></span></td>
@@ -928,6 +957,7 @@
         <td><div class="cat-name">Car Insurance</div><div class="cat-note">Added to mom's policy</div></td>
         <td><input class="amt-input" type="number" id="insurance" value="150" min="0" oninput="recalc()"></td>
         <td style="text-align:center;"><span id="w_insurance" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
+        <td class="insight-cell" style="font-size:11px; color:var(--muted); text-align:center; max-width:100px;">—</td>
         <td class="pct-rec">7% <span style="color:var(--muted);font-size:10px;">(mom)</span></td>
         <td><span class="pct-badge" id="insurancePct">7.1%</span></td>
         <td><span id="insuranceStatus" style="font-size:11px;"></span></td>
@@ -936,6 +966,7 @@
         <td><div class="cat-name">Gas &amp; Maintenance</div><div class="cat-note">Fuel, oil, tires</div></td>
         <td><input class="amt-input" type="number" id="gas" value="50" min="0" oninput="recalc()"></td>
         <td style="text-align:center;"><span id="w_gas" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
+        <td class="insight-cell" style="font-size:11px; color:var(--muted); text-align:center; max-width:100px;">—</td>
         <td class="pct-rec">2%</td>
         <td><span class="pct-badge" id="gasPct">2.4%</span></td>
         <td><span id="gasStatus" style="font-size:11px;"></span></td>
@@ -949,15 +980,16 @@
         <td></td>
       </tr>
 
-      <tr class="running-bar-row"><td colspan="6" style="padding:4px 14px;">
+      <tr class="running-bar-row"><td colspan="7" style="padding:4px 14px;">
         <div class="running-bar" id="rb_transp"><span class="rb-label">After Transportation</span><span><span class="rb-amount" id="rb_transp_amt">—</span><span class="rb-weekly" id="rb_transp_wk"></span></span></div>
       </td></tr>
       <!-- PERSONAL -->
-      <tr class="group-header"><td colspan="6" style="position:relative;">Personal &amp; Lifestyle<button class="sec-save-btn" onclick="saveSection('personal')" id="btn_personal">Lock In</button></td></tr>
+      <tr class="group-header"><td colspan="7" style="position:relative;">Personal &amp; Lifestyle<button class="sec-save-btn" onclick="saveSection('personal')" id="btn_personal">Lock In</button></td></tr>
       <tr>
         <td><div class="cat-name">Personal Care</div><div class="cat-note">Haircuts, hygiene</div></td>
         <td><input class="amt-input" type="number" id="personal" value="75" min="0" oninput="recalc()"></td>
         <td style="text-align:center;"><span id="w_personal" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
+        <td class="insight-cell" style="font-size:11px; color:var(--muted); text-align:center; max-width:100px;">—</td>
         <td class="pct-rec">3%</td>
         <td><span class="pct-badge" id="personalPct">3.6%</span></td>
         <td><span id="personalStatus" style="font-size:11px;"></span></td>
@@ -966,6 +998,7 @@
         <td><div class="cat-name">Entertainment</div><div class="cat-note">Eating out, subscriptions, fun</div></td>
         <td><input class="amt-input" type="number" id="entertainment" value="150" min="0" oninput="recalc()"></td>
         <td style="text-align:center;"><span id="w_entertainment" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
+        <td class="insight-cell" style="font-size:11px; color:var(--muted); text-align:center; max-width:100px;">—</td>
         <td class="pct-rec">7%</td>
         <td><span class="pct-badge" id="entertainmentPct">7.1%</span></td>
         <td><span id="entertainmentStatus" style="font-size:11px;"></span></td>
@@ -974,6 +1007,7 @@
         <td><div class="cat-name">Phone</div><div class="cat-note">T-Mobile military plan</div></td>
         <td><input class="amt-input" type="number" id="phone" value="50" min="0" oninput="recalc()"></td>
         <td style="text-align:center;"><span id="w_phone" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
+        <td class="insight-cell" style="font-size:11px; color:var(--muted); text-align:center; max-width:100px;">—</td>
         <td class="pct-rec">2%</td>
         <td><span class="pct-badge" id="phonePct">2.4%</span></td>
         <td><span id="phoneStatus" style="font-size:11px;"></span></td>
@@ -982,26 +1016,28 @@
         <td><div class="cat-name">Clothing</div><div class="cat-note">Civilian wear (uniform provided)</div></td>
         <td><input class="amt-input" type="number" id="clothing" value="50" min="0" oninput="recalc()"></td>
         <td style="text-align:center;"><span id="w_clothing" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
+        <td class="insight-cell" style="font-size:11px; color:var(--muted); text-align:center; max-width:100px;">—</td>
         <td class="pct-rec">2%</td>
         <td><span class="pct-badge" id="clothingPct">2.4%</span></td>
         <td><span id="clothingStatus" style="font-size:11px;"></span></td>
       </tr>
 
-      <tr class="running-bar-row"><td colspan="6" style="padding:4px 14px;">
+      <tr class="running-bar-row"><td colspan="7" style="padding:4px 14px;">
         <div class="running-bar" id="rb_personal"><span class="rb-label">After Personal</span><span><span class="rb-amount" id="rb_personal_amt">—</span><span class="rb-weekly" id="rb_personal_wk"></span></span></div>
       </td></tr>
       <!-- GIVING -->
-      <tr class="group-header"><td colspan="6" style="position:relative;">Charity &amp; Giving<button class="sec-save-btn" onclick="saveSection('charity')" id="btn_charity">Lock In</button></td></tr>
+      <tr class="group-header"><td colspan="7" style="position:relative;">Charity &amp; Giving<button class="sec-save-btn" onclick="saveSection('charity')" id="btn_charity">Lock In</button></td></tr>
       <tr>
         <td><div class="cat-name">Tithe / Donation</div><div class="cat-note">Give first</div></td>
         <td><input class="amt-input" type="number" id="charity" value="63" min="0" oninput="recalc()"></td>
         <td style="text-align:center;"><span id="w_charity" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
+        <td class="insight-cell" style="font-size:11px; color:var(--muted); text-align:center; max-width:100px;">—</td>
         <td class="pct-rec">3%</td>
         <td><span class="pct-badge gold" id="charityPct">10%</span></td>
         <td><span id="charityStatus" style="font-size:11px;"></span></td>
       </tr>
 
-      <tr class="running-bar-row"><td colspan="6" style="padding:4px 14px;">
+      <tr class="running-bar-row"><td colspan="7" style="padding:4px 14px;">
         <div class="running-bar" id="rb_charity"><span class="rb-label">After Giving</span><span><span class="rb-amount" id="rb_charity_amt">—</span><span class="rb-weekly" id="rb_charity_wk"></span></span></div>
       </td></tr>
       <!-- TOTALS -->
@@ -1280,15 +1316,17 @@ function recalc() {
 
 
   // ── UPDATE REC STRIP ──
-  // Housing std 25-30%, Food std 10-15%
+  // Housing std avg 28%, Food std avg 13%
   const hFreedEl = document.getElementById('rs_housing_freed');
-  if (hFreedEl) hFreedEl.textContent = '~$' + Math.round(income*0.25).toLocaleString() + '–' + Math.round(income*0.30).toLocaleString() + '/mo';
+  if (hFreedEl) hFreedEl.textContent = '$' + Math.round(income*0.28).toLocaleString();
   const fFreedEl = document.getElementById('rs_food_freed');
-  if (fFreedEl) fFreedEl.textContent = '~$' + Math.round(income*0.10).toLocaleString() + '–' + Math.round(income*0.15).toLocaleString() + '/mo freed';
+  if (fFreedEl) fFreedEl.textContent = '$' + Math.round(income*0.13).toLocaleString();
+  const totFreedEl = document.getElementById('rs_total_freed');
+  if (totFreedEl) totFreedEl.textContent = '$' + Math.round(income*0.41).toLocaleString();
 
   const recPcts = { savings:0.10, invest:0.08, transp:0.19, personal:0.14, giving:0.03 };
   const recTotal = Object.values(recPcts).reduce((a,b)=>a+b,0);
-  const recRemPct = 1 - recTotal;
+  const recRemPct = Math.max(0, 1 - recTotal);
   Object.entries(recPcts).forEach(([k,p]) => {
     const el = document.getElementById('rs_' + k);
     if (el) el.textContent = '$' + Math.round(income * p).toLocaleString();
