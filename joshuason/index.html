@@ -637,13 +637,15 @@
 <div class="rec-strip">
   <div class="rec-item">
     <div class="ri-label">Housing</div>
-    <div class="ri-pct">0%</div>
-    <div class="ri-amt ri-green">Army ✓</div>
+    <div class="ri-pct" style="color:var(--green);">0% <span style="color:var(--muted); font-size:9px;">(std 25–30%)</span></div>
+    <div class="ri-amt" style="color:var(--green); font-size:0.85rem;" id="rs_housing_freed">~$525–630/mo</div>
+    <div style="font-family:'Barlow Condensed',sans-serif; font-size:9px; letter-spacing:1px; color:var(--red); text-transform:uppercase; margin-top:1px;">Army Freed ✓</div>
   </div>
   <div class="rec-item">
     <div class="ri-label">Food</div>
-    <div class="ri-pct">0%</div>
-    <div class="ri-amt ri-green">Army ✓</div>
+    <div class="ri-pct" style="color:var(--green);">0% <span style="color:var(--muted); font-size:9px;">(std 10–15%)</span></div>
+    <div class="ri-amt" style="color:var(--green); font-size:0.85rem;" id="rs_food_freed">~$210–315/mo</div>
+    <div style="font-family:'Barlow Condensed',sans-serif; font-size:9px; letter-spacing:1px; color:var(--red); text-transform:uppercase; margin-top:1px;">Army Freed ✓</div>
   </div>
   <div class="rec-item">
     <div class="ri-label">Savings</div>
@@ -1243,6 +1245,12 @@ function recalc() {
 
 
   // ── UPDATE REC STRIP ──
+  // Housing std 25-30%, Food std 10-15%
+  const hFreedEl = document.getElementById('rs_housing_freed');
+  if (hFreedEl) hFreedEl.textContent = '~$' + Math.round(income*0.25).toLocaleString() + '–' + Math.round(income*0.30).toLocaleString() + '/mo';
+  const fFreedEl = document.getElementById('rs_food_freed');
+  if (fFreedEl) fFreedEl.textContent = '~$' + Math.round(income*0.10).toLocaleString() + '–' + Math.round(income*0.15).toLocaleString() + '/mo';
+
   const recPcts = { savings:0.10, invest:0.08, transp:0.19, personal:0.14, giving:0.10 };
   const recTotal = Object.values(recPcts).reduce((a,b)=>a+b,0);
   const recRemPct = 1 - recTotal;
