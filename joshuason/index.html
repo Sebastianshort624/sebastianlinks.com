@@ -535,7 +535,7 @@
 <div class="page-body">
 
   <!-- GOAL CARDS -->
-  <div class="section-label">Savings Goals</div>
+  <div class="section-label" style="display:flex; align-items:center; justify-content:space-between;">Savings Goals<button class="sec-save-btn" onclick="saveSection('goals')" id="btn_goals" style="position:static; transform:none;">Lock In</button></div>
   <div class="goal-cards">
     <div class="goal-card">
       <div class="gc-label">Car Down Payment</div>
@@ -593,14 +593,14 @@
       <!-- SAVINGS -->
       <tr class="group-header"><td colspan="5" style="position:relative;">Savings &amp; Emergency<button class="sec-save-btn" onclick="saveSection('savings')" id="btn_savings">Lock In</button></td></tr>
       <tr>
-        <td><div class="cat-name">Car Down Payment Fund</div><div class="cat-note">Goal: $1,750</div></td>
+        <td><div class="cat-name">Car Down Payment Fund</div><div class="cat-note" id="carSavingsNote">Goal: $1,750</div></td>
         <td><input class="amt-input" type="number" id="carSavings" value="200" min="0" oninput="recalc()"></td>
         <td class="pct-rec">8–10%</td>
         <td><span class="pct-badge" id="carSavingsPct">9.5%</span></td>
         <td><span id="carSavingsStatus" style="font-size:11px;"></span></td>
       </tr>
       <tr>
-        <td><div class="cat-name">Emergency Fund</div><div class="cat-note">Goal: $1,000 · then redirect</div></td>
+        <td><div class="cat-name">Emergency Fund</div><div class="cat-note" id="emergNote">Goal: $1,000 · then redirect</div></td>
         <td><input class="amt-input" type="number" id="emerg" value="100" min="0" oninput="recalc()"></td>
         <td class="pct-rec">3–5%</td>
         <td><span class="pct-badge" id="emergPctBadge">4.8%</span></td>
@@ -753,6 +753,7 @@
 <script>
 // ── SECTION FIELD MAP ──
 const SECTION_FIELDS = {
+  goals:          ['carSaved','emergSaved'],
   housing:        ['housing','food'],
   savings:        ['carSavings','emerg','carSaved','emergSaved'],
   investments:    ['tsp','roth'],
@@ -992,6 +993,43 @@ function updateGoals() {
   if (totalRem <= 0) { moEl.textContent = '✓'; }
   else if (monthly > 0) { moEl.textContent = Math.ceil(totalRem / monthly); }
   else { moEl.textContent = '—'; }
+
+  // ── Auto-adjust budget table when goals are met ──
+  const carGoalMet   = carSaved  >= 1750;
+  const emergGoalMet = emergSaved >= 1000;
+
+  const carSavingsInput = document.getElementById('carSavings');
+  const emergInput      = document.getElementById('emerg');
+  const carNote         = document.getElementById('carSavingsNote');
+  const emergNote       = document.getElementById('emergNote');
+
+  if (carGoalMet) {
+    if (carSavingsInput.value > 0) {
+      carSavingsInput.dataset.prev = carSavingsInput.value;
+      carSavingsInput.value = 0;
+    }
+    if (carNote) { carNote.textContent = '✓ Goal met — freed up!'; carNote.style.color = 'var(--green)'; }
+  } else {
+    if (carSavingsInput.dataset.prev && carSavingsInput.value == 0) {
+      carSavingsInput.value = carSavingsInput.dataset.prev;
+    }
+    if (carNote) { carNote.textContent = 'Goal: $1,750'; carNote.style.color = ''; }
+  }
+
+  if (emergGoalMet) {
+    if (emergInput.value > 0) {
+      emergInput.dataset.prev = emergInput.value;
+      emergInput.value = 0;
+    }
+    if (emergNote) { emergNote.textContent = '✓ Goal met — freed up!'; emergNote.style.color = 'var(--green)'; }
+  } else {
+    if (emergInput.dataset.prev && emergInput.value == 0) {
+      emergInput.value = emergInput.dataset.prev;
+    }
+    if (emergNote) { emergNote.textContent = 'Goal: $1,000 · then redirect'; emergNote.style.color = ''; }
+  }
+
+  recalc();
   autoSave();
 }
 
