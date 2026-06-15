@@ -16,7 +16,7 @@
     --white: #FFFFFF;
     --border: #E2E0D8;
     --text: #1a1a1a;
-    --muted: #777;
+    --muted: #888;
     --green: #2E6B3E;
     --red: #8B1A1A;
   }
@@ -32,7 +32,7 @@
   header {
     background: var(--white);
     border-bottom: 3px solid var(--gold);
-    padding: 36px 48px 28px;
+    padding: 32px 48px 24px;
     display: grid;
     grid-template-columns: auto 1fr auto;
     align-items: center;
@@ -44,10 +44,10 @@
     height: 53px;
     border: 1px solid var(--border);
     box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    flex-shrink: 0;
   }
 
   .header-text { text-align: center; }
-
   .header-text .eyebrow {
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 11px;
@@ -56,16 +56,13 @@
     color: var(--gold);
     margin-bottom: 6px;
   }
-
   .header-text h1 {
     font-family: 'Cormorant Garamond', serif;
     font-size: 2.6rem;
     font-weight: 700;
     color: var(--navy);
     line-height: 1;
-    letter-spacing: 1px;
   }
-
   .header-text .tagline {
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 12px;
@@ -75,10 +72,7 @@
     margin-top: 8px;
   }
 
-  .header-badge {
-    text-align: center;
-  }
-
+  .header-badge { text-align: center; }
   .header-badge .branch {
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 10px;
@@ -87,7 +81,6 @@
     color: var(--muted);
     margin-bottom: 4px;
   }
-
   .header-badge .rank-box {
     background: var(--navy);
     color: var(--gold);
@@ -109,13 +102,11 @@
     padding: 16px 48px;
     flex-wrap: wrap;
   }
-
   .income-field {
     display: flex;
     align-items: center;
     gap: 12px;
   }
-
   .income-field label {
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 11px;
@@ -123,7 +114,6 @@
     text-transform: uppercase;
     color: rgba(255,255,255,0.55);
   }
-
   .income-field input {
     background: transparent;
     border: none;
@@ -132,15 +122,17 @@
     font-family: 'Cormorant Garamond', serif;
     font-size: 1.6rem;
     font-weight: 600;
-    width: 120px;
+    width: 130px;
     padding: 2px 6px;
     text-align: center;
+    cursor: text;
+    -webkit-user-select: text;
+    user-select: text;
   }
   .income-field input:focus { outline: none; border-bottom-color: var(--gold-light); }
-
   .income-divider { width: 1px; height: 32px; background: rgba(255,255,255,0.15); }
 
-  /* ── SECTIONS ── */
+  /* ── BODY ── */
   .page-body { padding: 36px 48px; max-width: 1100px; margin: 0 auto; }
 
   .section-label {
@@ -161,7 +153,6 @@
     gap: 16px;
     margin-bottom: 36px;
   }
-
   .goal-card {
     background: var(--white);
     border: 1px solid var(--border);
@@ -169,7 +160,6 @@
     padding: 20px;
     position: relative;
   }
-
   .goal-card::before {
     content: '';
     position: absolute;
@@ -178,7 +168,6 @@
     background: var(--gold);
     border-radius: 4px 4px 0 0;
   }
-
   .gc-label {
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 10px;
@@ -187,14 +176,8 @@
     color: var(--muted);
     margin-bottom: 4px;
   }
-
-  .gc-goal-text {
-    font-size: 12px;
-    color: var(--muted);
-    margin-bottom: 12px;
-  }
+  .gc-goal-text { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
   .gc-goal-text strong { color: var(--navy); }
-
   .gc-input {
     width: 100%;
     border: 1px solid var(--border);
@@ -205,30 +188,15 @@
     color: var(--navy);
     background: var(--cream);
     margin-bottom: 10px;
+    cursor: text;
+    -webkit-user-select: text;
+    user-select: text;
   }
   .gc-input:focus { outline: 1px solid var(--gold); border-color: var(--gold); }
-
-  .gc-progress-track {
-    height: 4px;
-    background: var(--border);
-    border-radius: 2px;
-    margin-bottom: 6px;
-  }
-  .gc-progress-fill {
-    height: 100%;
-    background: var(--gold);
-    border-radius: 2px;
-    transition: width 0.4s;
-  }
-
-  .gc-pct-text {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 11px;
-    color: var(--muted);
-    text-align: right;
-  }
+  .gc-progress-track { height: 4px; background: var(--border); border-radius: 2px; margin-bottom: 6px; }
+  .gc-progress-fill { height: 100%; background: var(--gold); border-radius: 2px; transition: width 0.4s; width: 0%; }
+  .gc-pct-text { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; color: var(--muted); text-align: right; }
   .gc-pct-text strong { color: var(--navy); }
-
   .gc-big {
     font-family: 'Cormorant Garamond', serif;
     font-size: 2.4rem;
@@ -248,26 +216,24 @@
     overflow: hidden;
     margin-bottom: 24px;
   }
-
-  .finance-table thead tr {
-    background: var(--navy);
-  }
-
+  .finance-table thead tr { background: var(--navy); }
   .finance-table thead th {
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 10px;
-    letter-spacing: 3px;
+    letter-spacing: 2px;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.7);
-    padding: 14px 18px;
-    text-align: left;
+    color: rgba(255,255,255,0.65);
+    padding: 13px 14px;
+    text-align: center;
     font-weight: 500;
   }
-  .finance-table thead th:not(:first-child) { text-align: center; }
+  .finance-table thead th:first-child { text-align: left; }
 
   .finance-table tbody tr { border-bottom: 1px solid var(--border); }
   .finance-table tbody tr:last-child { border-bottom: none; }
-  .finance-table tbody tr:hover { background: #F7F6F1; }
+  .finance-table tbody tr:hover:not(.group-header):not(.subtotal):not(.total-row):not(.remaining-row) {
+    background: #F7F6F1;
+  }
 
   .finance-table tbody tr.group-header td {
     background: #F0EDE4;
@@ -276,21 +242,22 @@
     letter-spacing: 3px;
     text-transform: uppercase;
     color: var(--navy);
-    padding: 8px 18px;
+    padding: 8px 14px;
     font-weight: 600;
     border-bottom: 1px solid var(--border);
   }
-
   .finance-table tbody tr.subtotal td {
     background: #F7F6F1;
     font-family: 'Barlow Condensed', sans-serif;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
     color: var(--navy);
-    padding: 10px 18px;
+    padding: 9px 14px;
+    text-align: center;
   }
+  .finance-table tbody tr.subtotal td:first-child { text-align: left; }
 
   .finance-table tbody tr.total-row td {
     background: var(--navy);
@@ -300,8 +267,10 @@
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
-    padding: 14px 18px;
+    padding: 13px 14px;
+    text-align: center;
   }
+  .finance-table tbody tr.total-row td:first-child { text-align: left; }
 
   .finance-table tbody tr.remaining-row td {
     background: var(--gold);
@@ -311,27 +280,19 @@
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
-    padding: 14px 18px;
+    padding: 13px 14px;
+    text-align: center;
   }
+  .finance-table tbody tr.remaining-row td:first-child { text-align: left; }
 
-  .finance-table td { padding: 13px 18px; }
+  .finance-table td { padding: 11px 14px; vertical-align: middle; }
 
-  .cat-name {
-    font-weight: 500;
-    font-size: 14px;
-    color: var(--text);
-  }
+  .cat-name { font-weight: 500; font-size: 14px; color: var(--text); }
+  .cat-note { font-size: 11px; color: var(--muted); margin-top: 2px; }
 
-  .cat-note {
-    font-size: 11px;
-    color: var(--muted);
-    margin-top: 2px;
-  }
-
-  td.center { text-align: center; }
-
+  /* EDITABLE INPUT — key fix: pointer-events and z-index */
   .amt-input {
-    width: 100px;
+    width: 90px;
     border: 1px solid var(--border);
     border-radius: 3px;
     padding: 5px 8px;
@@ -339,9 +300,30 @@
     font-size: 1rem;
     color: var(--navy);
     text-align: center;
-    background: var(--cream);
+    background: #F5F4EE;
+    cursor: text;
+    pointer-events: all;
+    position: relative;
+    z-index: 1;
+    -webkit-user-select: text;
+    user-select: text;
+    display: block;
+    margin: 0 auto;
   }
-  .amt-input:focus { outline: 1px solid var(--gold); border-color: var(--gold); background: white; }
+  .amt-input:focus {
+    outline: 2px solid var(--gold);
+    border-color: var(--gold);
+    background: white;
+  }
+
+  /* PCT COLUMNS */
+  .pct-rec {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+    letter-spacing: 1px;
+  }
 
   .pct-badge {
     display: inline-block;
@@ -351,24 +333,26 @@
     letter-spacing: 1px;
     color: var(--navy);
     background: #EDE9DC;
-    padding: 3px 10px;
+    padding: 3px 8px;
     border-radius: 2px;
-    min-width: 52px;
+    min-width: 48px;
     text-align: center;
   }
-
-  .pct-badge.green { background: #D6EAD9; color: var(--green); }
-  .pct-badge.gold  { background: #FDF3D0; color: #8B6800; }
-  .pct-badge.red   { background: #F5DADA; color: var(--red); }
+  .pct-badge.green  { background: #D6EAD9; color: var(--green); }
+  .pct-badge.gold   { background: #FDF3D0; color: #8B6800; }
+  .pct-badge.red    { background: #F5DADA; color: var(--red); }
+  .pct-badge.over   { background: #F5DADA; color: var(--red); }
+  .pct-badge.under  { background: #D6EAD9; color: var(--green); }
 
   .monthly-disp {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 1.05rem;
+    font-size: 1rem;
     font-weight: 600;
     color: var(--navy);
+    text-align: center;
   }
 
-  /* ── PROGRESS ── */
+  /* PROGRESS */
   .progress-wrap {
     background: var(--white);
     border: 1px solid var(--border);
@@ -376,7 +360,6 @@
     padding: 20px 24px;
     margin-bottom: 36px;
   }
-
   .progress-meta {
     display: flex;
     justify-content: space-between;
@@ -387,32 +370,11 @@
     color: var(--muted);
     margin-bottom: 10px;
   }
-
   .progress-meta strong { color: var(--navy); font-size: 13px; }
+  .progress-track { height: 10px; background: var(--border); border-radius: 5px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--navy), var(--gold)); border-radius: 5px; transition: width 0.4s ease; }
+  .progress-ends { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-top: 6px; }
 
-  .progress-track {
-    height: 10px;
-    background: var(--border);
-    border-radius: 5px;
-    overflow: hidden;
-  }
-
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--navy), var(--gold));
-    border-radius: 5px;
-    transition: width 0.4s ease;
-  }
-
-  .progress-ends {
-    display: flex;
-    justify-content: space-between;
-    font-size: 11px;
-    color: var(--muted);
-    margin-top: 6px;
-  }
-
-  /* ── FOOTER ── */
   footer {
     background: var(--navy);
     color: rgba(255,255,255,0.45);
@@ -426,10 +388,11 @@
   footer strong { color: var(--gold); }
 
   @media (max-width: 700px) {
-    header { grid-template-columns: 1fr; text-align: center; padding: 24px 20px; }
-    .page-body { padding: 24px 16px; }
+    header { grid-template-columns: 1fr; text-align: center; padding: 24px 16px; }
+    .page-body { padding: 24px 12px; }
     .goal-cards { grid-template-columns: 1fr; }
-    .income-bar { gap: 16px; padding: 14px 20px; }
+    .income-bar { gap: 16px; padding: 14px 16px; }
+    .amt-input { width: 72px; }
   }
 </style>
 </head>
@@ -437,7 +400,6 @@
 
 <!-- ══ HEADER ══ -->
 <header>
-  <!-- USA Flag -->
   <svg class="flag-svg" viewBox="0 0 190 100" xmlns="http://www.w3.org/2000/svg">
     <rect width="190" height="100" fill="#B22234"/>
     <rect y="7.7" width="190" height="7.7" fill="white"/>
@@ -456,14 +418,12 @@
     </g>
   </svg>
 
-  <!-- Title -->
   <div class="header-text">
     <div class="eyebrow">Personal Finance Plan</div>
     <h1>Joshua Son</h1>
     <div class="tagline">U.S. Army · Active Duty · Financial Mission 2026</div>
   </div>
 
-  <!-- Badge -->
   <div class="header-badge">
     <div class="branch">Branch</div>
     <div class="rank-box">U.S. ARMY</div>
@@ -474,12 +434,12 @@
 <div class="income-bar">
   <div class="income-field">
     <label>Monthly Income</label>
-    <input type="number" id="income" value="2100" min="0" step="50" onchange="recalc()">
+    <input type="number" id="income" value="2100" min="0" step="50" oninput="recalc()">
   </div>
   <div class="income-divider"></div>
   <div class="income-field">
     <label>Annual</label>
-    <input type="number" id="annualIncome" value="25200" readonly style="opacity:0.7; cursor:default;">
+    <input type="number" id="annualIncome" value="25200" readonly style="opacity:0.65; cursor:default;">
   </div>
 </div>
 
@@ -489,30 +449,26 @@
   <!-- GOAL CARDS -->
   <div class="section-label">Savings Goals</div>
   <div class="goal-cards">
-
     <div class="goal-card">
       <div class="gc-label">Car Down Payment</div>
       <div class="gc-goal-text">Goal: <strong>$1,750</strong> — tax, tags &amp; insurance deposit</div>
-      <input class="gc-input" type="number" id="carSaved" value="0" min="0" placeholder="$ saved so far" onchange="updateGoals()">
-      <div class="gc-progress-track"><div class="gc-progress-fill" id="carBar" style="width:0%"></div></div>
+      <input class="gc-input" type="number" id="carSaved" value="0" min="0" placeholder="$ saved so far" oninput="updateGoals()">
+      <div class="gc-progress-track"><div class="gc-progress-fill" id="carBar"></div></div>
       <div class="gc-pct-text"><strong id="carPct">0%</strong> of $1,750</div>
     </div>
-
     <div class="goal-card">
       <div class="gc-label">Emergency Fund</div>
       <div class="gc-goal-text">Goal: <strong>$1,000</strong> — build before investing</div>
-      <input class="gc-input" type="number" id="emergSaved" value="0" min="0" placeholder="$ saved so far" onchange="updateGoals()">
-      <div class="gc-progress-track"><div class="gc-progress-fill" id="emergBar" style="width:0%"></div></div>
+      <input class="gc-input" type="number" id="emergSaved" value="0" min="0" placeholder="$ saved so far" oninput="updateGoals()">
+      <div class="gc-progress-track"><div class="gc-progress-fill" id="emergBar"></div></div>
       <div class="gc-pct-text"><strong id="emergPct">0%</strong> of $1,000</div>
     </div>
-
     <div class="goal-card">
       <div class="gc-label">Months to Goal</div>
       <div class="gc-goal-text">Combined remaining: <strong id="combinedRemaining">$2,750</strong></div>
       <div class="gc-big" id="monthsToGoal">—</div>
       <div class="gc-pct-text">months at current savings rate</div>
     </div>
-
   </div>
 
   <!-- TABLE -->
@@ -520,145 +476,172 @@
   <table class="finance-table">
     <thead>
       <tr>
-        <th style="width:38%">Category</th>
-        <th>Monthly ($)</th>
-        <th>% of Income</th>
-        <th>Notes</th>
+        <th style="width:32%; text-align:left;">Category</th>
+        <th>My Monthly $</th>
+        <th>Recommended %</th>
+        <th>My %</th>
+        <th>Status</th>
       </tr>
     </thead>
     <tbody>
 
-      <tr class="group-header"><td colspan="4">Housing &amp; Food — Base Life</td></tr>
+      <!-- HOUSING & FOOD -->
+      <tr class="group-header"><td colspan="5">Housing &amp; Food — Base Life</td></tr>
       <tr>
         <td><div class="cat-name">Housing</div><div class="cat-note">Lives on base — BAH included</div></td>
-        <td class="center"><input class="amt-input" type="number" id="housing" value="0" min="0" onchange="recalc()"></td>
-        <td class="center"><span class="pct-badge green" id="housingPct">0%</span></td>
-        <td style="font-size:12px; color:var(--muted);">Covered on base ✓</td>
+        <td><input class="amt-input" type="number" id="housing" value="0" min="0" oninput="recalc()"></td>
+        <td class="pct-rec">0%</td>
+        <td><span class="pct-badge green" id="housingPct">0%</span></td>
+        <td><span id="housingStatus" style="font-size:11px; color:var(--green);">✓ On base</span></td>
       </tr>
       <tr>
         <td><div class="cat-name">Food</div><div class="cat-note">Dining facility on base</div></td>
-        <td class="center"><input class="amt-input" type="number" id="food" value="0" min="0" onchange="recalc()"></td>
-        <td class="center"><span class="pct-badge green" id="foodPct">0%</span></td>
-        <td style="font-size:12px; color:var(--muted);">Covered on base ✓</td>
+        <td><input class="amt-input" type="number" id="food" value="0" min="0" oninput="recalc()"></td>
+        <td class="pct-rec">0%</td>
+        <td><span class="pct-badge green" id="foodPct">0%</span></td>
+        <td><span id="foodStatus" style="font-size:11px; color:var(--green);">✓ Covered</span></td>
       </tr>
 
-      <tr class="group-header"><td colspan="4">Savings &amp; Emergency</td></tr>
+      <!-- SAVINGS -->
+      <tr class="group-header"><td colspan="5">Savings &amp; Emergency</td></tr>
       <tr>
-        <td><div class="cat-name">Car Down Payment Fund</div><div class="cat-note">Goal: $1,750 total</div></td>
-        <td class="center"><input class="amt-input" type="number" id="carSavings" value="200" min="0" onchange="recalc()"></td>
-        <td class="center"><span class="pct-badge red" id="carSavingsPct">9.5%</span></td>
-        <td style="font-size:12px; color:var(--muted);">Redirect after goal met</td>
+        <td><div class="cat-name">Car Down Payment Fund</div><div class="cat-note">Goal: $1,750</div></td>
+        <td><input class="amt-input" type="number" id="carSavings" value="200" min="0" oninput="recalc()"></td>
+        <td class="pct-rec">5–10%</td>
+        <td><span class="pct-badge" id="carSavingsPct">9.5%</span></td>
+        <td><span id="carSavingsStatus" style="font-size:11px;"></span></td>
       </tr>
       <tr>
-        <td><div class="cat-name">Emergency Fund</div><div class="cat-note">Goal: $1,000</div></td>
-        <td class="center"><input class="amt-input" type="number" id="emerg" value="100" min="0" onchange="recalc()"></td>
-        <td class="center"><span class="pct-badge" id="emergPctBadge">4.8%</span></td>
-        <td style="font-size:12px; color:var(--muted);">Build before investing</td>
+        <td><div class="cat-name">Emergency Fund</div><div class="cat-note">Goal: $1,000 · then redirect</div></td>
+        <td><input class="amt-input" type="number" id="emerg" value="100" min="0" oninput="recalc()"></td>
+        <td class="pct-rec">3–5%</td>
+        <td><span class="pct-badge" id="emergPctBadge">4.8%</span></td>
+        <td><span id="emergStatus" style="font-size:11px;"></span></td>
       </tr>
       <tr class="subtotal">
         <td>Savings Subtotal</td>
-        <td class="center monthly-disp" id="savingsTotal">$300</td>
-        <td class="center"><span class="pct-badge" id="savingsTotalPct">14.3%</span></td>
+        <td class="monthly-disp" id="savingsTotal">$300</td>
+        <td class="pct-rec">8–15%</td>
+        <td id="savingsTotalPct">14.3%</td>
         <td></td>
       </tr>
 
-      <tr class="group-header"><td colspan="4">Investments &amp; Retirement</td></tr>
+      <!-- INVESTMENTS -->
+      <tr class="group-header"><td colspan="5">Investments &amp; Retirement</td></tr>
       <tr>
         <td><div class="cat-name">TSP (Thrift Savings Plan)</div><div class="cat-note">Army 401k — get the 5% match</div></td>
-        <td class="center"><input class="amt-input" type="number" id="tsp" value="105" min="0" onchange="recalc()"></td>
-        <td class="center"><span class="pct-badge gold" id="tspPct">5%</span></td>
-        <td style="font-size:12px; color:var(--muted);">Free money — don't skip</td>
+        <td><input class="amt-input" type="number" id="tsp" value="105" min="0" oninput="recalc()"></td>
+        <td class="pct-rec">5% min</td>
+        <td><span class="pct-badge gold" id="tspPct">5%</span></td>
+        <td><span id="tspStatus" style="font-size:11px;"></span></td>
       </tr>
       <tr>
         <td><div class="cat-name">Roth IRA</div><div class="cat-note">Tax-free growth · $7k/yr max</div></td>
-        <td class="center"><input class="amt-input" type="number" id="roth" value="100" min="0" onchange="recalc()"></td>
-        <td class="center"><span class="pct-badge gold" id="rothPct">4.8%</span></td>
-        <td style="font-size:12px; color:var(--muted);">Fidelity or Vanguard</td>
+        <td><input class="amt-input" type="number" id="roth" value="100" min="0" oninput="recalc()"></td>
+        <td class="pct-rec">3–5%</td>
+        <td><span class="pct-badge gold" id="rothPct">4.8%</span></td>
+        <td><span id="rothStatus" style="font-size:11px;"></span></td>
       </tr>
       <tr class="subtotal">
         <td>Investment Subtotal</td>
-        <td class="center monthly-disp" id="investTotal">$205</td>
-        <td class="center"><span class="pct-badge gold" id="investTotalPct">9.8%</span></td>
+        <td class="monthly-disp" id="investTotal">$205</td>
+        <td class="pct-rec">8–10%</td>
+        <td id="investTotalPct">9.8%</td>
         <td></td>
       </tr>
 
-      <tr class="group-header"><td colspan="4">Transportation</td></tr>
+      <!-- TRANSPORTATION -->
+      <tr class="group-header"><td colspan="5">Transportation</td></tr>
       <tr>
-        <td><div class="cat-name">Car Payment</div><div class="cat-note">After down payment secured</div></td>
-        <td class="center"><input class="amt-input" type="number" id="carPayment" value="250" min="0" onchange="recalc()"></td>
-        <td class="center"><span class="pct-badge" id="carPaymentPct">11.9%</span></td>
-        <td style="font-size:12px; color:var(--muted);">Keep ≤ $250/mo</td>
+        <td><div class="cat-name">Car Payment</div><div class="cat-note">Keep ≤ $250/mo</div></td>
+        <td><input class="amt-input" type="number" id="carPayment" value="250" min="0" oninput="recalc()"></td>
+        <td class="pct-rec">≤ 12%</td>
+        <td><span class="pct-badge" id="carPaymentPct">11.9%</span></td>
+        <td><span id="carPaymentStatus" style="font-size:11px;"></span></td>
       </tr>
       <tr>
         <td><div class="cat-name">Car Insurance</div><div class="cat-note">Added to mom's policy</div></td>
-        <td class="center"><input class="amt-input" type="number" id="insurance" value="150" min="0" onchange="recalc()"></td>
-        <td class="center"><span class="pct-badge" id="insurancePct">7.1%</span></td>
-        <td style="font-size:12px; color:var(--muted);">Pay mom directly</td>
+        <td><input class="amt-input" type="number" id="insurance" value="150" min="0" oninput="recalc()"></td>
+        <td class="pct-rec">5–7%</td>
+        <td><span class="pct-badge" id="insurancePct">7.1%</span></td>
+        <td><span id="insuranceStatus" style="font-size:11px;"></span></td>
       </tr>
       <tr>
         <td><div class="cat-name">Gas &amp; Maintenance</div><div class="cat-note">Fuel, oil, tires</div></td>
-        <td class="center"><input class="amt-input" type="number" id="gas" value="50" min="0" onchange="recalc()"></td>
-        <td class="center"><span class="pct-badge" id="gasPct">2.4%</span></td>
-        <td style="font-size:12px; color:var(--muted);"></td>
+        <td><input class="amt-input" type="number" id="gas" value="50" min="0" oninput="recalc()"></td>
+        <td class="pct-rec">2–3%</td>
+        <td><span class="pct-badge" id="gasPct">2.4%</span></td>
+        <td><span id="gasStatus" style="font-size:11px;"></span></td>
       </tr>
       <tr class="subtotal">
         <td>Transport Subtotal</td>
-        <td class="center monthly-disp" id="transpTotal">$450</td>
-        <td class="center"><span class="pct-badge" id="transpTotalPct">21.4%</span></td>
+        <td class="monthly-disp" id="transpTotal">$450</td>
+        <td class="pct-rec">≤ 20%</td>
+        <td id="transpTotalPct">21.4%</td>
         <td></td>
       </tr>
 
-      <tr class="group-header"><td colspan="4">Personal &amp; Lifestyle</td></tr>
+      <!-- PERSONAL -->
+      <tr class="group-header"><td colspan="5">Personal &amp; Lifestyle</td></tr>
       <tr>
         <td><div class="cat-name">Personal Care</div><div class="cat-note">Haircuts, hygiene</div></td>
-        <td class="center"><input class="amt-input" type="number" id="personal" value="75" min="0" onchange="recalc()"></td>
-        <td class="center"><span class="pct-badge" id="personalPct">3.6%</span></td>
-        <td style="font-size:12px; color:var(--muted);"></td>
+        <td><input class="amt-input" type="number" id="personal" value="75" min="0" oninput="recalc()"></td>
+        <td class="pct-rec">2–4%</td>
+        <td><span class="pct-badge" id="personalPct">3.6%</span></td>
+        <td><span id="personalStatus" style="font-size:11px;"></span></td>
       </tr>
       <tr>
         <td><div class="cat-name">Entertainment</div><div class="cat-note">Eating out, subscriptions, fun</div></td>
-        <td class="center"><input class="amt-input" type="number" id="entertainment" value="150" min="0" onchange="recalc()"></td>
-        <td class="center"><span class="pct-badge" id="entertainmentPct">7.1%</span></td>
-        <td style="font-size:12px; color:var(--muted);">Stay disciplined</td>
+        <td><input class="amt-input" type="number" id="entertainment" value="150" min="0" oninput="recalc()"></td>
+        <td class="pct-rec">5–8%</td>
+        <td><span class="pct-badge" id="entertainmentPct">7.1%</span></td>
+        <td><span id="entertainmentStatus" style="font-size:11px;"></span></td>
       </tr>
       <tr>
         <td><div class="cat-name">Phone</div><div class="cat-note">T-Mobile military plan</div></td>
-        <td class="center"><input class="amt-input" type="number" id="phone" value="50" min="0" onchange="recalc()"></td>
-        <td class="center"><span class="pct-badge" id="phonePct">2.4%</span></td>
-        <td style="font-size:12px; color:var(--muted);"></td>
+        <td><input class="amt-input" type="number" id="phone" value="50" min="0" oninput="recalc()"></td>
+        <td class="pct-rec">1–3%</td>
+        <td><span class="pct-badge" id="phonePct">2.4%</span></td>
+        <td><span id="phoneStatus" style="font-size:11px;"></span></td>
       </tr>
       <tr>
         <td><div class="cat-name">Clothing</div><div class="cat-note">Civilian wear (uniform provided)</div></td>
-        <td class="center"><input class="amt-input" type="number" id="clothing" value="50" min="0" onchange="recalc()"></td>
-        <td class="center"><span class="pct-badge" id="clothingPct">2.4%</span></td>
-        <td style="font-size:12px; color:var(--muted);"></td>
+        <td><input class="amt-input" type="number" id="clothing" value="50" min="0" oninput="recalc()"></td>
+        <td class="pct-rec">1–3%</td>
+        <td><span class="pct-badge" id="clothingPct">2.4%</span></td>
+        <td><span id="clothingStatus" style="font-size:11px;"></span></td>
       </tr>
 
-      <tr class="group-header"><td colspan="4">Charity &amp; Giving</td></tr>
+      <!-- GIVING -->
+      <tr class="group-header"><td colspan="5">Charity &amp; Giving</td></tr>
       <tr>
         <td><div class="cat-name">Tithe / Donation</div><div class="cat-note">Give first</div></td>
-        <td class="center"><input class="amt-input" type="number" id="charity" value="210" min="0" onchange="recalc()"></td>
-        <td class="center"><span class="pct-badge gold" id="charityPct">10%</span></td>
-        <td style="font-size:12px; color:var(--muted);">10% of income</td>
+        <td><input class="amt-input" type="number" id="charity" value="210" min="0" oninput="recalc()"></td>
+        <td class="pct-rec">10%</td>
+        <td><span class="pct-badge gold" id="charityPct">10%</span></td>
+        <td><span id="charityStatus" style="font-size:11px;"></span></td>
       </tr>
 
+      <!-- TOTALS -->
       <tr class="total-row">
         <td>Total Budgeted</td>
-        <td class="center" id="totalBudgeted" style="font-family:'Cormorant Garamond',serif; font-size:1.2rem;">$1,290</td>
-        <td class="center" id="totalBudgetedPct">—%</td>
+        <td id="totalBudgeted" style="font-family:'Cormorant Garamond',serif; font-size:1.15rem;">$1,140</td>
+        <td>—</td>
+        <td id="totalBudgetedPct">—%</td>
         <td></td>
       </tr>
       <tr class="remaining-row">
         <td>Remaining / Unallocated</td>
-        <td class="center" id="remaining" style="font-family:'Cormorant Garamond',serif; font-size:1.2rem;">$810</td>
-        <td class="center" id="remainingPct">—%</td>
-        <td style="font-size:12px;">Redirect to savings or investments</td>
+        <td id="remaining" style="font-family:'Cormorant Garamond',serif; font-size:1.15rem;">$960</td>
+        <td>—</td>
+        <td id="remainingPct">—%</td>
+        <td style="font-size:11px;">Redirect to savings or invest</td>
       </tr>
 
     </tbody>
   </table>
 
-  <!-- PROGRESS -->
+  <!-- PROGRESS BAR -->
   <div class="progress-wrap">
     <div class="progress-meta">
       <span>Budget Allocated</span>
@@ -673,97 +656,150 @@
     </div>
   </div>
 
-</div><!-- end page-body -->
+</div>
 
-<!-- ══ FOOTER ══ -->
 <footer>
   <strong>Joshua Son</strong> &nbsp;·&nbsp; U.S. Army Personal Finance Plan &nbsp;·&nbsp; All values editable
 </footer>
 
 <script>
-  function recalc() {
-    const income = parseFloat(document.getElementById('income').value) || 0;
-    document.getElementById('annualIncome').value = (income * 12).toLocaleString();
-    document.getElementById('incomeLabel').textContent = '$' + income.toLocaleString() + ' / mo';
+// Recommended ranges [min%, max%] — null means fixed target
+const REC = {
+  housing:       [0, 0],
+  food:          [0, 0],
+  carSavings:    [5, 10],
+  emerg:         [3, 5],
+  tsp:           [5, 10],
+  roth:          [3, 5],
+  carPayment:    [0, 12],
+  insurance:     [5, 7],
+  gas:           [2, 3],
+  personal:      [2, 4],
+  entertainment: [5, 8],
+  phone:         [1, 3],
+  clothing:      [1, 3],
+  charity:       [10, 10],
+};
 
-    const fields    = ['housing','food','carSavings','emerg','tsp','roth','carPayment','insurance','gas','personal','entertainment','phone','clothing','charity'];
-    const badgeIds  = ['housingPct','foodPct','carSavingsPct','emergPctBadge','tspPct','rothPct','carPaymentPct','insurancePct','gasPct','personalPct','entertainmentPct','phonePct','clothingPct','charityPct'];
-    const badgeClass= ['green','green','red','','gold','gold','','','','','','','','gold'];
+const STATUS_IDS = {
+  housing:'housingStatus', food:'foodStatus', carSavings:'carSavingsStatus',
+  emerg:'emergStatus', tsp:'tspStatus', roth:'rothStatus',
+  carPayment:'carPaymentStatus', insurance:'insuranceStatus', gas:'gasStatus',
+  personal:'personalStatus', entertainment:'entertainmentStatus',
+  phone:'phoneStatus', clothing:'clothingStatus', charity:'charityStatus'
+};
 
-    let total = 0;
-    fields.forEach((f, i) => {
-      const val = parseFloat(document.getElementById(f).value) || 0;
-      total += val;
-      const pct = income > 0 ? ((val / income) * 100).toFixed(1) : '0.0';
-      const el = document.getElementById(badgeIds[i]);
-      el.textContent = pct + '%';
-      el.className = 'pct-badge' + (badgeClass[i] ? ' ' + badgeClass[i] : '');
-    });
+const PCT_IDS = {
+  housing:'housingPct', food:'foodPct', carSavings:'carSavingsPct',
+  emerg:'emergPctBadge', tsp:'tspPct', roth:'rothPct',
+  carPayment:'carPaymentPct', insurance:'insurancePct', gas:'gasPct',
+  personal:'personalPct', entertainment:'entertainmentPct',
+  phone:'phonePct', clothing:'clothingPct', charity:'charityPct'
+};
 
-    const savings = (parseFloat(document.getElementById('carSavings').value)||0) + (parseFloat(document.getElementById('emerg').value)||0);
-    const invest  = (parseFloat(document.getElementById('tsp').value)||0) + (parseFloat(document.getElementById('roth').value)||0);
-    const transp  = (parseFloat(document.getElementById('carPayment').value)||0) + (parseFloat(document.getElementById('insurance').value)||0) + (parseFloat(document.getElementById('gas').value)||0);
+function recalc() {
+  const income = parseFloat(document.getElementById('income').value) || 0;
+  document.getElementById('annualIncome').value = (income * 12).toLocaleString();
+  document.getElementById('incomeLabel').textContent = '$' + income.toLocaleString() + ' / mo';
 
-    document.getElementById('savingsTotal').textContent = '$' + savings.toLocaleString();
-    document.getElementById('savingsTotalPct').textContent = income > 0 ? ((savings/income)*100).toFixed(1)+'%' : '0%';
-    document.getElementById('investTotal').textContent = '$' + invest.toLocaleString();
-    document.getElementById('investTotalPct').textContent = income > 0 ? ((invest/income)*100).toFixed(1)+'%' : '0%';
-    document.getElementById('transpTotal').textContent = '$' + transp.toLocaleString();
-    document.getElementById('transpTotalPct').textContent = income > 0 ? ((transp/income)*100).toFixed(1)+'%' : '0%';
+  const fields = Object.keys(REC);
+  let total = 0;
 
-    const remaining = income - total;
-    const pctUsed = income > 0 ? ((total/income)*100).toFixed(1) : '0.0';
-    const pctLeft = income > 0 ? ((remaining/income)*100).toFixed(1) : '0.0';
+  fields.forEach(f => {
+    const val = parseFloat(document.getElementById(f).value) || 0;
+    total += val;
+    const pct = income > 0 ? (val / income * 100) : 0;
+    const pctStr = pct.toFixed(1) + '%';
 
-    document.getElementById('totalBudgeted').textContent = '$' + total.toLocaleString();
-    document.getElementById('totalBudgetedPct').textContent = pctUsed + '%';
-    document.getElementById('remaining').textContent = '$' + remaining.toLocaleString();
-    document.getElementById('remainingPct').textContent = pctLeft + '%';
-
-    const barW = Math.min(100, Math.max(0, parseFloat(pctUsed)));
-    document.getElementById('progressBar').style.width = barW + '%';
-    document.getElementById('progressLabel').textContent = pctUsed + '%';
-
-    updateGoals();
-  }
-
-  function updateGoals() {
-    const carSaved   = parseFloat(document.getElementById('carSaved').value) || 0;
-    const emergSaved = parseFloat(document.getElementById('emergSaved').value) || 0;
-
-    const carGoal  = 1750;
-    const emergGoal = 1000;
-
-    const carPct   = Math.min(100, (carSaved  / carGoal  * 100)).toFixed(0);
-    const emergPct = Math.min(100, (emergSaved / emergGoal * 100)).toFixed(0);
-
-    document.getElementById('carPct').textContent   = carPct + '%';
-    document.getElementById('emergPct').textContent = emergPct + '%';
-    document.getElementById('carBar').style.width   = carPct + '%';
-    document.getElementById('emergBar').style.width = emergPct + '%';
-
-    const carRemaining   = Math.max(0, carGoal  - carSaved);
-    const emergRemaining = Math.max(0, emergGoal - emergSaved);
-    const totalRemaining = carRemaining + emergRemaining;
-
-    // Update combined remaining display
-    const crEl = document.getElementById('combinedRemaining');
-    if (crEl) crEl.textContent = '$' + totalRemaining.toLocaleString();
-
-    const monthly = (parseFloat(document.getElementById('carSavings').value)||0)
-                  + (parseFloat(document.getElementById('emerg').value)||0);
-
-    const moEl = document.getElementById('monthsToGoal');
-    if (totalRemaining <= 0) {
-      moEl.textContent = '✓';
-    } else if (monthly > 0) {
-      moEl.textContent = Math.ceil(totalRemaining / monthly);
-    } else {
-      moEl.textContent = '—';
+    // Update pct badge
+    const badge = document.getElementById(PCT_IDS[f]);
+    if (badge) {
+      badge.textContent = pctStr;
+      const [lo, hi] = REC[f];
+      if (lo === 0 && hi === 0) {
+        badge.className = 'pct-badge green';
+      } else if (pct < lo) {
+        badge.className = 'pct-badge under';
+      } else if (pct > hi) {
+        badge.className = 'pct-badge over';
+      } else {
+        badge.className = 'pct-badge gold';
+      }
     }
-  }
 
-  recalc();
+    // Update status
+    const stEl = document.getElementById(STATUS_IDS[f]);
+    if (stEl) {
+      const [lo, hi] = REC[f];
+      if (f === 'housing' || f === 'food') {
+        stEl.textContent = '✓ Covered'; stEl.style.color = 'var(--green)';
+      } else if (lo === 0 && hi === 0) {
+        stEl.textContent = '✓'; stEl.style.color = 'var(--green)';
+      } else if (pct < lo) {
+        stEl.textContent = '↑ Below rec'; stEl.style.color = '#B07000';
+      } else if (pct > hi) {
+        stEl.textContent = '↓ Above rec'; stEl.style.color = 'var(--red)';
+      } else {
+        stEl.textContent = '✓ On target'; stEl.style.color = 'var(--green)';
+      }
+    }
+  });
+
+  // Subtotals
+  const savings = (parseFloat(document.getElementById('carSavings').value)||0) + (parseFloat(document.getElementById('emerg').value)||0);
+  const invest  = (parseFloat(document.getElementById('tsp').value)||0) + (parseFloat(document.getElementById('roth').value)||0);
+  const transp  = (parseFloat(document.getElementById('carPayment').value)||0) + (parseFloat(document.getElementById('insurance').value)||0) + (parseFloat(document.getElementById('gas').value)||0);
+
+  document.getElementById('savingsTotal').textContent = '$' + savings.toLocaleString();
+  document.getElementById('savingsTotalPct').textContent = income > 0 ? (savings/income*100).toFixed(1)+'%' : '0%';
+  document.getElementById('investTotal').textContent = '$' + invest.toLocaleString();
+  document.getElementById('investTotalPct').textContent = income > 0 ? (invest/income*100).toFixed(1)+'%' : '0%';
+  document.getElementById('transpTotal').textContent = '$' + transp.toLocaleString();
+  document.getElementById('transpTotalPct').textContent = income > 0 ? (transp/income*100).toFixed(1)+'%' : '0%';
+
+  const remaining = income - total;
+  const pctUsed = income > 0 ? (total/income*100).toFixed(1) : '0.0';
+  const pctLeft = income > 0 ? (remaining/income*100).toFixed(1) : '0.0';
+
+  document.getElementById('totalBudgeted').textContent = '$' + total.toLocaleString();
+  document.getElementById('totalBudgetedPct').textContent = pctUsed + '%';
+  document.getElementById('remaining').textContent = '$' + remaining.toLocaleString();
+  document.getElementById('remainingPct').textContent = pctLeft + '%';
+
+  const barW = Math.min(100, Math.max(0, parseFloat(pctUsed)));
+  document.getElementById('progressBar').style.width = barW + '%';
+  document.getElementById('progressLabel').textContent = pctUsed + '%';
+
+  updateGoals();
+}
+
+function updateGoals() {
+  const carSaved   = parseFloat(document.getElementById('carSaved').value) || 0;
+  const emergSaved = parseFloat(document.getElementById('emergSaved').value) || 0;
+
+  const carPct   = Math.min(100, carSaved  / 1750 * 100).toFixed(0);
+  const emergPct = Math.min(100, emergSaved / 1000 * 100).toFixed(0);
+
+  document.getElementById('carPct').textContent   = carPct + '%';
+  document.getElementById('emergPct').textContent = emergPct + '%';
+  document.getElementById('carBar').style.width   = carPct + '%';
+  document.getElementById('emergBar').style.width = emergPct + '%';
+
+  const carRem   = Math.max(0, 1750 - carSaved);
+  const emergRem = Math.max(0, 1000 - emergSaved);
+  const totalRem = carRem + emergRem;
+
+  document.getElementById('combinedRemaining').textContent = '$' + totalRem.toLocaleString();
+
+  const monthly = (parseFloat(document.getElementById('carSavings').value)||0)
+                + (parseFloat(document.getElementById('emerg').value)||0);
+  const moEl = document.getElementById('monthsToGoal');
+  if (totalRem <= 0) { moEl.textContent = '✓'; }
+  else if (monthly > 0) { moEl.textContent = Math.ceil(totalRem / monthly); }
+  else { moEl.textContent = '—'; }
+}
+
+recalc();
 </script>
 </body>
 </html>
