@@ -493,7 +493,7 @@
     <div class="goal-card">
       <div class="gc-label">Car Down Payment</div>
       <div class="gc-goal-text">Goal: <strong>$1,750</strong> — tax, tags &amp; insurance deposit</div>
-      <input class="gc-input" type="number" id="carSaved" value="0" min="0" max="1750" placeholder="$ saved so far" onchange="updateGoals()">
+      <input class="gc-input" type="number" id="carSaved" value="0" min="0" placeholder="$ saved so far" onchange="updateGoals()">
       <div class="gc-progress-track"><div class="gc-progress-fill" id="carBar" style="width:0%"></div></div>
       <div class="gc-pct-text"><strong id="carPct">0%</strong> of $1,750</div>
     </div>
@@ -501,14 +501,14 @@
     <div class="goal-card">
       <div class="gc-label">Emergency Fund</div>
       <div class="gc-goal-text">Goal: <strong>$1,000</strong> — build before investing</div>
-      <input class="gc-input" type="number" id="emergSaved" value="0" min="0" max="1000" placeholder="$ saved so far" onchange="updateGoals()">
+      <input class="gc-input" type="number" id="emergSaved" value="0" min="0" placeholder="$ saved so far" onchange="updateGoals()">
       <div class="gc-progress-track"><div class="gc-progress-fill" id="emergBar" style="width:0%"></div></div>
       <div class="gc-pct-text"><strong id="emergPct">0%</strong> of $1,000</div>
     </div>
 
     <div class="goal-card">
       <div class="gc-label">Months to Goal</div>
-      <div class="gc-goal-text">Combined target: <strong>$2,750</strong></div>
+      <div class="gc-goal-text">Combined remaining: <strong id="combinedRemaining">$2,750</strong></div>
       <div class="gc-big" id="monthsToGoal">—</div>
       <div class="gc-pct-text">months at current savings rate</div>
     </div>
@@ -728,26 +728,38 @@
   }
 
   function updateGoals() {
-    const carSaved  = parseFloat(document.getElementById('carSaved').value) || 0;
-    const emergSaved= parseFloat(document.getElementById('emergSaved').value) || 0;
+    const carSaved   = parseFloat(document.getElementById('carSaved').value) || 0;
+    const emergSaved = parseFloat(document.getElementById('emergSaved').value) || 0;
 
-    const carPct  = Math.min(100, (carSaved  / 1750 * 100)).toFixed(0);
-    const emergPct= Math.min(100, (emergSaved / 1000 * 100)).toFixed(0);
+    const carGoal  = 1750;
+    const emergGoal = 1000;
 
-    document.getElementById('carPct').textContent  = carPct + '%';
-    document.getElementById('emergPct').textContent= emergPct + '%';
-    document.getElementById('carBar').style.width  = carPct + '%';
-    document.getElementById('emergBar').style.width= emergPct + '%';
+    const carPct   = Math.min(100, (carSaved  / carGoal  * 100)).toFixed(0);
+    const emergPct = Math.min(100, (emergSaved / emergGoal * 100)).toFixed(0);
 
-    const totalRemaining = Math.max(0, 1750 - carSaved) + Math.max(0, 1000 - emergSaved);
-    const monthly = (parseFloat(document.getElementById('carSavings').value)||0) + (parseFloat(document.getElementById('emerg').value)||0);
+    document.getElementById('carPct').textContent   = carPct + '%';
+    document.getElementById('emergPct').textContent = emergPct + '%';
+    document.getElementById('carBar').style.width   = carPct + '%';
+    document.getElementById('emergBar').style.width = emergPct + '%';
 
-    if (monthly > 0 && totalRemaining > 0) {
-      document.getElementById('monthsToGoal').textContent = Math.ceil(totalRemaining / monthly);
-    } else if (totalRemaining <= 0) {
-      document.getElementById('monthsToGoal').textContent = '✓';
+    const carRemaining   = Math.max(0, carGoal  - carSaved);
+    const emergRemaining = Math.max(0, emergGoal - emergSaved);
+    const totalRemaining = carRemaining + emergRemaining;
+
+    // Update combined remaining display
+    const crEl = document.getElementById('combinedRemaining');
+    if (crEl) crEl.textContent = '$' + totalRemaining.toLocaleString();
+
+    const monthly = (parseFloat(document.getElementById('carSavings').value)||0)
+                  + (parseFloat(document.getElementById('emerg').value)||0);
+
+    const moEl = document.getElementById('monthsToGoal');
+    if (totalRemaining <= 0) {
+      moEl.textContent = '✓';
+    } else if (monthly > 0) {
+      moEl.textContent = Math.ceil(totalRemaining / monthly);
     } else {
-      document.getElementById('monthsToGoal').textContent = '—';
+      moEl.textContent = '—';
     }
   }
 
