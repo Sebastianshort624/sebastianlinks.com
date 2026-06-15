@@ -3,176 +3,591 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sebastian Links — Hub</title>
+<title>⚡ Life OS — Sebastian S.</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --navy: #1B2A4A;
-    --gold: #F5C000;
-    --red: #B22234;
-    --cream: #FAFAF7;
-    --white: #FFFFFF;
-    --border: #E2E0D8;
-    --muted: #888;
-    --text: #1a1a1a;
-  }
-  body { font-family: 'Barlow', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --navy:#1B2A4A;--navy2:#0f1e38;--gold:#F5C000;--red:#B22234;
+  --blue:#185FA5;--cream:#FAFAF7;--white:#fff;--border:#2a3d5e;
+  --muted:#8aa0c0;--text:#e6f1fb;--green:#4CAF82;
+}
+body{font-family:'Barlow',sans-serif;background:var(--navy2);color:var(--text);min-height:100vh;}
 
-  header {
-    background: var(--navy);
-    padding: 32px 48px 24px;
-    text-align: center;
-    border-bottom: 4px solid var(--gold);
-  }
-  header .eyebrow {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
-    color: var(--gold); margin-bottom: 6px;
-  }
-  header h1 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 2.8rem; font-weight: 700; color: var(--white); line-height: 1;
-  }
-  header .sub {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
-    color: rgba(255,255,255,0.45); margin-top: 8px;
-  }
+/* TOP BAR */
+.topbar{background:linear-gradient(135deg,var(--navy2) 0%,var(--navy) 60%,#1e3560 100%);border-bottom:2px solid var(--gold);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;box-shadow:0 4px 20px rgba(0,0,0,.4);}
+.topbar-left{display:flex;align-items:center;gap:12px;}
+.topbar-logo{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;color:var(--gold);letter-spacing:1px;}
+.topbar-sub{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:1px;}
+.topbar-date{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted);letter-spacing:1px;}
 
-  .hub { max-width: 900px; margin: 0 auto; padding: 40px 32px; }
+/* TABS */
+.tabs{display:flex;gap:3px;flex-wrap:wrap;}
+.tab{font-family:'Barlow Condensed',sans-serif;font-size:11px;padding:6px 12px;border-radius:6px;border:none;background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);cursor:pointer;letter-spacing:.5px;transition:all .15s;}
+.tab:hover{background:rgba(255,255,255,.18);color:#fff;}
+.tab.active{background:var(--blue);color:#fff;font-weight:700;}
 
-  .section-label {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
-    color: var(--red);
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 8px; margin-bottom: 18px; margin-top: 36px;
-  }
-  .section-label:first-child { margin-top: 0; }
+/* PANELS */
+.panel{display:none;padding:16px 20px;}
+.panel.active{display:block;}
 
-  .cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 14px;
-  }
+/* SECTION HEADERS */
+.sec{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);border-bottom:1px solid var(--border);padding-bottom:5px;margin-bottom:14px;margin-top:22px;}
+.sec:first-child{margin-top:0;}
 
-  .card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    border-top: 3px solid var(--navy);
-    padding: 18px 20px;
-    text-decoration: none;
-    color: var(--text);
-    display: block;
-    transition: box-shadow 0.15s, border-top-color 0.15s;
-  }
-  .card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); border-top-color: var(--gold); }
-  .card.red-top { border-top-color: var(--red); }
-  .card.gold-top { border-top-color: var(--gold); }
+/* CARDS GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:16px;}
+.card{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:6px;border-top:3px solid var(--blue);padding:12px 14px;text-decoration:none;color:var(--text);display:block;transition:all .15s;}
+.card:hover{background:rgba(255,255,255,.1);border-top-color:var(--gold);transform:translateY(-1px);}
+.card.gold{border-top-color:var(--gold);}
+.card.red{border-top-color:var(--red);}
+.card.green{border-top-color:var(--green);}
+.card-eye{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:3px;}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;color:var(--gold);margin-bottom:3px;line-height:1.2;}
+.card-desc{font-size:10px;color:var(--muted);line-height:1.4;}
+.card-url{font-family:'Barlow Condensed',sans-serif;font-size:9px;color:rgba(255,255,255,.3);margin-top:6px;letter-spacing:.5px;}
 
-  .card-eyebrow {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
-    color: var(--muted); margin-bottom: 4px;
-  }
-  .card-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.25rem; font-weight: 700; color: var(--navy);
-    margin-bottom: 4px; line-height: 1.2;
-  }
-  .card-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
-  .card-url {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 10px; letter-spacing: 1px;
-    color: var(--gold); margin-top: 10px;
-    text-transform: lowercase;
-  }
+/* ALPHAFILES GRID — more compact */
+.alpha-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-bottom:14px;}
+.acard{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:5px;border-left:3px solid var(--blue);padding:8px 10px;text-decoration:none;color:var(--text);display:block;transition:all .15s;}
+.acard:hover{background:rgba(255,255,255,.09);border-left-color:var(--gold);}
+.acard.gold{border-left-color:var(--gold);}
+.acard.red{border-left-color:var(--red);}
+.acard.green{border-left-color:var(--green);}
+.acard-title{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:#e6f1fb;letter-spacing:.5px;}
+.acard-desc{font-size:10px;color:var(--muted);margin-top:2px;}
 
-  footer {
-    background: var(--navy);
-    color: rgba(255,255,255,0.4);
-    text-align: center;
-    padding: 16px;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
-  }
-  footer strong { color: var(--gold); }
+/* DAY BUILD */
+.day-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;}
+.cat-box{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:6px;padding:12px;}
+.cat-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
+.cat-title span{font-size:9px;color:var(--muted);}
+.task-row{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.05);}
+.task-row:last-child{border-bottom:none;}
+.task-row input[type=checkbox]{accent-color:var(--gold);width:14px;height:14px;cursor:pointer;flex-shrink:0;}
+.task-row label{font-size:12px;color:rgba(255,255,255,.8);cursor:pointer;flex:1;}
+.task-row input[type=checkbox]:checked + label{color:var(--muted);text-decoration:line-through;}
+.add-task{width:100%;background:transparent;border:none;border-top:1px dashed rgba(255,255,255,.1);color:var(--muted);font-size:11px;padding:5px 2px;margin-top:6px;cursor:pointer;text-align:left;}
+.add-task:hover{color:var(--gold);}
 
-  @media (max-width: 600px) {
-    header { padding: 24px 20px; }
-    .hub { padding: 24px 16px; }
-  }
+/* QUICK STATS */
+.stats-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
+.stat{background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:6px;padding:10px 14px;flex:1;min-width:100px;text-align:center;}
+.stat-val{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;color:var(--gold);}
+.stat-lbl{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:2px;}
+
+/* COMMISSION CALC */
+.calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:500px;}
+.inp-group{display:flex;flex-direction:column;gap:4px;}
+.inp-group label{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.inp-group input,.inp-group select{background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:4px;color:#fff;padding:7px 10px;font-size:13px;font-family:'Barlow',sans-serif;}
+.inp-group input:focus,.inp-group select:focus{outline:1px solid var(--gold);border-color:var(--gold);}
+.result-box{background:linear-gradient(135deg,#1e3560,#0f1e38);border:1px solid var(--gold);border-radius:6px;padding:14px;margin-top:14px;max-width:500px;}
+.result-val{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:var(--gold);}
+.result-lbl{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:2px;}
+
+/* SAVE BTN */
+.btn{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:7px 18px;border-radius:4px;border:none;cursor:pointer;transition:all .15s;}
+.btn-gold{background:var(--gold);color:var(--navy2);}
+.btn-gold:hover{background:#FFE000;}
+.btn-navy{background:var(--navy);color:var(--gold);border:1px solid var(--gold);}
+.btn-navy:hover{background:var(--blue);}
+.btn-red{background:var(--red);color:#fff;}
+
+/* FAVORITES */
+.fav-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;}
+.fav-card{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:5px;padding:10px 12px;text-decoration:none;color:var(--text);display:flex;align-items:center;gap:8px;transition:all .15s;}
+.fav-card:hover{background:rgba(255,255,255,.1);border-color:var(--gold);}
+.fav-icon{font-size:18px;flex-shrink:0;}
+.fav-name{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;color:#e6f1fb;letter-spacing:.5px;}
+.fav-url{font-size:9px;color:var(--muted);}
+
+/* PAY HISTORY TABLE */
+.pay-table{width:100%;border-collapse:collapse;font-size:12px;}
+.pay-table th{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);padding:8px 10px;border-bottom:1px solid var(--border);text-align:left;background:rgba(255,255,255,.04);}
+.pay-table td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.05);color:rgba(255,255,255,.8);}
+.pay-table tr:hover td{background:rgba(255,255,255,.04);}
+.tag{font-family:'Barlow Condensed',sans-serif;font-size:9px;padding:2px 6px;border-radius:3px;letter-spacing:1px;text-transform:uppercase;}
+.tag.g{background:#1a3d2a;color:var(--green);}
+.tag.r{background:#3d1a1a;color:#ef9a9a;}
+
+@media(max-width:640px){
+  .topbar{padding:8px 12px;}
+  .panel{padding:12px 10px;}
+  .grid,.alpha-grid,.fav-grid{grid-template-columns:1fr 1fr;}
+  .calc-grid{grid-template-columns:1fr;}
+}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="eyebrow">All Pages</div>
-  <h1>Sebastian Links</h1>
-  <div class="sub">Personal Hub · sebastianlinks.com</div>
-</header>
-
-<div class="hub">
-
-  <!-- PERSONAL TOOLS -->
-  <div class="section-label">Personal Tools</div>
-  <div class="cards">
-
-    <a class="card gold-top" href="/">
-      <div class="card-eyebrow">Dashboard</div>
-      <div class="card-title">⚡ Life OS</div>
-      <div class="card-desc">Personal productivity dashboard — CRM, commissions, pay history, favorites &amp; more.</div>
-      <div class="card-url">sebastianlinks.com</div>
-    </a>
-
+<div class="topbar">
+  <div class="topbar-left">
+    <div>
+      <div class="topbar-logo">⚡ Life OS</div>
+      <div class="topbar-sub">Sebastian S. — Personal Operating System</div>
+    </div>
   </div>
-
-  <!-- FAMILY -->
-  <div class="section-label">Family</div>
-  <div class="cards">
-
-    <a class="card red-top" href="/joshuason/">
-      <div class="card-eyebrow">Finance Plan · U.S. Army</div>
-      <div class="card-title">Joshua Son</div>
-      <div class="card-desc">Joshua Shortt — U.S. Army Tanker. Interactive personal budget with savings goals, recommended percentages &amp; snapshots.</div>
-      <div class="card-url">sebastianlinks.com/joshuason</div>
-    </a>
-
+  <div class="topbar-date" id="topDate"></div>
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('dashboard')">🏠 Dashboard</button>
+    <button class="tab" onclick="showTab('day')">📅 Day Build</button>
+    <button class="tab" onclick="showTab('sites')">🔗 All Sites</button>
+    <button class="tab" onclick="showTab('comm')">💰 Commission</button>
+    <button class="tab" onclick="showTab('pay')">📈 Pay History</button>
+    <button class="tab" onclick="showTab('favs')">⭐ Favorites</button>
   </div>
-
-  <!-- LANGUAGE & EDUCATION -->
-  <div class="section-label">Language &amp; Education</div>
-  <div class="cards">
-
-    <a class="card" href="/palabras/">
-      <div class="card-eyebrow">Spanish · Vocabulary</div>
-      <div class="card-title">333 Palabras Positivas</div>
-      <div class="card-desc">333 positive Spanish words — a vocabulary tool for daily inspiration and language learning.</div>
-      <div class="card-url">sebastianlinks.com/palabras</div>
-    </a>
-
-  </div>
-
-  <!-- BUSINESS -->
-  <div class="section-label">Business</div>
-  <div class="cards">
-
-    <a class="card gold-top" href="/nationalinstall/">
-      <div class="card-eyebrow">Business Plan · 2025–2028</div>
-      <div class="card-title">National Install, Inc.</div>
-      <div class="card-desc">National Install, Inc. business plan covering operations, projections and growth strategy 2025–2028.</div>
-      <div class="card-url">sebastianlinks.com/nationalinstall</div>
-    </a>
-
-  </div>
-
 </div>
 
-<footer>
-  <strong>Sebastian Links</strong> &nbsp;·&nbsp; sebastianlinks.com &nbsp;·&nbsp; Personal Hub
-</footer>
+<!-- DASHBOARD -->
+<div id="tab-dashboard" class="panel active">
+  <div class="stats-row">
+    <div class="stat"><div class="stat-val" id="ds-tasks">0/0</div><div class="stat-lbl">Today's Tasks</div></div>
+    <div class="stat"><div class="stat-val" id="ds-pay">$0</div><div class="stat-lbl">Last Paycheck</div></div>
+    <div class="stat"><div class="stat-val" id="ds-comm">$0</div><div class="stat-lbl">Commission Est.</div></div>
+    <div class="stat"><div class="stat-val" id="ds-streak">0</div><div class="stat-lbl">Day Streak</div></div>
+  </div>
 
+  <div class="sec">Quick Access — My Sites</div>
+  <div class="grid">
+    <a class="card gold" href="/hub">
+      <div class="card-eye">Directory</div>
+      <div class="card-title">📂 Full Hub</div>
+      <div class="card-desc">All pages across all domains</div>
+      <div class="card-url">sebastianlinks.com/hub</div>
+    </a>
+    <a class="card gold" href="/joshuason/">
+      <div class="card-eye">Family · Finance</div>
+      <div class="card-title">🎖️ Joshua Son</div>
+      <div class="card-desc">U.S. Army Tanker personal finance plan</div>
+      <div class="card-url">sebastianlinks.com/joshuason</div>
+    </a>
+    <a class="card" href="https://alphafiles.net" target="_blank">
+      <div class="card-eye">ATC · Sales Tool</div>
+      <div class="card-title">📊 Alpha Files</div>
+      <div class="card-desc">23-page client presentation flow</div>
+      <div class="card-url">alphafiles.net</div>
+    </a>
+    <a class="card green" href="https://12easysteps.org" target="_blank">
+      <div class="card-eye">Recovery · Education</div>
+      <div class="card-title">📖 12 Easy Steps</div>
+      <div class="card-desc">AA Big Book recovery education tools</div>
+      <div class="card-url">12easysteps.org</div>
+    </a>
+    <a class="card" href="/palabras/">
+      <div class="card-eye">Spanish · Vocabulary</div>
+      <div class="card-title">💬 333 Palabras</div>
+      <div class="card-desc">333 positive Spanish words</div>
+      <div class="card-url">sebastianlinks.com/palabras</div>
+    </a>
+    <a class="card red" href="/nationalinstall/">
+      <div class="card-eye">Business · Plan</div>
+      <div class="card-title">🏗️ National Install</div>
+      <div class="card-desc">Business plan 2025–2028</div>
+      <div class="card-url">sebastianlinks.com/nationalinstall</div>
+    </a>
+  </div>
+
+  <div class="sec">Alpha Files — ATC Presentation Pages</div>
+  <div class="alpha-grid">
+    <a class="acard gold" href="https://alphafiles.net/vitals/" target="_blank"><div class="acard-title">📋 Vitals</div><div class="acard-desc">Client vitals tracker</div></a>
+    <a class="acard" href="https://alphafiles.net/owner/" target="_blank"><div class="acard-title">👤 Owner Info</div><div class="acard-desc">Owner details</div></a>
+    <a class="acard" href="https://alphafiles.net/history/" target="_blank"><div class="acard-title">📜 History</div><div class="acard-desc">Alpha history</div></a>
+    <a class="acard" href="https://alphafiles.net/cost/" target="_blank"><div class="acard-title">💵 True Cost</div><div class="acard-desc">Cost calculator</div></a>
+    <a class="acard" href="https://alphafiles.net/calculator/" target="_blank"><div class="acard-title">🧮 Calculator</div><div class="acard-desc">TCO calculator</div></a>
+    <a class="acard" href="https://alphafiles.net/rights/" target="_blank"><div class="acard-title">⚖️ Rights</div><div class="acard-desc">Consumer rights</div></a>
+    <a class="acard" href="https://alphafiles.net/exit-methods/" target="_blank"><div class="acard-title">🚪 Exit Methods</div><div class="acard-desc">Exit options</div></a>
+    <a class="acard" href="https://alphafiles.net/guarantee/" target="_blank"><div class="acard-title">🛡️ Guarantee</div><div class="acard-desc">Certificate</div></a>
+    <a class="acard gold" href="https://alphafiles.net/quote/" target="_blank"><div class="acard-title">💰 Quote</div><div class="acard-desc">Quote generator</div></a>
+    <a class="acard" href="https://alphafiles.net/proof/" target="_blank"><div class="acard-title">✅ Proof</div><div class="acard-desc">Case database</div></a>
+    <a class="acard" href="https://alphafiles.net/letter/" target="_blank"><div class="acard-title">📄 Letter</div><div class="acard-desc">Mutual release</div></a>
+    <a class="acard" href="https://alphafiles.net/heirs/" target="_blank"><div class="acard-title">👨‍👩‍👧 Heirs</div><div class="acard-desc">Estate liability</div></a>
+    <a class="acard" href="https://alphafiles.net/compensation/" target="_blank"><div class="acard-title">🏦 Compensation</div><div class="acard-desc">Compensation</div></a>
+    <a class="acard" href="https://alphafiles.net/credit/" target="_blank"><div class="acard-title">💳 Credit</div><div class="acard-desc">Credit protection</div></a>
+    <a class="acard" href="https://alphafiles.net/included/" target="_blank"><div class="acard-title">📦 Included</div><div class="acard-desc">What's included</div></a>
+    <a class="acard" href="https://alphafiles.net/followup/" target="_blank"><div class="acard-title">📅 Follow Up</div><div class="acard-desc">Scheduler</div></a>
+    <a class="acard" href="https://alphafiles.net/recap/" target="_blank"><div class="acard-title">🔄 Recap</div><div class="acard-desc">Summary recap</div></a>
+    <a class="acard gold" href="https://alphafiles.net/approval/" target="_blank"><div class="acard-title">⭐ Approval</div><div class="acard-desc">Same-day pricing</div></a>
+    <a class="acard" href="https://alphafiles.net/checklist/" target="_blank"><div class="acard-title">✔️ Checklist</div><div class="acard-desc">Process checklist</div></a>
+    <a class="acard" href="https://alphafiles.net/contract/" target="_blank"><div class="acard-title">📝 Contract</div><div class="acard-desc">Contract page</div></a>
+    <a class="acard" href="https://alphafiles.net/better/" target="_blank"><div class="acard-title">🔝 Better</div><div class="acard-desc">Better offer</div></a>
+    <a class="acard" href="https://alphafiles.net/free/" target="_blank"><div class="acard-title">🎁 Free</div><div class="acard-desc">Free option</div></a>
+    <a class="acard" href="https://alphafiles.net/whyout/" target="_blank"><div class="acard-title">❓ Why Out</div><div class="acard-desc">Why exit</div></a>
+    <a class="acard" href="https://alphafiles.net/group/" target="_blank"><div class="acard-title">👥 Group</div><div class="acard-desc">Group page</div></a>
+    <a class="acard" href="https://alphafiles.net/wait/" target="_blank"><div class="acard-title">⏳ Wait</div><div class="acard-desc">Hold page</div></a>
+    <a class="acard red" href="https://alphafiles.net/admin/" target="_blank"><div class="acard-title">⚙️ Admin</div><div class="acard-desc">Admin panel</div></a>
+    <a class="acard green" href="https://alphafiles.net/crm/" target="_blank"><div class="acard-title">📊 CRM</div><div class="acard-desc">CRM tool</div></a>
+    <a class="acard" href="https://alphafiles.net/report/" target="_blank"><div class="acard-title">📈 Report</div><div class="acard-desc">Report page</div></a>
+  </div>
+
+  <div class="sec">12 Easy Steps — Recovery Tools</div>
+  <div class="alpha-grid">
+    <a class="acard green" href="https://12easysteps.org" target="_blank"><div class="acard-title">🏠 Home</div><div class="acard-desc">Recovery home</div></a>
+    <a class="acard green" href="https://12easysteps.org/steps/" target="_blank"><div class="acard-title">📖 Steps</div><div class="acard-desc">12 steps content</div></a>
+    <a class="acard green" href="https://12easysteps.org/report/" target="_blank"><div class="acard-title">📊 Report Card</div><div class="acard-desc">Daily/weekly tracker</div></a>
+    <a class="acard green" href="https://12easysteps.org/safe/" target="_blank"><div class="acard-title">🇨🇴 Safe</div><div class="acard-desc">Colombia safety plan</div></a>
+  </div>
+</div>
+
+<!-- DAY BUILD -->
+<div id="tab-day" class="panel">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+    <div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:var(--gold);" id="dayTitle">Today's Build</div>
+      <div style="font-size:11px;color:var(--muted);" id="dayDate"></div>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-gold" onclick="saveDay()">Save Day</button>
+      <button class="btn btn-navy" onclick="resetDay()">Reset</button>
+    </div>
+  </div>
+  <div class="day-grid" id="dayGrid"></div>
+</div>
+
+<!-- ALL SITES -->
+<div id="tab-sites" class="panel">
+  <div class="sec">sebastianlinks.com — Personal</div>
+  <div class="grid">
+    <a class="card" href="/"><div class="card-eye">Dashboard</div><div class="card-title">⚡ Life OS</div><div class="card-url">sebastianlinks.com</div></a>
+    <a class="card gold" href="/hub/"><div class="card-eye">Directory</div><div class="card-title">📂 Hub</div><div class="card-url">sebastianlinks.com/hub</div></a>
+    <a class="card red" href="/joshuason/"><div class="card-eye">Family · Finance</div><div class="card-title">🎖️ Joshua Son</div><div class="card-url">sebastianlinks.com/joshuason</div></a>
+    <a class="card" href="/palabras/"><div class="card-eye">Spanish</div><div class="card-title">💬 333 Palabras</div><div class="card-url">sebastianlinks.com/palabras</div></a>
+    <a class="card red" href="/nationalinstall/"><div class="card-eye">Business</div><div class="card-title">🏗️ National Install</div><div class="card-url">sebastianlinks.com/nationalinstall</div></a>
+  </div>
+
+  <div class="sec">alphafiles.net — ATC Sales Presentation</div>
+  <div class="alpha-grid">
+    <a class="acard gold" href="https://alphafiles.net" target="_blank"><div class="acard-title">🏠 Home</div></a>
+    <a class="acard gold" href="https://alphafiles.net/vitals/" target="_blank"><div class="acard-title">📋 Vitals</div></a>
+    <a class="acard" href="https://alphafiles.net/owner/" target="_blank"><div class="acard-title">👤 Owner</div></a>
+    <a class="acard" href="https://alphafiles.net/history/" target="_blank"><div class="acard-title">📜 History</div></a>
+    <a class="acard" href="https://alphafiles.net/cost/" target="_blank"><div class="acard-title">💵 True Cost</div></a>
+    <a class="acard" href="https://alphafiles.net/calculator/" target="_blank"><div class="acard-title">🧮 Calculator</div></a>
+    <a class="acard" href="https://alphafiles.net/rights/" target="_blank"><div class="acard-title">⚖️ Rights</div></a>
+    <a class="acard" href="https://alphafiles.net/exit-methods/" target="_blank"><div class="acard-title">🚪 Exit Methods</div></a>
+    <a class="acard" href="https://alphafiles.net/guarantee/" target="_blank"><div class="acard-title">🛡️ Guarantee</div></a>
+    <a class="acard gold" href="https://alphafiles.net/quote/" target="_blank"><div class="acard-title">💰 Quote</div></a>
+    <a class="acard" href="https://alphafiles.net/proof/" target="_blank"><div class="acard-title">✅ Proof</div></a>
+    <a class="acard" href="https://alphafiles.net/letter/" target="_blank"><div class="acard-title">📄 Letter</div></a>
+    <a class="acard" href="https://alphafiles.net/heirs/" target="_blank"><div class="acard-title">👨‍👩‍👧 Heirs</div></a>
+    <a class="acard" href="https://alphafiles.net/compensation/" target="_blank"><div class="acard-title">🏦 Compensation</div></a>
+    <a class="acard" href="https://alphafiles.net/credit/" target="_blank"><div class="acard-title">💳 Credit</div></a>
+    <a class="acard" href="https://alphafiles.net/included/" target="_blank"><div class="acard-title">📦 Included</div></a>
+    <a class="acard" href="https://alphafiles.net/followup/" target="_blank"><div class="acard-title">📅 Follow Up</div></a>
+    <a class="acard" href="https://alphafiles.net/recap/" target="_blank"><div class="acard-title">🔄 Recap</div></a>
+    <a class="acard gold" href="https://alphafiles.net/approval/" target="_blank"><div class="acard-title">⭐ Approval</div></a>
+    <a class="acard" href="https://alphafiles.net/checklist/" target="_blank"><div class="acard-title">✔️ Checklist</div></a>
+    <a class="acard" href="https://alphafiles.net/contract/" target="_blank"><div class="acard-title">📝 Contract</div></a>
+    <a class="acard" href="https://alphafiles.net/better/" target="_blank"><div class="acard-title">🔝 Better</div></a>
+    <a class="acard" href="https://alphafiles.net/free/" target="_blank"><div class="acard-title">🎁 Free</div></a>
+    <a class="acard" href="https://alphafiles.net/whyout/" target="_blank"><div class="acard-title">❓ Why Out</div></a>
+    <a class="acard" href="https://alphafiles.net/group/" target="_blank"><div class="acard-title">👥 Group</div></a>
+    <a class="acard" href="https://alphafiles.net/wait/" target="_blank"><div class="acard-title">⏳ Wait</div></a>
+    <a class="acard red" href="https://alphafiles.net/admin/" target="_blank"><div class="acard-title">⚙️ Admin</div></a>
+    <a class="acard green" href="https://alphafiles.net/crm/" target="_blank"><div class="acard-title">📊 CRM</div></a>
+    <a class="acard" href="https://alphafiles.net/report/" target="_blank"><div class="acard-title">📈 Report</div></a>
+  </div>
+
+  <div class="sec">12easysteps.org — Recovery</div>
+  <div class="alpha-grid">
+    <a class="acard green" href="https://12easysteps.org" target="_blank"><div class="acard-title">🏠 Home</div></a>
+    <a class="acard green" href="https://12easysteps.org/steps/" target="_blank"><div class="acard-title">📖 Steps</div></a>
+    <a class="acard green" href="https://12easysteps.org/report/" target="_blank"><div class="acard-title">📊 Report Card</div></a>
+    <a class="acard green" href="https://12easysteps.org/safe/" target="_blank"><div class="acard-title">🇨🇴 Safe Plan</div></a>
+  </div>
+</div>
+
+<!-- COMMISSION -->
+<div id="tab-comm" class="panel">
+  <div class="sec">Commission Calculator</div>
+  <div class="calc-grid">
+    <div class="inp-group">
+      <label>Sale Amount $</label>
+      <input type="number" id="saleAmt" value="5000" step="100" oninput="calcComm()">
+    </div>
+    <div class="inp-group">
+      <label>Commission %</label>
+      <input type="number" id="commPct" value="10" step=".5" oninput="calcComm()">
+    </div>
+    <div class="inp-group">
+      <label>Override %</label>
+      <input type="number" id="overridePct" value="0" step=".5" oninput="calcComm()">
+    </div>
+    <div class="inp-group">
+      <label>Deductions $</label>
+      <input type="number" id="deductions" value="0" step="50" oninput="calcComm()">
+    </div>
+  </div>
+  <div class="result-box">
+    <div class="result-val" id="commResult">$500</div>
+    <div class="result-lbl">Your Commission</div>
+    <div style="margin-top:10px;display:flex;gap:16px;flex-wrap:wrap;">
+      <div><div style="font-size:11px;color:var(--muted);">Base</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#e6f1fb;" id="commBase">$500</div></div>
+      <div><div style="font-size:11px;color:var(--muted);">Override</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#e6f1fb;" id="commOverride">$0</div></div>
+      <div><div style="font-size:11px;color:var(--muted);">Deductions</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#ef9a9a;" id="commDed">-$0</div></div>
+    </div>
+  </div>
+
+  <div class="sec" style="margin-top:20px;">Deal Log</div>
+  <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+    <input type="text" id="dealName" placeholder="Client name" style="background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:4px;color:#fff;padding:7px 10px;font-size:12px;flex:1;min-width:120px;">
+    <button class="btn btn-gold" onclick="addDeal()">+ Add Deal</button>
+  </div>
+  <table class="pay-table" id="dealTable">
+    <thead><tr><th>Client</th><th>Sale $</th><th>Commission</th><th>Date</th><th></th></tr></thead>
+    <tbody id="dealBody"></tbody>
+  </table>
+</div>
+
+<!-- PAY HISTORY -->
+<div id="tab-pay" class="panel">
+  <div class="sec">Pay History</div>
+  <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+    <input type="date" id="payDate" style="background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:4px;color:#fff;padding:6px 10px;font-size:12px;">
+    <input type="number" id="payAmt" placeholder="Amount $" step="50" style="background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:4px;color:#fff;padding:6px 10px;font-size:12px;width:130px;">
+    <input type="text" id="payNote" placeholder="Note (optional)" style="background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:4px;color:#fff;padding:6px 10px;font-size:12px;flex:1;min-width:120px;">
+    <button class="btn btn-gold" onclick="addPay()">+ Add</button>
+  </div>
+  <table class="pay-table">
+    <thead><tr><th>Date</th><th>Amount</th><th>Note</th><th></th></tr></thead>
+    <tbody id="payBody"></tbody>
+  </table>
+</div>
+
+<!-- FAVORITES -->
+<div id="tab-favs" class="panel">
+  <div class="sec">Quick Links</div>
+  <div class="fav-grid" id="favGrid"></div>
+  <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
+    <input type="text" id="favName" placeholder="Name" style="background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:4px;color:#fff;padding:6px 10px;font-size:12px;width:130px;">
+    <input type="text" id="favUrl" placeholder="URL" style="background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:4px;color:#fff;padding:6px 10px;font-size:12px;flex:1;min-width:200px;">
+    <input type="text" id="favIcon" placeholder="Emoji" style="background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:4px;color:#fff;padding:6px 10px;font-size:12px;width:70px;">
+    <button class="btn btn-gold" onclick="addFav()">+ Add</button>
+  </div>
+</div>
+
+<script>
+// ── TABS ──
+function showTab(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ── DATE ──
+const now = new Date();
+const opts = { weekday:'long', month:'long', day:'numeric', year:'numeric' };
+document.getElementById('topDate').textContent = now.toLocaleDateString('en-US', opts);
+document.getElementById('dayDate') && (document.getElementById('dayDate').textContent = now.toLocaleDateString('en-US', opts));
+
+// ── DAY BUILD ──
+const DAY_CATS = [
+  { name: 'Spiritual', emoji: '🙏', tasks: ['Morning prayer/meditation', 'Read Big Book', 'Gratitude list'] },
+  { name: 'Recovery', emoji: '🛡️', tasks: ['Meeting / call sponsor', 'Step work', 'Journal'] },
+  { name: 'Work', emoji: '💼', tasks: ['Follow up calls', 'Update CRM / Zoho', 'Review pipeline'] },
+  { name: 'Family', emoji: '👨‍👧‍👦', tasks: ['Connect with Ever', 'Connect with Sebastian Jr.', 'Family message'] },
+  { name: 'Exercise', emoji: '💪', tasks: ['Workout / walk', 'Stretch / breathe', 'Hydrate'] },
+  { name: 'Home', emoji: '🏠', tasks: ['Clean / tidy', 'Errands', 'Meal prep'] },
+  { name: 'Friends', emoji: '🤝', tasks: ['Check in on friend', 'Social time'] },
+  { name: 'Growth', emoji: '📚', tasks: ['Read / learn', 'Personal development'] },
+];
+
+const todayKey = () => 'day_' + now.toISOString().slice(0,10);
+let dayData = {};
+
+function renderDay() {
+  const saved = localStorage.getItem(todayKey());
+  if (saved) dayData = JSON.parse(saved);
+  const grid = document.getElementById('dayGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  let total = 0, done = 0;
+  DAY_CATS.forEach(cat => {
+    const tasks = dayData[cat.name] || cat.tasks.map(t => ({ text: t, checked: false }));
+    dayData[cat.name] = tasks;
+    total += tasks.length;
+    done += tasks.filter(t => t.checked).length;
+    const box = document.createElement('div');
+    box.className = 'cat-box';
+    const comp = tasks.filter(t => t.checked).length;
+    box.innerHTML = `<div class="cat-title">${cat.emoji} ${cat.name} <span>${comp}/${tasks.length}</span></div>` +
+      tasks.map((t, i) => `
+        <div class="task-row">
+          <input type="checkbox" id="t_${cat.name}_${i}" ${t.checked ? 'checked' : ''} onchange="toggleTask('${cat.name}',${i})">
+          <label for="t_${cat.name}_${i}">${t.text}</label>
+        </div>`).join('') +
+      `<button class="add-task" onclick="addTask('${cat.name}')">+ Add task</button>`;
+    grid.appendChild(box);
+  });
+  const ds = document.getElementById('ds-tasks');
+  if (ds) ds.textContent = done + '/' + total;
+}
+
+function toggleTask(cat, i) {
+  dayData[cat][i].checked = !dayData[cat][i].checked;
+  saveDay();
+  renderDay();
+}
+
+function addTask(cat) {
+  const text = prompt('New task for ' + cat + ':');
+  if (!text) return;
+  dayData[cat] = dayData[cat] || [];
+  dayData[cat].push({ text, checked: false });
+  saveDay();
+  renderDay();
+}
+
+function saveDay() {
+  localStorage.setItem(todayKey(), JSON.stringify(dayData));
+}
+
+function resetDay() {
+  if (!confirm('Reset all tasks for today?')) return;
+  localStorage.removeItem(todayKey());
+  dayData = {};
+  renderDay();
+}
+
+// ── COMMISSION ──
+let deals = JSON.parse(localStorage.getItem('os_deals') || '[]');
+
+function calcComm() {
+  const sale = parseFloat(document.getElementById('saleAmt')?.value) || 0;
+  const pct  = parseFloat(document.getElementById('commPct')?.value) || 0;
+  const ovr  = parseFloat(document.getElementById('overridePct')?.value) || 0;
+  const ded  = parseFloat(document.getElementById('deductions')?.value) || 0;
+  const base = sale * pct / 100;
+  const over = sale * ovr / 100;
+  const net  = base + over - ded;
+  const fmt = n => '$' + Math.round(n).toLocaleString();
+  const e = id => document.getElementById(id);
+  if (e('commBase'))     e('commBase').textContent = fmt(base);
+  if (e('commOverride')) e('commOverride').textContent = fmt(over);
+  if (e('commDed'))      e('commDed').textContent = '-' + fmt(ded);
+  if (e('commResult'))   e('commResult').textContent = fmt(net);
+  if (e('ds-comm'))      e('ds-comm').textContent = fmt(net);
+}
+
+function addDeal() {
+  const name = document.getElementById('dealName')?.value?.trim();
+  const sale = parseFloat(document.getElementById('saleAmt')?.value) || 0;
+  const pct  = parseFloat(document.getElementById('commPct')?.value) || 0;
+  const comm = sale * pct / 100;
+  if (!name || !sale) return alert('Enter client name and sale amount');
+  deals.push({ name, sale, comm, date: now.toLocaleDateString('en-US',{month:'short',day:'numeric'}) });
+  localStorage.setItem('os_deals', JSON.stringify(deals));
+  renderDeals();
+  document.getElementById('dealName').value = '';
+}
+
+function renderDeals() {
+  const b = document.getElementById('dealBody'); if (!b) return;
+  b.innerHTML = deals.map((d,i) => `
+    <tr>
+      <td>${d.name}</td>
+      <td>$${d.sale.toLocaleString()}</td>
+      <td style="color:var(--gold);">$${Math.round(d.comm).toLocaleString()}</td>
+      <td>${d.date}</td>
+      <td><button onclick="delDeal(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;">×</button></td>
+    </tr>`).join('');
+}
+
+function delDeal(i) {
+  deals.splice(i, 1);
+  localStorage.setItem('os_deals', JSON.stringify(deals));
+  renderDeals();
+}
+
+// ── PAY HISTORY ──
+let pays = JSON.parse(localStorage.getItem('os_pays') || '[]');
+
+function addPay() {
+  const date = document.getElementById('payDate')?.value;
+  const amt  = parseFloat(document.getElementById('payAmt')?.value) || 0;
+  const note = document.getElementById('payNote')?.value?.trim() || '';
+  if (!date || !amt) return alert('Enter date and amount');
+  pays.unshift({ date, amt, note });
+  localStorage.setItem('os_pays', JSON.stringify(pays));
+  renderPays();
+  document.getElementById('payAmt').value = '';
+  document.getElementById('payNote').value = '';
+  // update dashboard last pay
+  if (pays.length > 0) {
+    const ds = document.getElementById('ds-pay');
+    if (ds) ds.textContent = '$' + pays[0].amt.toLocaleString();
+  }
+}
+
+function renderPays() {
+  const b = document.getElementById('payBody'); if (!b) return;
+  b.innerHTML = pays.map((p,i) => `
+    <tr>
+      <td>${p.date}</td>
+      <td style="color:var(--gold);">$${p.amt.toLocaleString()}</td>
+      <td>${p.note}</td>
+      <td><button onclick="delPay(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;">×</button></td>
+    </tr>`).join('');
+  if (pays.length > 0) {
+    const ds = document.getElementById('ds-pay');
+    if (ds) ds.textContent = '$' + pays[0].amt.toLocaleString();
+  }
+}
+
+function delPay(i) {
+  pays.splice(i, 1);
+  localStorage.setItem('os_pays', JSON.stringify(pays));
+  renderPays();
+}
+
+// ── FAVORITES ──
+const DEFAULT_FAVS = [
+  { name: 'Alpha Files', url: 'https://alphafiles.net', icon: '📊' },
+  { name: '12 Easy Steps', url: 'https://12easysteps.org', icon: '📖' },
+  { name: 'Joshua Son', url: '/joshuason/', icon: '🎖️' },
+  { name: 'Hub', url: '/hub/', icon: '📂' },
+  { name: 'Palabras', url: '/palabras/', icon: '💬' },
+  { name: 'Gmail', url: 'https://mail.google.com', icon: '📧' },
+  { name: 'Zoho CRM', url: 'https://crm.zoho.com', icon: '👥' },
+  { name: 'RingCentral', url: 'https://app.ringcentral.com', icon: '📞' },
+];
+let favs = JSON.parse(localStorage.getItem('os_favs') || 'null') || DEFAULT_FAVS;
+
+function renderFavs() {
+  const g = document.getElementById('favGrid'); if (!g) return;
+  g.innerHTML = favs.map((f,i) => `
+    <a class="fav-card" href="${f.url}" target="${f.url.startsWith('http')?'_blank':'_self'}">
+      <div class="fav-icon">${f.icon || '🔗'}</div>
+      <div><div class="fav-name">${f.name}</div><div class="fav-url">${f.url.replace('https://','')}</div></div>
+      <button onclick="delFav(event,${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;margin-left:auto;">×</button>
+    </a>`).join('');
+}
+
+function addFav() {
+  const name = document.getElementById('favName')?.value?.trim();
+  const url  = document.getElementById('favUrl')?.value?.trim();
+  const icon = document.getElementById('favIcon')?.value?.trim() || '🔗';
+  if (!name || !url) return;
+  favs.push({ name, url, icon });
+  localStorage.setItem('os_favs', JSON.stringify(favs));
+  renderFavs();
+  ['favName','favUrl','favIcon'].forEach(id => { const e = document.getElementById(id); if(e) e.value=''; });
+}
+
+function delFav(e, i) {
+  e.preventDefault(); e.stopPropagation();
+  favs.splice(i, 1);
+  localStorage.setItem('os_favs', JSON.stringify(favs));
+  renderFavs();
+}
+
+// ── INIT ──
+renderDay();
+calcComm();
+renderDeals();
+renderPays();
+renderFavs();
+</script>
 </body>
 </html>
