@@ -578,15 +578,15 @@
         <td><div class="cat-name">Housing</div><div class="cat-note">Lives on base — BAH included</div></td>
         <td><input class="amt-input" type="number" id="housing" value="0" min="0" oninput="recalc()"></td>
         <td class="pct-rec">0%</td>
-        <td><span class="pct-badge green" id="housingPct">0%</span></td>
-        <td><span id="housingStatus" style="font-size:11px; color:var(--green);">✓ On base</span></td>
+        <td><span class="pct-badge green" id="housingPct">100%</span></td>
+        <td><span id="housingStatus" style="font-size:11px; color:var(--green);">✓ Army Covered</span></td>
       </tr>
       <tr>
         <td><div class="cat-name">Food</div><div class="cat-note">Dining facility on base</div></td>
         <td><input class="amt-input" type="number" id="food" value="0" min="0" oninput="recalc()"></td>
         <td class="pct-rec">0%</td>
-        <td><span class="pct-badge green" id="foodPct">0%</span></td>
-        <td><span id="foodStatus" style="font-size:11px; color:var(--green);">✓ Covered</span></td>
+        <td><span class="pct-badge green" id="foodPct">100%</span></td>
+        <td><span id="foodStatus" style="font-size:11px; color:var(--green);">✓ Army Covered</span></td>
       </tr>
 
       <!-- SAVINGS -->
@@ -906,7 +906,10 @@ function recalc() {
     if (badge) {
       badge.textContent = pctStr;
       const [lo, hi] = REC[f];
-      if (lo === 0 && hi === 0) {
+      if (f === 'housing' || f === 'food') {
+        badge.textContent = '100%';
+        badge.className = 'pct-badge green';
+      } else if (lo === 0 && hi === 0) {
         badge.className = 'pct-badge green';
       } else if (pct < lo) {
         badge.className = 'pct-badge under';
