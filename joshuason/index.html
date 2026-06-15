@@ -462,6 +462,55 @@
 
 
 
+
+  /* ── RECOMMENDED STRIP ── */
+  .rec-strip {
+    background: var(--white);
+    border-bottom: 2px solid var(--border);
+    padding: 10px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0;
+  }
+  .rec-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 6px 14px;
+    border-right: 1px solid var(--border);
+    min-width: 90px;
+  }
+  .rec-item:last-child { border-right: none; }
+  .rec-item .ri-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 2px;
+    text-align: center;
+  }
+  .rec-item .ri-pct {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--red);
+    letter-spacing: 1px;
+  }
+  .rec-item .ri-amt {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.1;
+  }
+  @media (max-width: 700px) {
+    .rec-strip { padding: 8px 8px; }
+    .rec-item { padding: 4px 8px; min-width: 70px; }
+  }
+
   /* ── CELEBRATION BANNERS ── */
   .celebrate-banner {
     display: flex;
@@ -582,6 +631,51 @@
     <div class="rank-box">U.S. ARMY</div>
   </div>
 </header>
+
+<!-- ══ RECOMMENDED ALLOCATION STRIP ══ -->
+<div class="rec-strip">
+  <div class="rec-item">
+    <div class="ri-label">Housing</div>
+    <div class="ri-pct">0%</div>
+    <div class="ri-amt ri-green">Army ✓</div>
+  </div>
+  <div class="rec-item">
+    <div class="ri-label">Food</div>
+    <div class="ri-pct">0%</div>
+    <div class="ri-amt ri-green">Army ✓</div>
+  </div>
+  <div class="rec-item">
+    <div class="ri-label">Savings</div>
+    <div class="ri-pct">10%</div>
+    <div class="ri-amt" id="rs_savings">$210</div>
+  </div>
+  <div class="rec-item">
+    <div class="ri-label">Invest</div>
+    <div class="ri-pct">8%</div>
+    <div class="ri-amt" id="rs_invest">$168</div>
+  </div>
+  <div class="rec-item">
+    <div class="ri-label">Transport</div>
+    <div class="ri-pct">19%</div>
+    <div class="ri-amt" id="rs_transp">$399</div>
+  </div>
+  <div class="rec-item">
+    <div class="ri-label">Personal</div>
+    <div class="ri-pct">14%</div>
+    <div class="ri-amt" id="rs_personal">$294</div>
+  </div>
+  <div class="rec-item">
+    <div class="ri-label">Giving</div>
+    <div class="ri-pct">10%</div>
+    <div class="ri-amt" id="rs_giving">$210</div>
+  </div>
+  <div class="rec-item" style="border-left:2px solid var(--gold); margin-left:8px; padding-left:16px;">
+    <div class="ri-label">Remaining</div>
+    <div class="ri-pct" id="rs_rem_pct">39%</div>
+    <div class="ri-amt" style="color:var(--green);" id="rs_rem_amt">$819</div>
+  </div>
+</div>
+
 
 <!-- ══ INCOME BAR ══ -->
 <div class="income-bar">
@@ -1139,6 +1233,20 @@ function recalc() {
   document.getElementById('progressBar').style.width = barW + '%';
   document.getElementById('progressLabel').textContent = pctUsed + '%';
 
+
+
+  // ── UPDATE REC STRIP ──
+  const recPcts = { savings:0.10, invest:0.08, transp:0.19, personal:0.14, giving:0.10 };
+  const recTotal = Object.values(recPcts).reduce((a,b)=>a+b,0);
+  const recRemPct = 1 - recTotal;
+  Object.entries(recPcts).forEach(([k,p]) => {
+    const el = document.getElementById('rs_' + k);
+    if (el) el.textContent = '$' + Math.round(income * p).toLocaleString();
+  });
+  const rsRem = document.getElementById('rs_rem_amt');
+  const rsRemPct = document.getElementById('rs_rem_pct');
+  if (rsRem) rsRem.textContent = '$' + Math.round(income * recRemPct).toLocaleString();
+  if (rsRemPct) rsRemPct.textContent = Math.round(recRemPct * 100) + '%';
 
   // ── HOUSING/FOOD FREED AMOUNTS ──
   const natRent = 1200; // approx national avg rent for single person
