@@ -573,7 +573,7 @@
     <tbody>
 
       <!-- HOUSING & FOOD -->
-      <tr class="group-header"><td colspan="5" style="position:relative;">Housing &amp; Food — Base Life<button class="sec-save-btn" onclick="saveSection('housing')" id="btn_housing">Save</button></td></tr>
+      <tr class="group-header"><td colspan="5" style="position:relative;">Housing &amp; Food — Base Life<button class="sec-save-btn" onclick="saveSection('housing')" id="btn_housing">Lock In</button></td></tr>
       <tr>
         <td><div class="cat-name">Housing</div><div class="cat-note">Lives on base — BAH included</div></td>
         <td><input class="amt-input" type="number" id="housing" value="0" min="0" oninput="recalc()"></td>
@@ -590,7 +590,7 @@
       </tr>
 
       <!-- SAVINGS -->
-      <tr class="group-header"><td colspan="5" style="position:relative;">Savings &amp; Emergency<button class="sec-save-btn" onclick="saveSection('savings')" id="btn_savings">Save</button></td></tr>
+      <tr class="group-header"><td colspan="5" style="position:relative;">Savings &amp; Emergency<button class="sec-save-btn" onclick="saveSection('savings')" id="btn_savings">Lock In</button></td></tr>
       <tr>
         <td><div class="cat-name">Car Down Payment Fund</div><div class="cat-note">Goal: $1,750</div></td>
         <td><input class="amt-input" type="number" id="carSavings" value="200" min="0" oninput="recalc()"></td>
@@ -614,7 +614,7 @@
       </tr>
 
       <!-- INVESTMENTS -->
-      <tr class="group-header"><td colspan="5" style="position:relative;">Investments &amp; Retirement<button class="sec-save-btn" onclick="saveSection('investments')" id="btn_investments">Save</button></td></tr>
+      <tr class="group-header"><td colspan="5" style="position:relative;">Investments &amp; Retirement<button class="sec-save-btn" onclick="saveSection('investments')" id="btn_investments">Lock In</button></td></tr>
       <tr>
         <td><div class="cat-name">TSP (Thrift Savings Plan)</div><div class="cat-note">Army 401k — get the 5% match</div></td>
         <td><input class="amt-input" type="number" id="tsp" value="105" min="0" oninput="recalc()"></td>
@@ -638,7 +638,7 @@
       </tr>
 
       <!-- TRANSPORTATION -->
-      <tr class="group-header"><td colspan="5" style="position:relative;">Transportation<button class="sec-save-btn" onclick="saveSection('transportation')" id="btn_transportation">Save</button></td></tr>
+      <tr class="group-header"><td colspan="5" style="position:relative;">Transportation<button class="sec-save-btn" onclick="saveSection('transportation')" id="btn_transportation">Lock In</button></td></tr>
       <tr>
         <td><div class="cat-name">Car Payment</div><div class="cat-note">Keep ≤ $250/mo</div></td>
         <td><input class="amt-input" type="number" id="carPayment" value="250" min="0" oninput="recalc()"></td>
@@ -669,7 +669,7 @@
       </tr>
 
       <!-- PERSONAL -->
-      <tr class="group-header"><td colspan="5" style="position:relative;">Personal &amp; Lifestyle<button class="sec-save-btn" onclick="saveSection('personal')" id="btn_personal">Save</button></td></tr>
+      <tr class="group-header"><td colspan="5" style="position:relative;">Personal &amp; Lifestyle<button class="sec-save-btn" onclick="saveSection('personal')" id="btn_personal">Lock In</button></td></tr>
       <tr>
         <td><div class="cat-name">Personal Care</div><div class="cat-note">Haircuts, hygiene</div></td>
         <td><input class="amt-input" type="number" id="personal" value="75" min="0" oninput="recalc()"></td>
@@ -700,7 +700,7 @@
       </tr>
 
       <!-- GIVING -->
-      <tr class="group-header"><td colspan="5" style="position:relative;">Charity &amp; Giving<button class="sec-save-btn" onclick="saveSection('charity')" id="btn_charity">Save</button></td></tr>
+      <tr class="group-header"><td colspan="5" style="position:relative;">Charity &amp; Giving<button class="sec-save-btn" onclick="saveSection('charity')" id="btn_charity">Lock In</button></td></tr>
       <tr>
         <td><div class="cat-name">Tithe / Donation</div><div class="cat-note">Give first</div></td>
         <td><input class="amt-input" type="number" id="charity" value="210" min="0" oninput="recalc()"></td>
@@ -783,9 +783,9 @@ function saveSection(key) {
   // Flash button
   const btn = document.getElementById('btn_' + key);
   if (btn) {
-    btn.textContent = 'Saved ✓';
+    btn.textContent = 'Locked ✓';
     btn.classList.add('saved');
-    setTimeout(() => { btn.textContent = 'Save'; btn.classList.remove('saved'); }, 2000);
+    setTimeout(() => { btn.textContent = 'Lock In'; btn.classList.remove('saved'); }, 2000);
   }
   renderChips();
 }
