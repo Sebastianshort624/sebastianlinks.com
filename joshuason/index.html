@@ -222,10 +222,10 @@
     font-size: 10px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.65);
+    color: var(--gold);
     padding: 13px 14px;
     text-align: center;
-    font-weight: 500;
+    font-weight: 600;
   }
   .finance-table thead th:first-child { text-align: left; }
 
@@ -261,7 +261,7 @@
 
   .finance-table tbody tr.total-row td {
     background: var(--navy);
-    color: var(--white);
+    color: var(--gold);
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 13px;
     font-weight: 700;
@@ -453,7 +453,7 @@
     cursor: pointer;
   }
   .snapshot-chip .chip-x:hover { color: darkred; }
-  .no-snaps { font-size: 12px; color: rgba(255,255,255,0.6); font-style: italic; }
+  .no-snaps { font-size: 12px; color: var(--gold); font-style: italic; }
 
   @media print {
     .snapshots-bar { display: none !important; }
@@ -569,17 +569,18 @@
     letter-spacing: 2px;
     text-transform: uppercase;
   }
-  .running-bar .rb-label { color: rgba(255,255,255,0.55); }
+  .running-bar .rb-label { color: var(--gold); }
   .running-bar .rb-amount {
     font-family: 'Cormorant Garamond', serif;
     font-size: 1.2rem;
     font-weight: 700;
     letter-spacing: 0;
     text-transform: none;
+    color: var(--gold);
   }
   .running-bar .rb-weekly {
     font-size: 10px;
-    color: rgba(255,255,255,0.5);
+    color: var(--gold);
     margin-left: 6px;
     letter-spacing: 1px;
     text-transform: none;
@@ -705,13 +706,13 @@
 
 
 <!-- ══ STICKY RUNNING BALANCE ══ -->
-<div id="stickyBalance" style="position:sticky; top:0; z-index:100; background:var(--navy); border-bottom:2px solid var(--gold); padding:6px 48px; display:flex; align-items:center; justify-content:center; gap:32px; flex-wrap:wrap;">
-  <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,0.5);">Paycheck Remaining</div>
+<div id="stickyBalance" style="position:sticky; top:0; z-index:100; background:var(--navy); border-bottom:2px solid var(--gold); padding:6px 48px; display:flex; align-items:center; justify-content:center; gap:32px; flex-wrap:wrap; color:var(--gold);">
+  <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--gold);">Paycheck Remaining</div>
   <div style="display:flex; align-items:baseline; gap:8px;">
     <span id="stickyAmt" style="font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:700; color:#6EE787;">$2,100</span>
-    <span id="stickyWk" style="font-family:'Barlow Condensed',sans-serif; font-size:11px; color:rgba(255,255,255,0.45); letter-spacing:1px;">/ wk $485</span>
+    <span id="stickyWk" style="font-family:'Barlow Condensed',sans-serif; font-size:11px; color:var(--gold); letter-spacing:1px;">/ wk $485</span>
   </div>
-  <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.4);" id="stickyPct">100% unallocated</div>
+  <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--gold);" id="stickyPct">100% unallocated</div>
 </div>
 
 <!-- ══ PAGE BODY ══ -->
