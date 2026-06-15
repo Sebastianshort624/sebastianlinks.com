@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>National Install, Inc. — Business Plan 2025–2028</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --orange:#F96302;--orange-dark:#D95200;--black:#1A1A1A;--charcoal:#333;
+  --mid:#555;--light:#F5F5F5;--white:#fff;--border:#E0E0E0;
+  --green:#2E7D32;--green-light:#E8F5E9;--red:#C62828;--red-light:#FFEBEE;
+  --blue:#1565C0;--blue-light:#E3F2FD;
+}
+body{font-family:'Open Sans',sans-serif;background:var(--light);color:var(--charcoal);font-size:15px;line-height:1.6}
+
+/* HEADER */
+header{background:var(--orange);border-bottom:4px solid var(--black)}
+.header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:18px;padding:14px 24px}
+.hd-diamond{width:60px;height:60px;flex-shrink:0}
+.brand-text{color:#fff;font-family:'Oswald',sans-serif}
+.brand-text span{display:block;font-size:22px;font-weight:700;letter-spacing:1px;text-transform:uppercase;line-height:1.1}
+.brand-text small{font-size:11px;font-weight:400;letter-spacing:2px;text-transform:uppercase;opacity:.85}
+.header-right{margin-left:auto;text-align:right;color:#fff;font-family:'Oswald',sans-serif}
+.header-right .tagline{font-size:13px;letter-spacing:1.5px;text-transform:uppercase;opacity:.9}
+.header-right .presented{font-size:11px;opacity:.7;margin-top:2px}
+
+/* HERO */
+.hero{background:var(--black);color:#fff;padding:54px 24px 48px;border-bottom:5px solid var(--orange)}
+.hero-inner{max-width:1200px;margin:0 auto}
+.hero-eyebrow{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--orange);margin-bottom:12px}
+.hero h1{font-family:'Oswald',sans-serif;font-size:clamp(30px,5vw,56px);font-weight:700;line-height:1.05;text-transform:uppercase;max-width:800px;margin-bottom:18px}
+.hero h1 em{color:var(--orange);font-style:normal}
+.hero p{max-width:640px;font-size:15px;opacity:.85;line-height:1.7;margin-bottom:32px}
+.hero-stats{display:flex;flex-wrap:wrap;gap:16px}
+.hero-stat{background:rgba(249,99,2,.12);border:1px solid rgba(249,99,2,.35);border-radius:4px;padding:14px 20px;min-width:130px}
+.hero-stat .num{font-family:'Oswald',sans-serif;font-size:30px;font-weight:700;color:var(--orange);line-height:1}
+.hero-stat .lbl{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;opacity:.7;margin-top:4px}
+
+/* SECTIONS */
+.section{max-width:1200px;margin:0 auto;padding:50px 24px}
+.section-title{font-family:'Oswald',sans-serif;font-size:26px;font-weight:700;text-transform:uppercase;color:var(--black);border-left:5px solid var(--orange);padding-left:14px;margin-bottom:28px}
+.divider{border:none;border-top:3px solid var(--border);margin:0}
+
+/* CARDS */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px}
+.card{background:#fff;border:1px solid var(--border);border-top:4px solid var(--orange);border-radius:4px;padding:20px 18px}
+.card-icon{font-size:26px;margin-bottom:10px}
+.card h3{font-family:'Oswald',sans-serif;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--black);margin-bottom:7px}
+.card p{font-size:12.5px;color:var(--mid);line-height:1.6}
+.card .highlight{font-family:'Oswald',sans-serif;font-size:22px;font-weight:700;color:var(--orange);display:block;margin-bottom:4px}
+
+/* PRICING BLOCK */
+.pricing-cols{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media(max-width:700px){.pricing-cols{grid-template-columns:1fr}}
+.pricing-box{background:#fff;border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.pricing-box .pb-head{font-family:'Oswald',sans-serif;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:12px 18px;display:flex;justify-content:space-between;align-items:center}
+.pricing-box .pb-head.std{background:var(--charcoal);color:#fff}
+.pricing-box .pb-head.upg{background:var(--orange);color:#fff}
+.pricing-box table{width:100%;border-collapse:collapse;font-size:13px}
+.pricing-box td{padding:9px 18px;border-bottom:1px solid var(--border)}
+.pricing-box td:last-child{text-align:right;font-weight:600}
+.pricing-box tr:last-child td{border-bottom:none}
+.pricing-box .total-row td{background:var(--light);font-family:'Oswald',sans-serif;font-size:15px;font-weight:700}
+.pricing-box .total-row td:last-child{color:var(--green)}
+
+/* UPGRADE CALLOUT */
+.upgrade-callout{background:linear-gradient(135deg,#1A1A1A 0%,#2d2d2d 100%);border:2px solid var(--orange);border-radius:6px;padding:28px 32px;display:flex;flex-wrap:wrap;gap:28px;align-items:center;margin-top:24px}
+.upgrade-callout h3{font-family:'Oswald',sans-serif;font-size:22px;font-weight:700;text-transform:uppercase;color:var(--orange);margin-bottom:6px}
+.upgrade-callout p{font-size:13px;color:rgba(255,255,255,.75);max-width:400px;line-height:1.6}
+.upgrade-nums{display:flex;gap:28px;flex-wrap:wrap}
+.upgrade-num .un{font-family:'Oswald',sans-serif;font-size:32px;font-weight:700;color:#fff;line-height:1}
+.upgrade-num .ul{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.55);margin-top:4px}
+
+/* STEPS */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:0;border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.step{background:#fff;padding:22px 16px;border-right:1px solid var(--border);position:relative}
+.step:last-child{border-right:none}
+.step-num{font-family:'Oswald',sans-serif;font-size:38px;font-weight:700;color:var(--orange);opacity:.2;line-height:1;position:absolute;top:12px;right:12px}
+.step h4{font-family:'Oswald',sans-serif;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;color:var(--black)}
+.step p{font-size:12px;color:var(--mid);line-height:1.6}
+
+/* LEAD FUNNEL */
+.funnel-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.funnel-card{background:#fff;border:1px solid var(--border);border-radius:4px;padding:18px;display:flex;gap:14px;align-items:flex-start}
+.funnel-icon{font-size:26px;flex-shrink:0;margin-top:2px}
+.funnel-card h4{font-family:'Oswald',sans-serif;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--black);margin-bottom:5px}
+.funnel-card p{font-size:12.5px;color:var(--mid);line-height:1.6}
+.cost-tag{display:inline-block;margin-top:8px;background:var(--orange);color:#fff;font-family:'Oswald',sans-serif;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:3px 9px;border-radius:2px}
+
+/* REP SCALE TABLE */
+.rep-table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:4px;overflow:hidden;font-size:13px}
+.rep-table thead{background:var(--black);color:#fff;font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:1px;font-size:12px}
+.rep-table th{padding:11px 14px;text-align:right}
+.rep-table th:first-child{text-align:left}
+.rep-table td{padding:10px 14px;text-align:right;border-bottom:1px solid var(--border)}
+.rep-table td:first-child{text-align:left;font-weight:600}
+.rep-table tr:nth-child(even) td{background:#FAFAFA}
+.rep-table tr:last-child td{border-bottom:none}
+.rep-table .money{font-family:'Oswald',sans-serif;font-weight:700;color:var(--green);font-size:14px}
+.rep-table .orange{font-family:'Oswald',sans-serif;font-weight:700;color:var(--orange)}
+.rep-table .subtotal-row td{background:var(--charcoal)!important;color:#fff;font-family:'Oswald',sans-serif;font-weight:600;font-size:13px}
+.rep-table .subtotal-row td.sc{color:var(--orange)}
+
+/* STATE SCALE */
+.state-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+.state-card{background:#fff;border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.state-card .sc-head{padding:14px 18px;font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:1px;color:#fff;display:flex;justify-content:space-between;align-items:center}
+.state-card .sc-head.tn{background:#1B4F8A}
+.state-card .sc-head.nc{background:#8B1A1A}
+.state-card .sc-head.ga{background:#2E7D32}
+.state-card .sc-head.al{background:#6A0DAD}
+.state-card .sc-head .yr-badge{font-size:10px;background:rgba(255,255,255,.2);padding:2px 8px;border-radius:2px;letter-spacing:1px}
+.state-card table{width:100%;border-collapse:collapse;font-size:13px}
+.state-card td{padding:8px 18px;border-bottom:1px solid var(--border)}
+.state-card td:last-child{text-align:right;font-weight:600}
+.state-card tr:last-child td{border-bottom:none}
+.state-card .net-row td{background:var(--green-light);color:var(--green);font-family:'Oswald',sans-serif;font-weight:700;font-size:15px}
+
+/* 3-YEAR P&L */
+.pl-table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:4px;overflow:hidden;font-size:13px}
+.pl-table thead tr{background:var(--black);color:#fff;font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:1px;font-size:12px}
+.pl-table th{padding:11px 10px;text-align:right}
+.pl-table th:first-child{text-align:left}
+.pl-table td{padding:10px 10px;text-align:right;border-bottom:1px solid var(--border)}
+.pl-table td:first-child{text-align:left;font-weight:600;font-family:'Oswald',sans-serif;font-size:14px}
+.pl-table tr:nth-child(even) td{background:#FAFAFA}
+.pl-table .yr-row td{background:rgba(249,99,2,.08)!important;font-family:'Oswald',sans-serif;font-weight:700}
+.pl-table .yr-row td:first-child{color:var(--orange)}
+.pl-table .profit{color:var(--green);font-family:'Oswald',sans-serif;font-weight:700}
+.pl-table .total-row td{background:var(--black)!important;color:#fff;font-family:'Oswald',sans-serif;font-weight:600;font-size:14px;border-bottom:none}
+.pl-table .total-row td.grand{color:var(--orange);font-size:16px}
+.month-badge{display:inline-block;background:var(--orange);color:#fff;font-family:'Oswald',sans-serif;font-size:10px;padding:2px 6px;border-radius:2px;margin-left:6px;vertical-align:middle;letter-spacing:.8px}
+
+/* TRAINING */
+.training-cols{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media(max-width:700px){.training-cols{grid-template-columns:1fr}}
+.training-box{background:#fff;border:1px solid var(--border);border-radius:4px;padding:20px}
+.training-box h4{font-family:'Oswald',sans-serif;font-size:14px;text-transform:uppercase;letter-spacing:1px;color:var(--black);margin-bottom:14px;border-bottom:2px solid var(--orange);padding-bottom:8px}
+.training-box ul{list-style:none}
+.training-box ul li{padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--charcoal);display:flex;align-items:flex-start;gap:8px}
+.training-box ul li:last-child{border-bottom:none}
+.training-box ul li::before{content:"▶";color:var(--orange);font-size:9px;margin-top:4px;flex-shrink:0}
+
+/* SUMMARY BANNER */
+.proj-banner{background:var(--black);border-radius:4px;padding:32px;display:flex;flex-wrap:wrap;gap:32px;align-items:center;justify-content:space-between}
+.proj-banner h2{font-family:'Oswald',sans-serif;font-size:28px;font-weight:700;text-transform:uppercase;color:#fff}
+.proj-banner h2 em{color:var(--orange);font-style:normal}
+.proj-nums{display:flex;flex-wrap:wrap;gap:28px}
+.proj-num{text-align:center}
+.proj-num .pn{font-family:'Oswald',sans-serif;font-size:34px;font-weight:700;color:var(--orange);line-height:1}
+.proj-num .pl{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.6);margin-top:5px}
+
+/* FOOTER */
+footer{background:var(--black);color:rgba(255,255,255,.5);text-align:center;font-size:12px;padding:22px 24px;border-top:4px solid var(--orange);letter-spacing:.5px}
+footer strong{color:var(--orange)}
+
+@media(max-width:600px){
+  .steps{grid-template-columns:1fr 1fr}
+  .pl-table{font-size:11px}
+  .pl-table td,.pl-table th{padding:7px 5px}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <svg class="hd-diamond" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="30,2 58,30 30,58 2,30" fill="#1A1A1A" stroke="#ffffff" stroke-width="1.5"/>
+      <polygon points="30,8 52,30 30,52 8,30" fill="#F96302"/>
+      <text x="30" y="37" font-family="Oswald,sans-serif" font-weight="700" font-size="15" fill="#ffffff" text-anchor="middle">NII</text>
+    </svg>
+    <div class="brand-text">
+      <span>National Install, Inc.</span>
+      <small>NATIONALINSTALL.COM</small>
+    </div>
+    <div class="header-right">
+      <div class="tagline">4-State Expansion Plan · 2025–2028</div>
+      <div class="presented">Confidential · Founder's Business Model</div>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <p class="hero-eyebrow">Confidential Business Plan · TN · NC · GA · AL</p>
+    <h1>In-Home Roofing<br><em>Without the Crew.</em><br>Without the Risk.</h1>
+    <p>National Install, Inc. places in-home estimators in residential markets who sell roof replacements at a compelling price — then fulfills every job through licensed broker roofers at a fixed per-square-foot cost. NII owns the client, controls the price, and keeps the margin.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><span class="num">4</span><span class="lbl">States Year 1–3</span></div>
+      <div class="hero-stat"><span class="num">$333</span><span class="lbl">Roofer Cost/sqft</span></div>
+      <div class="hero-stat"><span class="num">$700–800</span><span class="lbl">NII Charge/sqft</span></div>
+      <div class="hero-stat"><span class="num">5 Reps</span><span class="lbl">Per State</span></div>
+      <div class="hero-stat"><span class="num">15%</span><span class="lbl">Close Rate</span></div>
+      <div class="hero-stat"><span class="num">$1,500</span><span class="lbl">Rep Commission</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODEL OVERVIEW -->
+<div class="section">
+  <div class="section-title">The Business Model</div>
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon">📐</div>
+      <h3>Fixed-Rate Roofer</h3>
+      <p>NII contracts licensed roofers to complete every job at a flat <strong>$333/sq ft</strong>. On the avg 30 sq ft roof, that's <strong>$9,990</strong> to the roofer — guaranteed, no negotiation.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">💵</div>
+      <h3>NII Client Price</h3>
+      <span class="highlight">$700–$800/sqft</span>
+      <p>NII charges the homeowner $700–$800/sq ft. Avg 30 sq ft roof = <strong>$21,000–$24,000</strong>. Margin to NII: <strong>$11,010–$14,010 per roof.</strong></p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📋</div>
+      <h3>Broker License Structure</h3>
+      <p>NII operates under the contractor's license of the partner roofer — who is already licensed across TN, NC, GA, and AL. No separate licensing required per market.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏠</div>
+      <h3>In-Home Estimators</h3>
+      <p>5 reps per state. 100% commission. Each rep closes 5–15 roofs per month. No base salary, no overhead on labor. Cash paid per closed job.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📍</div>
+      <h3>State-by-State Rollout</h3>
+      <p>Year 1: Tennessee. Year 2: North Carolina. Year 3: Georgia + Alabama simultaneously. Each state replicates the same proven playbook.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">💻</div>
+      <h3>Zoom-Based Training</h3>
+      <p>All rep onboarding, script training, objection handling, and product knowledge done 100% via Zoom. No physical office required to launch any market.</p>
+    </div>
+  </div>
+</div>
+
+<hr class="divider"/>
+
+<!-- PRICING -->
+<div class="section">
+  <div class="section-title">Pricing Model — Per Job (Avg 30 Sq Ft Roof)</div>
+  <div class="pricing-cols">
+
+    <div class="pricing-box">
+      <div class="pb-head std">Standard Package <span>$500/mo × 120 mo</span></div>
+      <table>
+        <tr><td>Roof size (avg)</td><td>30 sq ft</td></tr>
+        <tr><td>NII charge to client</td><td>$750/sq ft (mid)</td></tr>
+        <tr><td>Total project price</td><td>$22,500</td></tr>
+        <tr><td>Financed over</td><td>120 months</td></tr>
+        <tr><td>Monthly payment</td><td>$500/mo</td></tr>
+        <tr><td>Roofer cost ($333 × 30)</td><td>−$9,990</td></tr>
+        <tr><td>Rep commission</td><td>−$1,500</td></tr>
+        <tr><td>Lead / CPA cost</td><td>−$1,650</td></tr>
+        <tr class="total-row"><td><strong>NII Net Per Job</strong></td><td>$9,360</td></tr>
+      </table>
+    </div>
+
+    <div class="pricing-box">
+      <div class="pb-head upg">⭐ Upgrade Package <span>$570/mo × 120 mo</span></div>
+      <table>
+        <tr><td>Roof size (avg)</td><td>30 sq ft</td></tr>
+        <tr><td>NII charge to client</td><td>$750/sq ft + $30 upgrade</td></tr>
+        <tr><td>Total project price</td><td>$22,500 + $900 sealant</td></tr>
+        <tr><td>Financed over</td><td>120 months</td></tr>
+        <tr><td>Monthly payment</td><td>$570/mo (+$70/mo vs std)</td></tr>
+        <tr><td>Roofer cost ($333 × 30)</td><td>−$9,990</td></tr>
+        <tr><td>Rep commission</td><td>−$1,500</td></tr>
+        <tr><td>Lead / CPA cost</td><td>−$1,650</td></tr>
+        <tr class="total-row"><td><strong>NII Net Per Job</strong></td><td>$10,260</td></tr>
+      </table>
+    </div>
+
+  </div>
+
+  <div class="upgrade-callout">
+    <div>
+      <h3>⭐ The Upgrade Package — Sealant Warranty Add-On</h3>
+      <p>Rep presents a premium sealant protection warranty at the close — an add-on of <strong>$30/sq ft</strong> (avg $900 total). Client pays only <strong>$70 more per month</strong> for 10 years vs. the standard package. Upgrade closes at the same appointment. No rescheduling. No friction.</p>
+    </div>
+    <div class="upgrade-nums">
+      <div class="upgrade-num"><div class="un">$500</div><div class="ul">Standard/mo</div></div>
+      <div class="upgrade-num"><div class="un">$570</div><div class="ul">Upgrade/mo</div></div>
+      <div class="upgrade-num"><div class="un">$8,400</div><div class="ul">Extra Over 10 Yrs</div></div>
+      <div class="upgrade-num"><div class="un">+$900</div><div class="ul">NII Extra Per Job</div></div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider"/>
+
+<!-- HOW IT WORKS -->
+<div class="section">
+  <div class="section-title">How It Works — From Lead to Install</div>
+  <div class="steps">
+    <div class="step"><span class="step-num">1</span><h4>Buy the Lead</h4><p>Google Local Services Ads (LSA) + PPC. Avg $275/lead. Takes 6 leads to produce 1 closed sale. CPA ≈ $1,500–$1,650.</p></div>
+    <div class="step"><span class="step-num">2</span><h4>Book Appointment</h4><p>VA or call center contacts lead within 2 hrs. Qualifies homeowner and books in-home estimate within 48 hours.</p></div>
+    <div class="step"><span class="step-num">3</span><h4>In-Home Estimate</h4><p>NII rep visits home, measures roof, presents standard vs. upgrade package. 15% of all estimates close on-site.</p></div>
+    <div class="step"><span class="step-num">4</span><h4>Close + Collect</h4><p>Rep presents financing ($500 or $570/mo × 120 mo), pitches upgrade, collects signed agreement and deposit. Rep earns $1,500 cash.</p></div>
+    <div class="step"><span class="step-num">5</span><h4>Dispatch Roofer</h4><p>NII dispatches broker roofer under their existing license. Roofer invoices NII at $333/sq ft. Homeowner never deals with the roofer directly.</p></div>
+    <div class="step"><span class="step-num">6</span><h4>Job Complete</h4><p>Roofer installs. NII collects remaining balance. NII pays roofer $9,990. NII keeps $9,360–$10,260 per job after all costs.</p></div>
+  </div>
+</div>
+
+<hr class="divider"/>
+
+<!-- LEAD FUNNELS -->
+<div class="section">
+  <div class="section-title">Lead Acquisition — How NII Fills the Pipeline</div>
+  <div class="funnel-grid">
+
+    <div class="funnel-card">
+      <div class="funnel-icon">🔍</div>
+      <div>
+        <h4>Google Local Services Ads (LSA)</h4>
+        <p>Primary channel. "Google Guaranteed" badge builds instant trust. Homeowners searching "roof replacement near me" see NII first. Pay per verified lead, not per click.</p>
+        <span class="cost-tag">$200–$300 / lead · Primary Channel</span>
+      </div>
+    </div>
+
+    <div class="funnel-card">
+      <div class="funnel-icon">💰</div>
+      <div>
+        <h4>Google PPC (Search Ads)</h4>
+        <p>Complements LSA. Targets high-intent keywords: "roof replacement cost," "new roof estimate," "roof financing." Geo-targeted by county within each state market.</p>
+        <span class="cost-tag">$250–$350 / lead</span>
+      </div>
+    </div>
+
+    <div class="funnel-card">
+      <div class="funnel-icon">⛈️</div>
+      <div>
+        <h4>Storm Response Canvassing</h4>
+        <p>After any hail or wind event, NII teams canvass affected neighborhoods. Highest close rate of any channel — homeowner is already motivated and may have insurance coverage.</p>
+        <span class="cost-tag">$15–$40 / lead</span>
+      </div>
+    </div>
+
+    <div class="funnel-card">
+      <div class="funnel-icon">📱</div>
+      <div>
+        <h4>Facebook / Meta Ads</h4>
+        <p>Geo-targeted to homeowners 35–65 in target zip codes. "Free roof inspection" and "see if your roof qualifies" creative. Lower cost per lead, slightly longer nurture cycle.</p>
+        <span class="cost-tag">$60–$120 / lead</span>
+      </div>
+    </div>
+
+    <div class="funnel-card">
+      <div class="funnel-icon">🏘️</div>
+      <div>
+        <h4>Referral Program</h4>
+        <p>Every completed client receives a $200 referral credit for each neighbor who signs. Strong in suburban HOA communities. Word-of-mouth flywheel compounds by month 3.</p>
+        <span class="cost-tag">$200 / converted referral</span>
+      </div>
+    </div>
+
+    <div class="funnel-card">
+      <div class="funnel-icon">📋</div>
+      <div>
+        <h4>Insurance Adjuster Network</h4>
+        <p>Partner with public adjusters who recommend NII to storm-damage policyholders. Pre-qualified, high-ticket, high-intent leads with insurance backing.</p>
+        <span class="cost-tag">15% referral fee / closed job</span>
+      </div>
+    </div>
+
+  </div>
+  <div style="background:#fff;border:1px solid var(--border);border-radius:4px;padding:20px 24px;margin-top:20px;display:flex;flex-wrap:wrap;gap:32px;align-items:center">
+    <div style="font-family:'Oswald',sans-serif">
+      <div style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--mid);margin-bottom:4px">Primary Channel Math</div>
+      <div style="font-size:28px;font-weight:700;color:var(--black)">6 Leads → 1 Sale</div>
+    </div>
+    <div style="font-size:13px;color:var(--mid);max-width:600px;line-height:1.7">
+      At <strong>$275 avg cost per lead</strong> on Google LSA/PPC, it takes <strong>6 leads to produce 1 closed job</strong> (15% in-home close rate). That's approximately <strong>$1,650 cost per acquisition</strong> — against a net margin of <strong>$9,360–$10,260 per closed roof.</strong> Every dollar spent on leads returns 5.7× to NII net.
+    </div>
+  </div>
+</div>
+
+<hr class="divider"/>
+
+<!-- REP SCALE -->
+<div class="section">
+  <div class="section-title">Rep Performance Model — 5 Reps Per State</div>
+  <p style="font-size:13px;color:var(--mid);margin-bottom:20px">Each rep runs 5–15 in-home estimates per month depending on lead volume and activity. 15% close rate. Commission: $1,500 cash per closed job, paid same day deposit is collected.</p>
+
+  <div style="overflow-x:auto">
+  <table class="rep-table">
+    <thead>
+      <tr>
+        <th>Scenario</th>
+        <th>Roofs/Rep/Mo</th>
+        <th>Rep Earnings/Mo</th>
+        <th>Rep Earnings/Yr</th>
+        <th>Leads Needed/Rep</th>
+        <th>Lead Cost/Rep</th>
+        <th>State Jobs/Mo (5 reps)</th>
+        <th>State Rev/Mo</th>
+        <th>State NII Net/Mo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>🔵 Low (slow start)</td>
+        <td>5 roofs</td>
+        <td class="money">$7,500</td>
+        <td class="money">$90,000</td>
+        <td>33 leads</td>
+        <td>$9,075</td>
+        <td>25 jobs</td>
+        <td>$562,500</td>
+        <td class="money">$234,000</td>
+      </tr>
+      <tr>
+        <td>🟡 Mid (steady state)</td>
+        <td>10 roofs</td>
+        <td class="money">$15,000</td>
+        <td class="money">$180,000</td>
+        <td>67 leads</td>
+        <td>$18,425</td>
+        <td>50 jobs</td>
+        <td>$1,125,000</td>
+        <td class="money">$468,000</td>
+      </tr>
+      <tr>
+        <td>🟢 High (full ramp)</td>
+        <td>15 roofs</td>
+        <td class="money">$22,500</td>
+        <td class="money">$270,000</td>
+        <td>100 leads</td>
+        <td>$27,500</td>
+        <td>75 jobs</td>
+        <td>$1,687,500</td>
+        <td class="money">$702,000</td>
+      </tr>
+      <tr class="subtotal-row">
+        <td colspan="6">Top Rep Annual Earnings at Full Ramp</td>
+        <td colspan="2">15 roofs/mo × $1,500 × 12 months</td>
+        <td class="sc">$270,000/yr</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <p style="font-size:11.5px;color:var(--mid);margin-top:10px">* State Rev/Mo uses $22,500 avg project (mid of $700–$800/sqft range). NII Net/Mo = Revenue − Roofer cost − Rep commissions − Lead/CPA costs. Overhead not deducted here — see P&amp;L table below.</p>
+</div>
+
+<hr class="divider"/>
+
+<!-- STATE BY STATE -->
+<div class="section">
+  <div class="section-title">State-by-State Rollout — Year 1 Through Year 3</div>
+  <div class="state-grid">
+
+    <div class="state-card">
+      <div class="sc-head tn"><span>Tennessee 🏔️</span><span class="yr-badge">YEAR 1</span></div>
+      <table>
+        <tr><td>Launch Month</td><td>Month 1 · 2025</td></tr>
+        <tr><td>Reps</td><td>5 (100% commission)</td></tr>
+        <tr><td>Ramp: Jobs/Mo Q1→Q4</td><td>25 → 35 → 45 → 55</td></tr>
+        <tr><td>Annual Jobs</td><td>480</td></tr>
+        <tr><td>Annual Revenue</td><td>$10,800,000</td></tr>
+        <tr><td>Roofer Cost</td><td>−$4,795,200</td></tr>
+        <tr><td>Rep Commissions</td><td>−$720,000</td></tr>
+        <tr><td>Lead / CPA Costs</td><td>−$792,000</td></tr>
+        <tr><td>Overhead (Mgmt/Ops)</td><td>−$42,000</td></tr>
+        <tr class="net-row"><td>NII Net Year 1</td><td>$4,450,800</td></tr>
+      </table>
+    </div>
+
+    <div class="state-card">
+      <div class="sc-head nc"><span>North Carolina 🌲</span><span class="yr-badge">YEAR 2</span></div>
+      <table>
+        <tr><td>Launch Month</td><td>Month 13 · 2026</td></tr>
+        <tr><td>Reps</td><td>5 (100% commission)</td></tr>
+        <tr><td>Ramp: Jobs/Mo Q1→Q4</td><td>25 → 35 → 45 → 55</td></tr>
+        <tr><td>Annual Jobs</td><td>480</td></tr>
+        <tr><td>Annual Revenue</td><td>$10,800,000</td></tr>
+        <tr><td>Roofer Cost</td><td>−$4,795,200</td></tr>
+        <tr><td>Rep Commissions</td><td>−$720,000</td></tr>
+        <tr><td>Lead / CPA Costs</td><td>−$792,000</td></tr>
+        <tr><td>Overhead (Mgmt/Ops)</td><td>−$42,000</td></tr>
+        <tr class="net-row"><td>NII Net Year 2</td><td>$4,450,800</td></tr>
+      </table>
+    </div>
+
+    <div class="state-card">
+      <div class="sc-head ga"><span>Georgia 🍑</span><span class="yr-badge">YEAR 3</span></div>
+      <table>
+        <tr><td>Launch Month</td><td>Month 25 · 2027</td></tr>
+        <tr><td>Reps</td><td>5 (100% commission)</td></tr>
+        <tr><td>Ramp: Jobs/Mo Q1→Q4</td><td>25 → 35 → 45 → 55</td></tr>
+        <tr><td>Annual Jobs</td><td>480</td></tr>
+        <tr><td>Annual Revenue</td><td>$10,800,000</td></tr>
+        <tr><td>Roofer Cost</td><td>−$4,795,200</td></tr>
+        <tr><td>Rep Commissions</td><td>−$720,000</td></tr>
+        <tr><td>Lead / CPA Costs</td><td>−$792,000</td></tr>
+        <tr><td>Overhead (Mgmt/Ops)</td><td>−$42,000</td></tr>
+        <tr class="net-row"><td>NII Net Year 3A</td><td>$4,450,800</td></tr>
+      </table>
+    </div>
+
+    <div class="state-card">
+      <div class="sc-head al"><span>Alabama 🌾</span><span class="yr-badge">YEAR 3</span></div>
+      <table>
+        <tr><td>Launch Month</td><td>Month 25 · 2027 (simultaneous)</td></tr>
+        <tr><td>Reps</td><td>5 (100% commission)</td></tr>
+        <tr><td>Ramp: Jobs/Mo Q1→Q4</td><td>25 → 35 → 45 → 55</td></tr>
+        <tr><td>Annual Jobs</td><td>480</td></tr>
+        <tr><td>Annual Revenue</td><td>$10,800,000</td></tr>
+        <tr><td>Roofer Cost</td><td>−$4,795,200</td></tr>
+        <tr><td>Rep Commissions</td><td>−$720,000</td></tr>
+        <tr><td>Lead / CPA Costs</td><td>−$792,000</td></tr>
+        <tr><td>Overhead (Mgmt/Ops)</td><td>−$42,000</td></tr>
+        <tr class="net-row"><td>NII Net Year 3B</td><td>$4,450,800</td></tr>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<hr class="divider"/>
+
+<!-- 3-YEAR P&L -->
+<div class="section">
+  <div class="section-title">3-Year Monthly P&amp;L Rollup</div>
+  <p style="font-size:13px;color:var(--mid);margin-bottom:18px">Avg project $22,500 · Roofer cost $9,990 · Rep commission $1,500/job · CPA $1,650/job · Overhead $3,500/state/mo · Ramp: Q1=25 jobs/mo · Q2=35 · Q3=45 · Q4=55 per active state</p>
+  <div style="overflow-x:auto">
+  <table class="pl-table">
+    <thead>
+      <tr>
+        <th>Period</th>
+        <th>Active States</th>
+        <th>Jobs/Mo</th>
+        <th>Monthly Rev</th>
+        <th>Roofer Cost</th>
+        <th>Rep Comm</th>
+        <th>Lead / CPA</th>
+        <th>Overhead</th>
+        <th class="profit" style="color:var(--orange)">NII Net/Mo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- YEAR 1 TN -->
+      <tr class="yr-row"><td colspan="9">YEAR 1 — TENNESSEE ONLY</td></tr>
+      <tr><td>Q1 (Mo 1–3)</td><td>TN</td><td>25</td><td>$562,500</td><td>$249,750</td><td>$37,500</td><td>$41,250</td><td>$3,500</td><td class="profit">$230,500</td></tr>
+      <tr><td>Q2 (Mo 4–6)</td><td>TN</td><td>35</td><td>$787,500</td><td>$349,650</td><td>$52,500</td><td>$57,750</td><td>$3,500</td><td class="profit">$324,100</td></tr>
+      <tr><td>Q3 (Mo 7–9)</td><td>TN</td><td>45</td><td>$1,012,500</td><td>$449,550</td><td>$67,500</td><td>$74,250</td><td>$3,500</td><td class="profit">$417,700</td></tr>
+      <tr><td>Q4 (Mo 10–12)</td><td>TN</td><td>55</td><td>$1,237,500</td><td>$549,450</td><td>$82,500</td><td>$90,750</td><td>$3,500</td><td class="profit">$511,300</td></tr>
+      <tr class="yr-row"><td>YEAR 1 TOTAL</td><td>TN · 480 jobs</td><td>—</td><td>$10,800,000</td><td>$4,795,200</td><td>$720,000</td><td>$792,000</td><td>$42,000</td><td class="profit">$4,450,800</td></tr>
+
+      <!-- YEAR 2 NC added -->
+      <tr class="yr-row"><td colspan="9">YEAR 2 — TENNESSEE + NORTH CAROLINA</td></tr>
+      <tr><td>Q1 (Mo 13–15)</td><td>TN + NC</td><td>110</td><td>$2,475,000</td><td>$1,099,890</td><td>$165,000</td><td>$181,500</td><td>$7,000</td><td class="profit">$1,021,610</td></tr>
+      <tr><td>Q2 (Mo 16–18)</td><td>TN + NC</td><td>130</td><td>$2,925,000</td><td>$1,298,700</td><td>$195,000</td><td>$214,500</td><td>$7,000</td><td class="profit">$1,209,800</td></tr>
+      <tr><td>Q3 (Mo 19–21)</td><td>TN + NC</td><td>150</td><td>$3,375,000</td><td>$1,498,500</td><td>$225,000</td><td>$247,500</td><td>$7,000</td><td class="profit">$1,397,000</td></tr>
+      <tr><td>Q4 (Mo 22–24)</td><td>TN + NC</td><td>170</td><td>$3,825,000</td><td>$1,698,300</td><td>$255,000</td><td>$280,500</td><td>$7,000</td><td class="profit">$1,584,200</td></tr>
+      <tr class="yr-row"><td>YEAR 2 TOTAL</td><td>TN + NC · 1,380 jobs</td><td>—</td><td>$31,050,000</td><td>$13,808,700</td><td>$2,070,000</td><td>$2,277,000</td><td>$84,000</td><td class="profit">$12,810,300</td></tr>
+
+      <!-- YEAR 3 GA+AL added -->
+      <tr class="yr-row"><td colspan="9">YEAR 3 — ALL 4 STATES (TN · NC · GA · AL)</td></tr>
+      <tr><td>Q1 (Mo 25–27)</td><td>TN+NC+GA+AL</td><td>220</td><td>$4,950,000</td><td>$2,197,800</td><td>$330,000</td><td>$363,000</td><td>$14,000</td><td class="profit">$2,045,200</td></tr>
+      <tr><td>Q2 (Mo 28–30)</td><td>TN+NC+GA+AL</td><td>260</td><td>$5,850,000</td><td>$2,597,400</td><td>$390,000</td><td>$429,000</td><td>$14,000</td><td class="profit">$2,419,600</td></tr>
+      <tr><td>Q3 (Mo 31–33)</td><td>TN+NC+GA+AL</td><td>300</td><td>$6,750,000</td><td>$2,997,000</td><td>$450,000</td><td>$495,000</td><td>$14,000</td><td class="profit">$2,794,000</td></tr>
+      <tr><td>Q4 (Mo 34–36)</td><td>TN+NC+GA+AL</td><td>340</td><td>$7,650,000</td><td>$3,396,600</td><td>$510,000</td><td>$561,000</td><td>$14,000</td><td class="profit">$3,168,400</td></tr>
+      <tr class="yr-row"><td>YEAR 3 TOTAL</td><td>4 States · 3,360 jobs</td><td>—</td><td>$75,600,000</td><td>$33,588,000</td><td>$5,040,000</td><td>$5,544,000</td><td>$168,000</td><td class="profit">$31,260,000</td></tr>
+
+      <!-- GRAND TOTAL -->
+      <tr class="total-row">
+        <td>3-YEAR GRAND TOTAL</td>
+        <td>4 States</td>
+        <td>5,220 jobs</td>
+        <td>$117,450,000</td>
+        <td>$52,191,900</td>
+        <td>$7,830,000</td>
+        <td>$8,613,000</td>
+        <td>$294,000</td>
+        <td class="grand">$48,521,100</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <p style="font-size:11.5px;color:var(--mid);margin-top:10px">* TN carries over at 55 jobs/mo (full ramp) into Years 2 and 3. NC adds 55 jobs/mo by Q4 Yr 2. GA + AL each add 55 jobs/mo by Q4 Yr 3. Year 2 TN shown at maintained 55 jobs/mo. All figures based on $22,500 avg project (mid-range).</p>
+</div>
+
+<hr class="divider"/>
+
+<!-- TRAINING -->
+<div class="section">
+  <div class="section-title">Rep Training — 100% Zoom</div>
+  <div class="training-cols">
+    <div class="training-box">
+      <h4>What Reps Learn (Week 1–2)</h4>
+      <ul>
+        <li>NII pitch script — from door intro to financing close</li>
+        <li>How to read and measure a roof (sq ft basics)</li>
+        <li>Presenting standard vs. upgrade package side-by-side</li>
+        <li>Financing objection handling ("just $500/mo" framing)</li>
+        <li>How to close the upgrade add-on at the same appointment</li>
+        <li>CRM entry, photo documentation, deposit collection process</li>
+        <li>What happens after the close — setting homeowner expectations</li>
+      </ul>
+    </div>
+    <div class="training-box">
+      <h4>Ongoing Zoom Support</h4>
+      <ul>
+        <li>Weekly Monday group call — pipeline review, top objections</li>
+        <li>Role-play sessions — reps practice close with each other live</li>
+        <li>Deal review — manager walks through won/lost estimates each week</li>
+        <li>New market onboarding call — before each state launch</li>
+        <li>Script updates pushed via Zoom recording library</li>
+        <li>1:1 coaching call for any rep below 10% close rate</li>
+        <li>Upgrade package training refresher every 60 days</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<hr class="divider"/>
+
+<!-- SUMMARY BANNER -->
+<div class="section">
+  <div class="proj-banner">
+    <div>
+      <h2>3-Year Build:<br><em>$48.5M Net Profit</em></h2>
+      <p style="color:rgba(255,255,255,.55);font-size:13px;margin-top:10px;max-width:380px">4 states · 5,220 completed roofs · 20 total reps at full build · 100% commission workforce · No trucks. No crews. No tools.</p>
+    </div>
+    <div class="proj-nums">
+      <div class="proj-num"><div class="pn">$117.5M</div><div class="pl">3-Yr Revenue</div></div>
+      <div class="proj-num"><div class="pn">5,220</div><div class="pl">Roofs Installed</div></div>
+      <div class="proj-num"><div class="pn">41.3%</div><div class="pl">Net Margin</div></div>
+      <div class="proj-num"><div class="pn">$270K</div><div class="pl">Top Rep/Year</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <strong>National Install, Inc.</strong> &nbsp;·&nbsp; NATIONALINSTALL.COM &nbsp;·&nbsp; Confidential Business Plan · TN · NC · GA · AL · 2025–2028<br/>
+  <span style="font-size:11px;opacity:.6">Forward-looking projections for internal planning purposes only. Not for public distribution.</span>
+</footer>
+
+</body>
+</html>
