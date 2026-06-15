@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sebastian Links — Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #1B2A4A;
+    --gold: #F5C000;
+    --red: #B22234;
+    --cream: #FAFAF7;
+    --white: #FFFFFF;
+    --border: #E2E0D8;
+    --muted: #888;
+    --text: #1a1a1a;
+  }
+  body { font-family: 'Barlow', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; }
+
+  header {
+    background: var(--navy);
+    padding: 32px 48px 24px;
+    text-align: center;
+    border-bottom: 4px solid var(--gold);
+  }
+  header .eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 6px;
+  }
+  header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.8rem; font-weight: 700; color: var(--white); line-height: 1;
+  }
+  header .sub {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+    color: rgba(255,255,255,0.45); margin-top: 8px;
+  }
+
+  .hub { max-width: 900px; margin: 0 auto; padding: 40px 32px; }
+
+  .section-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--red);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px; margin-bottom: 18px; margin-top: 36px;
+  }
+  .section-label:first-child { margin-top: 0; }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px;
+  }
+
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    border-top: 3px solid var(--navy);
+    padding: 18px 20px;
+    text-decoration: none;
+    color: var(--text);
+    display: block;
+    transition: box-shadow 0.15s, border-top-color 0.15s;
+  }
+  .card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); border-top-color: var(--gold); }
+  .card.red-top { border-top-color: var(--red); }
+  .card.gold-top { border-top-color: var(--gold); }
+
+  .card-eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 4px;
+  }
+  .card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.25rem; font-weight: 700; color: var(--navy);
+    margin-bottom: 4px; line-height: 1.2;
+  }
+  .card-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .card-url {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px; letter-spacing: 1px;
+    color: var(--gold); margin-top: 10px;
+    text-transform: lowercase;
+  }
+
+  footer {
+    background: var(--navy);
+    color: rgba(255,255,255,0.4);
+    text-align: center;
+    padding: 16px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  }
+  footer strong { color: var(--gold); }
+
+  @media (max-width: 600px) {
+    header { padding: 24px 20px; }
+    .hub { padding: 24px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">All Pages</div>
+  <h1>Sebastian Links</h1>
+  <div class="sub">Personal Hub · sebastianlinks.com</div>
+</header>
+
+<div class="hub">
+
+  <!-- PERSONAL TOOLS -->
+  <div class="section-label">Personal Tools</div>
+  <div class="cards">
+
+    <a class="card gold-top" href="/">
+      <div class="card-eyebrow">Dashboard</div>
+      <div class="card-title">⚡ Life OS</div>
+      <div class="card-desc">Personal productivity dashboard — CRM, commissions, pay history, favorites &amp; more.</div>
+      <div class="card-url">sebastianlinks.com</div>
+    </a>
+
+  </div>
+
+  <!-- FAMILY -->
+  <div class="section-label">Family</div>
+  <div class="cards">
+
+    <a class="card red-top" href="/joshuason/">
+      <div class="card-eyebrow">Finance Plan · U.S. Army</div>
+      <div class="card-title">Joshua Son</div>
+      <div class="card-desc">Joshua Shortt — U.S. Army Tanker. Interactive personal budget with savings goals, recommended percentages &amp; snapshots.</div>
+      <div class="card-url">sebastianlinks.com/joshuason</div>
+    </a>
+
+  </div>
+
+  <!-- LANGUAGE & EDUCATION -->
+  <div class="section-label">Language &amp; Education</div>
+  <div class="cards">
+
+    <a class="card" href="/palabras/">
+      <div class="card-eyebrow">Spanish · Vocabulary</div>
+      <div class="card-title">333 Palabras Positivas</div>
+      <div class="card-desc">333 positive Spanish words — a vocabulary tool for daily inspiration and language learning.</div>
+      <div class="card-url">sebastianlinks.com/palabras</div>
+    </a>
+
+  </div>
+
+  <!-- BUSINESS -->
+  <div class="section-label">Business</div>
+  <div class="cards">
+
+    <a class="card gold-top" href="/nationalinstall/">
+      <div class="card-eyebrow">Business Plan · 2025–2028</div>
+      <div class="card-title">National Install, Inc.</div>
+      <div class="card-desc">National Install, Inc. business plan covering operations, projections and growth strategy 2025–2028.</div>
+      <div class="card-url">sebastianlinks.com/nationalinstall</div>
+    </a>
+
+  </div>
+
+</div>
+
+<footer>
+  <strong>Sebastian Links</strong> &nbsp;·&nbsp; sebastianlinks.com &nbsp;·&nbsp; Personal Hub
+</footer>
+
+</body>
+</html>
