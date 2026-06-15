@@ -6,610 +6,164 @@
 <title>Joshua Son — Personal Finance Plan</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  :root{
+    --navy:#1B2A4A; --gold:#F5C000; --red:#B22234;
+    --cream:#FAFAF7; --white:#fff; --border:#E2E0D8;
+    --muted:#888; --text:#1a1a1a; --green:#2E6B3E;
+  }
+  body{font-family:'Barlow',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;}
 
-  :root {
-    --navy: #1B2A4A;
-    --gold: #F5C000;
-    --gold-light: #FFD93D;
-    --cream: #FAFAF7;
-    --white: #FFFFFF;
-    --border: #E2E0D8;
-    --text: #1a1a1a;
-    --muted: #888;
-    --green: #2E6B3E;
-    --red: #8B1A1A;
-  }
+  /* HEADER */
+  header{background:var(--white);border-top:4px solid var(--red);border-bottom:3px solid var(--gold);padding:24px 32px 18px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:20px;}
+  .flag-svg{width:72px;height:48px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.12);flex-shrink:0;}
+  .hdr-center{text-align:center;}
+  .hdr-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--red);margin-bottom:4px;}
+  .hdr-h1{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:700;color:var(--navy);line-height:1;}
+  .hdr-sub{font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:2px;color:var(--navy);margin:3px 0 2px;}
+  .hdr-tagline{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-top:4px;}
+  .hdr-badge{text-align:center;}
+  .hdr-badge .branch{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+  .hdr-badge .rank-box{background:var(--navy);color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;padding:6px 14px;border-radius:2px;}
 
-  body {
-    font-family: 'Barlow', sans-serif;
-    background: var(--cream);
-    color: var(--text);
-    min-height: 100vh;
-  }
+  /* REC STRIP */
+  .rec-strip{background:var(--white);border-bottom:1px solid var(--border);display:flex;flex-direction:column;}
+  .rec-row{display:flex;align-items:stretch;border-bottom:1px solid var(--border);}
+  .rec-row:last-child{border-bottom:none;}
+  .rec-item{flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 6px;border-right:1px solid var(--border);min-width:0;}
+  .rec-item:last-child{border-right:none;}
+  .ri-label{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:2px;text-align:center;}
+  .ri-pct{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:var(--navy);letter-spacing:1px;}
+  .ri-amt{font-family:'Cormorant Garamond',serif;font-size:.95rem;font-weight:700;color:var(--navy);}
+  .ri-tag{font-family:'Barlow Condensed',sans-serif;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--red);margin-top:1px;}
 
-  /* ── HEADER ── */
-  header {
-    background: var(--white);
-    border-bottom: 4px solid var(--gold); border-top: 4px solid var(--red);
-    padding: 32px 48px 24px;
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: center;
-    gap: 24px;
-  }
+  /* INCOME BAR */
+  .income-bar{background:var(--navy);display:flex;align-items:center;justify-content:center;gap:32px;padding:12px 32px;flex-wrap:wrap;}
+  .inc-field{display:flex;align-items:center;gap:10px;}
+  .inc-field label{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);}
+  .inc-field input{background:transparent;border:none;border-bottom:1px solid var(--gold);color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;width:110px;padding:2px 4px;text-align:center;}
+  .inc-field input:focus{outline:none;border-bottom-color:#fff;}
+  .inc-field span{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:var(--gold);}
+  .inc-div{width:1px;height:28px;background:rgba(255,255,255,.2);}
+  .inc-small{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);}
 
-  .flag-svg {
-    width: 80px;
-    height: 53px;
-    border: 1px solid var(--border);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-    flex-shrink: 0;
-  }
+  /* STICKY BAR */
+  .sticky-bar{position:sticky;top:0;z-index:100;background:var(--navy);border-bottom:2px solid var(--gold);padding:6px 32px;display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;}
+  .sticky-bar .sb-label{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);}
+  .sticky-bar .sb-amt{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;}
+  .sticky-bar .sb-wk{font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--gold);letter-spacing:1px;}
+  .sticky-bar .sb-pct{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);}
 
-  .header-text { text-align: center; }
-  .header-text .eyebrow {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 11px;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    color: var(--red);
-    margin-bottom: 6px;
-  }
-  .header-text h1 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 2.6rem;
-    font-weight: 700;
-    color: var(--navy);
-    line-height: 1;
-  }
-  .header-text .tagline {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 12px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--red);
-    margin-top: 8px;
-  }
+  /* SNAPSHOTS */
+  .snap-bar{background:var(--gold);border-bottom:1px solid #c8960c;padding:8px 32px;display:flex;flex-direction:column;align-items:center;gap:6px;}
+  .snap-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--red);font-weight:700;}
+  .snap-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;}
+  .snap-chip{display:inline-flex;align-items:center;gap:6px;background:var(--white);border:1px solid rgba(0,0,0,.15);border-radius:20px;padding:3px 10px;font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--navy);cursor:pointer;}
+  .snap-chip:hover{background:#f5f5f5;}
+  .snap-chip .cx{color:var(--red);font-weight:700;font-size:14px;line-height:1;}
+  .no-snaps{font-size:12px;color:var(--navy);font-style:italic;}
 
-  .header-badge { text-align: center; }
-  .header-badge .branch {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 10px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 4px;
-  }
-  .header-badge .rank-box {
-    background: var(--navy);
-    color: #FFD700;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    padding: 6px 16px;
-    border-radius: 2px;
-  }
+  /* PAGE BODY */
+  .body{max-width:1100px;margin:0 auto;padding:28px 32px;}
+  .sec-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--red);border-bottom:1px solid var(--border);padding-bottom:6px;margin-bottom:16px;margin-top:28px;display:flex;align-items:center;justify-content:space-between;}
+  .sec-label:first-child{margin-top:0;}
+  .lock-btn{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:var(--gold);color:var(--navy);border:none;border-radius:2px;padding:3px 10px;cursor:pointer;}
+  .lock-btn:hover{background:#FFE000;}
+  .lock-btn.locked{background:var(--green);color:#fff;}
 
-  /* ── INCOME BAR ── */
-  .income-bar {
-    background: var(--navy);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 40px;
-    padding: 16px 48px;
-    flex-wrap: wrap;
-  }
-  .income-field {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .income-field label {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 11px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.55);
-  }
-  .income-field input {
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid var(--gold);
-    color: var(--gold);
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.6rem;
-    font-weight: 600;
-    width: 130px;
-    padding: 2px 6px;
-    text-align: center;
-    cursor: text;
-    -webkit-user-select: text;
-    user-select: text;
-  }
-  .income-field input:focus { outline: none; border-bottom-color: var(--gold-light); }
-  .income-divider { width: 1px; height: 32px; background: rgba(255,255,255,0.15); }
+  /* GOAL CARDS */
+  .goal-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:24px;}
+  .gcard{background:var(--white);border:1px solid var(--border);border-radius:4px;border-top:3px solid var(--navy);padding:14px 16px;}
+  .gcard.gold{border-top-color:var(--gold);background:linear-gradient(135deg,#1B2A4A,#253d6b);}
+  .gcard.green{border-top-color:var(--green);background:linear-gradient(135deg,#f0fff4,#fff);}
+  .gc-label{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;}
+  .gc-input{width:100%;border:1px solid var(--border);border-radius:3px;padding:6px 8px;font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--navy);background:var(--cream);margin-bottom:8px;}
+  .gc-input:focus{outline:1px solid var(--gold);border-color:var(--gold);}
+  .gc-input.inv{background:transparent;border:none;border-bottom:1px solid var(--gold);color:var(--gold);font-size:1.3rem;font-weight:700;padding:2px 0;border-radius:0;}
+  .gc-input.inv::placeholder{color:rgba(255,255,255,.3);}
+  .gc-bar-track{height:4px;background:var(--border);border-radius:2px;margin-bottom:6px;}
+  .gc-bar-fill{height:100%;border-radius:2px;transition:width .4s;}
 
-  /* ── BODY ── */
-  .page-body { padding: 36px 48px; max-width: 1100px; margin: 0 auto; }
+  /* TABLE */
+  .tbl{width:100%;border-collapse:collapse;background:var(--white);border:1px solid var(--border);border-radius:4px;overflow:hidden;margin-bottom:16px;font-size:13px;}
+  .tbl thead tr{background:var(--navy);}
+  .tbl thead th{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);padding:11px 10px;text-align:center;font-weight:600;}
+  .tbl thead th:first-child{text-align:left;}
+  .tbl tbody tr{border-bottom:1px solid var(--border);}
+  .tbl tbody tr:hover:not(.grp):not(.sub):not(.total):not(.remain):not(.rb-row){background:#f9f8f4;}
+  .tbl tbody tr.grp td{background:var(--navy);color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:3px;text-transform:uppercase;padding:7px 10px;font-weight:600;position:relative;}
+  .tbl tbody tr.sub td{background:#F0EDE4;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--navy);padding:8px 10px;text-align:center;}
+  .tbl tbody tr.sub td:first-child{text-align:left;}
+  .tbl tbody tr.total td{background:var(--navy);color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:12px 10px;text-align:center;}
+  .tbl tbody tr.total td:first-child{text-align:left;}
+  .tbl tbody tr.remain td{background:var(--gold);color:var(--navy);font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:12px 10px;text-align:center;}
+  .tbl tbody tr.remain td:first-child{text-align:left;}
+  .tbl tbody tr.rb-row td{padding:3px 10px;}
+  .tbl td{padding:9px 10px;vertical-align:middle;}
 
-  .section-label {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 10px;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    color: var(--red);
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 8px;
-    margin-bottom: 20px;
-  }
+  .cat-name{font-weight:600;font-size:13px;color:var(--text);}
+  .cat-note{font-size:10px;color:var(--muted);margin-top:1px;}
+  .cat-hint{font-size:10px;color:var(--navy);font-style:italic;margin-top:2px;}
 
-  /* ── GOAL CARDS ── */
-  .goal-cards {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-bottom: 24px;
-  }
-  .goal-card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 12px 16px;
-    position: relative;
-  }
-  .goal-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: var(--red);
-    border-radius: 4px 4px 0 0;
-  }
-  .gc-label {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 10px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 4px;
-  }
-  .gc-goal-text { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
-  .gc-goal-text strong { color: var(--navy); }
-  .gc-input {
-    width: 100%;
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    padding: 7px 10px;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.1rem;
-    color: var(--navy);
-    background: var(--cream);
-    margin-bottom: 10px;
-    cursor: text;
-    -webkit-user-select: text;
-    user-select: text;
-  }
-  .gc-input:focus { outline: 1px solid var(--gold); border-color: var(--gold); }
-  .gc-progress-track { height: 4px; background: var(--border); border-radius: 2px; margin-bottom: 6px; }
-  .gc-progress-fill { height: 100%; background: var(--gold); border-radius: 2px; transition: width 0.4s; width: 0%; }
-  .gc-pct-text { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; color: var(--muted); text-align: right; }
-  .gc-pct-text strong { color: var(--navy); }
-  .gc-big {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--navy);
-    line-height: 1;
-    margin: 4px 0 2px;
-  }
+  /* INPUTS IN TABLE */
+  .amt{width:82px;border:1px solid var(--border);border-radius:3px;padding:4px 6px;font-family:'Cormorant Garamond',serif;font-size:.95rem;color:var(--navy);text-align:center;background:#f9f8f4;display:block;margin:0 auto;}
+  .amt:focus{outline:2px solid var(--gold);border-color:var(--gold);background:#fff;}
+  .amt.extra{background:#FFF9E6;border-color:var(--gold);width:82px;}
+  .amt-note{font-size:9px;color:var(--muted);text-align:center;margin-top:2px;}
 
-  /* ── TABLE ── */
-  .finance-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    overflow: hidden;
-    margin-bottom: 24px;
-  }
-  .finance-table thead tr { background: var(--navy); }
-  .finance-table thead th {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 10px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--gold);
-    padding: 13px 14px;
-    text-align: center;
-    font-weight: 600;
-  }
-  .finance-table thead th:first-child { text-align: left; }
+  .pct-badge{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;letter-spacing:1px;color:var(--navy);background:#EDE9DC;padding:2px 7px;border-radius:2px;min-width:44px;text-align:center;}
+  .pct-badge.g{background:#D6EAD9;color:var(--green);}
+  .pct-badge.y{background:#FFF3A3;color:#7A5800;}
+  .pct-badge.r{background:#F5DADA;color:var(--red);}
 
-  .finance-table tbody tr { border-bottom: 1px solid var(--border); }
-  .finance-table tbody tr:last-child { border-bottom: none; }
-  .finance-table tbody tr:hover:not(.group-header):not(.subtotal):not(.total-row):not(.remaining-row) {
-    background: #F7F6F1;
-  }
+  .rb-bar{display:flex;align-items:center;justify-content:space-between;background:var(--navy);color:var(--gold);padding:5px 10px;border-radius:3px;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;}
+  .rb-bar .rb-amt{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:700;letter-spacing:0;text-transform:none;}
+  .rb-bar .rb-wk{font-size:9px;color:rgba(255,255,255,.5);margin-left:6px;}
 
-  .finance-table tbody tr.group-header td {
-    background: #F0EDE4;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 10px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--red);
-    padding: 8px 14px;
-    font-weight: 600;
-    border-bottom: 1px solid var(--border);
-  }
-  .finance-table tbody tr.subtotal td {
-    background: #F7F6F1;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--navy);
-    padding: 9px 14px;
-    text-align: center;
-  }
-  .finance-table tbody tr.subtotal td:first-child { text-align: left; }
+  /* INSIGHT CELLS */
+  .insight{font-size:10px;color:var(--muted);text-align:center;line-height:1.4;}
+  .insight strong{color:var(--navy);}
+  .insight .hi{color:var(--green);font-weight:600;}
+  .insight .warn{color:var(--red);font-weight:600;}
 
-  .finance-table tbody tr.total-row td {
-    background: var(--navy);
-    color: var(--gold);
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 13px 14px;
-    text-align: center;
-  }
-  .finance-table tbody tr.total-row td:first-child { text-align: left; }
+  /* FINANCED ROW */
+  .fin-block{background:#fffdf0;border:1px solid var(--gold);border-radius:3px;padding:6px 8px;margin-top:4px;font-size:10px;}
+  .fin-block .fin-row{display:flex;justify-content:space-between;margin-bottom:2px;}
+  .fin-block .fin-lbl{color:var(--muted);}
+  .fin-block .fin-val{font-weight:600;color:var(--navy);}
 
-  .finance-table tbody tr.remaining-row td {
-    background: var(--gold);
-    color: var(--navy);
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 13px 14px;
-    text-align: center;
-  }
-  .finance-table tbody tr.remaining-row td:first-child { text-align: left; }
+  /* MOTIVATOR */
+  .motivator{background:var(--white);border:1px solid var(--border);border-radius:4px;padding:20px;margin-bottom:28px;}
 
-  .finance-table td { padding: 11px 14px; vertical-align: middle; }
+  /* PROGRESS BAR */
+  .prog-wrap{background:var(--white);border:1px solid var(--border);border-radius:4px;padding:16px 20px;margin-bottom:28px;}
+  .prog-meta{display:flex;justify-content:space-between;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+  .prog-meta strong{color:var(--navy);}
+  .prog-track{height:8px;background:var(--border);border-radius:4px;overflow:hidden;}
+  .prog-fill{height:100%;background:linear-gradient(90deg,var(--navy),var(--gold));border-radius:4px;transition:width .4s;}
+  .prog-ends{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:4px;}
 
-  .cat-name { font-weight: 500; font-size: 14px; color: var(--text); }
-  .cat-note { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  footer{background:var(--navy);color:rgba(255,255,255,.4);text-align:center;padding:14px;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;}
+  footer strong{color:var(--gold);}
 
-  /* EDITABLE INPUT — key fix: pointer-events and z-index */
-  .amt-input {
-    width: 90px;
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    padding: 5px 8px;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1rem;
-    color: var(--navy);
-    text-align: center;
-    background: #F5F4EE;
-    cursor: text;
-    pointer-events: all;
-    position: relative;
-    z-index: 1;
-    -webkit-user-select: text;
-    user-select: text;
-    display: block;
-    margin: 0 auto;
-  }
-  .amt-input:focus {
-    outline: 2px solid var(--gold);
-    border-color: var(--gold);
-    background: white;
-  }
-
-  /* PCT COLUMNS */
-  .pct-rec {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 12px;
-    color: var(--muted);
-    text-align: center;
-    letter-spacing: 1px;
-  }
-
-  .pct-badge {
-    display: inline-block;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 1px;
-    color: var(--navy);
-    background: #EDE9DC;
-    padding: 3px 8px;
-    border-radius: 2px;
-    min-width: 48px;
-    text-align: center;
-  }
-  .pct-badge.green  { background: #D6EAD9; color: var(--green); }
-  .pct-badge.gold   { background: #FFF3A3; color: #7A5800; }
-  .pct-badge.red    { background: #F5DADA; color: var(--red); }
-  .pct-badge.over   { background: #F5DADA; color: var(--red); }
-  .pct-badge.under  { background: #D6EAD9; color: var(--green); }
-
-  .monthly-disp {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--navy);
-    text-align: center;
-  }
-
-  /* PROGRESS */
-  .progress-wrap {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 20px 24px;
-    margin-bottom: 36px;
-  }
-  .progress-meta {
-    display: flex;
-    justify-content: space-between;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 10px;
-  }
-  .progress-meta strong { color: var(--navy); font-size: 13px; }
-  .progress-track { height: 10px; background: var(--border); border-radius: 5px; overflow: hidden; }
-  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--navy), var(--gold)); border-radius: 5px; transition: width 0.4s ease; }
-  .progress-ends { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-top: 6px; }
-
-  footer {
-    background: var(--navy);
-    color: rgba(255,255,255,0.45);
-    text-align: center;
-    padding: 18px;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
-  footer strong { color: var(--gold); }
-
-
-  /* ── SAVE BUTTONS ── */
-  .group-header td { position: relative; }
-  .sec-save-btn {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    background: var(--gold);
-    color: var(--navy);
-    border: none;
-    border-radius: 2px;
-    padding: 3px 10px;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-  .sec-save-btn:hover { background: #FFE000; }
-  .sec-save-btn.saved { background: var(--green); color: white; }
-
-  /* ── SNAPSHOTS DRAWER ── */
-  .snapshots-bar {
-    background: var(--gold);
-    border-bottom: 1px solid var(--border);
-    padding: 10px 48px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-  }
-  .snapshots-label {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 10px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--muted);
-    flex-shrink: 0;
-  }
-  .snapshot-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--white);
-    border: 1px solid rgba(0,0,0,0.15);
-    border-radius: 20px;
-    padding: 4px 12px;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 11px;
-    color: var(--navy);
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-  .snapshot-chip:hover { background: rgba(255,255,255,0.8); }
-  .snapshot-chip .chip-x {
-    color: var(--red);
-    font-weight: 700;
-    margin-left: 2px;
-    font-size: 13px;
-    line-height: 1;
-    cursor: pointer;
-  }
-  .snapshot-chip .chip-x:hover { color: darkred; }
-  .no-snaps { font-size: 12px; color: var(--navy); font-style: italic; }
-
-  @media print {
-    .snapshots-bar { display: none !important; }
-    .sec-save-btn  { display: none !important; }
-  }
-
-
-
-
-  /* ── RECOMMENDED STRIP ── */
-  .rec-strip {
-    background: var(--white);
-    border-bottom: 2px solid var(--border);
-    padding: 10px 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 0;
-  }
-  .rec-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 6px 14px;
-    border-right: 1px solid var(--border);
-    min-width: 90px;
-  }
-  .rec-item:last-child { border-right: none; }
-  .rec-item .ri-label {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 9px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 2px;
-    text-align: center;
-  }
-  .rec-item .ri-pct {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--red);
-    letter-spacing: 1px;
-  }
-  .rec-item .ri-amt {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--navy);
-    line-height: 1.1;
-  }
-  @media (max-width: 700px) {
-    .rec-strip { padding: 8px 8px; }
-    .rec-item { padding: 4px 8px; min-width: 70px; }
-  }
-
-  /* ── CELEBRATION BANNERS ── */
-  .celebrate-banner {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: linear-gradient(135deg, #0f2027, #1B2A4A);
-    border: 1px solid var(--gold);
-    border-radius: 4px;
-    padding: 10px 14px;
-    margin-top: 6px;
-  }
-  .celebrate-banner .cel-icon { font-size: 1.4rem; flex-shrink: 0; }
-  .celebrate-banner .cel-text { flex: 1; }
-  .celebrate-banner .cel-title {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 1px;
-  }
-  .celebrate-banner .cel-sub {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1rem;
-    color: rgba(255,255,255,0.85);
-  }
-  .celebrate-banner .cel-amount {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: #6EE787;
-    text-align: right;
-    flex-shrink: 0;
-  }
-  .celebrate-banner .cel-amount small {
-    display: block;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 10px;
-    color: rgba(255,255,255,0.4);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-
-  /* ── RUNNING BALANCE BAR ── */
-  .running-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--navy);
-    color: white;
-    padding: 7px 18px;
-    border-radius: 3px;
-    margin: 10px 0 6px;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
-  .running-bar .rb-label { color: var(--gold); }
-  .running-bar .rb-amount {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.2rem;
-    font-weight: 700;
-    letter-spacing: 0;
-    text-transform: none;
-    color: var(--gold);
-  }
-  .running-bar .rb-weekly {
-    font-size: 10px;
-    color: var(--gold);
-    margin-left: 6px;
-    letter-spacing: 1px;
-    text-transform: none;
-  }
-  .running-bar.healthy .rb-amount { color: #6EE787; }
-  .running-bar.warning .rb-amount { color: #F5C000; }
-  .running-bar.danger  .rb-amount { color: #FF6B6B; }
-
-  @media (max-width: 700px) {
-    header { grid-template-columns: 1fr; text-align: center; padding: 24px 16px; }
-    .page-body { padding: 24px 12px; }
-    .goal-cards { grid-template-columns: 1fr; }
-    .income-bar { gap: 16px; padding: 14px 16px; }
-    .amt-input { width: 72px; }
+  @media(max-width:680px){
+    header{grid-template-columns:1fr;text-align:center;padding:20px 16px;}
+    .body{padding:20px 12px;}
+    .goal-grid{grid-template-columns:1fr;}
+    .income-bar{gap:12px;padding:10px 16px;}
+    .amt{width:68px;}
   }
 </style>
 </head>
 <body>
 
-<!-- ══ HEADER ══ -->
+<!-- HEADER -->
 <header>
   <svg class="flag-svg" viewBox="0 0 190 100" xmlns="http://www.w3.org/2000/svg">
     <rect width="190" height="100" fill="#B22234"/>
-    <rect y="7.7" width="190" height="7.7" fill="white"/>
-    <rect y="23.1" width="190" height="7.7" fill="white"/>
-    <rect y="38.5" width="190" height="7.7" fill="white"/>
-    <rect y="53.8" width="190" height="7.7" fill="white"/>
-    <rect y="69.2" width="190" height="7.7" fill="white"/>
-    <rect y="84.6" width="190" height="7.7" fill="white"/>
+    <rect y="7.7" width="190" height="7.7" fill="white"/><rect y="23.1" width="190" height="7.7" fill="white"/>
+    <rect y="38.5" width="190" height="7.7" fill="white"/><rect y="53.8" width="190" height="7.7" fill="white"/>
+    <rect y="69.2" width="190" height="7.7" fill="white"/><rect y="84.6" width="190" height="7.7" fill="white"/>
     <rect width="76" height="53.8" fill="#3C3B6E"/>
     <g fill="white" font-size="7.5" font-family="Arial" text-anchor="middle">
       <text x="9" y="11">★</text><text x="22" y="11">★</text><text x="35" y="11">★</text><text x="48" y="11">★</text><text x="61" y="11">★</text><text x="74" y="11">★</text>
@@ -619,186 +173,156 @@
       <text x="9" y="47">★</text><text x="22" y="47">★</text><text x="35" y="47">★</text><text x="48" y="47">★</text><text x="61" y="47">★</text><text x="74" y="47">★</text>
     </g>
   </svg>
-
-  <div class="header-text">
-    <div class="eyebrow">Personal Finance Plan</div>
-    <h1>Joshua Son</h1>
-    <div style="font-family:'Barlow Condensed',sans-serif; font-size:13px; letter-spacing:2px; color:var(--navy); margin-top:3px; margin-bottom:2px;">Joshua Shortt — U.S. Army Tanker</div>
-    <div class="tagline">Active Duty · Financial Mission 2026</div>
+  <div class="hdr-center">
+    <div class="hdr-eyebrow">Personal Finance Plan</div>
+    <div class="hdr-h1">Joshua Son</div>
+    <div class="hdr-sub">Joshua Shortt — U.S. Army Tanker</div>
+    <div class="hdr-tagline">Active Duty · Financial Mission 2026</div>
   </div>
-
-  <div class="header-badge">
+  <div class="hdr-badge">
     <div class="branch">Branch</div>
     <div class="rank-box">U.S. ARMY</div>
   </div>
 </header>
 
-<!-- ══ RECOMMENDED ALLOCATION STRIP ══ -->
-<div class="rec-strip" style="flex-direction:column; gap:0; padding:0;">
-
-  <!-- ROW 1: Housing & Food (Army freed) -->
-  <div style="display:flex; align-items:stretch; border-bottom:1px solid var(--border); width:100%;">
-    <div class="rec-item" style="flex:1; border-right:1px solid var(--border);">
+<!-- REC STRIP — Suggested % based on national study averages -->
+<div class="rec-strip">
+  <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);text-align:center;padding:5px 0 3px;border-bottom:1px solid var(--border);">
+    Suggested % of Income — National Study Averages
+  </div>
+  <div class="rec-row">
+    <div class="rec-item">
       <div class="ri-label">Housing</div>
-      <div class="ri-pct" style="color:var(--muted);">Std 28%</div>
-      <div class="ri-amt" style="color:var(--green);" id="rs_housing_freed">$578</div>
-      <div style="font-family:'Barlow Condensed',sans-serif; font-size:9px; letter-spacing:1px; color:var(--red); text-transform:uppercase; margin-top:2px;">Army Freed ✓</div>
+      <div class="ri-pct" style="color:var(--muted);">Avg 28%</div>
+      <div class="ri-amt" style="color:var(--green);" id="rs_h">$578</div>
+      <div class="ri-tag">Army Freed ✓</div>
     </div>
-    <div class="rec-item" style="flex:1;">
+    <div class="rec-item">
       <div class="ri-label">Food</div>
-      <div class="ri-pct" style="color:var(--muted);">Std 13%</div>
-      <div class="ri-amt" style="color:var(--green);" id="rs_food_freed">$273</div>
-      <div style="font-family:'Barlow Condensed',sans-serif; font-size:9px; letter-spacing:1px; color:var(--red); text-transform:uppercase; margin-top:2px;">Army Freed ✓</div>
+      <div class="ri-pct" style="color:var(--muted);">Avg 13%</div>
+      <div class="ri-amt" style="color:var(--green);" id="rs_f">$273</div>
+      <div class="ri-tag">Army Freed ✓</div>
     </div>
-    <div class="rec-item" style="flex:1; border-left:1px solid var(--border); background:#fffdf0;">
-      <div class="ri-label" style="color:var(--muted);">Total Freed</div>
-      <div class="ri-pct" style="color:var(--muted);">Std 41%</div>
-      <div class="ri-amt" style="color:var(--green); font-size:1.1rem;" id="rs_total_freed">$851</div>
-      <div style="font-family:'Barlow Condensed',sans-serif; font-size:9px; letter-spacing:1px; color:var(--red); text-transform:uppercase; margin-top:2px;">Army Advantage</div>
+    <div class="rec-item" style="background:#fffdf0;border-left:2px solid var(--gold);">
+      <div class="ri-label">Total Freed</div>
+      <div class="ri-pct" style="color:var(--muted);">Avg 41%</div>
+      <div class="ri-amt" style="color:var(--green);font-size:1.05rem;" id="rs_freed">$861</div>
+      <div class="ri-tag">Army Advantage</div>
     </div>
   </div>
-
-  <!-- ROW 2: All other categories -->
-  <div style="display:flex; align-items:stretch; width:100%;">
-    <div class="rec-item" style="flex:1; border-right:1px solid var(--border);">
-      <div class="ri-label">Savings</div>
-      <div class="ri-pct">10%</div>
-      <div class="ri-amt" id="rs_savings">$210</div>
-    </div>
-    <div class="rec-item" style="flex:1; border-right:1px solid var(--border);">
-      <div class="ri-label">Invest</div>
-      <div class="ri-pct">8%</div>
-      <div class="ri-amt" id="rs_invest">$168</div>
-    </div>
-    <div class="rec-item" style="flex:1; border-right:1px solid var(--border);">
-      <div class="ri-label">Transport</div>
-      <div class="ri-pct">19%</div>
-      <div class="ri-amt" id="rs_transp">$399</div>
-    </div>
-    <div class="rec-item" style="flex:1; border-right:1px solid var(--border);">
-      <div class="ri-label">Personal</div>
-      <div class="ri-pct">14%</div>
-      <div class="ri-amt" id="rs_personal">$294</div>
-    </div>
-    <div class="rec-item" style="flex:1; border-right:1px solid var(--border);">
-      <div class="ri-label">Giving</div>
-      <div class="ri-pct">3%</div>
-      <div class="ri-amt" id="rs_giving">$63</div>
-    </div>
-    <div class="rec-item" style="flex:1; background:#fffdf0;">
+  <div class="rec-row">
+    <div class="rec-item"><div class="ri-label">Savings</div><div class="ri-pct">10%</div><div class="ri-amt" id="rs_sav">$210</div></div>
+    <div class="rec-item"><div class="ri-label">Invest</div><div class="ri-pct">8%</div><div class="ri-amt" id="rs_inv">$168</div></div>
+    <div class="rec-item"><div class="ri-label">Transport</div><div class="ri-pct">19%</div><div class="ri-amt" id="rs_tr">$399</div></div>
+    <div class="rec-item"><div class="ri-label">Personal</div><div class="ri-pct">14%</div><div class="ri-amt" id="rs_per">$294</div></div>
+    <div class="rec-item"><div class="ri-label">Giving</div><div class="ri-pct">3%</div><div class="ri-amt" id="rs_giv">$63</div></div>
+    <div class="rec-item" style="background:#fffdf0;border-left:2px solid var(--gold);">
       <div class="ri-label">Remaining</div>
-      <div class="ri-pct" id="rs_rem_pct">46%</div>
-      <div class="ri-amt" style="color:var(--green);" id="rs_rem_amt">$966</div>
+      <div class="ri-pct" id="rs_rp">46%</div>
+      <div class="ri-amt" style="color:var(--green);" id="rs_ra">$966</div>
     </div>
   </div>
-
 </div>
 
-
-<!-- ══ INCOME BAR ══ -->
+<!-- INCOME BAR -->
 <div class="income-bar">
-  <div class="income-field">
+  <div class="inc-field">
     <label>Monthly Income</label>
     <input type="number" id="income" value="2100" min="0" step="50" oninput="recalc()">
   </div>
-  <div class="income-divider"></div>
-  <div class="income-field">
+  <div class="inc-div"></div>
+  <div class="inc-field">
     <label>Annual</label>
-    <span id="annualIncome" style="font-family:'Cormorant Garamond',serif; font-size:1.6rem; font-weight:600; color:var(--gold);">$25,200</span>
+    <span id="annualIncome">$25,200</span>
   </div>
-  <div class="income-divider"></div>
-  <div class="income-field">
+  <div class="inc-div"></div>
+  <div class="inc-field">
     <label>Weekly</label>
-    <span id="weeklyIncome" style="font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:600; color:rgba(255,255,255,0.75);">$485</span>
+    <span id="weeklyIncome">$485</span>
   </div>
-
 </div>
 
-
-<!-- ══ SNAPSHOTS BAR ══ -->
-<div class="snapshots-bar">
-  <span class="snapshots-label">Saved Snapshots</span>
-  <div id="snapshotChips" style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center;"><span class="no-snaps">No saves yet — use the Save buttons in each section</span></div>
-</div>
-
-
-<!-- ══ STICKY RUNNING BALANCE ══ -->
-<div id="stickyBalance" style="position:sticky; top:0; z-index:100; background:var(--navy); border-bottom:2px solid var(--gold); padding:6px 48px; display:flex; align-items:center; justify-content:center; gap:32px; flex-wrap:wrap; color:var(--gold);">
-  <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--gold);">Paycheck Remaining</div>
-  <div style="display:flex; align-items:baseline; gap:8px;">
-    <span id="stickyAmt" style="font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:700; color:#6EE787;">$2,100</span>
-    <span id="stickyWk" style="font-family:'Barlow Condensed',sans-serif; font-size:11px; color:var(--gold); letter-spacing:1px;">/ wk $485</span>
+<!-- STICKY PAYCHECK REMAINING -->
+<div class="sticky-bar">
+  <div class="sb-label">Paycheck Remaining</div>
+  <div style="display:flex;align-items:baseline;gap:8px;">
+    <span class="sb-amt" id="stickyAmt" style="color:#6EE787;">$2,100</span>
+    <span class="sb-wk" id="stickyWk">/ wk $485</span>
   </div>
-  <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--gold);" id="stickyPct">100% unallocated</div>
+  <div class="sb-pct" id="stickyPct">100% unallocated</div>
 </div>
 
-<!-- ══ PAGE BODY ══ -->
-<div class="page-body">
+<!-- SNAPSHOTS -->
+<div class="snap-bar">
+  <div class="snap-label">Saved Snapshots</div>
+  <div class="snap-chips" id="snapChips"><span class="no-snaps">No saves yet — use Lock In buttons in each section</span></div>
+</div>
+
+<!-- PAGE BODY -->
+<div class="body">
 
   <!-- GOAL CARDS -->
-  <div class="section-label" style="display:flex; align-items:center; justify-content:space-between;">My Goals &amp; Every Dollar Plan<button class="sec-save-btn" onclick="saveSection('goals')" id="btn_goals" style="position:static; transform:none;">Lock In</button></div>
-  <div class="goal-cards">
+  <div class="sec-label">My Goals &amp; Every Dollar Plan <button class="lock-btn" onclick="saveSnap('goals')" id="lb_goals">Lock In</button></div>
+  <div class="goal-grid">
 
-    <!-- CARD 1: WELL DONE SOLDIER — CAR ACCOMPLISHED -->
-    <div class="goal-card" style="border-top-color: var(--gold); background: linear-gradient(135deg, #1B2A4A, #253d6b); color:white;">
-      <div class="gc-label" style="color:var(--gold); letter-spacing:3px;">🎖️ Well Done, Soldier</div>
-      <div style="font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:700; color:var(--gold); line-height:1.1; margin:6px 0 4px;">Car Down Payment</div>
-      <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.5); margin-bottom:8px;">Goal Accomplished Last Month</div>
-      <div class="gc-progress-track" style="background:rgba(255,255,255,0.15);"><div class="gc-progress-fill" style="width:100%; background:var(--gold);"></div></div>
-      <div style="display:flex; justify-content:space-between; align-items:baseline; margin-top:8px;">
-        <span style="font-family:'Cormorant Garamond',serif; font-size:1.8rem; font-weight:700; color:var(--gold);">$1,750 ✓</span>
-        <span style="font-family:'Barlow Condensed',sans-serif; font-size:10px; color:rgba(255,255,255,0.4); letter-spacing:1px;">100% complete</span>
+    <!-- Card 1: ACCOMPLISHED -->
+    <div class="gcard gold">
+      <div class="gc-label" style="color:var(--gold);">🎖️ Well Done, Soldier</div>
+      <input type="text" class="gc-input inv" value="Car Down Payment" readonly style="font-size:1.3rem;font-weight:700;cursor:default;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:6px;">Goal Accomplished Last Month</div>
+      <div style="height:4px;background:rgba(255,255,255,.2);border-radius:2px;margin-bottom:6px;"><div style="width:100%;height:100%;background:var(--gold);border-radius:2px;"></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;">
+        <span style="font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;color:var(--gold);">$1,750 ✓</span>
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:rgba(255,255,255,.4);letter-spacing:1px;">100%</span>
       </div>
-      <div style="font-size:11px; color:rgba(255,255,255,0.5); margin-top:4px;">Tax · Tags · Insurance deposit secured</div>
+      <div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:3px;">Tax · Tags · Insurance deposit secured</div>
     </div>
 
-    <!-- CARD 2: NEXT SAVINGS GOAL -->
-    <div class="goal-card" style="border-top-color: var(--gold); background: linear-gradient(135deg, #1B2A4A, #253d6b); color:white;">
-      <div class="gc-label" style="color:var(--gold); letter-spacing:3px;">🎯 Next Mission</div>
-      <input type="text" id="nextGoalName" placeholder="Name your goal" oninput="updateGoals()"
-        style="background:transparent; border:none; border-bottom:1px solid var(--gold); color:var(--gold); font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:700; width:100%; padding:4px 0; margin:6px 0 4px; outline:none;">
-      <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.5); margin-bottom:8px;">Goal Amount</div>
-      <input type="number" id="nextGoalAmt" value="500" min="0" oninput="updateGoals()"
-        style="background:transparent; border:none; border-bottom:1px solid rgba(255,255,255,0.3); color:white; font-family:'Cormorant Garamond',serif; font-size:1.6rem; font-weight:700; width:100%; padding:4px 0; margin-bottom:8px; outline:none;">
-      <div class="gc-progress-track" style="background:rgba(255,255,255,0.15);"><div class="gc-progress-fill" id="nextGoalBar" style="width:0%; background:var(--gold);"></div></div>
-      <div style="display:flex; justify-content:space-between; align-items:baseline; margin-top:6px;">
-        <span style="font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:700; color:rgba(255,255,255,0.3);" id="nextGoalSavedDisplay">$0</span>
-        <span style="font-family:'Barlow Condensed',sans-serif; font-size:10px; color:rgba(255,255,255,0.4); letter-spacing:1px;"><span id="nextGoalPct">0%</span> complete</span>
+    <!-- Card 2: NEXT MISSION -->
+    <div class="gcard gold">
+      <div class="gc-label" style="color:var(--gold);">🎯 Next Mission</div>
+      <input type="text" id="nextGoalName" class="gc-input inv" placeholder="Name your goal..." oninput="recalc()" style="font-size:1.1rem;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:4px;">Goal Amount</div>
+      <input type="number" id="nextGoalAmt" class="gc-input inv" value="500" min="0" oninput="recalc()" style="font-size:1.4rem;">
+      <div style="height:4px;background:rgba(255,255,255,.2);border-radius:2px;margin:6px 0;"><div id="nextGoalBar" style="width:0%;height:100%;background:var(--gold);border-radius:2px;transition:width .4s;"></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;">
+        <span style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:rgba(255,255,255,.3);" id="nextGoalSaved">$0</span>
+        <span style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:rgba(255,255,255,.4);" id="nextGoalETA">Unlocks after emergency fund</span>
       </div>
-      <div style="font-size:11px; color:rgba(255,255,255,0.4); margin-top:4px;" id="nextGoalETA">Unlocks after emergency fund &amp; investing</div>
     </div>
 
-    <!-- CARD 3: EMERGENCY FUND + INVESTING STACKED -->
-    <div style="display:flex; flex-direction:column; gap:10px;">
-
-      <div class="goal-card" style="border-top-color: var(--navy); padding:10px 14px;">
-        <div class="gc-label">🛡️ Emergency Fund — Priority #1</div>
-        <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:4px;">Current Balance</div>
-        <input class="gc-input" type="number" id="emergSaved" value="0" min="0" placeholder="$ currently saved" oninput="updateGoals()" style="margin-bottom:6px;">
-        <div class="gc-progress-track"><div class="gc-progress-fill" id="emergBar"></div></div>
-        <div class="gc-pct-text"><strong id="emergPct">0%</strong> of $1,000 · <span id="emergRemText">$1,000 remaining</span></div>
+    <!-- Card 3: EMERGENCY + INVESTING stacked -->
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="gcard" style="border-top-color:var(--navy);padding:10px 14px;">
+        <div class="gc-label" style="color:var(--navy);">🛡️ Emergency Fund — Priority #1</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:4px;">Current balance saved so far</div>
+        <input type="number" id="emergSaved" class="gc-input" value="0" min="0" placeholder="$ saved so far" oninput="recalc()" style="margin-bottom:6px;">
+        <div class="gc-bar-track"><div class="gc-bar-fill" id="emergBar" style="width:0%;background:var(--navy);"></div></div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--muted);display:flex;justify-content:space-between;margin-top:3px;">
+          <span id="emergPct" style="font-weight:700;color:var(--navy);">0%</span>
+          <span id="emergRemText">$1,000 remaining</span>
+        </div>
       </div>
-
-      <div class="goal-card" style="border-top-color: var(--navy); padding:10px 14px;">
-        <div class="gc-label">📈 Investing — After Emergency</div>
-        <div style="font-size:11px; color:var(--muted);">TSP (5% match) + Roth IRA auto-funded from leftover</div>
-        <div style="font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:700; color:var(--navy); margin-top:6px;" id="investAutoDisplay">—/mo flowing to investments</div>
+      <div class="gcard" style="border-top-color:var(--navy);padding:10px 14px;">
+        <div class="gc-label" style="color:var(--navy);">📈 Investing — After Emergency</div>
+        <div style="font-size:10px;color:var(--muted);">TSP (5% match) + Roth IRA</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;color:var(--navy);margin-top:4px;" id="investDisplay">Enter bills to calculate</div>
       </div>
-
     </div>
 
   </div>
 
-  <!-- TABLE -->
-  <div class="section-label">Monthly Budget Breakdown</div>
-  <table class="finance-table">
+  <!-- BUDGET TABLE -->
+  <div class="sec-label">Monthly Budget Breakdown</div>
+  <table class="tbl">
     <thead>
       <tr>
-        <th style="width:32%; text-align:left;">Category</th>
+        <th style="width:28%;text-align:left;">Category</th>
         <th>Monthly $</th>
+        <th>Extra Pmt</th>
         <th>Weekly $</th>
         <th>Insight</th>
-        <th>Rec %</th>
+        <th>Avg Rec %</th>
         <th>My %</th>
         <th>Status</th>
       </tr>
@@ -806,775 +330,610 @@
     <tbody>
 
       <!-- HOUSING & FOOD -->
-      <tr class="group-header"><td colspan="7" style="position:relative;">Housing &amp; Food — Base Life<button class="sec-save-btn" onclick="saveSection('housing')" id="btn_housing">Lock In</button></td></tr>
+      <tr class="grp"><td colspan="8">🏠 Housing &amp; Food — Base Life <button class="lock-btn" onclick="saveSnap('housing')" id="lb_housing" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);">Lock In</button></td></tr>
       <tr>
-        <td><div class="cat-name">Housing</div>
-          <div class="celebrate-banner">
-            <div class="cel-icon">🏆</div>
-            <div class="cel-text">
-              <div class="cel-title">Army Benefit — Freed Up</div>
-              <div class="cel-sub">BAH covers housing in full</div>
-            </div>
-            <div class="cel-amount" id="housingFreed">—<small>/ mo freed</small></div>
-          </div></td>
         <td>
-          <input class="amt-input" type="number" id="housing" value="0" min="0" oninput="recalc()">
-          <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; color:var(--green); letter-spacing:1px; text-align:center; margin-top:3px;">~$1,500/mo freed</div>
-        </td>
-        <td style="text-align:center;"><span id="w_housing" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
-        <td class="insight-cell" style="font-size:11px; color:var(--muted); text-align:center; max-width:100px;">—</td>
-        <td class="pct-rec">0%</td>
-        <td><span class="pct-badge green" id="housingPct">100%</span></td>
-        <td><span id="housingStatus" style="font-size:11px; color:var(--green);">✓ Army Covered</span></td>
-      </tr>
-      <tr>
-        <td><div class="cat-name">Food</div>
-          <div class="celebrate-banner">
-            <div class="cel-icon">🍽️</div>
-            <div class="cel-text">
-              <div class="cel-title">Army Benefit — Freed Up</div>
-              <div class="cel-sub">Dining facility on base</div>
-            </div>
-            <div class="cel-amount" id="foodFreed"><span id="foodFreedAmt">~$210–315</span><small>/ mo freed</small></div>
-          </div></td>
-        <td>
-          <input class="amt-input" type="number" id="food" value="0" min="0" oninput="recalc()">
-          <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; color:var(--green); letter-spacing:1px; text-align:center; margin-top:3px;">~$400/mo freed</div>
-        </td>
-        <td style="text-align:center;"><span id="w_food" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
-        <td class="insight-cell" style="font-size:11px; color:var(--muted); text-align:center; max-width:100px;">—</td>
-        <td class="pct-rec">0%</td>
-        <td><span class="pct-badge green" id="foodPct">100%</span></td>
-        <td><span id="foodStatus" style="font-size:11px; color:var(--green);">✓ Army Covered</span></td>
-      </tr>
-
-      <tr class="running-bar-row"><td colspan="7" style="padding:4px 14px;">
-        <div class="running-bar" id="rb_housing"><span class="rb-label">After Housing &amp; Food</span><span><span class="rb-amount" id="rb_housing_amt">—</span><span class="rb-weekly" id="rb_housing_wk"></span></span></div>
-      </td></tr>
-      <!-- SAVINGS -->
-      <tr class="group-header"><td colspan="7" style="position:relative;">Savings &amp; Emergency Fund<button class="sec-save-btn" onclick="saveSection('savings')" id="btn_savings">Lock In</button></td></tr>
-      <tr style="background:#f0fff4;">
-        <td>
-          <div class="cat-name" style="color:#2E6B3E;">🎉 Car Down Payment</div>
-          <div class="celebrate-banner" style="display:flex; margin-top:6px;">
-            <div class="cel-icon">✅</div>
-            <div class="cel-text">
-              <div class="cel-title">Goal Accomplished Last Month!</div>
-              <div class="cel-sub">$1,750 saved · Tax, tags &amp; insurance deposit ready</div>
+          <div class="cat-name">Housing</div>
+          <div class="cat-note">BAH included — lives on base</div>
+          <div class="celebrate" style="display:flex;align-items:center;gap:6px;background:linear-gradient(90deg,#f0fff4,#fff);border:1px solid var(--green);border-radius:3px;padding:4px 8px;margin-top:4px;">
+            <span>🏆</span>
+            <div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--green);">Army Freed</div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:.9rem;font-weight:700;color:var(--green);" id="housingFreedAmt">~$578/mo</div>
             </div>
           </div>
         </td>
-        <td style="text-align:center;"><span style="font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:700; color:#2E6B3E;">$1,750</span></td>
-        <td style="text-align:center;"><span style="font-size:11px; color:#2E6B3E;">Done ✓</span></td>
-        <td class="pct-rec">—</td>
-        <td><span class="pct-badge green">100%</span></td>
-        <td><span style="font-size:11px; color:#2E6B3E;">✓ Complete</span></td>
+        <td><input class="amt" type="number" id="housing" value="0" min="0" oninput="recalc()"><div class="amt-note" style="color:var(--green);">Army covered</div></td>
+        <td><div style="font-size:10px;color:var(--muted);text-align:center;">N/A</div></td>
+        <td style="text-align:center;"><span id="w_housing" style="font-family:'Cormorant Garamond',serif;font-size:.9rem;color:var(--navy);">—</span></td>
+        <td class="insight"><span class="hi">Avg civilian pays <span id="ins_housing">$578</span>/mo</span></td>
+        <td style="text-align:center;"><span class="pct-badge" style="background:#EDE9DC;color:var(--muted);">Avg 28%</span></td>
+        <td style="text-align:center;"><span class="pct-badge g" id="pct_housing">0%</span></td>
+        <td style="text-align:center;"><span style="font-size:10px;color:var(--green);">✓ Army</span></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="cat-name">Food</div>
+          <div class="cat-note">Dining facility on base</div>
+          <div class="celebrate" style="display:flex;align-items:center;gap:6px;background:linear-gradient(90deg,#f0fff4,#fff);border:1px solid var(--green);border-radius:3px;padding:4px 8px;margin-top:4px;">
+            <span>🍽️</span>
+            <div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--green);">Army Freed</div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:.9rem;font-weight:700;color:var(--green);" id="foodFreedAmt">~$273/mo</div>
+            </div>
+          </div>
+        </td>
+        <td><input class="amt" type="number" id="food" value="0" min="0" oninput="recalc()"><div class="amt-note" style="color:var(--green);">Army covered</div></td>
+        <td><div style="font-size:10px;color:var(--muted);text-align:center;">N/A</div></td>
+        <td style="text-align:center;"><span id="w_food" style="font-family:'Cormorant Garamond',serif;font-size:.9rem;color:var(--navy);">—</span></td>
+        <td class="insight"><span class="hi">Avg civilian pays <span id="ins_food">$273</span>/mo</span></td>
+        <td style="text-align:center;"><span class="pct-badge" style="background:#EDE9DC;color:var(--muted);">Avg 13%</span></td>
+        <td style="text-align:center;"><span class="pct-badge g" id="pct_food">0%</span></td>
+        <td style="text-align:center;"><span style="font-size:10px;color:var(--green);">✓ Army</span></td>
+      </tr>
+      <tr class="rb-row"><td colspan="8"><div class="rb-bar"><span>After Housing &amp; Food</span><span><span class="rb-amt" id="rb_housing">$2,100</span><span class="rb-wk" id="rb_housing_wk">/ wk $485</span></span></div></td></tr>
+
+      <!-- SAVINGS -->
+      <tr class="grp"><td colspan="8">💰 Savings &amp; Emergency Fund <button class="lock-btn" onclick="saveSnap('savings')" id="lb_savings" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);">Lock In</button></td></tr>
+      <tr style="background:#f0fff4;">
+        <td>
+          <div class="cat-name" style="color:var(--green);">🎉 Car Down Payment</div>
+          <div style="display:flex;align-items:center;gap:6px;background:linear-gradient(90deg,#f0fff4,#fff);border:1px solid var(--green);border-radius:3px;padding:5px 8px;margin-top:4px;">
+            <span>✅</span>
+            <div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--green);">Goal Accomplished Last Month!</div>
+              <div style="font-size:10px;color:var(--muted);">$1,750 saved · Tax, tags &amp; insurance deposit ready</div>
+            </div>
+          </div>
+        </td>
+        <td style="text-align:center;"><span style="font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:700;color:var(--green);">$1,750</span></td>
+        <td style="text-align:center;"><span style="font-size:10px;color:var(--green);">Done ✓</span></td>
+        <td style="text-align:center;"><span style="font-size:10px;color:var(--green);">Done ✓</span></td>
+        <td class="insight"><span class="hi">Mission complete 🎯</span></td>
+        <td style="text-align:center;"><span class="pct-badge g">—</span></td>
+        <td style="text-align:center;"><span class="pct-badge g">100%</span></td>
+        <td style="text-align:center;"><span style="font-size:10px;color:var(--green);">✓ Complete</span></td>
       </tr>
       <tr>
         <td>
           <div class="cat-name">🛡️ Emergency Fund</div>
-          <div class="cat-note">Priority #1 — all leftover income goes here until $1,000 met</div>
-          <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; color:var(--navy); letter-spacing:1px; margin-top:4px;">Current: <strong id="emergCurrentDisplay">$0</strong> · Need: <strong id="emergNeedDisplay">$1,000</strong></div>
+          <div class="cat-note">Priority #1 — fill before investing</div>
+          <div class="cat-hint">💡 Recommended: put ALL remaining income here after essential bills until $1,000 is met. Essential bills = transport, phone, personal care. Giving &amp; investing come after.</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--navy);margin-top:4px;letter-spacing:1px;">Current: <strong id="emergCurrent">$0</strong> · Still need: <strong id="emergNeed">$1,000</strong></div>
         </td>
-        <td style="text-align:center;">
-          <span id="emergAutoAmt" style="font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:700; color:var(--navy);">—</span>
-          <div style="font-size:10px; color:var(--muted); margin-top:2px;">auto-filled</div>
-        </td>
-        <td style="text-align:center;"><span id="w_emerg" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
-        <td class="insight-cell" style="font-size:11px; color:var(--muted); text-align:center; max-width:100px;">—</td>
-        <td class="pct-rec">All leftover</td>
-        <td><span class="pct-badge" id="emergPctBadge">—</span></td>
-        <td><span id="emergStatus" style="font-size:11px;"></span></td>
-      </tr>
-      <tr id="nextGoalRow" style="display:none;">
         <td>
-          <div class="cat-name" id="nextGoalTableName">🎯 Next Goal</div>
-          <div class="cat-note">After emergency fund met — leftover flows here</div>
+          <input class="amt" type="number" id="emergMonthly" value="2100" min="0" oninput="recalc()">
+          <div class="amt-note">This month</div>
+          <input class="amt extra" type="number" id="emergExtra" value="0" min="0" oninput="recalc()" style="margin-top:4px;">
+          <div class="amt-note" style="color:var(--gold);">Extra next mo?</div>
         </td>
-        <td style="text-align:center;"><span id="nextGoalAutoAmt" style="font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:700; color:var(--navy);">—</span></td>
-        <td style="text-align:center;"><span id="w_nextGoal" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
-        <td class="insight-cell" style="font-size:11px; color:var(--muted); text-align:center; max-width:100px;">—</td>
-        <td class="pct-rec">Leftover</td>
-        <td><span class="pct-badge gold" id="nextGoalPctBadge">—</span></td>
-        <td><span id="nextGoalStatus" style="font-size:11px; color:var(--green);">Auto ↑</span></td>
+        <td style="text-align:center;"><span style="font-size:10px;color:var(--muted);">N/A</span></td>
+        <td style="text-align:center;"><span id="w_emerg" style="font-family:'Cormorant Garamond',serif;font-size:.9rem;color:var(--navy);">—</span></td>
+        <td class="insight" id="ins_emerg">—</td>
+        <td style="text-align:center;"><span class="pct-badge">All left</span></td>
+        <td style="text-align:center;"><span class="pct-badge y" id="pct_emerg">—</span></td>
+        <td style="text-align:center;"><span id="stat_emerg" style="font-size:10px;color:var(--navy);">Priority ↑</span></td>
       </tr>
-      <tr class="subtotal">
+      <tr class="sub">
         <td>Savings Subtotal</td>
-        <td class="monthly-disp" id="savingsTotal">—</td>
-        <td style="text-align:center; font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);"><span id="wSavings">—</span></td>
-        <td class="pct-rec">All leftover</td>
-        <td id="savingsTotalPct">—</td>
-        <td></td>
+        <td id="savTotal">—</td><td>—</td><td id="savWk">—</td><td>—</td><td>All leftover</td><td id="savPct">—</td><td></td>
       </tr>
+      <tr class="rb-row"><td colspan="8"><div class="rb-bar"><span>After Savings</span><span><span class="rb-amt" id="rb_savings">—</span><span class="rb-wk" id="rb_savings_wk"></span></span></div></td></tr>
 
-      <tr class="running-bar-row"><td colspan="7" style="padding:4px 14px;">
-        <div class="running-bar" id="rb_savings"><span class="rb-label">After Savings</span><span><span class="rb-amount" id="rb_savings_amt">—</span><span class="rb-weekly" id="rb_savings_wk"></span></span></div>
-      </td></tr>
       <!-- INVESTMENTS -->
-      <tr class="group-header"><td colspan="7" style="position:relative;">Investments &amp; Retirement<button class="sec-save-btn" onclick="saveSection('investments')" id="btn_investments">Lock In</button></td></tr>
+      <tr class="grp"><td colspan="8">📈 Investments &amp; Retirement <button class="lock-btn" onclick="saveSnap('invest')" id="lb_invest" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);">Lock In</button></td></tr>
       <tr>
-        <td><div class="cat-name">TSP (Thrift Savings Plan)</div><div class="cat-note">Army 401k — get the 5% match</div></td>
-        <td><input class="amt-input" type="number" id="tsp" value="105" min="0" oninput="recalc()"></td>
-        <td style="text-align:center;"><span id="w_tsp" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
-        <td class="insight-cell" style="font-size:11px; color:var(--muted); text-align:center; max-width:100px;">—</td>
-        <td class="pct-rec">5% min</td>
-        <td><span class="pct-badge gold" id="tspPct">5%</span></td>
-        <td><span id="tspStatus" style="font-size:11px;"></span></td>
+        <td><div class="cat-name">TSP (Thrift Savings Plan)</div><div class="cat-note">Army 401k — at least 5% to get full match</div></td>
+        <td><input class="amt" type="number" id="tsp" value="105" min="0" oninput="recalc()"></td>
+        <td><div style="font-size:10px;color:var(--muted);text-align:center;">N/A</div></td>
+        <td style="text-align:center;"><span id="w_tsp" style="font-family:'Cormorant Garamond',serif;font-size:.9rem;color:var(--navy);">—</span></td>
+        <td class="insight" id="ins_tsp">—</td>
+        <td style="text-align:center;"><span class="pct-badge y">5% min</span></td>
+        <td style="text-align:center;"><span class="pct-badge y" id="pct_tsp">5%</span></td>
+        <td style="text-align:center;"><span id="stat_tsp" style="font-size:10px;"></span></td>
       </tr>
       <tr>
         <td><div class="cat-name">Roth IRA</div><div class="cat-note">Tax-free growth · $7k/yr max</div></td>
-        <td><input class="amt-input" type="number" id="roth" value="100" min="0" oninput="recalc()"></td>
-        <td style="text-align:center;"><span id="w_roth" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
-        <td class="insight-cell" style="font-size:11px; color:var(--muted); text-align:center; max-width:100px;">—</td>
-        <td class="pct-rec">3–5%</td>
-        <td><span class="pct-badge gold" id="rothPct">4.8%</span></td>
-        <td><span id="rothStatus" style="font-size:11px;"></span></td>
+        <td><input class="amt" type="number" id="roth" value="100" min="0" oninput="recalc()"></td>
+        <td><div style="font-size:10px;color:var(--muted);text-align:center;">N/A</div></td>
+        <td style="text-align:center;"><span id="w_roth" style="font-family:'Cormorant Garamond',serif;font-size:.9rem;color:var(--navy);">—</span></td>
+        <td class="insight" id="ins_roth">—</td>
+        <td style="text-align:center;"><span class="pct-badge y">3–5%</span></td>
+        <td style="text-align:center;"><span class="pct-badge y" id="pct_roth">5%</span></td>
+        <td style="text-align:center;"><span id="stat_roth" style="font-size:10px;"></span></td>
       </tr>
-      <tr class="subtotal">
+      <tr class="sub">
         <td>Investment Subtotal</td>
-        <td class="monthly-disp" id="investTotal">$205</td>
-        <td style="text-align:center; font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);"><span id="wInvest">—</span></td>
-        <td class="pct-rec">8–10%</td>
-        <td id="investTotalPct">9.8%</td>
-        <td></td>
+        <td id="invTotal">$205</td><td>—</td><td id="invWk">—</td>
+        <td class="insight" id="ins_inv_growth" style="color:var(--green);font-size:10px;">—</td>
+        <td>Avg 8%</td><td id="invPct">—</td><td></td>
       </tr>
+      <tr class="rb-row"><td colspan="8"><div class="rb-bar"><span>After Investments</span><span><span class="rb-amt" id="rb_invest">—</span><span class="rb-wk" id="rb_invest_wk"></span></span></div></td></tr>
 
-      <tr class="running-bar-row"><td colspan="7" style="padding:4px 14px;">
-        <div class="running-bar" id="rb_invest"><span class="rb-label">After Investments</span><span><span class="rb-amount" id="rb_invest_amt">—</span><span class="rb-weekly" id="rb_invest_wk"></span></span></div>
-      </td></tr>
       <!-- TRANSPORTATION -->
-      <tr class="group-header"><td colspan="7" style="position:relative;">Transportation<button class="sec-save-btn" onclick="saveSection('transportation')" id="btn_transportation">Lock In</button></td></tr>
+      <tr class="grp"><td colspan="8">🚗 Transportation <button class="lock-btn" onclick="saveSnap('transport')" id="lb_transport" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);">Lock In</button></td></tr>
       <tr>
-        <td><div class="cat-name">Car Payment</div><div class="cat-note">Keep ≤ $250/mo</div></td>
-        <td><input class="amt-input" type="number" id="carPayment" value="250" min="0" oninput="recalc()"></td>
-        <td style="text-align:center;"><span id="w_carPayment" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
-        <td class="insight-cell" style="font-size:11px; color:var(--muted); text-align:center; max-width:100px;">—</td>
-        <td class="pct-rec">≤ 12%</td>
-        <td><span class="pct-badge" id="carPaymentPct">11.9%</span></td>
-        <td><span id="carPaymentStatus" style="font-size:11px;"></span></td>
+        <td>
+          <div class="cat-name">Car Payment</div>
+          <div class="cat-note">Financed vehicle</div>
+          <div class="fin-block" id="carLoanBlock">
+            <div class="fin-row"><span class="fin-lbl">Loan Balance</span><span class="fin-val" id="carBalance">—</span></div>
+            <div class="fin-row"><span class="fin-lbl">Months Remaining</span><span class="fin-val" id="carMonths">—</span></div>
+            <div class="fin-row"><span class="fin-lbl">With Extra Pmt</span><span class="fin-val" id="carMonthsExtra" style="color:var(--green);">—</span></div>
+          </div>
+        </td>
+        <td>
+          <input class="amt" type="number" id="carPayment" value="250" min="0" oninput="recalc()">
+          <div class="amt-note">Min payment</div>
+        </td>
+        <td>
+          <input class="amt extra" type="number" id="carExtra" value="0" min="0" oninput="recalc()">
+          <div class="amt-note" style="color:var(--gold);">Extra this mo</div>
+        </td>
+        <td style="text-align:center;"><span id="w_carPayment" style="font-family:'Cormorant Garamond',serif;font-size:.9rem;color:var(--navy);">—</span></td>
+        <td class="insight" id="ins_car">—</td>
+        <td style="text-align:center;"><span class="pct-badge">≤ 12%</span></td>
+        <td style="text-align:center;"><span class="pct-badge" id="pct_carPayment">—</span></td>
+        <td style="text-align:center;"><span id="stat_carPayment" style="font-size:10px;"></span></td>
+      </tr>
+      <tr>
+        <td>
+          <div class="cat-name">Car Loan Details</div>
+          <div class="cat-note">Enter to calculate payoff timeline</div>
+        </td>
+        <td colspan="2" style="padding:6px 8px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">
+            <div><div class="amt-note">Loan Balance $</div><input class="amt" type="number" id="carLoanBal" value="12000" min="0" oninput="recalc()" style="width:100%;"></div>
+            <div><div class="amt-note">Interest Rate %</div><input class="amt" type="number" id="carLoanRate" value="7" min="0" step=".1" oninput="recalc()" style="width:100%;"></div>
+          </div>
+        </td>
+        <td colspan="5" class="insight" id="ins_carLoan">Enter balance and rate above to see 60-month loan breakdown</td>
       </tr>
       <tr>
         <td><div class="cat-name">Car Insurance</div><div class="cat-note">Added to mom's policy</div></td>
-        <td><input class="amt-input" type="number" id="insurance" value="150" min="0" oninput="recalc()"></td>
-        <td style="text-align:center;"><span id="w_insurance" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
-        <td class="insight-cell" style="font-size:11px; color:var(--muted); text-align:center; max-width:100px;">—</td>
-        <td class="pct-rec">7% <span style="color:var(--muted);font-size:10px;">(mom)</span></td>
-        <td><span class="pct-badge" id="insurancePct">7.1%</span></td>
-        <td><span id="insuranceStatus" style="font-size:11px;"></span></td>
+        <td><input class="amt" type="number" id="insurance" value="150" min="0" oninput="recalc()"></td>
+        <td><div style="font-size:10px;color:var(--muted);text-align:center;">N/A</div></td>
+        <td style="text-align:center;"><span id="w_insurance" style="font-family:'Cormorant Garamond',serif;font-size:.9rem;color:var(--navy);">—</span></td>
+        <td class="insight"><span style="font-size:10px;color:var(--muted);">Mom's policy saves ~$190/mo vs solo</span></td>
+        <td style="text-align:center;"><span class="pct-badge">Avg 7%</span></td>
+        <td style="text-align:center;"><span class="pct-badge" id="pct_insurance">—</span></td>
+        <td style="text-align:center;"><span id="stat_insurance" style="font-size:10px;"></span></td>
       </tr>
       <tr>
         <td><div class="cat-name">Gas &amp; Maintenance</div><div class="cat-note">Fuel, oil, tires</div></td>
-        <td><input class="amt-input" type="number" id="gas" value="50" min="0" oninput="recalc()"></td>
-        <td style="text-align:center;"><span id="w_gas" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
-        <td class="insight-cell" style="font-size:11px; color:var(--muted); text-align:center; max-width:100px;">—</td>
-        <td class="pct-rec">2%</td>
-        <td><span class="pct-badge" id="gasPct">2.4%</span></td>
-        <td><span id="gasStatus" style="font-size:11px;"></span></td>
+        <td><input class="amt" type="number" id="gas" value="50" min="0" oninput="recalc()"></td>
+        <td><div style="font-size:10px;color:var(--muted);text-align:center;">N/A</div></td>
+        <td style="text-align:center;"><span id="w_gas" style="font-family:'Cormorant Garamond',serif;font-size:.9rem;color:var(--navy);">—</span></td>
+        <td class="insight" id="ins_gas">—</td>
+        <td style="text-align:center;"><span class="pct-badge">Avg 2%</span></td>
+        <td style="text-align:center;"><span class="pct-badge" id="pct_gas">—</span></td>
+        <td style="text-align:center;"><span id="stat_gas" style="font-size:10px;"></span></td>
       </tr>
-      <tr class="subtotal">
+      <tr class="sub">
         <td>Transport Subtotal</td>
-        <td class="monthly-disp" id="transpTotal">$450</td>
-        <td style="text-align:center; font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);"><span id="wTransp">—</span></td>
-        <td class="pct-rec">≤ 20%</td>
-        <td id="transpTotalPct">21.4%</td>
-        <td></td>
+        <td id="trTotal">$450</td><td>—</td><td id="trWk">—</td><td>—</td><td>Avg 19%</td><td id="trPct">—</td><td></td>
       </tr>
+      <tr class="rb-row"><td colspan="8"><div class="rb-bar"><span>After Transportation</span><span><span class="rb-amt" id="rb_transp">—</span><span class="rb-wk" id="rb_transp_wk"></span></span></div></td></tr>
 
-      <tr class="running-bar-row"><td colspan="7" style="padding:4px 14px;">
-        <div class="running-bar" id="rb_transp"><span class="rb-label">After Transportation</span><span><span class="rb-amount" id="rb_transp_amt">—</span><span class="rb-weekly" id="rb_transp_wk"></span></span></div>
-      </td></tr>
       <!-- PERSONAL -->
-      <tr class="group-header"><td colspan="7" style="position:relative;">Personal &amp; Lifestyle<button class="sec-save-btn" onclick="saveSection('personal')" id="btn_personal">Lock In</button></td></tr>
+      <tr class="grp"><td colspan="8">🧍 Personal &amp; Lifestyle <button class="lock-btn" onclick="saveSnap('personal')" id="lb_personal" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);">Lock In</button></td></tr>
       <tr>
-        <td><div class="cat-name">Personal Care</div><div class="cat-note">Haircuts, hygiene</div></td>
-        <td><input class="amt-input" type="number" id="personal" value="75" min="0" oninput="recalc()"></td>
-        <td style="text-align:center;"><span id="w_personal" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
-        <td class="insight-cell" style="font-size:11px; color:var(--muted); text-align:center; max-width:100px;">—</td>
-        <td class="pct-rec">3%</td>
-        <td><span class="pct-badge" id="personalPct">3.6%</span></td>
-        <td><span id="personalStatus" style="font-size:11px;"></span></td>
+        <td><div class="cat-name">Phone</div><div class="cat-note">Essential bill · T-Mobile military</div></td>
+        <td><input class="amt" type="number" id="phone" value="50" min="0" oninput="recalc()"></td>
+        <td><div style="font-size:10px;color:var(--muted);text-align:center;">N/A</div></td>
+        <td style="text-align:center;"><span id="w_phone" style="font-family:'Cormorant Garamond',serif;font-size:.9rem;color:var(--navy);">—</span></td>
+        <td class="insight"><span style="font-size:10px;color:var(--muted);">Essential — military discount available</span></td>
+        <td style="text-align:center;"><span class="pct-badge">Avg 2%</span></td>
+        <td style="text-align:center;"><span class="pct-badge" id="pct_phone">—</span></td>
+        <td style="text-align:center;"><span id="stat_phone" style="font-size:10px;"></span></td>
+      </tr>
+      <tr>
+        <td><div class="cat-name">Personal Care</div><div class="cat-note">Essential · Haircuts, hygiene</div></td>
+        <td><input class="amt" type="number" id="personal" value="75" min="0" oninput="recalc()"></td>
+        <td><div style="font-size:10px;color:var(--muted);text-align:center;">N/A</div></td>
+        <td style="text-align:center;"><span id="w_personal" style="font-family:'Cormorant Garamond',serif;font-size:.9rem;color:var(--navy);">—</span></td>
+        <td class="insight"><span style="font-size:10px;color:var(--muted);">Essential — keep lean</span></td>
+        <td style="text-align:center;"><span class="pct-badge">Avg 3%</span></td>
+        <td style="text-align:center;"><span class="pct-badge" id="pct_personal">—</span></td>
+        <td style="text-align:center;"><span id="stat_personal" style="font-size:10px;"></span></td>
       </tr>
       <tr>
         <td><div class="cat-name">Entertainment</div><div class="cat-note">Eating out, subscriptions, fun</div></td>
-        <td><input class="amt-input" type="number" id="entertainment" value="150" min="0" oninput="recalc()"></td>
-        <td style="text-align:center;"><span id="w_entertainment" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
-        <td class="insight-cell" style="font-size:11px; color:var(--muted); text-align:center; max-width:100px;">—</td>
-        <td class="pct-rec">7%</td>
-        <td><span class="pct-badge" id="entertainmentPct">7.1%</span></td>
-        <td><span id="entertainmentStatus" style="font-size:11px;"></span></td>
+        <td><input class="amt" type="number" id="entertainment" value="150" min="0" oninput="recalc()"></td>
+        <td><div style="font-size:10px;color:var(--muted);text-align:center;">N/A</div></td>
+        <td style="text-align:center;"><span id="w_entertainment" style="font-family:'Cormorant Garamond',serif;font-size:.9rem;color:var(--navy);">—</span></td>
+        <td class="insight"><span style="font-size:10px;color:var(--muted);">Non-essential — flex budget</span></td>
+        <td style="text-align:center;"><span class="pct-badge">Avg 7%</span></td>
+        <td style="text-align:center;"><span class="pct-badge" id="pct_entertainment">—</span></td>
+        <td style="text-align:center;"><span id="stat_entertainment" style="font-size:10px;"></span></td>
       </tr>
       <tr>
-        <td><div class="cat-name">Phone</div><div class="cat-note">T-Mobile military plan</div></td>
-        <td><input class="amt-input" type="number" id="phone" value="50" min="0" oninput="recalc()"></td>
-        <td style="text-align:center;"><span id="w_phone" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
-        <td class="insight-cell" style="font-size:11px; color:var(--muted); text-align:center; max-width:100px;">—</td>
-        <td class="pct-rec">2%</td>
-        <td><span class="pct-badge" id="phonePct">2.4%</span></td>
-        <td><span id="phoneStatus" style="font-size:11px;"></span></td>
+        <td><div class="cat-name">Clothing</div><div class="cat-note">Civilian wear — uniform provided</div></td>
+        <td><input class="amt" type="number" id="clothing" value="50" min="0" oninput="recalc()"></td>
+        <td><div style="font-size:10px;color:var(--muted);text-align:center;">N/A</div></td>
+        <td style="text-align:center;"><span id="w_clothing" style="font-family:'Cormorant Garamond',serif;font-size:.9rem;color:var(--navy);">—</span></td>
+        <td class="insight"><span style="font-size:10px;color:var(--muted);">Non-essential — flex</span></td>
+        <td style="text-align:center;"><span class="pct-badge">Avg 2%</span></td>
+        <td style="text-align:center;"><span class="pct-badge" id="pct_clothing">—</span></td>
+        <td style="text-align:center;"><span id="stat_clothing" style="font-size:10px;"></span></td>
       </tr>
-      <tr>
-        <td><div class="cat-name">Clothing</div><div class="cat-note">Civilian wear (uniform provided)</div></td>
-        <td><input class="amt-input" type="number" id="clothing" value="50" min="0" oninput="recalc()"></td>
-        <td style="text-align:center;"><span id="w_clothing" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
-        <td class="insight-cell" style="font-size:11px; color:var(--muted); text-align:center; max-width:100px;">—</td>
-        <td class="pct-rec">2%</td>
-        <td><span class="pct-badge" id="clothingPct">2.4%</span></td>
-        <td><span id="clothingStatus" style="font-size:11px;"></span></td>
+      <tr class="sub">
+        <td>Personal Subtotal</td>
+        <td id="perTotal">$325</td><td>—</td><td id="perWk">—</td><td>—</td><td>Avg 14%</td><td id="perPct">—</td><td></td>
       </tr>
+      <tr class="rb-row"><td colspan="8"><div class="rb-bar"><span>After Personal</span><span><span class="rb-amt" id="rb_personal">—</span><span class="rb-wk" id="rb_personal_wk"></span></span></div></td></tr>
 
-      <tr class="running-bar-row"><td colspan="7" style="padding:4px 14px;">
-        <div class="running-bar" id="rb_personal"><span class="rb-label">After Personal</span><span><span class="rb-amount" id="rb_personal_amt">—</span><span class="rb-weekly" id="rb_personal_wk"></span></span></div>
-      </td></tr>
       <!-- GIVING -->
-      <tr class="group-header"><td colspan="7" style="position:relative;">Charity &amp; Giving<button class="sec-save-btn" onclick="saveSection('charity')" id="btn_charity">Lock In</button></td></tr>
+      <tr class="grp"><td colspan="8">🙏 Giving <button class="lock-btn" onclick="saveSnap('giving')" id="lb_giving" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);">Lock In</button></td></tr>
       <tr>
-        <td><div class="cat-name">Tithe / Donation</div><div class="cat-note">Give first</div></td>
-        <td><input class="amt-input" type="number" id="charity" value="63" min="0" oninput="recalc()"></td>
-        <td style="text-align:center;"><span id="w_charity" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
-        <td class="insight-cell" style="font-size:11px; color:var(--muted); text-align:center; max-width:100px;">—</td>
-        <td class="pct-rec">3%</td>
-        <td><span class="pct-badge gold" id="charityPct">10%</span></td>
-        <td><span id="charityStatus" style="font-size:11px;"></span></td>
+        <td><div class="cat-name">Tithe / Donation</div><div class="cat-note">Give first · 3% recommended</div></td>
+        <td><input class="amt" type="number" id="charity" value="63" min="0" oninput="recalc()"></td>
+        <td><div style="font-size:10px;color:var(--muted);text-align:center;">N/A</div></td>
+        <td style="text-align:center;"><span id="w_charity" style="font-family:'Cormorant Garamond',serif;font-size:.9rem;color:var(--navy);">—</span></td>
+        <td class="insight"><span style="font-size:10px;color:var(--muted);">3% = $<span id="ins_charity_amt">63</span>/mo</span></td>
+        <td style="text-align:center;"><span class="pct-badge y">3%</span></td>
+        <td style="text-align:center;"><span class="pct-badge y" id="pct_charity">3%</span></td>
+        <td style="text-align:center;"><span id="stat_charity" style="font-size:10px;"></span></td>
       </tr>
+      <tr class="rb-row"><td colspan="8"><div class="rb-bar"><span>After Giving</span><span><span class="rb-amt" id="rb_giving">—</span><span class="rb-wk" id="rb_giving_wk"></span></span></div></td></tr>
 
-      <tr class="running-bar-row"><td colspan="7" style="padding:4px 14px;">
-        <div class="running-bar" id="rb_charity"><span class="rb-label">After Giving</span><span><span class="rb-amount" id="rb_charity_amt">—</span><span class="rb-weekly" id="rb_charity_wk"></span></span></div>
-      </td></tr>
       <!-- TOTALS -->
-      <tr class="total-row">
+      <tr class="total">
         <td>Total Budgeted</td>
-        <td id="totalBudgeted" style="font-family:'Cormorant Garamond',serif; font-size:1.15rem;">$1,140</td>
-        <td style="text-align:center; font-family:'Cormorant Garamond',serif; font-size:1rem; color:white;"><span id="wTotal">—</span></td>
-        <td>—</td>
-        <td id="totalBudgetedPct">—%</td>
-        <td></td>
+        <td id="totalBudgeted">—</td><td>—</td><td id="totalWk">—</td><td>—</td><td>—</td><td id="totalPct">—</td><td></td>
       </tr>
-      <tr class="remaining-row">
-        <td>Remaining / Unallocated</td>
-        <td id="remaining" style="font-family:'Cormorant Garamond',serif; font-size:1.15rem;">$960</td>
-        <td style="text-align:center; font-family:'Cormorant Garamond',serif; font-size:1rem; color:var(--navy);"><span id="wRemaining">—</span></td>
-        <td>—</td>
-        <td id="remainingPct">—%</td>
-        <td style="font-size:11px;">Redirect to savings or invest</td>
+      <tr class="remain">
+        <td>Remaining / Every Dollar Accounted For</td>
+        <td id="remaining">—</td><td>—</td><td id="remainWk">—</td><td>—</td><td>—</td><td id="remainPct">—</td>
+        <td style="font-size:10px;">← Goes to emergency fund</td>
       </tr>
 
     </tbody>
   </table>
 
   <!-- PROGRESS BAR -->
-  <div class="progress-wrap">
-    <div class="progress-meta">
-      <span>Budget Allocated</span>
-      <strong id="progressLabel">—%</strong>
-    </div>
-    <div class="progress-track">
-      <div class="progress-fill" id="progressBar" style="width:0%"></div>
-    </div>
-    <div class="progress-ends">
-      <span>$0</span>
-      <span id="incomeLabel">$2,100 / mo</span>
-    </div>
+  <div class="prog-wrap">
+    <div class="prog-meta"><span>Budget Allocated</span><strong id="progLabel">—%</strong></div>
+    <div class="prog-track"><div class="prog-fill" id="progBar" style="width:0%"></div></div>
+    <div class="prog-ends"><span>$0</span><span id="progEnd">$2,100 / mo</span></div>
   </div>
 
-
   <!-- MOTIVATOR -->
-  <div id="motivatorSection" style="background:var(--white); border:1px solid var(--border); border-radius:4px; padding:24px; margin-bottom:36px;"></div>
+  <div class="motivator" id="motivator"></div>
 
 </div>
 
-<footer>
-  <strong>Joshua Son</strong> &nbsp;·&nbsp; U.S. Army Personal Finance Plan &nbsp;·&nbsp; All values editable
-</footer>
+<footer><strong>Joshua Son</strong> &nbsp;·&nbsp; U.S. Army Personal Finance Plan &nbsp;·&nbsp; All values editable &amp; auto-saved</footer>
 
 <script>
-// ── SECTION FIELD MAP ──
-const SECTION_FIELDS = {
-  goals:          ['emergSaved','nextGoalAmt','nextGoalName'],
-  housing:        ['housing','food'],
-  savings:        ['emergSaved','nextGoalAmt','nextGoalName'],
-  investments:    ['tsp','roth'],
-  transportation: ['carPayment','insurance','gas'],
-  personal:       ['personal','entertainment','phone','clothing'],
-  charity:        ['charity'],
+// ── SECTION FIELDS FOR SNAPSHOTS ──
+const SNAPS = {
+  goals:     ['emergSaved','emergMonthly','emergExtra','nextGoalName','nextGoalAmt'],
+  housing:   ['housing','food'],
+  savings:   ['emergSaved','emergMonthly','emergExtra'],
+  invest:    ['tsp','roth'],
+  transport: ['carPayment','carExtra','carLoanBal','carLoanRate','insurance','gas'],
+  personal:  ['phone','personal','entertainment','clothing'],
+  giving:    ['charity'],
 };
 
-// ── SAVE A SECTION SNAPSHOT ──
-function saveSection(key) {
-  const fields = SECTION_FIELDS[key];
-  const data = { income: document.getElementById('income').value };
-  fields.forEach(f => {
-    const el = document.getElementById(f);
-    if (el) data[f] = el.value;
-  });
-  const now = new Date();
-  const label = now.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'})
-              + ' ' + now.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'});
-  const snapId = key + '_' + now.getTime();
-  const snap = { id: snapId, section: key, label, data };
-
-  const all = JSON.parse(localStorage.getItem('joshua_snaps') || '[]');
-  all.unshift(snap); // newest first
-  // keep max 20
-  if (all.length > 20) all.pop();
-  localStorage.setItem('joshua_snaps', JSON.stringify(all));
-
-  // Flash button
-  const btn = document.getElementById('btn_' + key);
-  if (btn) {
-    btn.textContent = 'Locked ✓';
-    btn.classList.add('saved');
-    setTimeout(() => { btn.textContent = 'Lock In'; btn.classList.remove('saved'); }, 2000);
-  }
-  renderChips();
-}
-
-// ── LOAD A SNAPSHOT ──
-function loadSnapshot(snapId) {
-  const all = JSON.parse(localStorage.getItem('joshua_snaps') || '[]');
-  const snap = all.find(s => s.id === snapId);
-  if (!snap) return;
-  if (!confirm('Load snapshot "' + snap.label + '"? This will overwrite current values for the ' + snap.section + ' section.')) return;
-  Object.entries(snap.data).forEach(([k, v]) => {
-    const el = document.getElementById(k);
-    if (el) el.value = v;
-  });
-  recalc();
-  updateGoals();
-}
-
-// ── DELETE A SNAPSHOT ──
-function deleteSnapshot(snapId, e) {
-  e.stopPropagation();
-  const all = JSON.parse(localStorage.getItem('joshua_snaps') || '[]');
-  const updated = all.filter(s => s.id !== snapId);
-  localStorage.setItem('joshua_snaps', JSON.stringify(updated));
-  renderChips();
-}
-
-// ── RENDER CHIPS ──
-function renderChips() {
-  const all = JSON.parse(localStorage.getItem('joshua_snaps') || '[]');
-  const wrap = document.getElementById('snapshotChips');
-  if (!wrap) return;
-  if (all.length === 0) {
-    wrap.innerHTML = '<span class="no-snaps">No saves yet — use the Save buttons in each section</span>';
-    return;
-  }
-  wrap.innerHTML = all.map(s =>
-    `<span class="snapshot-chip" onclick="loadSnapshot('${s.id}')">
-      <span style="color:var(--muted);font-size:10px;margin-right:2px;">${s.section}</span>
-      ${s.label}
-      <span class="chip-x" onclick="deleteSnapshot('${s.id}', event)" title="Delete">×</span>
-    </span>`
-  ).join('');
-}
-
-// ── AUTO-SAVE ENTIRE BUDGET (on every change) ──
-function autoSave() {
-  const allFields = ['income','housing','food','emergSaved','nextGoalAmt','nextGoalName','tsp','roth','carPayment','insurance','gas','personal','entertainment','phone','clothing','charity'];
-  const data = {};
-  allFields.forEach(f => { const el = document.getElementById(f); if (el) data[f] = el.value; });
-  localStorage.setItem('joshua_autosave', JSON.stringify(data));
-}
-
-// ── LOAD AUTOSAVE ON PAGE OPEN ──
-function loadAutosave() {
-  const saved = localStorage.getItem('joshua_autosave');
-  if (!saved) return;
-  try {
-    const data = JSON.parse(saved);
-    Object.entries(data).forEach(([k, v]) => {
-      const el = document.getElementById(k);
-      if (el) el.value = v;
-    });
-  } catch(e) {}
-}
-
-// Recommended ranges [min%, max%] — null means fixed target
+// ── RECOMMENDED % (single avg, no ranges) ──
 const REC = {
-  housing:       [0, 0],
-  food:          [0, 0],
-  emerg:         [3, 5],
-  tsp:           [5, 10],
-  roth:          [3, 5],
-  carPayment:    [0, 12],
-  insurance:     [5, 7],
-  gas:           [2, 2],
-  personal:      [3, 3],
-  entertainment: [7, 7],
-  phone:         [2, 2],
-  clothing:      [2, 2],
-  charity:       [3, 3],
+  housing:0.28, food:0.13, tsp:0.05, roth:0.04,
+  carPayment:0.12, insurance:0.07, gas:0.02,
+  phone:0.02, personal:0.03, entertainment:0.07, clothing:0.02,
+  charity:0.03
 };
 
-const STATUS_IDS = {
-  housing:'housingStatus', food:'foodStatus',
-  emerg:'emergStatus', tsp:'tspStatus', roth:'rothStatus',
-  carPayment:'carPaymentStatus', insurance:'insuranceStatus', gas:'gasStatus',
-  personal:'personalStatus', entertainment:'entertainmentStatus',
-  phone:'phoneStatus', clothing:'clothingStatus', charity:'charityStatus'
-};
+function v(id){ return parseFloat(document.getElementById(id)?.value)||0; }
+function el(id){ return document.getElementById(id); }
+function fmt(n){ return '$'+Math.round(Math.abs(n)).toLocaleString(); }
+function wk(n){ return Math.round(n*12/52); }
 
-const PCT_IDS = {
-  housing:'housingPct', food:'foodPct',
-  emerg:'emergPctBadge', tsp:'tspPct', roth:'rothPct',
-  carPayment:'carPaymentPct', insurance:'insurancePct', gas:'gasPct',
-  personal:'personalPct', entertainment:'entertainmentPct',
-  phone:'phonePct', clothing:'clothingPct', charity:'charityPct'
-};
+function recalc(){
+  const inc = v('income');
 
-function recalc() {
-  const income = parseFloat(document.getElementById('income').value) || 0;
-  document.getElementById('annualIncome').textContent = '$' + (income * 12).toLocaleString();
-  document.getElementById('weeklyIncome').textContent = '$' + Math.round(income * 12 / 52).toLocaleString();
-  document.getElementById('incomeLabel').textContent = '$' + income.toLocaleString() + ' / mo';
+  // Annual / Weekly
+  el('annualIncome').textContent = '$'+(inc*12).toLocaleString();
+  el('weeklyIncome').textContent = '$'+wk(inc);
+  el('progEnd').textContent = '$'+inc.toLocaleString()+' / mo';
 
-  const fields = Object.keys(REC);
-  const weekly = income > 0 ? income * 12 / 52 : 0;
+  // REC STRIP
+  el('rs_h').textContent   = fmt(inc*0.28);
+  el('rs_f').textContent   = fmt(inc*0.13);
+  el('rs_freed').textContent = fmt(inc*0.41);
+  el('rs_sav').textContent = fmt(inc*0.10);
+  el('rs_inv').textContent = fmt(inc*0.08);
+  el('rs_tr').textContent  = fmt(inc*0.19);
+  el('rs_per').textContent = fmt(inc*0.14);
+  el('rs_giv').textContent = fmt(inc*0.03);
+  const recRem = Math.max(0, inc*(1-0.28-0.13-0.10-0.08-0.19-0.14-0.03));
+  el('rs_ra').textContent  = fmt(recRem);
+  el('rs_rp').textContent  = inc>0 ? Math.round(recRem/inc*100)+'%' : '—';
+
+  // Housing freed
+  el('housingFreedAmt').textContent = '~'+fmt(inc*0.28)+'/mo';
+  el('foodFreedAmt').textContent    = '~'+fmt(inc*0.13)+'/mo';
+  el('ins_housing').textContent     = fmt(inc*0.28);
+  el('ins_food').textContent        = fmt(inc*0.13);
+  el('ins_charity_amt').textContent = Math.round(inc*0.03);
+
+  // All bill fields
+  const fields = ['housing','food','tsp','roth','carPayment','insurance','gas','phone','personal','entertainment','clothing','charity'];
   let total = 0;
-
   fields.forEach(f => {
-    const val = parseFloat(document.getElementById(f).value) || 0;
+    const val = v(f);
     total += val;
-    const pct = income > 0 ? (val / income * 100) : 0;
-    const pctStr = pct.toFixed(1) + '%';
-
-    // Update pct badge
-    const badge = document.getElementById(PCT_IDS[f]);
-    if (badge) {
-      badge.textContent = pctStr;
-      const [lo, hi] = REC[f];
-      if (f === 'housing' || f === 'food') {
-        badge.textContent = '100%';
-        badge.className = 'pct-badge green';
-      } else if (lo === 0 && hi === 0) {
-        badge.className = 'pct-badge green';
-      } else if (pct < lo) {
-        badge.className = 'pct-badge under';
-      } else if (pct > hi) {
-        badge.className = 'pct-badge over';
-      } else {
-        badge.className = 'pct-badge gold';
-      }
+    const pct = inc>0 ? val/inc*100 : 0;
+    const rec = (REC[f]||0)*100;
+    const pb = el('pct_'+f);
+    if(pb){
+      pb.textContent = pct.toFixed(1)+'%';
+      pb.className = 'pct-badge' + (f==='housing'||f==='food' ? ' g' : pct<=rec*1.1 ? ' y' : ' r');
     }
-
-    // Update weekly
-    const wEl = document.getElementById('w_' + f);
-    if (wEl) wEl.textContent = val > 0 ? '$' + Math.round(val * 12 / 52) : '—';
-
-    // Update status
-    const stEl = document.getElementById(STATUS_IDS[f]);
-    if (stEl) {
-      const [lo, hi] = REC[f];
-      if (f === 'housing' || f === 'food') {
-        stEl.textContent = '✓ Covered'; stEl.style.color = 'var(--green)';
-      } else if (lo === 0 && hi === 0) {
-        stEl.textContent = '✓'; stEl.style.color = 'var(--green)';
-      } else if (pct < lo) {
-        stEl.textContent = '↑ Below rec'; stEl.style.color = '#B07000';
-      } else if (pct > hi) {
-        stEl.textContent = '↓ Above rec'; stEl.style.color = 'var(--red)';
-      } else {
-        stEl.textContent = '✓ On target'; stEl.style.color = 'var(--green)';
-      }
+    const we = el('w_'+f);
+    if(we) we.textContent = val>0 ? '$'+wk(val) : '—';
+    const se = el('stat_'+f);
+    if(se && f!=='housing' && f!=='food'){
+      if(pct < rec*0.85){ se.textContent='↑ Below avg'; se.style.color='#B07000'; }
+      else if(pct > rec*1.15){ se.textContent='↓ Above avg'; se.style.color='var(--red)'; }
+      else{ se.textContent='✓ On track'; se.style.color='var(--green)'; }
     }
   });
 
-  // Subtotals
-  const savings = (parseFloat(document.getElementById('carSavings').value)||0) + (parseFloat(document.getElementById('emerg').value)||0);
-  const invest  = (parseFloat(document.getElementById('tsp').value)||0) + (parseFloat(document.getElementById('roth').value)||0);
-  const transp  = (parseFloat(document.getElementById('carPayment').value)||0) + (parseFloat(document.getElementById('insurance').value)||0) + (parseFloat(document.getElementById('gas').value)||0);
+  // EMERGENCY FUND
+  const emergSaved   = v('emergSaved');
+  const emergMonthly = v('emergMonthly');
+  const emergExtra   = v('emergExtra');
+  const emergGoal    = 1000;
+  const emergMet     = emergSaved >= emergGoal;
+  const emergRem     = Math.max(0, emergGoal - emergSaved);
+  const emergPct     = Math.min(100, emergSaved/emergGoal*100);
 
-  // Weekly subtotals
-  const wk = n => '$' + Math.round(n * 12 / 52);
-  const wSavEl = document.getElementById('wSavings'); if(wSavEl) wSavEl.textContent = savings > 0 ? wk(savings) : '—';
-  const wInvEl = document.getElementById('wInvest');  if(wInvEl) wInvEl.textContent = invest  > 0 ? wk(invest)  : '—';
-  const wTrEl  = document.getElementById('wTransp');  if(wTrEl)  wTrEl.textContent  = transp  > 0 ? wk(transp)  : '—';
-  const wTotEl = document.getElementById('wTotal');   if(wTotEl) wTotEl.textContent  = total   > 0 ? wk(total)   : '—';
-  const wRemEl = document.getElementById('wRemaining'); if(wRemEl) wRemEl.textContent = wk(remaining);
+  el('emergBar').style.width = emergPct.toFixed(0)+'%';
+  el('emergPct').textContent = emergPct.toFixed(0)+'%';
+  el('emergRemText').textContent = emergMet ? 'Goal met! 🎉' : fmt(emergRem)+' remaining';
+  el('emergCurrent').textContent = fmt(emergSaved);
+  el('emergNeed').textContent    = emergMet ? '✓ Met!' : fmt(emergRem)+' to go';
+  el('w_emerg').textContent = emergMonthly>0 ? '$'+wk(emergMonthly) : '—';
+  el('pct_emerg').textContent = inc>0 ? (emergMonthly/inc*100).toFixed(1)+'%' : '—';
 
-  document.getElementById('savingsTotal').textContent = '$' + savings.toLocaleString();
-  document.getElementById('savingsTotalPct').textContent = income > 0 ? (savings/income*100).toFixed(1)+'%' : '0%';
-  document.getElementById('investTotal').textContent = '$' + invest.toLocaleString();
-  document.getElementById('investTotalPct').textContent = income > 0 ? (invest/income*100).toFixed(1)+'%' : '0%';
-  document.getElementById('transpTotal').textContent = '$' + transp.toLocaleString();
-  document.getElementById('transpTotalPct').textContent = income > 0 ? (transp/income*100).toFixed(1)+'%' : '0%';
+  // Emergency insight: months to goal
+  const totalMonthly = emergMonthly + emergExtra;
+  if(emergMet){
+    el('ins_emerg').innerHTML = '<span class="hi">🎉 Emergency fund complete!</span>';
+    el('stat_emerg').textContent = '✓ Met!'; el('stat_emerg').style.color='var(--green)';
+  } else if(totalMonthly>0){
+    const moBase  = Math.ceil(emergRem / emergMonthly);
+    const moExtra = Math.ceil(emergRem / totalMonthly);
+    el('ins_emerg').innerHTML = '<strong>'+moBase+'</strong> months at $'+emergMonthly+'/mo'+(emergExtra>0?'<br><span class="hi">'+moExtra+' months with extra $'+emergExtra+'</span>':'');
+    el('stat_emerg').textContent='Priority #1'; el('stat_emerg').style.color='var(--navy)';
+  } else {
+    el('ins_emerg').textContent='Enter amount above';
+    el('stat_emerg').textContent='Priority #1'; el('stat_emerg').style.color='var(--navy)';
+  }
 
-  const remaining = income - total;
-  const pctUsed = income > 0 ? (total/income*100).toFixed(1) : '0.0';
-  const pctLeft = income > 0 ? (remaining/income*100).toFixed(1) : '0.0';
+  total += emergMonthly;
 
-  document.getElementById('totalBudgeted').textContent = '$' + total.toLocaleString();
-  document.getElementById('totalBudgetedPct').textContent = pctUsed + '%';
-  document.getElementById('remaining').textContent = '$' + remaining.toLocaleString();
-  document.getElementById('remainingPct').textContent = pctLeft + '%';
+  // SUBTOTALS
+  const tsp=v('tsp'), roth=v('roth');
+  const invTot = tsp+roth;
+  el('invTotal').textContent = fmt(invTot);
+  el('invWk').textContent    = invTot>0 ? '$'+wk(invTot) : '—';
+  el('invPct').textContent   = inc>0 ? (invTot/inc*100).toFixed(1)+'%' : '—';
 
-  const barW = Math.min(100, Math.max(0, parseFloat(pctUsed)));
-  document.getElementById('progressBar').style.width = barW + '%';
-  document.getElementById('progressLabel').textContent = pctUsed + '%';
+  // Investment growth insight
+  const annualInv = invTot*12;
+  if(annualInv>0){
+    const r=0.10;
+    const g=(yr)=>Math.round(annualInv*((Math.pow(1+r,yr)-1)/r));
+    el('ins_inv_growth').innerHTML =
+      '1yr: <strong>'+fmt(g(1))+'</strong> · 5yr: <strong>'+fmt(g(5))+'</strong><br>10yr: <strong>'+fmt(g(10))+'</strong> · 20yr: <strong>'+fmt(g(20))+'</strong><br><span style="font-size:9px;color:var(--muted)">at 10% avg annual growth</span>';
+    el('investDisplay').textContent = fmt(invTot)+'/mo → '+fmt(g(10))+' in 10 yrs';
+  } else {
+    el('ins_inv_growth').textContent='Enter TSP + Roth above';
+    el('investDisplay').textContent='Enter bills to calculate';
+  }
 
+  // TSP/Roth insight
+  if(tsp>0){ el('ins_tsp').innerHTML = '<strong>'+fmt(tsp*12)+'</strong>/yr · Army matches 5%'; }
+  if(roth>0){ el('ins_roth').innerHTML = '<strong>'+fmt(roth*12)+'</strong>/yr · tax-free growth'; }
+  el('stat_tsp').textContent = tsp>=(inc*0.05) ? '✓ Match met' : '↑ Add '+(fmt(inc*0.05-tsp));
+  el('stat_tsp').style.color = tsp>=(inc*0.05) ? 'var(--green)' : 'var(--red)';
 
+  // Transport subtotal
+  const car=v('carPayment'), ins=v('insurance'), gas2=v('gas');
+  const trTot = car+ins+gas2;
+  el('trTotal').textContent = fmt(trTot);
+  el('trWk').textContent    = trTot>0 ? '$'+wk(trTot) : '—';
+  el('trPct').textContent   = inc>0 ? (trTot/inc*100).toFixed(1)+'%' : '—';
 
-  // ── UPDATE REC STRIP ──
-  // Housing std avg 28%, Food std avg 13%
-  const hFreedEl = document.getElementById('rs_housing_freed');
-  if (hFreedEl) hFreedEl.textContent = '$' + Math.round(income*0.28).toLocaleString();
-  const fFreedEl = document.getElementById('rs_food_freed');
-  if (fFreedEl) fFreedEl.textContent = '$' + Math.round(income*0.13).toLocaleString();
-  const totFreedEl = document.getElementById('rs_total_freed');
-  if (totFreedEl) totFreedEl.textContent = '$' + Math.round(income*0.41).toLocaleString();
+  // Car loan
+  const bal=v('carLoanBal'), rate=v('carLoanRate'), minPmt=v('carPayment'), extra=v('carExtra');
+  if(bal>0 && rate>0 && minPmt>0){
+    const mr = rate/100/12;
+    const calcMonths = (b,pmt) => { let m=0,b2=b; while(b2>0&&m<600){b2=b2*(1+mr)-pmt;m++;} return m; };
+    const moBase  = calcMonths(bal, minPmt);
+    const moExtra = extra>0 ? calcMonths(bal, minPmt+extra) : null;
+    const intBase = Math.round(minPmt*moBase - bal);
+    el('carBalance').textContent  = fmt(bal);
+    el('carMonths').textContent   = moBase+' months ('+Math.round(moBase/12*10)/10+' yrs) · '+fmt(intBase)+' interest';
+    el('carMonthsExtra').textContent = moExtra ? (moBase-moExtra)+' months sooner! '+fmt(minPmt*moBase - (minPmt+extra)*moExtra)+' saved in interest' : 'Enter extra payment to see savings';
+    el('ins_car').innerHTML = '<strong>'+moBase+' mo</strong> payoff'+(moExtra?'<br><span class="hi">'+moExtra+' mo with extra</span>':'');
+  } else {
+    el('carBalance').textContent = '—';
+    el('carMonths').textContent  = 'Enter loan details above';
+    el('carMonthsExtra').textContent = '—';
+    el('ins_car').textContent = 'Enter loan details';
+  }
+  // Gas miles
+  const gasBudget = gas2*0.9;
+  const mpg=28, pricePerGal=3.30;
+  const miles = Math.round(gasBudget/pricePerGal*mpg);
+  if(gas2>0) el('ins_gas').innerHTML='~<strong>'+miles.toLocaleString()+'</strong> miles/mo at $3.30/gal (90% of budget)';
 
-  const recPcts = { savings:0.10, invest:0.08, transp:0.19, personal:0.14, giving:0.03 };
-  const recTotal = Object.values(recPcts).reduce((a,b)=>a+b,0);
-  const recRemPct = Math.max(0, 1 - recTotal);
-  Object.entries(recPcts).forEach(([k,p]) => {
-    const el = document.getElementById('rs_' + k);
-    if (el) el.textContent = '$' + Math.round(income * p).toLocaleString();
-  });
-  const rsRem = document.getElementById('rs_rem_amt');
-  const rsRemPct = document.getElementById('rs_rem_pct');
-  if (rsRem) rsRem.textContent = '$' + Math.round(income * recRemPct).toLocaleString();
-  if (rsRemPct) rsRemPct.textContent = Math.round(recRemPct * 100) + '%';
+  // Personal subtotal
+  const perTot = v('phone')+v('personal')+v('entertainment')+v('clothing');
+  el('perTotal').textContent = fmt(perTot);
+  el('perWk').textContent    = perTot>0 ? '$'+wk(perTot) : '—';
+  el('perPct').textContent   = inc>0 ? (perTot/inc*100).toFixed(1)+'%' : '—';
 
-  // ── HOUSING/FOOD FREED AMOUNTS ──
-  // National avg rent ~$1,500, food ~$400 — what Army saves Joshua
-  const natRent = 1500;
-  const natFood = 400;
-  const hFree = document.getElementById('housingFreed');
-  if (hFree) hFree.innerHTML = '~$' + natRent.toLocaleString() + '<small>/ mo freed</small>';
-  const fFree = document.getElementById('foodFreedAmt');
-  if (fFree) fFree.textContent = '~$' + Math.round(income*0.10).toLocaleString() + '–' + Math.round(income*0.15).toLocaleString();
+  // Savings subtotal (emerg monthly)
+  el('savTotal').textContent = fmt(emergMonthly);
+  el('savWk').textContent    = emergMonthly>0 ? '$'+wk(emergMonthly) : '—';
+  el('savPct').textContent   = inc>0 ? (emergMonthly/inc*100).toFixed(1)+'%' : '—';
 
-  // ── RUNNING BALANCE ──
-  const wk = n => Math.round(n * 12 / 52);
-  const fmt = n => (n >= 0 ? '$' : '-$') + Math.abs(Math.round(n)).toLocaleString();
-  const fmtWk = n => '/ wk ' + fmt(wk(n));
-  const setColor = (id, amt) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.classList.remove('healthy','warning','danger');
-    if (amt > income * 0.2) el.classList.add('healthy');
-    else if (amt > 0)        el.classList.add('warning');
-    else                     el.classList.add('danger');
+  // RUNNING BALANCES
+  const rb = (id, wkId, amt) => {
+    const e=el(id), w=el(wkId);
+    if(!e) return;
+    e.textContent = fmt(amt);
+    e.style.color = amt>inc*0.2?'#6EE787':amt>0?'#F5C000':'#FF6B6B';
+    if(w) w.textContent='/ wk $'+Math.abs(wk(amt));
   };
+  const h_cost  = v('housing')+v('food');
+  const s_cost  = emergMonthly;
+  const i_cost  = invTot;
+  const tr_cost = trTot;
+  const p_cost  = perTot;
+  const g_cost  = v('charity');
 
-  const housing_cost = (parseFloat(document.getElementById('housing').value)||0) + (parseFloat(document.getElementById('food').value)||0);
-  const savings_cost = (parseFloat(document.getElementById('carSavings').value)||0) + (parseFloat(document.getElementById('emerg').value)||0);
-  const invest_cost  = (parseFloat(document.getElementById('tsp').value)||0) + (parseFloat(document.getElementById('roth').value)||0);
-  const transp_cost  = (parseFloat(document.getElementById('carPayment').value)||0) + (parseFloat(document.getElementById('insurance').value)||0) + (parseFloat(document.getElementById('gas').value)||0);
-  const personal_cost= (parseFloat(document.getElementById('personal').value)||0) + (parseFloat(document.getElementById('entertainment').value)||0) + (parseFloat(document.getElementById('phone').value)||0) + (parseFloat(document.getElementById('clothing').value)||0);
-  const charity_cost = (parseFloat(document.getElementById('charity').value)||0);
+  rb('rb_housing', 'rb_housing_wk', inc - h_cost);
+  rb('rb_savings', 'rb_savings_wk', inc - h_cost - s_cost);
+  rb('rb_invest',  'rb_invest_wk',  inc - h_cost - s_cost - i_cost);
+  rb('rb_transp',  'rb_transp_wk',  inc - h_cost - s_cost - i_cost - tr_cost);
+  rb('rb_personal','rb_personal_wk',inc - h_cost - s_cost - i_cost - tr_cost - p_cost);
+  rb('rb_giving',  'rb_giving_wk',  inc - h_cost - s_cost - i_cost - tr_cost - p_cost - g_cost);
 
-  let running = income;
-  const sections = [
-    ['housing', housing_cost],
-    ['savings', savings_cost],
-    ['invest',  invest_cost],
-    ['transp',  transp_cost],
-    ['personal',personal_cost],
-    ['charity', charity_cost],
-  ];
-  sections.forEach(([key, cost]) => {
-    running -= cost;
-    const amtEl = document.getElementById('rb_' + key + '_amt');
-    const wkEl  = document.getElementById('rb_' + key + '_wk');
-    if (amtEl) amtEl.textContent = fmt(running);
-    if (wkEl)  wkEl.textContent  = fmtWk(running);
-    setColor('rb_' + key, running);
-  });
+  const totalAll = h_cost+s_cost+i_cost+tr_cost+p_cost+g_cost;
+  const rem = inc - totalAll;
+  const pctUsed = inc>0 ? (totalAll/inc*100) : 0;
 
-  // Sticky bar
-  const stickyAmt = document.getElementById('stickyAmt');
-  const stickyWk  = document.getElementById('stickyWk');
-  const stickyPct = document.getElementById('stickyPct');
-  if (stickyAmt) {
-    stickyAmt.textContent = fmt(remaining);
-    stickyAmt.style.color = remaining > income * 0.2 ? '#6EE787' : remaining > 0 ? '#F5C000' : '#FF6B6B';
-  }
-  if (stickyWk)  stickyWk.textContent  = '/ wk ' + fmt(wk(remaining));
-  if (stickyPct) stickyPct.textContent  = pctLeft + '% unallocated';
+  el('totalBudgeted').textContent = fmt(totalAll);
+  el('totalWk').textContent = '$'+wk(totalAll);
+  el('totalPct').textContent = pctUsed.toFixed(1)+'%';
+  el('remaining').textContent = fmt(rem);
+  el('remainWk').textContent = '$'+Math.abs(wk(rem));
+  el('remainPct').textContent = inc>0 ? (rem/inc*100).toFixed(1)+'%' : '—';
 
-  updateGoals();
-  autoSave();
-}
+  const barW = Math.min(100, Math.max(0, pctUsed));
+  el('progBar').style.width = barW+'%';
+  el('progLabel').textContent = pctUsed.toFixed(1)+'%';
 
-function updateGoals() {
-  const income     = parseFloat(document.getElementById('income').value) || 0;
-  const emergSaved = parseFloat(document.getElementById('emergSaved').value) || 0;
-  const emergGoal  = 1000;
-  const emergRem   = Math.max(0, emergGoal - emergSaved);
-  const emergMet   = emergSaved >= emergGoal;
+  // STICKY
+  const sa=el('stickyAmt');
+  if(sa){ sa.textContent=fmt(rem); sa.style.color=rem>inc*0.2?'#6EE787':rem>0?'#F5C000':'#FF6B6B'; }
+  el('stickyWk').textContent = '/ wk $'+Math.abs(wk(rem));
+  el('stickyPct').textContent = inc>0?(rem/inc*100).toFixed(1)+'% unallocated':'—';
 
-  // Emergency fund progress bar
-  const emergPct = Math.min(100, emergSaved / emergGoal * 100).toFixed(0);
-  const emergBarEl = document.getElementById('emergBar');
-  if (emergBarEl) emergBarEl.style.width = emergPct + '%';
-  const emergPctEl = document.getElementById('emergPct');
-  if (emergPctEl) emergPctEl.textContent = emergPct + '%';
-  const emergRemEl = document.getElementById('emergRemText');
-  if (emergRemEl) emergRemEl.textContent = emergMet ? 'Goal met! 🎉' : '$' + emergRem.toLocaleString() + ' remaining';
+  // NEXT GOAL
+  const ng=v('nextGoalAmt');
+  const ngBar=el('nextGoalBar');
+  if(ngBar) ngBar.style.width=(emergMet&&ng>0?Math.min(100,rem/ng*100):0)+'%';
+  el('nextGoalETA').textContent = emergMet&&ng>0&&rem>0 ? Math.ceil(ng/rem)+' months away' : 'Unlocks after emergency fund';
 
-  // Update current/need display in table
-  const ecd = document.getElementById('emergCurrentDisplay');
-  const end = document.getElementById('emergNeedDisplay');
-  if (ecd) ecd.textContent = '$' + emergSaved.toLocaleString();
-  if (end) end.textContent = emergMet ? '✓ Met!' : '$' + emergRem.toLocaleString() + ' to go';
-
-  // ── EVERY DOLLAR LOGIC ──
-  // 1. Calculate bills total (everything except savings/invest)
-  const bills = ['housing','food','carPayment','insurance','gas','personal','entertainment','phone','clothing','charity']
-    .reduce((s,f) => s + (parseFloat(document.getElementById(f)?.value)||0), 0);
-
-  // 2. Leftover after bills
-  const leftover = Math.max(0, income - bills);
-
-  // 3. Emergency fund gets it all first
-  let toEmerg = 0, toNextGoal = 0, toInvest = 0;
-  if (!emergMet) {
-    toEmerg = Math.min(leftover, emergRem);
-    // Any left after emergency fund goes to investments
-    toInvest = Math.max(0, leftover - toEmerg);
-  } else {
-    // Emergency met — leftover goes to investments first, then next goal
-    const nextGoalAmt = parseFloat(document.getElementById('nextGoalAmt')?.value) || 0;
-    toInvest = Math.min(leftover, leftover); // all goes to invest for now
-    toNextGoal = 0; // after invest is maxed (user can define)
-    // Simple split: all leftover to invest unless next goal defined
-    toEmerg = 0;
-    toNextGoal = leftover;
-  }
-
-  // Update emergency auto amount in table
-  const emergAutoEl = document.getElementById('emergAutoAmt');
-  if (emergAutoEl) {
-    if (emergMet) {
-      emergAutoEl.textContent = '$1,000';
-      emergAutoEl.style.color = '#2E6B3E';
-    } else {
-      emergAutoEl.textContent = '$' + Math.round(toEmerg).toLocaleString();
-      emergAutoEl.style.color = 'var(--navy)';
-    }
-  }
-  const wEmergEl = document.getElementById('w_emerg');
-  if (wEmergEl) wEmergEl.textContent = toEmerg > 0 ? '$' + Math.round(toEmerg*12/52) : (emergMet ? '✓' : '—');
-
-  const emergPctBadge = document.getElementById('emergPctBadge');
-  if (emergPctBadge) {
-    if (emergMet) { emergPctBadge.textContent = '100%'; emergPctBadge.className = 'pct-badge green'; }
-    else { emergPctBadge.textContent = income > 0 ? (toEmerg/income*100).toFixed(1)+'%' : '—'; emergPctBadge.className = 'pct-badge'; }
-  }
-  const emergStatEl = document.getElementById('emergStatus');
-  if (emergStatEl) {
-    emergStatEl.textContent = emergMet ? '✓ Goal Met!' : '↑ Priority #1';
-    emergStatEl.style.color = emergMet ? '#2E6B3E' : 'var(--navy)';
-  }
-
-  // Next goal card + table row
-  const nextGoalName = document.getElementById('nextGoalName')?.value || 'Next Goal';
-  const nextGoalAmt  = parseFloat(document.getElementById('nextGoalAmt')?.value) || 500;
-  const nextGoalRow  = document.getElementById('nextGoalRow');
-  const nextGoalTableName = document.getElementById('nextGoalTableName');
-
-  if (emergMet) {
-    if (nextGoalRow) nextGoalRow.style.display = '';
-    if (nextGoalTableName) nextGoalTableName.textContent = '🎯 ' + (nextGoalName || 'Next Goal');
-    const ngAutoEl = document.getElementById('nextGoalAutoAmt');
-    if (ngAutoEl) ngAutoEl.textContent = '$' + Math.round(toNextGoal).toLocaleString();
-    const ngWkEl = document.getElementById('w_nextGoal');
-    if (ngWkEl) ngWkEl.textContent = toNextGoal > 0 ? '$' + Math.round(toNextGoal*12/52) : '—';
-    const ngPctEl = document.getElementById('nextGoalPct');
-    const ngEtaEl = document.getElementById('nextGoalETA');
-    const ngPctBadge = document.getElementById('nextGoalPctBadge');
-    if (ngPctBadge) ngPctBadge.textContent = income > 0 ? (toNextGoal/income*100).toFixed(1)+'%' : '—';
-    if (ngPctEl) ngPctEl.textContent = (toNextGoal/nextGoalAmt*100).toFixed(0) + '%';
-    if (ngEtaEl && toNextGoal > 0) {
-      const months = Math.ceil(nextGoalAmt / toNextGoal);
-      ngEtaEl.textContent = months + ' month' + (months === 1 ? '' : 's') + ' to reach goal';
-    }
-  } else {
-    if (nextGoalRow) nextGoalRow.style.display = 'none';
-  }
-
-  // Update invest display card
-  const invDispEl = document.getElementById('investAutoDisplay');
-  if (invDispEl) {
-    if (!emergMet) {
-      invDispEl.textContent = 'Unlocks after $1,000 emergency fund';
-      invDispEl.style.color = 'var(--muted)';
-    } else {
-      const tsp = parseFloat(document.getElementById('tsp')?.value)||0;
-      const roth = parseFloat(document.getElementById('roth')?.value)||0;
-      invDispEl.textContent = '$' + (tsp+roth).toLocaleString() + '/mo flowing to investments';
-      invDispEl.style.color = 'var(--navy)';
-    }
-  }
-
-  // Savings subtotal
-  const savTotal = toEmerg + (emergMet ? toNextGoal : 0);
-  const savTotEl = document.getElementById('savingsTotal');
-  if (savTotEl) savTotEl.textContent = '$' + Math.round(savTotal).toLocaleString();
-  const savPctEl = document.getElementById('savingsTotalPct');
-  if (savPctEl) savPctEl.textContent = income > 0 ? (savTotal/income*100).toFixed(1)+'%' : '—';
-  const wSavEl = document.getElementById('wSavings');
-  if (wSavEl) wSavEl.textContent = savTotal > 0 ? '$' + Math.round(savTotal*12/52) : '—';
-
-  // ── MOTIVATOR SECTION ──
-  updateMotivator(emergSaved, emergMet, nextGoalName, nextGoalAmt, toNextGoal);
+  // MOTIVATOR
+  updateMotivator(emergSaved, emergMet, emergRem, emergMonthly, emergExtra, v('nextGoalAmt'), el('nextGoalName')?.value, invTot);
 
   autoSave();
 }
 
-function updateMotivator(emergSaved, emergMet, nextGoalName, nextGoalAmt, monthlyToGoal) {
-  const motEl = document.getElementById('motivatorSection');
-  if (!motEl) return;
+function updateMotivator(eS, eMet, eRem, eMo, eEx, ngAmt, ngName, invTot){
+  const mot = el('motivator'); if(!mot) return;
+  const pct = Math.min(100, eS/1000*100).toFixed(0);
+  const moBase = eMo>0 ? Math.ceil(eRem/eMo) : null;
+  const moExtra= (eMo+eEx)>0 ? Math.ceil(eRem/(eMo+eEx)) : null;
 
-  const emergPct = Math.min(100, emergSaved / 1000 * 100).toFixed(0);
-  const months = monthlyToGoal > 0 && nextGoalAmt > 0 ? Math.ceil(nextGoalAmt / monthlyToGoal) : null;
-
-  motEl.innerHTML = `
-    <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; letter-spacing:4px; text-transform:uppercase; color:var(--red); margin-bottom:16px;">Your Progress Report</div>
-
-    <div style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom:20px;">
-      <div style="flex:1; min-width:180px; background:linear-gradient(135deg,#f0fff4,#fff); border:1px solid #2E6B3E; border-radius:4px; padding:16px;">
-        <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:#2E6B3E; margin-bottom:4px;">✅ Accomplished</div>
-        <div style="font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:700; color:#2E6B3E;">Car Down Payment</div>
-        <div style="font-size:12px; color:#555; margin-top:2px;">$1,750 saved last month · Goal crushed</div>
+  mot.innerHTML = `
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--red);margin-bottom:14px;">Your Progress Report</div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;">
+      <div style="flex:1;min-width:160px;background:linear-gradient(135deg,#f0fff4,#fff);border:1px solid var(--green);border-radius:4px;padding:14px;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--green);margin-bottom:3px;">✅ Accomplished</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:var(--green);">Car Down Payment</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;">$1,750 saved last month · Mission complete</div>
       </div>
-      <div style="flex:1; min-width:180px; background:var(--white); border:1px solid var(--border); border-radius:4px; padding:16px;">
-        <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--navy); margin-bottom:4px;">🛡️ In Progress</div>
-        <div style="font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:700; color:var(--navy);">Emergency Fund</div>
-        <div style="height:6px; background:#eee; border-radius:3px; margin:8px 0;">
-          <div style="width:${emergPct}%; height:100%; background:var(--navy); border-radius:3px;"></div>
+      <div style="flex:1;min-width:160px;background:var(--white);border:1px solid var(--border);border-radius:4px;padding:14px;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--navy);margin-bottom:3px;">🛡️ In Progress</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:var(--navy);">Emergency Fund</div>
+        <div style="height:5px;background:#eee;border-radius:3px;margin:6px 0;"><div style="width:${pct}%;height:100%;background:var(--navy);border-radius:3px;"></div></div>
+        <div style="font-size:11px;color:var(--muted);">$${eS.toLocaleString()} of $1,000 · ${pct}% complete</div>
+        ${moBase ? `<div style="font-size:10px;color:var(--navy);margin-top:4px;"><strong>${moBase} months</strong> at $${eMo}/mo${eEx>0?` · <span style="color:var(--green)">${moExtra} months with extra $${eEx}</span>`:''}</div>` : ''}
+      </div>
+    </div>
+    <div style="background:var(--navy);border-radius:4px;padding:18px;text-align:center;">
+      ${eMet ? `
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;">What's Your Next Goal?</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1rem;color:rgba(255,255,255,.75);margin-bottom:10px;">Emergency fund complete 🎉 — every extra dollar is yours to direct.</div>
+        <div style="display:flex;align-items:center;gap:8px;justify-content:center;flex-wrap:wrap;">
+          <span style="font-size:10px;color:rgba(255,255,255,.4);">Saving for</span>
+          <strong style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--gold);">${ngName||'—'}</strong>
+          <span style="font-size:10px;color:rgba(255,255,255,.4);">${ngAmt?'($'+ngAmt.toLocaleString()+')':''}</span>
         </div>
-        <div style="font-size:12px; color:#555;">$${emergSaved.toLocaleString()} of $1,000 · ${emergPct}% complete</div>
-      </div>
-    </div>
-
-    ${emergMet ? `
-    <div style="background:var(--navy); border-radius:4px; padding:20px; text-align:center;">
-      <div style="font-family:'Barlow Condensed',sans-serif; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); margin-bottom:8px;">What's Your Next Goal?</div>
-      <div style="font-family:'Cormorant Garamond',serif; font-size:1.1rem; color:rgba(255,255,255,0.8); margin-bottom:12px;">Emergency fund complete 🎉 — every extra dollar is now yours to direct.</div>
-      <div style="display:flex; align-items:center; gap:10px; justify-content:center; flex-wrap:wrap;">
-        <span style="font-family:'Barlow Condensed',sans-serif; font-size:11px; color:rgba(255,255,255,0.5); letter-spacing:2px;">I want to save for</span>
-        <strong style="font-family:'Cormorant Garamond',serif; font-size:1.3rem; color:var(--gold);">${nextGoalName || '—'}</strong>
-        <span style="font-family:'Barlow Condensed',sans-serif; font-size:11px; color:rgba(255,255,255,0.5); letter-spacing:2px;">($${(nextGoalAmt||0).toLocaleString()})</span>
-      </div>
-      ${months ? `<div style="font-size:12px; color:rgba(255,255,255,0.5); margin-top:8px;">At this rate: ${months} month${months===1?'':'s'} away</div>` : ''}
-    </div>
-    ` : `
-    <div style="background:var(--navy); border-radius:4px; padding:20px; text-align:center;">
-      <div style="font-family:'Barlow Condensed',sans-serif; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); margin-bottom:8px;">Focus: Complete the Emergency Fund</div>
-      <div style="font-family:'Cormorant Garamond',serif; font-size:1.1rem; color:rgba(255,255,255,0.8);">Every dollar left over goes here. Once you hit $1,000 — the world opens up.</div>
-      <div style="font-size:12px; color:rgba(255,255,255,0.5); margin-top:8px;">${1000 - emergSaved > 0 ? '$' + (1000 - emergSaved).toLocaleString() + ' to go' : ''}</div>
-    </div>
-    `}
-  `;
+      ` : `
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;">Current Focus</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1rem;color:rgba(255,255,255,.75);">Complete the $1,000 emergency fund first. Every dollar left over goes here.</div>
+        ${eRem>0?`<div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:6px;">${fmt(eRem)} to go</div>`:''}
+      `}
+    </div>`;
 }
 
-loadAutosave();
+// ── SNAPSHOTS ──
+function saveSnap(key){
+  const fields = SNAPS[key]||[];
+  const data = { income: v('income') };
+  fields.forEach(f=>{ const e=el(f); if(e) data[f]=e.value; });
+  const now = new Date();
+  const label = now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+' '+now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+  const id = key+'_'+now.getTime();
+  const all = JSON.parse(localStorage.getItem('j_snaps')||'[]');
+  all.unshift({id,section:key,label,data});
+  if(all.length>20) all.pop();
+  localStorage.setItem('j_snaps', JSON.stringify(all));
+  const b=el('lb_'+key);
+  if(b){b.textContent='Locked ✓';b.classList.add('locked');setTimeout(()=>{b.textContent='Lock In';b.classList.remove('locked');},2000);}
+  renderChips();
+}
+
+function loadSnap(id){
+  const all=JSON.parse(localStorage.getItem('j_snaps')||'[]');
+  const s=all.find(x=>x.id===id); if(!s) return;
+  if(!confirm('Load snapshot "'+s.label+'" for '+s.section+'?')) return;
+  Object.entries(s.data).forEach(([k,v2])=>{ const e=el(k); if(e) e.value=v2; });
+  recalc();
+}
+
+function delSnap(id,e){ e.stopPropagation();
+  const all=JSON.parse(localStorage.getItem('j_snaps')||'[]');
+  localStorage.setItem('j_snaps',JSON.stringify(all.filter(x=>x.id!==id)));
+  renderChips();
+}
+
+function renderChips(){
+  const all=JSON.parse(localStorage.getItem('j_snaps')||'[]');
+  const w=el('snapChips'); if(!w) return;
+  if(!all.length){w.innerHTML='<span class="no-snaps">No saves yet — use Lock In buttons in each section</span>';return;}
+  w.innerHTML=all.map(s=>`<span class="snap-chip" onclick="loadSnap('${s.id}')"><span style="color:var(--red);font-size:9px;margin-right:2px;">${s.section}</span>${s.label}<span class="cx" onclick="delSnap('${s.id}',event)">×</span></span>`).join('');
+}
+
+// ── AUTO SAVE / LOAD ──
+function autoSave(){
+  const fields=['income','housing','food','emergSaved','emergMonthly','emergExtra','tsp','roth','carPayment','carExtra','carLoanBal','carLoanRate','insurance','gas','phone','personal','entertainment','clothing','charity','nextGoalName','nextGoalAmt'];
+  const d={};
+  fields.forEach(f=>{const e=el(f);if(e)d[f]=e.value;});
+  localStorage.setItem('j_auto',JSON.stringify(d));
+}
+
+function autoLoad(){
+  const s=localStorage.getItem('j_auto'); if(!s) return;
+  try{
+    const d=JSON.parse(s);
+    Object.entries(d).forEach(([k,v2])=>{const e=el(k);if(e)e.value=v2;});
+  }catch(e){}
+}
+
+autoLoad();
 renderChips();
 recalc();
-updateGoals();
 </script>
 </body>
 </html>
