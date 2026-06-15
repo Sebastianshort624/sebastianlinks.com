@@ -507,7 +507,7 @@
       <tr>
         <td><div class="cat-name">Car Down Payment Fund</div><div class="cat-note">Goal: $1,750</div></td>
         <td><input class="amt-input" type="number" id="carSavings" value="200" min="0" oninput="recalc()"></td>
-        <td class="pct-rec">5–10%</td>
+        <td class="pct-rec">8–10%</td>
         <td><span class="pct-badge" id="carSavingsPct">9.5%</span></td>
         <td><span id="carSavingsStatus" style="font-size:11px;"></span></td>
       </tr>
@@ -521,7 +521,7 @@
       <tr class="subtotal">
         <td>Savings Subtotal</td>
         <td class="monthly-disp" id="savingsTotal">$300</td>
-        <td class="pct-rec">8–15%</td>
+        <td class="pct-rec">10–15%</td>
         <td id="savingsTotalPct">14.3%</td>
         <td></td>
       </tr>
@@ -562,14 +562,14 @@
       <tr>
         <td><div class="cat-name">Car Insurance</div><div class="cat-note">Added to mom's policy</div></td>
         <td><input class="amt-input" type="number" id="insurance" value="150" min="0" oninput="recalc()"></td>
-        <td class="pct-rec">5–7%</td>
+        <td class="pct-rec">7% <span style="color:var(--muted);font-size:10px;">(mom)</span></td>
         <td><span class="pct-badge" id="insurancePct">7.1%</span></td>
         <td><span id="insuranceStatus" style="font-size:11px;"></span></td>
       </tr>
       <tr>
         <td><div class="cat-name">Gas &amp; Maintenance</div><div class="cat-note">Fuel, oil, tires</div></td>
         <td><input class="amt-input" type="number" id="gas" value="50" min="0" oninput="recalc()"></td>
-        <td class="pct-rec">2–3%</td>
+        <td class="pct-rec">2%</td>
         <td><span class="pct-badge" id="gasPct">2.4%</span></td>
         <td><span id="gasStatus" style="font-size:11px;"></span></td>
       </tr>
@@ -586,28 +586,28 @@
       <tr>
         <td><div class="cat-name">Personal Care</div><div class="cat-note">Haircuts, hygiene</div></td>
         <td><input class="amt-input" type="number" id="personal" value="75" min="0" oninput="recalc()"></td>
-        <td class="pct-rec">2–4%</td>
+        <td class="pct-rec">3%</td>
         <td><span class="pct-badge" id="personalPct">3.6%</span></td>
         <td><span id="personalStatus" style="font-size:11px;"></span></td>
       </tr>
       <tr>
         <td><div class="cat-name">Entertainment</div><div class="cat-note">Eating out, subscriptions, fun</div></td>
         <td><input class="amt-input" type="number" id="entertainment" value="150" min="0" oninput="recalc()"></td>
-        <td class="pct-rec">5–8%</td>
+        <td class="pct-rec">7%</td>
         <td><span class="pct-badge" id="entertainmentPct">7.1%</span></td>
         <td><span id="entertainmentStatus" style="font-size:11px;"></span></td>
       </tr>
       <tr>
         <td><div class="cat-name">Phone</div><div class="cat-note">T-Mobile military plan</div></td>
         <td><input class="amt-input" type="number" id="phone" value="50" min="0" oninput="recalc()"></td>
-        <td class="pct-rec">1–3%</td>
+        <td class="pct-rec">2%</td>
         <td><span class="pct-badge" id="phonePct">2.4%</span></td>
         <td><span id="phoneStatus" style="font-size:11px;"></span></td>
       </tr>
       <tr>
         <td><div class="cat-name">Clothing</div><div class="cat-note">Civilian wear (uniform provided)</div></td>
         <td><input class="amt-input" type="number" id="clothing" value="50" min="0" oninput="recalc()"></td>
-        <td class="pct-rec">1–3%</td>
+        <td class="pct-rec">2%</td>
         <td><span class="pct-badge" id="clothingPct">2.4%</span></td>
         <td><span id="clothingStatus" style="font-size:11px;"></span></td>
       </tr>
@@ -667,17 +667,17 @@
 const REC = {
   housing:       [0, 0],
   food:          [0, 0],
-  carSavings:    [5, 10],
+  carSavings:    [8, 10],
   emerg:         [3, 5],
   tsp:           [5, 10],
   roth:          [3, 5],
   carPayment:    [0, 12],
   insurance:     [5, 7],
-  gas:           [2, 3],
-  personal:      [2, 4],
-  entertainment: [5, 8],
-  phone:         [1, 3],
-  clothing:      [1, 3],
+  gas:           [2, 2],
+  personal:      [3, 3],
+  entertainment: [7, 7],
+  phone:         [2, 2],
+  clothing:      [2, 2],
   charity:       [10, 10],
 };
 
