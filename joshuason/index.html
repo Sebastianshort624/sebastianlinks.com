@@ -461,6 +461,50 @@
   }
 
 
+
+  /* ── CELEBRATION BANNERS ── */
+  .celebrate-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, #0f2027, #1B2A4A);
+    border: 1px solid var(--gold);
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin-top: 6px;
+  }
+  .celebrate-banner .cel-icon { font-size: 1.4rem; flex-shrink: 0; }
+  .celebrate-banner .cel-text { flex: 1; }
+  .celebrate-banner .cel-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1px;
+  }
+  .celebrate-banner .cel-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    color: rgba(255,255,255,0.85);
+  }
+  .celebrate-banner .cel-amount {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #6EE787;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .celebrate-banner .cel-amount small {
+    display: block;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
   /* ── RUNNING BALANCE BAR ── */
   .running-bar {
     display: flex;
@@ -622,7 +666,15 @@
       <!-- HOUSING & FOOD -->
       <tr class="group-header"><td colspan="6" style="position:relative;">Housing &amp; Food — Base Life<button class="sec-save-btn" onclick="saveSection('housing')" id="btn_housing">Lock In</button></td></tr>
       <tr>
-        <td><div class="cat-name">Housing</div><div class="cat-note">Lives on base — BAH included</div></td>
+        <td><div class="cat-name">Housing</div>
+          <div class="celebrate-banner">
+            <div class="cel-icon">🏆</div>
+            <div class="cel-text">
+              <div class="cel-title">Army Benefit — Freed Up</div>
+              <div class="cel-sub">BAH covers housing in full</div>
+            </div>
+            <div class="cel-amount" id="housingFreed">—<small>/ mo freed</small></div>
+          </div></td>
         <td><input class="amt-input" type="number" id="housing" value="0" min="0" oninput="recalc()"></td>
         <td style="text-align:center;"><span id="w_housing" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
         <td class="pct-rec">0%</td>
@@ -630,7 +682,15 @@
         <td><span id="housingStatus" style="font-size:11px; color:var(--green);">✓ Army Covered</span></td>
       </tr>
       <tr>
-        <td><div class="cat-name">Food</div><div class="cat-note">Dining facility on base</div></td>
+        <td><div class="cat-name">Food</div>
+          <div class="celebrate-banner">
+            <div class="cel-icon">🍽️</div>
+            <div class="cel-text">
+              <div class="cel-title">Army Benefit — Freed Up</div>
+              <div class="cel-sub">Dining facility on base</div>
+            </div>
+            <div class="cel-amount" id="foodFreed">~$400<small>/ mo freed</small></div>
+          </div></td>
         <td><input class="amt-input" type="number" id="food" value="0" min="0" oninput="recalc()"></td>
         <td style="text-align:center;"><span id="w_food" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
         <td class="pct-rec">0%</td>
@@ -644,7 +704,16 @@
       <!-- SAVINGS -->
       <tr class="group-header"><td colspan="6" style="position:relative;">Savings &amp; Emergency<button class="sec-save-btn" onclick="saveSection('savings')" id="btn_savings">Lock In</button></td></tr>
       <tr>
-        <td><div class="cat-name">Car Down Payment Fund</div><div class="cat-note" id="carSavingsNote">Goal: $1,750</div></td>
+        <td><div class="cat-name">Car Down Payment Fund</div>
+          <div id="carGoalBanner" style="display:none;" class="celebrate-banner">
+            <div class="cel-icon">🎯</div>
+            <div class="cel-text">
+              <div class="cel-title">Goal Achieved — Freed Up!</div>
+              <div class="cel-sub">$200/mo now available to redirect</div>
+            </div>
+            <div class="cel-amount" id="carFreedAmt">$200<small>/ mo freed</small></div>
+          </div>
+          <div class="cat-note" id="carSavingsNote">Goal: $1,750</div></td>
         <td><input class="amt-input" type="number" id="carSavings" value="200" min="0" oninput="recalc()"></td>
         <td style="text-align:center;"><span id="w_carSavings" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
         <td class="pct-rec">8–10%</td>
@@ -652,7 +721,16 @@
         <td><span id="carSavingsStatus" style="font-size:11px;"></span></td>
       </tr>
       <tr>
-        <td><div class="cat-name">Emergency Fund</div><div class="cat-note" id="emergNote">Goal: $1,000 · then redirect</div></td>
+        <td><div class="cat-name">Emergency Fund</div>
+          <div id="emergGoalBanner" style="display:none;" class="celebrate-banner">
+            <div class="cel-icon">🛡️</div>
+            <div class="cel-text">
+              <div class="cel-title">Goal Achieved — Freed Up!</div>
+              <div class="cel-sub">$100/mo now available to redirect</div>
+            </div>
+            <div class="cel-amount" id="emergFreedAmt">$100<small>/ mo freed</small></div>
+          </div>
+          <div class="cat-note" id="emergNote">Goal: $1,000 · then redirect</div></td>
         <td><input class="amt-input" type="number" id="emerg" value="100" min="0" oninput="recalc()"></td>
         <td style="text-align:center;"><span id="w_emerg" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
         <td class="pct-rec">3–5%</td>
@@ -1062,6 +1140,11 @@ function recalc() {
   document.getElementById('progressLabel').textContent = pctUsed + '%';
 
 
+  // ── HOUSING/FOOD FREED AMOUNTS ──
+  const natRent = 1200; // approx national avg rent for single person
+  const hFree = document.getElementById('housingFreed');
+  if (hFree) hFree.innerHTML = '~$' + natRent.toLocaleString() + '<small>/ mo freed</small>';
+
   // ── RUNNING BALANCE ──
   const wk = n => Math.round(n * 12 / 52);
   const fmt = n => (n >= 0 ? '$' : '-$') + Math.abs(Math.round(n)).toLocaleString();
@@ -1149,30 +1232,50 @@ function updateGoals() {
   const carNote         = document.getElementById('carSavingsNote');
   const emergNote       = document.getElementById('emergNote');
 
+  const carBanner = document.getElementById('carGoalBanner');
   if (carGoalMet) {
-    if (carSavingsInput.value > 0) {
+    const prevVal = parseFloat(carSavingsInput.dataset.prev) || 200;
+    if (parseFloat(carSavingsInput.value) > 0) {
       carSavingsInput.dataset.prev = carSavingsInput.value;
       carSavingsInput.value = 0;
     }
-    if (carNote) { carNote.textContent = '✓ Goal met — freed up!'; carNote.style.color = 'var(--green)'; }
+    if (carNote) { carNote.style.display = 'none'; }
+    if (carBanner) {
+      carBanner.style.display = 'flex';
+      const fredEl = document.getElementById('carFreedAmt');
+      if (fredEl) fredEl.innerHTML = '$' + Math.round(prevVal) + '<small>/ mo freed</small>';
+      const subEl = carBanner.querySelector('.cel-sub');
+      if (subEl) subEl.textContent = '$' + Math.round(prevVal) + '/mo now available to redirect';
+    }
   } else {
-    if (carSavingsInput.dataset.prev && carSavingsInput.value == 0) {
+    if (carSavingsInput.dataset.prev && parseFloat(carSavingsInput.value) === 0) {
       carSavingsInput.value = carSavingsInput.dataset.prev;
     }
-    if (carNote) { carNote.textContent = 'Goal: $1,750'; carNote.style.color = ''; }
+    if (carNote)   { carNote.style.display = ''; carNote.textContent = 'Goal: $1,750'; }
+    if (carBanner) { carBanner.style.display = 'none'; }
   }
 
+  const emergBanner = document.getElementById('emergGoalBanner');
   if (emergGoalMet) {
-    if (emergInput.value > 0) {
+    const prevEmerg = parseFloat(emergInput.dataset.prev) || 100;
+    if (parseFloat(emergInput.value) > 0) {
       emergInput.dataset.prev = emergInput.value;
       emergInput.value = 0;
     }
-    if (emergNote) { emergNote.textContent = '✓ Goal met — freed up!'; emergNote.style.color = 'var(--green)'; }
+    if (emergNote)   { emergNote.style.display = 'none'; }
+    if (emergBanner) {
+      emergBanner.style.display = 'flex';
+      const eFreedEl = document.getElementById('emergFreedAmt');
+      if (eFreedEl) eFreedEl.innerHTML = '$' + Math.round(prevEmerg) + '<small>/ mo freed</small>';
+      const eSubEl = emergBanner.querySelector('.cel-sub');
+      if (eSubEl) eSubEl.textContent = '$' + Math.round(prevEmerg) + '/mo now available to redirect';
+    }
   } else {
-    if (emergInput.dataset.prev && emergInput.value == 0) {
+    if (emergInput.dataset.prev && parseFloat(emergInput.value) === 0) {
       emergInput.value = emergInput.dataset.prev;
     }
-    if (emergNote) { emergNote.textContent = 'Goal: $1,000 · then redirect'; emergNote.style.color = ''; }
+    if (emergNote)   { emergNote.style.display = ''; emergNote.textContent = 'Goal: $1,000 · then redirect'; }
+    if (emergBanner) { emergBanner.style.display = 'none'; }
   }
 
   recalc();
