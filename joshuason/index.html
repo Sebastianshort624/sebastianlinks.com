@@ -417,10 +417,9 @@
     border-bottom: 1px solid var(--border);
     padding: 10px 48px;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 12px;
-    flex-wrap: wrap;
+    gap: 8px;
   }
   .snapshots-label {
     font-family: 'Barlow Condensed', sans-serif;
@@ -528,7 +527,7 @@
 <!-- ══ SNAPSHOTS BAR ══ -->
 <div class="snapshots-bar">
   <span class="snapshots-label">Saved Snapshots</span>
-  <div id="snapshotChips"><span class="no-snaps">No saves yet — use the Save buttons in each section</span></div>
+  <div id="snapshotChips" style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center;"><span class="no-snaps">No saves yet — use the Save buttons in each section</span></div>
 </div>
 
 <!-- ══ PAGE BODY ══ -->
