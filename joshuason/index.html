@@ -150,14 +150,14 @@
   .goal-cards {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    margin-bottom: 36px;
+    gap: 10px;
+    margin-bottom: 24px;
   }
   .goal-card {
     background: var(--white);
     border: 1px solid var(--border);
     border-radius: 4px;
-    padding: 20px;
+    padding: 12px 16px;
     position: relative;
   }
   .goal-card::before {
@@ -199,11 +199,11 @@
   .gc-pct-text strong { color: var(--navy); }
   .gc-big {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 2.4rem;
+    font-size: 1.8rem;
     font-weight: 700;
     color: var(--navy);
     line-height: 1;
-    margin: 8px 0 4px;
+    margin: 4px 0 2px;
   }
 
   /* ── TABLE ── */
@@ -564,8 +564,9 @@
     <thead>
       <tr>
         <th style="width:32%; text-align:left;">Category</th>
-        <th>My Monthly $</th>
-        <th>Recommended %</th>
+        <th>Monthly $</th>
+        <th>Weekly $</th>
+        <th>Rec %</th>
         <th>My %</th>
         <th>Status</th>
       </tr>
@@ -573,10 +574,11 @@
     <tbody>
 
       <!-- HOUSING & FOOD -->
-      <tr class="group-header"><td colspan="5" style="position:relative;">Housing &amp; Food — Base Life<button class="sec-save-btn" onclick="saveSection('housing')" id="btn_housing">Lock In</button></td></tr>
+      <tr class="group-header"><td colspan="6" style="position:relative;">Housing &amp; Food — Base Life<button class="sec-save-btn" onclick="saveSection('housing')" id="btn_housing">Lock In</button></td></tr>
       <tr>
         <td><div class="cat-name">Housing</div><div class="cat-note">Lives on base — BAH included</div></td>
         <td><input class="amt-input" type="number" id="housing" value="0" min="0" oninput="recalc()"></td>
+        <td style="text-align:center;"><span id="w_housing" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
         <td class="pct-rec">0%</td>
         <td><span class="pct-badge green" id="housingPct">100%</span></td>
         <td><span id="housingStatus" style="font-size:11px; color:var(--green);">✓ Army Covered</span></td>
@@ -584,16 +586,18 @@
       <tr>
         <td><div class="cat-name">Food</div><div class="cat-note">Dining facility on base</div></td>
         <td><input class="amt-input" type="number" id="food" value="0" min="0" oninput="recalc()"></td>
+        <td style="text-align:center;"><span id="w_food" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
         <td class="pct-rec">0%</td>
         <td><span class="pct-badge green" id="foodPct">100%</span></td>
         <td><span id="foodStatus" style="font-size:11px; color:var(--green);">✓ Army Covered</span></td>
       </tr>
 
       <!-- SAVINGS -->
-      <tr class="group-header"><td colspan="5" style="position:relative;">Savings &amp; Emergency<button class="sec-save-btn" onclick="saveSection('savings')" id="btn_savings">Lock In</button></td></tr>
+      <tr class="group-header"><td colspan="6" style="position:relative;">Savings &amp; Emergency<button class="sec-save-btn" onclick="saveSection('savings')" id="btn_savings">Lock In</button></td></tr>
       <tr>
         <td><div class="cat-name">Car Down Payment Fund</div><div class="cat-note" id="carSavingsNote">Goal: $1,750</div></td>
         <td><input class="amt-input" type="number" id="carSavings" value="200" min="0" oninput="recalc()"></td>
+        <td style="text-align:center;"><span id="w_carSavings" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
         <td class="pct-rec">8–10%</td>
         <td><span class="pct-badge" id="carSavingsPct">9.5%</span></td>
         <td><span id="carSavingsStatus" style="font-size:11px;"></span></td>
@@ -601,6 +605,7 @@
       <tr>
         <td><div class="cat-name">Emergency Fund</div><div class="cat-note" id="emergNote">Goal: $1,000 · then redirect</div></td>
         <td><input class="amt-input" type="number" id="emerg" value="100" min="0" oninput="recalc()"></td>
+        <td style="text-align:center;"><span id="w_emerg" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
         <td class="pct-rec">3–5%</td>
         <td><span class="pct-badge" id="emergPctBadge">4.8%</span></td>
         <td><span id="emergStatus" style="font-size:11px;"></span></td>
@@ -608,16 +613,18 @@
       <tr class="subtotal">
         <td>Savings Subtotal</td>
         <td class="monthly-disp" id="savingsTotal">$300</td>
+        <td style="text-align:center; font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);"><span id="wSavings">—</span></td>
         <td class="pct-rec">10–15%</td>
         <td id="savingsTotalPct">14.3%</td>
         <td></td>
       </tr>
 
       <!-- INVESTMENTS -->
-      <tr class="group-header"><td colspan="5" style="position:relative;">Investments &amp; Retirement<button class="sec-save-btn" onclick="saveSection('investments')" id="btn_investments">Lock In</button></td></tr>
+      <tr class="group-header"><td colspan="6" style="position:relative;">Investments &amp; Retirement<button class="sec-save-btn" onclick="saveSection('investments')" id="btn_investments">Lock In</button></td></tr>
       <tr>
         <td><div class="cat-name">TSP (Thrift Savings Plan)</div><div class="cat-note">Army 401k — get the 5% match</div></td>
         <td><input class="amt-input" type="number" id="tsp" value="105" min="0" oninput="recalc()"></td>
+        <td style="text-align:center;"><span id="w_tsp" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
         <td class="pct-rec">5% min</td>
         <td><span class="pct-badge gold" id="tspPct">5%</span></td>
         <td><span id="tspStatus" style="font-size:11px;"></span></td>
@@ -625,6 +632,7 @@
       <tr>
         <td><div class="cat-name">Roth IRA</div><div class="cat-note">Tax-free growth · $7k/yr max</div></td>
         <td><input class="amt-input" type="number" id="roth" value="100" min="0" oninput="recalc()"></td>
+        <td style="text-align:center;"><span id="w_roth" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
         <td class="pct-rec">3–5%</td>
         <td><span class="pct-badge gold" id="rothPct">4.8%</span></td>
         <td><span id="rothStatus" style="font-size:11px;"></span></td>
@@ -632,16 +640,18 @@
       <tr class="subtotal">
         <td>Investment Subtotal</td>
         <td class="monthly-disp" id="investTotal">$205</td>
+        <td style="text-align:center; font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);"><span id="wInvest">—</span></td>
         <td class="pct-rec">8–10%</td>
         <td id="investTotalPct">9.8%</td>
         <td></td>
       </tr>
 
       <!-- TRANSPORTATION -->
-      <tr class="group-header"><td colspan="5" style="position:relative;">Transportation<button class="sec-save-btn" onclick="saveSection('transportation')" id="btn_transportation">Lock In</button></td></tr>
+      <tr class="group-header"><td colspan="6" style="position:relative;">Transportation<button class="sec-save-btn" onclick="saveSection('transportation')" id="btn_transportation">Lock In</button></td></tr>
       <tr>
         <td><div class="cat-name">Car Payment</div><div class="cat-note">Keep ≤ $250/mo</div></td>
         <td><input class="amt-input" type="number" id="carPayment" value="250" min="0" oninput="recalc()"></td>
+        <td style="text-align:center;"><span id="w_carPayment" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
         <td class="pct-rec">≤ 12%</td>
         <td><span class="pct-badge" id="carPaymentPct">11.9%</span></td>
         <td><span id="carPaymentStatus" style="font-size:11px;"></span></td>
@@ -649,6 +659,7 @@
       <tr>
         <td><div class="cat-name">Car Insurance</div><div class="cat-note">Added to mom's policy</div></td>
         <td><input class="amt-input" type="number" id="insurance" value="150" min="0" oninput="recalc()"></td>
+        <td style="text-align:center;"><span id="w_insurance" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
         <td class="pct-rec">7% <span style="color:var(--muted);font-size:10px;">(mom)</span></td>
         <td><span class="pct-badge" id="insurancePct">7.1%</span></td>
         <td><span id="insuranceStatus" style="font-size:11px;"></span></td>
@@ -656,6 +667,7 @@
       <tr>
         <td><div class="cat-name">Gas &amp; Maintenance</div><div class="cat-note">Fuel, oil, tires</div></td>
         <td><input class="amt-input" type="number" id="gas" value="50" min="0" oninput="recalc()"></td>
+        <td style="text-align:center;"><span id="w_gas" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
         <td class="pct-rec">2%</td>
         <td><span class="pct-badge" id="gasPct">2.4%</span></td>
         <td><span id="gasStatus" style="font-size:11px;"></span></td>
@@ -663,16 +675,18 @@
       <tr class="subtotal">
         <td>Transport Subtotal</td>
         <td class="monthly-disp" id="transpTotal">$450</td>
+        <td style="text-align:center; font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);"><span id="wTransp">—</span></td>
         <td class="pct-rec">≤ 20%</td>
         <td id="transpTotalPct">21.4%</td>
         <td></td>
       </tr>
 
       <!-- PERSONAL -->
-      <tr class="group-header"><td colspan="5" style="position:relative;">Personal &amp; Lifestyle<button class="sec-save-btn" onclick="saveSection('personal')" id="btn_personal">Lock In</button></td></tr>
+      <tr class="group-header"><td colspan="6" style="position:relative;">Personal &amp; Lifestyle<button class="sec-save-btn" onclick="saveSection('personal')" id="btn_personal">Lock In</button></td></tr>
       <tr>
         <td><div class="cat-name">Personal Care</div><div class="cat-note">Haircuts, hygiene</div></td>
         <td><input class="amt-input" type="number" id="personal" value="75" min="0" oninput="recalc()"></td>
+        <td style="text-align:center;"><span id="w_personal" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
         <td class="pct-rec">3%</td>
         <td><span class="pct-badge" id="personalPct">3.6%</span></td>
         <td><span id="personalStatus" style="font-size:11px;"></span></td>
@@ -680,6 +694,7 @@
       <tr>
         <td><div class="cat-name">Entertainment</div><div class="cat-note">Eating out, subscriptions, fun</div></td>
         <td><input class="amt-input" type="number" id="entertainment" value="150" min="0" oninput="recalc()"></td>
+        <td style="text-align:center;"><span id="w_entertainment" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
         <td class="pct-rec">7%</td>
         <td><span class="pct-badge" id="entertainmentPct">7.1%</span></td>
         <td><span id="entertainmentStatus" style="font-size:11px;"></span></td>
@@ -687,6 +702,7 @@
       <tr>
         <td><div class="cat-name">Phone</div><div class="cat-note">T-Mobile military plan</div></td>
         <td><input class="amt-input" type="number" id="phone" value="50" min="0" oninput="recalc()"></td>
+        <td style="text-align:center;"><span id="w_phone" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
         <td class="pct-rec">2%</td>
         <td><span class="pct-badge" id="phonePct">2.4%</span></td>
         <td><span id="phoneStatus" style="font-size:11px;"></span></td>
@@ -694,16 +710,18 @@
       <tr>
         <td><div class="cat-name">Clothing</div><div class="cat-note">Civilian wear (uniform provided)</div></td>
         <td><input class="amt-input" type="number" id="clothing" value="50" min="0" oninput="recalc()"></td>
+        <td style="text-align:center;"><span id="w_clothing" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
         <td class="pct-rec">2%</td>
         <td><span class="pct-badge" id="clothingPct">2.4%</span></td>
         <td><span id="clothingStatus" style="font-size:11px;"></span></td>
       </tr>
 
       <!-- GIVING -->
-      <tr class="group-header"><td colspan="5" style="position:relative;">Charity &amp; Giving<button class="sec-save-btn" onclick="saveSection('charity')" id="btn_charity">Lock In</button></td></tr>
+      <tr class="group-header"><td colspan="6" style="position:relative;">Charity &amp; Giving<button class="sec-save-btn" onclick="saveSection('charity')" id="btn_charity">Lock In</button></td></tr>
       <tr>
         <td><div class="cat-name">Tithe / Donation</div><div class="cat-note">Give first</div></td>
         <td><input class="amt-input" type="number" id="charity" value="210" min="0" oninput="recalc()"></td>
+        <td style="text-align:center;"><span id="w_charity" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
         <td class="pct-rec">10%</td>
         <td><span class="pct-badge gold" id="charityPct">10%</span></td>
         <td><span id="charityStatus" style="font-size:11px;"></span></td>
@@ -713,6 +731,7 @@
       <tr class="total-row">
         <td>Total Budgeted</td>
         <td id="totalBudgeted" style="font-family:'Cormorant Garamond',serif; font-size:1.15rem;">$1,140</td>
+        <td style="text-align:center; font-family:'Cormorant Garamond',serif; font-size:1rem; color:white;"><span id="wTotal">—</span></td>
         <td>—</td>
         <td id="totalBudgetedPct">—%</td>
         <td></td>
@@ -720,6 +739,7 @@
       <tr class="remaining-row">
         <td>Remaining / Unallocated</td>
         <td id="remaining" style="font-family:'Cormorant Garamond',serif; font-size:1.15rem;">$960</td>
+        <td style="text-align:center; font-family:'Cormorant Garamond',serif; font-size:1rem; color:var(--navy);"><span id="wRemaining">—</span></td>
         <td>—</td>
         <td id="remainingPct">—%</td>
         <td style="font-size:11px;">Redirect to savings or invest</td>
@@ -894,6 +914,7 @@ function recalc() {
   document.getElementById('incomeLabel').textContent = '$' + income.toLocaleString() + ' / mo';
 
   const fields = Object.keys(REC);
+  const weekly = income > 0 ? income * 12 / 52 : 0;
   let total = 0;
 
   fields.forEach(f => {
@@ -921,6 +942,10 @@ function recalc() {
       }
     }
 
+    // Update weekly
+    const wEl = document.getElementById('w_' + f);
+    if (wEl) wEl.textContent = val > 0 ? '$' + Math.round(val * 12 / 52) : '—';
+
     // Update status
     const stEl = document.getElementById(STATUS_IDS[f]);
     if (stEl) {
@@ -943,6 +968,14 @@ function recalc() {
   const savings = (parseFloat(document.getElementById('carSavings').value)||0) + (parseFloat(document.getElementById('emerg').value)||0);
   const invest  = (parseFloat(document.getElementById('tsp').value)||0) + (parseFloat(document.getElementById('roth').value)||0);
   const transp  = (parseFloat(document.getElementById('carPayment').value)||0) + (parseFloat(document.getElementById('insurance').value)||0) + (parseFloat(document.getElementById('gas').value)||0);
+
+  // Weekly subtotals
+  const wk = n => '$' + Math.round(n * 12 / 52);
+  const wSavEl = document.getElementById('wSavings'); if(wSavEl) wSavEl.textContent = savings > 0 ? wk(savings) : '—';
+  const wInvEl = document.getElementById('wInvest');  if(wInvEl) wInvEl.textContent = invest  > 0 ? wk(invest)  : '—';
+  const wTrEl  = document.getElementById('wTransp');  if(wTrEl)  wTrEl.textContent  = transp  > 0 ? wk(transp)  : '—';
+  const wTotEl = document.getElementById('wTotal');   if(wTotEl) wTotEl.textContent  = total   > 0 ? wk(total)   : '—';
+  const wRemEl = document.getElementById('wRemaining'); if(wRemEl) wRemEl.textContent = wk(remaining);
 
   document.getElementById('savingsTotal').textContent = '$' + savings.toLocaleString();
   document.getElementById('savingsTotalPct').textContent = income > 0 ? (savings/income*100).toFixed(1)+'%' : '0%';
