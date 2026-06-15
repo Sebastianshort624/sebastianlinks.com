@@ -724,35 +724,46 @@
   <div class="section-label" style="display:flex; align-items:center; justify-content:space-between;">My Goals &amp; Every Dollar Plan<button class="sec-save-btn" onclick="saveSection('goals')" id="btn_goals" style="position:static; transform:none;">Lock In</button></div>
   <div class="goal-cards">
 
-    <!-- CARD 1: CAR GOAL — ACCOMPLISHED -->
-    <div class="goal-card" style="border-top-color: #2E6B3E; background: linear-gradient(135deg, #f0fff4, #fff);">
-      <div class="gc-label" style="color:#2E6B3E;">🎉 Goal Accomplished</div>
-      <div class="gc-goal-text"><strong style="color:#2E6B3E;">Car Down Payment — $1,750</strong></div>
-      <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:#888; margin-bottom:6px;">Completed Last Month</div>
-      <div class="gc-progress-track"><div class="gc-progress-fill" style="width:100%; background:#2E6B3E;"></div></div>
-      <div style="font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:700; color:#2E6B3E; margin-top:6px;">100% ✓</div>
-      <div style="font-size:11px; color:#888; margin-top:2px;">Tax · Tags · Insurance deposit secured</div>
+    <!-- CARD 1: WELL DONE SOLDIER — CAR ACCOMPLISHED -->
+    <div class="goal-card" style="border-top-color: var(--gold); background: linear-gradient(135deg, #1B2A4A, #253d6b); color:white;">
+      <div class="gc-label" style="color:var(--gold); letter-spacing:3px;">🎖️ Well Done, Soldier</div>
+      <div style="font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:700; color:var(--gold); line-height:1.1; margin:6px 0 4px;">Car Down Payment</div>
+      <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.5); margin-bottom:8px;">Goal Accomplished Last Month</div>
+      <div class="gc-progress-track" style="background:rgba(255,255,255,0.15);"><div class="gc-progress-fill" style="width:100%; background:var(--gold);"></div></div>
+      <div style="display:flex; justify-content:space-between; align-items:baseline; margin-top:8px;">
+        <span style="font-family:'Cormorant Garamond',serif; font-size:1.8rem; font-weight:700; color:var(--gold);">$1,750 ✓</span>
+        <span style="font-family:'Barlow Condensed',sans-serif; font-size:10px; color:rgba(255,255,255,0.4); letter-spacing:1px;">100% complete</span>
+      </div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.5); margin-top:4px;">Tax · Tags · Insurance deposit secured</div>
     </div>
 
-    <!-- CARD 2: EMERGENCY FUND -->
-    <div class="goal-card" style="border-top-color: var(--navy);">
-      <div class="gc-label">🛡️ Emergency Fund</div>
-      <div class="gc-goal-text">Goal: <strong>$1,000</strong> — Priority #1</div>
-      <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:4px;">Current Balance</div>
-      <input class="gc-input" type="number" id="emergSaved" value="0" min="0" placeholder="$ currently saved" oninput="updateGoals()">
-      <div class="gc-progress-track"><div class="gc-progress-fill" id="emergBar"></div></div>
-      <div class="gc-pct-text"><strong id="emergPct">0%</strong> of $1,000 · <span id="emergRemText">$1,000 remaining</span></div>
-      <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; color:var(--navy); margin-top:6px; letter-spacing:1px;">Every leftover dollar goes here first ↑</div>
-    </div>
-
-    <!-- CARD 3: NEXT GOAL -->
+    <!-- CARD 2: NEXT SAVINGS GOAL (unlocks after emergency + investing met) -->
     <div class="goal-card" style="border-top-color: var(--gold);">
-      <div class="gc-label">🎯 Next Savings Goal</div>
-      <div class="gc-goal-text">After emergency fund is met</div>
-      <input class="gc-input" type="text" id="nextGoalName" placeholder="Name your goal (e.g. PS5, Trip)" oninput="updateGoals()" style="margin-bottom:6px;">
+      <div class="gc-label" style="color:var(--gold);">🎯 Next Savings Goal</div>
+      <div class="gc-goal-text">Unlocks after emergency fund &amp; investing</div>
+      <input class="gc-input" type="text" id="nextGoalName" placeholder="Name your goal (e.g. Vacation, PS5)" oninput="updateGoals()" style="margin-bottom:6px;">
       <input class="gc-input" type="number" id="nextGoalAmt" value="500" min="0" placeholder="$ goal amount" oninput="updateGoals()">
-      <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; color:var(--muted); margin-top:4px; letter-spacing:1px;">Leftover after $1,000 emergency fund flows here automatically</div>
+      <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; color:var(--muted); margin-top:4px; letter-spacing:1px;">Leftover after emergency &amp; investing flows here</div>
       <div class="gc-pct-text" style="margin-top:6px;">Progress: <strong id="nextGoalPct">0%</strong> · <span id="nextGoalETA">—</span></div>
+    </div>
+
+    <!-- CARD 3: EMERGENCY FUND + INVESTING STACKED -->
+    <div style="display:flex; flex-direction:column; gap:10px;">
+
+      <div class="goal-card" style="border-top-color: var(--navy); padding:10px 14px;">
+        <div class="gc-label">🛡️ Emergency Fund — Priority #1</div>
+        <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:4px;">Current Balance</div>
+        <input class="gc-input" type="number" id="emergSaved" value="0" min="0" placeholder="$ currently saved" oninput="updateGoals()" style="margin-bottom:6px;">
+        <div class="gc-progress-track"><div class="gc-progress-fill" id="emergBar"></div></div>
+        <div class="gc-pct-text"><strong id="emergPct">0%</strong> of $1,000 · <span id="emergRemText">$1,000 remaining</span></div>
+      </div>
+
+      <div class="goal-card" style="border-top-color: var(--navy); padding:10px 14px;">
+        <div class="gc-label">📈 Investing — After Emergency</div>
+        <div style="font-size:11px; color:var(--muted);">TSP (5% match) + Roth IRA auto-funded from leftover</div>
+        <div style="font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:700; color:var(--navy); margin-top:6px;" id="investAutoDisplay">—/mo flowing to investments</div>
+      </div>
+
     </div>
 
   </div>
@@ -801,7 +812,7 @@
               <div class="cel-title">Army Benefit — Freed Up</div>
               <div class="cel-sub">Dining facility on base</div>
             </div>
-            <div class="cel-amount" id="foodFreed">~$400<small>/ mo freed</small></div>
+            <div class="cel-amount" id="foodFreed"><span id="foodFreedAmt">~$210–315</span><small>/ mo freed</small></div>
           </div></td>
         <td>
           <input class="amt-input" type="number" id="food" value="0" min="0" oninput="recalc()">
@@ -1273,7 +1284,7 @@ function recalc() {
   const hFreedEl = document.getElementById('rs_housing_freed');
   if (hFreedEl) hFreedEl.textContent = '~$' + Math.round(income*0.25).toLocaleString() + '–' + Math.round(income*0.30).toLocaleString() + '/mo';
   const fFreedEl = document.getElementById('rs_food_freed');
-  if (fFreedEl) fFreedEl.textContent = '~$' + Math.round(income*0.10).toLocaleString() + '–' + Math.round(income*0.15).toLocaleString() + '/mo';
+  if (fFreedEl) fFreedEl.textContent = '~$' + Math.round(income*0.10).toLocaleString() + '–' + Math.round(income*0.15).toLocaleString() + '/mo freed';
 
   const recPcts = { savings:0.10, invest:0.08, transp:0.19, personal:0.14, giving:0.03 };
   const recTotal = Object.values(recPcts).reduce((a,b)=>a+b,0);
@@ -1293,8 +1304,8 @@ function recalc() {
   const natFood = 400;
   const hFree = document.getElementById('housingFreed');
   if (hFree) hFree.innerHTML = '~$' + natRent.toLocaleString() + '<small>/ mo freed</small>';
-  const fFree = document.getElementById('foodFreed');
-  if (fFree) fFree.innerHTML = '~$' + natFood.toLocaleString() + '<small>/ mo freed</small>';
+  const fFree = document.getElementById('foodFreedAmt');
+  if (fFree) fFree.textContent = '~$' + Math.round(income*0.10).toLocaleString() + '–' + Math.round(income*0.15).toLocaleString();
 
   // ── RUNNING BALANCE ──
   const wk = n => Math.round(n * 12 / 52);
@@ -1444,6 +1455,20 @@ function updateGoals() {
     }
   } else {
     if (nextGoalRow) nextGoalRow.style.display = 'none';
+  }
+
+  // Update invest display card
+  const invDispEl = document.getElementById('investAutoDisplay');
+  if (invDispEl) {
+    if (!emergMet) {
+      invDispEl.textContent = 'Unlocks after $1,000 emergency fund';
+      invDispEl.style.color = 'var(--muted)';
+    } else {
+      const tsp = parseFloat(document.getElementById('tsp')?.value)||0;
+      const roth = parseFloat(document.getElementById('roth')?.value)||0;
+      invDispEl.textContent = '$' + (tsp+roth).toLocaleString() + '/mo flowing to investments';
+      invDispEl.style.color = 'var(--navy)';
+    }
   }
 
   // Savings subtotal
