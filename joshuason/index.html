@@ -721,28 +721,40 @@
 <div class="page-body">
 
   <!-- GOAL CARDS -->
-  <div class="section-label" style="display:flex; align-items:center; justify-content:space-between;">Savings Goals<button class="sec-save-btn" onclick="saveSection('goals')" id="btn_goals" style="position:static; transform:none;">Lock In</button></div>
+  <div class="section-label" style="display:flex; align-items:center; justify-content:space-between;">My Goals &amp; Every Dollar Plan<button class="sec-save-btn" onclick="saveSection('goals')" id="btn_goals" style="position:static; transform:none;">Lock In</button></div>
   <div class="goal-cards">
-    <div class="goal-card">
-      <div class="gc-label">Car Down Payment</div>
-      <div class="gc-goal-text">Goal: <strong>$1,750</strong> — tax, tags &amp; insurance deposit</div>
-      <input class="gc-input" type="number" id="carSaved" value="0" min="0" placeholder="$ saved so far" oninput="updateGoals()">
-      <div class="gc-progress-track"><div class="gc-progress-fill" id="carBar"></div></div>
-      <div class="gc-pct-text"><strong id="carPct">0%</strong> of $1,750</div>
+
+    <!-- CARD 1: CAR GOAL — ACCOMPLISHED -->
+    <div class="goal-card" style="border-top-color: #2E6B3E; background: linear-gradient(135deg, #f0fff4, #fff);">
+      <div class="gc-label" style="color:#2E6B3E;">🎉 Goal Accomplished</div>
+      <div class="gc-goal-text"><strong style="color:#2E6B3E;">Car Down Payment — $1,750</strong></div>
+      <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:#888; margin-bottom:6px;">Completed Last Month</div>
+      <div class="gc-progress-track"><div class="gc-progress-fill" style="width:100%; background:#2E6B3E;"></div></div>
+      <div style="font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:700; color:#2E6B3E; margin-top:6px;">100% ✓</div>
+      <div style="font-size:11px; color:#888; margin-top:2px;">Tax · Tags · Insurance deposit secured</div>
     </div>
-    <div class="goal-card">
-      <div class="gc-label">Emergency Fund</div>
-      <div class="gc-goal-text">Goal: <strong>$1,000</strong> — build before investing</div>
-      <input class="gc-input" type="number" id="emergSaved" value="0" min="0" placeholder="$ saved so far" oninput="updateGoals()">
+
+    <!-- CARD 2: EMERGENCY FUND -->
+    <div class="goal-card" style="border-top-color: var(--navy);">
+      <div class="gc-label">🛡️ Emergency Fund</div>
+      <div class="gc-goal-text">Goal: <strong>$1,000</strong> — Priority #1</div>
+      <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:4px;">Current Balance</div>
+      <input class="gc-input" type="number" id="emergSaved" value="0" min="0" placeholder="$ currently saved" oninput="updateGoals()">
       <div class="gc-progress-track"><div class="gc-progress-fill" id="emergBar"></div></div>
-      <div class="gc-pct-text"><strong id="emergPct">0%</strong> of $1,000</div>
+      <div class="gc-pct-text"><strong id="emergPct">0%</strong> of $1,000 · <span id="emergRemText">$1,000 remaining</span></div>
+      <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; color:var(--navy); margin-top:6px; letter-spacing:1px;">Every leftover dollar goes here first ↑</div>
     </div>
-    <div class="goal-card">
-      <div class="gc-label">Months to Goal</div>
-      <div class="gc-goal-text">Combined remaining: <strong id="combinedRemaining">$2,750</strong></div>
-      <div class="gc-big" id="monthsToGoal">—</div>
-      <div class="gc-pct-text">months at current savings rate</div>
+
+    <!-- CARD 3: NEXT GOAL -->
+    <div class="goal-card" style="border-top-color: var(--gold);">
+      <div class="gc-label">🎯 Next Savings Goal</div>
+      <div class="gc-goal-text">After emergency fund is met</div>
+      <input class="gc-input" type="text" id="nextGoalName" placeholder="Name your goal (e.g. PS5, Trip)" oninput="updateGoals()" style="margin-bottom:6px;">
+      <input class="gc-input" type="number" id="nextGoalAmt" value="500" min="0" placeholder="$ goal amount" oninput="updateGoals()">
+      <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; color:var(--muted); margin-top:4px; letter-spacing:1px;">Leftover after $1,000 emergency fund flows here automatically</div>
+      <div class="gc-pct-text" style="margin-top:6px;">Progress: <strong id="nextGoalPct">0%</strong> · <span id="nextGoalETA">—</span></div>
     </div>
+
   </div>
 
   <!-- TABLE -->
@@ -805,47 +817,56 @@
         <div class="running-bar" id="rb_housing"><span class="rb-label">After Housing &amp; Food</span><span><span class="rb-amount" id="rb_housing_amt">—</span><span class="rb-weekly" id="rb_housing_wk"></span></span></div>
       </td></tr>
       <!-- SAVINGS -->
-      <tr class="group-header"><td colspan="6" style="position:relative;">Savings &amp; Emergency<button class="sec-save-btn" onclick="saveSection('savings')" id="btn_savings">Lock In</button></td></tr>
-      <tr>
-        <td><div class="cat-name">Car Down Payment Fund</div>
-          <div id="carGoalBanner" style="display:none;" class="celebrate-banner">
-            <div class="cel-icon">🎯</div>
+      <tr class="group-header"><td colspan="6" style="position:relative;">Savings &amp; Emergency Fund<button class="sec-save-btn" onclick="saveSection('savings')" id="btn_savings">Lock In</button></td></tr>
+      <tr style="background:#f0fff4;">
+        <td>
+          <div class="cat-name" style="color:#2E6B3E;">🎉 Car Down Payment</div>
+          <div class="celebrate-banner" style="display:flex; margin-top:6px;">
+            <div class="cel-icon">✅</div>
             <div class="cel-text">
-              <div class="cel-title">Goal Achieved — Freed Up!</div>
-              <div class="cel-sub">$200/mo now available to redirect</div>
+              <div class="cel-title">Goal Accomplished Last Month!</div>
+              <div class="cel-sub">$1,750 saved · Tax, tags &amp; insurance deposit ready</div>
             </div>
-            <div class="cel-amount" id="carFreedAmt">$200<small>/ mo freed</small></div>
           </div>
-          <div class="cat-note" id="carSavingsNote">Goal: $1,750</div></td>
-        <td><input class="amt-input" type="number" id="carSavings" value="200" min="0" oninput="recalc()"></td>
-        <td style="text-align:center;"><span id="w_carSavings" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
-        <td class="pct-rec">8–10%</td>
-        <td><span class="pct-badge" id="carSavingsPct">9.5%</span></td>
-        <td><span id="carSavingsStatus" style="font-size:11px;"></span></td>
+        </td>
+        <td style="text-align:center;"><span style="font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:700; color:#2E6B3E;">$1,750</span></td>
+        <td style="text-align:center;"><span style="font-size:11px; color:#2E6B3E;">Done ✓</span></td>
+        <td class="pct-rec">—</td>
+        <td><span class="pct-badge green">100%</span></td>
+        <td><span style="font-size:11px; color:#2E6B3E;">✓ Complete</span></td>
       </tr>
       <tr>
-        <td><div class="cat-name">Emergency Fund</div>
-          <div id="emergGoalBanner" style="display:none;" class="celebrate-banner">
-            <div class="cel-icon">🛡️</div>
-            <div class="cel-text">
-              <div class="cel-title">Goal Achieved — Freed Up!</div>
-              <div class="cel-sub">$100/mo now available to redirect</div>
-            </div>
-            <div class="cel-amount" id="emergFreedAmt">$100<small>/ mo freed</small></div>
-          </div>
-          <div class="cat-note" id="emergNote">Goal: $1,000 · then redirect</div></td>
-        <td><input class="amt-input" type="number" id="emerg" value="100" min="0" oninput="recalc()"></td>
+        <td>
+          <div class="cat-name">🛡️ Emergency Fund</div>
+          <div class="cat-note">Priority #1 — all leftover income goes here until $1,000 met</div>
+          <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; color:var(--navy); letter-spacing:1px; margin-top:4px;">Current: <strong id="emergCurrentDisplay">$0</strong> · Need: <strong id="emergNeedDisplay">$1,000</strong></div>
+        </td>
+        <td style="text-align:center;">
+          <span id="emergAutoAmt" style="font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:700; color:var(--navy);">—</span>
+          <div style="font-size:10px; color:var(--muted); margin-top:2px;">auto-filled</div>
+        </td>
         <td style="text-align:center;"><span id="w_emerg" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
-        <td class="pct-rec">3–5%</td>
-        <td><span class="pct-badge" id="emergPctBadge">4.8%</span></td>
+        <td class="pct-rec">All leftover</td>
+        <td><span class="pct-badge" id="emergPctBadge">—</span></td>
         <td><span id="emergStatus" style="font-size:11px;"></span></td>
+      </tr>
+      <tr id="nextGoalRow" style="display:none;">
+        <td>
+          <div class="cat-name" id="nextGoalTableName">🎯 Next Goal</div>
+          <div class="cat-note">After emergency fund met — leftover flows here</div>
+        </td>
+        <td style="text-align:center;"><span id="nextGoalAutoAmt" style="font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:700; color:var(--navy);">—</span></td>
+        <td style="text-align:center;"><span id="w_nextGoal" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
+        <td class="pct-rec">Leftover</td>
+        <td><span class="pct-badge gold" id="nextGoalPctBadge">—</span></td>
+        <td><span id="nextGoalStatus" style="font-size:11px; color:var(--green);">Auto ↑</span></td>
       </tr>
       <tr class="subtotal">
         <td>Savings Subtotal</td>
-        <td class="monthly-disp" id="savingsTotal">$300</td>
+        <td class="monthly-disp" id="savingsTotal">—</td>
         <td style="text-align:center; font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);"><span id="wSavings">—</span></td>
-        <td class="pct-rec">10–15%</td>
-        <td id="savingsTotalPct">14.3%</td>
+        <td class="pct-rec">All leftover</td>
+        <td id="savingsTotalPct">—</td>
         <td></td>
       </tr>
 
@@ -962,9 +983,9 @@
       <tr class="group-header"><td colspan="6" style="position:relative;">Charity &amp; Giving<button class="sec-save-btn" onclick="saveSection('charity')" id="btn_charity">Lock In</button></td></tr>
       <tr>
         <td><div class="cat-name">Tithe / Donation</div><div class="cat-note">Give first</div></td>
-        <td><input class="amt-input" type="number" id="charity" value="210" min="0" oninput="recalc()"></td>
+        <td><input class="amt-input" type="number" id="charity" value="63" min="0" oninput="recalc()"></td>
         <td style="text-align:center;"><span id="w_charity" style="font-family:'Cormorant Garamond',serif; font-size:0.95rem; color:var(--navy);">—</span></td>
-        <td class="pct-rec">10%</td>
+        <td class="pct-rec">3%</td>
         <td><span class="pct-badge gold" id="charityPct">10%</span></td>
         <td><span id="charityStatus" style="font-size:11px;"></span></td>
       </tr>
@@ -1008,6 +1029,10 @@
     </div>
   </div>
 
+
+  <!-- MOTIVATOR -->
+  <div id="motivatorSection" style="background:var(--white); border:1px solid var(--border); border-radius:4px; padding:24px; margin-bottom:36px;"></div>
+
 </div>
 
 <footer>
@@ -1017,9 +1042,9 @@
 <script>
 // ── SECTION FIELD MAP ──
 const SECTION_FIELDS = {
-  goals:          ['carSaved','emergSaved'],
+  goals:          ['emergSaved','nextGoalAmt','nextGoalName'],
   housing:        ['housing','food'],
-  savings:        ['carSavings','emerg','carSaved','emergSaved'],
+  savings:        ['emergSaved','nextGoalAmt','nextGoalName'],
   investments:    ['tsp','roth'],
   transportation: ['carPayment','insurance','gas'],
   personal:       ['personal','entertainment','phone','clothing'],
@@ -1099,7 +1124,7 @@ function renderChips() {
 
 // ── AUTO-SAVE ENTIRE BUDGET (on every change) ──
 function autoSave() {
-  const allFields = ['income','housing','food','carSavings','emerg','carSaved','emergSaved','tsp','roth','carPayment','insurance','gas','personal','entertainment','phone','clothing','charity'];
+  const allFields = ['income','housing','food','emergSaved','nextGoalAmt','nextGoalName','tsp','roth','carPayment','insurance','gas','personal','entertainment','phone','clothing','charity'];
   const data = {};
   allFields.forEach(f => { const el = document.getElementById(f); if (el) data[f] = el.value; });
   localStorage.setItem('joshua_autosave', JSON.stringify(data));
@@ -1122,7 +1147,6 @@ function loadAutosave() {
 const REC = {
   housing:       [0, 0],
   food:          [0, 0],
-  carSavings:    [8, 10],
   emerg:         [3, 5],
   tsp:           [5, 10],
   roth:          [3, 5],
@@ -1133,11 +1157,11 @@ const REC = {
   entertainment: [7, 7],
   phone:         [2, 2],
   clothing:      [2, 2],
-  charity:       [10, 10],
+  charity:       [3, 3],
 };
 
 const STATUS_IDS = {
-  housing:'housingStatus', food:'foodStatus', carSavings:'carSavingsStatus',
+  housing:'housingStatus', food:'foodStatus',
   emerg:'emergStatus', tsp:'tspStatus', roth:'rothStatus',
   carPayment:'carPaymentStatus', insurance:'insuranceStatus', gas:'gasStatus',
   personal:'personalStatus', entertainment:'entertainmentStatus',
@@ -1145,7 +1169,7 @@ const STATUS_IDS = {
 };
 
 const PCT_IDS = {
-  housing:'housingPct', food:'foodPct', carSavings:'carSavingsPct',
+  housing:'housingPct', food:'foodPct',
   emerg:'emergPctBadge', tsp:'tspPct', roth:'rothPct',
   carPayment:'carPaymentPct', insurance:'insurancePct', gas:'gasPct',
   personal:'personalPct', entertainment:'entertainmentPct',
@@ -1251,7 +1275,7 @@ function recalc() {
   const fFreedEl = document.getElementById('rs_food_freed');
   if (fFreedEl) fFreedEl.textContent = '~$' + Math.round(income*0.10).toLocaleString() + '–' + Math.round(income*0.15).toLocaleString() + '/mo';
 
-  const recPcts = { savings:0.10, invest:0.08, transp:0.19, personal:0.14, giving:0.10 };
+  const recPcts = { savings:0.10, invest:0.08, transp:0.19, personal:0.14, giving:0.03 };
   const recTotal = Object.values(recPcts).reduce((a,b)=>a+b,0);
   const recRemPct = 1 - recTotal;
   Object.entries(recPcts).forEach(([k,p]) => {
@@ -1326,92 +1350,168 @@ function recalc() {
 }
 
 function updateGoals() {
-  const carSaved   = parseFloat(document.getElementById('carSaved').value) || 0;
+  const income     = parseFloat(document.getElementById('income').value) || 0;
   const emergSaved = parseFloat(document.getElementById('emergSaved').value) || 0;
+  const emergGoal  = 1000;
+  const emergRem   = Math.max(0, emergGoal - emergSaved);
+  const emergMet   = emergSaved >= emergGoal;
 
-  const carPct   = Math.min(100, carSaved  / 1750 * 100).toFixed(0);
-  const emergPct = Math.min(100, emergSaved / 1000 * 100).toFixed(0);
+  // Emergency fund progress bar
+  const emergPct = Math.min(100, emergSaved / emergGoal * 100).toFixed(0);
+  const emergBarEl = document.getElementById('emergBar');
+  if (emergBarEl) emergBarEl.style.width = emergPct + '%';
+  const emergPctEl = document.getElementById('emergPct');
+  if (emergPctEl) emergPctEl.textContent = emergPct + '%';
+  const emergRemEl = document.getElementById('emergRemText');
+  if (emergRemEl) emergRemEl.textContent = emergMet ? 'Goal met! 🎉' : '$' + emergRem.toLocaleString() + ' remaining';
 
-  document.getElementById('carPct').textContent   = carPct + '%';
-  document.getElementById('emergPct').textContent = emergPct + '%';
-  document.getElementById('carBar').style.width   = carPct + '%';
-  document.getElementById('emergBar').style.width = emergPct + '%';
+  // Update current/need display in table
+  const ecd = document.getElementById('emergCurrentDisplay');
+  const end = document.getElementById('emergNeedDisplay');
+  if (ecd) ecd.textContent = '$' + emergSaved.toLocaleString();
+  if (end) end.textContent = emergMet ? '✓ Met!' : '$' + emergRem.toLocaleString() + ' to go';
 
-  const carRem   = Math.max(0, 1750 - carSaved);
-  const emergRem = Math.max(0, 1000 - emergSaved);
-  const totalRem = carRem + emergRem;
+  // ── EVERY DOLLAR LOGIC ──
+  // 1. Calculate bills total (everything except savings/invest)
+  const bills = ['housing','food','carPayment','insurance','gas','personal','entertainment','phone','clothing','charity']
+    .reduce((s,f) => s + (parseFloat(document.getElementById(f)?.value)||0), 0);
 
-  document.getElementById('combinedRemaining').textContent = '$' + totalRem.toLocaleString();
+  // 2. Leftover after bills
+  const leftover = Math.max(0, income - bills);
 
-  const monthly = (parseFloat(document.getElementById('carSavings').value)||0)
-                + (parseFloat(document.getElementById('emerg').value)||0);
-  const moEl = document.getElementById('monthsToGoal');
-  if (totalRem <= 0) { moEl.textContent = '✓'; }
-  else if (monthly > 0) { moEl.textContent = Math.ceil(totalRem / monthly); }
-  else { moEl.textContent = '—'; }
-
-  // ── Auto-adjust budget table when goals are met ──
-  const carGoalMet   = carSaved  >= 1750;
-  const emergGoalMet = emergSaved >= 1000;
-
-  const carSavingsInput = document.getElementById('carSavings');
-  const emergInput      = document.getElementById('emerg');
-  const carNote         = document.getElementById('carSavingsNote');
-  const emergNote       = document.getElementById('emergNote');
-
-  const carBanner = document.getElementById('carGoalBanner');
-  if (carGoalMet) {
-    const prevVal = parseFloat(carSavingsInput.dataset.prev) || 200;
-    if (parseFloat(carSavingsInput.value) > 0) {
-      carSavingsInput.dataset.prev = carSavingsInput.value;
-      carSavingsInput.value = 0;
-    }
-    if (carNote) { carNote.style.display = 'none'; }
-    if (carBanner) {
-      carBanner.style.display = 'flex';
-      const fredEl = document.getElementById('carFreedAmt');
-      if (fredEl) fredEl.innerHTML = '$' + Math.round(prevVal) + '<small>/ mo freed</small>';
-      const subEl = carBanner.querySelector('.cel-sub');
-      if (subEl) subEl.textContent = '$' + Math.round(prevVal) + '/mo now available to redirect';
-    }
+  // 3. Emergency fund gets it all first
+  let toEmerg = 0, toNextGoal = 0, toInvest = 0;
+  if (!emergMet) {
+    toEmerg = Math.min(leftover, emergRem);
+    // Any left after emergency fund goes to investments
+    toInvest = Math.max(0, leftover - toEmerg);
   } else {
-    if (carSavingsInput.dataset.prev && parseFloat(carSavingsInput.value) === 0) {
-      carSavingsInput.value = carSavingsInput.dataset.prev;
-    }
-    if (carNote)   { carNote.style.display = ''; carNote.textContent = 'Goal: $1,750'; }
-    if (carBanner) { carBanner.style.display = 'none'; }
+    // Emergency met — leftover goes to investments first, then next goal
+    const nextGoalAmt = parseFloat(document.getElementById('nextGoalAmt')?.value) || 0;
+    toInvest = Math.min(leftover, leftover); // all goes to invest for now
+    toNextGoal = 0; // after invest is maxed (user can define)
+    // Simple split: all leftover to invest unless next goal defined
+    toEmerg = 0;
+    toNextGoal = leftover;
   }
 
-  const emergBanner = document.getElementById('emergGoalBanner');
-  if (emergGoalMet) {
-    const prevEmerg = parseFloat(emergInput.dataset.prev) || 100;
-    if (parseFloat(emergInput.value) > 0) {
-      emergInput.dataset.prev = emergInput.value;
-      emergInput.value = 0;
+  // Update emergency auto amount in table
+  const emergAutoEl = document.getElementById('emergAutoAmt');
+  if (emergAutoEl) {
+    if (emergMet) {
+      emergAutoEl.textContent = '$1,000';
+      emergAutoEl.style.color = '#2E6B3E';
+    } else {
+      emergAutoEl.textContent = '$' + Math.round(toEmerg).toLocaleString();
+      emergAutoEl.style.color = 'var(--navy)';
     }
-    if (emergNote)   { emergNote.style.display = 'none'; }
-    if (emergBanner) {
-      emergBanner.style.display = 'flex';
-      const eFreedEl = document.getElementById('emergFreedAmt');
-      if (eFreedEl) eFreedEl.innerHTML = '$' + Math.round(prevEmerg) + '<small>/ mo freed</small>';
-      const eSubEl = emergBanner.querySelector('.cel-sub');
-      if (eSubEl) eSubEl.textContent = '$' + Math.round(prevEmerg) + '/mo now available to redirect';
-    }
-  } else {
-    if (emergInput.dataset.prev && parseFloat(emergInput.value) === 0) {
-      emergInput.value = emergInput.dataset.prev;
-    }
-    if (emergNote)   { emergNote.style.display = ''; emergNote.textContent = 'Goal: $1,000 · then redirect'; }
-    if (emergBanner) { emergBanner.style.display = 'none'; }
+  }
+  const wEmergEl = document.getElementById('w_emerg');
+  if (wEmergEl) wEmergEl.textContent = toEmerg > 0 ? '$' + Math.round(toEmerg*12/52) : (emergMet ? '✓' : '—');
+
+  const emergPctBadge = document.getElementById('emergPctBadge');
+  if (emergPctBadge) {
+    if (emergMet) { emergPctBadge.textContent = '100%'; emergPctBadge.className = 'pct-badge green'; }
+    else { emergPctBadge.textContent = income > 0 ? (toEmerg/income*100).toFixed(1)+'%' : '—'; emergPctBadge.className = 'pct-badge'; }
+  }
+  const emergStatEl = document.getElementById('emergStatus');
+  if (emergStatEl) {
+    emergStatEl.textContent = emergMet ? '✓ Goal Met!' : '↑ Priority #1';
+    emergStatEl.style.color = emergMet ? '#2E6B3E' : 'var(--navy)';
   }
 
-  recalc();
+  // Next goal card + table row
+  const nextGoalName = document.getElementById('nextGoalName')?.value || 'Next Goal';
+  const nextGoalAmt  = parseFloat(document.getElementById('nextGoalAmt')?.value) || 500;
+  const nextGoalRow  = document.getElementById('nextGoalRow');
+  const nextGoalTableName = document.getElementById('nextGoalTableName');
+
+  if (emergMet) {
+    if (nextGoalRow) nextGoalRow.style.display = '';
+    if (nextGoalTableName) nextGoalTableName.textContent = '🎯 ' + (nextGoalName || 'Next Goal');
+    const ngAutoEl = document.getElementById('nextGoalAutoAmt');
+    if (ngAutoEl) ngAutoEl.textContent = '$' + Math.round(toNextGoal).toLocaleString();
+    const ngWkEl = document.getElementById('w_nextGoal');
+    if (ngWkEl) ngWkEl.textContent = toNextGoal > 0 ? '$' + Math.round(toNextGoal*12/52) : '—';
+    const ngPctEl = document.getElementById('nextGoalPct');
+    const ngEtaEl = document.getElementById('nextGoalETA');
+    const ngPctBadge = document.getElementById('nextGoalPctBadge');
+    if (ngPctBadge) ngPctBadge.textContent = income > 0 ? (toNextGoal/income*100).toFixed(1)+'%' : '—';
+    if (ngPctEl) ngPctEl.textContent = (toNextGoal/nextGoalAmt*100).toFixed(0) + '%';
+    if (ngEtaEl && toNextGoal > 0) {
+      const months = Math.ceil(nextGoalAmt / toNextGoal);
+      ngEtaEl.textContent = months + ' month' + (months === 1 ? '' : 's') + ' to reach goal';
+    }
+  } else {
+    if (nextGoalRow) nextGoalRow.style.display = 'none';
+  }
+
+  // Savings subtotal
+  const savTotal = toEmerg + (emergMet ? toNextGoal : 0);
+  const savTotEl = document.getElementById('savingsTotal');
+  if (savTotEl) savTotEl.textContent = '$' + Math.round(savTotal).toLocaleString();
+  const savPctEl = document.getElementById('savingsTotalPct');
+  if (savPctEl) savPctEl.textContent = income > 0 ? (savTotal/income*100).toFixed(1)+'%' : '—';
+  const wSavEl = document.getElementById('wSavings');
+  if (wSavEl) wSavEl.textContent = savTotal > 0 ? '$' + Math.round(savTotal*12/52) : '—';
+
+  // ── MOTIVATOR SECTION ──
+  updateMotivator(emergSaved, emergMet, nextGoalName, nextGoalAmt, toNextGoal);
+
   autoSave();
+}
+
+function updateMotivator(emergSaved, emergMet, nextGoalName, nextGoalAmt, monthlyToGoal) {
+  const motEl = document.getElementById('motivatorSection');
+  if (!motEl) return;
+
+  const emergPct = Math.min(100, emergSaved / 1000 * 100).toFixed(0);
+  const months = monthlyToGoal > 0 && nextGoalAmt > 0 ? Math.ceil(nextGoalAmt / monthlyToGoal) : null;
+
+  motEl.innerHTML = `
+    <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; letter-spacing:4px; text-transform:uppercase; color:var(--red); margin-bottom:16px;">Your Progress Report</div>
+
+    <div style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom:20px;">
+      <div style="flex:1; min-width:180px; background:linear-gradient(135deg,#f0fff4,#fff); border:1px solid #2E6B3E; border-radius:4px; padding:16px;">
+        <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:#2E6B3E; margin-bottom:4px;">✅ Accomplished</div>
+        <div style="font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:700; color:#2E6B3E;">Car Down Payment</div>
+        <div style="font-size:12px; color:#555; margin-top:2px;">$1,750 saved last month · Goal crushed</div>
+      </div>
+      <div style="flex:1; min-width:180px; background:var(--white); border:1px solid var(--border); border-radius:4px; padding:16px;">
+        <div style="font-family:'Barlow Condensed',sans-serif; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--navy); margin-bottom:4px;">🛡️ In Progress</div>
+        <div style="font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:700; color:var(--navy);">Emergency Fund</div>
+        <div style="height:6px; background:#eee; border-radius:3px; margin:8px 0;">
+          <div style="width:${emergPct}%; height:100%; background:var(--navy); border-radius:3px;"></div>
+        </div>
+        <div style="font-size:12px; color:#555;">$${emergSaved.toLocaleString()} of $1,000 · ${emergPct}% complete</div>
+      </div>
+    </div>
+
+    ${emergMet ? `
+    <div style="background:var(--navy); border-radius:4px; padding:20px; text-align:center;">
+      <div style="font-family:'Barlow Condensed',sans-serif; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); margin-bottom:8px;">What's Your Next Goal?</div>
+      <div style="font-family:'Cormorant Garamond',serif; font-size:1.1rem; color:rgba(255,255,255,0.8); margin-bottom:12px;">Emergency fund complete 🎉 — every extra dollar is now yours to direct.</div>
+      <div style="display:flex; align-items:center; gap:10px; justify-content:center; flex-wrap:wrap;">
+        <span style="font-family:'Barlow Condensed',sans-serif; font-size:11px; color:rgba(255,255,255,0.5); letter-spacing:2px;">I want to save for</span>
+        <strong style="font-family:'Cormorant Garamond',serif; font-size:1.3rem; color:var(--gold);">${nextGoalName || '—'}</strong>
+        <span style="font-family:'Barlow Condensed',sans-serif; font-size:11px; color:rgba(255,255,255,0.5); letter-spacing:2px;">($${(nextGoalAmt||0).toLocaleString()})</span>
+      </div>
+      ${months ? `<div style="font-size:12px; color:rgba(255,255,255,0.5); margin-top:8px;">At this rate: ${months} month${months===1?'':'s'} away</div>` : ''}
+    </div>
+    ` : `
+    <div style="background:var(--navy); border-radius:4px; padding:20px; text-align:center;">
+      <div style="font-family:'Barlow Condensed',sans-serif; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); margin-bottom:8px;">Focus: Complete the Emergency Fund</div>
+      <div style="font-family:'Cormorant Garamond',serif; font-size:1.1rem; color:rgba(255,255,255,0.8);">Every dollar left over goes here. Once you hit $1,000 — the world opens up.</div>
+      <div style="font-size:12px; color:rgba(255,255,255,0.5); margin-top:8px;">${1000 - emergSaved > 0 ? '$' + (1000 - emergSaved).toLocaleString() + ' to go' : ''}</div>
+    </div>
+    `}
+  `;
 }
 
 loadAutosave();
 renderChips();
 recalc();
+updateGoals();
 </script>
 </body>
 </html>
