@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Joshua Son — Personal Finance Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --red: #B22234;
+    --blue: #3C3B6E;
+    --gold: #FFD700;
+    --white: #FFFFFF;
+    --light: #F0F2F8;
+    --text: #1a1a2e;
+    --muted: #555;
+  }
+
+  body {
+    font-family: 'Open Sans', sans-serif;
+    background: var(--light);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--blue);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stars-stripe {
+    display: flex;
+    height: 12px;
+  }
+  .stripe { flex: 1; }
+  .s-red { background: var(--red); }
+  .s-white { background: var(--white); }
+  .s-blue { background: var(--blue); }
+
+  .flag-bar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 24px 32px;
+    gap: 16px;
+  }
+
+  .flag-left, .flag-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .flag-right { justify-content: flex-end; }
+
+  /* USA Flag SVG embed */
+  .usa-flag {
+    width: 72px;
+    height: 48px;
+    border: 2px solid rgba(255,255,255,0.4);
+    flex-shrink: 0;
+  }
+
+  /* Army emblem placeholder */
+  .army-emblem {
+    width: 64px;
+    height: 64px;
+    flex-shrink: 0;
+  }
+
+  .header-center { text-align: center; }
+
+  .header-center .plan-label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+
+  .header-center h1 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.1;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .header-center .subtitle {
+    font-size: 12px;
+    color: rgba(255,255,255,0.65);
+    margin-top: 6px;
+    letter-spacing: 1px;
+  }
+
+  .stripe-bottom {
+    height: 8px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--red) 0px, var(--red) 14px,
+      var(--white) 14px, var(--white) 28px
+    );
+  }
+
+  /* ── INCOME BANNER ── */
+  .income-banner {
+    background: var(--red);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    padding: 14px 32px;
+    flex-wrap: wrap;
+  }
+
+  .income-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--white);
+  }
+
+  .income-item label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.85;
+  }
+
+  .income-item input {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.4);
+    color: var(--white);
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    width: 130px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    text-align: center;
+  }
+  .income-item input::placeholder { color: rgba(255,255,255,0.5); }
+  .income-item input:focus { outline: 2px solid var(--gold); background: rgba(255,255,255,0.25); }
+
+  .income-divider { color: rgba(255,255,255,0.4); font-size: 1.4rem; }
+
+  /* ── GOAL CARDS ── */
+  .goals-section {
+    padding: 28px 32px 12px;
+  }
+
+  .section-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--blue);
+    border-bottom: 2px solid var(--blue);
+    padding-bottom: 6px;
+    margin-bottom: 16px;
+  }
+
+  .goal-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin-bottom: 8px;
+  }
+
+  .goal-card {
+    background: var(--white);
+    border-radius: 8px;
+    border-top: 4px solid var(--blue);
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  }
+
+  .goal-card.red-top { border-top-color: var(--red); }
+  .goal-card.gold-top { border-top-color: #c8960c; }
+
+  .goal-card .gc-label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .goal-card .gc-goal {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .goal-card .gc-goal span {
+    font-weight: 600;
+    color: var(--blue);
+  }
+
+  .goal-card input[type="number"],
+  .goal-card input[type="text"] {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.1rem;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .goal-card input:focus { outline: 2px solid var(--blue); border-color: var(--blue); }
+
+  .goal-card .gc-pct {
+    font-size: 11px;
+    color: var(--muted);
+    text-align: right;
+  }
+
+  .goal-card .gc-pct strong { color: var(--red); font-size: 13px; }
+
+  /* ── MAIN TABLE ── */
+  .table-section { padding: 8px 32px 32px; }
+
+  .finance-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--white);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  }
+
+  .finance-table thead tr {
+    background: var(--blue);
+    color: var(--white);
+  }
+
+  .finance-table thead th {
+    font-family: 'Oswald', sans-serif;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 14px 16px;
+    text-align: left;
+    font-weight: 600;
+  }
+
+  .finance-table thead th:not(:first-child) { text-align: center; }
+
+  .finance-table tbody tr {
+    border-bottom: 1px solid #eee;
+    transition: background 0.15s;
+  }
+
+  .finance-table tbody tr:hover { background: #f7f8fc; }
+
+  .finance-table tbody tr.group-header td {
+    background: var(--blue);
+    color: var(--gold);
+    font-family: 'Oswald', sans-serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    font-weight: 600;
+  }
+
+  .finance-table tbody tr.subtotal td {
+    background: #eef0f8;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 10px 16px;
+  }
+
+  .finance-table tbody tr.total-row td {
+    background: var(--red);
+    color: var(--white);
+    font-family: 'Oswald', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 14px 16px;
+    letter-spacing: 1px;
+  }
+
+  .finance-table tbody tr.remaining-row td {
+    background: var(--blue);
+    color: var(--white);
+    font-family: 'Oswald', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 14px 16px;
+    letter-spacing: 1px;
+  }
+
+  .finance-table td {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+
+  .cat-name {
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .cat-note {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  td.center { text-align: center; }
+
+  /* Editable inputs inside table */
+  .amt-input {
+    width: 110px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px 8px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 1rem;
+    color: var(--text);
+    text-align: center;
+    background: #fafafa;
+  }
+  .amt-input:focus { outline: 2px solid var(--blue); border-color: var(--blue); background: white; }
+
+  .pct-badge {
+    display: inline-block;
+    background: var(--blue);
+    color: var(--white);
+    font-family: 'Oswald', sans-serif;
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    min-width: 56px;
+    text-align: center;
+  }
+
+  .pct-badge.red { background: var(--red); }
+  .pct-badge.green { background: #2e7d32; }
+  .pct-badge.gold { background: #c8960c; }
+
+  .monthly-disp {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--blue);
+    text-align: center;
+  }
+
+  /* Progress bar */
+  .progress-wrap {
+    padding: 0 32px 32px;
+  }
+
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Oswald', sans-serif;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 8px;
+  }
+
+  .progress-track {
+    height: 18px;
+    background: #ddd;
+    border-radius: 9px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue), var(--red));
+    border-radius: 9px;
+    transition: width 0.4s ease;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--blue);
+    color: rgba(255,255,255,0.6);
+    text-align: center;
+    padding: 16px;
+    font-size: 11px;
+    letter-spacing: 1px;
+  }
+
+  footer strong { color: var(--gold); }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .flag-bar { grid-template-columns: 1fr; text-align: center; }
+    .flag-left, .flag-right { justify-content: center; }
+    .goals-section, .table-section, .progress-wrap { padding-left: 16px; padding-right: 16px; }
+    .income-banner { flex-direction: column; gap: 12px; }
+    .amt-input { width: 90px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header>
+  <div class="stripe-bottom" style="height:6px; background: repeating-linear-gradient(90deg,var(--red) 0,var(--red) 14px,var(--white) 14px,var(--white) 28px);"></div>
+
+  <div class="flag-bar">
+
+    <!-- USA Flag SVG -->
+    <div class="flag-left">
+      <svg class="usa-flag" viewBox="0 0 190 100" xmlns="http://www.w3.org/2000/svg">
+        <rect width="190" height="100" fill="#B22234"/>
+        <rect y="7.7" width="190" height="7.7" fill="white"/>
+        <rect y="23.1" width="190" height="7.7" fill="white"/>
+        <rect y="38.5" width="190" height="7.7" fill="white"/>
+        <rect y="53.8" width="190" height="7.7" fill="white"/>
+        <rect y="69.2" width="190" height="7.7" fill="white"/>
+        <rect y="84.6" width="190" height="7.7" fill="white"/>
+        <rect width="76" height="53.8" fill="#3C3B6E"/>
+        <!-- Stars (simplified) -->
+        <g fill="white" font-size="8" font-family="Arial" text-anchor="middle">
+          <text x="9" y="12">★</text><text x="22" y="12">★</text><text x="35" y="12">★</text><text x="48" y="12">★</text><text x="61" y="12">★</text><text x="74" y="12">★</text>
+          <text x="15" y="22">★</text><text x="28" y="22">★</text><text x="41" y="22">★</text><text x="54" y="22">★</text><text x="67" y="22">★</text>
+          <text x="9" y="32">★</text><text x="22" y="32">★</text><text x="35" y="32">★</text><text x="48" y="32">★</text><text x="61" y="32">★</text><text x="74" y="32">★</text>
+          <text x="15" y="42">★</text><text x="28" y="42">★</text><text x="41" y="42">★</text><text x="54" y="42">★</text><text x="67" y="42">★</text>
+          <text x="9" y="52">★</text><text x="22" y="52">★</text><text x="35" y="52">★</text><text x="48" y="52">★</text><text x="61" y="52">★</text><text x="74" y="52">★</text>
+        </g>
+      </svg>
+      <div style="color:var(--gold); font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:2px; text-transform:uppercase; line-height:1.6;">
+        U.S. ARMY<br><span style="color:white; font-size:10px;">Active Duty</span>
+      </div>
+    </div>
+
+    <!-- Title -->
+    <div class="header-center">
+      <div class="plan-label">Personal Finance Plan</div>
+      <h1>Joshua Son</h1>
+      <div class="subtitle">Mission: Financial Freedom · Car Goal · Emergency Ready</div>
+    </div>
+
+    <!-- Army Star Logo -->
+    <div class="flag-right">
+      <div style="color:var(--gold); font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:2px; text-transform:uppercase; text-align:right; line-height:1.6;">
+        This We'll<br>Defend
+      </div>
+      <svg class="army-emblem" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="48" fill="#3C3B6E" stroke="#FFD700" stroke-width="3"/>
+        <polygon points="50,10 61,38 92,38 67,57 77,85 50,66 23,85 33,57 8,38 39,38" fill="#FFD700"/>
+        <circle cx="50" cy="50" r="18" fill="#3C3B6E"/>
+        <text x="50" y="55" font-size="11" fill="#FFD700" font-family="Oswald,sans-serif" font-weight="700" text-anchor="middle">ARMY</text>
+      </svg>
+    </div>
+
+  </div>
+  <div class="stripe-bottom"></div>
+</header>
+
+<!-- ══ INCOME BANNER ══ -->
+<div class="income-banner">
+  <div class="income-item">
+    <label>Monthly Income</label>
+    <input type="number" id="income" value="2100" min="0" step="50" onchange="recalc()">
+  </div>
+  <div class="income-divider">|</div>
+  <div class="income-item">
+    <label>Annual Income</label>
+    <input type="number" id="annualIncome" value="25200" min="0" step="100" readonly style="opacity:0.8; cursor:default;">
+  </div>
+</div>
+
+<!-- ══ GOAL CARDS ══ -->
+<div class="goals-section">
+  <div class="section-title">🎯 Savings Goals</div>
+  <div class="goal-cards">
+
+    <div class="goal-card red-top">
+      <div class="gc-label">🚗 Car Down Payment</div>
+      <div class="gc-goal">Goal: <span>$1,750</span> (incl. tax, tags, insurance)</div>
+      <input type="number" id="carSaved" value="0" min="0" max="1750" onchange="updateGoals()" placeholder="Saved so far $">
+      <div class="gc-pct">Saved: <strong id="carPct">0%</strong> of $1,750</div>
+      <div style="height:6px; background:#eee; border-radius:3px; margin-top:6px;">
+        <div id="carBar" style="height:100%; width:0%; background:var(--red); border-radius:3px; transition:width 0.4s;"></div>
+      </div>
+    </div>
+
+    <div class="goal-card gold-top">
+      <div class="gc-label">🛡️ Emergency Fund</div>
+      <div class="gc-goal">Goal: <span>$1,000</span></div>
+      <input type="number" id="emergSaved" value="0" min="0" max="1000" onchange="updateGoals()" placeholder="Saved so far $">
+      <div class="gc-pct">Saved: <strong id="emergPct">0%</strong> of $1,000</div>
+      <div style="height:6px; background:#eee; border-radius:3px; margin-top:6px;">
+        <div id="emergBar" style="height:100%; width:0%; background:#c8960c; border-radius:3px; transition:width 0.4s;"></div>
+      </div>
+    </div>
+
+    <div class="goal-card">
+      <div class="gc-label">📅 Time to Goal</div>
+      <div class="gc-goal">Combined: <span>$2,750</span></div>
+      <div style="font-family:'Oswald',sans-serif; font-size:2rem; font-weight:700; color:var(--blue); margin: 8px 0;" id="monthsToGoal">—</div>
+      <div class="gc-pct">months at current savings rate</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ FINANCE TABLE ══ -->
+<div class="table-section">
+  <div class="section-title">📊 Monthly Budget Breakdown</div>
+
+  <table class="finance-table">
+    <thead>
+      <tr>
+        <th style="width:35%">Category</th>
+        <th>Monthly ($)</th>
+        <th>% of Income</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <!-- FIXED / ZERO -->
+      <tr class="group-header"><td colspan="4">🏠 Housing &amp; Food — Base Life</td></tr>
+      <tr>
+        <td><div class="cat-name">Housing (Rent/Mortgage)</div><div class="cat-note">Lives on base — BAH included</div></td>
+        <td class="center"><input class="amt-input" type="number" id="housing" value="0" min="0" onchange="recalc()"></td>
+        <td class="center"><span class="pct-badge green" id="housingPct">0%</span></td>
+        <td style="font-size:12px; color:var(--muted);">Free on base ✅</td>
+      </tr>
+      <tr>
+        <td><div class="cat-name">Food / Groceries</div><div class="cat-note">MREs + dining facility on base</div></td>
+        <td class="center"><input class="amt-input" type="number" id="food" value="0" min="0" onchange="recalc()"></td>
+        <td class="center"><span class="pct-badge green" id="foodPct">0%</span></td>
+        <td style="font-size:12px; color:var(--muted);">Covered on base ✅</td>
+      </tr>
+
+      <!-- SAVINGS -->
+      <tr class="group-header"><td colspan="4">💰 Savings &amp; Emergency</td></tr>
+      <tr>
+        <td><div class="cat-name">Car Down Payment Fund</div><div class="cat-note">Goal: $1,750 total</div></td>
+        <td class="center"><input class="amt-input" type="number" id="carSavings" value="200" min="0" onchange="recalc()"></td>
+        <td class="center"><span class="pct-badge red" id="carSavingsPct">9.5%</span></td>
+        <td style="font-size:12px; color:var(--muted);">Tax, tags, insurance deposit</td>
+      </tr>
+      <tr>
+        <td><div class="cat-name">Emergency Fund</div><div class="cat-note">Goal: $1,000 · then redirect</div></td>
+        <td class="center"><input class="amt-input" type="number" id="emerg" value="100" min="0" onchange="recalc()"></td>
+        <td class="center"><span class="pct-badge" id="emergPctBadge">4.8%</span></td>
+        <td style="font-size:12px; color:var(--muted);">Build before investing</td>
+      </tr>
+      <tr class="subtotal">
+        <td>Savings Subtotal</td>
+        <td class="center monthly-disp" id="savingsTotal">$300</td>
+        <td class="center"><span class="pct-badge" id="savingsTotalPct">14.3%</span></td>
+        <td></td>
+      </tr>
+
+      <!-- INVESTMENTS -->
+      <tr class="group-header"><td colspan="4">📈 Investments &amp; Retirement</td></tr>
+      <tr>
+        <td><div class="cat-name">TSP (Thrift Savings Plan)</div><div class="cat-note">Army's 401k — max match at 5%</div></td>
+        <td class="center"><input class="amt-input" type="number" id="tsp" value="105" min="0" onchange="recalc()"></td>
+        <td class="center"><span class="pct-badge gold" id="tspPct">5%</span></td>
+        <td style="font-size:12px; color:var(--muted);">Get the free match!</td>
+      </tr>
+      <tr>
+        <td><div class="cat-name">Roth IRA</div><div class="cat-note">Tax-free growth · $7k/yr max</div></td>
+        <td class="center"><input class="amt-input" type="number" id="roth" value="100" min="0" onchange="recalc()"></td>
+        <td class="center"><span class="pct-badge gold" id="rothPct">4.8%</span></td>
+        <td style="font-size:12px; color:var(--muted);">Fidelity or Vanguard</td>
+      </tr>
+      <tr class="subtotal">
+        <td>Investment Subtotal</td>
+        <td class="center monthly-disp" id="investTotal">$205</td>
+        <td class="center"><span class="pct-badge gold" id="investTotalPct">9.8%</span></td>
+        <td></td>
+      </tr>
+
+      <!-- TRANSPORTATION -->
+      <tr class="group-header"><td colspan="4">🚗 Transportation (Budget: $400/mo)</td></tr>
+      <tr>
+        <td><div class="cat-name">Car Payment</div><div class="cat-note">After down payment secured</div></td>
+        <td class="center"><input class="amt-input" type="number" id="carPayment" value="250" min="0" onchange="recalc()"></td>
+        <td class="center"><span class="pct-badge" id="carPaymentPct">11.9%</span></td>
+        <td style="font-size:12px; color:var(--muted);">Keep ≤ $250/mo</td>
+      </tr>
+      <tr>
+        <td><div class="cat-name">Car Insurance</div><div class="cat-note">USAA recommended for military</div></td>
+        <td class="center"><input class="amt-input" type="number" id="insurance" value="100" min="0" onchange="recalc()"></td>
+        <td class="center"><span class="pct-badge" id="insurancePct">4.8%</span></td>
+        <td style="font-size:12px; color:var(--muted);">USAA military discount</td>
+      </tr>
+      <tr>
+        <td><div class="cat-name">Gas &amp; Maintenance</div><div class="cat-note">Oil, tires, fuel</div></td>
+        <td class="center"><input class="amt-input" type="number" id="gas" value="50" min="0" onchange="recalc()"></td>
+        <td class="center"><span class="pct-badge" id="gasPct">2.4%</span></td>
+        <td style="font-size:12px; color:var(--muted);">Budget $50 buffer</td>
+      </tr>
+      <tr class="subtotal">
+        <td>Transport Subtotal</td>
+        <td class="center monthly-disp" id="transpTotal">$400</td>
+        <td class="center"><span class="pct-badge" id="transpTotalPct">19%</span></td>
+        <td></td>
+      </tr>
+
+      <!-- PERSONAL -->
+      <tr class="group-header"><td colspan="4">🧍 Personal &amp; Lifestyle</td></tr>
+      <tr>
+        <td><div class="cat-name">Personal Care</div><div class="cat-note">Haircuts, hygiene, clothing</div></td>
+        <td class="center"><input class="amt-input" type="number" id="personal" value="75" min="0" onchange="recalc()"></td>
+        <td class="center"><span class="pct-badge" id="personalPct">3.6%</span></td>
+        <td style="font-size:12px; color:var(--muted);"></td>
+      </tr>
+      <tr>
+        <td><div class="cat-name">Entertainment / Fun</div><div class="cat-note">Eating out, games, subscriptions</div></td>
+        <td class="center"><input class="amt-input" type="number" id="entertainment" value="150" min="0" onchange="recalc()"></td>
+        <td class="center"><span class="pct-badge" id="entertainmentPct">7.1%</span></td>
+        <td style="font-size:12px; color:var(--muted);">Stay disciplined</td>
+      </tr>
+      <tr>
+        <td><div class="cat-name">Phone Plan</div><div class="cat-note">Military discount available</div></td>
+        <td class="center"><input class="amt-input" type="number" id="phone" value="50" min="0" onchange="recalc()"></td>
+        <td class="center"><span class="pct-badge" id="phonePct">2.4%</span></td>
+        <td style="font-size:12px; color:var(--muted);">T-Mobile military plan</td>
+      </tr>
+      <tr>
+        <td><div class="cat-name">Clothing</div><div class="cat-note">Civilian wear (uniform provided)</div></td>
+        <td class="center"><input class="amt-input" type="number" id="clothing" value="50" min="0" onchange="recalc()"></td>
+        <td class="center"><span class="pct-badge" id="clothingPct">2.4%</span></td>
+        <td style="font-size:12px; color:var(--muted);"></td>
+      </tr>
+
+      <!-- GIVING -->
+      <tr class="group-header"><td colspan="4">🙏 Charity &amp; Giving</td></tr>
+      <tr>
+        <td><div class="cat-name">Tithe / Donation</div><div class="cat-note">Give first</div></td>
+        <td class="center"><input class="amt-input" type="number" id="charity" value="210" min="0" onchange="recalc()"></td>
+        <td class="center"><span class="pct-badge gold" id="charityPct">10%</span></td>
+        <td style="font-size:12px; color:var(--muted);">10% recommended</td>
+      </tr>
+
+      <!-- TOTALS -->
+      <tr class="total-row">
+        <td>TOTAL BUDGETED</td>
+        <td class="center" id="totalBudgeted" style="font-size:1.2rem;">$1,290</td>
+        <td class="center" id="totalBudgetedPct" style="font-size:1.1rem;">61.4%</td>
+        <td></td>
+      </tr>
+      <tr class="remaining-row">
+        <td>REMAINING / UNALLOCATED</td>
+        <td class="center" id="remaining" style="font-size:1.2rem; color:var(--gold);">$810</td>
+        <td class="center" id="remainingPct" style="font-size:1.1rem; color:var(--gold);">38.6%</td>
+        <td style="font-size:12px; color:rgba(255,255,255,0.7);">Reallocate or build savings faster</td>
+      </tr>
+
+    </tbody>
+  </table>
+</div>
+
+<!-- ══ PROGRESS BAR ══ -->
+<div class="progress-wrap">
+  <div class="progress-label">
+    <span>Budget Allocated</span>
+    <span id="progressLabel">61.4%</span>
+  </div>
+  <div class="progress-track">
+    <div class="progress-fill" id="progressBar" style="width:61.4%"></div>
+  </div>
+  <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--muted); margin-top:6px;">
+    <span>$0</span>
+    <span id="incomeLabel">$2,100</span>
+  </div>
+</div>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <strong>Joshua Son — U.S. Army Finance Plan</strong> · All values are editable · Built with discipline &amp; purpose
+</footer>
+
+<script>
+  function recalc() {
+    const income = parseFloat(document.getElementById('income').value) || 0;
+    document.getElementById('annualIncome').value = (income * 12).toLocaleString();
+    document.getElementById('incomeLabel').textContent = '$' + income.toLocaleString();
+
+    const fields = ['housing','food','carSavings','emerg','tsp','roth','carPayment','insurance','gas','personal','entertainment','phone','clothing','charity'];
+    const badgeIds = ['housingPct','foodPct','carSavingsPct','emergPctBadge','tspPct','rothPct','carPaymentPct','insurancePct','gasPct','personalPct','entertainmentPct','phonePct','clothingPct','charityPct'];
+
+    let total = 0;
+    fields.forEach((f, i) => {
+      const val = parseFloat(document.getElementById(f).value) || 0;
+      total += val;
+      const pct = income > 0 ? ((val / income) * 100).toFixed(1) : '0.0';
+      document.getElementById(badgeIds[i]).textContent = pct + '%';
+    });
+
+    // Subtotals
+    const savings = (parseFloat(document.getElementById('carSavings').value)||0) + (parseFloat(document.getElementById('emerg').value)||0);
+    const invest = (parseFloat(document.getElementById('tsp').value)||0) + (parseFloat(document.getElementById('roth').value)||0);
+    const transp = (parseFloat(document.getElementById('carPayment').value)||0) + (parseFloat(document.getElementById('insurance').value)||0) + (parseFloat(document.getElementById('gas').value)||0);
+
+    document.getElementById('savingsTotal').textContent = '$' + savings.toLocaleString();
+    document.getElementById('savingsTotalPct').textContent = income > 0 ? ((savings/income)*100).toFixed(1)+'%' : '0%';
+    document.getElementById('investTotal').textContent = '$' + invest.toLocaleString();
+    document.getElementById('investTotalPct').textContent = income > 0 ? ((invest/income)*100).toFixed(1)+'%' : '0%';
+    document.getElementById('transpTotal').textContent = '$' + transp.toLocaleString();
+    document.getElementById('transpTotalPct').textContent = income > 0 ? ((transp/income)*100).toFixed(1)+'%' : '0%';
+
+    // Total & remaining
+    const remaining = income - total;
+    const pctUsed = income > 0 ? ((total/income)*100).toFixed(1) : '0.0';
+    const pctLeft = income > 0 ? ((remaining/income)*100).toFixed(1) : '0.0';
+
+    document.getElementById('totalBudgeted').textContent = '$' + total.toLocaleString();
+    document.getElementById('totalBudgetedPct').textContent = pctUsed + '%';
+    document.getElementById('remaining').textContent = '$' + remaining.toLocaleString();
+    document.getElementById('remaining').style.color = remaining >= 0 ? 'var(--gold)' : '#ff6b6b';
+    document.getElementById('remainingPct').textContent = pctLeft + '%';
+    document.getElementById('remainingPct').style.color = remaining >= 0 ? 'var(--gold)' : '#ff6b6b';
+
+    // Progress bar
+    const barW = Math.min(100, Math.max(0, parseFloat(pctUsed)));
+    document.getElementById('progressBar').style.width = barW + '%';
+    document.getElementById('progressBar').style.background = barW > 100 ? 'var(--red)' : 'linear-gradient(90deg, var(--blue), var(--red))';
+    document.getElementById('progressLabel').textContent = pctUsed + '%';
+
+    updateGoals();
+  }
+
+  function updateGoals() {
+    const carSaved = parseFloat(document.getElementById('carSaved').value) || 0;
+    const emergSaved = parseFloat(document.getElementById('emergSaved').value) || 0;
+
+    const carPct = Math.min(100, (carSaved / 1750 * 100)).toFixed(0);
+    const emergPct = Math.min(100, (emergSaved / 1000 * 100)).toFixed(0);
+
+    document.getElementById('carPct').textContent = carPct + '%';
+    document.getElementById('emergPct').textContent = emergPct + '%';
+    document.getElementById('carBar').style.width = carPct + '%';
+    document.getElementById('emergBar').style.width = emergPct + '%';
+
+    const carRemaining = Math.max(0, 1750 - carSaved);
+    const emergRemaining = Math.max(0, 1000 - emergSaved);
+    const totalRemaining = carRemaining + emergRemaining;
+
+    const monthlyToGoals = (parseFloat(document.getElementById('carSavings').value)||0) + (parseFloat(document.getElementById('emerg').value)||0);
+    if (monthlyToGoals > 0 && totalRemaining > 0) {
+      const months = Math.ceil(totalRemaining / monthlyToGoals);
+      document.getElementById('monthsToGoal').textContent = months;
+    } else if (totalRemaining <= 0) {
+      document.getElementById('monthsToGoal').textContent = '✅';
+    } else {
+      document.getElementById('monthsToGoal').textContent = '—';
+    }
+  }
+
+  // Init
+  recalc();
+</script>
+
+</body>
+</html>
