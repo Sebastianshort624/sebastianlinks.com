@@ -7,227 +7,73 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --navy: #1B2A4A;
-  --navy2: #243660;
-  --gold: #C8960C;
-  --gold2: #E0AC1A;
-  --gold-bg: #FDF6E3;
-  --ice: #EAF0F8;
-  --ice2: #D6E4F4;
-  --border: #C5D4E8;
-  --green: #1A6B3A;
-  --green-bg: #D4F0E1;
-  --red: #B91C1C;
-  --red-bg: #FEE2E2;
-  --neutral: #374151;
-  --neutral-bg: #F3F4F6;
-  --white: #FFFFFF;
-  --text: #1e2d4a;
-  --text2: #4A5568;
-  --shadow: rgba(27,42,74,.10);
+  --navy:#1B2A4A; --navy2:#243660; --gold:#C8960C; --gold2:#E0AC1A; --gold-bg:#FDF6E3;
+  --ice:#EAF0F8; --ice2:#D6E4F4; --border:#C5D4E8;
+  --green:#1A6B3A; --green-bg:#D4F0E1;
+  --red:#B91C1C; --red-bg:#FEE2E2; --red-soft:rgba(254,226,226,.18);
+  --green-soft:rgba(212,240,225,.18);
+  --white:#FFFFFF; --text:#1e2d4a; --text2:#4A5568; --text3:#7A99C2;
+  --shadow:rgba(27,42,74,.10);
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--ice); color: var(--text); font-family: 'Barlow', sans-serif; min-height: 100vh; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--ice);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh}
 
-/* HEADER */
-header {
-  background: var(--navy);
-  padding: 2.5rem 2rem 3rem;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-header::after {
-  content: '';
-  position: absolute;
-  bottom: -1px; left: 0; right: 0;
-  height: 48px;
-  background: var(--ice);
-  clip-path: ellipse(55% 100% at 50% 100%);
-}
-.header-label {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: .65rem;
-  font-weight: 700;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  color: var(--gold2);
-  margin-bottom: .8rem;
-}
-header h1 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(1.8rem, 5vw, 2.6rem);
-  font-weight: 700;
-  color: #fff;
-  line-height: 1.1;
-  margin-bottom: .5rem;
-}
-header h1 span { color: var(--gold2); }
-header p {
-  color: rgba(255,255,255,.65);
-  font-size: .88rem;
-  max-width: 480px;
-  margin: 0 auto;
-  line-height: 1.65;
-}
-.gold-bar {
-  width: 44px; height: 3px;
-  background: linear-gradient(90deg, var(--gold), var(--gold2));
-  border-radius: 99px;
-  margin: .9rem auto 0;
-}
+header{background:var(--navy);padding:2.5rem 2rem 3.5rem;text-align:center;position:relative;overflow:hidden}
+header::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:48px;background:var(--ice);clip-path:ellipse(55% 100% at 50% 100%)}
+.header-label{font-family:'Barlow Condensed',sans-serif;font-size:.65rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold2);margin-bottom:.8rem}
+header h1{font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,5vw,2.6rem);font-weight:700;color:#fff;line-height:1.1;margin-bottom:.5rem}
+header h1 span{color:var(--gold2)}
+header p{color:rgba(255,255,255,.65);font-size:.88rem;max-width:500px;margin:0 auto;line-height:1.65}
+.gold-bar{width:44px;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:99px;margin:.9rem auto 0}
 
-/* MAIN */
-main {
-  max-width: 1020px;
-  margin: 0 auto;
-  padding: 2.5rem 1.5rem 4rem;
-}
+main{max-width:1060px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
 
-/* LEGEND */
-.legend {
-  display: flex;
-  gap: .75rem;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-bottom: 2rem;
-}
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: .4rem;
-  font-size: .72rem;
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 700;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--text2);
-}
-.dot {
-  width: 10px; height: 10px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-.dot-green { background: var(--green); }
-.dot-neutral { background: #6B7280; }
-.dot-red { background: var(--red); }
+/* ALERT BANNER */
+.alert-banner{background:#FEF3C7;border:1.5px solid #F59E0B;border-radius:10px;padding:1rem 1.4rem;margin-bottom:2rem;display:flex;align-items:flex-start;gap:.85rem}
+.alert-icon{font-size:1.3rem;flex-shrink:0;margin-top:.05rem}
+.alert-text{font-size:.8rem;color:#7C4A00;line-height:1.6}
+.alert-text strong{font-weight:700;color:#5C3600}
 
-/* TABLE WRAPPER */
-.table-wrap {
-  background: var(--white);
-  border-radius: 14px;
-  border: 1.5px solid var(--border);
-  box-shadow: 0 4px 18px var(--shadow);
-  overflow: hidden;
-  overflow-x: auto;
-}
+.legend{display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;margin-bottom:1.8rem}
+.legend-item{display:flex;align-items:center;gap:.4rem;font-size:.72rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text2)}
+.dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.dot-green{background:var(--green)} .dot-neutral{background:#6B7280} .dot-red{background:var(--red)}
 
-/* TABLE */
-.reputation-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: .83rem;
-  min-width: 560px;
-}
-.reputation-table thead tr {
-  background: var(--navy);
-}
-.reputation-table thead th {
-  padding: .9rem 1.2rem;
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: .7rem;
-  font-weight: 700;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  text-align: left;
-  white-space: nowrap;
-}
-.reputation-table thead th:nth-child(1) { color: #6EE7A0; border-bottom: 2px solid #22C55E; }
-.reputation-table thead th:nth-child(2) { color: rgba(255,255,255,.75); border-bottom: 2px solid rgba(255,255,255,.2); }
-.reputation-table thead th:nth-child(3) { color: #FCA5A5; border-bottom: 2px solid #EF4444; }
+.table-wrap{background:var(--white);border-radius:14px;border:1.5px solid var(--border);box-shadow:0 4px 18px var(--shadow);overflow:hidden;overflow-x:auto}
 
-.reputation-table tbody tr {
-  border-bottom: 1px solid var(--ice2);
-  transition: background .15s;
-}
-.reputation-table tbody tr:last-child { border-bottom: none; }
-.reputation-table tbody tr:hover { background: var(--ice); }
+.reputation-table{width:100%;border-collapse:collapse;font-size:.83rem;min-width:600px}
+.reputation-table thead tr{background:var(--navy)}
+.reputation-table thead th{padding:.9rem 1.1rem;font-family:'Barlow Condensed',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;text-align:left;white-space:nowrap}
+.reputation-table thead th:nth-child(1){color:#6EE7A0;border-bottom:2px solid #22C55E}
+.reputation-table thead th:nth-child(2){color:rgba(255,255,255,.75);border-bottom:2px solid rgba(255,255,255,.2)}
+.reputation-table thead th:nth-child(3){color:#FCA5A5;border-bottom:2px solid #EF4444}
 
-.reputation-table td {
-  padding: .75rem 1.2rem;
-  vertical-align: middle;
-  line-height: 1.45;
-}
+.reputation-table tbody tr{border-bottom:1px solid var(--ice2);transition:background .15s}
+.reputation-table tbody tr:last-child{border-bottom:none}
+.reputation-table tbody tr:hover{background:var(--ice)}
+.reputation-table td{padding:.72rem 1.1rem;vertical-align:middle;line-height:1.5}
+.reputation-table td:nth-child(1){background:var(--green-soft)}
+.reputation-table td:nth-child(3){background:var(--red-soft)}
 
-/* Column coloring */
-.reputation-table td:nth-child(1) { background: rgba(212,240,225,.18); }
-.reputation-table td:nth-child(3) { background: rgba(254,226,226,.12); color: var(--text2); }
+.reputation-table a{color:var(--navy2);text-decoration:none;font-weight:500;border-bottom:1px solid var(--ice2);transition:color .15s,border-color .15s}
+.reputation-table a:hover{color:var(--gold);border-color:var(--gold)}
 
-/* Links */
-.reputation-table a {
-  color: var(--navy2);
-  text-decoration: none;
-  font-weight: 500;
-  border-bottom: 1px solid var(--ice2);
-  transition: color .15s, border-color .15s;
-}
-.reputation-table a:hover {
-  color: var(--gold);
-  border-color: var(--gold);
-}
+.plain{color:var(--text2);font-style:italic;font-size:.78rem}
+.dash{color:var(--text3);font-style:normal}
 
-/* Plain text cells */
-.reputation-table td:not(:has(a)) {
-  color: var(--text2);
-  font-style: italic;
-  font-size: .78rem;
-}
+/* chips */
+.chip{display:inline-block;border-radius:4px;padding:1px 7px;font-size:.6rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-left:.3rem;vertical-align:middle;white-space:nowrap}
+.chip-gold{background:var(--gold-bg);border:1px solid var(--gold2);color:var(--gold)}
+.chip-red{background:#FEE2E2;border:1px solid #FCA5A5;color:var(--red)}
+.chip-amber{background:#FEF3C7;border:1px solid #F59E0B;color:#92400E}
 
-/* BBB note chip */
-.bbb-note {
-  display: inline-block;
-  background: var(--gold-bg);
-  border: 1px solid var(--gold2);
-  border-radius: 4px;
-  padding: 1px 6px;
-  font-size: .65rem;
-  font-family: 'Barlow Condensed', sans-serif;
-  font-weight: 700;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-left: .35rem;
-  vertical-align: middle;
-  white-space: nowrap;
-}
+.footnote{margin-top:1.5rem;padding:1rem 1.4rem;background:var(--gold-bg);border:1px solid rgba(200,150,12,.25);border-radius:8px;font-size:.76rem;color:#7A5800;line-height:1.65}
+.footnote strong{font-weight:600;color:#5A4000}
 
-/* FOOTER NOTE */
-.footnote {
-  margin-top: 1.5rem;
-  padding: 1rem 1.4rem;
-  background: var(--gold-bg);
-  border: 1px solid rgba(200,150,12,.25);
-  border-radius: 8px;
-  font-size: .75rem;
-  color: #7A5800;
-  line-height: 1.6;
-}
-.footnote strong { font-weight: 600; color: #5A4000; }
+footer{background:var(--navy);padding:1.2rem 1.5rem;text-align:center;border-top:1px solid rgba(200,150,12,.12)}
+footer p{font-size:.65rem;color:rgba(255,255,255,.32);letter-spacing:.06em}
 
-/* FOOTER */
-footer {
-  background: var(--navy);
-  padding: 1.2rem 1.5rem;
-  text-align: center;
-  border-top: 1px solid rgba(200,150,12,.12);
-  margin-top: 0;
-}
-footer p { font-size: .65rem; color: rgba(255,255,255,.32); letter-spacing: .06em; }
-
-@media (max-width: 600px) {
-  .reputation-table { font-size: .77rem; }
-  .reputation-table td, .reputation-table thead th { padding: .65rem .85rem; }
-}
+@media(max-width:600px){.reputation-table{font-size:.77rem}.reputation-table td,.reputation-table thead th{padding:.6rem .8rem}}
 </style>
 </head>
 <body>
@@ -235,16 +81,23 @@ footer p { font-size: .65rem; color: rgba(255,255,255,.32); letter-spacing: .06e
 <header>
   <div class="header-label">Online Reputation Audit</div>
   <h1>Panther Van Lines<br><span>Web Presence Report</span></h1>
-  <p>A structured review of mentions, listings, and sentiment found across public sources.</p>
+  <p>Full sweep of public mentions, listings, reviews, and sentiment across all indexed sources.</p>
   <div class="gold-bar"></div>
 </header>
 
 <main>
 
+  <div class="alert-banner">
+    <div class="alert-icon">⚠️</div>
+    <div class="alert-text">
+      <strong>Closure Alert:</strong> Yellow Pages and Yelp (Lincolnton location, updated December 2025) both list Panther Van Lines as <strong>CLOSED</strong>. This is the most significant reputation signal in the audit and should be addressed or corrected across all platforms if the business is still operating.
+    </div>
+  </div>
+
   <div class="legend">
     <div class="legend-item"><div class="dot dot-green"></div> Positive Mentions</div>
     <div class="legend-item"><div class="dot dot-neutral"></div> Neutral / Business Listings</div>
-    <div class="legend-item"><div class="dot dot-red"></div> Negative Mentions</div>
+    <div class="legend-item"><div class="dot dot-red"></div> Negative / Concerning</div>
   </div>
 
   <div class="table-wrap">
@@ -253,37 +106,68 @@ footer p { font-size: .65rem; color: rgba(255,255,255,.32); letter-spacing: .06e
         <tr>
           <th>✅ Positive Mentions</th>
           <th>⬜ Neutral / Business Listings</th>
-          <th>🚩 Negative Mentions</th>
+          <th>🚩 Negative / Concerning</th>
         </tr>
       </thead>
       <tbody>
+
         <tr>
           <td>
             <a href="https://www.yellowpages.com/nationwide/mip/panther-van-lines-19970744" target="_blank" rel="noopener">
-              Yellow Pages – "Best move I've ever had"
+              Yellow Pages – 5-Star Rating
             </a>
+            <span class="chip chip-red">Closed</span>
           </td>
           <td>
             <a href="https://www.bbb.org/us/nc/conover/profile/moving-companies/panther-van-lines-0473-116164" target="_blank" rel="noopener">
-              BBB Business Profile
+              BBB Business Profile – 2 Locations
             </a>
           </td>
-          <td>No major consumer complaint site located using exact phrase.</td>
+          <td>
+            <a href="https://www.yellowpages.com/nationwide/mip/panther-van-lines-19970744" target="_blank" rel="noopener">
+              Yellow Pages – Listed as CLOSED
+            </a>
+          </td>
         </tr>
+
+        <tr>
+          <td>
+            <a href="https://www.yellowpages.com/nationwide/mip/panther-van-lines-19970744" target="_blank" rel="noopener">
+              "Best move I've ever had" — Tyra G., 2011
+            </a>
+          </td>
+          <td>
+            <a href="https://www.whereorg.com/panther-van-lines-9688002" target="_blank" rel="noopener">
+              WhereOrg Directory Listing
+            </a>
+          </td>
+          <td>
+            <a href="https://www.yelp.com/biz/panther-van-lines-lincolnton-2" target="_blank" rel="noopener">
+              Yelp (Lincolnton) – Listed as CLOSED
+            </a>
+            <span class="chip chip-red">Dec 2025</span>
+          </td>
+        </tr>
+
         <tr>
           <td>
             <a href="https://www.bbb.org/us/nc/conover/profile/moving-companies/panther-van-lines-0473-116164" target="_blank" rel="noopener">
               BBB A+ Rating
             </a>
-            <span class="bbb-note">Not Accredited</span>
+            <span class="chip chip-gold">Not Accredited</span>
           </td>
           <td>
-            <a href="https://www.whereorg.com/panther-van-lines-9688002" target="_blank" rel="noopener">
-              WhereOrg Listing
+            <a href="https://pro.porch.com/lincolnton-nc/movers/panther-van-lines-1/pp" target="_blank" rel="noopener">
+              Porch Business Profile – Lincolnton
             </a>
           </td>
-          <td>—</td>
+          <td>
+            <a href="https://www.yelp.com/biz/panther-van-lines-cherryville" target="_blank" rel="noopener">
+              Yelp (Cherryville) – Active but 0 reviews
+            </a>
+          </td>
         </tr>
+
         <tr>
           <td>
             <a href="https://www.mapquest.com/us/north-carolina/panther-van-lines-439265097" target="_blank" rel="noopener">
@@ -291,29 +175,36 @@ footer p { font-size: .65rem; color: rgba(255,255,255,.32); letter-spacing: .06e
             </a>
           </td>
           <td>
-            <a href="https://pro.porch.com/lincolnton-nc/movers/panther-van-lines-1/pp" target="_blank" rel="noopener">
-              Porch Business Profile
+            <a href="https://411.info/business/Panther-Van-Lines-Cherryville-NC-9871497" target="_blank" rel="noopener">
+              411.info – Cherryville Location<br>
+              <span style="font-size:.74rem;color:#6B7280">501 S Elm St · (704) 435-8070</span>
             </a>
           </td>
-          <td>—</td>
+          <td>
+            <span class="plain">MapQuest listing returns 404 – page removed or broken</span>
+          </td>
         </tr>
+
         <tr>
           <td>
             <a href="https://www.yellowpages.com/nationwide/mip/panther-van-lines-19970744" target="_blank" rel="noopener">
-              Professional &amp; Reliable Moving Company Description
+              "Professional &amp; Reliable" – Company Description
             </a>
           </td>
           <td>
-            <a href="https://411.info/business/Panther-Van-Lines-Cherryville-NC-9871497" target="_blank" rel="noopener">
-              411 Business Directory
+            <a href="https://www.movingideas.org/cherryville-nc/panther-van-lines-38715/" target="_blank" rel="noopener">
+              MovingIdeas.org – Cherryville Listing
             </a>
           </td>
-          <td>—</td>
+          <td>
+            <span class="plain">MovingIdeas.org – Listed but 0 reviews on file</span>
+          </td>
         </tr>
+
         <tr>
           <td>
-            <a href="https://www.mapquest.com/us/north-carolina/panther-van-lines-439265097" target="_blank" rel="noopener">
-              Licensed &amp; Bonded Moving Services
+            <a href="https://www.yellowpages.com/nationwide/mip/panther-van-lines-19970744" target="_blank" rel="noopener">
+              30 Years in Business (Est. 1996)
             </a>
           </td>
           <td>
@@ -321,44 +212,111 @@ footer p { font-size: .65rem; color: rgba(255,255,255,.32); letter-spacing: .06e
               Manta Company Listing
             </a>
           </td>
-          <td>—</td>
+          <td>
+            <span class="plain">WhereOrg listing returns server error (526) – site unreachable</span>
+          </td>
         </tr>
+
         <tr>
           <td>
             <a href="https://www.yellowpages.com/nationwide/mip/panther-van-lines-19970744" target="_blank" rel="noopener">
-              30 Years in Business
+              Guaranteed Pricing &amp; Delivery Dates
             </a>
           </td>
-          <td>BBB License Info (DOT #1141667)</td>
-          <td>—</td>
+          <td>
+            BBB DOT License #1141667 · MC# 463158
+          </td>
+          <td>
+            <span class="plain">No Trustpilot, Google Reviews, HomeAdvisor, or Angi presence found</span>
+          </td>
         </tr>
+
         <tr>
-          <td>Guaranteed Pricing &amp; Delivery Dates</td>
-          <td>Business Registration Records</td>
-          <td>—</td>
+          <td>
+            <a href="https://www.yellowpages.com/nationwide/mip/panther-van-lines-19970744" target="_blank" rel="noopener">
+              22,000 sq ft Climate-Controlled Storage
+            </a>
+          </td>
+          <td>
+            Lincolnton Chamber of Commerce Member
+          </td>
+          <td class="dash">—</td>
         </tr>
+
         <tr>
-          <td>Climate-Controlled Storage Facility</td>
-          <td>Local Directory Citations</td>
-          <td>—</td>
+          <td>
+            <a href="https://pro.porch.com/lincolnton-nc/movers/panther-van-lines-1/pp" target="_blank" rel="noopener">
+              Piano Moving &amp; High-Value Item Services
+            </a>
+          </td>
+          <td>
+            <a href="https://www.facebook.com/Panther-Van-Lines-124497277666301" target="_blank" rel="noopener">
+              Facebook Business Page
+            </a>
+          </td>
+          <td class="dash">—</td>
         </tr>
+
         <tr>
-          <td>Residential &amp; Commercial Moving Services</td>
-          <td>Industry Listings</td>
-          <td>—</td>
+          <td>
+            <a href="https://pro.porch.com/lincolnton-nc/movers/panther-van-lines-1/pp" target="_blank" rel="noopener">
+              Wide Service Area – 40+ NC Cities Listed on Porch
+            </a>
+          </td>
+          <td>
+            <a href="http://www.panthervanlines.com" target="_blank" rel="noopener">
+              panthervanlines.com (company website)
+            </a>
+          </td>
+          <td class="dash">—</td>
         </tr>
+
+        <tr>
+          <td>
+            <a href="https://www.yellowpages.com/nationwide/mip/panther-van-lines-19970744" target="_blank" rel="noopener">
+              Free On-Site Estimates + Monthly Specials
+            </a>
+          </td>
+          <td>
+            Two Physical Locations:<br>
+            <span style="font-size:.74rem;color:#6B7280">441 N McLin Creek Rd, Conover NC<br>103 Labans Ln, Lincolnton NC</span>
+          </td>
+          <td class="dash">—</td>
+        </tr>
+
+        <tr>
+          <td>
+            <span class="plain">Licensed, Bonded – DOT Registered (All 48 States)</span>
+          </td>
+          <td>
+            <span class="plain">BBB File Opened: 9/23/2003 · Business Inc. 2/6/1996</span>
+          </td>
+          <td class="dash">—</td>
+        </tr>
+
+        <tr>
+          <td>
+            <span class="plain">All Major Credit Cards, Debit, Check Accepted</span>
+          </td>
+          <td>
+            <span class="plain">6 Employees on record (BBB)</span>
+          </td>
+          <td class="dash">—</td>
+        </tr>
+
       </tbody>
     </table>
   </div>
 
   <div class="footnote">
-    <strong>BBB Note:</strong> Panther Van Lines holds an <strong>A+ BBB Rating</strong> but is <strong>not BBB Accredited</strong> — these are distinct. Accreditation requires an application and fee; a rating reflects BBB's assessment of publicly available info. An A+ without accreditation is still favorable and indicates no significant complaint history on file.
+    <strong>BBB Note:</strong> Panther Van Lines holds an <strong>A+ BBB Rating</strong> but is <strong>not BBB Accredited</strong> — these are distinct. Accreditation requires an application and annual fee; the A+ rating reflects BBB's own assessment based on complaint history and time in business. No complaints are on file, which is the primary driver of the A+.<br><br>
+    <strong>Closure Note:</strong> Yellow Pages and Yelp Lincolnton both currently display the business as CLOSED. If Panther Van Lines is still operating, these listings should be claimed and corrected immediately, as they represent the most visible negative signal a prospective customer would encounter.
   </div>
 
 </main>
 
 <footer>
-  <p>Panther Van Lines · Online Reputation Report · Conover, NC</p>
+  <p>Panther Van Lines · Online Reputation Report · Conover &amp; Lincolnton, NC · Audit Date: June 2026</p>
 </footer>
 
 </body>
