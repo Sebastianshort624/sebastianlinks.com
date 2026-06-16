@@ -7,316 +7,343 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --navy:#1B2A4A; --navy2:#243660; --gold:#C8960C; --gold2:#E0AC1A; --gold-bg:#FDF6E3;
-  --ice:#EAF0F8; --ice2:#D6E4F4; --border:#C5D4E8;
-  --green:#1A6B3A; --green-bg:#D4F0E1;
-  --red:#B91C1C; --red-bg:#FEE2E2; --red-soft:rgba(254,226,226,.18);
-  --green-soft:rgba(212,240,225,.18);
-  --white:#FFFFFF; --text:#1e2d4a; --text2:#4A5568; --text3:#7A99C2;
-  --shadow:rgba(27,42,74,.10);
+  --bg:#F8FAFC; --white:#FFFFFF; --border:#E2E8F0; --border2:#CBD5E1;
+  --text:#1E293B; --text2:#475569; --muted:#94A3B8;
+  --blue:#0284C7; --blue2:#0369A1; --blue-light:#E0F2FE; --blue-mid:#BAE6FD;
+  --green:#059669; --green2:#047857; --green-light:#D1FAE5;
+  --yellow:#CA8A04; --yellow-light:#FEF9C3; --yellow-mid:#FDE68A;
+  --red:#DC2626; --red-light:#FEE2E2;
+  --purple:#7C3AED; --purple-light:#EDE9FE;
+  --teal:#0891B2; --teal-light:#CFFAFE;
+  --shadow:0 1px 4px rgba(0,0,0,.07);
+  --shadow2:0 3px 14px rgba(0,0,0,.10);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--ice);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh}
+body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh;font-size:14px}
 
-header{background:var(--navy);padding:2.5rem 2rem 3.5rem;text-align:center;position:relative;overflow:hidden}
-header::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:48px;background:var(--ice);clip-path:ellipse(55% 100% at 50% 100%)}
-.header-label{font-family:'Barlow Condensed',sans-serif;font-size:.65rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold2);margin-bottom:.8rem}
-header h1{font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,5vw,2.6rem);font-weight:700;color:#fff;line-height:1.1;margin-bottom:.5rem}
-header h1 span{color:var(--gold2)}
-header p{color:rgba(255,255,255,.65);font-size:.88rem;max-width:500px;margin:0 auto;line-height:1.65}
-.gold-bar{width:44px;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:99px;margin:.9rem auto 0}
+header{background:var(--white);border-bottom:3px solid var(--blue-mid);padding:1.8rem 2rem 2rem;text-align:center;box-shadow:var(--shadow2)}
+.header-label{font-family:'Barlow Condensed',sans-serif;font-size:.65rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--blue);margin-bottom:.6rem}
+header h1{font-family:'Cormorant Garamond',serif;font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;color:var(--text);line-height:1.1;margin-bottom:.4rem}
+header h1 span{color:var(--blue)}
+header p{color:var(--text2);font-size:.85rem;max-width:560px;margin:0 auto;line-height:1.65}
+.blue-bar{width:44px;height:3px;background:linear-gradient(90deg,var(--blue),var(--blue-mid));border-radius:99px;margin:.8rem auto 0}
 
-main{max-width:1060px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+main{max-width:1400px;margin:0 auto;padding:2rem 1.2rem 4rem}
 
-/* ALERT BANNER */
-.alert-banner{background:#FEF3C7;border:1.5px solid #F59E0B;border-radius:10px;padding:1rem 1.4rem;margin-bottom:2rem;display:flex;align-items:flex-start;gap:.85rem}
-.alert-icon{font-size:1.3rem;flex-shrink:0;margin-top:.05rem}
-.alert-text{font-size:.8rem;color:#7C4A00;line-height:1.6}
-.alert-text strong{font-weight:700;color:#5C3600}
+/* ALERT */
+.alert{background:var(--red-light);border:1.5px solid #FCA5A5;border-radius:8px;padding:.9rem 1.2rem;margin-bottom:1.2rem;display:flex;gap:.7rem;align-items:flex-start}
+.alert-warn{background:var(--yellow-light);border-color:var(--yellow-mid)}
+.alert-blue{background:var(--blue-light);border-color:var(--blue-mid)}
+.alert-purple{background:var(--purple-light);border-color:#C4B5FD}
+.alert-icon{font-size:1.1rem;flex-shrink:0;margin-top:.05rem}
+.alert-text{font-size:.78rem;color:var(--text);line-height:1.6}
+.alert-text strong{font-weight:700}
 
-.legend{display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;margin-bottom:1.8rem}
-.legend-item{display:flex;align-items:center;gap:.4rem;font-size:.72rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text2)}
-.dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.dot-green{background:var(--green)} .dot-neutral{background:#6B7280} .dot-red{background:var(--red)}
+/* COLUMN LEGEND */
+.legend{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.5rem}
+.leg{display:flex;align-items:center;gap:.35rem;font-size:.68rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text2);background:var(--white);border:1px solid var(--border);border-radius:4px;padding:.3rem .7rem}
+.leg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
 
-.table-wrap{background:var(--white);border-radius:14px;border:1.5px solid var(--border);box-shadow:0 4px 18px var(--shadow);overflow:hidden;overflow-x:auto}
+/* TABLE WRAPPER */
+.table-wrap{background:var(--white);border-radius:10px;border:1px solid var(--border);box-shadow:var(--shadow2);overflow:hidden;overflow-x:auto}
 
-.reputation-table{width:100%;border-collapse:collapse;font-size:.83rem;min-width:600px}
-.reputation-table thead tr{background:var(--navy)}
-.reputation-table thead th{padding:.9rem 1.1rem;font-family:'Barlow Condensed',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;text-align:left;white-space:nowrap}
-.reputation-table thead th:nth-child(1){color:#6EE7A0;border-bottom:2px solid #22C55E}
-.reputation-table thead th:nth-child(2){color:rgba(255,255,255,.75);border-bottom:2px solid rgba(255,255,255,.2)}
-.reputation-table thead th:nth-child(3){color:#FCA5A5;border-bottom:2px solid #EF4444}
+table{width:100%;border-collapse:collapse;min-width:900px}
+thead tr{background:var(--text)}
+thead th{padding:.75rem .9rem;font-family:'Barlow Condensed',sans-serif;font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;text-align:left;white-space:nowrap;vertical-align:bottom;line-height:1.3}
+/* Column header colors */
+th.col-pos{color:#86EFAC;border-bottom:2px solid #22C55E}
+th.col-neu{color:#BAE6FD;border-bottom:2px solid var(--blue)}
+th.col-neg{color:#FCA5A5;border-bottom:2px solid var(--red)}
+th.col-share{color:#DDD6FE;border-bottom:2px solid var(--purple)}
+th.col-fix{color:#A7F3D0;border-bottom:2px solid var(--teal)}
 
-.reputation-table tbody tr{border-bottom:1px solid var(--ice2);transition:background .15s}
-.reputation-table tbody tr:last-child{border-bottom:none}
-.reputation-table tbody tr:hover{background:var(--ice)}
-.reputation-table td{padding:.72rem 1.1rem;vertical-align:middle;line-height:1.5}
-.reputation-table td:nth-child(1){background:var(--green-soft)}
-.reputation-table td:nth-child(3){background:var(--red-soft)}
+tbody tr{border-bottom:1px solid var(--border);transition:background .12s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:#F8FAFC}
 
-.reputation-table a{color:var(--navy2);text-decoration:none;font-weight:500;border-bottom:1px solid var(--ice2);transition:color .15s,border-color .15s}
-.reputation-table a:hover{color:var(--gold);border-color:var(--gold)}
+td{padding:.65rem .9rem;vertical-align:top;line-height:1.5;font-size:.79rem}
+td.col-pos{background:rgba(209,250,229,.12)}
+td.col-neg{background:rgba(254,226,226,.12)}
+td.col-share{background:rgba(237,233,254,.12)}
+td.col-fix{background:rgba(204,251,241,.10)}
 
-.plain{color:var(--text2);font-style:italic;font-size:.78rem}
-.dash{color:var(--text3);font-style:normal}
+a{color:var(--blue);text-decoration:none;border-bottom:1px solid var(--blue-mid);transition:color .12s}
+a:hover{color:var(--blue2);border-color:var(--blue2)}
 
 /* chips */
-.chip{display:inline-block;border-radius:4px;padding:1px 7px;font-size:.6rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-left:.3rem;vertical-align:middle;white-space:nowrap}
-.chip-gold{background:var(--gold-bg);border:1px solid var(--gold2);color:var(--gold)}
-.chip-red{background:#FEE2E2;border:1px solid #FCA5A5;color:var(--red)}
-.chip-amber{background:#FEF3C7;border:1px solid #F59E0B;color:#92400E}
+.chip{display:inline-block;border-radius:3px;padding:1px 6px;font-size:.6rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin:.1rem .1rem 0 0;vertical-align:middle;white-space:nowrap}
+.chip-red{background:var(--red-light);color:var(--red);border:1px solid #FCA5A5}
+.chip-green{background:var(--green-light);color:var(--green);border:1px solid #A7F3D0}
+.chip-yellow{background:var(--yellow-light);color:var(--yellow);border:1px solid var(--yellow-mid)}
+.chip-blue{background:var(--blue-light);color:var(--blue);border:1px solid var(--blue-mid)}
+.chip-purple{background:var(--purple-light);color:var(--purple);border:1px solid #C4B5FD}
+.chip-teal{background:var(--teal-light);color:var(--teal);border:1px solid #67E8F9}
 
-.footnote{margin-top:1.5rem;padding:1rem 1.4rem;background:var(--gold-bg);border:1px solid rgba(200,150,12,.25);border-radius:8px;font-size:.76rem;color:#7A5800;line-height:1.65}
-.footnote strong{font-weight:600;color:#5A4000}
+.plain{color:var(--text2);font-style:italic}
+.dash{color:var(--muted)}
 
-footer{background:var(--navy);padding:1.2rem 1.5rem;text-align:center;border-top:1px solid rgba(200,150,12,.12)}
-footer p{font-size:.65rem;color:rgba(255,255,255,.32);letter-spacing:.06em}
+/* section divider rows */
+.divider-row td{background:var(--bg);padding:.4rem .9rem;font-family:'Barlow Condensed',sans-serif;font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);border-top:2px solid var(--border)}
 
-@media(max-width:600px){.reputation-table{font-size:.77rem}.reputation-table td,.reputation-table thead th{padding:.6rem .8rem}}
+.footnotes{margin-top:1.5rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem}
+.footnote{padding:1rem 1.2rem;border-radius:8px;font-size:.76rem;line-height:1.65}
+.fn-red{background:var(--red-light);border:1px solid #FCA5A5;color:#7F1D1D}
+.fn-blue{background:var(--blue-light);border:1px solid var(--blue-mid);color:#0C4A6E}
+.fn-purple{background:var(--purple-light);border:1px solid #C4B5FD;color:#4C1D95}
+.fn-teal{background:var(--teal-light);border:1px solid #67E8F9;color:#164E63}
+.footnote strong{font-weight:700}
+
+footer{background:var(--text);padding:1rem 1.5rem;text-align:center;margin-top:0}
+footer p{font-size:.63rem;color:rgba(255,255,255,.35);letter-spacing:.06em}
+
+@media(max-width:700px){td,thead th{padding:.5rem .6rem;font-size:.73rem}}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="header-label">Online Reputation Audit</div>
-  <h1>Panther Van Lines<br><span>Web Presence Report</span></h1>
-  <p>Full sweep of public mentions, listings, reviews, and sentiment across all indexed sources.</p>
-  <div class="gold-bar"></div>
+  <div class="header-label">Online Reputation Audit · Cross-Reference Report</div>
+  <h1>Panther Van Lines<br><span>Full 5-Column Intelligence Report</span></h1>
+  <p>All indexed mentions, business listing cross-references, address/phone overlaps, and recommended resolutions — June 2026.</p>
+  <div class="blue-bar"></div>
 </header>
 
 <main>
 
-  <div class="alert-banner">
+  <!-- CRITICAL ALERTS -->
+  <div class="alert">
+    <div class="alert-icon">🔴</div>
+    <div class="alert-text"><strong>Critical — Probable Business Status:</strong> Mr. Basil Todd Sain, age 54, of Labans Lane, Lincolnton — the listed President of Panther Van Lines — passed away July 24, 2018. The Lincolnton business address (103 Labans Ln) appears to be the residence. This event most likely explains why Yellow Pages and Yelp both flag the company as CLOSED, and why the online footprint went dormant post-2018. If the business has continued under new ownership or family management, all listings must be actively updated.</div>
+  </div>
+  <div class="alert alert-purple">
+    <div class="alert-icon">🔗</div>
+    <div class="alert-text"><strong>Identity Overlap — AAA Moving &amp; Storage:</strong> AAA Moving &amp; Storage (Hickory, NC · USDOT 642836 · 906 10th Ave NE) uses <em>word-for-word identical language</em> to Panther Van Lines — same "22,000 sq ft climate-controlled storage facility," same "guarantee prices, moving dates, and delivery dates," same service area. MapQuest links both names to the Panther address. AAA Moving also declares a "sister company" relationship with Ashe Van Lines. This shared-brand data is being indexed as a separate competitor entity, which dilutes Panther's identity and confuses prospective customers.</div>
+  </div>
+  <div class="alert alert-warn">
     <div class="alert-icon">⚠️</div>
-    <div class="alert-text">
-      <strong>Closure Alert:</strong> Yellow Pages and Yelp (Lincolnton location, updated December 2025) both list Panther Van Lines as <strong>CLOSED</strong>. This is the most significant reputation signal in the audit and should be addressed or corrected across all platforms if the business is still operating.
-    </div>
+    <div class="alert-text"><strong>MapQuest — Dual Listing Problem:</strong> The MapQuest page for Panther Van Lines (now 404) previously showed "AAA Moving" as a related or alternate name at the same address. This appears to be a data aggregator error — not a factual connection — but it surfaces in search and creates brand confusion. The old MapQuest link is dead (404), which actually removes a damaging entry but leaves a broken link in any backlinks.</div>
+  </div>
+  <div class="alert alert-blue">
+    <div class="alert-icon">🖼️</div>
+    <div class="alert-text"><strong>Logo Note:</strong> The Panther Van Lines logo visible across directory listings is a generic stock-style panther mark — functional but not distinctive. It does not communicate professionalism at the level the company's 30-year track record and service quality warrant. A refreshed logo would materially improve how the brand appears on BBB, Porch, Yelp, and directory thumbnail previews.</div>
   </div>
 
+  <!-- LEGEND -->
   <div class="legend">
-    <div class="legend-item"><div class="dot dot-green"></div> Positive Mentions</div>
-    <div class="legend-item"><div class="dot dot-neutral"></div> Neutral / Business Listings</div>
-    <div class="legend-item"><div class="dot dot-red"></div> Negative / Concerning</div>
+    <div class="leg"><div class="leg-dot" style="background:#22C55E"></div> Positive</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--blue)"></div> Neutral / Listings</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--red)"></div> Negative / Concerning</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--purple)"></div> Shared / Cross-Ref Data</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--teal)"></div> Resolution / Fix</div>
   </div>
 
   <div class="table-wrap">
-    <table class="reputation-table">
-      <thead>
-        <tr>
-          <th>✅ Positive Mentions</th>
-          <th>⬜ Neutral / Business Listings</th>
-          <th>🚩 Negative / Concerning</th>
-        </tr>
-      </thead>
-      <tbody>
+  <table>
+    <thead>
+      <tr>
+        <th class="col-pos">✅ Positive Mentions</th>
+        <th class="col-neu">⬜ Neutral / Listings</th>
+        <th class="col-neg">🚩 Negative / Concerning</th>
+        <th class="col-share">🔗 Shared / Cross-Ref</th>
+        <th class="col-fix">🛠️ Resolution</th>
+      </tr>
+    </thead>
+    <tbody>
 
-        <tr>
-          <td>
-            <a href="https://www.yellowpages.com/nationwide/mip/panther-van-lines-19970744" target="_blank" rel="noopener">
-              Yellow Pages – 5-Star Rating
-            </a>
-            <span class="chip chip-red">Closed</span>
-          </td>
-          <td>
-            <a href="https://www.bbb.org/us/nc/conover/profile/moving-companies/panther-van-lines-0473-116164" target="_blank" rel="noopener">
-              BBB Business Profile – 2 Locations
-            </a>
-          </td>
-          <td>
-            <a href="https://www.yellowpages.com/nationwide/mip/panther-van-lines-19970744" target="_blank" rel="noopener">
-              Yellow Pages – Listed as CLOSED
-            </a>
-          </td>
-        </tr>
+      <!-- REVIEWS & RATINGS -->
+      <tr class="divider-row"><td colspan="5">Reviews &amp; Ratings</td></tr>
 
-        <tr>
-          <td>
-            <a href="https://www.yellowpages.com/nationwide/mip/panther-van-lines-19970744" target="_blank" rel="noopener">
-              "Best move I've ever had" — Tyra G., 2011
-            </a>
-          </td>
-          <td>
-            <a href="https://www.whereorg.com/panther-van-lines-9688002" target="_blank" rel="noopener">
-              WhereOrg Directory Listing
-            </a>
-          </td>
-          <td>
-            <a href="https://www.yelp.com/biz/panther-van-lines-lincolnton-2" target="_blank" rel="noopener">
-              Yelp (Lincolnton) – Listed as CLOSED
-            </a>
-            <span class="chip chip-red">Dec 2025</span>
-          </td>
-        </tr>
+      <tr>
+        <td class="col-pos">
+          <a href="https://www.yellowpages.com/nationwide/mip/panther-van-lines-19970744" target="_blank">YP 5-Star Rating</a><br>
+          <span class="chip chip-green">Only 1 Review</span>
+        </td>
+        <td>Yellow Pages — Claimed listing, rated 5★</td>
+        <td class="col-neg">
+          <a href="https://www.yellowpages.com/nationwide/mip/panther-van-lines-19970744" target="_blank">YP flags business as CLOSED</a><br>
+          <span class="chip chip-red">Active</span>
+        </td>
+        <td class="col-share">YP data syndicated to downstream aggregators — closure flag will spread</td>
+        <td class="col-fix">Claim/login to YP listing and update to Open. Add current phone, hours, ownership info. One 5★ review is thin — actively solicit new ones.</td>
+      </tr>
 
-        <tr>
-          <td>
-            <a href="https://www.bbb.org/us/nc/conover/profile/moving-companies/panther-van-lines-0473-116164" target="_blank" rel="noopener">
-              BBB A+ Rating
-            </a>
-            <span class="chip chip-gold">Not Accredited</span>
-          </td>
-          <td>
-            <a href="https://pro.porch.com/lincolnton-nc/movers/panther-van-lines-1/pp" target="_blank" rel="noopener">
-              Porch Business Profile – Lincolnton
-            </a>
-          </td>
-          <td>
-            <a href="https://www.yelp.com/biz/panther-van-lines-cherryville" target="_blank" rel="noopener">
-              Yelp (Cherryville) – Active but 0 reviews
-            </a>
-          </td>
-        </tr>
+      <tr>
+        <td class="col-pos">
+          <a href="https://www.yellowpages.com/nationwide/mip/panther-van-lines-19970744" target="_blank">"Best move I've ever had" — Tyra G., 2011</a>
+        </td>
+        <td>Only verified customer review in public record</td>
+        <td class="col-neg"><span class="plain">Review is 13+ years old — raises freshness concern</span></td>
+        <td class="col-share">Same review appears on YP and mirror sites</td>
+        <td class="col-fix">Reach out to past customers for Google, YP, and BBB reviews. Even 3–5 modern reviews would dominate current footprint.</td>
+      </tr>
 
-        <tr>
-          <td>
-            <a href="https://www.mapquest.com/us/north-carolina/panther-van-lines-439265097" target="_blank" rel="noopener">
-              MapQuest – "The Gentleman Movers"
-            </a>
-          </td>
-          <td>
-            <a href="https://411.info/business/Panther-Van-Lines-Cherryville-NC-9871497" target="_blank" rel="noopener">
-              411.info – Cherryville Location<br>
-              <span style="font-size:.74rem;color:#6B7280">501 S Elm St · (704) 435-8070</span>
-            </a>
-          </td>
-          <td>
-            <span class="plain">MapQuest listing returns 404 – page removed or broken</span>
-          </td>
-        </tr>
+      <tr>
+        <td class="col-pos"><a href="https://www.bbb.org/us/nc/conover/profile/moving-companies/panther-van-lines-0473-116164" target="_blank">BBB A+ Rating</a> <span class="chip chip-yellow">Not Accredited</span></td>
+        <td>No complaints on file — primary driver of A+</td>
+        <td class="col-neg"><span class="plain">Not BBB Accredited — some customers filter exclusively for accredited businesses</span></td>
+        <td class="col-share">BBB data feeds Porch, HomeAdvisor, and many aggregators</td>
+        <td class="col-fix">Apply for BBB Accreditation ($400–$600/yr). Converts the A+ from passive to active — earns the seal displayed on listings. High trust signal in the moving industry.</td>
+      </tr>
 
-        <tr>
-          <td>
-            <a href="https://www.yellowpages.com/nationwide/mip/panther-van-lines-19970744" target="_blank" rel="noopener">
-              "Professional &amp; Reliable" – Company Description
-            </a>
-          </td>
-          <td>
-            <a href="https://www.movingideas.org/cherryville-nc/panther-van-lines-38715/" target="_blank" rel="noopener">
-              MovingIdeas.org – Cherryville Listing
-            </a>
-          </td>
-          <td>
-            <span class="plain">MovingIdeas.org – Listed but 0 reviews on file</span>
-          </td>
-        </tr>
+      <tr>
+        <td class="col-pos"><a href="https://www.yelp.com/biz/panther-van-lines-cherryville" target="_blank">Yelp (Cherryville) — Active listing</a></td>
+        <td>Yelp Cherryville location shows as open</td>
+        <td class="col-neg"><a href="https://www.yelp.com/biz/panther-van-lines-lincolnton-2" target="_blank">Yelp (Lincolnton) — CLOSED</a> <span class="chip chip-red">Dec 2025</span></td>
+        <td class="col-share">Two separate Yelp listings for same company — Cherryville and Lincolnton — with conflicting status</td>
+        <td class="col-fix">Claim both Yelp listings. Mark Lincolnton as open (or merged). Eliminate the split listing confusion. Add photos and business description to both.</td>
+      </tr>
 
-        <tr>
-          <td>
-            <a href="https://www.yellowpages.com/nationwide/mip/panther-van-lines-19970744" target="_blank" rel="noopener">
-              30 Years in Business (Est. 1996)
-            </a>
-          </td>
-          <td>
-            <a href="https://www.manta.com/c/mknm1pm/waldron-contracting-services" target="_blank" rel="noopener">
-              Manta Company Listing
-            </a>
-          </td>
-          <td>
-            <span class="plain">WhereOrg listing returns server error (526) – site unreachable</span>
-          </td>
-        </tr>
+      <!-- DIRECTORY LISTINGS -->
+      <tr class="divider-row"><td colspan="5">Directory &amp; Citation Listings</td></tr>
 
-        <tr>
-          <td>
-            <a href="https://www.yellowpages.com/nationwide/mip/panther-van-lines-19970744" target="_blank" rel="noopener">
-              Guaranteed Pricing &amp; Delivery Dates
-            </a>
-          </td>
-          <td>
-            BBB DOT License #1141667 · MC# 463158
-          </td>
-          <td>
-            <span class="plain">No Trustpilot, Google Reviews, HomeAdvisor, or Angi presence found</span>
-          </td>
-        </tr>
+      <tr>
+        <td class="col-pos"><span class="plain">30 Years in Business (Est. 1996) — strong longevity signal</span></td>
+        <td><a href="https://www.bbb.org/us/nc/conover/profile/moving-companies/panther-van-lines-0473-116164" target="_blank">BBB — 2 locations, file since 2003</a></td>
+        <td class="col-neg"><span class="plain">No Trustpilot, Google Business Profile, HomeAdvisor, or Angi presence found</span></td>
+        <td class="col-share">Absence from Google Business means AAA Moving and Ashe Van Lines fill the local map results for the same service area</td>
+        <td class="col-fix">Create/claim a Google Business Profile immediately — this is the highest-impact single fix. Appears in Maps, local search, and knowledge panel.</td>
+      </tr>
 
-        <tr>
-          <td>
-            <a href="https://www.yellowpages.com/nationwide/mip/panther-van-lines-19970744" target="_blank" rel="noopener">
-              22,000 sq ft Climate-Controlled Storage
-            </a>
-          </td>
-          <td>
-            Lincolnton Chamber of Commerce Member
-          </td>
-          <td class="dash">—</td>
-        </tr>
+      <tr>
+        <td class="col-pos"><a href="https://pro.porch.com/lincolnton-nc/movers/panther-van-lines-1/pp" target="_blank">Porch.com — Lincolnton listing, 40+ city service area</a></td>
+        <td><a href="https://pro.porch.com/lincolnton-nc/movers/panther-van-lines-1/pp" target="_blank">Porch lists: Appliance, Fragile/High-Value, Moving</a></td>
+        <td class="col-neg"><span class="plain">Porch listing has 0 reviews, no photos, bare-minimum profile</span></td>
+        <td class="col-share">Porch syndicates to HomeAdvisor network — thin profile lowers match priority vs. competitors</td>
+        <td class="col-fix">Add service description, photos, and request reviews on Porch. Upgrade from skeleton listing to full profile to increase match visibility.</td>
+      </tr>
 
-        <tr>
-          <td>
-            <a href="https://pro.porch.com/lincolnton-nc/movers/panther-van-lines-1/pp" target="_blank" rel="noopener">
-              Piano Moving &amp; High-Value Item Services
-            </a>
-          </td>
-          <td>
-            <a href="https://www.facebook.com/Panther-Van-Lines-124497277666301" target="_blank" rel="noopener">
-              Facebook Business Page
-            </a>
-          </td>
-          <td class="dash">—</td>
-        </tr>
+      <tr>
+        <td class="col-pos"><a href="https://411.info/business/Panther-Van-Lines-Cherryville-NC-9871497" target="_blank">411.info — Cherryville citation</a><br><span style="font-size:.72rem;color:var(--muted)">501 S Elm St · (704) 435-8070</span></td>
+        <td><a href="https://www.movingideas.org/cherryville-nc/panther-van-lines-38715/" target="_blank">MovingIdeas.org — Cherryville listing</a></td>
+        <td class="col-neg"><span class="plain">MovingIdeas shows 0 reviews — listed but completely empty</span></td>
+        <td class="col-share">411.info phone (704) 435-8070 is a third number — not matching the two primary BBB phones. Three different numbers in the wild creates NAP inconsistency.</td>
+        <td class="col-fix">Audit all phone numbers across listings. NAP consistency (Name, Address, Phone) is a local SEO ranking factor. Consolidate to one primary number across all platforms.</td>
+      </tr>
 
-        <tr>
-          <td>
-            <a href="https://pro.porch.com/lincolnton-nc/movers/panther-van-lines-1/pp" target="_blank" rel="noopener">
-              Wide Service Area – 40+ NC Cities Listed on Porch
-            </a>
-          </td>
-          <td>
-            <a href="http://www.panthervanlines.com" target="_blank" rel="noopener">
-              panthervanlines.com (company website)
-            </a>
-          </td>
-          <td class="dash">—</td>
-        </tr>
+      <tr>
+        <td class="col-pos"><span class="plain">Lincolnton Chamber of Commerce member — local credibility</span></td>
+        <td><a href="https://www.whereorg.com/panther-van-lines-9688002" target="_blank">WhereOrg listing</a> <span class="chip chip-red">526 Error</span></td>
+        <td class="col-neg"><span class="plain">WhereOrg returns server error — listing may be broken or stale</span></td>
+        <td class="col-share"><span class="plain">—</span></td>
+        <td class="col-fix">Submit a manual correction to WhereOrg or flag for removal. Broken listings harm crawl reputation.</td>
+      </tr>
 
-        <tr>
-          <td>
-            <a href="https://www.yellowpages.com/nationwide/mip/panther-van-lines-19970744" target="_blank" rel="noopener">
-              Free On-Site Estimates + Monthly Specials
-            </a>
-          </td>
-          <td>
-            Two Physical Locations:<br>
-            <span style="font-size:.74rem;color:#6B7280">441 N McLin Creek Rd, Conover NC<br>103 Labans Ln, Lincolnton NC</span>
-          </td>
-          <td class="dash">—</td>
-        </tr>
+      <tr>
+        <td class="col-pos"><span class="plain">DOT Licensed · All 48 States · DOT# 1141667 · MC# 463158</span></td>
+        <td><a href="https://www.manta.com/c/mknm1pm/waldron-contracting-services" target="_blank">Manta listing</a></td>
+        <td class="col-neg"><span class="plain">Manta URL resolves to "Waldron Contracting Services" — wrong business at same listing ID</span></td>
+        <td class="col-share">Manta data crossover with unrelated business at same record ID — could confuse customers researching Panther</td>
+        <td class="col-fix">Claim the Manta listing, correct the business name, and sever the connection to Waldron Contracting. Report the error to Manta support.</td>
+      </tr>
 
-        <tr>
-          <td>
-            <span class="plain">Licensed, Bonded – DOT Registered (All 48 States)</span>
-          </td>
-          <td>
-            <span class="plain">BBB File Opened: 9/23/2003 · Business Inc. 2/6/1996</span>
-          </td>
-          <td class="dash">—</td>
-        </tr>
+      <!-- COMPANY IDENTITY & BRAND OVERLAP -->
+      <tr class="divider-row"><td colspan="5">Company Identity &amp; Brand Overlap</td></tr>
 
-        <tr>
-          <td>
-            <span class="plain">All Major Credit Cards, Debit, Check Accepted</span>
-          </td>
-          <td>
-            <span class="plain">6 Employees on record (BBB)</span>
-          </td>
-          <td class="dash">—</td>
-        </tr>
+      <tr>
+        <td class="col-pos"><span class="plain">Unique brand name "Panther Van Lines" — no national chain conflict</span></td>
+        <td><a href="https://www.mapquest.com/us/north-carolina/panther-van-lines-439265097" target="_blank">MapQuest listing</a> <span class="chip chip-red">404 Dead</span></td>
+        <td class="col-neg"><span class="plain">MapQuest page dead (404) — previously showed "AAA Moving" as alternate name at same address, creating false dual identity</span></td>
+        <td class="col-share"><a href="https://aaamovingandstorage.net" target="_blank">AAA Moving &amp; Storage</a> (Hickory, NC · USDOT 642836) uses word-for-word identical language: same "22,000 sq ft climate-controlled facility," same guarantee pitch, same service territory</td>
+        <td class="col-fix">File a correction with MapQuest data team to remove the AAA association. Monitor for re-indexing. Panther should ensure its DOT number appears prominently on all listings to establish distinct identity from AAA Moving.</td>
+      </tr>
 
-      </tbody>
-    </table>
+      <tr>
+        <td class="col-pos"><span class="plain">Distinct from national "Panther Premium Logistics" (expedite trucking) — different industry</span></td>
+        <td><span class="plain">AAA Moving &amp; Storage declares "sister company" = Ashe Van Lines</span></td>
+        <td class="col-neg"><span class="plain">AAA Moving's identical marketing copy makes it appear the same entity as Panther to data crawlers and customers</span></td>
+        <td class="col-share">AAA Moving (Hickory) · Ashe Van Lines (Hickory) · Panther Van Lines (Conover/Lincolnton) — three entities sharing nearly identical service descriptions and territory, generating cross-contamination in aggregator databases</td>
+        <td class="col-fix">Panther needs a differentiated brand voice on all platforms — unique description, specific service stats, named staff, and photos. Generic copy = invisible in a field where competitors use your same words.</td>
+      </tr>
+
+      <tr>
+        <td class="col-pos"><a href="https://www.facebook.com/Panther-Van-Lines-124497277666301" target="_blank">Facebook Business Page — exists</a></td>
+        <td><span class="plain">Facebook page active but appears unmaintained</span></td>
+        <td class="col-neg"><span class="plain">No posts, no photos, no reviews visible in public metadata</span></td>
+        <td class="col-share">Facebook data feeds into Google, Yelp, and Bing business listings — a dormant page signals inactivity to crawlers</td>
+        <td class="col-fix">Update Facebook with current ownership info, hours, photos, and a pinned post. Even one post per month signals activity to both customers and crawlers.</td>
+      </tr>
+
+      <!-- BUSINESS ADDRESSES / PHONE CROSS-REF -->
+      <tr class="divider-row"><td colspan="5">Address &amp; Phone Cross-Reference</td></tr>
+
+      <tr>
+        <td class="col-pos"><span class="plain">441 N McLin Creek Rd, Conover, NC 28613 — primary commercial address</span></td>
+        <td><span class="plain">Same address: YP phone listed as (704) 732-3338 — differs from BBB primary (704) 732-9262</span></td>
+        <td class="col-neg"><span class="plain">Two different phone numbers indexed at 441 N McLin Creek — NAP inconsistency across platforms</span></td>
+        <td class="col-share">"All Fit Solutions" (gymnastics/sporting goods) also indexed at 441 N McLin Creek Rd, Conover, NC 28613 — unrelated business at same address appearing in search</td>
+        <td class="col-fix">Confirm correct primary phone and suppress the secondary number in all listing updates. Contact YP and BBB to reconcile the number discrepancy. Coordinate with All Fit Solutions if they share the facility.</td>
+      </tr>
+
+      <tr>
+        <td class="col-pos"><span class="plain">103 Labans Ln, Lincolnton, NC 28092 — second listed location</span></td>
+        <td><span class="plain">Property records show 103 Labans Ln is a 3BR/3BA residential home, sold April 2021 for $390,000</span></td>
+        <td class="col-neg"><span class="plain">Using a residential address as a business address — sold in 2021, meaning the listed business address is now owned by a different party</span></td>
+        <td class="col-share">Address linked to Todd Sain obituary (July 2018) — personal residence of former president, now sold. Business data still routes to this address on BBB, Porch, 411.info.</td>
+        <td class="col-fix">Remove 103 Labans Ln from all business listings immediately. It is a private home under new ownership. Update BBB, Porch, and all directories to reflect only the commercial Conover address or a new verified business address.</td>
+      </tr>
+
+      <tr>
+        <td class="col-pos"><span class="plain">501 S Elm St, Cherryville, NC 28021 — third address in 411.info</span></td>
+        <td><span class="plain">Phone listed: (704) 435-8070 — not on BBB, not on YP main listing</span></td>
+        <td class="col-neg"><span class="plain">Three addresses, three different phone numbers across platforms — severe NAP fragmentation</span></td>
+        <td class="col-share"><span class="plain">Cherryville address and phone appear in 411.info and MovingIdeas only — not corroborated elsewhere</span></td>
+        <td class="col-fix">Verify whether Cherryville address is/was a real operating location. If not, submit removal requests to 411.info and MovingIdeas. Three unverified addresses hurt local SEO and confuse customers.</td>
+      </tr>
+
+      <!-- LOGO & BRAND ASSETS -->
+      <tr class="divider-row"><td colspan="5">Logo &amp; Brand Presentation</td></tr>
+
+      <tr>
+        <td class="col-pos"><span class="plain">Panther logo present across listings — brand is visually recognizable</span></td>
+        <td><span class="plain">Generic stock panther mark — functional but not distinctive</span></td>
+        <td class="col-neg"><span class="plain">Logo does not reflect 30 years in business or premium positioning; appears dated vs. competitors</span></td>
+        <td class="col-share"><span class="plain">Same generic panther imagery used by other regional movers — no differentiation</span></td>
+        <td class="col-fix">Commission a professional logo rebrand — clean wordmark + panther mark. Upload new logo to all platforms simultaneously: BBB, Yelp, Porch, Facebook, Google Business, YP. Cost: $300–$800 for a quality design.</td>
+      </tr>
+
+      <tr>
+        <td class="col-pos"><span class="plain">"The Gentleman Movers" tagline (MapQuest) — strong, memorable, differentiating</span></td>
+        <td><span class="plain">Tagline appears on MapQuest only — not used consistently across platforms</span></td>
+        <td class="col-neg"><span class="plain">MapQuest page is 404 — tagline has lost its only indexed placement</span></td>
+        <td class="col-share"><span class="plain">No other platform uses or references this tagline</span></td>
+        <td class="col-fix">"The Gentleman Movers" is a strong brand differentiator. Register it as part of the identity refresh. Use it in all listing descriptions, on the company website, and in Facebook bio. It creates an immediate emotional brand impression competitors don't have.</td>
+      </tr>
+
+    </tbody>
+  </table>
   </div>
 
-  <div class="footnote">
-    <strong>BBB Note:</strong> Panther Van Lines holds an <strong>A+ BBB Rating</strong> but is <strong>not BBB Accredited</strong> — these are distinct. Accreditation requires an application and annual fee; the A+ rating reflects BBB's own assessment based on complaint history and time in business. No complaints are on file, which is the primary driver of the A+.<br><br>
-    <strong>Closure Note:</strong> Yellow Pages and Yelp Lincolnton both currently display the business as CLOSED. If Panther Van Lines is still operating, these listings should be claimed and corrected immediately, as they represent the most visible negative signal a prospective customer would encounter.
+  <!-- FOOTNOTES -->
+  <div class="footnotes">
+    <div class="footnote fn-red">
+      <strong>🔴 Ownership / Closure Reality:</strong><br>
+      The BBB-listed president, Mr. Basil Todd Sain, passed away July 24, 2018, at 103 Labans Ln, Lincolnton — the company's listed Lincolnton address. The business appears to have gone quiet post-2018, which explains the "CLOSED" flags on Yelp and YP. If Panther Van Lines is still operating under family or new management, the most urgent priority is updating ownership on every platform, starting with BBB.
+    </div>
+    <div class="footnote fn-blue">
+      <strong>⬜ BBB Clarification:</strong><br>
+      Panther holds an <strong>A+ BBB Rating</strong> but is <strong>not accredited</strong>. The rating is earned passively — no complaints on file. Accreditation requires an active application and fee. The distinction matters: accredited businesses get the BBB seal displayed on their profile and search results, dramatically increasing click-through trust.
+    </div>
+    <div class="footnote fn-purple">
+      <strong>🔗 AAA Moving Data Overlap:</strong><br>
+      AAA Moving &amp; Storage (Hickory, NC · aaamovingandstorage.net) and Panther Van Lines share word-for-word identical marketing language and serve the same geographic territory. AAA explicitly lists a sister relationship with Ashe Van Lines. The data convergence — especially the MapQuest dual-name entry — suggests these three entities have historically been linked, presenting as competitors while sharing resources or ownership. This needs to be disentangled in all public listings.
+    </div>
+    <div class="footnote fn-teal">
+      <strong>🛠️ Priority Action List:</strong><br>
+      1. <strong>Create Google Business Profile</strong> — highest impact, zero cost<br>
+      2. <strong>Update/claim all listings</strong> — correct closure flags on YP and Yelp<br>
+      3. <strong>Remove 103 Labans Ln</strong> from all platforms — now a sold private home<br>
+      4. <strong>Fix Manta listing</strong> — currently resolves to Waldron Contracting<br>
+      5. <strong>Apply for BBB Accreditation</strong> — converts A+ into displayed seal<br>
+      6. <strong>Standardize NAP</strong> — one address, one phone across all platforms<br>
+      7. <strong>Rebrand logo + activate "The Gentleman Movers" tagline</strong><br>
+      8. <strong>Solicit 5–10 new customer reviews</strong> on Google and Yelp
+    </div>
   </div>
 
 </main>
 
 <footer>
-  <p>Panther Van Lines · Online Reputation Report · Conover &amp; Lincolnton, NC · Audit Date: June 2026</p>
+  <p>Panther Van Lines · Full Reputation Intelligence Report · Conover, NC · Audit: June 2026 · sebastianlinks.com/panther</p>
 </footer>
 
 </body>
