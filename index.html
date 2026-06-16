@@ -8,108 +8,149 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --navy:#1B2A4A;--navy2:#0f1e38;--gold:#F5C000;--red:#B22234;
-  --blue:#185FA5;--cream:#FAFAF7;--white:#fff;--border:#2a3d5e;
-  --muted:#8aa0c0;--text:#e6f1fb;--green:#4CAF82;
+  --bg:#F8FAFC;
+  --white:#FFFFFF;
+  --border:#E2E8F0;
+  --border2:#CBD5E1;
+  --text:#1E293B;
+  --text2:#475569;
+  --muted:#94A3B8;
+
+  --blue:#0284C7;
+  --blue2:#0369A1;
+  --blue-light:#E0F2FE;
+  --blue-mid:#BAE6FD;
+
+  --green:#059669;
+  --green2:#047857;
+  --green-light:#D1FAE5;
+  --green-mid:#A7F3D0;
+
+  --yellow:#CA8A04;
+  --yellow2:#A16207;
+  --yellow-light:#FEF9C3;
+  --yellow-mid:#FDE68A;
+
+  --grey:#64748B;
+  --grey-light:#F1F5F9;
+  --grey-mid:#E2E8F0;
+
+  --red:#DC2626;
+  --red-light:#FEE2E2;
+
+  --shadow:0 1px 4px rgba(0,0,0,.07);
+  --shadow2:0 2px 10px rgba(0,0,0,.09);
 }
-body{font-family:'Barlow',sans-serif;background:var(--navy2);color:var(--text);min-height:100vh;}
+body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 
 /* TOP BAR */
-.topbar{background:linear-gradient(135deg,var(--navy2) 0%,var(--navy) 60%,#1e3560 100%);border-bottom:2px solid var(--gold);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;box-shadow:0 4px 20px rgba(0,0,0,.4);}
+.topbar{background:var(--white);border-bottom:2px solid var(--blue-mid);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;box-shadow:var(--shadow2);}
 .topbar-left{display:flex;align-items:center;gap:12px;}
-.topbar-logo{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;color:var(--gold);letter-spacing:1px;}
+.topbar-logo{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;color:var(--blue);letter-spacing:1px;}
 .topbar-sub{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:1px;}
-.topbar-date{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted);letter-spacing:1px;}
+.topbar-date{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--text2);letter-spacing:1px;}
 
 /* TABS */
 .tabs{display:flex;gap:3px;flex-wrap:wrap;}
-.tab{font-family:'Barlow Condensed',sans-serif;font-size:11px;padding:6px 12px;border-radius:6px;border:none;background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);cursor:pointer;letter-spacing:.5px;transition:all .15s;}
-.tab:hover{background:rgba(255,255,255,.18);color:#fff;}
-.tab.active{background:var(--blue);color:#fff;font-weight:700;}
+.tab{font-family:'Barlow Condensed',sans-serif;font-size:11px;padding:6px 12px;border-radius:6px;border:1px solid var(--border);background:var(--grey-light);color:var(--text2);cursor:pointer;letter-spacing:.5px;transition:all .15s;}
+.tab:hover{background:var(--blue-light);color:var(--blue);border-color:var(--blue-mid);}
+.tab.active{background:var(--blue);color:#fff;font-weight:700;border-color:var(--blue);}
 
 /* PANELS */
 .panel{display:none;padding:16px 20px;}
 .panel.active{display:block;}
 
 /* SECTION HEADERS */
-.sec{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);border-bottom:1px solid var(--border);padding-bottom:5px;margin-bottom:14px;margin-top:22px;}
+.sec{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--blue);border-bottom:2px solid var(--blue-light);padding-bottom:5px;margin-bottom:14px;margin-top:22px;}
 .sec:first-child{margin-top:0;}
 
 /* CARDS GRID */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:16px;}
-.card{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:6px;border-top:3px solid var(--blue);padding:12px 14px;text-decoration:none;color:var(--text);display:block;transition:all .15s;}
-.card:hover{background:rgba(255,255,255,.1);border-top-color:var(--gold);transform:translateY(-1px);}
-.card.gold{border-top-color:var(--gold);}
+.card{background:var(--white);border:1px solid var(--border);border-radius:8px;border-top:3px solid var(--blue);padding:12px 14px;text-decoration:none;color:var(--text);display:block;transition:all .15s;box-shadow:var(--shadow);}
+.card:hover{box-shadow:var(--shadow2);border-top-color:var(--blue2);transform:translateY(-2px);}
+.card.gold{border-top-color:var(--yellow);}
+.card.gold:hover{border-top-color:var(--yellow2);}
 .card.red{border-top-color:var(--red);}
 .card.green{border-top-color:var(--green);}
+.card.green:hover{border-top-color:var(--green2);}
 .card-eye{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:3px;}
-.card-title{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;color:var(--gold);margin-bottom:3px;line-height:1.2;}
-.card-desc{font-size:10px;color:var(--muted);line-height:1.4;}
-.card-url{font-family:'Barlow Condensed',sans-serif;font-size:9px;color:rgba(255,255,255,.3);margin-top:6px;letter-spacing:.5px;}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;color:var(--blue);margin-bottom:3px;line-height:1.2;}
+.card.gold .card-title{color:var(--yellow);}
+.card.green .card-title{color:var(--green);}
+.card.red .card-title{color:var(--red);}
+.card-desc{font-size:10px;color:var(--text2);line-height:1.4;}
+.card-url{font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--muted);margin-top:6px;letter-spacing:.5px;}
 
-/* ALPHAFILES GRID — more compact */
+/* ALPHA GRID */
 .alpha-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-bottom:14px;}
-.acard{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:5px;border-left:3px solid var(--blue);padding:8px 10px;text-decoration:none;color:var(--text);display:block;transition:all .15s;}
-.acard:hover{background:rgba(255,255,255,.09);border-left-color:var(--gold);}
-.acard.gold{border-left-color:var(--gold);}
+.acard{background:var(--white);border:1px solid var(--border);border-radius:6px;border-left:3px solid var(--blue);padding:8px 10px;text-decoration:none;color:var(--text);display:block;transition:all .15s;box-shadow:var(--shadow);}
+.acard:hover{background:var(--blue-light);border-left-color:var(--blue2);}
+.acard.gold{border-left-color:var(--yellow);}
+.acard.gold:hover{background:var(--yellow-light);}
 .acard.red{border-left-color:var(--red);}
+.acard.red:hover{background:var(--red-light);}
 .acard.green{border-left-color:var(--green);}
-.acard-title{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:#e6f1fb;letter-spacing:.5px;}
-.acard-desc{font-size:10px;color:var(--muted);margin-top:2px;}
+.acard.green:hover{background:var(--green-light);}
+.acard-title{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--text);letter-spacing:.5px;}
+.acard-desc{font-size:10px;color:var(--text2);margin-top:2px;}
 
 /* DAY BUILD */
 .day-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;}
-.cat-box{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:6px;padding:12px;}
-.cat-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
+.cat-box{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:12px;box-shadow:var(--shadow);}
+.cat-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
 .cat-title span{font-size:9px;color:var(--muted);}
-.task-row{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.05);}
+.task-row{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--border);}
 .task-row:last-child{border-bottom:none;}
-.task-row input[type=checkbox]{accent-color:var(--gold);width:14px;height:14px;cursor:pointer;flex-shrink:0;}
-.task-row label{font-size:12px;color:rgba(255,255,255,.8);cursor:pointer;flex:1;}
+.task-row input[type=checkbox]{accent-color:var(--blue);width:14px;height:14px;cursor:pointer;flex-shrink:0;}
+.task-row label{font-size:12px;color:var(--text2);cursor:pointer;flex:1;}
 .task-row input[type=checkbox]:checked + label{color:var(--muted);text-decoration:line-through;}
-.add-task{width:100%;background:transparent;border:none;border-top:1px dashed rgba(255,255,255,.1);color:var(--muted);font-size:11px;padding:5px 2px;margin-top:6px;cursor:pointer;text-align:left;}
-.add-task:hover{color:var(--gold);}
+.add-task{width:100%;background:transparent;border:none;border-top:1px dashed var(--border2);color:var(--muted);font-size:11px;padding:5px 2px;margin-top:6px;cursor:pointer;text-align:left;}
+.add-task:hover{color:var(--blue);}
 
 /* QUICK STATS */
 .stats-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
-.stat{background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:6px;padding:10px 14px;flex:1;min-width:100px;text-align:center;}
-.stat-val{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;color:var(--gold);}
+.stat{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:10px 14px;flex:1;min-width:100px;text-align:center;box-shadow:var(--shadow);}
+.stat-val{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;color:var(--blue);}
 .stat-lbl{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:2px;}
 
 /* COMMISSION CALC */
 .calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:500px;}
 .inp-group{display:flex;flex-direction:column;gap:4px;}
-.inp-group label{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
-.inp-group input,.inp-group select{background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:4px;color:#fff;padding:7px 10px;font-size:13px;font-family:'Barlow',sans-serif;}
-.inp-group input:focus,.inp-group select:focus{outline:1px solid var(--gold);border-color:var(--gold);}
-.result-box{background:linear-gradient(135deg,#1e3560,#0f1e38);border:1px solid var(--gold);border-radius:6px;padding:14px;margin-top:14px;max-width:500px;}
-.result-val{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:var(--gold);}
-.result-lbl{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:2px;}
+.inp-group label{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text2);}
+.inp-group input,.inp-group select{background:var(--white);border:1px solid var(--border2);border-radius:4px;color:var(--text);padding:7px 10px;font-size:13px;font-family:'Barlow',sans-serif;}
+.inp-group input:focus,.inp-group select:focus{outline:2px solid var(--blue-mid);border-color:var(--blue);}
+.result-box{background:var(--blue-light);border:1.5px solid var(--blue-mid);border-radius:8px;padding:14px;margin-top:14px;max-width:500px;}
+.result-val{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:var(--blue);}
+.result-lbl{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text2);margin-top:2px;}
 
 /* SAVE BTN */
 .btn{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:7px 18px;border-radius:4px;border:none;cursor:pointer;transition:all .15s;}
-.btn-gold{background:var(--gold);color:var(--navy2);}
-.btn-gold:hover{background:#FFE000;}
-.btn-navy{background:var(--navy);color:var(--gold);border:1px solid var(--gold);}
-.btn-navy:hover{background:var(--blue);}
+.btn-blue{background:var(--blue);color:#fff;}
+.btn-blue:hover{background:var(--blue2);}
+.btn-outline{background:var(--white);color:var(--blue);border:1px solid var(--blue);}
+.btn-outline:hover{background:var(--blue-light);}
 .btn-red{background:var(--red);color:#fff;}
 
 /* FAVORITES */
 .fav-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;}
-.fav-card{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:5px;padding:10px 12px;text-decoration:none;color:var(--text);display:flex;align-items:center;gap:8px;transition:all .15s;}
-.fav-card:hover{background:rgba(255,255,255,.1);border-color:var(--gold);}
+.fav-card{background:var(--white);border:1px solid var(--border);border-radius:6px;padding:10px 12px;text-decoration:none;color:var(--text);display:flex;align-items:center;gap:8px;transition:all .15s;box-shadow:var(--shadow);}
+.fav-card:hover{background:var(--blue-light);border-color:var(--blue-mid);}
 .fav-icon{font-size:18px;flex-shrink:0;}
-.fav-name{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;color:#e6f1fb;letter-spacing:.5px;}
+.fav-name{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;color:var(--text);letter-spacing:.5px;}
 .fav-url{font-size:9px;color:var(--muted);}
 
 /* PAY HISTORY TABLE */
-.pay-table{width:100%;border-collapse:collapse;font-size:12px;}
-.pay-table th{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);padding:8px 10px;border-bottom:1px solid var(--border);text-align:left;background:rgba(255,255,255,.04);}
-.pay-table td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.05);color:rgba(255,255,255,.8);}
-.pay-table tr:hover td{background:rgba(255,255,255,.04);}
+.pay-table{width:100%;border-collapse:collapse;font-size:12px;background:var(--white);border-radius:8px;overflow:hidden;box-shadow:var(--shadow);}
+.pay-table th{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--blue);padding:8px 10px;border-bottom:2px solid var(--blue-light);text-align:left;background:var(--grey-light);}
+.pay-table td{padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text2);}
+.pay-table tr:hover td{background:var(--blue-light);}
 .tag{font-family:'Barlow Condensed',sans-serif;font-size:9px;padding:2px 6px;border-radius:3px;letter-spacing:1px;text-transform:uppercase;}
-.tag.g{background:#1a3d2a;color:var(--green);}
-.tag.r{background:#3d1a1a;color:#ef9a9a;}
+.tag.g{background:var(--green-light);color:var(--green);}
+.tag.r{background:var(--red-light);color:var(--red);}
+
+/* text inputs in tables */
+.text-inp{background:var(--white);border:1px solid var(--border2);border-radius:4px;color:var(--text);padding:6px 10px;font-size:12px;font-family:'Barlow',sans-serif;}
+.text-inp:focus{outline:2px solid var(--blue-mid);border-color:var(--blue);}
 
 @media(max-width:640px){
   .topbar{padding:8px 12px;}
@@ -130,12 +171,12 @@ body{font-family:'Barlow',sans-serif;background:var(--navy2);color:var(--text);m
   </div>
   <div class="topbar-date" id="topDate"></div>
   <div class="tabs">
-    <button class="tab active" onclick="showTab('dashboard')">🏠 Dashboard</button>
-    <button class="tab" onclick="showTab('day')">📅 Day Build</button>
-    <button class="tab" onclick="showTab('sites')">🔗 All Sites</button>
-    <button class="tab" onclick="showTab('comm')">💰 Commission</button>
-    <button class="tab" onclick="showTab('pay')">📈 Pay History</button>
-    <button class="tab" onclick="showTab('favs')">⭐ Favorites</button>
+    <button class="tab active" onclick="showTab('dashboard',this)">🏠 Dashboard</button>
+    <button class="tab" onclick="showTab('day',this)">📅 Day Build</button>
+    <button class="tab" onclick="showTab('sites',this)">🔗 All Sites</button>
+    <button class="tab" onclick="showTab('comm',this)">💰 Commission</button>
+    <button class="tab" onclick="showTab('pay',this)">📈 Pay History</button>
+    <button class="tab" onclick="showTab('favs',this)">⭐ Favorites</button>
   </div>
 </div>
 
@@ -186,6 +227,12 @@ body{font-family:'Barlow',sans-serif;background:var(--navy2);color:var(--text);m
       <div class="card-desc">Business plan 2025–2028</div>
       <div class="card-url">sebastianlinks.com/nationalinstall</div>
     </a>
+    <a class="card" href="/panther/">
+      <div class="card-eye">Client · Reputation</div>
+      <div class="card-title">🐆 Panther Van Lines</div>
+      <div class="card-desc">Online reputation audit report</div>
+      <div class="card-url">sebastianlinks.com/panther</div>
+    </a>
   </div>
 
   <div class="sec">Alpha Files — ATC Presentation Pages</div>
@@ -233,12 +280,12 @@ body{font-family:'Barlow',sans-serif;background:var(--navy2);color:var(--text);m
 <div id="tab-day" class="panel">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
     <div>
-      <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:var(--gold);" id="dayTitle">Today's Build</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:var(--blue);" id="dayTitle">Today's Build</div>
       <div style="font-size:11px;color:var(--muted);" id="dayDate"></div>
     </div>
     <div style="display:flex;gap:8px;">
-      <button class="btn btn-gold" onclick="saveDay()">Save Day</button>
-      <button class="btn btn-navy" onclick="resetDay()">Reset</button>
+      <button class="btn btn-blue" onclick="saveDay()">Save Day</button>
+      <button class="btn btn-outline" onclick="resetDay()">Reset</button>
     </div>
   </div>
   <div class="day-grid" id="dayGrid"></div>
@@ -250,9 +297,10 @@ body{font-family:'Barlow',sans-serif;background:var(--navy2);color:var(--text);m
   <div class="grid">
     <a class="card" href="/"><div class="card-eye">Dashboard</div><div class="card-title">⚡ Life OS</div><div class="card-url">sebastianlinks.com</div></a>
     <a class="card gold" href="/hub/"><div class="card-eye">Directory</div><div class="card-title">📂 Hub</div><div class="card-url">sebastianlinks.com/hub</div></a>
-    <a class="card red" href="/joshuason/"><div class="card-eye">Family · Finance</div><div class="card-title">🎖️ Joshua Son</div><div class="card-url">sebastianlinks.com/joshuason</div></a>
+    <a class="card gold" href="/joshuason/"><div class="card-eye">Family · Finance</div><div class="card-title">🎖️ Joshua Son</div><div class="card-url">sebastianlinks.com/joshuason</div></a>
     <a class="card" href="/palabras/"><div class="card-eye">Spanish</div><div class="card-title">💬 333 Palabras</div><div class="card-url">sebastianlinks.com/palabras</div></a>
     <a class="card red" href="/nationalinstall/"><div class="card-eye">Business</div><div class="card-title">🏗️ National Install</div><div class="card-url">sebastianlinks.com/nationalinstall</div></a>
+    <a class="card" href="/panther/"><div class="card-eye">Client · Reputation</div><div class="card-title">🐆 Panther Van Lines</div><div class="card-url">sebastianlinks.com/panther</div></a>
   </div>
 
   <div class="sec">alphafiles.net — ATC Sales Presentation</div>
@@ -303,35 +351,35 @@ body{font-family:'Barlow',sans-serif;background:var(--navy2);color:var(--text);m
   <div class="calc-grid">
     <div class="inp-group">
       <label>Sale Amount $</label>
-      <input type="number" id="saleAmt" value="5000" step="100" oninput="calcComm()">
+      <input class="text-inp" type="number" id="saleAmt" value="5000" step="100" oninput="calcComm()">
     </div>
     <div class="inp-group">
       <label>Commission %</label>
-      <input type="number" id="commPct" value="10" step=".5" oninput="calcComm()">
+      <input class="text-inp" type="number" id="commPct" value="10" step=".5" oninput="calcComm()">
     </div>
     <div class="inp-group">
       <label>Override %</label>
-      <input type="number" id="overridePct" value="0" step=".5" oninput="calcComm()">
+      <input class="text-inp" type="number" id="overridePct" value="0" step=".5" oninput="calcComm()">
     </div>
     <div class="inp-group">
       <label>Deductions $</label>
-      <input type="number" id="deductions" value="0" step="50" oninput="calcComm()">
+      <input class="text-inp" type="number" id="deductions" value="0" step="50" oninput="calcComm()">
     </div>
   </div>
   <div class="result-box">
     <div class="result-val" id="commResult">$500</div>
     <div class="result-lbl">Your Commission</div>
     <div style="margin-top:10px;display:flex;gap:16px;flex-wrap:wrap;">
-      <div><div style="font-size:11px;color:var(--muted);">Base</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#e6f1fb;" id="commBase">$500</div></div>
-      <div><div style="font-size:11px;color:var(--muted);">Override</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#e6f1fb;" id="commOverride">$0</div></div>
-      <div><div style="font-size:11px;color:var(--muted);">Deductions</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:#ef9a9a;" id="commDed">-$0</div></div>
+      <div><div style="font-size:11px;color:var(--text2);">Base</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--text);" id="commBase">$500</div></div>
+      <div><div style="font-size:11px;color:var(--text2);">Override</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--text);" id="commOverride">$0</div></div>
+      <div><div style="font-size:11px;color:var(--text2);">Deductions</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--red);" id="commDed">-$0</div></div>
     </div>
   </div>
 
   <div class="sec" style="margin-top:20px;">Deal Log</div>
   <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
-    <input type="text" id="dealName" placeholder="Client name" style="background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:4px;color:#fff;padding:7px 10px;font-size:12px;flex:1;min-width:120px;">
-    <button class="btn btn-gold" onclick="addDeal()">+ Add Deal</button>
+    <input class="text-inp" type="text" id="dealName" placeholder="Client name" style="flex:1;min-width:120px;">
+    <button class="btn btn-blue" onclick="addDeal()">+ Add Deal</button>
   </div>
   <table class="pay-table" id="dealTable">
     <thead><tr><th>Client</th><th>Sale $</th><th>Commission</th><th>Date</th><th></th></tr></thead>
@@ -343,10 +391,10 @@ body{font-family:'Barlow',sans-serif;background:var(--navy2);color:var(--text);m
 <div id="tab-pay" class="panel">
   <div class="sec">Pay History</div>
   <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
-    <input type="date" id="payDate" style="background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:4px;color:#fff;padding:6px 10px;font-size:12px;">
-    <input type="number" id="payAmt" placeholder="Amount $" step="50" style="background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:4px;color:#fff;padding:6px 10px;font-size:12px;width:130px;">
-    <input type="text" id="payNote" placeholder="Note (optional)" style="background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:4px;color:#fff;padding:6px 10px;font-size:12px;flex:1;min-width:120px;">
-    <button class="btn btn-gold" onclick="addPay()">+ Add</button>
+    <input class="text-inp" type="date" id="payDate">
+    <input class="text-inp" type="number" id="payAmt" placeholder="Amount $" step="50" style="width:130px;">
+    <input class="text-inp" type="text" id="payNote" placeholder="Note (optional)" style="flex:1;min-width:120px;">
+    <button class="btn btn-blue" onclick="addPay()">+ Add</button>
   </div>
   <table class="pay-table">
     <thead><tr><th>Date</th><th>Amount</th><th>Note</th><th></th></tr></thead>
@@ -359,38 +407,39 @@ body{font-family:'Barlow',sans-serif;background:var(--navy2);color:var(--text);m
   <div class="sec">Quick Links</div>
   <div class="fav-grid" id="favGrid"></div>
   <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
-    <input type="text" id="favName" placeholder="Name" style="background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:4px;color:#fff;padding:6px 10px;font-size:12px;width:130px;">
-    <input type="text" id="favUrl" placeholder="URL" style="background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:4px;color:#fff;padding:6px 10px;font-size:12px;flex:1;min-width:200px;">
-    <input type="text" id="favIcon" placeholder="Emoji" style="background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:4px;color:#fff;padding:6px 10px;font-size:12px;width:70px;">
-    <button class="btn btn-gold" onclick="addFav()">+ Add</button>
+    <input class="text-inp" type="text" id="favName" placeholder="Name" style="width:130px;">
+    <input class="text-inp" type="text" id="favUrl" placeholder="URL" style="flex:1;min-width:200px;">
+    <input class="text-inp" type="text" id="favIcon" placeholder="Emoji" style="width:70px;">
+    <button class="btn btn-blue" onclick="addFav()">+ Add</button>
   </div>
 </div>
 
 <script>
 // ── TABS ──
-function showTab(id) {
+function showTab(id, btn) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('tab-' + id).classList.add('active');
-  event.target.classList.add('active');
+  btn.classList.add('active');
 }
 
 // ── DATE ──
 const now = new Date();
 const opts = { weekday:'long', month:'long', day:'numeric', year:'numeric' };
 document.getElementById('topDate').textContent = now.toLocaleDateString('en-US', opts);
-document.getElementById('dayDate') && (document.getElementById('dayDate').textContent = now.toLocaleDateString('en-US', opts));
+const dd = document.getElementById('dayDate');
+if (dd) dd.textContent = now.toLocaleDateString('en-US', opts);
 
 // ── DAY BUILD ──
 const DAY_CATS = [
-  { name: 'Spiritual', emoji: '🙏', tasks: ['Morning prayer/meditation', 'Read Big Book', 'Gratitude list'] },
-  { name: 'Recovery', emoji: '🛡️', tasks: ['Meeting / call sponsor', 'Step work', 'Journal'] },
-  { name: 'Work', emoji: '💼', tasks: ['Follow up calls', 'Update CRM / Zoho', 'Review pipeline'] },
-  { name: 'Family', emoji: '👨‍👧‍👦', tasks: ['Connect with Ever', 'Connect with Sebastian Jr.', 'Family message'] },
-  { name: 'Exercise', emoji: '💪', tasks: ['Workout / walk', 'Stretch / breathe', 'Hydrate'] },
-  { name: 'Home', emoji: '🏠', tasks: ['Clean / tidy', 'Errands', 'Meal prep'] },
-  { name: 'Friends', emoji: '🤝', tasks: ['Check in on friend', 'Social time'] },
-  { name: 'Growth', emoji: '📚', tasks: ['Read / learn', 'Personal development'] },
+  { name:'Spiritual', emoji:'🙏', tasks:['Morning prayer/meditation','Read Big Book','Gratitude list'] },
+  { name:'Recovery',  emoji:'🛡️', tasks:['Meeting / call sponsor','Step work','Journal'] },
+  { name:'Work',      emoji:'💼', tasks:['Follow up calls','Update CRM / Zoho','Review pipeline'] },
+  { name:'Family',    emoji:'👨‍👧‍👦', tasks:['Connect with Ever','Connect with Sebastian Jr.','Family message'] },
+  { name:'Exercise',  emoji:'💪', tasks:['Workout / walk','Stretch / breathe','Hydrate'] },
+  { name:'Home',      emoji:'🏠', tasks:['Clean / tidy','Errands','Meal prep'] },
+  { name:'Friends',   emoji:'🤝', tasks:['Check in on friend','Social time'] },
+  { name:'Growth',    emoji:'📚', tasks:['Read / learn','Personal development'] },
 ];
 
 const todayKey = () => 'day_' + now.toISOString().slice(0,10);
@@ -404,17 +453,17 @@ function renderDay() {
   grid.innerHTML = '';
   let total = 0, done = 0;
   DAY_CATS.forEach(cat => {
-    const tasks = dayData[cat.name] || cat.tasks.map(t => ({ text: t, checked: false }));
+    const tasks = dayData[cat.name] || cat.tasks.map(t => ({ text:t, checked:false }));
     dayData[cat.name] = tasks;
     total += tasks.length;
-    done += tasks.filter(t => t.checked).length;
+    done  += tasks.filter(t => t.checked).length;
     const box = document.createElement('div');
     box.className = 'cat-box';
     const comp = tasks.filter(t => t.checked).length;
     box.innerHTML = `<div class="cat-title">${cat.emoji} ${cat.name} <span>${comp}/${tasks.length}</span></div>` +
-      tasks.map((t, i) => `
+      tasks.map((t,i) => `
         <div class="task-row">
-          <input type="checkbox" id="t_${cat.name}_${i}" ${t.checked ? 'checked' : ''} onchange="toggleTask('${cat.name}',${i})">
+          <input type="checkbox" id="t_${cat.name}_${i}" ${t.checked?'checked':''} onchange="toggleTask('${cat.name}',${i})">
           <label for="t_${cat.name}_${i}">${t.text}</label>
         </div>`).join('') +
       `<button class="add-task" onclick="addTask('${cat.name}')">+ Add task</button>`;
@@ -424,35 +473,22 @@ function renderDay() {
   if (ds) ds.textContent = done + '/' + total;
 }
 
-function toggleTask(cat, i) {
-  dayData[cat][i].checked = !dayData[cat][i].checked;
-  saveDay();
-  renderDay();
-}
-
+function toggleTask(cat,i) { dayData[cat][i].checked = !dayData[cat][i].checked; saveDay(); renderDay(); }
 function addTask(cat) {
   const text = prompt('New task for ' + cat + ':');
   if (!text) return;
   dayData[cat] = dayData[cat] || [];
-  dayData[cat].push({ text, checked: false });
-  saveDay();
-  renderDay();
+  dayData[cat].push({ text, checked:false });
+  saveDay(); renderDay();
 }
-
-function saveDay() {
-  localStorage.setItem(todayKey(), JSON.stringify(dayData));
-}
-
+function saveDay() { localStorage.setItem(todayKey(), JSON.stringify(dayData)); }
 function resetDay() {
   if (!confirm('Reset all tasks for today?')) return;
-  localStorage.removeItem(todayKey());
-  dayData = {};
-  renderDay();
+  localStorage.removeItem(todayKey()); dayData = {}; renderDay();
 }
 
 // ── COMMISSION ──
 let deals = JSON.parse(localStorage.getItem('os_deals') || '[]');
-
 function calcComm() {
   const sale = parseFloat(document.getElementById('saleAmt')?.value) || 0;
   const pct  = parseFloat(document.getElementById('commPct')?.value) || 0;
@@ -461,15 +497,14 @@ function calcComm() {
   const base = sale * pct / 100;
   const over = sale * ovr / 100;
   const net  = base + over - ded;
-  const fmt = n => '$' + Math.round(n).toLocaleString();
-  const e = id => document.getElementById(id);
-  if (e('commBase'))     e('commBase').textContent = fmt(base);
+  const fmt  = n => '$' + Math.round(n).toLocaleString();
+  const e    = id => document.getElementById(id);
+  if (e('commBase'))     e('commBase').textContent    = fmt(base);
   if (e('commOverride')) e('commOverride').textContent = fmt(over);
-  if (e('commDed'))      e('commDed').textContent = '-' + fmt(ded);
-  if (e('commResult'))   e('commResult').textContent = fmt(net);
-  if (e('ds-comm'))      e('ds-comm').textContent = fmt(net);
+  if (e('commDed'))      e('commDed').textContent      = '-' + fmt(ded);
+  if (e('commResult'))   e('commResult').textContent   = fmt(net);
+  if (e('ds-comm'))      e('ds-comm').textContent      = fmt(net);
 }
-
 function addDeal() {
   const name = document.getElementById('dealName')?.value?.trim();
   const sale = parseFloat(document.getElementById('saleAmt')?.value) || 0;
@@ -481,28 +516,21 @@ function addDeal() {
   renderDeals();
   document.getElementById('dealName').value = '';
 }
-
 function renderDeals() {
   const b = document.getElementById('dealBody'); if (!b) return;
   b.innerHTML = deals.map((d,i) => `
     <tr>
       <td>${d.name}</td>
       <td>$${d.sale.toLocaleString()}</td>
-      <td style="color:var(--gold);">$${Math.round(d.comm).toLocaleString()}</td>
+      <td style="color:var(--blue);font-weight:600;">$${Math.round(d.comm).toLocaleString()}</td>
       <td>${d.date}</td>
       <td><button onclick="delDeal(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;">×</button></td>
     </tr>`).join('');
 }
-
-function delDeal(i) {
-  deals.splice(i, 1);
-  localStorage.setItem('os_deals', JSON.stringify(deals));
-  renderDeals();
-}
+function delDeal(i) { deals.splice(i,1); localStorage.setItem('os_deals',JSON.stringify(deals)); renderDeals(); }
 
 // ── PAY HISTORY ──
 let pays = JSON.parse(localStorage.getItem('os_pays') || '[]');
-
 function addPay() {
   const date = document.getElementById('payDate')?.value;
   const amt  = parseFloat(document.getElementById('payAmt')?.value) || 0;
@@ -513,57 +541,42 @@ function addPay() {
   renderPays();
   document.getElementById('payAmt').value = '';
   document.getElementById('payNote').value = '';
-  // update dashboard last pay
-  if (pays.length > 0) {
-    const ds = document.getElementById('ds-pay');
-    if (ds) ds.textContent = '$' + pays[0].amt.toLocaleString();
-  }
 }
-
 function renderPays() {
   const b = document.getElementById('payBody'); if (!b) return;
   b.innerHTML = pays.map((p,i) => `
     <tr>
       <td>${p.date}</td>
-      <td style="color:var(--gold);">$${p.amt.toLocaleString()}</td>
+      <td style="color:var(--blue);font-weight:600;">$${p.amt.toLocaleString()}</td>
       <td>${p.note}</td>
       <td><button onclick="delPay(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;">×</button></td>
     </tr>`).join('');
-  if (pays.length > 0) {
-    const ds = document.getElementById('ds-pay');
-    if (ds) ds.textContent = '$' + pays[0].amt.toLocaleString();
-  }
+  if (pays.length > 0) { const ds = document.getElementById('ds-pay'); if (ds) ds.textContent = '$' + pays[0].amt.toLocaleString(); }
 }
-
-function delPay(i) {
-  pays.splice(i, 1);
-  localStorage.setItem('os_pays', JSON.stringify(pays));
-  renderPays();
-}
+function delPay(i) { pays.splice(i,1); localStorage.setItem('os_pays',JSON.stringify(pays)); renderPays(); }
 
 // ── FAVORITES ──
 const DEFAULT_FAVS = [
-  { name: 'Alpha Files', url: 'https://alphafiles.net', icon: '📊' },
-  { name: '12 Easy Steps', url: 'https://12easysteps.org', icon: '📖' },
-  { name: 'Joshua Son', url: '/joshuason/', icon: '🎖️' },
-  { name: 'Hub', url: '/hub/', icon: '📂' },
-  { name: 'Palabras', url: '/palabras/', icon: '💬' },
-  { name: 'Gmail', url: 'https://mail.google.com', icon: '📧' },
-  { name: 'Zoho CRM', url: 'https://crm.zoho.com', icon: '👥' },
-  { name: 'RingCentral', url: 'https://app.ringcentral.com', icon: '📞' },
+  { name:'Alpha Files',  url:'https://alphafiles.net',      icon:'📊' },
+  { name:'12 Easy Steps',url:'https://12easysteps.org',     icon:'📖' },
+  { name:'Joshua Son',   url:'/joshuason/',                  icon:'🎖️' },
+  { name:'Hub',          url:'/hub/',                        icon:'📂' },
+  { name:'Palabras',     url:'/palabras/',                   icon:'💬' },
+  { name:'Panther',      url:'/panther/',                    icon:'🐆' },
+  { name:'Gmail',        url:'https://mail.google.com',      icon:'📧' },
+  { name:'Zoho CRM',     url:'https://crm.zoho.com',         icon:'👥' },
+  { name:'RingCentral',  url:'https://app.ringcentral.com',  icon:'📞' },
 ];
 let favs = JSON.parse(localStorage.getItem('os_favs') || 'null') || DEFAULT_FAVS;
-
 function renderFavs() {
   const g = document.getElementById('favGrid'); if (!g) return;
   g.innerHTML = favs.map((f,i) => `
     <a class="fav-card" href="${f.url}" target="${f.url.startsWith('http')?'_blank':'_self'}">
-      <div class="fav-icon">${f.icon || '🔗'}</div>
+      <div class="fav-icon">${f.icon||'🔗'}</div>
       <div><div class="fav-name">${f.name}</div><div class="fav-url">${f.url.replace('https://','')}</div></div>
       <button onclick="delFav(event,${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;margin-left:auto;">×</button>
     </a>`).join('');
 }
-
 function addFav() {
   const name = document.getElementById('favName')?.value?.trim();
   const url  = document.getElementById('favUrl')?.value?.trim();
@@ -574,20 +587,13 @@ function addFav() {
   renderFavs();
   ['favName','favUrl','favIcon'].forEach(id => { const e = document.getElementById(id); if(e) e.value=''; });
 }
-
-function delFav(e, i) {
+function delFav(e,i) {
   e.preventDefault(); e.stopPropagation();
-  favs.splice(i, 1);
-  localStorage.setItem('os_favs', JSON.stringify(favs));
-  renderFavs();
+  favs.splice(i,1); localStorage.setItem('os_favs',JSON.stringify(favs)); renderFavs();
 }
 
 // ── INIT ──
-renderDay();
-calcComm();
-renderDeals();
-renderPays();
-renderFavs();
+renderDay(); calcComm(); renderDeals(); renderPays(); renderFavs();
 </script>
 </body>
 </html>
