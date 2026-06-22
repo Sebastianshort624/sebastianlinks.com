@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>National Install — Interactive Financial Model</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Open+Sans:wght@400;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --orange:#F96302; --orange-dark:#D95200; --black:#1A1A1A; --charcoal:#2b2b2b;
+  --mid:#5a5a5a; --light:#F2F3F5; --white:#fff; --border:#dcdfe3;
+  --green:#1f7a3d; --green-light:#e8f5ec; --red:#c0392b; --red-light:#fdecea;
+  --blue:#1565C0; --blue-light:#e8f1fb; --locked:#ececec; --locked-text:#888;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Open Sans',sans-serif;background:var(--light);color:var(--charcoal);font-size:14px;line-height:1.5}
+header{background:var(--black);border-bottom:4px solid var(--orange);padding:18px 24px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:50;margin-left:var(--sidebar-w)}
+@media(max-width:880px){header{margin-left:0}}
+header svg{width:46px;height:46px;flex-shrink:0}
+header .brand{color:#fff;font-family:'Oswald',sans-serif}
+header .brand span{display:block;font-size:18px;font-weight:700;text-transform:uppercase;letter-spacing:1px}
+header .brand small{font-size:11px;letter-spacing:2px;opacity:.7;text-transform:uppercase}
+header .reset-btn{margin-left:auto;background:var(--orange);color:#fff;border:none;font-family:'Oswald',sans-serif;font-weight:600;font-size:12px;letter-spacing:1px;text-transform:uppercase;padding:10px 18px;border-radius:3px;cursor:pointer}
+header .reset-btn:hover{background:var(--orange-dark)}
+
+nav.tabs{background:#fff;border-bottom:1px solid var(--border);display:flex;overflow-x:auto;position:sticky;top:82px;z-index:40;margin-left:var(--sidebar-w)}
+@media(max-width:880px){nav.tabs{margin-left:0}}
+nav.tabs button{font-family:'Oswald',sans-serif;font-size:12.5px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;background:none;border:none;padding:14px 20px;cursor:pointer;color:var(--mid);border-bottom:3px solid transparent;white-space:nowrap}
+nav.tabs button.active{color:var(--orange);border-bottom-color:var(--orange)}
+nav.tabs button:hover{color:var(--black)}
+
+main{max-width:1500px;margin:0 auto;padding:28px 24px 80px;margin-left:var(--sidebar-w)}
+@media(max-width:880px){main{margin-left:0}}
+.panel{display:none}
+.panel.active{display:block}
+
+.section-title{font-family:'Oswald',sans-serif;font-size:22px;font-weight:700;text-transform:uppercase;border-left:5px solid var(--orange);padding-left:14px;margin:36px 0 18px}
+.section-title:first-child{margin-top:0}
+.subtitle{font-size:12.5px;color:var(--mid);margin:-10px 0 18px 19px;max-width:780px}
+
+table.model{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:5px;overflow:hidden;font-size:13px;margin-bottom:8px}
+table.model thead tr{background:var(--black);color:#fff}
+table.model th{font-family:'Oswald',sans-serif;font-size:11px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;padding:10px 12px;text-align:right}
+table.model th:first-child{text-align:left}
+table.model td{padding:9px 12px;text-align:right;border-bottom:1px solid var(--border);vertical-align:middle}
+table.model td:first-child{text-align:left;font-weight:600;font-family:'Oswald',sans-serif;font-size:13px}
+table.model tbody tr:nth-child(even) td{background:#fafbfc}
+table.model tbody tr:hover td{background:#fff3e9}
+table.model tbody tr.subhead td{background:var(--orange)!important;color:#fff;font-family:'Oswald',sans-serif;font-weight:700;letter-spacing:.5px}
+table.model tbody tr.total td{background:var(--black)!important;color:#fff;font-family:'Oswald',sans-serif;font-weight:700;font-size:14px;border-bottom:none}
+table.model tbody tr.total td.grand{color:var(--orange)}
+table.model tbody tr.locked td{background:var(--locked)!important;color:var(--locked-text)}
+table.model tbody tr.profit td.val{color:var(--green);font-family:'Oswald',sans-serif;font-weight:700}
+table.model tbody tr.loss td.val{color:var(--red);font-family:'Oswald',sans-serif;font-weight:700}
+
+.adj-input{width:78px;padding:5px 6px;border:1.5px solid var(--orange);border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:12.5px;text-align:right;background:#fff8f3}
+.adj-input:focus{outline:none;border-color:var(--orange-dark);background:#fff}
+.adj-input.locked-input{border-color:var(--border);background:var(--locked);color:var(--locked-text);cursor:not-allowed}
+.unit-toggle{display:inline-flex;border:1px solid var(--border);border-radius:3px;overflow:hidden;margin-left:4px;vertical-align:middle}
+.unit-toggle button{font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;padding:4px 6px;border:none;background:#fff;cursor:pointer;color:var(--mid)}
+.unit-toggle button.on{background:var(--black);color:#fff}
+.calc-val{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--black)}
+.locked-tag{display:inline-block;background:var(--locked);color:var(--locked-text);font-size:9.5px;font-family:'Oswald',sans-serif;letter-spacing:1px;text-transform:uppercase;padding:2px 6px;border-radius:2px;margin-left:6px}
+
+.org-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-bottom:8px}
+.org-card{background:#fff;border:1px solid var(--border);border-top:4px solid var(--orange);border-radius:5px;padding:18px 20px}
+.org-card h4{font-family:'Oswald',sans-serif;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;color:var(--black)}
+.org-card .role-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:12.5px}
+.org-card .role-row:last-child{border-bottom:none}
+.org-card .role-name{font-weight:600}
+.org-card .role-sub{font-size:11px;color:var(--mid);display:block}
+
+.fillblank{background:#fff;border:1px solid var(--border);border-radius:5px;padding:22px 24px;margin-bottom:18px}
+.fillblank label{display:block;font-family:'Oswald',sans-serif;font-size:11.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--mid);margin-bottom:5px;margin-top:14px}
+.fillblank label:first-child{margin-top:0}
+.fillblank input[type=text]{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:3px;font-size:14px;font-family:'Open Sans',sans-serif}
+.fillblank input[type=text]:focus{outline:none;border-color:var(--orange)}
+.fillblank-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 24px}
+@media(max-width:700px){.fillblank-grid{grid-template-columns:1fr}}
+
+.kpi-strip{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:24px}
+.kpi{background:var(--black);border-radius:5px;padding:14px 20px;min-width:140px;flex:1}
+.kpi .kv{font-family:'Oswald',sans-serif;font-size:24px;font-weight:700;color:var(--orange);line-height:1}
+.kpi .kl{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,255,255,.6);margin-top:4px}
+
+.note{background:var(--blue-light);border-left:4px solid var(--blue);padding:12px 16px;border-radius:3px;font-size:12.5px;color:var(--charcoal);margin:14px 0}
+.note.warn{background:#fff4e5;border-left-color:var(--orange)}
+
+footer{background:var(--black);color:rgba(255,255,255,.45);text-align:center;font-size:11.5px;padding:20px 24px;border-top:4px solid var(--orange);margin-left:var(--sidebar-w)}
+@media(max-width:880px){footer{margin-left:0}}
+footer strong{color:var(--orange)}
+
+@media(max-width:680px){
+  table.model{font-size:11px}
+  table.model td,table.model th{padding:7px 6px}
+  .adj-input{width:60px;font-size:11px}
+}
+
+/* ===== SIDEBAR ===== */
+:root{--sidebar-w:260px}
+.sidebar{
+  position:fixed;top:0;left:0;height:100vh;width:var(--sidebar-w);
+  background:#1A1A1A;border-right:4px solid #F96302;
+  overflow-y:auto;z-index:200;
+  display:flex;flex-direction:column;
+}
+.sidebar-logo{display:flex;align-items:center;gap:12px;padding:20px 18px;border-bottom:1px solid rgba(255,255,255,.1)}
+.sidebar-logo svg{width:42px;height:42px;flex-shrink:0}
+.sidebar-logo .brand{color:#fff;font-family:'Oswald',sans-serif}
+.sidebar-logo .brand span{display:block;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;line-height:1.2}
+.sidebar-logo .brand small{font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;opacity:.6}
+.sidebar-nav{padding:14px 0;flex:1}
+.nav-group{margin-bottom:6px}
+.nav-group-label{font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.35);padding:14px 20px 6px}
+.nav-link{
+  display:flex;align-items:center;gap:10px;padding:11px 20px;
+  color:rgba(255,255,255,.75);text-decoration:none;font-size:13.5px;
+  border-left:3px solid transparent;transition:background .15s;
+}
+.nav-link:hover{background:rgba(255,255,255,.06);color:#fff}
+.nav-link.active{background:rgba(249,99,2,.15);border-left-color:#F96302;color:#fff;font-weight:600}
+.nav-link .ic{font-size:15px;width:18px;text-align:center;flex-shrink:0}
+.sidebar-foot{padding:16px 20px;border-top:1px solid rgba(255,255,255,.1);font-size:10.5px;color:rgba(255,255,255,.35)}
+.sidebar-toggle{
+  display:none;position:fixed;top:14px;left:14px;z-index:210;
+  background:#F96302;color:#fff;border:none;width:42px;height:42px;
+  border-radius:5px;font-size:18px;cursor:pointer;
+}
+.main-wrap{margin-left:var(--sidebar-w)}
+@media(max-width:880px){
+  .sidebar{transform:translateX(-100%);transition:transform .25s}
+  .sidebar.open{transform:translateX(0)}
+  .main-wrap{margin-left:0}
+  .sidebar-toggle{display:block}
+  header{padding-left:50px!important}
+}
+
+</style>
+</head>
+<body>
+<button class="sidebar-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="30,2 58,30 30,58 2,30" fill="#1A1A1A" stroke="#fff" stroke-width="1.5"/>
+      <polygon points="30,8 52,30 30,52 8,30" fill="#F96302"/>
+      <text x="30" y="37" font-family="Oswald,sans-serif" font-weight="700" font-size="15" fill="#fff" text-anchor="middle">NII</text>
+    </svg>
+    <div class="brand"><span>National Install</span><small>NATIONALINSTALL.COM</small></div>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-group">
+      <div class="nav-group-label">Business Plan</div>
+      <a class="nav-link" href="/nationalinstall/"><span class="ic">🏠</span> Home / Business Plan</a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Platform / App</div>
+      <a class="nav-link" href="/nationalinstall/app/"><span class="ic">📲</span> App Hub</a>
+      <a class="nav-link" href="/nationalinstall/app/overview/"><span class="ic">🦅</span> Platform Overview</a>
+      <a class="nav-link" href="/nationalinstall/app/expansion/"><span class="ic">💰</span> Setup & Maintenance Pitch</a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Corporate</div>
+      <a class="nav-link" href="/nationalinstall/app/corp/formation/"><span class="ic">📄</span> S-Corp Formation</a>
+      <a class="nav-link active" href="/nationalinstall/app/master/"><span class="ic">📊</span> Master Forecast Model</a>
+    </div>
+  </div>
+  <div class="sidebar-foot">Internal planning use only · Confidential</div>
+</nav>
+
+
+<header>
+  <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="30,2 58,30 30,58 2,30" fill="#1A1A1A" stroke="#fff" stroke-width="1.5"/>
+    <polygon points="30,8 52,30 30,52 8,30" fill="#F96302"/>
+    <text x="30" y="37" font-family="Oswald,sans-serif" font-weight="700" font-size="15" fill="#fff" text-anchor="middle">NII</text>
+  </svg>
+  <div class="brand"><span>National Install, Inc.</span><small>Interactive Financial Model — S-Corp</small></div>
+  <button class="reset-btn" onclick="resetAll()">Reset to Defaults</button>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button class="active" data-tab="org">Org & Man-Hours</button>
+  <button data-tab="funnel">Funnel & Conversion</button>
+  <button data-tab="revenue">Revenue Forecast</button>
+  <button data-tab="expense">Expense / Distribution</button>
+  <button data-tab="profit">Profit Forecast</button>
+  <button data-tab="tax">Quarterly & Annual Taxes</button>
+  <button data-tab="owners">Owner Equity & Distributions</button>
+</nav>
+
+<main>
+
+<!-- ============ TAB: ORG & MAN-HOURS ============ -->
+<div class="panel active" id="panel-org">
+  <div class="section-title">Departments & Roles</div>
+  <p class="subtitle">Fill in the blanks for who staffs each department, by state/territory. Adjustable boxes everywhere except owner equity.</p>
+
+  <div class="fillblank">
+    <div class="fillblank-grid">
+      <div>
+        <label>Marketing Dept — Lead</label>
+        <input type="text" id="org-mktg-lead" placeholder="Name / Title">
+        <label>Sales Dept — Sales Manager</label>
+        <input type="text" id="org-sales-mgr" placeholder="Name / Title">
+        <label>Sales Dept — Rep 1 (Territory / State)</label>
+        <input type="text" id="org-rep1" placeholder="e.g. Rep 1 — Tennessee">
+        <label>Sales Dept — Secretary (paired w/ Rep 1)</label>
+        <input type="text" id="org-sec1" placeholder="Name / Title">
+      </div>
+      <div>
+        <label>Revisions Dept — Lead</label>
+        <input type="text" id="org-rev-lead" placeholder="Name / Title">
+        <label>Dispatch (Sales Floor ↔ Contractor Liaison)</label>
+        <input type="text" id="org-dispatch" placeholder="Name / Title">
+        <label>Accountant</label>
+        <input type="text" id="org-accountant" placeholder="Name / Title">
+        <label>State / Territory 1</label>
+        <input type="text" id="org-territory1" placeholder="e.g. Tennessee">
+      </div>
+    </div>
+  </div>
+
+  <div class="org-grid">
+    <div class="org-card">
+      <h4>📣 Marketing Department</h4>
+      <div class="role-row"><div><span class="role-name">Lead Gen / Ad Buyer</span><span class="role-sub">Google LSA/PPC, Buyer's Guide placements</span></div><div class="calc-val" id="org-hrs-mktg">—</div></div>
+      <div class="role-row"><div><span class="role-name">Hrs/week (adjustable)</span></div><input class="adj-input" type="number" id="hrs-mktg" value="40"></div>
+    </div>
+    <div class="org-card">
+      <h4>📞 Sales Department</h4>
+      <div class="role-row"><div><span class="role-name">Sales Manager</span><span class="role-sub">Oversees reps, pipeline, closing support</span></div><input class="adj-input" type="number" id="hrs-salesmgr" value="45"></div>
+      <div class="role-row"><div><span class="role-name">Rep — per rep, hrs/week</span><span class="role-sub">Pitch, Zoom estimate, close</span></div><input class="adj-input" type="number" id="hrs-rep" value="40"></div>
+      <div class="role-row"><div><span class="role-name">Secretary — per secretary, hrs/week</span><span class="role-sub">Intake call, app download, file build</span></div><input class="adj-input" type="number" id="hrs-sec" value="40"></div>
+    </div>
+    <div class="org-card">
+      <h4>🔧 Revisions Department</h4>
+      <div class="role-row"><div><span class="role-name">Revisions Coordinator</span><span class="role-sub">QA upgrades, material changes, re-quote</span></div><input class="adj-input" type="number" id="hrs-rev" value="40"></div>
+      <div class="role-row"><div><span class="role-name">Revision split — Roofer</span></div><div class="calc-val">$3,000 / job <span class="locked-tag">locked</span></div></div>
+      <div class="role-row"><div><span class="role-name">Revision split — Nat'l Install</span></div><div class="calc-val">$5,000 / job <span class="locked-tag">locked</span></div></div>
+      <div class="role-row"><div><span class="role-name">Revision avg total value</span></div><input class="adj-input" type="number" id="rev-total" value="8000"></div>
+      <div class="role-row"><div><span class="role-name">Revision dept fee (% of revision)</span></div><input class="adj-input" type="number" id="rev-fee-pct" value="7" style="width:55px">%</div>
+    </div>
+    <div class="org-card">
+      <h4>🚚 Dispatch</h4>
+      <div class="role-row"><div><span class="role-name">Dispatch Liaison</span><span class="role-sub">Connects sales floor → contractor schedule</span></div><input class="adj-input" type="number" id="hrs-dispatch" value="40"></div>
+    </div>
+  </div>
+
+  <div class="section-title">Man-Hours Per Sales Stage (per closed deal)</div>
+  <p class="subtitle">Adjust hours at each stage of the sale. These roll up into total labor hours per deal and per day at your volume target.</p>
+  <table class="model" id="stage-table">
+    <thead><tr><th>Stage</th><th>Role Responsible</th><th>Avg Time (min)</th><th>Adjust</th></tr></thead>
+    <tbody>
+      <tr><td>1. Inbound Call / Intake</td><td>Secretary</td><td class="calc-val" id="disp-stage1">15 min</td><td><input class="adj-input" type="number" id="stage1" value="15"></td></tr>
+      <tr><td>2. App Download + Client File Creation</td><td>Secretary</td><td class="calc-val" id="disp-stage2">10 min</td><td><input class="adj-input" type="number" id="stage2" value="10"></td></tr>
+      <tr><td>3. Photo Collection (all sides of home)</td><td>Secretary / Homeowner</td><td class="calc-val" id="disp-stage3">10 min</td><td><input class="adj-input" type="number" id="stage3" value="10"></td></tr>
+      <tr><td>4. Eagle Eye Overlay / Map Measure Prep</td><td>Rep</td><td class="calc-val" id="disp-stage4">15 min</td><td><input class="adj-input" type="number" id="stage4" value="15"></td></tr>
+      <tr><td>5. Zoom Walkthrough / Quote Presentation</td><td>Rep</td><td class="calc-val" id="disp-stage5">45 min</td><td><input class="adj-input" type="number" id="stage5" value="45"></td></tr>
+      <tr><td>6. Financing Application (phone-based)</td><td>Rep</td><td class="calc-val" id="disp-stage6">20 min</td><td><input class="adj-input" type="number" id="stage6" value="20"></td></tr>
+      <tr><td>7. Close + Deposit Collection</td><td>Rep</td><td class="calc-val" id="disp-stage7">15 min</td><td><input class="adj-input" type="number" id="stage7" value="15"></td></tr>
+      <tr><td>8. Dispatch Handoff to Contractor</td><td>Dispatch</td><td class="calc-val" id="disp-stage8">10 min</td><td><input class="adj-input" type="number" id="stage8" value="10"></td></tr>
+      <tr class="total"><td>TOTAL MAN-MINUTES PER CLOSED DEAL</td><td></td><td class="grand" id="stage-total-min">—</td><td class="grand" id="stage-total-hrs">—</td></tr>
+    </tbody>
+  </table>
+  <div class="note">Rep-facing time (stages 4–7): <span class="calc-val" id="rep-time-summary">—</span> &nbsp;|&nbsp; Secretary-facing time (stages 1–3): <span class="calc-val" id="sec-time-summary">—</span> &nbsp;|&nbsp; Dispatch time (stage 8): <span class="calc-val" id="dispatch-time-summary">—</span></div>
+</div>
+
+<!-- ============ TAB: FUNNEL & CONVERSION ============ -->
+<div class="panel" id="panel-funnel">
+  <div class="section-title">Lead Funnel & Conversion Ratios</div>
+  <p class="subtitle">Every box below is adjustable. Change leads/day, pitch rate, or close rate and every table on every tab recalculates.</p>
+
+  <div class="kpi-strip" id="funnel-kpis"></div>
+
+  <table class="model">
+    <thead><tr><th>Funnel Stage</th><th>Per Day</th><th>Per Week</th><th>Per Month</th><th>Per Quarter</th><th>Per Year</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Leads Purchased
+          <div style="margin-top:6px"><input class="adj-input" type="number" id="leads-day" value="300"> /day</div>
+        </td>
+        <td class="calc-val" id="f-leads-day">—</td><td class="calc-val" id="f-leads-wk">—</td><td class="calc-val" id="f-leads-mo">—</td><td class="calc-val" id="f-leads-qtr">—</td><td class="calc-val" id="f-leads-yr">—</td>
+      </tr>
+      <tr>
+        <td>Cost Per Lead
+          <div style="margin-top:6px"><input class="adj-input" type="number" id="cost-per-lead" value="270"> $/lead</div>
+        </td>
+        <td class="calc-val" id="f-cpl-day">—</td><td class="calc-val" id="f-cpl-wk">—</td><td class="calc-val" id="f-cpl-mo">—</td><td class="calc-val" id="f-cpl-qtr">—</td><td class="calc-val" id="f-cpl-yr">—</td>
+      </tr>
+      <tr>
+        <td>Pitch Rate (Lead → Zoom Quote)
+          <div style="margin-top:6px"><input class="adj-input" type="number" id="pitch-rate" value="40" style="width:55px">%</div>
+        </td>
+        <td class="calc-val" id="f-quoted-day">—</td><td class="calc-val" id="f-quoted-wk">—</td><td class="calc-val" id="f-quoted-mo">—</td><td class="calc-val" id="f-quoted-qtr">—</td><td class="calc-val" id="f-quoted-yr">—</td>
+      </tr>
+      <tr>
+        <td>Close Rate (Quoted → Sold)
+          <div style="margin-top:6px"><input class="adj-input" type="number" id="close-rate" value="40" style="width:55px">%</div>
+        </td>
+        <td class="calc-val" id="f-sold-day">—</td><td class="calc-val" id="f-sold-wk">—</td><td class="calc-val" id="f-sold-mo">—</td><td class="calc-val" id="f-sold-qtr">—</td><td class="calc-val" id="f-sold-yr">—</td>
+      </tr>
+      <tr>
+        <td>Cost Per Acquisition (closed deal)
+          <div style="margin-top:6px"><input class="adj-input" type="number" id="cpa-input" value="1500"> $/deal</div>
+        </td>
+        <td class="calc-val" id="f-cpa-actual">—</td><td colspan="4" style="text-align:left;font-size:11.5px;color:var(--mid)">↳ Actual CPA from lead spend ÷ deals closed (compare to your $1,500 target at left)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="org-grid" style="margin-top:18px">
+    <div class="org-card">
+      <h4>Staffing Required at This Volume</h4>
+      <div class="role-row"><div class="role-name">Leads per Rep/Secretary pair per day</div><input class="adj-input" type="number" id="leads-per-pair" value="10"></div>
+      <div class="role-row"><div class="role-name">Reps Needed</div><div class="calc-val" id="reps-needed">—</div></div>
+      <div class="role-row"><div class="role-name">Secretaries Needed</div><div class="calc-val" id="secs-needed">—</div></div>
+    </div>
+    <div class="org-card">
+      <h4>Per-Rep Performance Check</h4>
+      <div class="role-row"><div class="role-name">Sold deals / rep / day</div><div class="calc-val" id="sold-per-rep-day">—</div></div>
+      <div class="role-row"><div class="role-name">Sold deals / rep / week</div><div class="calc-val" id="sold-per-rep-week">—</div></div>
+      <div class="role-row"><div class="role-name">Target check</div><div class="calc-val" id="rep-target-check">—</div></div>
+    </div>
+  </div>
+  <div class="note warn">Adjust <strong>Leads/Day</strong>, <strong>Pitch Rate</strong>, or <strong>Close Rate</strong> above and watch Reps/Secretaries Needed and Sold/Rep/Week update — use this to find the staffing level that matches your real-world rep capacity.</div>
+</div>
+
+<!-- ============ TAB: REVENUE FORECAST ============ -->
+<div class="panel" id="panel-revenue">
+  <div class="section-title">Revenue Forecast</div>
+  <p class="subtitle">Driven by the Funnel tab. Adjust average sale price and revision economics here.</p>
+
+  <table class="model">
+    <thead><tr><th>Revenue Stream</th><th>Daily</th><th>Weekly</th><th>Monthly</th><th>Quarterly</th><th>Yearly</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Avg Roof Sale Price
+          <div style="margin-top:6px"><input class="adj-input" type="number" id="avg-roof-price" value="21000"></div>
+        </td>
+        <td colspan="5" style="text-align:left;font-size:11.5px;color:var(--mid)">↳ Used to calculate Initial Sales revenue below</td>
+      </tr>
+      <tr class="subhead"><td colspan="6">Initial Roof Sales</td></tr>
+      <tr>
+        <td>Roofs Sold</td>
+        <td class="calc-val" id="r-roofs-day">—</td><td class="calc-val" id="r-roofs-wk">—</td><td class="calc-val" id="r-roofs-mo">—</td><td class="calc-val" id="r-roofs-qtr">—</td><td class="calc-val" id="r-roofs-yr">—</td>
+      </tr>
+      <tr>
+        <td>Gross Revenue — Initial Sales</td>
+        <td class="calc-val" id="r-initrev-day">—</td><td class="calc-val" id="r-initrev-wk">—</td><td class="calc-val" id="r-initrev-mo">—</td><td class="calc-val" id="r-initrev-qtr">—</td><td class="calc-val" id="r-initrev-yr">—</td>
+      </tr>
+      <tr class="subhead"><td colspan="6">Revisions / Upgrades</td></tr>
+      <tr>
+        <td>Revision Rate (% of sold deals that revise)
+          <div style="margin-top:6px"><input class="adj-input" type="number" id="revision-rate" value="83" style="width:55px">%</div>
+        </td>
+        <td colspan="5" style="text-align:left;font-size:11.5px;color:var(--mid)">↳ Default models ~40 revisions per 48 sold deals; adjust freely</td>
+      </tr>
+      <tr>
+        <td>Revisions Completed</td>
+        <td class="calc-val" id="r-rev-day">—</td><td class="calc-val" id="r-rev-wk">—</td><td class="calc-val" id="r-rev-mo">—</td><td class="calc-val" id="r-rev-qtr">—</td><td class="calc-val" id="r-rev-yr">—</td>
+      </tr>
+      <tr>
+        <td>Gross Revenue — Revisions</td>
+        <td class="calc-val" id="r-revrev-day">—</td><td class="calc-val" id="r-revrev-wk">—</td><td class="calc-val" id="r-revrev-mo">—</td><td class="calc-val" id="r-revrev-qtr">—</td><td class="calc-val" id="r-revrev-yr">—</td>
+      </tr>
+      <tr class="total">
+        <td>TOTAL GROSS REVENUE</td>
+        <td class="grand" id="r-totrev-day">—</td><td class="grand" id="r-totrev-wk">—</td><td class="grand" id="r-totrev-mo">—</td><td class="grand" id="r-totrev-qtr">—</td><td class="grand" id="r-totrev-yr">—</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ============ TAB: EXPENSE / DISTRIBUTION ============ -->
+<div class="panel" id="panel-expense">
+  <div class="section-title">Expense & Distribution Forecast</div>
+  <p class="subtitle">Descending order, greatest cost to least. Every line adjustable as % or $ except where marked locked. Owner distribution is the remainder — never directly edited.</p>
+
+  <table class="model">
+    <thead><tr><th>Distribution Line</th><th>Basis</th><th>Daily</th><th>Weekly</th><th>Monthly</th><th>Quarterly</th><th>Yearly</th></tr></thead>
+    <tbody>
+
+      <tr class="locked"><td>1. Roofer — Initial Install</td><td>$14,000/roof <span class="locked-tag">locked</span></td>
+        <td class="calc-val" id="e-roofer-day">—</td><td class="calc-val" id="e-roofer-wk">—</td><td class="calc-val" id="e-roofer-mo">—</td><td class="calc-val" id="e-roofer-qtr">—</td><td class="calc-val" id="e-roofer-yr">—</td></tr>
+
+      <tr class="locked"><td>2. Roofer — Revision Share</td><td>$3,000/revision <span class="locked-tag">locked</span></td>
+        <td class="calc-val" id="e-roofrev-day">—</td><td class="calc-val" id="e-roofrev-wk">—</td><td class="calc-val" id="e-roofrev-mo">—</td><td class="calc-val" id="e-roofrev-qtr">—</td><td class="calc-val" id="e-roofrev-yr">—</td></tr>
+
+      <tr><td>3. Lead Generation Spend</td><td>$<span id="disp-cpl2">270</span>/lead × leads</td>
+        <td class="calc-val" id="e-lead-day">—</td><td class="calc-val" id="e-lead-wk">—</td><td class="calc-val" id="e-lead-mo">—</td><td class="calc-val" id="e-lead-qtr">—</td><td class="calc-val" id="e-lead-yr">—</td></tr>
+
+      <tr><td>4. Buyer's Guide / Authority Placement</td><td>Forbes/US News/Consumer Affairs — float<br><input class="adj-input" type="number" id="buyersguide-total" value="200000"> total / <input class="adj-input" type="number" id="buyersguide-float-days" value="105"> day float</td>
+        <td class="calc-val" id="e-bg-day">—</td><td class="calc-val" id="e-bg-wk">—</td><td class="calc-val" id="e-bg-mo">—</td><td class="calc-val" id="e-bg-qtr">—</td><td class="calc-val" id="e-bg-yr">—</td></tr>
+
+      <tr class="subhead"><td colspan="7">Sales Team Commission Pool — 10% of Initial Sale Price (adjustable)</td></tr>
+      <tr><td>5a. Sales Commission Pool (Total)</td><td><input class="adj-input" type="number" id="comm-pool-pct" value="10" style="width:50px">% of sale</td>
+        <td class="calc-val" id="e-commpool-day">—</td><td class="calc-val" id="e-commpool-wk">—</td><td class="calc-val" id="e-commpool-mo">—</td><td class="calc-val" id="e-commpool-qtr">—</td><td class="calc-val" id="e-commpool-yr">—</td></tr>
+      <tr><td>5b. → Rep Share</td><td><input class="adj-input" type="number" id="rep-split-pct" value="60" style="width:50px">% of pool</td>
+        <td class="calc-val" id="e-repshare-day">—</td><td class="calc-val" id="e-repshare-wk">—</td><td class="calc-val" id="e-repshare-mo">—</td><td class="calc-val" id="e-repshare-qtr">—</td><td class="calc-val" id="e-repshare-yr">—</td></tr>
+      <tr><td>5c. → Secretary Share</td><td><input class="adj-input" type="number" id="sec-split-pct" value="35" style="width:50px">% of pool</td>
+        <td class="calc-val" id="e-secshare-day">—</td><td class="calc-val" id="e-secshare-wk">—</td><td class="calc-val" id="e-secshare-mo">—</td><td class="calc-val" id="e-secshare-qtr">—</td><td class="calc-val" id="e-secshare-yr">—</td></tr>
+      <tr><td>5d. → Sales Manager Share</td><td><span id="disp-mgr-split">5</span>% of pool <span class="locked-tag">remainder</span></td>
+        <td class="calc-val" id="e-mgrshare-day">—</td><td class="calc-val" id="e-mgrshare-wk">—</td><td class="calc-val" id="e-mgrshare-mo">—</td><td class="calc-val" id="e-mgrshare-qtr">—</td><td class="calc-val" id="e-mgrshare-yr">—</td></tr>
+
+      <tr class="subhead"><td colspan="7">Revisions Department — 7% of Revision Value (adjustable on Org tab)</td></tr>
+      <tr><td>6. Revisions Dept Fee</td><td><span id="disp-revfeepct">7</span>% of $<span id="disp-revtotal">8,000</span></td>
+        <td class="calc-val" id="e-revfee-day">—</td><td class="calc-val" id="e-revfee-wk">—</td><td class="calc-val" id="e-revfee-mo">—</td><td class="calc-val" id="e-revfee-qtr">—</td><td class="calc-val" id="e-revfee-yr">—</td></tr>
+
+      <tr><td>7. CRM / App Fee — Ongoing</td><td><input class="adj-input" type="number" id="crm-pct" value="1" style="width:50px">% of gross revenue</td>
+        <td class="calc-val" id="e-crm-day">—</td><td class="calc-val" id="e-crm-wk">—</td><td class="calc-val" id="e-crm-mo">—</td><td class="calc-val" id="e-crm-qtr">—</td><td class="calc-val" id="e-crm-yr">—</td></tr>
+
+      <tr><td>8. Secretary Wages (W-2)</td><td>$<input class="adj-input" type="number" id="sec-wage-wk" value="600">/wk per secretary</td>
+        <td class="calc-val" id="e-secwage-day">—</td><td class="calc-val" id="e-secwage-wk">—</td><td class="calc-val" id="e-secwage-mo">—</td><td class="calc-val" id="e-secwage-qtr">—</td><td class="calc-val" id="e-secwage-yr">—</td></tr>
+
+      <tr><td>9. Accountant Fee</td><td>$<input class="adj-input" type="number" id="acct-fee-wk" value="1000">/wk</td>
+        <td class="calc-val" id="e-acctfee-day">—</td><td class="calc-val" id="e-acctfee-wk">—</td><td class="calc-val" id="e-acctfee-mo">—</td><td class="calc-val" id="e-acctfee-qtr">—</td><td class="calc-val" id="e-acctfee-yr">—</td></tr>
+
+      <tr><td>10. Rent</td><td>$<input class="adj-input" type="number" id="rent-day" value="5000">/day</td>
+        <td class="calc-val" id="e-rent-day">—</td><td class="calc-val" id="e-rent-wk">—</td><td class="calc-val" id="e-rent-mo">—</td><td class="calc-val" id="e-rent-qtr">—</td><td class="calc-val" id="e-rent-yr">—</td></tr>
+
+      <tr><td>11. Merchant Processing</td><td>$<input class="adj-input" type="number" id="merchant-day" value="2000">/day</td>
+        <td class="calc-val" id="e-merch-day">—</td><td class="calc-val" id="e-merch-wk">—</td><td class="calc-val" id="e-merch-mo">—</td><td class="calc-val" id="e-merch-qtr">—</td><td class="calc-val" id="e-merch-yr">—</td></tr>
+
+      <tr><td>12. Tithe</td><td><input class="adj-input" type="number" id="tithe-pct" value="0.10" step="0.01" style="width:55px">% of gross</td>
+        <td class="calc-val" id="e-tithe-day">—</td><td class="calc-val" id="e-tithe-wk">—</td><td class="calc-val" id="e-tithe-mo">—</td><td class="calc-val" id="e-tithe-qtr">—</td><td class="calc-val" id="e-tithe-yr">—</td></tr>
+
+      <tr class="total"><td>TOTAL EXPENSES (excl. tax & owner draw)</td><td></td>
+        <td class="grand" id="e-totexp-day">—</td><td class="grand" id="e-totexp-wk">—</td><td class="grand" id="e-totexp-mo">—</td><td class="grand" id="e-totexp-qtr">—</td><td class="grand" id="e-totexp-yr">—</td></tr>
+    </tbody>
+  </table>
+  <div class="note">CRM/App <strong>build fee</strong> ($16,000 — 50% deposit / 50% on completion) is a one-time setup cost, modeled separately on the Owner Equity tab as a startup cost, not in recurring expense flow.</div>
+</div>
+
+<!-- ============ TAB: PROFIT FORECAST ============ -->
+<div class="panel" id="panel-profit">
+  <div class="section-title">Profit Forecast</div>
+  <p class="subtitle">Gross Revenue → minus Total Expenses (incl. roofer COGS) → Pre-Tax Net Income → minus Tax Reserve → Net Distributable Profit.</p>
+
+  <div class="kpi-strip" id="profit-kpis"></div>
+
+  <table class="model">
+    <thead><tr><th>Line</th><th>Daily</th><th>Weekly</th><th>Monthly</th><th>Quarterly</th><th>Yearly</th></tr></thead>
+    <tbody>
+      <tr><td>Total Gross Revenue</td>
+        <td class="calc-val" id="p-rev-day">—</td><td class="calc-val" id="p-rev-wk">—</td><td class="calc-val" id="p-rev-mo">—</td><td class="calc-val" id="p-rev-qtr">—</td><td class="calc-val" id="p-rev-yr">—</td></tr>
+      <tr><td>Total Expenses (all lines above)</td>
+        <td class="calc-val" id="p-exp-day">—</td><td class="calc-val" id="p-exp-wk">—</td><td class="calc-val" id="p-exp-mo">—</td><td class="calc-val" id="p-exp-qtr">—</td><td class="calc-val" id="p-exp-yr">—</td></tr>
+      <tr class="total"><td>PRE-TAX NET INCOME</td>
+        <td class="grand" id="p-pretax-day">—</td><td class="grand" id="p-pretax-wk">—</td><td class="grand" id="p-pretax-mo">—</td><td class="grand" id="p-pretax-qtr">—</td><td class="grand" id="p-pretax-yr">—</td></tr>
+      <tr><td>Federal Tax Reserve (<input class="adj-input" type="number" id="fed-tax-pct" value="20" style="width:50px">%)</td>
+        <td class="calc-val" id="p-fed-day">—</td><td class="calc-val" id="p-fed-wk">—</td><td class="calc-val" id="p-fed-mo">—</td><td class="calc-val" id="p-fed-qtr">—</td><td class="calc-val" id="p-fed-yr">—</td></tr>
+      <tr><td>State Tax Reserve (<input class="adj-input" type="number" id="state-tax-pct" value="7" style="width:50px">%)</td>
+        <td class="calc-val" id="p-state-day">—</td><td class="calc-val" id="p-state-wk">—</td><td class="calc-val" id="p-state-mo">—</td><td class="calc-val" id="p-state-qtr">—</td><td class="calc-val" id="p-state-yr">—</td></tr>
+      <tr class="total profit"><td>NET DISTRIBUTABLE PROFIT</td>
+        <td class="grand val" id="p-net-day">—</td><td class="grand val" id="p-net-wk">—</td><td class="grand val" id="p-net-mo">—</td><td class="grand val" id="p-net-qtr">—</td><td class="grand val" id="p-net-yr">—</td></tr>
+    </tbody>
+  </table>
+  <div class="note warn">Federal/State % shown are <strong>planning reserves</strong>, not filed tax calculations. Actual S-corp pass-through liability depends on each shareholder's full personal return — confirm with a CPA before relying on these for real disbursement.</div>
+</div>
+
+<!-- ============ TAB: TAXES ============ -->
+<div class="panel" id="panel-tax">
+  <div class="section-title">Quarterly & Annual Tax Reserve</div>
+  <p class="subtitle">S-corp pass-through — no entity-level federal tax. Reserve is modeled at the entity level for planning purposes only; actual liability is assessed on each shareholder's personal return.</p>
+
+  <table class="model">
+    <thead><tr><th>Period</th><th>Pre-Tax Net Income</th><th>Federal Reserve</th><th>State Reserve</th><th>Total Tax Reserve</th><th>Net After Tax</th></tr></thead>
+    <tbody>
+      <tr><td>Q1 (Jan–Mar)</td><td class="calc-val" id="t-q1-pretax">—</td><td class="calc-val" id="t-q1-fed">—</td><td class="calc-val" id="t-q1-state">—</td><td class="calc-val" id="t-q1-tot">—</td><td class="calc-val" id="t-q1-net">—</td></tr>
+      <tr><td>Q2 (Apr–Jun)</td><td class="calc-val" id="t-q2-pretax">—</td><td class="calc-val" id="t-q2-fed">—</td><td class="calc-val" id="t-q2-state">—</td><td class="calc-val" id="t-q2-tot">—</td><td class="calc-val" id="t-q2-net">—</td></tr>
+      <tr><td>Q3 (Jul–Sep)</td><td class="calc-val" id="t-q3-pretax">—</td><td class="calc-val" id="t-q3-fed">—</td><td class="calc-val" id="t-q3-state">—</td><td class="calc-val" id="t-q3-tot">—</td><td class="calc-val" id="t-q3-net">—</td></tr>
+      <tr><td>Q4 (Oct–Dec)</td><td class="calc-val" id="t-q4-pretax">—</td><td class="calc-val" id="t-q4-fed">—</td><td class="calc-val" id="t-q4-state">—</td><td class="calc-val" id="t-q4-tot">—</td><td class="calc-val" id="t-q4-net">—</td></tr>
+      <tr class="total"><td>ANNUAL TOTAL</td><td class="grand" id="t-yr-pretax">—</td><td class="grand" id="t-yr-fed">—</td><td class="grand" id="t-yr-state">—</td><td class="grand" id="t-yr-tot">—</td><td class="grand" id="t-yr-net">—</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    <strong>Quarterly estimated payment deadlines (calendar year, federal):</strong> Q1 — Apr 15 · Q2 — Jun 15 · Q3 — Sep 15 · Q4 — Jan 15 (following year). State deadlines generally mirror federal but confirm per state of incorporation/operation.
+  </div>
+  <div class="note warn">Tennessee has no personal state income tax. The 7% state reserve modeled above is a placeholder — replace with the actual TN franchise/excise tax rate (or the applicable rate for NC/GA/AL as those markets launch) once confirmed with your CPA.</div>
+</div>
+
+<!-- ============ TAB: OWNERS ============ -->
+<div class="panel" id="panel-owners">
+  <div class="section-title">Owner Equity & Distributions — Locked</div>
+  <p class="subtitle">Ownership percentages are fixed and do not adjust with performance scenarios. Dollar distributions below scale automatically with Net Distributable Profit from the Profit Forecast tab.</p>
+
+  <table class="model">
+    <thead><tr><th>Shareholder</th><th>Equity %</th><th>Investment</th><th>Daily</th><th>Weekly</th><th>Monthly</th><th>Quarterly</th><th>Yearly</th></tr></thead>
+    <tbody>
+      <tr class="locked"><td>Josh Morales <span class="locked-tag">locked</span></td><td>20%</td><td>$100,000</td>
+        <td class="calc-val" id="o-josh-day">—</td><td class="calc-val" id="o-josh-wk">—</td><td class="calc-val" id="o-josh-mo">—</td><td class="calc-val" id="o-josh-qtr">—</td><td class="calc-val" id="o-josh-yr">—</td></tr>
+      <tr class="locked"><td>Investor 2 — <input type="text" id="owner2-name" placeholder="[Name]" style="width:100px;border:1px solid var(--border);border-radius:3px;padding:3px 6px;font-size:12px"> <span class="locked-tag">locked</span></td><td>40%</td><td>$100,000</td>
+        <td class="calc-val" id="o-inv2-day">—</td><td class="calc-val" id="o-inv2-wk">—</td><td class="calc-val" id="o-inv2-mo">—</td><td class="calc-val" id="o-inv2-qtr">—</td><td class="calc-val" id="o-inv2-yr">—</td></tr>
+      <tr class="locked"><td>Principal (Chris) <span class="locked-tag">locked</span></td><td>20%</td><td>Sweat Equity</td>
+        <td class="calc-val" id="o-chris-day">—</td><td class="calc-val" id="o-chris-wk">—</td><td class="calc-val" id="o-chris-mo">—</td><td class="calc-val" id="o-chris-qtr">—</td><td class="calc-val" id="o-chris-yr">—</td></tr>
+      <tr class="locked"><td>Brother 1 (Age 19) <span class="locked-tag">locked</span></td><td>10%</td><td>Family Share</td>
+        <td class="calc-val" id="o-b1-day">—</td><td class="calc-val" id="o-b1-wk">—</td><td class="calc-val" id="o-b1-mo">—</td><td class="calc-val" id="o-b1-qtr">—</td><td class="calc-val" id="o-b1-yr">—</td></tr>
+      <tr class="locked"><td>Brother 2 (Age 20) <span class="locked-tag">locked</span></td><td>10%</td><td>Family Share</td>
+        <td class="calc-val" id="o-b2-day">—</td><td class="calc-val" id="o-b2-wk">—</td><td class="calc-val" id="o-b2-mo">—</td><td class="calc-val" id="o-b2-qtr">—</td><td class="calc-val" id="o-b2-yr">—</td></tr>
+      <tr class="total"><td>TOTAL (100%)</td><td>100%</td><td>$200,000 + Sweat/Family</td>
+        <td class="grand" id="o-tot-day">—</td><td class="grand" id="o-tot-wk">—</td><td class="grand" id="o-tot-mo">—</td><td class="grand" id="o-tot-qtr">—</td><td class="grand" id="o-tot-yr">—</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note warn">
+    <strong>Open item:</strong> 20% (Josh) + 40% (Investor 2) + 20% (Chris) + 10% + 10% (brothers) = 100%. This assumes the brothers split the original "20% family" line into 10%/10%. Confirm exact split before finalizing cap table.
+  </div>
+
+  <div class="section-title">One-Time Startup Costs (Not in Recurring Expense Flow)</div>
+  <table class="model">
+    <thead><tr><th>Item</th><th>Total</th><th>Payment Structure</th></tr></thead>
+    <tbody>
+      <tr><td>CRM / App Build Fee</td><td class="calc-val">$<input class="adj-input" type="number" id="crm-build-total" value="16000"></td><td>50% deposit to start, 50% on completion</td></tr>
+      <tr><td>Buyer's Guide / Authority Placement (Forbes, US News, etc.)</td><td class="calc-val">$<input class="adj-input" type="number" id="buyersguide-startup" value="200000"></td><td>90–120 day float</td></tr>
+      <tr class="total"><td>TOTAL STARTUP CAPITAL NEEDED</td><td class="grand" id="startup-total">—</td><td></td></tr>
+    </tbody>
+  </table>
+</div>
+
+</main>
+
+<footer>
+  <strong>National Install, Inc.</strong> &nbsp;·&nbsp; NATIONALINSTALL.COM &nbsp;·&nbsp; Interactive Planning Model — All figures adjustable except owner equity %<br/>
+  <span style="font-size:10.5px;opacity:.7">Forward-looking projections for internal planning only. Tax figures are reserve estimates, not filed calculations. Confirm with CPA before investor distribution.</span>
+</footer>
+
+<script>
+// ============================================================
+// TAB SWITCHING
+// ============================================================
+document.querySelectorAll('nav.tabs button').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+// ============================================================
+// HELPERS
+// ============================================================
+function $(id){return document.getElementById(id);}
+function num(id){const el=$(id); return el? (parseFloat(el.value)||0) : 0;}
+function fmt$(v){
+  const neg = v<0; v=Math.abs(v);
+  let s = '$'+v.toLocaleString('en-US',{maximumFractionDigits:0});
+  return neg? '−'+s : s;
+}
+function fmtNum(v){return v.toLocaleString('en-US',{maximumFractionDigits:1});}
+function setText(id,val){const el=$(id); if(el) el.textContent=val;}
+
+const PERIODS = {day:1, wk:7, mo:30, qtr:91, yr:365};
+
+function fillRow(prefix, dailyValue, isMoney=true){
+  Object.keys(PERIODS).forEach(p=>{
+    const v = dailyValue * PERIODS[p];
+    setText(prefix+'-'+p, isMoney? fmt$(v): fmtNum(v));
+  });
+}
+
+// ============================================================
+// MASTER RECALCULATION
+// ============================================================
+function recalcAll(){
+  // ---------- FUNNEL ----------
+  const leadsDay = num('leads-day');
+  const cpl = num('cost-per-lead');
+  const pitchRate = num('pitch-rate')/100;
+  const closeRate = num('close-rate')/100;
+  const cpaTarget = num('cpa-input');
+  const leadsPerPair = num('leads-per-pair') || 1;
+
+  const quotedDay = leadsDay * pitchRate;
+  const soldDay = quotedDay * closeRate;
+  const leadSpendDay = leadsDay * cpl;
+  const actualCPA = soldDay>0 ? leadSpendDay/soldDay : 0;
+
+  fillRow('f-leads', leadsDay, false);
+  fillRow('f-cpl', leadSpendDay);
+  fillRow('f-quoted', quotedDay, false);
+  fillRow('f-sold', soldDay, false);
+  setText('f-cpa-actual', fmt$(actualCPA));
+
+  const repsNeeded = Math.ceil(leadsDay/leadsPerPair);
+  const secsNeeded = repsNeeded;
+  setText('reps-needed', repsNeeded+' reps');
+  setText('secs-needed', secsNeeded+' secretaries');
+
+  const soldPerRepDay = repsNeeded>0? soldDay/repsNeeded : 0;
+  const soldPerRepWeek = soldPerRepDay*7;
+  setText('sold-per-rep-day', soldPerRepDay.toFixed(2));
+  setText('sold-per-rep-week', soldPerRepWeek.toFixed(1));
+  setText('rep-target-check', soldPerRepWeek>=3 && soldPerRepWeek<=6 ? '✓ Near 4/week target' : (soldPerRepWeek>6? '⚠ Above typical 4/wk target': '⚠ Below typical 4/wk target'));
+
+  // Funnel KPI strip
+  $('funnel-kpis').innerHTML = `
+    <div class="kpi"><div class="kv">${fmtNum(leadsDay)}</div><div class="kl">Leads/Day</div></div>
+    <div class="kpi"><div class="kv">${fmtNum(quotedDay)}</div><div class="kl">Zoom Quotes/Day</div></div>
+    <div class="kpi"><div class="kv">${fmtNum(soldDay)}</div><div class="kl">Roofs Sold/Day</div></div>
+    <div class="kpi"><div class="kv">${fmt$(actualCPA)}</div><div class="kl">Actual CPA</div></div>
+    <div class="kpi"><div class="kv">${repsNeeded}</div><div class="kl">Reps Needed</div></div>
+  `;
+
+  // ---------- ORG / MAN-HOURS ----------
+  const s1=num('stage1'), s2=num('stage2'), s3=num('stage3'), s4=num('stage4'),
+        s5=num('stage5'), s6=num('stage6'), s7=num('stage7'), s8=num('stage8');
+  [1,2,3,4,5,6,7,8].forEach(i=>setText('disp-stage'+i, num('stage'+i)+' min'));
+  const totalMin = s1+s2+s3+s4+s5+s6+s7+s8;
+  setText('stage-total-min', totalMin+' min');
+  setText('stage-total-hrs', (totalMin/60).toFixed(2)+' hrs');
+  setText('sec-time-summary', (s1+s2+s3)+' min');
+  setText('rep-time-summary', (s4+s5+s6+s7)+' min');
+  setText('dispatch-time-summary', s8+' min');
+
+  // ---------- REVENUE ----------
+  const avgRoofPrice = num('avg-roof-price');
+  const revisionRate = num('revision-rate')/100;
+  const revTotal = num('rev-total');
+
+  const roofsDay = soldDay;
+  const initRevDay = roofsDay * avgRoofPrice;
+  const revCountDay = roofsDay * revisionRate;
+  const revRevDay = revCountDay * revTotal;
+  const totalGrossDay = initRevDay + revRevDay;
+
+  fillRow('r-roofs', roofsDay, false);
+  fillRow('r-initrev', initRevDay);
+  fillRow('r-rev', revCountDay, false);
+  fillRow('r-revrev', revRevDay);
+  fillRow('r-totrev', totalGrossDay);
+
+  // ---------- EXPENSES ----------
+  const roofsRevDay = revCountDay; // alias
+  const roofer1Day = roofsDay * 14000; // locked
+  const roofer2Day = roofsRevDay * 3000; // locked revision share
+
+  const buyersguideTotal = num('buyersguide-total');
+  const bgFloatDays = num('buyersguide-float-days') || 1;
+  const bgDailyAmort = buyersguideTotal / bgFloatDays;
+
+  const commPoolPct = num('comm-pool-pct')/100;
+  const repSplitPct = num('rep-split-pct')/100;
+  const secSplitPct = num('sec-split-pct')/100;
+  const mgrSplitPct = Math.max(0, 1 - repSplitPct - secSplitPct);
+  setText('disp-mgr-split', (mgrSplitPct*100).toFixed(1));
+
+  const commPoolDay = initRevDay * commPoolPct;
+  const repShareDay = commPoolDay * repSplitPct;
+  const secShareDay = commPoolDay * secSplitPct;
+  const mgrShareDay = commPoolDay * mgrSplitPct;
+
+  const revFeePct = num('rev-fee-pct')/100;
+  setText('disp-revfeepct', (revFeePct*100).toFixed(0));
+  setText('disp-revtotal', revTotal.toLocaleString());
+  const revFeeDay = revCountDay * revTotal * revFeePct;
+
+  const crmPct = num('crm-pct')/100;
+  const crmDay = totalGrossDay * crmPct;
+
+  const secWageWk = num('sec-wage-wk');
+  const secWageDay = (secWageWk * secsNeeded) / 7;
+
+  const acctFeeWk = num('acct-fee-wk');
+  const acctFeeDay = acctFeeWk / 7;
+
+  const rentDay = num('rent-day');
+  const merchDay = num('merchant-day');
+  const tithePct = num('tithe-pct')/100;
+  const titheDay = totalGrossDay * tithePct;
+
+  setText('disp-cpl2', cpl);
+
+  fillRow('e-roofer', roofer1Day);
+  fillRow('e-roofrev', roofer2Day);
+  fillRow('e-lead', leadSpendDay);
+  fillRow('e-bg', bgDailyAmort);
+  fillRow('e-commpool', commPoolDay);
+  fillRow('e-repshare', repShareDay);
+  fillRow('e-secshare', secShareDay);
+  fillRow('e-mgrshare', mgrShareDay);
+  fillRow('e-revfee', revFeeDay);
+  fillRow('e-crm', crmDay);
+  fillRow('e-secwage', secWageDay);
+  fillRow('e-acctfee', acctFeeDay);
+  fillRow('e-rent', rentDay);
+  fillRow('e-merch', merchDay);
+  fillRow('e-tithe', titheDay);
+
+  const totalExpDay = roofer1Day+roofer2Day+leadSpendDay+bgDailyAmort+commPoolDay+revFeeDay+crmDay+secWageDay+acctFeeDay+rentDay+merchDay+titheDay;
+  fillRow('e-totexp', totalExpDay);
+
+  // ---------- PROFIT ----------
+  const pretaxDay = totalGrossDay - totalExpDay;
+  const fedPct = num('fed-tax-pct')/100;
+  const statePct = num('state-tax-pct')/100;
+  const fedDay = Math.max(0,pretaxDay) * fedPct;
+  const stateDay = Math.max(0,pretaxDay) * statePct;
+  const netDay = pretaxDay - fedDay - stateDay;
+
+  fillRow('p-rev', totalGrossDay);
+  fillRow('p-exp', totalExpDay);
+  fillRow('p-pretax', pretaxDay);
+  fillRow('p-fed', fedDay);
+  fillRow('p-state', stateDay);
+  fillRow('p-net', netDay);
+
+  $('profit-kpis').innerHTML = `
+    <div class="kpi"><div class="kv">${fmt$(totalGrossDay)}</div><div class="kl">Gross Rev/Day</div></div>
+    <div class="kpi"><div class="kv">${fmt$(pretaxDay)}</div><div class="kl">Pre-Tax/Day</div></div>
+    <div class="kpi"><div class="kv">${fmt$(netDay)}</div><div class="kl">Net Distributable/Day</div></div>
+    <div class="kpi"><div class="kv">${fmt$(netDay*365)}</div><div class="kl">Net Distributable/Year</div></div>
+  `;
+
+  // ---------- TAXES (quarterly = 91 days each, simplified even split) ----------
+  const qPretax = pretaxDay*91;
+  const qFed = fedDay*91;
+  const qState = stateDay*91;
+  const qTot = qFed+qState;
+  const qNet = qPretax-qTot;
+  ['q1','q2','q3','q4'].forEach(q=>{
+    setText('t-'+q+'-pretax', fmt$(qPretax));
+    setText('t-'+q+'-fed', fmt$(qFed));
+    setText('t-'+q+'-state', fmt$(qState));
+    setText('t-'+q+'-tot', fmt$(qTot));
+    setText('t-'+q+'-net', fmt$(qNet));
+  });
+  setText('t-yr-pretax', fmt$(qPretax*4));
+  setText('t-yr-fed', fmt$(qFed*4));
+  setText('t-yr-state', fmt$(qState*4));
+  setText('t-yr-tot', fmt$(qTot*4));
+  setText('t-yr-net', fmt$(qNet*4));
+
+  // ---------- OWNERS (locked % of net distributable) ----------
+  const ownerPcts = {josh:0.20, inv2:0.40, chris:0.20, b1:0.10, b2:0.10};
+  Object.keys(ownerPcts).forEach(k=>{
+    fillRow('o-'+k, netDay*ownerPcts[k]);
+  });
+  fillRow('o-tot', netDay);
+
+  // Startup costs
+  const startupTotal = num('crm-build-total') + num('buyersguide-startup');
+  setText('startup-total', fmt$(startupTotal));
+}
+
+// ============================================================
+// EVENT BINDING — recalc on any input change
+// ============================================================
+document.querySelectorAll('input').forEach(inp=>{
+  inp.addEventListener('input', recalcAll);
+});
+
+// ============================================================
+// RESET TO DEFAULTS
+// ============================================================
+const DEFAULTS = {};
+function captureDefaults(){
+  document.querySelectorAll('input[type=number], input[type=text]').forEach(inp=>{
+    DEFAULTS[inp.id] = inp.value;
+  });
+}
+function resetAll(){
+  Object.keys(DEFAULTS).forEach(id=>{
+    const el = $(id);
+    if(el) el.value = DEFAULTS[id];
+  });
+  recalcAll();
+}
+
+captureDefaults();
+recalcAll();
+</script>
+
+</body>
+</html>
