@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>National Install, Inc. — Corporate Formation</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --orange:#F96302;--orange-dark:#D95200;--black:#1A1A1A;--charcoal:#333;
+  --mid:#555;--light:#F5F5F5;--white:#fff;--border:#E0E0E0;
+  --green:#2E7D32;--green-light:#E8F5E9;--red:#C62828;--red-light:#FFEBEE;
+  --blue:#1565C0;--blue-light:#E3F2FD;
+}
+body{font-family:'Open Sans',sans-serif;background:var(--light);color:var(--charcoal);font-size:15px;line-height:1.6}
+
+header{background:var(--orange);border-bottom:4px solid var(--black)}
+.header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:18px;padding:14px 24px}
+.hd-diamond{width:60px;height:60px;flex-shrink:0}
+.brand-text{color:#fff;font-family:'Oswald',sans-serif}
+.brand-text span{display:block;font-size:22px;font-weight:700;letter-spacing:1px;text-transform:uppercase;line-height:1.1}
+.brand-text small{font-size:11px;font-weight:400;letter-spacing:2px;text-transform:uppercase;opacity:.85}
+.header-right{margin-left:auto;text-align:right;color:#fff;font-family:'Oswald',sans-serif}
+.header-right .tagline{font-size:13px;letter-spacing:1.5px;text-transform:uppercase;opacity:.9}
+.header-right .presented{font-size:11px;opacity:.7;margin-top:2px}
+.breadcrumb{background:var(--black);color:rgba(255,255,255,.6);font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:10px 24px}
+.breadcrumb a{color:var(--orange);text-decoration:none}
+.breadcrumb a:hover{text-decoration:underline}
+
+.hero{background:var(--black);color:#fff;padding:48px 24px 42px;border-bottom:5px solid var(--orange)}
+.hero-inner{max-width:1200px;margin:0 auto}
+.hero-eyebrow{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--orange);margin-bottom:12px}
+.hero h1{font-family:'Oswald',sans-serif;font-size:clamp(28px,4.5vw,48px);font-weight:700;line-height:1.05;text-transform:uppercase;max-width:800px;margin-bottom:16px}
+.hero h1 em{color:var(--orange);font-style:normal}
+.hero p{max-width:640px;font-size:15px;opacity:.85;line-height:1.7}
+
+.section{max-width:1200px;margin:0 auto;padding:44px 24px}
+.section-title{font-family:'Oswald',sans-serif;font-size:24px;font-weight:700;text-transform:uppercase;color:var(--black);border-left:5px solid var(--orange);padding-left:14px;margin-bottom:24px}
+.divider{border:none;border-top:3px solid var(--border);margin:0}
+
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:700px){.compare-grid{grid-template-columns:1fr}}
+.compare-box{background:#fff;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.compare-box .cb-head{padding:14px 20px;font-family:'Oswald',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:1px;font-size:15px;color:#fff;display:flex;align-items:center;justify-content:space-between}
+.compare-box .cb-head.win{background:var(--orange)}
+.compare-box .cb-head.lose{background:var(--charcoal)}
+.compare-box .cb-head .badge{font-size:10px;background:rgba(255,255,255,.2);padding:3px 8px;border-radius:3px;letter-spacing:.5px}
+.compare-box ul{list-style:none;padding:18px 20px}
+.compare-box li{padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;display:flex;gap:10px;align-items:flex-start}
+.compare-box li:last-child{border-bottom:none}
+.compare-box li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--orange);margin-top:6px;flex-shrink:0}
+.compare-box.lose li::before{background:var(--mid)}
+
+.cap-table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:6px;overflow:hidden;font-size:13.5px}
+.cap-table thead tr{background:var(--black);color:#fff;font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:1px;font-size:11.5px}
+.cap-table th{padding:12px 16px;text-align:left}
+.cap-table th.num{text-align:right}
+.cap-table td{padding:12px 16px;border-bottom:1px solid var(--border)}
+.cap-table td.num{text-align:right;font-family:'Oswald',sans-serif;font-weight:700}
+.cap-table tr:nth-child(even) td{background:#fafafa}
+.cap-table tr:last-child td{border-bottom:none}
+.cap-table tr.total td{background:var(--black)!important;color:#fff;font-family:'Oswald',sans-serif;font-weight:700;font-size:14px}
+.cap-table tr.total td.num{color:var(--orange)}
+.role-tag{display:inline-block;font-size:10px;font-family:'Oswald',sans-serif;letter-spacing:.6px;text-transform:uppercase;padding:2px 8px;border-radius:3px;margin-top:3px}
+.role-tag.investor{background:var(--blue-light);color:var(--blue)}
+.role-tag.principal{background:rgba(249,99,2,.15);color:var(--orange-dark)}
+.role-tag.family{background:var(--green-light);color:var(--green)}
+
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.step{background:#fff;padding:22px 18px;border-right:1px solid var(--border);position:relative}
+.step:last-child{border-right:none}
+.step-num{font-family:'Oswald',sans-serif;font-size:36px;font-weight:700;color:var(--orange);opacity:.2;line-height:1;position:absolute;top:12px;right:12px}
+.step h4{font-family:'Oswald',sans-serif;font-size:12.5px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;color:var(--black)}
+.step p{font-size:12.5px;color:var(--mid);line-height:1.6}
+
+.docs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.doc-card{background:#fff;border:1px solid var(--border);border-top:4px solid var(--orange);border-radius:5px;padding:18px}
+.doc-card .doc-icon{font-size:24px;margin-bottom:8px}
+.doc-card h4{font-family:'Oswald',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+.doc-card p{font-size:12px;color:var(--mid);line-height:1.6}
+
+.note{background:var(--blue-light);border-left:4px solid var(--blue);padding:14px 18px;border-radius:4px;font-size:13px;margin:18px 0}
+.note.warn{background:#fff4e5;border-left-color:var(--orange)}
+
+footer{background:var(--black);color:rgba(255,255,255,.5);text-align:center;font-size:12px;padding:22px 24px;border-top:4px solid var(--orange)}
+footer strong{color:var(--orange)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <svg class="hd-diamond" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="30,2 58,30 30,58 2,30" fill="#1A1A1A" stroke="#ffffff" stroke-width="1.5"/>
+      <polygon points="30,8 52,30 30,52 8,30" fill="#F96302"/>
+      <text x="30" y="37" font-family="Oswald,sans-serif" font-weight="700" font-size="15" fill="#ffffff" text-anchor="middle">NII</text>
+    </svg>
+    <div class="brand-text">
+      <span>National Install, Inc.</span>
+      <small>NATIONALINSTALL.COM</small>
+    </div>
+    <div class="header-right">
+      <div class="tagline">Corporate Formation</div>
+      <div class="presented">S-Corporation · Cap Table · Filing Structure</div>
+    </div>
+  </div>
+</header>
+<div class="breadcrumb"><a href="/nationalinstall/">National Install</a> / <a href="/nationalinstall/app/">App</a> / <a href="/nationalinstall/app/corp/">Corp</a> / Formation</div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <p class="hero-eyebrow">Legal & Tax Structure</p>
+    <h1>S-Corporation.<br><em>One Class of Stock.</em><br>Five Owners. One Vision.</h1>
+    <p>National Install, Inc. is structured as an S-Corporation — pass-through taxation, no corporate-level double tax, and a simple cap table built for five owners who are all U.S. individuals. Here's why, and exactly how the equity breaks down.</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Why S-Corp Over C-Corp</div>
+  <div class="compare-grid">
+    <div class="compare-box">
+      <div class="cb-head win">S-Corporation <span class="badge">Selected</span></div>
+      <ul>
+        <li>Pass-through taxation — income taxed once, at the shareholder level, not twice</li>
+        <li>No 21% corporate-level federal tax before distributions</li>
+        <li>Active owners can take a reasonable salary + distributions, reducing self-employment tax exposure</li>
+        <li>Losses pass through and can offset shareholders' other personal income during ramp-up quarters</li>
+        <li>Likely qualifies for the Section 199A 20% QBI deduction (roofing/contracting is not a specified service trade)</li>
+        <li>Simple structure fits 5 individual U.S. shareholders with one class of stock</li>
+      </ul>
+    </div>
+    <div class="compare-box lose">
+      <div class="cb-head lose">C-Corporation</div>
+      <ul>
+        <li>Corporate income taxed at 21% federal first</li>
+        <li>Dividends to shareholders taxed again at the personal level — double taxation</li>
+        <li>No pass-through of early losses to offset shareholders' other income</li>
+        <li>Better suited for raising venture capital or going public — unnecessary complexity for this ownership group</li>
+        <li>More complex reporting and board requirements</li>
+      </ul>
+    </div>
+  </div>
+  <div class="note">S-corp eligibility requirements: 100 shareholders max, all U.S. individuals/eligible trusts, one class of stock only. National Install's 5-owner structure with straightforward percentage splits fits cleanly within all three limits.</div>
+</div>
+
+<hr class="divider"/>
+
+<div class="section">
+  <div class="section-title">Capitalization Table</div>
+  <table class="cap-table">
+    <thead>
+      <tr><th>Shareholder</th><th>Role</th><th class="num">Equity %</th><th class="num">Capital Contribution</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Josh Morales</strong><div class="role-tag investor">Investor</div></td>
+        <td>Capital partner — International Van Lines relationship</td>
+        <td class="num">20%</td>
+        <td class="num">$100,000</td>
+      </tr>
+      <tr>
+        <td><strong>[Investor 2 — Name Pending]</strong><div class="role-tag investor">Investor</div></td>
+        <td>Capital partner</td>
+        <td class="num">40%</td>
+        <td class="num">$100,000</td>
+      </tr>
+      <tr>
+        <td><strong>Chris</strong><div class="role-tag principal">Principal / Founder</div></td>
+        <td>Founder & CEO — operational control</td>
+        <td class="num">20%</td>
+        <td class="num">Sweat Equity</td>
+      </tr>
+      <tr>
+        <td><strong>Brother 1 (Age 19)</strong><div class="role-tag family">Family</div></td>
+        <td>Family equity holder</td>
+        <td class="num">10%</td>
+        <td class="num">Family Share</td>
+      </tr>
+      <tr>
+        <td><strong>Brother 2 (Age 20)</strong><div class="role-tag family">Family</div></td>
+        <td>Family equity holder</td>
+        <td class="num">10%</td>
+        <td class="num">Family Share</td>
+      </tr>
+      <tr class="total">
+        <td>TOTAL</td><td></td><td class="num">100%</td><td class="num">$200,000 + Sweat/Family</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="note warn"><strong>Open item:</strong> Investor 2's name and the exact basis for the 40%/20%/10%/10% split should be confirmed and documented in the shareholder agreement before filing. The two $100K checks (Josh + Investor 2) total $200,000 in outside capital against 60% combined equity, with the remaining 40% held by the operating principal and family.</div>
+</div>
+
+<hr class="divider"/>
+
+<div class="section">
+  <div class="section-title">Formation Steps</div>
+  <div class="steps">
+    <div class="step"><span class="step-num">1</span><h4>Articles of Incorporation</h4><p>File in state of incorporation, naming National Install, Inc. and authorized share structure (one class, common stock).</p></div>
+    <div class="step"><span class="step-num">2</span><h4>EIN Registration</h4><p>Obtain Employer Identification Number from the IRS for banking, payroll, and tax filing.</p></div>
+    <div class="step"><span class="step-num">3</span><h4>Form 2553 — S-Election</h4><p>File IRS Form 2553 within 75 days of incorporation (or start of tax year) to elect S-corp status.</p></div>
+    <div class="step"><span class="step-num">4</span><h4>Shareholder Agreement</h4><p>Document equity %, capital contributions, distribution policy, and transfer restrictions for all 5 owners.</p></div>
+    <div class="step"><span class="step-num">5</span><h4>Bylaws & Stock Ledger</h4><p>Corporate bylaws, stock certificates issued per the cap table, and initial board resolution.</p></div>
+    <div class="step"><span class="step-num">6</span><h4>State & Local Licensing</h4><p>Register for state tax accounts, business licenses, and operate under the contracted roofer's existing license per state (TN first).</p></div>
+  </div>
+</div>
+
+<hr class="divider"/>
+
+<div class="section">
+  <div class="section-title">Required Filing Documents</div>
+  <div class="docs-grid">
+    <div class="doc-card"><div class="doc-icon">📄</div><h4>Articles of Incorporation</h4><p>State-filed founding document establishing the corporation.</p></div>
+    <div class="doc-card"><div class="doc-icon">🧾</div><h4>IRS Form 2553</h4><p>S-corporation tax election, signed by all shareholders.</p></div>
+    <div class="doc-card"><div class="doc-icon">📋</div><h4>Corporate Bylaws</h4><p>Internal governance rules — officer roles, meeting cadence, voting.</p></div>
+    <div class="doc-card"><div class="doc-icon">🤝</div><h4>Shareholder Agreement</h4><p>Equity %, vesting (if any), buy-sell terms, distribution policy.</p></div>
+    <div class="doc-card"><div class="doc-icon">🏦</div><h4>EIN Confirmation Letter</h4><p>IRS-issued tax ID for banking and payroll setup.</p></div>
+    <div class="doc-card"><div class="doc-icon">📑</div><h4>Stock Ledger / Certificates</h4><p>Records issuance of shares matching the cap table above.</p></div>
+  </div>
+  <div class="note">This page outlines the formation structure for planning purposes. Final documents should be prepared and filed with a corporate attorney and CPA to ensure compliance with state-specific requirements and IRS S-election deadlines.</div>
+</div>
+
+<footer>
+  <strong>National Install, Inc.</strong> &nbsp;·&nbsp; NATIONALINSTALL.COM &nbsp;·&nbsp; Corporate Formation — S-Corp Structure<br/>
+  <span style="font-size:11px;opacity:.6">For internal planning purposes only. Not legal advice. Consult a corporate attorney and CPA before filing.</span>
+</footer>
+
+</body>
+</html>
