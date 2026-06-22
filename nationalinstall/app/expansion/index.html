@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>National Install, Inc. — Platform Investment</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --orange:#F96302;--orange-dark:#D95200;--black:#1A1A1A;--charcoal:#333;
+  --mid:#555;--light:#F5F5F5;--white:#fff;--border:#E0E0E0;
+  --green:#2E7D32;--green-light:#E8F5E9;--red:#C62828;--red-light:#FFEBEE;
+  --blue:#1565C0;--blue-light:#E3F2FD;
+}
+body{font-family:'Open Sans',sans-serif;background:var(--light);color:var(--charcoal);font-size:15px;line-height:1.6}
+
+header{background:var(--orange);border-bottom:4px solid var(--black)}
+.header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:18px;padding:14px 24px}
+.hd-diamond{width:60px;height:60px;flex-shrink:0}
+.brand-text{color:#fff;font-family:'Oswald',sans-serif}
+.brand-text span{display:block;font-size:22px;font-weight:700;letter-spacing:1px;text-transform:uppercase;line-height:1.1}
+.brand-text small{font-size:11px;font-weight:400;letter-spacing:2px;text-transform:uppercase;opacity:.85}
+.header-right{margin-left:auto;text-align:right;color:#fff;font-family:'Oswald',sans-serif}
+.header-right .tagline{font-size:13px;letter-spacing:1.5px;text-transform:uppercase;opacity:.9}
+.header-right .presented{font-size:11px;opacity:.7;margin-top:2px}
+.breadcrumb{background:var(--black);color:rgba(255,255,255,.6);font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:10px 24px}
+.breadcrumb a{color:var(--orange);text-decoration:none}
+.breadcrumb a:hover{text-decoration:underline}
+
+.hero{background:var(--black);color:#fff;padding:54px 24px 48px;border-bottom:5px solid var(--orange)}
+.hero-inner{max-width:1200px;margin:0 auto}
+.hero-eyebrow{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--orange);margin-bottom:12px}
+.hero h1{font-family:'Oswald',sans-serif;font-size:clamp(28px,4.8vw,52px);font-weight:700;line-height:1.08;text-transform:uppercase;max-width:780px;margin-bottom:18px}
+.hero h1 em{color:var(--orange);font-style:normal}
+.hero p{max-width:660px;font-size:15px;opacity:.85;line-height:1.75}
+
+.section{max-width:1200px;margin:0 auto;padding:48px 24px}
+.section-title{font-family:'Oswald',sans-serif;font-size:24px;font-weight:700;text-transform:uppercase;color:var(--black);border-left:5px solid var(--orange);padding-left:14px;margin-bottom:24px}
+.divider{border:none;border-top:3px solid var(--border);margin:0}
+
+/* PITCH NARRATIVE */
+.pitch-block{background:#fff;border:1px solid var(--border);border-radius:6px;padding:30px 34px;margin-bottom:20px}
+.pitch-block h3{font-family:'Oswald',sans-serif;font-size:18px;text-transform:uppercase;color:var(--black);margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.pitch-block h3 .pn{color:var(--orange);font-size:28px;opacity:.4}
+.pitch-block p{font-size:14.5px;color:var(--charcoal);line-height:1.8;max-width:880px}
+.pitch-block p+p{margin-top:12px}
+.pitch-block strong{color:var(--black)}
+
+/* COST WITHOUT VS WITH */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:24px 0}
+@media(max-width:700px){.compare-grid{grid-template-columns:1fr}}
+.compare-box{background:#fff;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.compare-box .cb-head{padding:14px 20px;font-family:'Oswald',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:1px;font-size:14px;color:#fff}
+.compare-box .cb-head.lose{background:var(--charcoal)}
+.compare-box .cb-head.win{background:var(--orange)}
+.compare-box ul{list-style:none;padding:18px 20px}
+.compare-box li{padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;display:flex;gap:10px;align-items:flex-start}
+.compare-box li:last-child{border-bottom:none}
+.compare-box li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--mid);margin-top:6px;flex-shrink:0}
+.compare-box.win li::before{background:var(--orange)}
+
+/* PRICING TABLE */
+.pricing-box{background:#fff;border:2px solid var(--orange);border-radius:8px;overflow:hidden;margin:24px 0}
+.pricing-box .pb-head{background:var(--black);color:#fff;padding:18px 28px;text-align:center}
+.pricing-box .pb-head h3{font-family:'Oswald',sans-serif;font-size:20px;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.pricing-box .pb-head p{font-size:12.5px;color:rgba(255,255,255,.6)}
+.price-table{width:100%;border-collapse:collapse;font-size:14px}
+.price-table td{padding:16px 28px;border-bottom:1px solid var(--border)}
+.price-table td:last-child{text-align:right;font-family:'Oswald',sans-serif;font-weight:700;font-size:17px;color:var(--black)}
+.price-table tr:last-child td{border-bottom:none}
+.price-table tr.highlight td{background:#fff8f3}
+.price-table tr.highlight td:last-child{color:var(--orange);font-size:20px}
+.price-table .sub{display:block;font-size:11.5px;color:var(--mid);font-weight:400;margin-top:3px}
+
+/* ROI TABLE */
+.roi-table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:6px;overflow:hidden;font-size:13.5px}
+.roi-table thead tr{background:var(--black);color:#fff;font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:1px;font-size:11.5px}
+.roi-table th{padding:12px 16px;text-align:right}
+.roi-table th:first-child{text-align:left}
+.roi-table td{padding:12px 16px;text-align:right;border-bottom:1px solid var(--border)}
+.roi-table td:first-child{text-align:left;font-weight:600;font-family:'Oswald',sans-serif}
+.roi-table tr:nth-child(even) td{background:#fafafa}
+.roi-table tr.total td{background:var(--black)!important;color:#fff;font-family:'Oswald',sans-serif;font-weight:700;font-size:14px}
+.roi-table tr.total td:last-child{color:var(--orange)}
+
+/* UPGRADE TIER */
+.upgrade-callout{background:linear-gradient(135deg,#1A1A1A 0%,#2d2d2d 100%);border:2px solid var(--orange);border-radius:6px;padding:26px 30px;display:flex;flex-wrap:wrap;gap:24px;align-items:center;margin:20px 0}
+.upgrade-callout h3{font-family:'Oswald',sans-serif;font-size:18px;font-weight:700;text-transform:uppercase;color:var(--orange);margin-bottom:6px}
+.upgrade-callout p{font-size:13px;color:rgba(255,255,255,.75);max-width:520px;line-height:1.65}
+
+.objection-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.objection-card{background:#fff;border:1px solid var(--border);border-left:4px solid var(--orange);border-radius:5px;padding:18px 20px}
+.objection-card .obj-q{font-family:'Oswald',sans-serif;font-size:13px;font-weight:700;color:var(--black);margin-bottom:8px}
+.objection-card .obj-a{font-size:12.5px;color:var(--mid);line-height:1.65}
+
+.note{background:var(--blue-light);border-left:4px solid var(--blue);padding:14px 18px;border-radius:4px;font-size:13px;margin:18px 0}
+.note.warn{background:#fff4e5;border-left-color:var(--orange)}
+
+footer{background:var(--black);color:rgba(255,255,255,.5);text-align:center;font-size:12px;padding:22px 24px;border-top:4px solid var(--orange)}
+footer strong{color:var(--orange)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <svg class="hd-diamond" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="30,2 58,30 30,58 2,30" fill="#1A1A1A" stroke="#ffffff" stroke-width="1.5"/>
+      <polygon points="30,8 52,30 30,52 8,30" fill="#F96302"/>
+      <text x="30" y="37" font-family="Oswald,sans-serif" font-weight="700" font-size="15" fill="#ffffff" text-anchor="middle">NII</text>
+    </svg>
+    <div class="brand-text">
+      <span>National Install, Inc.</span>
+      <small>NATIONALINSTALL.COM</small>
+    </div>
+    <div class="header-right">
+      <div class="tagline">Platform Investment</div>
+      <div class="presented">Setup & Ongoing Maintenance Proposal</div>
+    </div>
+  </div>
+</header>
+<div class="breadcrumb"><a href="/nationalinstall/">National Install</a> / <a href="/nationalinstall/app/">App</a> / Expansion</div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <p class="hero-eyebrow">Why the Platform Pays for Itself</p>
+    <h1>The App Isn't<br>an Expense.<br><em>It's the Engine.</em></h1>
+    <p>Every system on this site — Map Measure, Eagle Eye, the client file, the dispatch handoff — runs on one platform. Here's what it costs to build it, what it costs to keep it running, and why that number is small next to what it protects.</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">The Pitch</div>
+
+  <div class="pitch-block">
+    <h3><span class="pn">01</span>What Happens Without a Real Platform</h3>
+    <p>Right now, every lead, every photo, every quote, and every signed deposit either lives in someone's head, a text thread, or a spreadsheet that one person controls. That works at 5 deals a month. It does not work at <strong>60 roofs a day across 4 states</strong>.</p>
+    <p>Without a platform, every new market means re-training people on a different process, every revision means someone digging through old texts to find the original quote, and every dispatch handoff is a phone call that may or may not get logged. That's not a tech problem — it's a <strong>business that can't scale past the founder's personal bandwidth</strong>.</p>
+  </div>
+
+  <div class="pitch-block">
+    <h3><span class="pn">02</span>What the Platform Actually Does</h3>
+    <p>The National Install App is the reason a secretary in Tennessee and a secretary in Georgia run the <strong>exact same process</strong>, every time, without a training manual in their hand. It's the reason a rep can pull up Eagle Eye on a Zoom call and show a homeowner their own roof, finished, before they've signed anything. It's the reason Dispatch doesn't have to guess which contractor gets which job — the system already knows.</p>
+    <p>This isn't software for software's sake. It's the difference between <strong>a business you can run from a phone</strong> and one that requires you physically present in every market to keep quality consistent.</p>
+  </div>
+
+  <div class="pitch-block">
+    <h3><span class="pn">03</span>Why the Investment Structure Makes Sense</h3>
+    <p>The build is a <strong>one-time $16,000 setup fee</strong> — not a guess, not a placeholder, a real number for a real build: client file system, photo capture, Map Measure integration, Eagle Eye overlay, and the dispatch handoff, all connected.</p>
+    <p>After that, it's <strong>1% of gross revenue</strong> — not a flat monthly fee that stays the same whether you're doing 5 roofs or 60. The platform cost scales with the business. On a slow month, it costs less. On a $4.5M month, it costs $45,000 — and at that volume, $45,000 to keep four states running on one system isn't a cost, it's a rounding error against the model breaking down without it.</p>
+  </div>
+</div>
+
+<hr class="divider"/>
+
+<div class="section">
+  <div class="section-title">Without the Platform vs. With the Platform</div>
+  <div class="compare-grid">
+    <div class="compare-box">
+      <div class="cb-head lose">Without a Unified Platform</div>
+      <ul>
+        <li>Every market re-invents its own process</li>
+        <li>Client files live in texts, spreadsheets, or someone's memory</li>
+        <li>Revisions require digging up the original quote manually</li>
+        <li>Dispatch handoffs are phone calls with no system record</li>
+        <li>No consistent way to track which lead source actually converts</li>
+        <li>Owner has to be personally present to maintain quality control</li>
+      </ul>
+    </div>
+    <div class="compare-box win">
+      <div class="cb-head win">With the National Install App</div>
+      <ul>
+        <li>Every state, every rep, runs the same proven workflow</li>
+        <li>Every client file — photos, quotes, signatures — lives in one place</li>
+        <li>Revisions pull the original file in seconds</li>
+        <li>Dispatch handoff is a tracked, timestamped system event</li>
+        <li>Every lead source's cost and close rate is visible in real time</li>
+        <li>System scales to a new state without the owner on-site</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<hr class="divider"/>
+
+<div class="section">
+  <div class="section-title">The Investment</div>
+  <div class="pricing-box">
+    <div class="pb-head">
+      <h3>National Install App — Platform Fee Structure</h3>
+      <p>Build once. Scale forever. Pay in proportion to what it earns you.</p>
+    </div>
+    <table class="price-table">
+      <tr>
+        <td>One-Time Setup Fee<span class="sub">Client file system, photo capture, Map Measure + Eagle Eye integration, dispatch workflow</span></td>
+        <td>$16,000</td>
+      </tr>
+      <tr>
+        <td>Payment Structure<span class="sub">Standard build-and-pay schedule</span></td>
+        <td>50% / 50%</td>
+      </tr>
+      <tr class="highlight">
+        <td>Ongoing Platform Fee<span class="sub">Includes maintenance, hosting, and support — scales with the business</span></td>
+        <td>1% of Gross Revenue</td>
+      </tr>
+      <tr>
+        <td>CRM Upgrade Path<span class="sub">Estimate pending — custom CRM build beyond current app scope</span></td>
+        <td>Quoted Separately</td>
+      </tr>
+    </table>
+  </div>
+  <div class="note warn"><strong>CRM est. pending</strong> means: if National Install wants a dedicated CRM beyond the current app's client-file system (deeper pipeline reporting, multi-state dashboards, automated follow-up sequences), that's scoped and quoted as its own project — not bundled into the $16K base build.</div>
+</div>
+
+<hr class="divider"/>
+
+<div class="section">
+  <div class="section-title">What 1% Actually Looks Like at Scale</div>
+  <table class="roi-table">
+    <thead><tr><th>Scenario</th><th>Monthly Gross Revenue</th><th>Platform Fee (1%)</th><th>% of Revenue</th></tr></thead>
+    <tbody>
+      <tr><td>Year 1 — TN Launch (Q1)</td><td>$562,500</td><td>$5,625</td><td>1.0%</td></tr>
+      <tr><td>Year 1 — TN Full Ramp (Q4)</td><td>$1,237,500</td><td>$12,375</td><td>1.0%</td></tr>
+      <tr><td>Year 2 — TN + NC Full Ramp</td><td>$3,825,000</td><td>$38,250</td><td>1.0%</td></tr>
+      <tr><td>Year 3 — All 4 States Full Ramp</td><td>$7,650,000</td><td>$76,500</td><td>1.0%</td></tr>
+      <tr class="total"><td>3-Year Total Platform Fees Paid</td><td>—</td><td>$1,174,500</td><td>1.0% of $117.45M</td></tr>
+    </tbody>
+  </table>
+  <div class="note">At full 4-state scale, the platform costs roughly <strong>$76,500/month</strong> against a model generating <strong>$3.1M+ in net profit that same month</strong>. The fee never outpaces what the system is protecting — consistent process, trackable leads, and a business that doesn't depend on the founder being in the room.</div>
+</div>
+
+<hr class="divider"/>
+
+<div class="section">
+  <div class="upgrade-callout">
+    <div>
+      <h3>Handling the "Why Not Just Use Off-the-Shelf Software?" Objection</h3>
+      <p>Generic CRMs don't know what Eagle Eye overlay is, don't understand the revision-to-roofer-share math, and don't connect Dispatch to a contractor's existing license the way this workflow requires. Off-the-shelf tools mean stitching together 4-5 different apps and hoping they talk to each other across 4 states. This platform was built around the actual sales process — not the other way around.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Anticipated Questions</div>
+  <div class="objection-grid">
+    <div class="objection-card">
+      <div class="obj-q">"What if revenue is low some months?"</div>
+      <div class="obj-a">The fee is 1% of whatever comes in — it moves with you. There's no flat fee draining cash in a slow month.</div>
+    </div>
+    <div class="objection-card">
+      <div class="obj-q">"What does the $16K actually buy?"</div>
+      <div class="obj-a">A working system connecting intake, photo capture, Eagle Eye overlay, Map Measure, financing flow, and dispatch — not a template, a build specific to this sales process.</div>
+    </div>
+    <div class="objection-card">
+      <div class="obj-q">"What's included in maintenance?"</div>
+      <div class="obj-a">Hosting, bug fixes, uptime monitoring, and support are folded into the 1% — no separate maintenance invoice.</div>
+    </div>
+    <div class="objection-card">
+      <div class="obj-q">"What if we want more — like a full CRM?"</div>
+      <div class="obj-a">That's scoped and quoted separately as an upgrade path once the base platform is live and the business knows exactly what it needs next.</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <strong>National Install, Inc.</strong> &nbsp;·&nbsp; NATIONALINSTALL.COM &nbsp;·&nbsp; Platform Investment Proposal<br/>
+  <span style="font-size:11px;opacity:.6">For internal planning purposes only.</span>
+</footer>
+
+</body>
+</html>
