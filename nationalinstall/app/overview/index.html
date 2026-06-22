@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>National Install, Inc. — Platform Overview</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --orange:#F96302;--orange-dark:#D95200;--black:#1A1A1A;--charcoal:#333;
+  --mid:#555;--light:#F5F5F5;--white:#fff;--border:#E0E0E0;
+  --green:#2E7D32;--green-light:#E8F5E9;--red:#C62828;--red-light:#FFEBEE;
+  --blue:#1565C0;--blue-light:#E3F2FD;
+}
+body{font-family:'Open Sans',sans-serif;background:var(--light);color:var(--charcoal);font-size:15px;line-height:1.6}
+
+header{background:var(--orange);border-bottom:4px solid var(--black)}
+.header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:18px;padding:14px 24px}
+.hd-diamond{width:60px;height:60px;flex-shrink:0}
+.brand-text{color:#fff;font-family:'Oswald',sans-serif}
+.brand-text span{display:block;font-size:22px;font-weight:700;letter-spacing:1px;text-transform:uppercase;line-height:1.1}
+.brand-text small{font-size:11px;font-weight:400;letter-spacing:2px;text-transform:uppercase;opacity:.85}
+.header-right{margin-left:auto;text-align:right;color:#fff;font-family:'Oswald',sans-serif}
+.header-right .tagline{font-size:13px;letter-spacing:1.5px;text-transform:uppercase;opacity:.9}
+.header-right .presented{font-size:11px;opacity:.7;margin-top:2px}
+.breadcrumb{background:var(--black);color:rgba(255,255,255,.6);font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:10px 24px}
+.breadcrumb a{color:var(--orange);text-decoration:none}
+.breadcrumb a:hover{text-decoration:underline}
+
+.hero{background:var(--black);color:#fff;padding:54px 24px 48px;border-bottom:5px solid var(--orange)}
+.hero-inner{max-width:1200px;margin:0 auto}
+.hero-eyebrow{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--orange);margin-bottom:12px}
+.hero h1{font-family:'Oswald',sans-serif;font-size:clamp(30px,5vw,54px);font-weight:700;line-height:1.05;text-transform:uppercase;max-width:800px;margin-bottom:18px}
+.hero h1 em{color:var(--orange);font-style:normal}
+.hero p{max-width:640px;font-size:15px;opacity:.85;line-height:1.7;margin-bottom:28px}
+.hero-stats{display:flex;flex-wrap:wrap;gap:16px}
+.hero-stat{background:rgba(249,99,2,.12);border:1px solid rgba(249,99,2,.35);border-radius:4px;padding:14px 20px;min-width:130px}
+.hero-stat .num{font-family:'Oswald',sans-serif;font-size:28px;font-weight:700;color:var(--orange);line-height:1}
+.hero-stat .lbl{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;opacity:.7;margin-top:4px}
+
+.section{max-width:1200px;margin:0 auto;padding:48px 24px}
+.section-title{font-family:'Oswald',sans-serif;font-size:24px;font-weight:700;text-transform:uppercase;color:var(--black);border-left:5px solid var(--orange);padding-left:14px;margin-bottom:24px}
+.divider{border:none;border-top:3px solid var(--border);margin:0}
+
+.app-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+.app-card{background:#fff;border:1px solid var(--border);border-top:4px solid var(--orange);border-radius:6px;padding:24px}
+.app-card .app-icon{font-size:30px;margin-bottom:10px}
+.app-card h3{font-family:'Oswald',sans-serif;font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;color:var(--black)}
+.app-card .app-tag{display:inline-block;background:var(--black);color:var(--orange);font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:3px 9px;border-radius:3px;margin-bottom:10px}
+.app-card p{font-size:13px;color:var(--mid);line-height:1.65}
+
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.flow-step{background:#fff;padding:20px 16px;border-right:1px solid var(--border);position:relative}
+.flow-step:last-child{border-right:none}
+.flow-num{font-family:'Oswald',sans-serif;font-size:32px;font-weight:700;color:var(--orange);opacity:.2;line-height:1;position:absolute;top:10px;right:10px}
+.flow-step h4{font-family:'Oswald',sans-serif;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;color:var(--black)}
+.flow-step p{font-size:11.5px;color:var(--mid);line-height:1.55}
+
+.screen-mock{background:var(--black);border-radius:8px;padding:20px;display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin-top:20px}
+.screen-mock .sm-icon{width:64px;height:64px;background:var(--orange);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
+.screen-mock .sm-text h4{font-family:'Oswald',sans-serif;color:#fff;font-size:16px;text-transform:uppercase;margin-bottom:4px}
+.screen-mock .sm-text p{color:rgba(255,255,255,.6);font-size:12.5px;max-width:520px}
+
+.dept-table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:6px;overflow:hidden;font-size:13px}
+.dept-table thead tr{background:var(--black);color:#fff;font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:1px;font-size:11.5px}
+.dept-table th{padding:11px 16px;text-align:left}
+.dept-table td{padding:11px 16px;border-bottom:1px solid var(--border)}
+.dept-table tr:nth-child(even) td{background:#fafafa}
+.dept-table tr:last-child td{border-bottom:none}
+
+.note{background:var(--blue-light);border-left:4px solid var(--blue);padding:14px 18px;border-radius:4px;font-size:13px;margin:18px 0}
+.note.warn{background:#fff4e5;border-left-color:var(--orange)}
+
+.cta-banner{background:var(--black);border-radius:6px;padding:28px 32px;display:flex;flex-wrap:wrap;gap:20px;align-items:center;justify-content:space-between;margin-top:10px}
+.cta-banner h3{font-family:'Oswald',sans-serif;color:#fff;font-size:20px;text-transform:uppercase}
+.cta-banner h3 em{color:var(--orange);font-style:normal}
+.cta-banner a.cta-btn{background:var(--orange);color:#fff;font-family:'Oswald',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:1px;font-size:13px;padding:14px 28px;border-radius:4px;text-decoration:none;white-space:nowrap}
+.cta-banner a.cta-btn:hover{background:var(--orange-dark)}
+
+footer{background:var(--black);color:rgba(255,255,255,.5);text-align:center;font-size:12px;padding:22px 24px;border-top:4px solid var(--orange)}
+footer strong{color:var(--orange)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <svg class="hd-diamond" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="30,2 58,30 30,58 2,30" fill="#1A1A1A" stroke="#ffffff" stroke-width="1.5"/>
+      <polygon points="30,8 52,30 30,52 8,30" fill="#F96302"/>
+      <text x="30" y="37" font-family="Oswald,sans-serif" font-weight="700" font-size="15" fill="#ffffff" text-anchor="middle">NII</text>
+    </svg>
+    <div class="brand-text">
+      <span>National Install, Inc.</span>
+      <small>NATIONALINSTALL.COM</small>
+    </div>
+    <div class="header-right">
+      <div class="tagline">Platform Overview</div>
+      <div class="presented">The Technology Behind Every Sale</div>
+    </div>
+  </div>
+</header>
+<div class="breadcrumb"><a href="/nationalinstall/">National Install</a> / <a href="/nationalinstall/app/">App</a> / Overview</div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <p class="hero-eyebrow">The National Install Technology Stack</p>
+    <h1>One Platform.<br><em>Every Department.</em><br>Every Roof, Tracked.</h1>
+    <p>National Install runs on three connected tools — Map Measure, Eagle Eye, and the National Install App — that take a homeowner from first call to finished roof, with every photo, quote, and dollar tracked in one place.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><span class="num">3</span><span class="lbl">Core Tools</span></div>
+      <div class="hero-stat"><span class="num">8</span><span class="lbl">Sales Stages Tracked</span></div>
+      <div class="hero-stat"><span class="num">4</span><span class="lbl">Departments Connected</span></div>
+      <div class="hero-stat"><span class="num">100%</span><span class="lbl">Zoom-Compatible</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">The Three-Software Stack</div>
+  <div class="app-grid">
+    <div class="app-card">
+      <div class="app-icon">📐</div>
+      <div class="app-tag">Measurement</div>
+      <h3>Map Measure</h3>
+      <p>Calculates exact roof square footage from satellite and address data — no ladder, no manual measuring tape needed before quoting.</p>
+    </div>
+    <div class="app-card">
+      <div class="app-icon">🦅</div>
+      <div class="app-tag">Visualization</div>
+      <h3>Eagle Eye</h3>
+      <p>Overlays an AI-rendered finished roof directly onto the homeowner's actual satellite image — shown live on the Zoom call so they see their own home, transformed, before they sign.</p>
+    </div>
+    <div class="app-card">
+      <div class="app-icon">📲</div>
+      <div class="app-tag">Contractor-Facing</div>
+      <h3>National Install App</h3>
+      <p>Entrance-to-close workflow: sq ft price lookup, step-by-step guided data entry, photo capture from all sides of the home, and client file creation — all in one guided flow.</p>
+    </div>
+  </div>
+
+  <div class="screen-mock">
+    <div class="sm-icon">🔄</div>
+    <div class="sm-text">
+      <h4>How They Connect</h4>
+      <p>A lead comes in → Secretary opens the App and creates the client file → photos upload and sync automatically → Rep pulls the address into Eagle Eye for the live overlay walkthrough → Map Measure confirms sq ft for the instant quote → everything from intake to signed deposit lives in one client file, visible to Sales, Dispatch, and Revisions.</p>
+    </div>
+  </div>
+</div>
+
+<hr class="divider"/>
+
+<div class="section">
+  <div class="section-title">The Sales Flow Inside the App</div>
+  <div class="flow">
+    <div class="flow-step"><span class="flow-num">1</span><h4>Add Campaign</h4><p>Lead enters system from ad campaign source.</p></div>
+    <div class="flow-step"><span class="flow-num">2</span><h4>Call</h4><p>Secretary calls, confirms interest, books appointment.</p></div>
+    <div class="flow-step"><span class="flow-num">3</span><h4>App Download</h4><p>Homeowner downloads app; client file created.</p></div>
+    <div class="flow-step"><span class="flow-num">4</span><h4>Photo Capture</h4><p>Photos taken from all sides of home, uploaded to file.</p></div>
+    <div class="flow-step"><span class="flow-num">5</span><h4>Address Match</h4><p>Address overlaid with satellite image via Eagle Eye / Map Measure.</p></div>
+    <div class="flow-step"><span class="flow-num">6</span><h4>Zoom Walkthrough</h4><p>Rep shares screen, shows AI-rendered finished roof on actual home.</p></div>
+    <div class="flow-step"><span class="flow-num">7</span><h4>Financing</h4><p>Loan application completed over the phone, live.</p></div>
+    <div class="flow-step"><span class="flow-num">8</span><h4>Close</h4><p>Standard or upgrade package signed, deposit collected.</p></div>
+  </div>
+</div>
+
+<hr class="divider"/>
+
+<div class="section">
+  <div class="section-title">Who Uses the Platform</div>
+  <table class="dept-table">
+    <thead><tr><th>Department</th><th>What They See / Do in the App</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Marketing</strong></td><td>Tracks campaign source per lead, cost-per-lead, and conversion by channel.</td></tr>
+      <tr><td><strong>Sales (Manager, Rep, Secretary)</strong></td><td>Secretary builds the client file and uploads photos; Rep runs the Zoom quote using Eagle Eye and Map Measure; Sales Manager monitors pipeline and close rates.</td></tr>
+      <tr><td><strong>Revisions</strong></td><td>Pulls the original client file to process upgrade/material change requests post-close.</td></tr>
+      <tr><td><strong>Dispatch</strong></td><td>Receives the completed, signed client file and hands the job to the contractor under their license — the liaison point between the sales floor and the roofer.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="divider"/>
+
+<div class="section">
+  <div class="cta-banner">
+    <h3>Built the platform.<br>Now let's talk about <em>keeping it running.</em></h3>
+    <a class="cta-btn" href="/nationalinstall/app/expansion/">See the Setup & Maintenance Plan →</a>
+  </div>
+</div>
+
+<footer>
+  <strong>National Install, Inc.</strong> &nbsp;·&nbsp; NATIONALINSTALL.COM &nbsp;·&nbsp; Platform Overview<br/>
+  <span style="font-size:11px;opacity:.6">For internal planning purposes only.</span>
+</footer>
+
+</body>
+</html>
