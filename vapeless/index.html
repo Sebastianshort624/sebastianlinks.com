@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vapeless · Recovery Command Center</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0f0e;
+  --bg2:#0d1513;
+  --glass:rgba(255,255,255,0.045);
+  --glass-brd:rgba(255,255,255,0.09);
+  --text:#e9f3f0;
+  --dim:#7f9590;
+  --green:#34d399;
+  --green-dim:rgba(52,211,153,0.16);
+  --blue:#38bdf8;
+  --blue-dim:rgba(56,189,248,0.16);
+  --purple:#b794f6;
+  --purple-dim:rgba(183,148,246,0.16);
+  --orange:#fb923c;
+  --orange-dim:rgba(251,146,60,0.16);
+  --red:#fb6a6a;
+  --red-dim:rgba(251,106,106,0.18);
+  --gold:#facc15;
+  --gold-dim:rgba(250,204,21,0.16);
+  --radius:16px;
+  --disp:'Rajdhani',sans-serif;
+  --body:'Inter',sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:var(--body);}
+body{
+  background-image:radial-gradient(circle at 15% 0%, rgba(52,211,153,0.08), transparent 45%),
+                    radial-gradient(circle at 85% 8%, rgba(183,148,246,0.07), transparent 45%);
+  min-height:100vh;
+  padding-bottom:90px;
+}
+::selection{background:var(--green-dim);}
+button{font-family:inherit;cursor:pointer;}
+h1,h2,h3,h4{font-family:var(--disp);margin:0;letter-spacing:0.02em;}
+.app{max-width:540px;margin:0 auto;padding:0 14px;}
+
+/* ---------- HEADER / HUD ---------- */
+.hud{padding:18px 0 10px;}
+.hud-top{display:flex;align-items:baseline;gap:9px;margin-bottom:14px;}
+.hud-top h1{font-size:26px;font-weight:700;color:var(--text);text-transform:uppercase;}
+.hud-top .sub{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:0.12em;font-family:var(--disp);font-weight:600;}
+.hud-main{display:flex;align-items:center;gap:16px;background:var(--glass);border:1px solid var(--glass-brd);border-radius:20px;padding:16px;backdrop-filter:blur(14px);}
+.ring-wrap{position:relative;width:104px;height:104px;flex:none;}
+.ring-wrap svg{transform:rotate(-90deg);width:100%;height:100%;}
+.ring-bg{fill:none;stroke:rgba(255,255,255,0.07);stroke-width:9;}
+.ring-fg{fill:none;stroke:var(--green);stroke-width:9;stroke-linecap:round;transition:stroke-dashoffset 0.6s ease;}
+.ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.ring-center .pct{font-family:var(--disp);font-size:22px;font-weight:700;line-height:1;}
+.ring-center .rank{font-size:9px;color:var(--gold);text-transform:uppercase;letter-spacing:0.08em;font-weight:600;margin-top:3px;text-align:center;}
+.hud-stats{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.hud-stat{background:rgba(255,255,255,0.03);border-radius:11px;padding:7px 9px;}
+.hud-stat .num{font-family:var(--disp);font-size:17px;font-weight:700;}
+.hud-stat .lbl{font-size:9.5px;color:var(--dim);text-transform:uppercase;letter-spacing:0.04em;line-height:1.3;}
+.stat-grid-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px;}
+.stat-card{background:var(--glass);border:1px solid var(--glass-brd);border-radius:13px;padding:9px 6px;text-align:center;}
+.stat-card i{font-size:13px;margin-bottom:4px;display:block;}
+.stat-card .num{font-family:var(--disp);font-size:15px;font-weight:700;}
+.stat-card .lbl{font-size:8px;color:var(--dim);text-transform:uppercase;letter-spacing:0.03em;}
+
+/* ---------- TAB BAR (bottom nav) ---------- */
+.tabbar{position:fixed;bottom:0;left:0;right:0;background:rgba(10,15,14,0.92);backdrop-filter:blur(16px);border-top:1px solid var(--glass-brd);display:flex;justify-content:space-around;padding:8px 4px calc(8px + env(safe-area-inset-bottom));z-index:40;}
+.tabbar button{background:none;border:none;color:var(--dim);display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:600;font-family:var(--disp);text-transform:uppercase;letter-spacing:0.03em;padding:4px 8px;border-radius:10px;transition:color .2s;}
+.tabbar button i{font-size:16px;}
+.tabbar button.active{color:var(--green);}
+
+/* ---------- VIEWS ---------- */
+main{padding-top:16px;}
+.view{display:none;animation:fade .25s ease;}
+.view.active{display:block;}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+.card{background:var(--glass);border:1px solid var(--glass-brd);border-radius:var(--radius);padding:16px;margin-bottom:14px;backdrop-filter:blur(10px);}
+.card-head{display:flex;align-items:center;justify-content:between;gap:8px;margin-bottom:12px;}
+.card-head h3{font-size:14px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text);display:flex;align-items:center;gap:8px;}
+.card-head .tag{margin-left:auto;font-size:10px;color:var(--dim);font-family:var(--body);font-weight:500;}
+
+.banner{border-radius:13px;padding:12px 14px;margin-bottom:14px;font-size:13px;display:flex;align-items:center;gap:10px;}
+.banner.purple{background:var(--purple-dim);color:var(--purple);}
+.banner.orange{background:var(--orange-dim);color:var(--orange);}
+.banner b{color:inherit;}
+
+/* mission blocks */
+.mission{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.06);}
+.mission:last-child{border-bottom:none;}
+.mission .icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex:none;}
+.mission-body{flex:1;min-width:0;}
+.mission-time{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:0.04em;}
+.mission select{width:100%;background:rgba(255,255,255,0.05);border:1px solid var(--glass-brd);color:var(--text);border-radius:9px;padding:7px 8px;font-size:13px;margin-top:4px;font-family:var(--body);}
+.mission-check{flex:none;align-self:center;}
+.chk{width:24px;height:24px;border-radius:8px;border:2px solid var(--glass-brd);background:transparent;display:flex;align-items:center;justify-content:center;color:transparent;transition:all .15s;}
+.chk.on{background:var(--green);border-color:var(--green);color:#06281d;}
+.chk i{font-size:12px;}
+
+/* day pills */
+.day-pills{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;}
+.day-pills button{flex:none;background:var(--glass);border:1px solid var(--glass-brd);color:var(--dim);font-family:var(--disp);font-weight:600;font-size:12px;padding:8px 13px;border-radius:11px;text-transform:uppercase;}
+.day-pills button.active{background:var(--green-dim);color:var(--green);border-color:rgba(52,211,153,0.4);}
+
+/* review checklist */
+.review-item{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+.review-item:last-child{border-bottom:none;}
+.review-item .txt{flex:1;font-size:13.5px;}
+.review-item .pts{font-size:10.5px;color:var(--gold);font-family:var(--disp);font-weight:600;}
+.review-item.locked{opacity:0.6;}
+.review-item select.mini{background:rgba(255,255,255,0.06);color:var(--text);border:1px solid var(--glass-brd);border-radius:7px;font-size:11px;padding:3px 5px;margin-left:6px;}
+
+/* liquids */
+.liquid-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.liquid-btn{background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.2);color:var(--text);border-radius:11px;padding:10px 4px;font-size:11px;text-align:center;display:flex;flex-direction:column;gap:5px;align-items:center;}
+.liquid-btn i{color:var(--blue);font-size:15px;}
+.progress-track{height:9px;border-radius:6px;background:rgba(255,255,255,0.07);overflow:hidden;margin-top:6px;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--green));border-radius:6px;transition:width .4s;}
+.progress-label{display:flex;justify-content:space-between;font-size:11px;color:var(--dim);margin-top:5px;}
+
+/* nutrition / exercise */
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;}
+.chip{background:rgba(255,255,255,0.05);border:1px solid var(--glass-brd);border-radius:20px;padding:7px 13px;font-size:12px;display:flex;align-items:center;gap:6px;color:var(--dim);}
+.chip.on{background:var(--orange-dim);color:var(--orange);border-color:rgba(251,146,60,0.4);}
+.exrow{display:grid;grid-template-columns:1.4fr 0.7fr 0.7fr;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:12.5px;}
+.exrow input{width:100%;background:rgba(255,255,255,0.05);border:1px solid var(--glass-brd);color:var(--text);border-radius:7px;padding:6px;font-size:12px;text-align:center;}
+
+/* score */
+.score-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+.score-row:last-child{border-bottom:none;}
+.score-row .dot{width:8px;height:8px;border-radius:50%;flex:none;}
+.score-row .name{flex:1;font-size:13px;}
+.score-row .val{font-family:var(--disp);font-weight:700;font-size:13px;}
+.rank-ladder{display:flex;flex-direction:column;gap:8px;}
+.rank-step{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:11px;background:rgba(255,255,255,0.03);border:1px solid transparent;}
+.rank-step.current{background:var(--gold-dim);border-color:rgba(250,204,21,0.4);}
+.rank-step .badge{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:13px;}
+.rank-step .info{flex:1;}
+.rank-step .info .name{font-family:var(--disp);font-weight:700;font-size:13px;}
+.rank-step .info .range{font-size:10.5px;color:var(--dim);}
+.bars-7{display:flex;align-items:flex-end;gap:6px;height:80px;margin-top:6px;}
+.bar7{flex:1;background:rgba(255,255,255,0.06);border-radius:6px 6px 2px 2px;position:relative;min-height:4px;}
+.bar7 .fill{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(180deg,var(--green),var(--blue));border-radius:6px 6px 2px 2px;}
+.bar7 .day{position:absolute;bottom:-18px;left:0;right:0;text-align:center;font-size:9px;color:var(--dim);}
+
+/* meeting links */
+.link-card{display:flex;align-items:center;gap:12px;padding:13px;border-radius:13px;background:rgba(255,255,255,0.03);border:1px solid var(--glass-brd);margin-bottom:9px;text-decoration:none;color:var(--text);}
+.link-card .ic{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none;font-size:16px;}
+.link-card .meta b{display:block;font-size:13.5px;}
+.link-card .meta span{font-size:11px;color:var(--dim);}
+.link-card i.chev{margin-left:auto;color:var(--dim);}
+
+/* word of wisdom */
+.wow{border-left:3px solid var(--purple);padding-left:13px;margin-bottom:10px;}
+.wow b{color:var(--purple);font-family:var(--disp);}
+.wow p{font-size:12.5px;color:var(--dim);line-height:1.55;margin:4px 0 0;}
+
+/* notes */
+textarea.note{width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--glass-brd);color:var(--text);border-radius:11px;padding:10px;font-family:var(--body);font-size:13px;resize:vertical;min-height:64px;}
+label.prompt{font-size:11.5px;color:var(--dim);text-transform:uppercase;letter-spacing:0.03em;margin-bottom:5px;display:block;font-family:var(--disp);font-weight:600;}
+
+/* settings */
+.field-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);gap:10px;}
+.field-row:last-child{border-bottom:none;}
+.field-row span{font-size:13px;}
+.field-row input{background:rgba(255,255,255,0.06);border:1px solid var(--glass-brd);color:var(--text);border-radius:8px;padding:6px 9px;font-size:13px;width:128px;text-align:right;font-family:var(--body);}
+.btn{background:var(--green-dim);color:var(--green);border:1px solid rgba(52,211,153,0.35);border-radius:11px;padding:11px;font-weight:700;font-family:var(--disp);text-transform:uppercase;font-size:12.5px;letter-spacing:0.04em;width:100%;text-align:center;}
+.btn.danger{background:var(--red-dim);color:var(--red);border-color:rgba(251,106,106,0.4);}
+.btn.ghost{background:transparent;border:1px solid var(--glass-brd);color:var(--dim);}
+
+/* emergency */
+.emergency-fab{position:fixed;right:14px;bottom:88px;z-index:45;background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;border:none;border-radius:30px;padding:13px 18px;font-family:var(--disp);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:0.04em;box-shadow:0 8px 24px rgba(220,38,38,0.45);display:flex;align-items:center;gap:7px;animation:pulse-red 2.4s infinite;}
+@keyframes pulse-red{0%,100%{box-shadow:0 8px 24px rgba(220,38,38,0.45)}50%{box-shadow:0 8px 30px rgba(220,38,38,0.75)}}
+.modal-overlay{position:fixed;inset:0;background:rgba(4,6,6,0.86);backdrop-filter:blur(6px);z-index:99;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
+.modal-overlay.show{opacity:1;pointer-events:auto;}
+.modal-sheet{background:#0e1716;border:1px solid var(--glass-brd);border-top-left-radius:24px;border-top-right-radius:24px;width:100%;max-width:540px;padding:22px 18px 30px;max-height:88vh;overflow-y:auto;transform:translateY(30px);transition:transform .25s;}
+.modal-overlay.show .modal-sheet{transform:translateY(0);}
+.modal-sheet h2{color:var(--red);font-size:20px;text-align:center;margin-bottom:4px;}
+.modal-sheet .timer{text-align:center;font-family:var(--disp);font-size:38px;font-weight:700;color:var(--gold);margin:14px 0;}
+.action-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+.action-item{display:flex;align-items:center;gap:11px;background:rgba(255,255,255,0.04);border:1px solid var(--glass-brd);border-radius:12px;padding:11px 13px;font-size:13px;}
+.action-item.done{background:var(--green-dim);border-color:rgba(52,211,153,0.4);color:var(--green);}
+.action-item .num{width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:11px;flex:none;font-family:var(--disp);font-weight:700;}
+.close-modal{position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.07);border:none;color:var(--text);width:32px;height:32px;border-radius:50%;font-size:14px;}
+.modal-sheet{position:relative;}
+
+.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%) translateY(-20px);background:#10221d;border:1px solid rgba(52,211,153,0.4);color:var(--green);padding:10px 18px;border-radius:30px;font-size:12.5px;font-weight:600;z-index:200;opacity:0;transition:all .25s;pointer-events:none;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+.section-gap{height:6px;}
+::-webkit-scrollbar{display:none;}
+
+@media (min-width:560px){
+  .hud-stats{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="hud">
+    <div class="hud-top">
+      <h1>VAPELESS</h1>
+      <span class="sub">Recovery Command Center</span>
+    </div>
+    <div class="hud-main">
+      <div class="ring-wrap">
+        <svg viewBox="0 0 110 110">
+          <circle class="ring-bg" cx="55" cy="55" r="46"></circle>
+          <circle id="ringFg" class="ring-fg" cx="55" cy="55" r="46" stroke-dasharray="289" stroke-dashoffset="289"></circle>
+        </svg>
+        <div class="ring-center">
+          <div class="pct" id="ringPct">0%</div>
+          <div class="rank" id="ringRank">RECRUIT</div>
+        </div>
+      </div>
+      <div class="hud-stats">
+        <div class="hud-stat"><div class="num" id="statDays">0</div><div class="lbl">Days Vape-Free</div></div>
+        <div class="hud-stat"><div class="num" id="statStreak">0</div><div class="lbl">Recovery Streak</div></div>
+        <div class="hud-stat"><div class="num" id="statXP">0</div><div class="lbl">XP Points</div></div>
+        <div class="hud-stat"><div class="num" id="statMoney">$0</div><div class="lbl">Money Saved</div></div>
+      </div>
+    </div>
+    <div class="stat-grid-row">
+      <div class="stat-card"><i class="fa-solid fa-droplet" style="color:var(--blue)"></i><div class="num" id="statWater">0oz</div><div class="lbl">Water Today</div></div>
+      <div class="stat-card"><i class="fa-solid fa-people-group" style="color:var(--blue)"></i><div class="num" id="statMeetings">0</div><div class="lbl">Meetings</div></div>
+      <div class="stat-card"><i class="fa-solid fa-podcast" style="color:var(--purple)"></i><div class="num" id="statSpeaker">0</div><div class="lbl">Speakers</div></div>
+      <div class="stat-card"><i class="fa-solid fa-bolt" style="color:var(--gold)"></i><div class="num" id="statScorePct">0%</div><div class="lbl">Today's Score</div></div>
+    </div>
+  </header>
+
+  <main>
+    <!-- TODAY -->
+    <section class="view active" id="view-today">
+      <div class="banner purple" id="taperBanner"><i class="fa-solid fa-leaf"></i><span></span></div>
+
+      <div class="card">
+        <div class="card-head"><h3><i class="fa-solid fa-list-check" style="color:var(--green)"></i> Today's Missions</h3><span class="tag" id="todayDateTag"></span></div>
+        <div id="todayMissions"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3><i class="fa-solid fa-clipboard-check" style="color:var(--gold)"></i> Daily Review</h3><span class="tag">Drives your score</span></div>
+        <div id="reviewList"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3><i class="fa-solid fa-pen-nib" style="color:var(--purple)"></i> Daily Notes</h3></div>
+        <label class="prompt">What triggered cravings today?</label>
+        <textarea class="note" id="note0"></textarea>
+        <div class="section-gap"></div>
+        <label class="prompt">What worked today?</label>
+        <textarea class="note" id="note1"></textarea>
+        <div class="section-gap"></div>
+        <label class="prompt">What am I grateful for?</label>
+        <textarea class="note" id="note2"></textarea>
+        <div class="section-gap"></div>
+        <label class="prompt">What will I improve tomorrow?</label>
+        <textarea class="note" id="note3"></textarea>
+      </div>
+    </section>
+
+    <!-- WEEK -->
+    <section class="view" id="view-week">
+      <div class="day-pills" id="dayPills"></div>
+      <div class="banner orange" id="weekTaperBanner"><i class="fa-solid fa-flask"></i><span></span></div>
+      <div class="card">
+        <div class="card-head"><h3><i class="fa-solid fa-route" style="color:var(--green)"></i> Plan Blocks</h3></div>
+        <div id="weekMissions"></div>
+      </div>
+    </section>
+
+    <!-- TRACK -->
+    <section class="view" id="view-track">
+      <div class="banner orange" id="exerciseBanner"><i class="fa-solid fa-dumbbell"></i><span></span></div>
+      <div class="card">
+        <div class="card-head"><h3><i class="fa-solid fa-dumbbell" style="color:var(--orange)"></i> Exercise Log</h3><span class="tag" id="exDayTag"></span></div>
+        <div id="exerciseList"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3><i class="fa-solid fa-glass-water" style="color:var(--blue)"></i> Liquid Tracker</h3></div>
+        <div class="liquid-grid" id="liquidGrid"></div>
+        <div class="progress-track"><div class="progress-fill" id="waterFill" style="width:0%"></div></div>
+        <div class="progress-label"><span id="waterNow">0oz</span><span>Goal: 120oz</span></div>
+        <div class="section-gap"></div>
+        <button class="btn ghost" id="resetLiquids">Reset Today's Liquids</button>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3><i class="fa-solid fa-apple-whole" style="color:var(--green)"></i> Nutrition</h3><span class="tag" id="nutritionTag">0/5</span></div>
+        <div class="chip-row" id="nutritionChips"></div>
+      </div>
+    </section>
+
+    <!-- SCORE -->
+    <section class="view" id="view-score">
+      <div class="card">
+        <div class="card-head"><h3><i class="fa-solid fa-bullseye" style="color:var(--gold)"></i> Today's Score Breakdown</h3></div>
+        <div id="scoreBreakdown"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3><i class="fa-solid fa-chart-column" style="color:var(--green)"></i> Last 7 Days</h3></div>
+        <div class="bars-7" id="bars7" style="margin-bottom:16px;"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3><i class="fa-solid fa-ranking-star" style="color:var(--gold)"></i> Recovery Rank Ladder</h3></div>
+        <div class="rank-ladder" id="rankLadder"></div>
+      </div>
+    </section>
+
+    <!-- MORE -->
+    <section class="view" id="view-more">
+      <div class="card">
+        <div class="card-head"><h3><i class="fa-solid fa-link" style="color:var(--blue)"></i> Meeting Links</h3></div>
+        <a class="link-card" target="_blank" rel="noopener" href="https://nicotine-anonymous.org/find-a-meeting">
+          <div class="ic" style="background:var(--blue-dim);color:var(--blue)"><i class="fa-solid fa-smoking"></i></div>
+          <div class="meta"><b>Nicotine Anonymous</b><span>Find a meeting</span></div>
+          <i class="fa-solid fa-chevron-right chev"></i>
+        </a>
+        <a class="link-card" target="_blank" rel="noopener" href="https://paarec.org">
+          <div class="ic" style="background:var(--purple-dim);color:var(--purple)"><i class="fa-solid fa-shield-heart"></i></div>
+          <div class="meta"><b>Porn Addicts Anonymous</b><span>paarec.org</span></div>
+          <i class="fa-solid fa-chevron-right chev"></i>
+        </a>
+        <a class="link-card" target="_blank" rel="noopener" href="https://ca.org">
+          <div class="ic" style="background:var(--orange-dim);color:var(--orange)"><i class="fa-solid fa-snowflake"></i></div>
+          <div class="meta"><b>Cocaine Anonymous</b><span>ca.org</span></div>
+          <i class="fa-solid fa-chevron-right chev"></i>
+        </a>
+        <a class="link-card" target="_blank" rel="noopener" href="https://voicesofnicotinerecovery.com">
+          <div class="ic" style="background:var(--green-dim);color:var(--green)"><i class="fa-solid fa-microphone"></i></div>
+          <div class="meta"><b>Voices of Recovery</b><span>voicesofnicotinerecovery.com</span></div>
+          <i class="fa-solid fa-chevron-right chev"></i>
+        </a>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3><i class="fa-solid fa-book-open" style="color:var(--purple)"></i> Word of Wisdom Recovery</h3></div>
+        <div class="wow"><b>Doctrine and Covenants 89</b><p>A revealed standard of health and self-mastery — care for the body as a gift, and avoid that which harms it.</p></div>
+        <div class="wow"><b>Self-Mastery</b><p>Recovery is the daily practice of choosing discipline over impulse, one block of the day at a time.</p></div>
+        <div class="wow"><b>Moderation &amp; Health</b><p>The body functions best when treated with consistency — rest, nourishment, movement, and abstinence from harmful substances.</p></div>
+        <div class="wow"><b>Spiritual Strength</b><p>Prayer and scripture study build the inner reserve that carries you through a craving.</p></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3><i class="fa-solid fa-gear" style="color:var(--dim)"></i> Settings</h3></div>
+        <div class="field-row"><span>Quit Date</span><input type="date" id="setQuitDate"></div>
+        <div class="field-row"><span>Vape Cost / Day ($)</span><input type="number" id="setCost" step="0.5" min="0"></div>
+        <div class="section-gap"></div>
+        <button class="btn danger" id="resetAllBtn">Reset All Data</button>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabbar">
+    <button data-view="today" class="active"><i class="fa-solid fa-house"></i>Today</button>
+    <button data-view="week"><i class="fa-solid fa-calendar-week"></i>Week</button>
+    <button data-view="track"><i class="fa-solid fa-chart-line"></i>Track</button>
+    <button data-view="score"><i class="fa-solid fa-trophy"></i>Score</button>
+    <button data-view="more"><i class="fa-solid fa-ellipsis"></i>More</button>
+  </nav>
+
+  <button class="emergency-fab" id="emergencyBtn"><i class="fa-solid fa-triangle-exclamation"></i>I Want to Vape</button>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-sheet">
+      <button class="close-modal" id="closeModal"><i class="fa-solid fa-xmark"></i></button>
+      <h2>Ride It Out</h2>
+      <div style="text-align:center;color:var(--dim);font-size:12px;">Cravings peak and pass. Pick an action below.</div>
+      <div class="timer" id="craveTimer">15:00</div>
+      <div style="display:flex;gap:8px;margin-bottom:16px;">
+        <button class="btn ghost" id="timerStart" style="flex:1;">Start Timer</button>
+        <button class="btn ghost" id="timerReset" style="flex:1;">Reset</button>
+      </div>
+      <div class="action-list" id="actionList"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ============== CONSTANTS ============== */
+var DAY_ORDER = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
+var DAY_LABEL = {monday:'Monday',tuesday:'Tuesday',wednesday:'Wednesday',thursday:'Thursday',friday:'Friday',saturday:'Saturday',sunday:'Sunday'};
+var JS_DAY_TO_KEY = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+
+var BLOCKS = [
+  {key:'morning', label:'Morning Mission', time:'6AM – 10AM', icon:'fa-sun', color:'green',
+    options:['Nicotine Anonymous Meeting','Voices of Recovery Speaker','Porn Addicts Anonymous Meeting','Cocaine Anonymous Meeting','Prayer','Meditation','Scripture Study','Recovery Reading','Walk','Upper Body Workout']},
+  {key:'midday', label:'Midday Mission', time:'10AM – 2PM', icon:'fa-cloud-sun', color:'blue',
+    options:['Nicotine Anonymous Meeting','Porn Addicts Anonymous Meeting','Cocaine Anonymous Meeting','Voices of Recovery Speaker','Step Work','Sponsor Call','Meal Prep','Walk','Gratitude List']},
+  {key:'afternoon', label:'Afternoon Mission', time:'2PM – 6PM', icon:'fa-cloud-sun-rain', color:'orange',
+    options:['Voices of Recovery Speaker','Lower Body Workout','Nicotine Anonymous Meeting','Porn Addicts Anonymous Meeting','Cocaine Anonymous Meeting','Service Work','Recovery Reading','Step Work']},
+  {key:'evening', label:'Evening Mission', time:'6PM – 10PM', icon:'fa-moon', color:'purple',
+    options:['Nicotine Anonymous Meeting','Porn Addicts Anonymous Meeting','Cocaine Anonymous Meeting','Voices of Recovery Speaker','Prayer','Recovery Phone Call','Family Time','Gratitude List']}
+];
+
+var TAPER_PLAN = {
+  monday:'Patch + Gum + Track Vape Usage',
+  tuesday:'Patch + Gum + Reduce Vape Usage 50%',
+  wednesday:'Patch + Gum + Emergency Vape Only',
+  thursday:'Patch + Gum + Dispose Vape',
+  friday:'No Vape',
+  saturday:'No Vape',
+  sunday:'No Vape'
+};
+
+var EXERCISES_ODD = ['Pushups','Military Press','Curls','Triceps','Situps'];
+var EXERCISES_EVEN = ['Squats','Lunges','Calf Raises','Situps','Walking'];
+
+var LIQUIDS = [
+  {key:'water', label:'Water', icon:'fa-droplet'},
+  {key:'pineapple', label:'Pineapple Juice', icon:'fa-lemon'},
+  {key:'grapefruit', label:'Grapefruit Juice', icon:'fa-lemon'},
+  {key:'coconut', label:'Coconut Water', icon:'fa-tree'},
+  {key:'lemonwater', label:'Lemon Water', icon:'fa-droplet'},
+  {key:'peppermint', label:'Peppermint Tea', icon:'fa-mug-hot'},
+  {key:'ginger', label:'Ginger Tea', icon:'fa-mug-hot'},
+  {key:'chamomile', label:'Chamomile Tea', icon:'fa-mug-hot'},
+  {key:'protein', label:'Protein Shake', icon:'fa-dumbbell'}
+];
+
+var NUTRITION_ITEMS = [
+  {key:'protein', label:'Protein'},
+  {key:'fruit', label:'Fruit'},
+  {key:'veg', label:'Vegetables'},
+  {key:'fat', label:'Healthy Fat'},
+  {key:'supplements', label:'Supplements'}
+];
+
+var REVIEW_ITEMS = [
+  {key:'noVape', label:'No Vape Today', pts:100, locked:false},
+  {key:'patchUsed', label:'Patch Used', pts:0, locked:false},
+  {key:'gumUsed', label:'Gum Used Correctly', pts:0, locked:false},
+  {key:'noNewVape', label:'No New Vape Purchase', pts:0, locked:false},
+  {key:'meeting', label:'Meeting Attended', pts:50, locked:false, hasType:true},
+  {key:'speaker', label:'Speaker / Recording Heard', pts:25, locked:false},
+  {key:'workout', label:'Exercise Completed', pts:30, locked:false},
+  {key:'prayer', label:'Prayer Completed', pts:10, locked:false},
+  {key:'gratitude', label:'Gratitude Completed', pts:10, locked:false},
+  {key:'waterGoalMet', label:'Water Goal Met (auto)', pts:20, locked:true},
+  {key:'healthyEating', label:'Healthy Meals (auto, 3+ items)', pts:20, locked:true}
+];
+
+var SCORE_MAX = REVIEW_ITEMS.reduce(function(s,i){return s+i.pts;},0);
+
+var RANKS = [
+  {min:0, name:'Recruit', icon:'fa-user'},
+  {min:200, name:'Cadet', icon:'fa-user-shield'},
+  {min:400, name:'Sergeant', icon:'fa-medal'},
+  {min:600, name:'Captain', icon:'fa-star'},
+  {min:800, name:'Freedom Warrior', icon:'fa-crown'}
+];
+
+var EMERGENCY_ACTIONS = [
+  'Drink Water','Use Nicotine Gum','20 Pushups','Walk 10 Minutes','Listen to a Speaker',
+  'Attend a Meeting','Call Recovery Contact','Pray','Wait 15 Minutes'
+];
+
+/* ============== STORAGE ============== */
+var STORE_KEY = 'vapeless_v1';
+
+function loadStore(){
+  var raw = null;
+  try{ raw = localStorage.getItem(STORE_KEY); }catch(e){}
+  var defaults = {
+    weekPlan: {},
+    logs: {},
+    settings: { quitDate: todayKey(), lastVapeDate: todayKey(), costPerDay: 10, totalXP: 0 }
+  };
+  DAY_ORDER.forEach(function(d){ defaults.weekPlan[d] = {morning:'',midday:'',afternoon:'',evening:''}; });
+  if(!raw) return defaults;
+  try{
+    var parsed = JSON.parse(raw);
+    parsed.weekPlan = parsed.weekPlan || defaults.weekPlan;
+    parsed.logs = parsed.logs || {};
+    parsed.settings = parsed.settings || defaults.settings;
+    DAY_ORDER.forEach(function(d){ if(!parsed.weekPlan[d]) parsed.weekPlan[d] = {morning:'',midday:'',afternoon:'',evening:''}; });
+    return parsed;
+  }catch(e){ return defaults; }
+}
+
+var store = loadStore();
+
+function saveStore(){
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(store)); }catch(e){}
+}
+
+/* ============== DATE HELPERS ============== */
+function pad(n){ return n<10 ? '0'+n : ''+n; }
+function todayKey(d){
+  d = d || new Date();
+  return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+}
+function dayKeyFromDate(d){ return JS_DAY_TO_KEY[d.getDay()]; }
+function addDays(dateKey, n){
+  var parts = dateKey.split('-').map(Number);
+  var d = new Date(parts[0], parts[1]-1, parts[2]);
+  d.setDate(d.getDate()+n);
+  return d;
+}
+function daysBetween(aKey, bKey){
+  var a = addDays(aKey,0), b = addDays(bKey,0);
+  return Math.round((b-a)/86400000);
+}
+
+/* ============== LOG HELPERS ============== */
+function blankLog(){
+  return {
+    review: {noVape:false, patchUsed:false, gumUsed:false, noNewVape:false, meeting:false, meetingType:'NA', speaker:false, workout:false, prayer:false, gratitude:false},
+    liquids: {water:0,pineapple:0,grapefruit:0,coconut:0,lemonwater:0,peppermint:0,ginger:0,chamomile:0,protein:0},
+    nutrition: {protein:false,fruit:false,veg:false,fat:false,supplements:false},
+    exercise: {},
+    blocksDone: {morning:false,midday:false,afternoon:false,evening:false},
+    notes: ['','','',''],
+    scoreApplied: false
+  };
+}
+
+function getLog(dateKey){
+  if(!store.logs[dateKey]){
+    store.logs[dateKey] = blankLog();
+  }
+  // backfill any missing nested fields for older saved logs
+  var b = blankLog();
+  var l = store.logs[dateKey];
+  Object.keys(b).forEach(function(k){
+    if(l[k] === undefined) l[k] = b[k];
+  });
+  Object.keys(b.review).forEach(function(k){ if(l.review[k] === undefined) l.review[k] = b.review[k]; });
+  Object.keys(b.liquids).forEach(function(k){ if(l.liquids[k] === undefined) l.liquids[k] = 0; });
+  Object.keys(b.nutrition).forEach(function(k){ if(l.nutrition[k] === undefined) l.nutrition[k] = false; });
+  return l;
+}
+
+function waterTotal(log){ return Object.keys(log.liquids).reduce(function(s,k){return s+log.liquids[k];},0); }
+function nutritionCount(log){ return NUTRITION_ITEMS.reduce(function(s,it){return s+(log.nutrition[it.key]?1:0);},0); }
+
+function computeAutoFields(log){
+  log.review.waterGoalMet = waterTotal(log) >= 120;
+  log.review.healthyEating = nutritionCount(log) >= 3;
+}
+
+function computeScore(log){
+  computeAutoFields(log);
+  var score = 0;
+  REVIEW_ITEMS.forEach(function(it){
+    if(log.review[it.key]) score += it.pts;
+  });
+  return score;
+}
+
+function rankForXP(xp){
+  var r = RANKS[0];
+  for(var i=0;i<RANKS.length;i++){ if(xp >= RANKS[i].min) r = RANKS[i]; }
+  return r;
+}
+
+/* ============== STREAK / STATS ============== */
+function recomputeStreaks(){
+  var t = todayKey();
+  var streak = 0;
+  var cursor = t;
+  while(true){
+    var l = store.logs[cursor];
+    if(l && l.review && l.review.noVape){ streak++; cursor = todayKey(addDays(cursor,-1)); }
+    else break;
+    if(streak > 3650) break;
+  }
+  var daysSince = store.settings.lastVapeDate ? Math.max(0, daysBetween(store.settings.lastVapeDate, t)) : 0;
+  return {streak:streak, daysSince:daysSince};
+}
+
+function totalVapeFreeDays(){
+  return Object.keys(store.logs).reduce(function(s,k){ return s + (store.logs[k].review && store.logs[k].review.noVape ? 1 : 0); },0);
+}
+
+function recalcTotalXP(){
+  var sum = 0;
+  Object.keys(store.logs).forEach(function(k){ sum += computeScore(store.logs[k]); });
+  store.settings.totalXP = sum;
+  return sum;
+}
+
+/* ============== TOAST ============== */
+var toastEl = document.getElementById('toast');
+var toastTimer = null;
+function toast(msg){
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ toastEl.classList.remove('show'); }, 1800);
+}
+
+/* ============== TAB NAV ============== */
+var tabButtons = document.querySelectorAll('.tabbar button');
+var views = document.querySelectorAll('.view');
+tabButtons.forEach(function(btn){
+  btn.addEventListener('click', function(){
+    tabButtons.forEach(function(b){ b.classList.remove('active'); });
+    views.forEach(function(v){ v.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById('view-'+btn.dataset.view).classList.add('active');
+  });
+});
+
+/* ============== RENDER: HEADER ============== */
+function renderHeader(){
+  var t = todayKey();
+  var log = getLog(t);
+  var s = recomputeStreaks();
+  var xp = recalcTotalXP();
+  var rank = rankForXP(xp);
+  var todayScore = computeScore(log);
+  var pct = Math.round((todayScore/SCORE_MAX)*100);
+
+  document.getElementById('statDays').textContent = s.daysSince;
+  document.getElementById('statStreak').textContent = s.streak;
+  document.getElementById('statXP').textContent = xp;
+  document.getElementById('statMoney').textContent = '$'+(totalVapeFreeDays()*store.settings.costPerDay).toFixed(0);
+  document.getElementById('statWater').textContent = waterTotal(log)+'oz';
+  document.getElementById('statMeetings').textContent = Object.keys(store.logs).reduce(function(s2,k){return s2+(store.logs[k].review.meeting?1:0);},0);
+  document.getElementById('statSpeaker').textContent = Object.keys(store.logs).reduce(function(s2,k){return s2+(store.logs[k].review.speaker?1:0);},0);
+  document.getElementById('statScorePct').textContent = pct+'%';
+
+  document.getElementById('ringPct').textContent = pct+'%';
+  document.getElementById('ringRank').textContent = rank.name.toUpperCase();
+  var circumference = 2*Math.PI*46;
+  var ring = document.getElementById('ringFg');
+  ring.setAttribute('stroke-dasharray', circumference.toFixed(1));
+  ring.setAttribute('stroke-dashoffset', (circumference - (circumference*pct/100)).toFixed(1));
+}
+
+/* ============== RENDER: TODAY ============== */
+function renderToday(){
+  var t = todayKey();
+  var dKey = dayKeyFromDate(new Date());
+  var log = getLog(t);
+  document.getElementById('todayDateTag').textContent = DAY_LABEL[dKey] + ' · ' + t;
+  document.getElementById('taperBanner').querySelector('span').innerHTML = '<b>Taper Plan — '+DAY_LABEL[dKey]+':</b> '+TAPER_PLAN[dKey];
+
+  var missionsEl = document.getElementById('todayMissions');
+  missionsEl.innerHTML = '';
+  BLOCKS.forEach(function(b){
+    var val = store.weekPlan[dKey][b.key] || 'Not planned — set in Week tab';
+    var done = log.blocksDone[b.key];
+    var row = document.createElement('div');
+    row.className = 'mission';
+    row.innerHTML =
+      '<div class="icon" style="background:var(--'+b.color+'-dim);color:var(--'+b.color+')"><i class="fa-solid '+b.icon+'"></i></div>'+
+      '<div class="mission-body"><div class="mission-time">'+b.time+'</div><div style="font-size:13.5px;margin-top:2px;">'+val+'</div></div>'+
+      '<div class="mission-check"><button class="chk '+(done?'on':'')+'" data-block="'+b.key+'"><i class="fa-solid fa-check"></i></button></div>';
+    missionsEl.appendChild(row);
+  });
+  missionsEl.querySelectorAll('.chk').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var key = btn.dataset.block;
+      log.blocksDone[key] = !log.blocksDone[key];
+      saveStore();
+      renderToday(); renderHeader();
+    });
+  });
+
+  renderReview(log);
+
+  for(var i=0;i<4;i++){
+    var ta = document.getElementById('note'+i);
+    ta.value = log.notes[i] || '';
+    ta.oninput = (function(idx){ return function(){ log.notes[idx] = ta.value; saveStore(); }; })(i);
+  }
+}
+
+function renderReview(log){
+  var el = document.getElementById('reviewList');
+  el.innerHTML = '';
+  computeAutoFields(log);
+  REVIEW_ITEMS.forEach(function(it){
+    var row = document.createElement('div');
+    row.className = 'review-item'+(it.locked?' locked':'');
+    var typeSelect = '';
+    if(it.hasType){
+      typeSelect = '<select class="mini" data-typefor="'+it.key+'">'+
+        ['NA','PAA','CA'].map(function(o){ return '<option value="'+o+'" '+(log.review.meetingType===o?'selected':'')+'>'+o+'</option>'; }).join('')+
+        '</select>';
+    }
+    row.innerHTML =
+      '<button class="chk '+(log.review[it.key]?'on':'')+'" data-key="'+it.key+'" '+(it.locked?'disabled':'')+'><i class="fa-solid fa-check"></i></button>'+
+      '<div class="txt">'+it.label+typeSelect+'</div>'+
+      '<div class="pts">+'+it.pts+'</div>';
+    el.appendChild(row);
+  });
+  el.querySelectorAll('.chk').forEach(function(btn){
+    if(btn.disabled) return;
+    btn.addEventListener('click', function(){
+      var key = btn.dataset.key;
+      log.review[key] = !log.review[key];
+      if(key === 'noVape' && !log.review.noVape){
+        store.settings.lastVapeDate = todayKey();
+      }
+      saveStore();
+      renderReview(log); renderHeader(); renderScore();
+    });
+  });
+  el.querySelectorAll('select[data-typefor]').forEach(function(sel){
+    sel.addEventListener('change', function(){ log.review.meetingType = sel.value; saveStore(); });
+  });
+}
+
+/* ============== RENDER: WEEK ============== */
+var selectedWeekDay = dayKeyFromDate(new Date());
+function renderDayPills(){
+  var el = document.getElementById('dayPills');
+  el.innerHTML = '';
+  DAY_ORDER.forEach(function(d){
+    var btn = document.createElement('button');
+    btn.textContent = DAY_LABEL[d].slice(0,3);
+    btn.className = (d===selectedWeekDay?'active':'');
+    btn.addEventListener('click', function(){ selectedWeekDay = d; renderWeek(); });
+    el.appendChild(btn);
+  });
+}
+
+function renderWeek(){
+  renderDayPills();
+  document.getElementById('weekTaperBanner').querySelector('span').innerHTML =
+    '<b>'+DAY_LABEL[selectedWeekDay]+' Taper:</b> '+TAPER_PLAN[selectedWeekDay];
+
+  var el = document.getElementById('weekMissions');
+  el.innerHTML = '';
+  BLOCKS.forEach(function(b){
+    var row = document.createElement('div');
+    row.className = 'mission';
+    var opts = b.options.map(function(o){
+      var sel = (store.weekPlan[selectedWeekDay][b.key] === o) ? 'selected' : '';
+      return '<option '+sel+' value="'+o+'">'+o+'</option>';
+    }).join('');
+    row.innerHTML =
+      '<div class="icon" style="background:var(--'+b.color+'-dim);color:var(--'+b.color+')"><i class="fa-solid '+b.icon+'"></i></div>'+
+      '<div class="mission-body"><div class="mission-time">'+b.time+'</div>'+
+      '<select data-block="'+b.key+'"><option value="">— Choose an activity —</option>'+opts+'</select></div>';
+    el.appendChild(row);
+  });
+  el.querySelectorAll('select').forEach(function(sel){
+    sel.addEventListener('change', function(){
+      store.weekPlan[selectedWeekDay][sel.dataset.block] = sel.value;
+      saveStore();
+      if(selectedWeekDay === dayKeyFromDate(new Date())) renderToday();
+    });
+  });
+}
+
+/* ============== RENDER: TRACK ============== */
+function renderTrack(){
+  var t = todayKey();
+  var log = getLog(t);
+  var now = new Date();
+  var isOdd = now.getDate() % 2 === 1;
+  var list = isOdd ? EXERCISES_ODD : EXERCISES_EVEN;
+  document.getElementById('exDayTag').textContent = isOdd ? 'Odd Day' : 'Even Day';
+  document.getElementById('exerciseBanner').querySelector('span').innerHTML =
+    '<b>'+(isOdd?'Odd Day Routine':'Even Day Routine')+':</b> '+list.join(', ');
+
+  var exEl = document.getElementById('exerciseList');
+  exEl.innerHTML = '<div class="exrow" style="color:var(--dim);font-size:11px;"><div>Exercise</div><div>Sets</div><div>Reps</div></div>';
+  list.forEach(function(ex){
+    if(!log.exercise[ex]) log.exercise[ex] = {sets:'', reps:''};
+    var row = document.createElement('div');
+    row.className = 'exrow';
+    row.innerHTML = '<div>'+ex+'</div>'+
+      '<input type="number" min="0" data-ex="'+ex+'" data-field="sets" value="'+log.exercise[ex].sets+'">'+
+      '<input type="number" min="0" data-ex="'+ex+'" data-field="reps" value="'+log.exercise[ex].reps+'">';
+    exEl.appendChild(row);
+  });
+  exEl.querySelectorAll('input').forEach(function(inp){
+    inp.addEventListener('input', function(){
+      log.exercise[inp.dataset.ex][inp.dataset.field] = inp.value;
+      saveStore();
+    });
+  });
+
+  var liqEl = document.getElementById('liquidGrid');
+  liqEl.innerHTML = '';
+  LIQUIDS.forEach(function(l){
+    var btn = document.createElement('button');
+    btn.className = 'liquid-btn';
+    btn.innerHTML = '<i class="fa-solid '+l.icon+'"></i><span>'+l.label+'</span><span style="color:var(--dim);font-size:10px;">'+log.liquids[l.key]+'oz</span>';
+    btn.addEventListener('click', function(){
+      log.liquids[l.key] += 8;
+      saveStore();
+      renderTrack(); renderHeader(); renderReview(log); renderScore();
+    });
+    liqEl.appendChild(btn);
+  });
+  var w = waterTotal(log);
+  document.getElementById('waterFill').style.width = Math.min(100, (w/120*100))+'%';
+  document.getElementById('waterNow').textContent = w+'oz';
+
+  document.getElementById('resetLiquids').onclick = function(){
+    LIQUIDS.forEach(function(l){ log.liquids[l.key] = 0; });
+    saveStore();
+    renderTrack(); renderHeader(); renderReview(log); renderScore();
+    toast('Liquids reset for today');
+  };
+
+  var nutEl = document.getElementById('nutritionChips');
+  nutEl.innerHTML = '';
+  NUTRITION_ITEMS.forEach(function(it){
+    var chip = document.createElement('button');
+    chip.className = 'chip'+(log.nutrition[it.key]?' on':'');
+    chip.innerHTML = '<i class="fa-solid '+(log.nutrition[it.key]?'fa-check':'fa-plus')+'"></i>'+it.label;
+    chip.addEventListener('click', function(){
+      log.nutrition[it.key] = !log.nutrition[it.key];
+      saveStore();
+      renderTrack(); renderReview(log); renderHeader(); renderScore();
+    });
+    nutEl.appendChild(chip);
+  });
+  document.getElementById('nutritionTag').textContent = nutritionCount(log)+'/5';
+}
+
+/* ============== RENDER: SCORE ============== */
+function renderScore(){
+  var t = todayKey();
+  var log = getLog(t);
+  computeAutoFields(log);
+  var score = computeScore(log);
+
+  var colorFor = {noVape:'green',patchUsed:'dim',gumUsed:'dim',noNewVape:'dim',meeting:'blue',speaker:'purple',workout:'orange',prayer:'purple',gratitude:'green',waterGoalMet:'blue',healthyEating:'green'};
+  var bd = document.getElementById('scoreBreakdown');
+  bd.innerHTML = '';
+  REVIEW_ITEMS.forEach(function(it){
+    var row = document.createElement('div');
+    row.className = 'score-row';
+    var c = colorFor[it.key] || 'dim';
+    row.innerHTML = '<div class="dot" style="background:var(--'+c+', var(--dim))"></div>'+
+      '<div class="name">'+it.label+'</div>'+
+      '<div class="val" style="color:'+(log.review[it.key]?'var(--gold)':'var(--dim)')+'">'+(log.review[it.key]?'+'+it.pts:'0')+' / '+it.pts+'</div>';
+    bd.appendChild(row);
+  });
+  var totalRow = document.createElement('div');
+  totalRow.className = 'score-row';
+  totalRow.style.borderTop = '1px solid rgba(255,255,255,0.1)';
+  totalRow.style.marginTop = '6px';
+  totalRow.style.paddingTop = '12px';
+  totalRow.innerHTML = '<div class="dot" style="background:var(--gold)"></div><div class="name" style="font-family:var(--disp);font-weight:700;">TOTAL</div><div class="val" style="color:var(--gold);font-size:16px;">'+score+' / '+SCORE_MAX+'</div>';
+  bd.appendChild(totalRow);
+
+  // 7 day bars
+  var bars = document.getElementById('bars7');
+  bars.innerHTML = '';
+  for(var i=6;i>=0;i--){
+    var dKey = todayKey(addDays(t, -i));
+    var l = store.logs[dKey] || blankLog();
+    var sc = computeScore(l);
+    var pct = Math.max(2, (sc/SCORE_MAX*100));
+    var d = addDays(t,-i);
+    var bar = document.createElement('div');
+    bar.className = 'bar7';
+    bar.innerHTML = '<div class="fill" style="height:'+pct+'%"></div><div class="day">'+DAY_LABEL[dayKeyFromDate(d)].slice(0,2)+'</div>';
+    bars.appendChild(bar);
+  }
+
+  var xp = recalcTotalXP();
+  var ladder = document.getElementById('rankLadder');
+  ladder.innerHTML = '';
+  RANKS.forEach(function(r, idx){
+    var isCurrent = rankForXP(xp).name === r.name;
+    var nextMin = RANKS[idx+1] ? RANKS[idx+1].min : null;
+    var range = nextMin ? (r.min+' – '+(nextMin-1)+' XP') : (r.min+'+ XP');
+    var step = document.createElement('div');
+    step.className = 'rank-step'+(isCurrent?' current':'');
+    step.innerHTML = '<div class="badge" style="color:'+(isCurrent?'var(--gold)':'var(--dim)')+'"><i class="fa-solid '+r.icon+'"></i></div>'+
+      '<div class="info"><div class="name">'+r.name+'</div><div class="range">'+range+'</div></div>'+
+      (isCurrent? '<i class="fa-solid fa-circle-check" style="color:var(--gold)"></i>' : '');
+    ladder.appendChild(step);
+  });
+}
+
+/* ============== SETTINGS ============== */
+function renderSettings(){
+  document.getElementById('setQuitDate').value = store.settings.quitDate;
+  document.getElementById('setCost').value = store.settings.costPerDay;
+}
+document.getElementById('setQuitDate').addEventListener('change', function(e){
+  store.settings.quitDate = e.target.value;
+  saveStore(); renderHeader();
+});
+document.getElementById('setCost').addEventListener('input', function(e){
+  store.settings.costPerDay = parseFloat(e.target.value) || 0;
+  saveStore(); renderHeader();
+});
+document.getElementById('resetAllBtn').addEventListener('click', function(){
+  if(confirm('This will permanently erase all Vapeless data on this device. Continue?')){
+    try{ localStorage.removeItem(STORE_KEY); }catch(e){}
+    store = loadStore();
+    renderAll();
+    toast('All data has been reset');
+  }
+});
+
+/* ============== EMERGENCY MODAL ============== */
+var overlay = document.getElementById('modalOverlay');
+var actionList = document.getElementById('actionList');
+var doneActions = {};
+function renderActions(){
+  actionList.innerHTML = '';
+  EMERGENCY_ACTIONS.forEach(function(a, idx){
+    var item = document.createElement('div');
+    item.className = 'action-item'+(doneActions[idx]?' done':'');
+    item.innerHTML = '<div class="num">'+(idx+1)+'</div><div>'+a+'</div>';
+    item.addEventListener('click', function(){
+      doneActions[idx] = !doneActions[idx];
+      renderActions();
+    });
+    actionList.appendChild(item);
+  });
+}
+document.getElementById('emergencyBtn').addEventListener('click', function(){
+  doneActions = {};
+  renderActions();
+  overlay.classList.add('show');
+});
+document.getElementById('closeModal').addEventListener('click', function(){
+  overlay.classList.remove('show');
+  stopTimer();
+});
+overlay.addEventListener('click', function(e){ if(e.target === overlay){ overlay.classList.remove('show'); stopTimer(); } });
+
+var timerInterval = null;
+var timerSeconds = 900;
+function renderTimer(){
+  var m = Math.floor(timerSeconds/60), s = timerSeconds%60;
+  document.getElementById('craveTimer').textContent = pad(m)+':'+pad(s);
+}
+function stopTimer(){ clearInterval(timerInterval); timerInterval = null; }
+document.getElementById('timerStart').addEventListener('click', function(){
+  if(timerInterval) return;
+  timerInterval = setInterval(function(){
+    timerSeconds--;
+    if(timerSeconds <= 0){ timerSeconds = 0; stopTimer(); toast('You made it through 15 minutes.'); }
+    renderTimer();
+  }, 1000);
+});
+document.getElementById('timerReset').addEventListener('click', function(){
+  stopTimer(); timerSeconds = 900; renderTimer();
+});
+renderTimer();
+
+/* ============== INIT ============== */
+function renderAll(){
+  renderHeader();
+  renderToday();
+  renderWeek();
+  renderTrack();
+  renderScore();
+  renderSettings();
+}
+renderAll();
+
+})();
+</script>
+</body>
+</html>
