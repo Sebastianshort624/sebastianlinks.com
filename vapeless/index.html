@@ -117,9 +117,14 @@ main{padding-top:16px;}
 .review-item select.mini option{color:#000000;background:#ffffff;}
 
 /* liquids */
-.liquid-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
-.liquid-btn{background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.2);color:var(--text);border-radius:11px;padding:10px 4px;font-size:11px;text-align:center;display:flex;flex-direction:column;gap:5px;align-items:center;}
-.liquid-btn i{color:var(--blue);font-size:15px;}
+.liquid-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+.liquid-row:last-child{border-bottom:none;}
+.liquid-row .ic{width:32px;height:32px;border-radius:9px;background:var(--blue-dim);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:13px;flex:none;}
+.liquid-row .lbl{flex:1;font-size:13px;}
+.liquid-row .stepper{display:flex;align-items:center;gap:8px;}
+.liquid-row .stepper button{width:28px;height:28px;border-radius:8px;border:1px solid var(--glass-brd);background:rgba(255,255,255,0.05);color:var(--text);font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+.liquid-row .stepper button:disabled{opacity:0.3;}
+.liquid-row .stepper .qty{font-family:var(--disp);font-weight:700;font-size:13px;min-width:38px;text-align:center;}
 .progress-track{height:9px;border-radius:6px;background:rgba(255,255,255,0.07);overflow:hidden;margin-top:6px;}
 .progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--green));border-radius:6px;transition:width .4s;}
 .progress-label{display:flex;justify-content:space-between;font-size:11px;color:var(--dim);margin-top:5px;}
@@ -193,6 +198,10 @@ label.prompt{font-size:11.5px;color:var(--dim);text-transform:uppercase;letter-s
 .toast{position:fixed;top:16px;left:50%;transform:translateX(-50%) translateY(-20px);background:#10221d;border:1px solid rgba(52,211,153,0.4);color:var(--green);padding:10px 18px;border-radius:30px;font-size:12.5px;font-weight:600;z-index:200;opacity:0;transition:all .25s;pointer-events:none;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
+.save-status{display:flex;align-items:center;gap:6px;justify-content:center;font-size:10.5px;color:var(--dim);margin:2px 0 10px;transition:color .3s;}
+.save-status i{color:var(--green);font-size:10px;}
+.save-status.flash{color:var(--green);}
+
 .section-gap{height:6px;}
 ::-webkit-scrollbar{display:none;}
 
@@ -234,6 +243,8 @@ label.prompt{font-size:11.5px;color:var(--dim);text-transform:uppercase;letter-s
       <div class="stat-card"><i class="fa-solid fa-bolt" style="color:var(--gold)"></i><div class="num" id="statScorePct">0%</div><div class="lbl">Today's Score</div></div>
     </div>
   </header>
+
+  <div class="save-status" id="saveStatus"><i class="fa-solid fa-check"></i><span id="saveStatusText">Saved to this device</span></div>
 
   <main>
     <!-- TODAY -->
@@ -286,7 +297,7 @@ label.prompt{font-size:11.5px;color:var(--dim);text-transform:uppercase;letter-s
 
       <div class="card">
         <div class="card-head"><h3><i class="fa-solid fa-glass-water" style="color:var(--blue)"></i> Liquid Tracker</h3></div>
-        <div class="liquid-grid" id="liquidGrid"></div>
+        <div id="liquidGrid"></div>
         <div class="progress-track"><div class="progress-fill" id="waterFill" style="width:0%"></div></div>
         <div class="progress-label"><span id="waterNow">0oz</span><span>Goal: 120oz</span></div>
         <div class="section-gap"></div>
@@ -495,6 +506,22 @@ var store = loadStore();
 
 function saveStore(){
   try{ localStorage.setItem(STORE_KEY, JSON.stringify(store)); }catch(e){}
+  flashSaved();
+}
+
+var saveStatusText = document.getElementById('saveStatusText');
+var saveStatusEl = document.getElementById('saveStatus');
+var flashTimer = null;
+function flashSaved(){
+  var now = new Date();
+  var hh = pad(now.getHours()%12 || 12), mm = pad(now.getMinutes()), ss = pad(now.getSeconds());
+  saveStatusText.textContent = 'Saved · '+hh+':'+mm+':'+ss;
+  saveStatusEl.classList.add('flash');
+  clearTimeout(flashTimer);
+  flashTimer = setTimeout(function(){
+    saveStatusEl.classList.remove('flash');
+    saveStatusText.textContent = 'Saved to this device';
+  }, 1600);
 }
 
 /* ============== DATE HELPERS ============== */
@@ -606,12 +633,15 @@ function toast(msg){
 /* ============== TAB NAV ============== */
 var tabButtons = document.querySelectorAll('.tabbar button');
 var views = document.querySelectorAll('.view');
+var viewRenderers = { today: renderToday, week: renderWeek, track: renderTrack, score: renderScore, more: renderSettings };
 tabButtons.forEach(function(btn){
   btn.addEventListener('click', function(){
     tabButtons.forEach(function(b){ b.classList.remove('active'); });
     views.forEach(function(v){ v.classList.remove('active'); });
     btn.classList.add('active');
     document.getElementById('view-'+btn.dataset.view).classList.add('active');
+    renderHeader();
+    if(viewRenderers[btn.dataset.view]) viewRenderers[btn.dataset.view]();
   });
 });
 
@@ -762,6 +792,12 @@ function renderWeek(){
 
 /* ============== RENDER: TRACK ============== */
 function renderTrack(){
+  renderExercise();
+  renderLiquids();
+  renderNutrition();
+}
+
+function renderExercise(){
   var t = todayKey();
   var log = getLog(t);
   var now = new Date();
@@ -788,31 +824,59 @@ function renderTrack(){
       saveStore();
     });
   });
+}
 
-  var liqEl = document.getElementById('liquidGrid');
-  liqEl.innerHTML = '';
+function renderLiquids(){
+  var t = todayKey();
+  var log = getLog(t);
+  var el = document.getElementById('liquidGrid');
+  el.innerHTML = '';
   LIQUIDS.forEach(function(l){
-    var btn = document.createElement('button');
-    btn.className = 'liquid-btn';
-    btn.innerHTML = '<i class="fa-solid '+l.icon+'"></i><span>'+l.label+'</span><span style="color:var(--dim);font-size:10px;">'+log.liquids[l.key]+'oz</span>';
-    btn.addEventListener('click', function(){
-      log.liquids[l.key] += 8;
-      saveStore();
-      renderTrack(); renderHeader(); renderReview(log); renderScore();
-    });
-    liqEl.appendChild(btn);
+    var row = document.createElement('div');
+    row.className = 'liquid-row';
+    row.innerHTML =
+      '<div class="ic"><i class="fa-solid '+l.icon+'"></i></div>'+
+      '<div class="lbl">'+l.label+'</div>'+
+      '<div class="stepper">'+
+        '<button class="liq-minus" data-key="'+l.key+'" '+(log.liquids[l.key]<=0?'disabled':'')+'><i class="fa-solid fa-minus"></i></button>'+
+        '<div class="qty" id="liqval-'+l.key+'">'+log.liquids[l.key]+'oz</div>'+
+        '<button class="liq-plus" data-key="'+l.key+'"><i class="fa-solid fa-plus"></i></button>'+
+      '</div>';
+    el.appendChild(row);
   });
+  el.querySelectorAll('.liq-plus').forEach(function(btn){
+    btn.addEventListener('click', function(){ adjustLiquid(btn.dataset.key, 8); });
+  });
+  el.querySelectorAll('.liq-minus').forEach(function(btn){
+    btn.addEventListener('click', function(){ adjustLiquid(btn.dataset.key, -8); });
+  });
+  updateWaterBar();
+}
+
+function adjustLiquid(key, delta){
+  var log = getLog(todayKey());
+  log.liquids[key] = Math.max(0, log.liquids[key] + delta);
+  saveStore();
+  // update just this row's number + the minus button's disabled state, no full rebuild
+  var valEl = document.getElementById('liqval-'+key);
+  if(valEl) valEl.textContent = log.liquids[key]+'oz';
+  var minusBtn = document.querySelector('.liq-minus[data-key="'+key+'"]');
+  if(minusBtn) minusBtn.disabled = log.liquids[key] <= 0;
+  updateWaterBar();
+  renderHeader();
+  renderReview(log);
+}
+
+function updateWaterBar(){
+  var log = getLog(todayKey());
   var w = waterTotal(log);
   document.getElementById('waterFill').style.width = Math.min(100, (w/120*100))+'%';
   document.getElementById('waterNow').textContent = w+'oz';
+}
 
-  document.getElementById('resetLiquids').onclick = function(){
-    LIQUIDS.forEach(function(l){ log.liquids[l.key] = 0; });
-    saveStore();
-    renderTrack(); renderHeader(); renderReview(log); renderScore();
-    toast('Liquids reset for today');
-  };
-
+function renderNutrition(){
+  var t = todayKey();
+  var log = getLog(t);
   var nutEl = document.getElementById('nutritionChips');
   nutEl.innerHTML = '';
   NUTRITION_ITEMS.forEach(function(it){
@@ -822,7 +886,7 @@ function renderTrack(){
     chip.addEventListener('click', function(){
       log.nutrition[it.key] = !log.nutrition[it.key];
       saveStore();
-      renderTrack(); renderReview(log); renderHeader(); renderScore();
+      renderNutrition(); renderReview(log); renderHeader();
     });
     nutEl.appendChild(chip);
   });
@@ -888,6 +952,13 @@ function renderScore(){
 }
 
 /* ============== SETTINGS ============== */
+document.getElementById('resetLiquids').addEventListener('click', function(){
+  var log = getLog(todayKey());
+  LIQUIDS.forEach(function(l){ log.liquids[l.key] = 0; });
+  saveStore();
+  renderLiquids(); renderHeader(); renderReview(log);
+  toast('Liquids reset for today');
+});
 function renderSettings(){
   document.getElementById('setQuitDate').value = store.settings.quitDate;
   document.getElementById('setCost').value = store.settings.costPerDay;
