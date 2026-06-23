@@ -408,13 +408,13 @@ var JS_DAY_TO_KEY = ['sunday','monday','tuesday','wednesday','thursday','friday'
 
 var BLOCKS = [
   {key:'morning', label:'Morning Mission', time:'6AM – 10AM', icon:'fa-sun', color:'green',
-    options:['Nicotine Anonymous Meeting','Voices of Recovery Speaker','Porn Addicts Anonymous Meeting','Cocaine Anonymous Meeting','Prayer','Meditation','Scripture Study','Recovery Reading','Walk','Upper Body Workout']},
+    options:['Nicotine Anonymous Meeting','Voices of Recovery Speaker','Step Group A Meeting','Step Group B Meeting','Prayer','Meditation','Scripture Study','Recovery Reading','Walk','Upper Body Workout']},
   {key:'midday', label:'Midday Mission', time:'10AM – 2PM', icon:'fa-cloud-sun', color:'blue',
-    options:['Nicotine Anonymous Meeting','Porn Addicts Anonymous Meeting','Cocaine Anonymous Meeting','Voices of Recovery Speaker','Step Work','Sponsor Call','Meal Prep','Walk','Gratitude List']},
+    options:['Nicotine Anonymous Meeting','Step Group A Meeting','Step Group B Meeting','Voices of Recovery Speaker','Step Work','Sponsor Call','Meal Prep','Walk','Gratitude List']},
   {key:'afternoon', label:'Afternoon Mission', time:'2PM – 6PM', icon:'fa-cloud-sun-rain', color:'orange',
-    options:['Voices of Recovery Speaker','Lower Body Workout','Nicotine Anonymous Meeting','Porn Addicts Anonymous Meeting','Cocaine Anonymous Meeting','Service Work','Recovery Reading','Step Work']},
+    options:['Voices of Recovery Speaker','Lower Body Workout','Nicotine Anonymous Meeting','Step Group A Meeting','Step Group B Meeting','Service Work','Recovery Reading','Step Work']},
   {key:'evening', label:'Evening Mission', time:'6PM – 10PM', icon:'fa-moon', color:'purple',
-    options:['Nicotine Anonymous Meeting','Porn Addicts Anonymous Meeting','Cocaine Anonymous Meeting','Voices of Recovery Speaker','Prayer','Recovery Phone Call','Family Time','Gratitude List']}
+    options:['Nicotine Anonymous Meeting','Step Group A Meeting','Step Group B Meeting','Voices of Recovery Speaker','Prayer','Recovery Phone Call','Family Time','Gratitude List']}
 ];
 
 var TAPER_PLAN = {
@@ -504,6 +504,29 @@ function loadStore(){
 
 var store = loadStore();
 
+function migrateAnonymityCodes(){
+  var renameMap = {
+    'Porn Addicts Anonymous Meeting': 'Step Group A Meeting',
+    'Cocaine Anonymous Meeting': 'Step Group B Meeting'
+  };
+  var typeMap = { 'NA': 'NicA', 'PAA': 'Group A', 'CA': 'Group B' };
+  var changed = false;
+  DAY_ORDER.forEach(function(d){
+    var plan = store.weekPlan[d];
+    if(!plan) return;
+    Object.keys(plan).forEach(function(b){
+      if(renameMap[plan[b]]){ plan[b] = renameMap[plan[b]]; changed = true; }
+    });
+  });
+  Object.keys(store.logs).forEach(function(k){
+    var rv = store.logs[k].review;
+    if(rv && typeMap[rv.meetingType]){ rv.meetingType = typeMap[rv.meetingType]; changed = true; }
+  });
+  if(changed){
+    try{ localStorage.setItem(STORE_KEY, JSON.stringify(store)); }catch(e){}
+  }
+}
+
 function saveStore(){
   try{ localStorage.setItem(STORE_KEY, JSON.stringify(store)); }catch(e){}
   flashSaved();
@@ -545,7 +568,7 @@ function daysBetween(aKey, bKey){
 /* ============== LOG HELPERS ============== */
 function blankLog(){
   return {
-    review: {noVape:false, patchUsed:false, gumUsed:false, noNewVape:false, meeting:false, meetingType:'NA', speaker:false, workout:false, prayer:false, gratitude:false},
+    review: {noVape:false, patchUsed:false, gumUsed:false, noNewVape:false, meeting:false, meetingType:'NicA', speaker:false, workout:false, prayer:false, gratitude:false},
     liquids: {water:0,pineapple:0,grapefruit:0,coconut:0,lemonwater:0,peppermint:0,ginger:0,chamomile:0,protein:0},
     nutrition: {protein:false,fruit:false,veg:false,fat:false,supplements:false},
     exercise: {},
@@ -721,7 +744,7 @@ function renderReview(log){
     var typeSelect = '';
     if(it.hasType){
       typeSelect = '<select class="mini" data-typefor="'+it.key+'">'+
-        ['NA','PAA','CA'].map(function(o){ return '<option value="'+o+'" '+(log.review.meetingType===o?'selected':'')+'>'+o+'</option>'; }).join('')+
+        ['NicA','Group A','Group B'].map(function(o){ return '<option value="'+o+'" '+(log.review.meetingType===o?'selected':'')+'>'+o+'</option>'; }).join('')+
         '</select>';
     }
     row.innerHTML =
@@ -1037,6 +1060,7 @@ function renderAll(){
   renderScore();
   renderSettings();
 }
+migrateAnonymityCodes();
 renderAll();
 
 })();
