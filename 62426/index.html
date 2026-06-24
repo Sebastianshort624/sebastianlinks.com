@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Charlotte Adventure — Route 62426</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#11142B;
+    --night:#161B33;
+    --night-deep:#0D0F22;
+    --gold:#E8A33D;
+    --gold-soft:#F0C988;
+    --crimson:#C23B3B;
+    --teal:#2F6F6E;
+    --cream:#F6F1E7;
+    --line:rgba(246,241,231,0.18);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--night-deep);
+    color:var(--cream);
+    font-family:'Barlow Condensed', sans-serif;
+    line-height:1.5;
+  }
+  .wrap{max-width:920px;margin:0 auto;padding:0 24px 80px;}
+
+  /* HERO */
+  .hero{
+    background:
+      radial-gradient(ellipse at 20% -10%, rgba(232,163,61,0.18), transparent 55%),
+      linear-gradient(180deg, var(--night) 0%, var(--night-deep) 100%);
+    padding:72px 24px 56px;
+    text-align:center;
+    border-bottom:1px solid var(--line);
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image: radial-gradient(circle, rgba(246,241,231,0.35) 1px, transparent 1px);
+    background-size: 26px 26px;
+    opacity:0.10;
+    pointer-events:none;
+  }
+  .eyebrow{
+    font-family:'Barlow Condensed',sans-serif;
+    letter-spacing:0.32em;
+    text-transform:uppercase;
+    font-size:12.5px;
+    color:var(--gold-soft);
+    font-weight:600;
+    margin-bottom:18px;
+  }
+  h1{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:600;
+    font-size:clamp(44px,7vw,72px);
+    margin:0 0 10px;
+    color:var(--cream);
+    letter-spacing:0.01em;
+  }
+  .hero p.sub{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:20px;
+    color:#C9CCDE;
+    margin:0 auto;
+    max-width:560px;
+  }
+  .hero .date-badge{
+    display:inline-block;
+    margin-top:26px;
+    padding:8px 22px;
+    border:1px solid var(--gold);
+    border-radius:30px;
+    font-size:13px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--gold-soft);
+  }
+
+  /* TRANSIT LINE TIMELINE */
+  .section-label{
+    font-family:'Barlow Condensed',sans-serif;
+    text-transform:uppercase;
+    letter-spacing:0.28em;
+    font-size:12px;
+    color:var(--gold);
+    font-weight:700;
+    margin:64px 0 6px;
+  }
+  .section-title{
+    font-family:'Cormorant Garamond', serif;
+    font-size:32px;
+    font-weight:600;
+    color:var(--cream);
+    margin:0 0 28px;
+  }
+
+  .line{
+    position:relative;
+    margin-left:18px;
+    border-left:2px dashed rgba(232,163,61,0.45);
+    padding-left:34px;
+  }
+  .stop{
+    position:relative;
+    padding:0 0 30px;
+  }
+  .stop:last-child{padding-bottom:0;}
+  .stop::before{
+    content:"";
+    position:absolute;
+    left:-43px;
+    top:4px;
+    width:14px;height:14px;
+    border-radius:50%;
+    background:var(--night-deep);
+    border:2px solid var(--gold);
+  }
+  .stop.transit::before{
+    border-color:var(--teal);
+    background:var(--teal);
+  }
+  .stop-time{
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:700;
+    font-size:14px;
+    letter-spacing:0.06em;
+    color:var(--gold-soft);
+  }
+  .stop-time span.end{ color:#9FA3BD; font-weight:500; }
+  .stop-title{
+    font-family:'Cormorant Garamond', serif;
+    font-size:24px;
+    font-weight:600;
+    color:var(--cream);
+    margin:2px 0 4px;
+  }
+  .stop-addr{
+    font-size:14px;
+    color:#AEB2CC;
+  }
+  .stop-dur{
+    display:inline-block;
+    margin-top:6px;
+    font-size:12px;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:#8C90AE;
+  }
+  .transit-note{
+    font-size:13.5px;
+    color:#7E92A0;
+    font-style:italic;
+    font-family:'Cormorant Garamond', serif;
+  }
+
+  /* ACTIVITY CARDS */
+  .card{
+    background:linear-gradient(160deg, rgba(255,255,255,0.045), rgba(255,255,255,0.01));
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:30px 30px 28px;
+    margin-bottom:26px;
+    display:grid;
+    grid-template-columns:148px 1fr;
+    gap:26px;
+    align-items:center;
+  }
+  @media (max-width:560px){
+    .card{grid-template-columns:1fr; text-align:center;}
+    .art-frame{margin:0 auto;}
+  }
+  .art-frame{
+    width:148px;height:148px;
+    border-radius:50%;
+    background:radial-gradient(circle at 30% 25%, rgba(232,163,61,0.16), rgba(13,15,34,0.4));
+    border:1px solid rgba(232,163,61,0.35);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .art-frame svg{width:84px;height:84px;}
+  .card h3{
+    font-family:'Cormorant Garamond', serif;
+    font-size:27px;
+    font-weight:600;
+    margin:0 0 6px;
+    color:var(--cream);
+  }
+  .card .meta{
+    font-size:13.5px;
+    color:#A6AAC6;
+    margin-bottom:8px;
+  }
+  .card .meta b{color:var(--gold-soft); font-weight:600;}
+  .card p.desc{
+    font-family:'Cormorant Garamond', serif;
+    font-size:16.5px;
+    font-style:italic;
+    color:#C9CCDE;
+    margin:0;
+  }
+
+  /* TOTALS */
+  .totals{
+    margin-top:64px;
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:30px 34px;
+    background:rgba(255,255,255,0.025);
+  }
+  .totals h2{
+    font-family:'Cormorant Garamond', serif;
+    font-size:26px;
+    margin:0 0 18px;
+    color:var(--gold-soft);
+  }
+  .totals-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px 28px;
+  }
+  @media (max-width:560px){.totals-grid{grid-template-columns:1fr;}}
+  .total-row{
+    display:flex; justify-content:space-between;
+    font-size:15px; padding:8px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .total-row b{color:var(--cream); font-weight:600;}
+  .callout{
+    margin-top:22px;
+    padding:16px 18px;
+    border-left:3px solid var(--crimson);
+    background:rgba(194,59,59,0.08);
+    font-family:'Cormorant Garamond', serif;
+    font-size:15.5px;
+    font-style:italic;
+    color:#E9C2C2;
+  }
+
+  footer{
+    text-align:center;
+    margin-top:60px;
+    font-size:12px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:#5C6080;
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="eyebrow">Route 62426 · Queen City Crawl</div>
+  <h1>Charlotte Adventure</h1>
+  <p class="sub">A full day uptown — mystery, history, the high seas, and dessert.</p>
+  <div class="date-badge">10:15 AM → 12:05 AM</div>
+</div>
+
+<div class="wrap">
+
+  <div class="section-label">The Route</div>
+  <div class="section-title">Stop by Stop</div>
+
+  <div class="line">
+
+    <div class="stop">
+      <div class="stop-time">10:15 AM</div>
+      <div class="stop-title">🏠 Leave Home</div>
+      <div class="stop-addr">118 Silverlimb Ln, Taylors, SC</div>
+      <div class="transit-note">→ 30 min drive</div>
+    </div>
+
+    <div class="stop">
+      <div class="stop-time">10:45 <span class="end">– 10:50 AM</span></div>
+      <div class="stop-title">👧 Drop Off Ever</div>
+      <div class="stop-addr">115 Silverdale Dr, Spartanburg, SC</div>
+      <div class="stop-dur">5 min</div>
+      <div class="transit-note">→ 1 hr 25 min drive</div>
+    </div>
+
+    <div class="stop">
+      <div class="stop-time">12:15 <span class="end">– 1:00 PM</span></div>
+      <div class="stop-title">🙏 AA Noon Meeting</div>
+      <div class="stop-addr">200 W Trade St, Charlotte, NC 28202</div>
+      <div class="stop-dur">45 min</div>
+      <div class="transit-note">→ 15 min drive</div>
+    </div>
+
+    <div class="stop">
+      <div class="stop-time">1:15 <span class="end">– 1:20 PM</span></div>
+      <div class="stop-title">✈️ Joshua Airport Drop-Off</div>
+      <div class="stop-addr">Charlotte Douglas Airport</div>
+      <div class="stop-dur">5 min</div>
+      <div class="transit-note">→ 15 min drive</div>
+    </div>
+
+    <div class="stop">
+      <div class="stop-time">1:35 <span class="end">– 2:30 PM</span></div>
+      <div class="stop-title">🕵️ Queen City Murder Mystery Detective Game</div>
+      <div class="stop-addr">501 S College St, Charlotte, NC 28202</div>
+      <div class="stop-dur">55 min</div>
+      <div class="transit-note">→ 10 min drive</div>
+    </div>
+
+    <div class="stop">
+      <div class="stop-time">2:45 <span class="end">– 4:30 PM</span></div>
+      <div class="stop-title">🚌 Southern Charm Historical City Cart Tour</div>
+      <div class="stop-addr">224 E 7th St, Charlotte, NC 28202</div>
+      <div class="stop-dur">1 hr 45 min</div>
+      <div class="transit-note">→ 10 min drive</div>
+    </div>
+
+    <div class="stop">
+      <div class="stop-time">5:30 <span class="end">– 6:40 PM</span></div>
+      <div class="stop-title">🚢 Titanic: The Exhibition</div>
+      <div class="stop-addr">800 Briar Creek Rd, Charlotte, NC 28205</div>
+      <div class="stop-dur">1 hr 10 min</div>
+      <div class="transit-note">→ 20 min drive — tightest gap of the day</div>
+    </div>
+
+    <div class="stop">
+      <div class="stop-time">7:10 <span class="end">– 9:35 PM</span></div>
+      <div class="stop-title">🎬🍔 Dinner &amp; Movie — Disclosure Day</div>
+      <div class="stop-addr">9630 Monroe Rd, Charlotte, NC 28270 · Cinemark Bistro</div>
+      <div class="stop-dur">2 hr 25 min</div>
+      <div class="transit-note">→ 20 min drive</div>
+    </div>
+
+    <div class="stop">
+      <div class="stop-time">9:55 <span class="end">– 10:40 PM</span></div>
+      <div class="stop-title">🍰 Crave Dessert Bar</div>
+      <div class="stop-addr">500 W 5th St Suite 120, Charlotte, NC 28202</div>
+      <div class="stop-dur">45 min</div>
+      <div class="transit-note">→ 40 min drive</div>
+    </div>
+
+    <div class="stop">
+      <div class="stop-time">11:20 <span class="end">– 11:25 PM</span></div>
+      <div class="stop-title">👧 Pick Up Ever</div>
+      <div class="stop-addr">115 Silverdale Dr, Spartanburg, SC</div>
+      <div class="stop-dur">5 min</div>
+      <div class="transit-note">→ 40 min drive</div>
+    </div>
+
+    <div class="stop">
+      <div class="stop-time">12:05 AM</div>
+      <div class="stop-title">🏠 Home</div>
+      <div class="stop-addr">118 Silverlimb Ln, Taylors, SC</div>
+    </div>
+
+  </div>
+
+  <!-- ACTIVITY DETAIL CARDS -->
+  <div class="section-label">The Stops</div>
+  <div class="section-title">Activity Details</div>
+
+  <div class="card">
+    <div class="art-frame">
+      <svg viewBox="0 0 100 100" fill="none">
+        <circle cx="40" cy="40" r="22" stroke="#E8A33D" stroke-width="4"/>
+        <line x1="57" y1="57" x2="78" y2="78" stroke="#E8A33D" stroke-width="5" stroke-linecap="round"/>
+        <path d="M30 40 a10 10 0 0 1 20 0" stroke="#F6F1E7" stroke-width="2.5" opacity="0.6"/>
+      </svg>
+    </div>
+    <div>
+      <h3>Queen City Murder Mystery Detective Game</h3>
+      <div class="meta"><b>1:35 – 2:30 PM</b> · 501 S College St, Charlotte, NC 28202</div>
+      <p class="desc">An uptown walking case — follow the clues, crack the alibi, beat the clock.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="art-frame">
+      <svg viewBox="0 0 100 100" fill="none">
+        <rect x="18" y="42" width="64" height="22" rx="4" stroke="#E8A33D" stroke-width="4"/>
+        <rect x="28" y="30" width="44" height="14" rx="3" stroke="#E8A33D" stroke-width="4"/>
+        <circle cx="32" cy="68" r="6" fill="#F6F1E7"/>
+        <circle cx="68" cy="68" r="6" fill="#F6F1E7"/>
+        <line x1="18" y1="64" x2="82" y2="64" stroke="#2F6F6E" stroke-width="3"/>
+      </svg>
+    </div>
+    <div>
+      <h3>Southern Charm Historical City Cart Tour</h3>
+      <div class="meta"><b>2:45 – 4:30 PM</b> · 224 E 7th St, Charlotte, NC 28202</div>
+      <p class="desc">An open-air roll through Uptown's oldest blocks and newest skyline.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="art-frame">
+      <svg viewBox="0 0 100 100" fill="none">
+        <path d="M15 55 Q50 75 85 55 L78 70 Q50 82 22 70 Z" stroke="#E8A33D" stroke-width="4" stroke-linejoin="round"/>
+        <rect x="35" y="28" width="30" height="22" rx="2" stroke="#F6F1E7" stroke-width="3"/>
+        <line x1="40" y1="28" x2="40" y2="18" stroke="#F6F1E7" stroke-width="3"/>
+        <line x1="50" y1="28" x2="50" y2="18" stroke="#F6F1E7" stroke-width="3"/>
+        <line x1="60" y1="28" x2="60" y2="18" stroke="#F6F1E7" stroke-width="3"/>
+        <path d="M20 55 Q50 38 80 55" stroke="#2F6F6E" stroke-width="2.5" opacity="0.7"/>
+      </svg>
+    </div>
+    <div>
+      <h3>Titanic: The Exhibition</h3>
+      <div class="meta"><b>5:30 – 6:40 PM</b> · 800 Briar Creek Rd, Charlotte, NC 28205</div>
+      <p class="desc">Artifacts, recovered rooms, and the stories that went down with the ship.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="art-frame">
+      <svg viewBox="0 0 100 100" fill="none">
+        <rect x="16" y="24" width="68" height="46" rx="3" stroke="#E8A33D" stroke-width="4"/>
+        <polygon points="44,36 44,58 62,47" fill="#F6F1E7"/>
+        <path d="M30 78 q20 10 40 0" stroke="#2F6F6E" stroke-width="4" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div>
+      <h3>Dinner &amp; Movie — Disclosure Day</h3>
+      <div class="meta"><b>7:10 – 9:35 PM</b> · 9630 Monroe Rd, Charlotte, NC 28270 — Cinemark Bistro</div>
+      <p class="desc">Recliners, a full dinner menu, and the feature on the big screen.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="art-frame">
+      <svg viewBox="0 0 100 100" fill="none">
+        <path d="M30 70 V46 a20 20 0 0 1 40 0 V70 Z" stroke="#E8A33D" stroke-width="4" stroke-linejoin="round"/>
+        <line x1="22" y1="70" x2="78" y2="70" stroke="#F6F1E7" stroke-width="4" stroke-linecap="round"/>
+        <path d="M40 38 q5 -10 0 -16" stroke="#C23B3B" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="50" cy="56" r="4" fill="#F6F1E7"/>
+        <circle cx="60" cy="60" r="3" fill="#F6F1E7"/>
+      </svg>
+    </div>
+    <div>
+      <h3>Crave Dessert Bar</h3>
+      <div class="meta"><b>9:55 – 10:40 PM</b> · 500 W 5th St Suite 120, Charlotte, NC 28202</div>
+      <p class="desc">A late-night close to the day — small plates, sweet, shareable.</p>
+    </div>
+  </div>
+
+  <!-- TOTALS -->
+  <div class="totals">
+    <h2>Route Overview</h2>
+    <div class="totals-grid">
+      <div class="total-row"><span>🚗 Driving</span><b>~4 hr 45 min</b></div>
+      <div class="total-row"><span>🎟️ Activities &amp; Attractions</span><b>~5 hr 45 min</b></div>
+      <div class="total-row"><span>🍽️ Food &amp; Dessert</span><b>~3 hr 10 min</b></div>
+      <div class="total-row"><span>🏠 Away From Home</span><b>~13 hr 50 min</b></div>
+    </div>
+    <div class="callout">
+      The tightest connection is <b>Titanic (6:40 PM) → Cinemark Bistro (7:10 PM)</b> — about 30 minutes including travel and parking. Every other gap has a comfortable buffer. 🌙 Home around 12:05 AM.
+    </div>
+  </div>
+
+  <footer>Charlotte Adventure · Route 62426</footer>
+</div>
+
+</body>
+</html>
