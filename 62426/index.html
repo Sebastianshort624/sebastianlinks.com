@@ -8,21 +8,20 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#11142B;
-    --night:#161B33;
-    --night-deep:#0D0F22;
-    --gold:#E8A33D;
-    --gold-soft:#F0C988;
-    --crimson:#C23B3B;
-    --teal:#2F6F6E;
     --cream:#F6F1E7;
-    --line:rgba(246,241,231,0.18);
+    --cream-soft:#FBF8F1;
+    --navy:#1B2A4A;
+    --navy-soft:#3A4A6B;
+    --teal:#2F6F6E;
+    --fuchsia:#C2368C;
+    --fuchsia-soft:#E2A6CB;
+    --line:rgba(27,42,74,0.14);
   }
   *{box-sizing:border-box;}
   body{
     margin:0;
-    background:var(--night-deep);
-    color:var(--cream);
+    background:var(--cream);
+    color:var(--navy);
     font-family:'Barlow Condensed', sans-serif;
     line-height:1.5;
   }
@@ -30,89 +29,92 @@
 
   /* HERO */
   .hero{
-    background:
-      radial-gradient(ellipse at 20% -10%, rgba(232,163,61,0.18), transparent 55%),
-      linear-gradient(180deg, var(--night) 0%, var(--night-deep) 100%);
-    padding:72px 24px 56px;
-    text-align:center;
-    border-bottom:1px solid var(--line);
     position:relative;
+    padding:0;
+    border-bottom:4px solid var(--fuchsia);
     overflow:hidden;
   }
-  .hero::before{
-    content:"";
+  .hero-photo{
+    width:100%;
+    height:280px;
+    object-fit:cover;
+    display:block;
+    filter:saturate(0.9);
+  }
+  .hero-overlay{
     position:absolute; inset:0;
-    background-image: radial-gradient(circle, rgba(246,241,231,0.35) 1px, transparent 1px);
-    background-size: 26px 26px;
-    opacity:0.10;
-    pointer-events:none;
+    background:linear-gradient(180deg, rgba(27,42,74,0.25) 0%, rgba(27,42,74,0.78) 100%);
+  }
+  .hero-text{
+    position:absolute; bottom:0; left:0; right:0;
+    padding:28px 24px 26px;
+    text-align:center;
   }
   .eyebrow{
     font-family:'Barlow Condensed',sans-serif;
     letter-spacing:0.32em;
     text-transform:uppercase;
     font-size:12.5px;
-    color:var(--gold-soft);
-    font-weight:600;
-    margin-bottom:18px;
+    color:var(--fuchsia-soft);
+    font-weight:700;
+    margin-bottom:10px;
   }
   h1{
     font-family:'Cormorant Garamond', serif;
     font-weight:600;
-    font-size:clamp(44px,7vw,72px);
-    margin:0 0 10px;
-    color:var(--cream);
+    font-size:clamp(38px,6.5vw,60px);
+    margin:0 0 8px;
+    color:#FBF8F1;
     letter-spacing:0.01em;
   }
-  .hero p.sub{
+  .hero-text p.sub{
     font-family:'Cormorant Garamond', serif;
     font-style:italic;
-    font-size:20px;
-    color:#C9CCDE;
-    margin:0 auto;
+    font-size:18px;
+    color:#E7E2D4;
+    margin:0 auto 16px;
     max-width:560px;
   }
-  .hero .date-badge{
+  .date-badge{
     display:inline-block;
-    margin-top:26px;
-    padding:8px 22px;
-    border:1px solid var(--gold);
+    padding:7px 20px;
+    border:1px solid var(--fuchsia-soft);
     border-radius:30px;
     font-size:13px;
-    letter-spacing:0.18em;
+    letter-spacing:0.16em;
     text-transform:uppercase;
-    color:var(--gold-soft);
+    color:var(--cream-soft);
   }
 
-  /* TRANSIT LINE TIMELINE */
+  /* SECTION HEADERS */
   .section-label{
     font-family:'Barlow Condensed',sans-serif;
     text-transform:uppercase;
     letter-spacing:0.28em;
     font-size:12px;
-    color:var(--gold);
+    color:var(--fuchsia);
     font-weight:700;
-    margin:64px 0 6px;
+    margin:60px 0 6px;
   }
   .section-title{
     font-family:'Cormorant Garamond', serif;
-    font-size:32px;
+    font-size:30px;
     font-weight:600;
-    color:var(--cream);
-    margin:0 0 28px;
+    color:var(--navy);
+    margin:0 0 26px;
   }
 
+  /* TIMELINE */
   .line{
     position:relative;
     margin-left:18px;
-    border-left:2px dashed rgba(232,163,61,0.45);
+    border-left:2px dashed rgba(47,111,110,0.45);
     padding-left:34px;
   }
   .stop{
     position:relative;
-    padding:0 0 30px;
+    padding:0 0 18px;
   }
-  .stop:last-child{padding-bottom:0;}
   .stop::before{
     content:"";
     position:absolute;
@@ -120,31 +122,27 @@
     top:4px;
     width:14px;height:14px;
     border-radius:50%;
-    background:var(--night-deep);
-    border:2px solid var(--gold);
-  }
-  .stop.transit::before{
-    border-color:var(--teal);
-    background:var(--teal);
+    background:var(--cream);
+    border:2px solid var(--fuchsia);
   }
   .stop-time{
     font-family:'Barlow Condensed',sans-serif;
     font-weight:700;
     font-size:14px;
     letter-spacing:0.06em;
-    color:var(--gold-soft);
+    color:var(--fuchsia);
   }
-  .stop-time span.end{ color:#9FA3BD; font-weight:500; }
+  .stop-time span.end{ color:var(--navy-soft); font-weight:500; }
   .stop-title{
     font-family:'Cormorant Garamond', serif;
-    font-size:24px;
+    font-size:23px;
     font-weight:600;
-    color:var(--cream);
+    color:var(--navy);
     margin:2px 0 4px;
   }
   .stop-addr{
     font-size:14px;
-    color:#AEB2CC;
+    color:var(--navy-soft);
   }
   .stop-dur{
     display:inline-block;
@@ -152,74 +150,94 @@
     font-size:12px;
     letter-spacing:0.05em;
     text-transform:uppercase;
-    color:#8C90AE;
+    color:var(--teal);
+    font-weight:600;
   }
-  .transit-note{
-    font-size:13.5px;
-    color:#7E92A0;
-    font-style:italic;
+
+  /* mini route map caption */
+  .route-caption{
+    margin:14px 0 8px;
+    padding:10px 12px 12px;
+    background:var(--cream-soft);
+    border:1px solid var(--line);
+    border-radius:6px;
+    max-width:340px;
+  }
+  .route-caption iframe{
+    width:100%;
+    height:130px;
+    border:0;
+    border-radius:4px;
+    display:block;
+    margin-bottom:6px;
+  }
+  .route-caption .route-label{
     font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:13.5px;
+    color:var(--teal);
+    text-align:center;
   }
 
   /* ACTIVITY CARDS */
   .card{
-    background:linear-gradient(160deg, rgba(255,255,255,0.045), rgba(255,255,255,0.01));
+    background:var(--cream-soft);
     border:1px solid var(--line);
-    border-radius:4px;
-    padding:30px 30px 28px;
-    margin-bottom:26px;
-    display:grid;
-    grid-template-columns:148px 1fr;
-    gap:26px;
-    align-items:center;
+    border-radius:6px;
+    padding:0;
+    margin-bottom:30px;
+    overflow:hidden;
+    box-shadow:0 1px 3px rgba(27,42,74,0.06);
   }
-  @media (max-width:560px){
-    .card{grid-template-columns:1fr; text-align:center;}
-    .art-frame{margin:0 auto;}
+  .card img.photo{
+    width:100%;
+    height:220px;
+    object-fit:cover;
+    display:block;
+    border-bottom:3px solid var(--teal);
   }
-  .art-frame{
-    width:148px;height:148px;
-    border-radius:50%;
-    background:radial-gradient(circle at 30% 25%, rgba(232,163,61,0.16), rgba(13,15,34,0.4));
-    border:1px solid rgba(232,163,61,0.35);
-    display:flex;align-items:center;justify-content:center;
-    flex-shrink:0;
-  }
-  .art-frame svg{width:84px;height:84px;}
+  .card .card-body{ padding:22px 26px 24px; }
   .card h3{
     font-family:'Cormorant Garamond', serif;
     font-size:27px;
     font-weight:600;
     margin:0 0 6px;
-    color:var(--cream);
+    color:var(--navy);
   }
   .card .meta{
     font-size:13.5px;
-    color:#A6AAC6;
+    color:var(--navy-soft);
     margin-bottom:8px;
   }
-  .card .meta b{color:var(--gold-soft); font-weight:600;}
+  .card .meta b{color:var(--fuchsia); font-weight:600;}
   .card p.desc{
     font-family:'Cormorant Garamond', serif;
     font-size:16.5px;
     font-style:italic;
-    color:#C9CCDE;
+    color:var(--navy-soft);
     margin:0;
+  }
+  .photo-credit{
+    font-size:10.5px;
+    text-align:right;
+    color:#9A9685;
+    padding:3px 10px 0;
+    font-style:italic;
   }
 
   /* TOTALS */
   .totals{
-    margin-top:64px;
+    margin-top:60px;
     border:1px solid var(--line);
-    border-radius:4px;
-    padding:30px 34px;
-    background:rgba(255,255,255,0.025);
+    border-radius:6px;
+    padding:28px 32px;
+    background:var(--cream-soft);
   }
   .totals h2{
     font-family:'Cormorant Garamond', serif;
-    font-size:26px;
+    font-size:25px;
     margin:0 0 18px;
-    color:var(--gold-soft);
+    color:var(--teal);
   }
   .totals-grid{
     display:grid;
@@ -232,35 +250,39 @@
     font-size:15px; padding:8px 0;
     border-bottom:1px solid var(--line);
   }
-  .total-row b{color:var(--cream); font-weight:600;}
+  .total-row b{color:var(--navy); font-weight:600;}
   .callout{
-    margin-top:22px;
-    padding:16px 18px;
-    border-left:3px solid var(--crimson);
-    background:rgba(194,59,59,0.08);
+    margin-top:20px;
+    padding:14px 18px;
+    border-left:3px solid var(--fuchsia);
+    background:rgba(194,54,140,0.06);
     font-family:'Cormorant Garamond', serif;
     font-size:15.5px;
     font-style:italic;
-    color:#E9C2C2;
+    color:var(--navy);
   }
 
   footer{
     text-align:center;
-    margin-top:60px;
+    margin-top:54px;
     font-size:12px;
     letter-spacing:0.18em;
     text-transform:uppercase;
-    color:#5C6080;
+    color:var(--navy-soft);
   }
 </style>
 </head>
 <body>
 
 <div class="hero">
-  <div class="eyebrow">Route 62426 · Queen City Crawl</div>
-  <h1>Charlotte Adventure</h1>
-  <p class="sub">A full day uptown — mystery, history, the high seas, and dessert.</p>
-  <div class="date-badge">10:15 AM → 12:05 AM</div>
+  <img class="hero-photo" src="https://commons.wikimedia.org/wiki/Special:FilePath/Skyline_of_Charlotte,_North_Carolina_(fall_2007).jpg?width=1400" alt="Charlotte, North Carolina skyline">
+  <div class="hero-overlay"></div>
+  <div class="hero-text">
+    <div class="eyebrow">Route 62426 · Queen City Crawl</div>
+    <h1>Charlotte Adventure</h1>
+    <p class="sub">A full day uptown — mystery, history, the high seas, and dessert.</p>
+    <div class="date-badge">10:15 AM → 12:05 AM</div>
+  </div>
 </div>
 
 <div class="wrap">
@@ -274,7 +296,10 @@
       <div class="stop-time">10:15 AM</div>
       <div class="stop-title">🏠 Leave Home</div>
       <div class="stop-addr">118 Silverlimb Ln, Taylors, SC</div>
-      <div class="transit-note">→ 30 min drive</div>
+      <div class="route-caption">
+        <iframe loading="lazy" src="https://maps.google.com/maps?saddr=118+Silverlimb+Ln,+Taylors,+SC&daddr=115+Silverdale+Dr,+Spartanburg,+SC&output=embed"></iframe>
+        <div class="route-label">→ Taylors to Spartanburg · 30 min</div>
+      </div>
     </div>
 
     <div class="stop">
@@ -282,7 +307,10 @@
       <div class="stop-title">👧 Drop Off Ever</div>
       <div class="stop-addr">115 Silverdale Dr, Spartanburg, SC</div>
       <div class="stop-dur">5 min</div>
-      <div class="transit-note">→ 1 hr 25 min drive</div>
+      <div class="route-caption">
+        <iframe loading="lazy" src="https://maps.google.com/maps?saddr=115+Silverdale+Dr,+Spartanburg,+SC&daddr=200+W+Trade+St,+Charlotte,+NC+28202&output=embed"></iframe>
+        <div class="route-label">→ Spartanburg to Uptown Charlotte · 1 hr 25 min</div>
+      </div>
     </div>
 
     <div class="stop">
@@ -290,7 +318,10 @@
       <div class="stop-title">🙏 AA Noon Meeting</div>
       <div class="stop-addr">200 W Trade St, Charlotte, NC 28202</div>
       <div class="stop-dur">45 min</div>
-      <div class="transit-note">→ 15 min drive</div>
+      <div class="route-caption">
+        <iframe loading="lazy" src="https://maps.google.com/maps?saddr=200+W+Trade+St,+Charlotte,+NC+28202&daddr=Charlotte+Douglas+International+Airport&output=embed"></iframe>
+        <div class="route-label">→ To Charlotte Douglas Airport · 15 min</div>
+      </div>
     </div>
 
     <div class="stop">
@@ -298,7 +329,10 @@
       <div class="stop-title">✈️ Joshua Airport Drop-Off</div>
       <div class="stop-addr">Charlotte Douglas Airport</div>
       <div class="stop-dur">5 min</div>
-      <div class="transit-note">→ 15 min drive</div>
+      <div class="route-caption">
+        <iframe loading="lazy" src="https://maps.google.com/maps?saddr=Charlotte+Douglas+International+Airport&daddr=501+S+College+St,+Charlotte,+NC+28202&output=embed"></iframe>
+        <div class="route-label">→ Back uptown to S College St · 15 min</div>
+      </div>
     </div>
 
     <div class="stop">
@@ -306,7 +340,10 @@
       <div class="stop-title">🕵️ Queen City Murder Mystery Detective Game</div>
       <div class="stop-addr">501 S College St, Charlotte, NC 28202</div>
       <div class="stop-dur">55 min</div>
-      <div class="transit-note">→ 10 min drive</div>
+      <div class="route-caption">
+        <iframe loading="lazy" src="https://maps.google.com/maps?saddr=501+S+College+St,+Charlotte,+NC+28202&daddr=224+E+7th+St,+Charlotte,+NC+28202&output=embed"></iframe>
+        <div class="route-label">→ To E 7th St · 10 min</div>
+      </div>
     </div>
 
     <div class="stop">
@@ -314,7 +351,10 @@
       <div class="stop-title">🚌 Southern Charm Historical City Cart Tour</div>
       <div class="stop-addr">224 E 7th St, Charlotte, NC 28202</div>
       <div class="stop-dur">1 hr 45 min</div>
-      <div class="transit-note">→ 10 min drive</div>
+      <div class="route-caption">
+        <iframe loading="lazy" src="https://maps.google.com/maps?saddr=224+E+7th+St,+Charlotte,+NC+28202&daddr=800+Briar+Creek+Rd,+Charlotte,+NC+28205&output=embed"></iframe>
+        <div class="route-label">→ To Briar Creek Rd · 10 min</div>
+      </div>
     </div>
 
     <div class="stop">
@@ -322,7 +362,10 @@
       <div class="stop-title">🚢 Titanic: The Exhibition</div>
       <div class="stop-addr">800 Briar Creek Rd, Charlotte, NC 28205</div>
       <div class="stop-dur">1 hr 10 min</div>
-      <div class="transit-note">→ 20 min drive — tightest gap of the day</div>
+      <div class="route-caption">
+        <iframe loading="lazy" src="https://maps.google.com/maps?saddr=800+Briar+Creek+Rd,+Charlotte,+NC+28205&daddr=9630+Monroe+Rd,+Charlotte,+NC+28270&output=embed"></iframe>
+        <div class="route-label">→ To Monroe Rd · 20 min — tightest gap of the day</div>
+      </div>
     </div>
 
     <div class="stop">
@@ -330,7 +373,10 @@
       <div class="stop-title">🎬🍔 Dinner &amp; Movie — Disclosure Day</div>
       <div class="stop-addr">9630 Monroe Rd, Charlotte, NC 28270 · Cinemark Bistro</div>
       <div class="stop-dur">2 hr 25 min</div>
-      <div class="transit-note">→ 20 min drive</div>
+      <div class="route-caption">
+        <iframe loading="lazy" src="https://maps.google.com/maps?saddr=9630+Monroe+Rd,+Charlotte,+NC+28270&daddr=500+W+5th+St,+Charlotte,+NC+28202&output=embed"></iframe>
+        <div class="route-label">→ To W 5th St · 20 min</div>
+      </div>
     </div>
 
     <div class="stop">
@@ -338,7 +384,10 @@
       <div class="stop-title">🍰 Crave Dessert Bar</div>
       <div class="stop-addr">500 W 5th St Suite 120, Charlotte, NC 28202</div>
       <div class="stop-dur">45 min</div>
-      <div class="transit-note">→ 40 min drive</div>
+      <div class="route-caption">
+        <iframe loading="lazy" src="https://maps.google.com/maps?saddr=500+W+5th+St,+Charlotte,+NC+28202&daddr=115+Silverdale+Dr,+Spartanburg,+SC&output=embed"></iframe>
+        <div class="route-label">→ Back to Spartanburg · 40 min</div>
+      </div>
     </div>
 
     <div class="stop">
@@ -346,7 +395,10 @@
       <div class="stop-title">👧 Pick Up Ever</div>
       <div class="stop-addr">115 Silverdale Dr, Spartanburg, SC</div>
       <div class="stop-dur">5 min</div>
-      <div class="transit-note">→ 40 min drive</div>
+      <div class="route-caption">
+        <iframe loading="lazy" src="https://maps.google.com/maps?saddr=115+Silverdale+Dr,+Spartanburg,+SC&daddr=118+Silverlimb+Ln,+Taylors,+SC&output=embed"></iframe>
+        <div class="route-label">→ Home to Taylors · 40 min</div>
+      </div>
     </div>
 
     <div class="stop">
@@ -362,14 +414,9 @@
   <div class="section-title">Activity Details</div>
 
   <div class="card">
-    <div class="art-frame">
-      <svg viewBox="0 0 100 100" fill="none">
-        <circle cx="40" cy="40" r="22" stroke="#E8A33D" stroke-width="4"/>
-        <line x1="57" y1="57" x2="78" y2="78" stroke="#E8A33D" stroke-width="5" stroke-linecap="round"/>
-        <path d="M30 40 a10 10 0 0 1 20 0" stroke="#F6F1E7" stroke-width="2.5" opacity="0.6"/>
-      </svg>
-    </div>
-    <div>
+    <img class="photo" src="https://commons.wikimedia.org/wiki/Special:FilePath/Classic_pose_with_a_magnifying_glass_-_model_Gwyneth_Ellis.jpg?width=900" alt="Detective with magnifying glass">
+    <div class="photo-credit">Photo: Wikimedia Commons</div>
+    <div class="card-body">
       <h3>Queen City Murder Mystery Detective Game</h3>
       <div class="meta"><b>1:35 – 2:30 PM</b> · 501 S College St, Charlotte, NC 28202</div>
       <p class="desc">An uptown walking case — follow the clues, crack the alibi, beat the clock.</p>
@@ -377,16 +424,9 @@
   </div>
 
   <div class="card">
-    <div class="art-frame">
-      <svg viewBox="0 0 100 100" fill="none">
-        <rect x="18" y="42" width="64" height="22" rx="4" stroke="#E8A33D" stroke-width="4"/>
-        <rect x="28" y="30" width="44" height="14" rx="3" stroke="#E8A33D" stroke-width="4"/>
-        <circle cx="32" cy="68" r="6" fill="#F6F1E7"/>
-        <circle cx="68" cy="68" r="6" fill="#F6F1E7"/>
-        <line x1="18" y1="64" x2="82" y2="64" stroke="#2F6F6E" stroke-width="3"/>
-      </svg>
-    </div>
-    <div>
+    <img class="photo" src="https://commons.wikimedia.org/wiki/Special:FilePath/Astoria_Riverfront_Trolley_-_Old_300_at_12th_Street.jpg?width=900" alt="Vintage heritage trolley car">
+    <div class="photo-credit">Photo: Wikimedia Commons</div>
+    <div class="card-body">
       <h3>Southern Charm Historical City Cart Tour</h3>
       <div class="meta"><b>2:45 – 4:30 PM</b> · 224 E 7th St, Charlotte, NC 28202</div>
       <p class="desc">An open-air roll through Uptown's oldest blocks and newest skyline.</p>
@@ -394,17 +434,9 @@
   </div>
 
   <div class="card">
-    <div class="art-frame">
-      <svg viewBox="0 0 100 100" fill="none">
-        <path d="M15 55 Q50 75 85 55 L78 70 Q50 82 22 70 Z" stroke="#E8A33D" stroke-width="4" stroke-linejoin="round"/>
-        <rect x="35" y="28" width="30" height="22" rx="2" stroke="#F6F1E7" stroke-width="3"/>
-        <line x1="40" y1="28" x2="40" y2="18" stroke="#F6F1E7" stroke-width="3"/>
-        <line x1="50" y1="28" x2="50" y2="18" stroke="#F6F1E7" stroke-width="3"/>
-        <line x1="60" y1="28" x2="60" y2="18" stroke="#F6F1E7" stroke-width="3"/>
-        <path d="M20 55 Q50 38 80 55" stroke="#2F6F6E" stroke-width="2.5" opacity="0.7"/>
-      </svg>
-    </div>
-    <div>
+    <img class="photo" src="https://commons.wikimedia.org/wiki/Special:FilePath/RMS_Titanic_in_Southampton,_April_9th_of_1912.jpg?width=900" alt="RMS Titanic in Southampton, 1912">
+    <div class="photo-credit">Photo: Wikimedia Commons</div>
+    <div class="card-body">
       <h3>Titanic: The Exhibition</h3>
       <div class="meta"><b>5:30 – 6:40 PM</b> · 800 Briar Creek Rd, Charlotte, NC 28205</div>
       <p class="desc">Artifacts, recovered rooms, and the stories that went down with the ship.</p>
@@ -412,14 +444,9 @@
   </div>
 
   <div class="card">
-    <div class="art-frame">
-      <svg viewBox="0 0 100 100" fill="none">
-        <rect x="16" y="24" width="68" height="46" rx="3" stroke="#E8A33D" stroke-width="4"/>
-        <polygon points="44,36 44,58 62,47" fill="#F6F1E7"/>
-        <path d="M30 78 q20 10 40 0" stroke="#2F6F6E" stroke-width="4" stroke-linecap="round"/>
-      </svg>
-    </div>
-    <div>
+    <img class="photo" src="https://commons.wikimedia.org/wiki/Special:FilePath/Popcorn_in_cinema_IMG_7715.jpg?width=900" alt="Popcorn in a movie theater">
+    <div class="photo-credit">Photo: Wikimedia Commons</div>
+    <div class="card-body">
       <h3>Dinner &amp; Movie — Disclosure Day</h3>
       <div class="meta"><b>7:10 – 9:35 PM</b> · 9630 Monroe Rd, Charlotte, NC 28270 — Cinemark Bistro</div>
       <p class="desc">Recliners, a full dinner menu, and the feature on the big screen.</p>
@@ -427,16 +454,9 @@
   </div>
 
   <div class="card">
-    <div class="art-frame">
-      <svg viewBox="0 0 100 100" fill="none">
-        <path d="M30 70 V46 a20 20 0 0 1 40 0 V70 Z" stroke="#E8A33D" stroke-width="4" stroke-linejoin="round"/>
-        <line x1="22" y1="70" x2="78" y2="70" stroke="#F6F1E7" stroke-width="4" stroke-linecap="round"/>
-        <path d="M40 38 q5 -10 0 -16" stroke="#C23B3B" stroke-width="3" stroke-linecap="round"/>
-        <circle cx="50" cy="56" r="4" fill="#F6F1E7"/>
-        <circle cx="60" cy="60" r="3" fill="#F6F1E7"/>
-      </svg>
-    </div>
-    <div>
+    <img class="photo" src="https://commons.wikimedia.org/wiki/Special:FilePath/Slice_of_chocolate_cloud_cake_at_Tous_les_Jours.jpg?width=900" alt="Slice of chocolate dessert cake">
+    <div class="photo-credit">Photo: Wikimedia Commons</div>
+    <div class="card-body">
       <h3>Crave Dessert Bar</h3>
       <div class="meta"><b>9:55 – 10:40 PM</b> · 500 W 5th St Suite 120, Charlotte, NC 28202</div>
       <p class="desc">A late-night close to the day — small plates, sweet, shareable.</p>
