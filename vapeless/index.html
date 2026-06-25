@@ -264,6 +264,11 @@ body{padding-left:64px;}
   .tabbar{padding-left:54px;}
 }
 
+/* ---------- MEETING TYPE MULTI-SELECT PILLS ---------- */
+.type-pills{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;}
+.type-pill{font-size:10px;padding:4px 9px;border-radius:20px;border:1px solid var(--glass-brd);background:#ffffff;color:var(--dim);font-family:var(--disp);font-weight:700;text-transform:uppercase;letter-spacing:0.03em;cursor:pointer;}
+.type-pill.on{background:var(--navy);color:#ffffff;border-color:var(--navy);}
+
 /* ---------- PRINT REPORT ---------- */
 #printReport{display:none;}
 @media print{
@@ -761,7 +766,7 @@ function getBlockActivities(day, key){
 /* ============== LOG HELPERS ============== */
 function blankLog(){
   return {
-    review: {noVape:false, patchUsed:false, gumUsed:false, noNewVape:false, meeting:false, meetingType:'NicA', speaker:false, workout:false, prayer:false, gratitude:false},
+    review: {noVape:false, patchUsed:false, gumUsed:false, noNewVape:false, meeting:false, meetingTypes:[], speaker:false, workout:false, prayer:false, gratitude:false},
     liquids: {water:0,pineapple:0,grapefruit:0,coconut:0,lemonwater:0,peppermint:0,ginger:0,chamomile:0,protein:0},
     nutrition: {protein:false,fruit:false,veg:false,fat:false,supplements:false},
     exercise: {},
@@ -782,6 +787,9 @@ function getLog(dateKey){
     if(l[k] === undefined) l[k] = b[k];
   });
   Object.keys(b.review).forEach(function(k){ if(l.review[k] === undefined) l.review[k] = b.review[k]; });
+  if(!Array.isArray(l.review.meetingTypes)){
+    l.review.meetingTypes = l.review.meetingType ? [l.review.meetingType] : [];
+  }
   Object.keys(b.liquids).forEach(function(k){ if(l.liquids[k] === undefined) l.liquids[k] = 0; });
   Object.keys(b.nutrition).forEach(function(k){ if(l.nutrition[k] === undefined) l.nutrition[k] = false; });
   return l;
@@ -977,18 +985,22 @@ function renderReview(log){
   var el = document.getElementById('reviewList');
   el.innerHTML = '';
   computeAutoFields(log);
+  var MEETING_TYPE_OPTIONS = ['NicA','Group A','Group B','Group C'];
   REVIEW_ITEMS.forEach(function(it){
     var row = document.createElement('div');
     row.className = 'review-item'+(it.locked?' locked':'');
-    var typeSelect = '';
+    var typePills = '';
     if(it.hasType){
-      typeSelect = '<select class="mini" data-typefor="'+it.key+'">'+
-        ['NicA','Group A','Group B','Group C'].map(function(o){ return '<option value="'+o+'" '+(log.review.meetingType===o?'selected':'')+'>'+o+'</option>'; }).join('')+
-        '</select>';
+      typePills = '<div class="type-pills">'+
+        MEETING_TYPE_OPTIONS.map(function(o){
+          var isOn = log.review.meetingTypes.indexOf(o) > -1;
+          return '<button type="button" class="type-pill'+(isOn?' on':'')+'" data-typefor="'+it.key+'" data-type="'+o+'">'+o+'</button>';
+        }).join('')+
+      '</div>';
     }
     row.innerHTML =
       '<button class="chk '+(log.review[it.key]?'on':'')+'" data-key="'+it.key+'" '+(it.locked?'disabled':'')+'><i class="fa-solid fa-check"></i></button>'+
-      '<div class="txt">'+it.label+typeSelect+'</div>'+
+      '<div class="txt">'+it.label+typePills+'</div>'+
       '<div class="pts">+'+it.pts+'</div>';
     el.appendChild(row);
   });
@@ -1004,8 +1016,16 @@ function renderReview(log){
       renderReview(log); renderHeader(); renderScore();
     });
   });
-  el.querySelectorAll('select[data-typefor]').forEach(function(sel){
-    sel.addEventListener('change', function(){ log.review.meetingType = sel.value; saveStore(); });
+  el.querySelectorAll('.type-pill').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var type = btn.dataset.type;
+      var idx = log.review.meetingTypes.indexOf(type);
+      if(idx > -1) log.review.meetingTypes.splice(idx, 1);
+      else log.review.meetingTypes.push(type);
+      if(log.review.meetingTypes.length > 0) log.review.meeting = true;
+      saveStore();
+      renderReview(log); renderHeader(); renderScore();
+    });
   });
 }
 
