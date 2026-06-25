@@ -269,6 +269,29 @@ body{padding-left:64px;}
 .type-pill{font-size:10px;padding:4px 9px;border-radius:20px;border:1px solid var(--glass-brd);background:#ffffff;color:var(--dim);font-family:var(--disp);font-weight:700;text-transform:uppercase;letter-spacing:0.03em;cursor:pointer;}
 .type-pill.on{background:var(--navy);color:#ffffff;border-color:var(--navy);}
 
+/* ---------- EXERCISE LIBRARY ---------- */
+.exlib-note{font-size:11px;color:var(--dim);line-height:1.5;margin-bottom:10px;}
+.exlib details{border:1px solid var(--glass-brd);border-radius:10px;margin-bottom:8px;overflow:hidden;}
+.exlib summary{list-style:none;cursor:pointer;padding:11px 12px;display:flex;align-items:center;gap:8px;font-family:var(--disp);font-weight:700;font-size:13px;color:#ffffff;background:var(--navy);}
+.exlib summary::-webkit-details-marker{display:none;}
+.exlib summary .chev{margin-left:auto;transition:transform .2s;}
+.exlib details[open] > summary .chev{transform:rotate(90deg);}
+.exlib .sec-body{padding:10px 12px;}
+.exlib .cat-block{border:1px solid var(--glass-brd);border-radius:9px;margin-bottom:8px;overflow:hidden;}
+.exlib .cat-block:last-child{margin-bottom:0;}
+.exlib .cat-block summary{background:var(--navy-soft);color:var(--navy);font-size:12px;padding:9px 11px;}
+.exlib .cat-items{padding:4px 11px 6px;}
+.ex-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid rgba(12,31,77,0.06);}
+.ex-item:last-child{border-bottom:none;}
+.ex-item .ex-sketch{flex:none;width:42px;height:42px;}
+.ex-item .ex-sketch svg{width:100%;height:100%;}
+.ex-item .ex-body{flex:1;min-width:0;}
+.ex-item .ex-name{font-weight:700;font-size:12.5px;color:var(--text);display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.ex-item .ex-desc{font-size:11.5px;color:var(--dim);margin-top:2px;line-height:1.45;}
+.core8-badge{font-size:7.5px;background:var(--gold);color:#fff;padding:2px 6px;border-radius:10px;text-transform:uppercase;font-weight:700;letter-spacing:0.03em;}
+.core8-callout{background:var(--navy-soft);border-radius:11px;padding:11px 12px;margin-bottom:12px;font-size:12px;color:var(--text);line-height:1.5;}
+.core8-callout b{color:var(--navy);}
+
 /* ---------- PRINT REPORT ---------- */
 #printReport{display:none;}
 @media print{
@@ -386,6 +409,13 @@ body{padding-left:64px;}
       <div class="card">
         <div class="card-head"><h3><i class="fa-solid fa-dumbbell" style="color:var(--orange)"></i> Exercise Log</h3><span class="tag" id="exDayTag"></span></div>
         <div id="exerciseList"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3><i class="fa-solid fa-book-open" style="color:var(--orange)"></i> Exercise Library</h3></div>
+        <div class="exlib-note">One heavy dumbbell + bodyweight covers every major muscle group. Tap a section, then a category, to see exercises and how to do them.</div>
+        <div class="core8-callout"><b>If you only do 8 exercises:</b> Goblet squat, Romanian deadlift, Bulgarian split squat, Single-arm row, Floor press, Overhead press, Farmer carry, Turkish get-up — these 8 cover almost every muscle in your body. Look for the gold "Core 8" tag and sketch on each below.</div>
+        <div class="exlib" id="exerciseLibrary"></div>
       </div>
 
       <div class="card">
@@ -590,6 +620,137 @@ var TAPER_PLAN = {
 
 var EXERCISES_ODD = ['Pushups','Military Press','Curls','Triceps','Situps'];
 var EXERCISES_EVEN = ['Squats','Lunges','Calf Raises','Situps','Walking'];
+
+/* ============== EXERCISE LIBRARY (one dumbbell + bodyweight) ============== */
+var EX_SKETCHES = {
+  goblet: '<svg viewBox="0 0 40 40" fill="none" stroke="#0c1f4d" stroke-width="2.4" stroke-linecap="round"><circle cx="20" cy="7" r="3"/><line x1="20" y1="10" x2="20" y2="21"/><line x1="20" y1="21" x2="13" y2="31"/><line x1="13" y1="31" x2="13" y2="37"/><line x1="20" y1="21" x2="27" y2="31"/><line x1="27" y1="31" x2="27" y2="37"/><line x1="20" y1="14" x2="15" y2="18"/><line x1="20" y1="14" x2="25" y2="18"/><rect x="15" y="16" width="10" height="5" rx="1" fill="#0c1f4d" stroke="none"/></svg>',
+  rdl: '<svg viewBox="0 0 40 40" fill="none" stroke="#0c1f4d" stroke-width="2.4" stroke-linecap="round"><circle cx="13" cy="8" r="3"/><line x1="14" y1="11" x2="25" y2="23"/><line x1="25" y1="23" x2="23" y2="37"/><line x1="16" y1="13" x2="11" y2="29"/><rect x="8" y="28" width="7" height="4" rx="1" fill="#0c1f4d" stroke="none"/></svg>',
+  bulgarian: '<svg viewBox="0 0 40 40" fill="none" stroke="#0c1f4d" stroke-width="2.4" stroke-linecap="round"><circle cx="16" cy="7" r="3"/><line x1="16" y1="10" x2="16" y2="21"/><line x1="16" y1="21" x2="11" y2="30"/><line x1="11" y1="30" x2="11" y2="37"/><line x1="16" y1="21" x2="24" y2="27"/><line x1="24" y1="27" x2="30" y2="22"/><rect x="29" y="21" width="7" height="3" fill="#0c1f4d" stroke="none"/><line x1="16" y1="14" x2="10" y2="18"/><line x1="16" y1="14" x2="22" y2="18"/></svg>',
+  row: '<svg viewBox="0 0 40 40" fill="none" stroke="#0c1f4d" stroke-width="2.4" stroke-linecap="round"><circle cx="14" cy="9" r="3"/><line x1="14" y1="12" x2="24" y2="22"/><line x1="24" y1="22" x2="22" y2="37"/><line x1="16" y1="14" x2="12" y2="26"/><rect x="9" y="25" width="7" height="4" rx="1" fill="#0c1f4d" stroke="none"/><line x1="18" y1="16" x2="24" y2="20"/><rect x="22" y="30" width="14" height="2" fill="#0c1f4d" stroke="none"/></svg>',
+  floorpress: '<svg viewBox="0 0 40 40" fill="none" stroke="#0c1f4d" stroke-width="2.4" stroke-linecap="round"><line x1="6" y1="30" x2="30" y2="30"/><circle cx="33" cy="30" r="3"/><line x1="20" y1="30" x2="20" y2="14"/><rect x="16" y="9" width="9" height="5" rx="1" fill="#0c1f4d" stroke="none"/></svg>',
+  ohp: '<svg viewBox="0 0 40 40" fill="none" stroke="#0c1f4d" stroke-width="2.4" stroke-linecap="round"><circle cx="20" cy="10" r="3"/><line x1="20" y1="13" x2="20" y2="27"/><line x1="20" y1="27" x2="15" y2="38"/><line x1="20" y1="27" x2="25" y2="38"/><line x1="20" y1="13" x2="20" y2="3"/><rect x="16" y="0" width="9" height="4" rx="1" fill="#0c1f4d" stroke="none"/></svg>',
+  carry: '<svg viewBox="0 0 40 40" fill="none" stroke="#0c1f4d" stroke-width="2.4" stroke-linecap="round"><circle cx="20" cy="8" r="3"/><line x1="20" y1="11" x2="20" y2="25"/><line x1="20" y1="25" x2="14" y2="38"/><line x1="20" y1="25" x2="27" y2="35"/><line x1="20" y1="13" x2="12" y2="28"/><line x1="20" y1="13" x2="28" y2="28"/><rect x="9" y="27" width="6" height="4" rx="1" fill="#0c1f4d" stroke="none"/><rect x="25" y="27" width="6" height="4" rx="1" fill="#0c1f4d" stroke="none"/></svg>',
+  getup: '<svg viewBox="0 0 40 40" fill="none" stroke="#0c1f4d" stroke-width="2.4" stroke-linecap="round"><circle cx="16" cy="10" r="3"/><line x1="16" y1="13" x2="20" y2="25"/><line x1="20" y1="25" x2="14" y2="37"/><line x1="20" y1="25" x2="28" y2="30"/><line x1="28" y1="30" x2="28" y2="38"/><line x1="17" y1="14" x2="22" y2="6"/><line x1="22" y1="6" x2="22" y2="2"/><rect x="18" y="0" width="8" height="4" rx="1" fill="#0c1f4d" stroke="none"/></svg>'
+};
+
+var EXERCISE_LIBRARY = [
+  { section:'Lower Body', icon:'fa-person-walking', categories:[
+    { name:'Legs &amp; Glutes', exercises:[
+      {n:'Goblet squat', d:'Hold the dumbbell vertically at chest height, squat down between your knees, drive up through your heels.', sk:'goblet', core:1},
+      {n:'Front squat (one-sided/racked)', d:'Rack the dumbbell against one shoulder, squat keeping your torso upright, alternate sides each set.'},
+      {n:'Sumo squat', d:'Wide stance with toes out, hold the dumbbell between your legs, squat down and stand tall.'},
+      {n:'Split squat', d:'Feet staggered front-to-back, lower straight down, drive back up through the front heel.'},
+      {n:'Bulgarian split squat', d:'Rear foot elevated on a bench, lower until your front thigh is parallel to the floor, push back up.', sk:'bulgarian', core:1},
+      {n:'Reverse lunge', d:'Step one foot back, lower the rear knee toward the floor, return to standing.'},
+      {n:'Forward lunge', d:'Step one foot forward, lower until both knees bend to 90°, push back to start.'},
+      {n:'Walking lunge', d:'Lunge forward continuously, alternating legs as you travel across the floor.'},
+      {n:'Lateral lunge', d:'Step one foot out to the side, sit your hips back and down, push back to center.'},
+      {n:'Curtsy lunge', d:'Step one leg diagonally behind the other, bend both knees, return to standing.'},
+      {n:'Step-up', d:'Step one foot onto a bench or box, drive up to standing, step back down with control.'},
+      {n:'Pistol squat (assisted or weighted)', d:'Balance on one leg, squat down low while extending the other leg out in front of you.'},
+      {n:'Romanian deadlift (RDL)', d:'Hinge at the hips with a slight knee bend, lower the dumbbell along your legs, squeeze your glutes to stand.', sk:'rdl', core:1},
+      {n:'Single-leg RDL', d:'Hinge on one leg, reach the dumbbell toward the floor while lifting the other leg behind you.'},
+      {n:'Dumbbell deadlift', d:'Stand over the dumbbell, hinge down, grip it and stand up by driving through your heels.'},
+      {n:'Sumo deadlift', d:'Wide stance, grip the dumbbell between your feet, stand up keeping your chest tall.'},
+      {n:'Goblet good morning', d:'Hold the dumbbell at your chest, hinge forward at the hips with a flat back, return to standing.'},
+      {n:'Hip thrust', d:'Shoulders on a bench, dumbbell over your hips, drive your hips up by squeezing your glutes.'},
+      {n:'Glute bridge', d:'Lie on your back, dumbbell on your hips, push through your heels to lift your hips up.'},
+      {n:'Single-leg glute bridge', d:'Same as the glute bridge, performed with one foot lifted off the floor.'},
+      {n:'Calf raises', d:'Hold dumbbells at your sides, rise onto your toes, lower slowly under control.'},
+      {n:'Weighted wall sit', d:'Back against a wall, knees at 90°, hold a dumbbell on your lap and hold the position.'}
+    ]}
+  ]},
+  { section:'Upper Body', icon:'fa-dumbbell', categories:[
+    { name:'Chest', exercises:[
+      {n:'Dumbbell floor press', d:'Lie on the floor, press the dumbbells up from chest level, lower with control.', sk:'floorpress', core:1},
+      {n:'Single-arm floor press', d:'Same as the floor press, working one arm at a time for added core stability.'},
+      {n:'Dumbbell pullover', d:'Lying on a bench, lower the dumbbell behind your head with straight arms, pull it back over your chest.'},
+      {n:'Push-up', d:'Hands under shoulders, lower your chest to the floor, push back up keeping your body straight.'},
+      {n:'Weighted push-up', d:'A standard push-up with a dumbbell placed across your upper back for added resistance.'},
+      {n:'Uneven push-up (one hand on dumbbell)', d:'One hand on a dumbbell, other on the floor, alternate sides between reps.'},
+      {n:'Close-grip push-up', d:'Hands close together under your chest, lower and press up to target triceps and inner chest.'}
+    ]},
+    { name:'Back', exercises:[
+      {n:'Single-arm row', d:'Hinge forward, pull the dumbbell to your hip while bracing your opposite hand on a bench.', sk:'row', core:1},
+      {n:'Three-point row', d:'Same as the single-arm row, with a supporting knee and hand on a bench for stability.'},
+      {n:'Bent-over row', d:'Hinge at the hips with both dumbbells hanging down, pull your elbows back and squeeze your shoulder blades.'},
+      {n:'Renegade row', d:'In a plank position with hands on dumbbells, row one dumbbell up while balancing on the other.'},
+      {n:'Loaded beast row', d:'From a bear-crawl position, row a single dumbbell up toward your ribs.'},
+      {n:'Dumbbell pullover', d:'Lying on a bench, lower the dumbbell behind your head, pull it back over your chest to work the lats.'},
+      {n:'Reverse fly', d:'Hinge forward, raise the dumbbells out to the sides, squeezing your shoulder blades together.'},
+      {n:'Shrugs', d:'Hold dumbbells at your sides, lift your shoulders straight up toward your ears, lower slowly.'},
+      {n:'Farmer carry', d:'Hold a dumbbell in each hand, walk with tall posture and a braced core.', sk:'carry', core:1}
+    ]},
+    { name:'Shoulders', exercises:[
+      {n:'Overhead press', d:'Press the dumbbells from shoulder height straight overhead, lower with control.', sk:'ohp', core:1},
+      {n:'Push press', d:'Use a slight knee bend and drive from your legs to help press the dumbbells overhead.'},
+      {n:'Arnold press', d:'Press overhead while rotating your palms from facing you to facing forward.'},
+      {n:'Lateral raise', d:'Raise the dumbbells out to the sides up to shoulder height, lower slowly.'},
+      {n:'Front raise', d:'Raise the dumbbells straight in front of you to shoulder height, lower with control.'},
+      {n:'Rear delt raise', d:'Hinge forward, raise the dumbbells out to the sides to target the rear shoulders.'},
+      {n:'Upright row', d:'Pull the dumbbells straight up along your body to chest height, elbows leading.'},
+      {n:'Dumbbell snatch', d:'Explosively pull one dumbbell from the floor to overhead in a single motion.'},
+      {n:'Clean and press', d:'Pull the dumbbell up to shoulder height, then press it overhead.'},
+      {n:'Thruster (squat + press)', d:'Squat down holding dumbbells at your shoulders, stand and press them overhead in one motion.'}
+    ]},
+    { name:'Biceps', exercises:[
+      {n:'Hammer curl', d:'Curl the dumbbells with your palms facing each other throughout the movement.'},
+      {n:'Standard curl', d:'Curl the dumbbells with palms facing forward, squeezing at the top.'},
+      {n:'Concentration curl', d:'Seated, elbow braced against your inner thigh, curl one dumbbell at a time.'},
+      {n:'Cross-body hammer curl', d:'Curl the dumbbell diagonally across your body toward the opposite shoulder.'},
+      {n:'Zottman curl', d:'Curl up with palms facing forward, rotate your palms down at the top, lower slowly.'}
+    ]},
+    { name:'Triceps', exercises:[
+      {n:'Overhead triceps extension', d:'Hold the dumbbell behind your head with both hands, extend your arms straight overhead.'},
+      {n:'Single-arm overhead extension', d:'Same movement using one arm at a time behind your head.'},
+      {n:'Dumbbell skull crusher (floor)', d:'Lying down, lower the dumbbell toward your forehead by bending your elbows, extend back up.'},
+      {n:'Close-grip floor press', d:'A floor press with your elbows tucked close to your body to emphasize the triceps.'},
+      {n:'Triceps kickback', d:'Hinge forward, extend your arm straight back, squeezing the triceps at the top.'}
+    ]}
+  ]},
+  { section:'Core', icon:'fa-circle-dot', categories:[
+    { name:'Core &amp; Abs', exercises:[
+      {n:'Russian twists', d:'Seated, lean back slightly, rotate a dumbbell side to side over the floor.'},
+      {n:'Weighted sit-up', d:'Hold the dumbbell at your chest, sit up fully, lower back down with control.'},
+      {n:'Weighted crunch', d:'Hold the dumbbell at your chest, crunch your shoulders up off the floor.'},
+      {n:'Dumbbell side bends', d:'Standing, hold the dumbbell at one side, bend sideways and return to upright.'},
+      {n:'Woodchoppers', d:'Rotate a dumbbell diagonally from high to low across your body.'},
+      {n:'Plank dumbbell drag', d:'In a plank position, drag a dumbbell under your body from side to side.'},
+      {n:'Plank pull-through', d:'In a plank, reach under and pull a dumbbell through to the opposite side.'},
+      {n:'Turkish get-up', d:'A slow, controlled sequence from lying to standing while holding a dumbbell overhead.', sk:'getup', core:1},
+      {n:'Dead bug with dumbbell', d:'Lying on your back, extend opposite arm and leg while holding a dumbbell, keeping your core braced.'},
+      {n:'Weighted hollow hold', d:'Hold a hollow body position with arms extended, holding a dumbbell overhead.'},
+      {n:'Weighted leg raises', d:'Lying down, raise your straight legs up while holding a dumbbell between your feet.'},
+      {n:'Suitcase carry', d:'Carry a single dumbbell at your side, resisting the urge to lean.'},
+      {n:'Overhead carry', d:'Walk while holding a dumbbell extended straight overhead.'},
+      {n:'Windmill', d:'Press the dumbbell overhead, hinge sideways at the hips while keeping that arm vertical.'}
+    ]}
+  ]},
+  { section:'Full-Body &amp; Carries', icon:'fa-bolt', categories:[
+    { name:'Full-Body / Athletic Movements', exercises:[
+      {n:'Dumbbell snatch', d:'Explosively pull one dumbbell from the floor to overhead in a single motion.'},
+      {n:'Clean', d:'Pull a dumbbell from the floor up to shoulder height in one motion.'},
+      {n:'Clean and press', d:'Pull the dumbbell up to shoulder height, then press it overhead.'},
+      {n:'Thruster', d:'Squat down holding dumbbells at your shoulders, stand and press them overhead in one motion.'},
+      {n:'Man maker', d:'Combine a push-up, row, and thruster into one continuous flowing movement.'},
+      {n:'Dumbbell swing', d:'Hinge and swing a dumbbell up using hip drive, similar to a kettlebell swing.'},
+      {n:'Squat to press', d:'Squat down, then stand and press the dumbbells overhead.'},
+      {n:'Lunge to press', d:'Step into a lunge, then press the dumbbells overhead as you return to standing.'},
+      {n:'Squat curl press', d:'Combine a squat, bicep curl, and overhead press into one flowing rep.'},
+      {n:'Burpee with dumbbell', d:'Perform a burpee while holding light dumbbells throughout the movement.'},
+      {n:'Devil&rsquo;s press', d:'From a burpee position, explosively snatch both dumbbells up to overhead.'},
+      {n:'Bear crawl dumbbell drag', d:'Crawl on hands and feet while dragging a dumbbell underneath your body.'},
+      {n:'Turkish get-up', d:'A slow, controlled sequence from lying to standing while holding a dumbbell overhead.', sk:'getup', core:1}
+    ]},
+    { name:'Carries', exercises:[
+      {n:'Farmer carry', d:'Hold a dumbbell in each hand, walk with tall posture and a braced core.', sk:'carry', core:1},
+      {n:'Suitcase carry', d:'Carry a single dumbbell at your side, resisting the urge to lean.'},
+      {n:'Rack carry', d:'Hold a dumbbell at shoulder height and walk while keeping your core braced.'},
+      {n:'Overhead carry', d:'Walk while holding a dumbbell extended straight overhead.'},
+      {n:'Waiter walk', d:'Hold a dumbbell overhead with one arm, palm up, and walk with control.'}
+    ]}
+  ]}
+];
 
 var LIQUIDS = [
   {key:'water', label:'Water', icon:'fa-droplet'},
@@ -1090,6 +1251,24 @@ function renderTrack(){
   renderNutrition();
 }
 
+function renderExerciseLibrary(){
+  var el = document.getElementById('exerciseLibrary');
+  if(!el) return;
+  el.innerHTML = EXERCISE_LIBRARY.map(function(sec){
+    var catsHtml = sec.categories.map(function(cat){
+      var itemsHtml = cat.exercises.map(function(ex){
+        var sketch = ex.sk ? '<div class="ex-sketch">'+EX_SKETCHES[ex.sk]+'</div>' : '<div class="ex-sketch"><i class="fa-solid fa-dumbbell" style="color:var(--dim);font-size:16px;"></i></div>';
+        var badge = ex.core ? '<span class="core8-badge">Core 8</span>' : '';
+        return '<div class="ex-item">'+sketch+
+          '<div class="ex-body"><div class="ex-name">'+ex.n+badge+'</div><div class="ex-desc">'+ex.d+'</div></div>'+
+        '</div>';
+      }).join('');
+      return '<details class="cat-block"><summary>'+cat.name+'<i class="fa-solid fa-chevron-right chev"></i></summary><div class="cat-items">'+itemsHtml+'</div></details>';
+    }).join('');
+    return '<details><summary><i class="fa-solid '+sec.icon+'"></i> '+sec.section+'<i class="fa-solid fa-chevron-right chev"></i></summary><div class="sec-body">'+catsHtml+'</div></details>';
+  }).join('');
+}
+
 function renderExercise(){
   var t = viewDate;
   var log = getLog(t);
@@ -1439,6 +1618,7 @@ function renderAll(){
 migrateAnonymityCodes();
 migrateGroupLettersV2();
 renderAll();
+renderExerciseLibrary();
 
 var initialHash = (window.location.hash || '').replace('#','');
 if(viewRenderers[initialHash]) switchView(initialHash, true);
