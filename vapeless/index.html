@@ -560,15 +560,17 @@ var DAY_ORDER = ['monday','tuesday','wednesday','thursday','friday','saturday','
 var DAY_LABEL = {monday:'Monday',tuesday:'Tuesday',wednesday:'Wednesday',thursday:'Thursday',friday:'Friday',saturday:'Saturday',sunday:'Sunday'};
 var JS_DAY_TO_KEY = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
 
+var ACTIVITY_OPTIONS = [
+  'Nicotine Anonymous Meeting','Group A Meeting','Group B Meeting','Group C Meeting','Voices of Recovery Speaker',
+  'Prayer','Meditation','Scripture Study','Recovery Reading','Step Work','Sponsor Call','Recovery Phone Call',
+  'Gratitude List','Family Time','Meal Prep','Walk','Upper Body Workout','Lower Body Workout','Service Work'
+];
+
 var BLOCKS = [
-  {key:'morning', label:'Morning Mission', time:'6AM – 10AM', icon:'fa-sun', color:'green',
-    options:['Nicotine Anonymous Meeting','Group A Meeting','Voices of Recovery Speaker','Group B Meeting','Group C Meeting','Prayer','Meditation','Scripture Study','Recovery Reading','Walk','Upper Body Workout']},
-  {key:'midday', label:'Midday Mission', time:'10AM – 2PM', icon:'fa-cloud-sun', color:'blue',
-    options:['Nicotine Anonymous Meeting','Group A Meeting','Group B Meeting','Group C Meeting','Voices of Recovery Speaker','Step Work','Sponsor Call','Meal Prep','Walk','Gratitude List']},
-  {key:'afternoon', label:'Afternoon Mission', time:'2PM – 6PM', icon:'fa-cloud-sun-rain', color:'orange',
-    options:['Voices of Recovery Speaker','Lower Body Workout','Nicotine Anonymous Meeting','Group A Meeting','Group B Meeting','Group C Meeting','Service Work','Recovery Reading','Step Work']},
-  {key:'evening', label:'Evening Mission', time:'6PM – 10PM', icon:'fa-moon', color:'purple',
-    options:['Nicotine Anonymous Meeting','Group A Meeting','Group B Meeting','Group C Meeting','Voices of Recovery Speaker','Prayer','Recovery Phone Call','Family Time','Gratitude List']}
+  {key:'morning', label:'Morning Mission', time:'6AM – 10AM', icon:'fa-sun', color:'green', options:ACTIVITY_OPTIONS},
+  {key:'midday', label:'Midday Mission', time:'10AM – 2PM', icon:'fa-cloud-sun', color:'blue', options:ACTIVITY_OPTIONS},
+  {key:'afternoon', label:'Afternoon Mission', time:'2PM – 6PM', icon:'fa-cloud-sun-rain', color:'orange', options:ACTIVITY_OPTIONS},
+  {key:'evening', label:'Evening Mission', time:'6PM – 10PM', icon:'fa-moon', color:'purple', options:ACTIVITY_OPTIONS}
 ];
 
 var TAPER_PLAN = {
