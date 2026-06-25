@@ -71,7 +71,7 @@ h1,h2,h3,h4{font-family:var(--disp);margin:0;letter-spacing:0.02em;}
 .stat-card .lbl{font-size:8px;color:var(--dim);text-transform:uppercase;letter-spacing:0.03em;}
 
 /* ---------- TAB BAR (bottom nav) ---------- */
-.tabbar{position:fixed;bottom:0;left:0;right:0;background:var(--navy);box-shadow:0 -4px 18px rgba(12,31,77,0.25);border-top:1px solid var(--navy);display:flex;justify-content:space-around;padding:8px 4px calc(8px + env(safe-area-inset-bottom));z-index:40;}
+.tabbar{position:fixed;bottom:0;left:0;right:0;background:var(--navy);box-shadow:0 -4px 18px rgba(12,31,77,0.25);border-top:1px solid var(--navy);display:flex;justify-content:space-around;padding:8px 4px calc(8px + env(safe-area-inset-bottom)) 64px;z-index:40;}
 .tabbar button{background:none;border:none;color:rgba(255,255,255,0.55);display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:600;font-family:var(--disp);text-transform:uppercase;letter-spacing:0.03em;padding:4px 8px;border-radius:10px;transition:color .2s;}
 .tabbar button i{font-size:16px;}
 .tabbar button.active{color:#ffffff;}
@@ -239,6 +239,31 @@ label.prompt{font-size:10.5px;color:#ffffff;background:var(--navy);text-transfor
 .opt-toggle.on .opt-check{background:#ffffff;border-color:#ffffff;color:var(--navy);}
 .opt-hint{font-size:10.5px;color:var(--dim);text-transform:uppercase;letter-spacing:0.04em;margin-top:8px;}
 
+/* ---------- SIDE MENU (left, all pages) ---------- */
+body{padding-left:64px;}
+.side-menu{position:fixed;top:0;left:0;bottom:0;width:64px;background:var(--navy);display:flex;flex-direction:column;align-items:center;padding:16px 0;gap:6px;z-index:60;box-shadow:2px 0 16px rgba(12,31,77,0.2);}
+.side-menu .side-logo{color:#ffffff;font-family:var(--disp);font-weight:700;font-size:10px;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px;text-align:center;opacity:0.85;}
+.side-menu button{background:none;border:none;color:rgba(255,255,255,0.55);width:46px;height:46px;border-radius:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:15px;flex:none;font-family:var(--disp);}
+.side-menu button .side-lbl{font-size:8px;text-transform:uppercase;letter-spacing:0.03em;font-weight:600;}
+.side-menu button.active{background:rgba(255,255,255,0.16);color:#ffffff;}
+.side-menu .side-divider{width:30px;height:1px;background:rgba(255,255,255,0.18);margin:8px 0;flex:none;}
+.side-create{margin-top:auto;background:#ffffff !important;color:var(--navy) !important;}
+
+/* ---------- CREATE ACTIVITY MODAL ---------- */
+.create-list{display:flex;flex-direction:column;gap:8px;margin:14px 0;max-height:160px;overflow-y:auto;}
+.create-item{display:flex;align-items:center;gap:10px;background:var(--navy-soft);border-radius:10px;padding:8px 11px;font-size:13px;}
+.create-item span{flex:1;}
+.create-item button{background:none;border:none;color:var(--dim);font-size:13px;flex:none;}
+.create-row{display:flex;gap:8px;}
+.create-row input{flex:1;background:var(--navy-soft);border:1px solid var(--glass-brd);color:var(--text);border-radius:9px;padding:9px 11px;font-size:13.5px;font-family:var(--body);}
+
+@media (max-width:430px){
+  body{padding-left:54px;}
+  .side-menu{width:54px;}
+  .side-menu button{width:40px;height:40px;font-size:13px;}
+  .tabbar{padding-left:54px;}
+}
+
 /* ---------- PRINT REPORT ---------- */
 #printReport{display:none;}
 @media print{
@@ -255,6 +280,16 @@ label.prompt{font-size:10.5px;color:#ffffff;background:var(--navy);text-transfor
 </style>
 </head>
 <body>
+<nav class="side-menu" id="sideMenu">
+  <div class="side-logo">VL</div>
+  <button data-view="today" class="active"><i class="fa-solid fa-house"></i><span class="side-lbl">Today</span></button>
+  <button data-view="week"><i class="fa-solid fa-calendar-week"></i><span class="side-lbl">Week</span></button>
+  <button data-view="track"><i class="fa-solid fa-chart-line"></i><span class="side-lbl">Track</span></button>
+  <button data-view="score"><i class="fa-solid fa-trophy"></i><span class="side-lbl">Score</span></button>
+  <button data-view="more"><i class="fa-solid fa-ellipsis"></i><span class="side-lbl">More</span></button>
+  <div class="side-divider"></div>
+  <button class="side-create" id="sideCreateBtn" title="Create new activity"><i class="fa-solid fa-plus"></i><span class="side-lbl">Create</span></button>
+</nav>
 <div class="app">
 
   <header class="hud">
@@ -501,6 +536,19 @@ label.prompt{font-size:10.5px;color:#ffffff;background:var(--navy);text-transfor
 
   <div class="toast" id="toast"></div>
   <div id="printReport"></div>
+
+  <div class="modal-overlay" id="createOverlay">
+    <div class="modal-sheet">
+      <button class="close-modal" id="closeCreateModal"><i class="fa-solid fa-xmark"></i></button>
+      <h2>New Activity</h2>
+      <div style="text-align:center;color:var(--dim);font-size:12px;">Add a custom activity — it'll show up as a choice in every Plan Block on the Week tab.</div>
+      <div class="create-row" style="margin-top:16px;">
+        <input type="text" id="newActivityInput" placeholder="e.g. Journaling, Cold Shower, Therapy Call" maxlength="60">
+        <button class="btn" id="addActivityBtn" style="width:auto;padding:0 16px;">Add</button>
+      </div>
+      <div class="create-list" id="customActivityList"></div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -594,6 +642,7 @@ function loadStore(){
   var defaults = {
     weekPlan: {},
     logs: {},
+    customActivities: [],
     settings: { quitDate: todayKey(), lastVapeDate: todayKey(), costPerDay: 10, totalXP: 0 }
   };
   DAY_ORDER.forEach(function(d){ defaults.weekPlan[d] = {morning:'',midday:'',afternoon:'',evening:''}; });
@@ -602,6 +651,7 @@ function loadStore(){
     var parsed = JSON.parse(raw);
     parsed.weekPlan = parsed.weekPlan || defaults.weekPlan;
     parsed.logs = parsed.logs || {};
+    parsed.customActivities = parsed.customActivities || [];
     parsed.settings = parsed.settings || defaults.settings;
     DAY_ORDER.forEach(function(d){ if(!parsed.weekPlan[d]) parsed.weekPlan[d] = {morning:'',midday:'',afternoon:'',evening:''}; });
     return parsed;
@@ -795,18 +845,26 @@ function toast(msg){
 }
 
 /* ============== TAB NAV ============== */
-var tabButtons = document.querySelectorAll('.tabbar button');
+var tabButtons = document.querySelectorAll('.tabbar button[data-view]');
+var sideButtons = document.querySelectorAll('.side-menu button[data-view]');
 var views = document.querySelectorAll('.view');
 var viewRenderers = { today: renderToday, week: renderWeek, track: renderTrack, score: renderScore, more: renderSettings };
+
+function switchView(viewName, skipHash){
+  if(!viewRenderers[viewName]) return;
+  tabButtons.forEach(function(b){ b.classList.toggle('active', b.dataset.view === viewName); });
+  sideButtons.forEach(function(b){ b.classList.toggle('active', b.dataset.view === viewName); });
+  views.forEach(function(v){ v.classList.remove('active'); });
+  document.getElementById('view-'+viewName).classList.add('active');
+  renderHeader();
+  viewRenderers[viewName]();
+  if(!skipHash){ try{ history.replaceState(null, '', '#'+viewName); }catch(e){} }
+}
 tabButtons.forEach(function(btn){
-  btn.addEventListener('click', function(){
-    tabButtons.forEach(function(b){ b.classList.remove('active'); });
-    views.forEach(function(v){ v.classList.remove('active'); });
-    btn.classList.add('active');
-    document.getElementById('view-'+btn.dataset.view).classList.add('active');
-    renderHeader();
-    if(viewRenderers[btn.dataset.view]) viewRenderers[btn.dataset.view]();
-  });
+  btn.addEventListener('click', function(){ switchView(btn.dataset.view); });
+});
+sideButtons.forEach(function(btn){
+  btn.addEventListener('click', function(){ switchView(btn.dataset.view); });
 });
 
 /* ============== RENDER: HEADER ============== */
@@ -972,7 +1030,8 @@ function renderWeek(){
   el.innerHTML = '';
   BLOCKS.forEach(function(b){
     var selected = getBlockActivities(selectedWeekDay, b.key);
-    var optsHtml = b.options.map(function(o){
+    var allOptions = b.options.concat(store.customActivities.filter(function(c){ return b.options.indexOf(c) === -1; }));
+    var optsHtml = allOptions.map(function(o){
       var isOn = selected.indexOf(o) > -1;
       return '<button class="opt-toggle'+(isOn?' on':'')+'" type="button" data-block="'+b.key+'" data-opt="'+o.replace(/"/g,'&quot;')+'">'+
         '<span class="opt-check"><i class="fa-solid fa-check"></i></span>'+o+
@@ -1293,6 +1352,58 @@ document.getElementById('timerReset').addEventListener('click', function(){
 });
 renderTimer();
 
+/* ============== CREATE ACTIVITY MODAL ============== */
+var createOverlay = document.getElementById('createOverlay');
+var newActivityInput = document.getElementById('newActivityInput');
+function renderCustomActivityList(){
+  var el = document.getElementById('customActivityList');
+  el.innerHTML = '';
+  if(store.customActivities.length === 0){
+    el.innerHTML = '<div style="font-size:11.5px;color:var(--dim);text-align:center;">No custom activities yet.</div>';
+    return;
+  }
+  store.customActivities.forEach(function(act, idx){
+    var row = document.createElement('div');
+    row.className = 'create-item';
+    row.innerHTML = '<span>'+act+'</span><button data-idx="'+idx+'"><i class="fa-solid fa-trash"></i></button>';
+    el.appendChild(row);
+  });
+  el.querySelectorAll('button[data-idx]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var idx = parseInt(btn.dataset.idx, 10);
+      store.customActivities.splice(idx, 1);
+      saveStore();
+      renderCustomActivityList();
+      renderWeek();
+    });
+  });
+}
+document.getElementById('sideCreateBtn').addEventListener('click', function(){
+  newActivityInput.value = '';
+  renderCustomActivityList();
+  createOverlay.classList.add('show');
+  setTimeout(function(){ newActivityInput.focus(); }, 150);
+});
+document.getElementById('closeCreateModal').addEventListener('click', function(){
+  createOverlay.classList.remove('show');
+});
+createOverlay.addEventListener('click', function(e){ if(e.target === createOverlay) createOverlay.classList.remove('show'); });
+function addCustomActivity(){
+  var val = newActivityInput.value.trim();
+  if(!val) return;
+  if(store.customActivities.indexOf(val) === -1){
+    store.customActivities.push(val);
+    saveStore();
+    renderCustomActivityList();
+    renderWeek();
+    toast('Activity added');
+  }
+  newActivityInput.value = '';
+  newActivityInput.focus();
+}
+document.getElementById('addActivityBtn').addEventListener('click', addCustomActivity);
+newActivityInput.addEventListener('keydown', function(e){ if(e.key === 'Enter'){ e.preventDefault(); addCustomActivity(); } });
+
 /* ============== INIT ============== */
 function renderAll(){
   renderHeader();
@@ -1306,6 +1417,9 @@ function renderAll(){
 migrateAnonymityCodes();
 migrateGroupLettersV2();
 renderAll();
+
+var initialHash = (window.location.hash || '').replace('#','');
+if(viewRenderers[initialHash]) switchView(initialHash, true);
 
 })();
 </script>
