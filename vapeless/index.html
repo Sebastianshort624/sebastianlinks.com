@@ -374,6 +374,25 @@ label.prompt{font-size:10.5px;color:#ffffff;background:var(--navy);text-transfor
     <!-- MORE -->
     <section class="view" id="view-more">
       <div class="card">
+        <div class="card-head"><h3><i class="fa-solid fa-book-bible" style="color:var(--gold)"></i> Daily Readings</h3><span class="tag">Today's date, auto-linked</span></div>
+        <a class="link-card" target="_blank" rel="noopener" id="readingJFT" href="https://www.justfortodaymeditations.com/">
+          <div class="ic" style="background:var(--green-dim);color:var(--green)"><i class="fa-solid fa-calendar-day"></i></div>
+          <div class="meta"><b>Just For Today Meditations</b><span>Today's NA daily reading</span></div>
+          <i class="fa-solid fa-chevron-right chev"></i>
+        </a>
+        <a class="link-card" target="_blank" rel="noopener" id="readingRR" href="https://www.recoveryreadings.com/">
+          <div class="ic" style="background:var(--blue-dim);color:var(--blue)"><i class="fa-solid fa-calendar-day"></i></div>
+          <div class="meta"><b>Recovery Readings</b><span>Today's daily recovery reading</span></div>
+          <i class="fa-solid fa-chevron-right chev"></i>
+        </a>
+        <a class="link-card" target="_blank" rel="noopener" href="https://newcomersinternational.com/12-and-12-readings/">
+          <div class="ic" style="background:var(--purple-dim);color:var(--purple)"><i class="fa-solid fa-book-open"></i></div>
+          <div class="meta"><b>NewComers International</b><span>12 &amp; 12 readings</span></div>
+          <i class="fa-solid fa-chevron-right chev"></i>
+        </a>
+      </div>
+
+      <div class="card">
         <div class="card-head"><h3><i class="fa-solid fa-link" style="color:var(--blue)"></i> Meeting Links</h3></div>
         <a class="link-card" target="_blank" rel="noopener" href="https://nicotine-anonymous.org/find-a-meeting">
           <div class="ic" style="background:var(--blue-dim);color:var(--blue)"><i class="fa-solid fa-smoking"></i></div>
@@ -398,6 +417,20 @@ label.prompt{font-size:10.5px;color:#ffffff;background:var(--navy);text-transfor
         <a class="link-card" target="_blank" rel="noopener" href="https://voicesofnicotinerecovery.com">
           <div class="ic" style="background:var(--green-dim);color:var(--green)"><i class="fa-solid fa-microphone"></i></div>
           <div class="meta"><b>Voices of Recovery</b><span>voicesofnicotinerecovery.com</span></div>
+          <i class="fa-solid fa-chevron-right chev"></i>
+        </a>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3><i class="fa-solid fa-hands-praying" style="color:var(--purple)"></i> 12 Step Prayers</h3></div>
+        <a class="link-card" target="_blank" rel="noopener" href="https://slaavirtual.org/12-step-prayers/">
+          <div class="ic" style="background:var(--purple-dim);color:var(--purple)"><i class="fa-solid fa-book-open"></i></div>
+          <div class="meta"><b>12 Step Prayers</b><span>slaavirtual.org</span></div>
+          <i class="fa-solid fa-chevron-right chev"></i>
+        </a>
+        <a class="link-card" target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=Bn4uozKyL74">
+          <div class="ic" style="background:var(--red-dim);color:var(--red)"><i class="fa-solid fa-play"></i></div>
+          <div class="meta"><b>12 Step Prayers — Guided Meditation</b><span>10 min, with music</span></div>
           <i class="fa-solid fa-chevron-right chev"></i>
         </a>
       </div>
@@ -1143,6 +1176,19 @@ document.getElementById('resetLiquids').addEventListener('click', function(){
 function renderSettings(){
   document.getElementById('setQuitDate').value = store.settings.quitDate;
   document.getElementById('setCost').value = store.settings.costPerDay;
+  renderReadingLinks();
+}
+
+var MONTHS_LOWER = ['january','february','march','april','may','june','july','august','september','october','november','december'];
+var MONTHS_CAP = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+function renderReadingLinks(){
+  var now = new Date();
+  var mIdx = now.getMonth();
+  var day = now.getDate();
+  var jft = 'https://www.justfortodaymeditations.com/daily-recovery-readings-'+MONTHS_LOWER[mIdx]+'-'+day+'/';
+  var rr = 'https://www.recoveryreadings.com/dailyrecoveryreadings'+MONTHS_CAP[mIdx]+day+'.html';
+  document.getElementById('readingJFT').href = jft;
+  document.getElementById('readingRR').href = rr;
 }
 document.getElementById('setQuitDate').addEventListener('change', function(e){
   store.settings.quitDate = e.target.value;
