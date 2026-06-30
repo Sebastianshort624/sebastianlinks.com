@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DP Movers Group LLC — Business Intelligence Report</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Georgia', serif; background: #fff; color: #111; max-width: 860px; margin: 0 auto; padding: 40px 24px; }
+  h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.5px; border-bottom: 3px solid #111; padding-bottom: 12px; margin-bottom: 8px; }
+  .tagline { font-style: italic; color: #444; margin-bottom: 32px; font-size: 0.95rem; }
+  h2 { font-size: 1.05rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin: 32px 0 12px; border-bottom: 1px solid #ccc; padding-bottom: 6px; }
+  ul { list-style: none; padding: 0; }
+  ul li { padding: 6px 0 6px 18px; border-bottom: 1px solid #f0f0f0; font-size: 0.92rem; line-height: 1.6; position: relative; }
+  ul li::before { content: "—"; position: absolute; left: 0; color: #999; }
+  ul li:last-child { border-bottom: none; }
+  a { color: #111; text-decoration: underline; }
+  a:hover { color: #555; }
+  .badge { display: inline-block; background: #111; color: #fff; font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; padding: 2px 8px; text-transform: uppercase; margin-left: 6px; vertical-align: middle; }
+  .badge.bbb { background: #004B87; }
+  .badge.green { background: #2a7a2a; }
+  .badge.red { background: #8b0000; }
+  .badge.gray { background: #666; }
+  .profile-grid { display: grid; grid-template-columns: 160px 1fr; gap: 0; border: 1px solid #ddd; margin-bottom: 8px; }
+  .profile-label { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #666; padding: 10px 12px; background: #f8f8f8; border-bottom: 1px solid #eee; }
+  .profile-value { font-size: 0.92rem; padding: 10px 12px; border-bottom: 1px solid #eee; }
+  .profile-label:last-of-type, .profile-value:last-of-type { border-bottom: none; }
+  .tier-header { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #666; margin: 20px 0 8px; }
+  .tier-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 24px; margin-bottom: 4px; list-style: none; padding: 0; }
+  .tier-grid li { font-size: 0.88rem; padding: 5px 0 5px 18px; border-bottom: 1px solid #f0f0f0; }
+  .tier-grid li::before { content: "—"; position: absolute; left: 0; color: #999; }
+  .note { background: #f8f8f8; border-left: 3px solid #111; padding: 12px 16px; font-size: 0.88rem; margin: 16px 0; line-height: 1.6; }
+  .priority-list { counter-reset: priority; }
+  .priority-list li { counter-increment: priority; }
+  .priority-list li::before { content: counter(priority) "."; color: #111; font-weight: 700; }
+  footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid #ddd; font-size: 0.78rem; color: #999; }
+</style>
+</head>
+<body>
+
+<h1>DP Movers Group LLC</h1>
+<div class="tagline">The Dependable Professional Movers You Trust! &nbsp;·&nbsp; Brand Promise: Dependable Professionals. Every Move. Every Time.</div>
+
+<h2>Company Profile</h2>
+<div class="profile-grid">
+  <div class="profile-label">Legal Name</div>
+  <div class="profile-value"><a href="https://www.google.com/search?q=DP+Movers+Group+LLC" target="_blank">DP Movers Group LLC</a></div>
+
+  <div class="profile-label">Brand Name</div>
+  <div class="profile-value">DP Movers</div>
+
+  <div class="profile-label">Website</div>
+  <div class="profile-value"><a href="https://www.dpmovers.com" target="_blank">www.dpmovers.com</a></div>
+
+  <div class="profile-label">Phone</div>
+  <div class="profile-value"><a href="https://www.numberbarn.com/search?type=local&npa=720&state=CO&search=9276" target="_blank">(720) 882-9276</a></div>
+
+  <div class="profile-label">Address 1</div>
+  <div class="profile-value"><a href="https://www.anytimemailbox.com/find-location?pl=address.2318601785142550&t=2821+South+Parker+Road%2c+Aurora%2c+Colorado+80014%2c+United+States&o=2821+S+Parker+Rd++Aurora%2c+CO+80014&r=false" target="_blank">8400 E Crescent Pkwy, Greenwood Village, CO 80111</a></div>
+
+  <div class="profile-label">Address 2</div>
+  <div class="profile-value"><a href="https://yourofficedenver.com/downtown-denver/" target="_blank">600 17th St, Denver, CO 80202</a></div>
+
+  <div class="profile-label">BBB</div>
+  <div class="profile-value"><a href="https://www.bbb.org/us/co/aurora/profile/moving-companies/dpmovers-relocation-1296-90252736" target="_blank">DP Movers Relocations</a> <span class="badge bbb">A+</span> <span class="badge bbb">17 Yrs</span> <span class="badge bbb">0 Complaints</span></div>
+</div>
+
+<h2>Similar Names — Watch List</h2>
+<ul>
+  <li><a href="https://www.instagram.com/dpmoverslogisticservices/" target="_blank">Instagram: dp movers logistic services</a> <span class="badge gray">Not You</span></li>
+  <li><a href="https://www.yelp.com/biz/dp-moving-and-storage-stuart-2" target="_blank">Yelp: DP Moving and Storage — Stuart, FL</a> <span class="badge gray">Not You</span></li>
+  <li><a href="https://search.sunbiz.org/Inquiry/CorporationSearch/SearchResults/EntityName/dp%20movers/Page1?searchNameOrder=DPMOVERS" target="_blank">Sunbiz: DP MOVING LLC — Stuart, FL</a> — no conflict per legal review <span class="badge green">Clear</span></li>
+</ul>
+
+<h2>Reviews</h2>
+<ul>
+  <li><span class="badge red">Negative</span> &nbsp;<a href="https://www.yelp.com/biz/dp-movers-denver?dd_referrer=" target="_blank">Yelp: DP Movers Denver</a> — not the Relocations entity</li>
+  <li><span class="badge green">Positive</span> &nbsp;<a href="https://www.angi.com/companylist/us/co/denver/dp-movers-relocations-reviews-22429252.htm" target="_blank">Angi: DP Movers Relocations — 5 Stars</a></li>
+  <li><span class="badge green">Positive</span> &nbsp;<a href="https://loadconnect.io/trucking/1359875" target="_blank">Load Connect — Start date listed as 21 years ago</a></li>
+</ul>
+
+<h2>SEO — Citation Strategy</h2>
+<div class="note">Keep Legal Name, Address, Phone (NAP), website, categories, hours, and description <strong>identical across every listing</strong>. Consistent citations are a primary local SEO trust signal. Complete Tier 1 before any other tier.</div>
+
+<div class="tier-header">Tier 1 — Complete First (Core Presence)</div>
+<ul class="tier-grid priority-list">
+  <li><a href="https://business.google.com/" target="_blank">Google Business Profile</a></li>
+  <li><a href="https://businessconnect.apple.com/" target="_blank">Apple Business Connect</a></li>
+  <li><a href="https://www.bingplaces.com/" target="_blank">Bing Places for Business</a></li>
+  <li><a href="https://biz.yelp.com/" target="_blank">Yelp for Business</a></li>
+  <li><a href="https://www.facebook.com/pages/create" target="_blank">Facebook Business Page</a></li>
+  <li><a href="https://www.linkedin.com/company/setup/new/" target="_blank">LinkedIn Company Page</a></li>
+  <li><a href="https://www.bbb.org/" target="_blank">Better Business Bureau</a></li>
+  <li><a href="https://business.nextdoor.com/" target="_blank">Nextdoor Business</a></li>
+  <li><a href="https://business.foursquare.com/" target="_blank">Foursquare</a></li>
+  <li><a href="https://www.mapquest.com/" target="_blank">MapQuest Listings</a></li>
+</ul>
+
+<div class="tier-header">Tier 2 — Major Citation Sites</div>
+<ul class="tier-grid">
+  <li><a href="https://www.yellowpages.com/" target="_blank">Yellow Pages</a></li>
+  <li><a href="https://www.manta.com/" target="_blank">Manta</a></li>
+  <li><a href="https://www.superpages.com/" target="_blank">Superpages</a></li>
+  <li><a href="https://www.hotfrog.com/" target="_blank">Hotfrog</a></li>
+  <li><a href="https://www.brownbook.net/" target="_blank">Brownbook</a></li>
+  <li><a href="https://www.chamberofcommerce.com/" target="_blank">Chamber of Commerce</a></li>
+  <li><a href="https://dash.ezlocal.com/" target="_blank">EZlocal</a></li>
+  <li><a href="https://www.local.com/" target="_blank">Local.com</a></li>
+  <li><a href="https://citysquares.com/" target="_blank">CitySquares</a></li>
+  <li><a href="https://www.merchantcircle.com/" target="_blank">MerchantCircle</a></li>
+</ul>
+
+<div class="tier-header">Tier 3 — Home Service Directories</div>
+<ul class="tier-grid">
+  <li><a href="https://www.angi.com/" target="_blank">Angi</a></li>
+  <li><a href="https://www.homeadvisor.com/" target="_blank">HomeAdvisor</a></li>
+  <li><a href="https://www.thumbtack.com/" target="_blank">Thumbtack</a></li>
+  <li><a href="https://porch.com/" target="_blank">Porch</a></li>
+  <li><a href="https://www.houzz.com/" target="_blank">Houzz</a></li>
+  <li><a href="https://www.networx.com/" target="_blank">Networx</a></li>
+  <li><a href="https://www.bark.com/" target="_blank">Bark</a></li>
+  <li><a href="https://www.thebluebook.com/" target="_blank">The Blue Book Network</a></li>
+  <li><a href="https://www.movinglabor.com/" target="_blank">MovingLabor.com</a></li>
+  <li><a href="https://www.hireahelper.com/" target="_blank">HireAHelper</a></li>
+</ul>
+
+<div class="tier-header">Tier 4 — High-Authority Profiles</div>
+<ul class="tier-grid">
+  <li><a href="https://www.crunchbase.com/" target="_blank">Crunchbase</a></li>
+  <li><a href="https://www.alignable.com/" target="_blank">Alignable</a></li>
+  <li><a href="https://www.trustpilot.com/" target="_blank">Trustpilot</a></li>
+  <li><a href="https://www.sitejabber.com/" target="_blank">Sitejabber</a></li>
+  <li><a href="https://www.trustindex.io/" target="_blank">Trustindex</a></li>
+  <li><a href="https://www.provenexpert.com/" target="_blank">ProvenExpert</a></li>
+  <li><a href="https://www.showmelocal.com/" target="_blank">ShowMeLocal</a></li>
+  <li><a href="https://www.find-us-here.com/" target="_blank">Find-Us-Here</a></li>
+  <li><a href="https://www.callupcontact.com/" target="_blank">CallUpContact</a></li>
+  <li><a href="https://company.com/" target="_blank">Company.com Directory</a></li>
+</ul>
+
+<div class="tier-header">Tier 5 — Social & Brand Profiles</div>
+<ul class="tier-grid">
+  <li><a href="https://www.instagram.com/" target="_blank">Instagram Business</a></li>
+  <li><a href="https://x.com/" target="_blank">X (Twitter)</a></li>
+  <li><a href="https://business.pinterest.com/" target="_blank">Pinterest Business</a></li>
+  <li><a href="https://www.youtube.com/" target="_blank">YouTube Channel</a></li>
+  <li><a href="https://www.tiktok.com/business/" target="_blank">TikTok Business</a></li>
+  <li><a href="https://www.threads.net/" target="_blank">Threads</a></li>
+  <li><a href="https://bsky.app/" target="_blank">Bluesky</a></li>
+  <li><a href="https://www.reddit.com/" target="_blank">Reddit Business Profile</a></li>
+  <li><a href="https://about.me/" target="_blank">About.me</a></li>
+  <li><a href="https://gravatar.com/" target="_blank">Gravatar Profile</a></li>
+</ul>
+
+<h2>Top 10 Priority Listings — Moving Company</h2>
+<ul class="priority-list">
+  <li>Google Business Profile</li>
+  <li>Apple Business Connect</li>
+  <li>Bing Places</li>
+  <li>Yelp</li>
+  <li>Facebook</li>
+  <li>BBB</li>
+  <li>Nextdoor</li>
+  <li>Angi</li>
+  <li>Thumbtack</li>
+  <li>HireAHelper</li>
+</ul>
+
+<footer>sebastianlinks.com/dp &nbsp;·&nbsp; DP Movers Group LLC Business Intelligence Report</footer>
+
+</body>
+</html>
