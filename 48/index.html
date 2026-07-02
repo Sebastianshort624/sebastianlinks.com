@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>48 States Moving &amp; Storage — Business Intelligence Report</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Georgia', serif; background: #fff; color: #111; max-width: 860px; margin: 0 auto; padding: 40px 24px; }
+  h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.5px; border-bottom: 3px solid #111; padding-bottom: 12px; margin-bottom: 8px; }
+  .tagline { font-style: italic; color: #444; margin-bottom: 32px; font-size: 0.95rem; }
+  h2 { font-size: 1.05rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin: 32px 0 12px; border-bottom: 1px solid #ccc; padding-bottom: 6px; }
+  ul { list-style: none; padding: 0; }
+  ul li { padding: 6px 0 6px 18px; border-bottom: 1px solid #f0f0f0; font-size: 0.92rem; line-height: 1.6; position: relative; }
+  ul li::before { content: "—"; position: absolute; left: 0; color: #999; }
+  ul li:last-child { border-bottom: none; }
+  a { color: #111; text-decoration: underline; }
+  a:hover { color: #555; }
+  .badge { display: inline-block; background: #111; color: #fff; font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; padding: 2px 8px; text-transform: uppercase; margin-left: 6px; vertical-align: middle; }
+  .badge.bbb { background: #004B87; }
+  .badge.green { background: #2a7a2a; }
+  .badge.red { background: #8b0000; }
+  .badge.gray { background: #666; }
+  .badge.amber { background: #b45309; }
+  .profile-grid { display: grid; grid-template-columns: 160px 1fr; gap: 0; border: 1px solid #ddd; margin-bottom: 8px; }
+  .profile-label { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #666; padding: 10px 12px; background: #f8f8f8; border-bottom: 1px solid #eee; }
+  .profile-value { font-size: 0.92rem; padding: 10px 12px; border-bottom: 1px solid #eee; }
+  .profile-label:last-of-type, .profile-value:last-of-type { border-bottom: none; }
+  .tier-header { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #666; margin: 20px 0 8px; }
+  .tier-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 24px; margin-bottom: 4px; list-style: none; padding: 0; }
+  .tier-grid li { font-size: 0.88rem; padding: 5px 0 5px 18px; border-bottom: 1px solid #f0f0f0; position: relative; }
+  .tier-grid li::before { content: "—"; position: absolute; left: 0; color: #999; }
+  .note { background: #f8f8f8; border-left: 3px solid #111; padding: 12px 16px; font-size: 0.88rem; margin: 16px 0; line-height: 1.6; }
+  .note.red { border-left-color: #8b0000; background: #fff8f8; }
+  .note.green { border-left-color: #2a7a2a; background: #f0fff0; }
+  .priority-list { counter-reset: priority; }
+  .priority-list li { counter-increment: priority; position: relative; }
+  .priority-list li::before { content: counter(priority) "."; color: #111; font-weight: 700; }
+  .timeline-item { padding: 8px 0 8px 18px; border-bottom: 1px solid #f0f0f0; font-size: 0.92rem; line-height: 1.5; position: relative; }
+  .timeline-item::before { content: ""; position: absolute; left: 0; top: 14px; width: 8px; height: 8px; border-radius: 50%; background: #111; }
+  .timeline-year { font-weight: 700; margin-right: 8px; }
+  .status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: #ddd; border: 1px solid #ddd; margin: 12px 0; }
+  .status-cell { background: #fff; padding: 10px 14px; font-size: 0.88rem; }
+  .status-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #666; margin-bottom: 3px; }
+  .status-val { font-weight: 700; }
+  .status-val.dead { color: #8b0000; }
+  .status-val.ok { color: #2a7a2a; }
+  footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid #ddd; font-size: 0.78rem; color: #999; }
+</style>
+</head>
+<body>
+
+<h1>48 States Moving &amp; Storage</h1>
+<div class="tagline">Legal entity: AVON MOVING SOLUTIONS LLC &nbsp;·&nbsp; USDOT 3246645 &nbsp;·&nbsp; MC1063264 &nbsp;·&nbsp; Appears ceased as of mid-2023</div>
+
+<h2>Company Profile</h2>
+<div class="profile-grid">
+  <div class="profile-label">Brand</div>
+  <div class="profile-value"><a href="https://www.google.com/search?q=%2248+States+Moving+and+Storage%22" target="_blank">48 States Moving &amp; Storage</a></div>
+
+  <div class="profile-label">Legal Name</div>
+  <div class="profile-value">AVON MOVING SOLUTIONS LIMITED LIABILITY COMPANY</div>
+
+  <div class="profile-label">DBA</div>
+  <div class="profile-value">48 States Moving and Storage</div>
+
+  <div class="profile-label">Owner / President</div>
+  <div class="profile-value">David Peretz</div>
+
+  <div class="profile-label">Business Started</div>
+  <div class="profile-value">May 2, 2008</div>
+
+  <div class="profile-label">USDOT / MC</div>
+  <div class="profile-value"><a href="https://safer.fmcsa.dot.gov/query.asp?searchtype=ANY&query_type=queryCarrierSnapshot&query_param=USDOT&original_query_param=NAME&query_string=3246645&original_query_string=48%20states%20moving" target="_blank">USDOT 3246645</a> &nbsp;/&nbsp; MC1063264</div>
+
+  <div class="profile-label">Website / Email</div>
+  <div class="profile-value"><a href="https://web.archive.org/web/2023*/https://48statesmoving.com/" target="_blank">48statesmoving.com</a> <span class="badge gray">Archived</span> &nbsp;·&nbsp; Email on file: info@48statesmoving.com</div>
+
+  <div class="profile-label">Preferred Phone</div>
+  <div class="profile-value">
+    <a href="https://www.fonality.com/number/(301)348-4848" target="_blank">(301) 348-4848</a>
+    <span class="badge green">Acquire — $372</span>
+    &nbsp; matches existing disconnected <strong>(301) 468-4848</strong> pattern
+  </div>
+
+  <div class="profile-label">Alt Phone</div>
+  <div class="profile-value">
+    <a href="https://www.fonality.com/number/(301)798-4848" target="_blank">(301) 798-4848</a>
+    <span class="badge amber">Acquire — $155</span>
+    Damascus / Hagerstown LATA, MD
+  </div>
+
+  <div class="profile-label">Target Address</div>
+  <div class="profile-value">
+    <a href="https://www.anytimemailbox.com/find-location?pl=place.169257196&t=Kensington%2c+Maryland%2c+United+States&o=Kensington%2c+md&r=false" target="_blank">402 King Farm Blvd, Rockville, MD 20850</a>
+    <span class="badge green">From $9.99/mo</span> — AnyTimeMailbox
+  </div>
+
+  <div class="profile-label">Prior Address 1</div>
+  <div class="profile-value">1451 Rockville Pike Suite 250, Rockville, MD 20852 <span class="badge gray">FMCSA Record</span></div>
+
+  <div class="profile-label">Prior Address 2</div>
+  <div class="profile-value">5268 Nicholson Ln Suite G, Kensington, MD 20895</div>
+
+  <div class="profile-label">Prior Address 3</div>
+  <div class="profile-value">3057 Nutley St Suite 612, Fairfax, VA 22031 <span class="badge gray">Historical</span></div>
+
+  <div class="profile-label">States Claimed</div>
+  <div class="profile-value">Maryland, Virginia, Arizona</div>
+</div>
+
+<h2>Government Status</h2>
+
+<div class="status-grid">
+  <div class="status-cell"><div class="status-label">Maryland LLC</div><div class="status-val dead">REVOKED</div><div style="font-size:0.8rem;color:#666;margin-top:2px">Auto-revoked — annual report / fees. Cannot reinstate.</div></div>
+  <div class="status-cell"><div class="status-label">Virginia Registration</div><div class="status-val dead">INACTIVE</div><div style="font-size:0.8rem;color:#666;margin-top:2px">Foreign registration no longer active with VA SCC.</div></div>
+  <div class="status-cell"><div class="status-label">FMCSA Operating Status</div><div class="status-val dead">NOT AUTHORIZED</div><div style="font-size:0.8rem;color:#666;margin-top:2px">Authority inactive. Cannot legally perform interstate moves.</div></div>
+  <div class="status-cell"><div class="status-label">Last MCS-150 Filing</div><div class="status-val">Dec 29, 2023</div><div style="font-size:0.8rem;color:#666;margin-top:2px">Administrative update only — not evidence of active operations.</div></div>
+  <div class="status-cell"><div class="status-label">Fleet (Last Filed)</div><div class="status-val">1 truck / 1 driver</div><div style="font-size:0.8rem;color:#666;margin-top:2px">~15,000 miles reported for 2023.</div></div>
+  <div class="status-cell"><div class="status-label">Last Known Moving Activity</div><div class="status-val dead">~May 2023</div><div style="font-size:0.8rem;color:#666;margin-top:2px">No verified customer moves found after mid-2023.</div></div>
+</div>
+
+<div class="note red"><strong>Assessment:</strong> 48 States Moving &amp; Storage appears to have ceased meaningful operations around May 2023. Maryland LLC is automatically revoked and cannot be reinstated. Virginia registration inactive. FMCSA authority not authorized. No customer reviews or completed moves located after mid-2023.</div>
+
+<h2>Historical Phones</h2>
+<ul>
+  <li>(202) 420-1302 <span class="badge gray">Historical</span></li>
+  <li>(703) 281-4848 <span class="badge gray">Historical — BBB profile</span></li>
+  <li>(703) 691-1993 <span class="badge gray">Historical — Fairfax VA era</span></li>
+  <li>(240) 482-8282 <span class="badge gray">Historical</span></li>
+  <li>1-800-440-0234 <span class="badge gray">Late FMCSA listing — no active business found</span></li>
+  <li><strong>(301) 468-4848</strong> <span class="badge red">Disconnected — matches 4848 vanity pattern</span></li>
+</ul>
+
+<h2>Phone Acquisition — Recommended</h2>
+<div class="note green">Both numbers follow the company's established <strong>4848 vanity sequence</strong> ((703) 281-<strong>4848</strong>, (301) <strong>348-4848</strong>, etc.) and are rooted in the Maryland/DC metro service area — a natural fit for a replacement presence.</div>
+<ul>
+  <li>
+    <a href="https://www.fonality.com/number/(301)348-4848" target="_blank">(301) 348-4848</a>
+    — Washington, MD &nbsp;
+    <span class="badge green">Preferred — $372</span>
+    &nbsp; Closest match to disconnected (301) 468-4848 in same area code and 4848 pattern
+  </li>
+  <li>
+    <a href="https://www.fonality.com/number/(301)798-4848" target="_blank">(301) 798-4848</a>
+    — Damascus / Hagerstown LATA, MD &nbsp;
+    <span class="badge amber">Alt — $155</span>
+    &nbsp; Lower cost, same 4848 vanity, MD coverage
+  </li>
+</ul>
+
+<h2>Address Acquisition — Recommended</h2>
+<ul>
+  <li>
+    <a href="https://www.anytimemailbox.com/find-location?pl=place.169257196&t=Kensington%2c+Maryland%2c+United+States&o=Kensington%2c+md&r=false" target="_blank">402 King Farm Blvd, Rockville, MD 20850</a>
+    — AnyTimeMailbox &nbsp;
+    <span class="badge green">From $9.99/mo</span>
+    &nbsp; Rockville / King Farm Blvd — same Rockville footprint as the company's last FMCSA address (1451 Rockville Pike)
+  </li>
+</ul>
+
+<h2>Business Timeline</h2>
+<div class="timeline-item"><span class="timeline-year">2008</span>Business established. Operating from Kensington, MD.</div>
+<div class="timeline-item"><span class="timeline-year">2019</span>Obtained USDOT 3246645 and MC1063264. Active household goods carrier.</div>
+<div class="timeline-item"><span class="timeline-year">2021–22</span>Moved headquarters: 1700 Rockville Pike → 1451 Rockville Pike Suite 250.</div>
+<div class="timeline-item"><span class="timeline-year">May 2023</span>Last identifiable evidence of actual moving operations. No verified customer moves after this date.</div>
+<div class="timeline-item"><span class="timeline-year">Dec 29, 2023</span>FMCSA MCS-150 updated — administrative filing only, not indicative of continued operations.</div>
+<div class="timeline-item"><span class="timeline-year">2024–2026</span>No verified moves, reviews, advertising, or active presence located. Maryland LLC revoked. Virginia registration inactive. FMCSA authority inactive / not authorized.</div>
+
+<h2>Related Names / Identifiers</h2>
+<ul>
+  <li>AVON MOVING SOLUTIONS LIMITED LIABILITY COMPANY</li>
+  <li>48 States Moving and Storage (DBA)</li>
+  <li>48 States Moving &amp; Storage Inc.</li>
+  <li>David Peretz — President / Owner</li>
+  <li><a href="https://safer.fmcsa.dot.gov/query.asp?searchtype=ANY&query_type=queryCarrierSnapshot&query_param=USDOT&original_query_param=NAME&query_string=3246645" target="_blank">USDOT 3246645</a></li>
+  <li>MC1063264</li>
+  <li>EIN / state reg: Maryland (revoked), Virginia (inactive)</li>
+</ul>
+
+<h2>SEO — Citation Strategy</h2>
+<div class="note">Keep Legal Name, Address, Phone (NAP), website, categories, hours, and description <strong>identical across every listing</strong>. Consistent citations are a primary local SEO trust signal. Complete Tier 1 before any other tier.</div>
+
+<div class="tier-header">Tier 1 — Complete First (Core Presence)</div>
+<ul class="tier-grid priority-list">
+  <li><a href="https://business.google.com/" target="_blank">Google Business Profile</a></li>
+  <li><a href="https://businessconnect.apple.com/" target="_blank">Apple Business Connect</a></li>
+  <li><a href="https://www.bingplaces.com/" target="_blank">Bing Places for Business</a></li>
+  <li><a href="https://biz.yelp.com/" target="_blank">Yelp for Business</a></li>
+  <li><a href="https://www.facebook.com/pages/create" target="_blank">Facebook Business Page</a></li>
+  <li><a href="https://www.linkedin.com/company/setup/new/" target="_blank">LinkedIn Company Page</a></li>
+  <li><a href="https://www.bbb.org/" target="_blank">Better Business Bureau</a></li>
+  <li><a href="https://business.nextdoor.com/" target="_blank">Nextdoor Business</a></li>
+  <li><a href="https://business.foursquare.com/" target="_blank">Foursquare</a></li>
+  <li><a href="https://www.mapquest.com/" target="_blank">MapQuest Listings</a></li>
+</ul>
+
+<div class="tier-header">Tier 2 — Major Citation Sites</div>
+<ul class="tier-grid">
+  <li><a href="https://www.yellowpages.com/" target="_blank">Yellow Pages</a></li>
+  <li><a href="https://www.manta.com/" target="_blank">Manta</a></li>
+  <li><a href="https://www.superpages.com/" target="_blank">Superpages</a></li>
+  <li><a href="https://www.hotfrog.com/" target="_blank">Hotfrog</a></li>
+  <li><a href="https://www.brownbook.net/" target="_blank">Brownbook</a></li>
+  <li><a href="https://www.chamberofcommerce.com/" target="_blank">Chamber of Commerce</a></li>
+  <li><a href="https://dash.ezlocal.com/" target="_blank">EZlocal</a></li>
+  <li><a href="https://www.local.com/" target="_blank">Local.com</a></li>
+  <li><a href="https://citysquares.com/" target="_blank">CitySquares</a></li>
+  <li><a href="https://www.merchantcircle.com/" target="_blank">MerchantCircle</a></li>
+</ul>
+
+<div class="tier-header">Tier 3 — Moving-Specific Directories</div>
+<ul class="tier-grid">
+  <li><a href="https://www.angi.com/" target="_blank">Angi</a></li>
+  <li><a href="https://www.homeadvisor.com/" target="_blank">HomeAdvisor</a></li>
+  <li><a href="https://www.thumbtack.com/" target="_blank">Thumbtack</a></li>
+  <li><a href="https://porch.com/" target="_blank">Porch</a></li>
+  <li><a href="https://www.moving.com/" target="_blank">Moving.com</a></li>
+  <li><a href="https://www.movebuddha.com/" target="_blank">MoveBuddha</a></li>
+  <li><a href="https://www.bark.com/" target="_blank">Bark</a></li>
+  <li><a href="https://www.movinglabor.com/" target="_blank">MovingLabor.com</a></li>
+  <li><a href="https://www.hireahelper.com/" target="_blank">HireAHelper</a></li>
+  <li><a href="https://www.moveadvisor.com/" target="_blank">MoveAdvisor</a></li>
+</ul>
+
+<div class="tier-header">Tier 4 — High-Authority Profiles</div>
+<ul class="tier-grid">
+  <li><a href="https://www.crunchbase.com/" target="_blank">Crunchbase</a></li>
+  <li><a href="https://www.alignable.com/" target="_blank">Alignable</a></li>
+  <li><a href="https://www.trustpilot.com/" target="_blank">Trustpilot</a></li>
+  <li><a href="https://www.sitejabber.com/" target="_blank">Sitejabber</a></li>
+  <li><a href="https://www.trustindex.io/" target="_blank">Trustindex</a></li>
+  <li><a href="https://www.provenexpert.com/" target="_blank">ProvenExpert</a></li>
+  <li><a href="https://www.showmelocal.com/" target="_blank">ShowMeLocal</a></li>
+  <li><a href="https://www.find-us-here.com/" target="_blank">Find-Us-Here</a></li>
+  <li><a href="https://www.callupcontact.com/" target="_blank">CallUpContact</a></li>
+  <li><a href="https://company.com/" target="_blank">Company.com Directory</a></li>
+</ul>
+
+<div class="tier-header">Tier 5 — Social &amp; Brand Profiles</div>
+<ul class="tier-grid">
+  <li><a href="https://www.instagram.com/" target="_blank">Instagram Business</a></li>
+  <li><a href="https://x.com/" target="_blank">X (Twitter)</a></li>
+  <li><a href="https://business.pinterest.com/" target="_blank">Pinterest Business</a></li>
+  <li><a href="https://www.youtube.com/" target="_blank">YouTube Channel</a></li>
+  <li><a href="https://www.tiktok.com/business/" target="_blank">TikTok Business</a></li>
+  <li><a href="https://www.threads.net/" target="_blank">Threads</a></li>
+  <li><a href="https://bsky.app/" target="_blank">Bluesky</a></li>
+  <li><a href="https://www.reddit.com/" target="_blank">Reddit Business Profile</a></li>
+  <li><a href="https://about.me/" target="_blank">About.me</a></li>
+  <li><a href="https://gravatar.com/" target="_blank">Gravatar Profile</a></li>
+</ul>
+
+<h2>Top 10 Priority Listings — Moving Company</h2>
+<ul class="priority-list">
+  <li>Google Business Profile</li>
+  <li>Apple Business Connect</li>
+  <li>Bing Places</li>
+  <li>Yelp</li>
+  <li>Facebook</li>
+  <li>BBB</li>
+  <li>Nextdoor</li>
+  <li>Angi</li>
+  <li>Thumbtack</li>
+  <li>HireAHelper</li>
+</ul>
+
+<footer>sebastianlinks.com/48 &nbsp;·&nbsp; 48 States Moving &amp; Storage — Business Intelligence Report</footer>
+
+</body>
+</html>
