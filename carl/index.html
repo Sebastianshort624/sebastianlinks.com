@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Post-Surgery Meal Plan — Carl</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#f8f9fa;color:#1a1a2e;font-size:15px;line-height:1.6;padding-bottom:40px}
+.hero{background:linear-gradient(135deg,#1a1a2e,#2d3561);color:#fff;padding:32px 20px;text-align:center}
+.hero h1{font-size:26px;font-weight:800;margin-bottom:6px}
+.hero p{font-size:14px;opacity:.7}
+.progress-bar-wrap{background:rgba(255,255,255,.15);border-radius:100px;height:10px;margin:16px auto 4px;max-width:320px}
+.progress-bar{background:#4ade80;height:10px;border-radius:100px;transition:.4s;width:0%}
+.progress-label{font-size:13px;opacity:.8}
+.tabs{display:flex;background:#fff;border-bottom:2px solid #e5e7eb;position:sticky;top:0;z-index:100;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tab{flex-shrink:0;padding:12px 18px;font-size:13px;font-weight:600;color:#6b7280;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:.15s}
+.tab.active{color:#2d3561;border-bottom-color:#2d3561;font-weight:700}
+.tab-content{display:none;padding:16px}
+.tab-content.active{display:block}
+.section{background:#fff;border-radius:12px;border:1px solid #e5e7eb;margin-bottom:16px;overflow:hidden}
+.section-hdr{background:#f1f3ff;padding:12px 16px;font-size:13px;font-weight:700;color:#2d3561;text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:8px}
+.section-hdr .count{margin-left:auto;background:#2d3561;color:#fff;font-size:11px;padding:2px 8px;border-radius:100px}
+.check-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #f3f4f6;cursor:pointer;transition:.15s}
+.check-item:last-child{border-bottom:none}
+.check-item:hover{background:#f8f9ff}
+.check-item.checked{background:#f0fdf4}
+.check-item.checked .item-text{text-decoration:line-through;color:#9ca3af}
+.checkbox{width:22px;height:22px;border-radius:6px;border:2px solid #d1d5db;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:.2s;background:#fff}
+.check-item.checked .checkbox{background:#16a34a;border-color:#16a34a;color:#fff;font-size:13px}
+.item-text{font-size:14px;font-weight:500;flex:1}
+.item-tag{font-size:11px;font-weight:700;padding:2px 8px;border-radius:100px;flex-shrink:0}
+.tag-p{background:#e0f2fe;color:#0369a1}
+.tag-g{background:#dcfce7;color:#166534}
+.tag-v{background:#fef3c7;color:#92400e}
+.tag-d{background:#fce7f3;color:#9d174d}
+.tag-f{background:#f3e8ff;color:#6b21a8}
+.tag-2{background:#fee2e2;color:#991b1b}
+.meal-card{background:#fff;border-radius:12px;border:1px solid #e5e7eb;margin-bottom:12px;overflow:hidden}
+.meal-hdr{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;background:#f8f9fa}
+.meal-hdr h3{font-size:14px;font-weight:700;color:#1a1a2e}
+.meal-hdr .badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px}
+.badge-b{background:#dbeafe;color:#1e40af}
+.badge-l{background:#dcfce7;color:#15803d}
+.badge-d{background:#fae8ff;color:#7e22ce}
+.badge-s{background:#fef3c7;color:#92400e}
+.meal-body{padding:14px 16px;display:none;border-top:1px solid #e5e7eb}
+.meal-body.open{display:block}
+.meal-check{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #f9fafb;cursor:pointer}
+.meal-check:last-child{border-bottom:none}
+.meal-check.checked .mc-text{text-decoration:line-through;color:#9ca3af}
+.mc-box{width:18px;height:18px;border-radius:4px;border:1.5px solid #d1d5db;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;background:#fff;transition:.15s}
+.meal-check.checked .mc-box{background:#16a34a;border-color:#16a34a;color:#fff}
+.mc-text{font-size:13px;color:#374151}
+.mc-note{font-size:11px;color:#9ca3af;margin-left:auto}
+.alert-box{background:#fff;border-radius:12px;border:1.5px solid #fca5a5;overflow:hidden;margin-bottom:12px}
+.alert-hdr{background:#fef2f2;padding:12px 16px;font-size:13px;font-weight:700;color:#dc2626;display:flex;align-items:center;gap:8px}
+.alert-item{display:flex;align-items:flex-start;gap:10px;padding:10px 16px;border-bottom:1px solid #fef2f2;font-size:13px;color:#374151}
+.alert-item:last-child{border-bottom:none}
+.alert-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.guideline-box{background:#fff;border-radius:12px;border:1px solid #e5e7eb;margin-bottom:12px}
+.g-item{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-bottom:1px solid #f3f4f6;font-size:13px}
+.g-item:last-child{border-bottom:none}
+.g-icon{font-size:18px;flex-shrink:0}
+.note-box{background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;padding:14px 16px;margin-top:8px;font-size:13px;color:#92400e;line-height:1.6}
+.reset-btn{display:block;margin:20px auto 0;background:#e5e7eb;color:#374151;border:none;border-radius:8px;padding:10px 24px;font-size:13px;font-weight:600;cursor:pointer}
+.reset-btn:hover{background:#d1d5db}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div style="font-size:32px;margin-bottom:8px">🏥</div>
+  <h1>Post-Surgery Meal Plan</h1>
+  <p>Post-Cholecystectomy (Gallbladder Removal) — Carl</p>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="prog-bar"></div></div>
+  <div class="progress-label"><span id="prog-text">0 of 0 items checked</span></div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('guidelines')">📋 Guidelines</div>
+  <div class="tab" onclick="showTab('grocery')">🛒 Grocery List</div>
+  <div class="tab" onclick="showTab('week1')">Week 1 Meals</div>
+  <div class="tab" onclick="showTab('week2')">Week 2 Meals</div>
+  <div class="tab" onclick="showTab('snacks')">Snacks</div>
+  <div class="tab" onclick="showTab('alerts')">🚨 Call Doctor If</div>
+</div>
+
+<!-- GUIDELINES -->
+<div class="tab-content active" id="tab-guidelines">
+  <div class="section">
+    <div class="section-hdr">✅ Do These</div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Eat small meals (5–6 small meals instead of 3 large ones)</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Keep fat low — under 10–15g of fat per meal initially</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Stay well hydrated throughout the day</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Introduce higher-fat and high-fiber foods gradually after Week 2</div></div>
+  </div>
+  <div class="section">
+    <div class="section-hdr">❌ Avoid These (First 2 Weeks)</div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Fried foods</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Bacon, sausage</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Pizza</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Heavy cream</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Butter-heavy dishes</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Fast food</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Alcohol (until cleared by surgeon)</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Very spicy foods if they trigger symptoms</div></div>
+  </div>
+  <div class="note-box">💡 This plan is intentionally bland and low in fat because the body is adapting to digesting fats without a gallbladder. Most people can begin expanding their diet gradually after about 2–4 weeks, depending on symptoms and their surgeon's guidance. <strong>Always follow your surgeon's discharge instructions first.</strong></div>
+</div>
+
+<!-- GROCERY -->
+<div class="tab-content" id="tab-grocery">
+
+  <div class="section">
+    <div class="section-hdr">🍗 Proteins <span class="count" id="cnt-p">0/10</span></div>
+    <div class="check-item" onclick="toggle(this,'p')" data-cat="p"><div class="checkbox"></div><div class="item-text">Boneless skinless chicken breast</div><span class="item-tag tag-p">Protein</span></div>
+    <div class="check-item" onclick="toggle(this,'p')" data-cat="p"><div class="checkbox"></div><div class="item-text">Turkey breast</div><span class="item-tag tag-p">Protein</span></div>
+    <div class="check-item" onclick="toggle(this,'p')" data-cat="p"><div class="checkbox"></div><div class="item-text">Lean ground turkey (99% lean)</div><span class="item-tag tag-p">Protein</span></div>
+    <div class="check-item" onclick="toggle(this,'p')" data-cat="p"><div class="checkbox"></div><div class="item-text">White fish (cod, tilapia, haddock)</div><span class="item-tag tag-p">Protein</span></div>
+    <div class="check-item" onclick="toggle(this,'p')" data-cat="p"><div class="checkbox"></div><div class="item-text">Salmon <em style="font-size:12px;color:#9ca3af">(Week 2 only, small portions)</em></div><span class="item-tag tag-2">Week 2</span></div>
+    <div class="check-item" onclick="toggle(this,'p')" data-cat="p"><div class="checkbox"></div><div class="item-text">Eggs</div><span class="item-tag tag-p">Protein</span></div>
+    <div class="check-item" onclick="toggle(this,'p')" data-cat="p"><div class="checkbox"></div><div class="item-text">Egg whites</div><span class="item-tag tag-p">Protein</span></div>
+    <div class="check-item" onclick="toggle(this,'p')" data-cat="p"><div class="checkbox"></div><div class="item-text">Low-fat cottage cheese</div><span class="item-tag tag-d">Dairy</span></div>
+    <div class="check-item" onclick="toggle(this,'p')" data-cat="p"><div class="checkbox"></div><div class="item-text">Plain nonfat Greek yogurt</div><span class="item-tag tag-d">Dairy</span></div>
+    <div class="check-item" onclick="toggle(this,'p')" data-cat="p"><div class="checkbox"></div><div class="item-text">Tofu (optional)</div><span class="item-tag tag-p">Protein</span></div>
+  </div>
+
+  <div class="section">
+    <div class="section-hdr">🌾 Grains <span class="count" id="cnt-g">0/9</span></div>
+    <div class="check-item" onclick="toggle(this,'g')" data-cat="g"><div class="checkbox"></div><div class="item-text">Oatmeal</div><span class="item-tag tag-g">Grain</span></div>
+    <div class="check-item" onclick="toggle(this,'g')" data-cat="g"><div class="checkbox"></div><div class="item-text">Brown rice</div><span class="item-tag tag-g">Grain</span></div>
+    <div class="check-item" onclick="toggle(this,'g')" data-cat="g"><div class="checkbox"></div><div class="item-text">White rice</div><span class="item-tag tag-g">Grain</span></div>
+    <div class="check-item" onclick="toggle(this,'g')" data-cat="g"><div class="checkbox"></div><div class="item-text">Quinoa</div><span class="item-tag tag-g">Grain</span></div>
+    <div class="check-item" onclick="toggle(this,'g')" data-cat="g"><div class="checkbox"></div><div class="item-text">Whole wheat bread</div><span class="item-tag tag-g">Grain</span></div>
+    <div class="check-item" onclick="toggle(this,'g')" data-cat="g"><div class="checkbox"></div><div class="item-text">Whole wheat tortillas</div><span class="item-tag tag-g">Grain</span></div>
+    <div class="check-item" onclick="toggle(this,'g')" data-cat="g"><div class="checkbox"></div><div class="item-text">Whole wheat pasta</div><span class="item-tag tag-g">Grain</span></div>
+    <div class="check-item" onclick="toggle(this,'g')" data-cat="g"><div class="checkbox"></div><div class="item-text">Saltine crackers</div><span class="item-tag tag-g">Grain</span></div>
+    <div class="check-item" onclick="toggle(this,'g')" data-cat="g"><div class="checkbox"></div><div class="item-text">Rice cakes</div><span class="item-tag tag-g">Grain</span></div>
+  </div>
+
+  <div class="section">
+    <div class="section-hdr">🥦 Vegetables <span class="count" id="cnt-v">0/11</span></div>
+    <div class="check-item" onclick="toggle(this,'v')" data-cat="v"><div class="checkbox"></div><div class="item-text">Carrots</div><span class="item-tag tag-v">Veggie</span></div>
+    <div class="check-item" onclick="toggle(this,'v')" data-cat="v"><div class="checkbox"></div><div class="item-text">Zucchini</div><span class="item-tag tag-v">Veggie</span></div>
+    <div class="check-item" onclick="toggle(this,'v')" data-cat="v"><div class="checkbox"></div><div class="item-text">Green beans</div><span class="item-tag tag-v">Veggie</span></div>
+    <div class="check-item" onclick="toggle(this,'v')" data-cat="v"><div class="checkbox"></div><div class="item-text">Spinach</div><span class="item-tag tag-v">Veggie</span></div>
+    <div class="check-item" onclick="toggle(this,'v')" data-cat="v"><div class="checkbox"></div><div class="item-text">Cucumbers</div><span class="item-tag tag-v">Veggie</span></div>
+    <div class="check-item" onclick="toggle(this,'v')" data-cat="v"><div class="checkbox"></div><div class="item-text">Lettuce</div><span class="item-tag tag-v">Veggie</span></div>
+    <div class="check-item" onclick="toggle(this,'v')" data-cat="v"><div class="checkbox"></div><div class="item-text">Sweet potatoes</div><span class="item-tag tag-v">Veggie</span></div>
+    <div class="check-item" onclick="toggle(this,'v')" data-cat="v"><div class="checkbox"></div><div class="item-text">Potatoes</div><span class="item-tag tag-v">Veggie</span></div>
+    <div class="check-item" onclick="toggle(this,'v')" data-cat="v"><div class="checkbox"></div><div class="item-text">Broccoli <em style="font-size:12px;color:#9ca3af">(Week 2)</em></div><span class="item-tag tag-2">Week 2</span></div>
+    <div class="check-item" onclick="toggle(this,'v')" data-cat="v"><div class="checkbox"></div><div class="item-text">Cauliflower <em style="font-size:12px;color:#9ca3af">(Week 2)</em></div><span class="item-tag tag-2">Week 2</span></div>
+    <div class="check-item" onclick="toggle(this,'v')" data-cat="v"><div class="checkbox"></div><div class="item-text">Celery</div><span class="item-tag tag-v">Veggie</span></div>
+  </div>
+
+  <div class="section">
+    <div class="section-hdr">🍎 Fruit <span class="count" id="cnt-f">0/7</span></div>
+    <div class="check-item" onclick="toggle(this,'f')" data-cat="f"><div class="checkbox"></div><div class="item-text">Bananas</div><span class="item-tag tag-f">Fruit</span></div>
+    <div class="check-item" onclick="toggle(this,'f')" data-cat="f"><div class="checkbox"></div><div class="item-text">Apples</div><span class="item-tag tag-f">Fruit</span></div>
+    <div class="check-item" onclick="toggle(this,'f')" data-cat="f"><div class="checkbox"></div><div class="item-text">Applesauce (unsweetened)</div><span class="item-tag tag-f">Fruit</span></div>
+    <div class="check-item" onclick="toggle(this,'f')" data-cat="f"><div class="checkbox"></div><div class="item-text">Blueberries</div><span class="item-tag tag-f">Fruit</span></div>
+    <div class="check-item" onclick="toggle(this,'f')" data-cat="f"><div class="checkbox"></div><div class="item-text">Strawberries</div><span class="item-tag tag-f">Fruit</span></div>
+    <div class="check-item" onclick="toggle(this,'f')" data-cat="f"><div class="checkbox"></div><div class="item-text">Pears</div><span class="item-tag tag-f">Fruit</span></div>
+    <div class="check-item" onclick="toggle(this,'f')" data-cat="f"><div class="checkbox"></div><div class="item-text">Melons</div><span class="item-tag tag-f">Fruit</span></div>
+  </div>
+
+  <div class="section">
+    <div class="section-hdr">🥛 Dairy <span class="count" id="cnt-d">0/4</span></div>
+    <div class="check-item" onclick="toggle(this,'d')" data-cat="d"><div class="checkbox"></div><div class="item-text">Skim milk</div><span class="item-tag tag-d">Dairy</span></div>
+    <div class="check-item" onclick="toggle(this,'d')" data-cat="d"><div class="checkbox"></div><div class="item-text">Unsweetened almond milk</div><span class="item-tag tag-d">Dairy</span></div>
+    <div class="check-item" onclick="toggle(this,'d')" data-cat="d"><div class="checkbox"></div><div class="item-text">Low-fat mozzarella</div><span class="item-tag tag-d">Dairy</span></div>
+    <div class="check-item" onclick="toggle(this,'d')" data-cat="d"><div class="checkbox"></div><div class="item-text">Light string cheese</div><span class="item-tag tag-d">Dairy</span></div>
+  </div>
+
+  <div class="section">
+    <div class="section-hdr">🫙 Pantry <span class="count" id="cnt-pp">0/10</span></div>
+    <div class="check-item" onclick="toggle(this,'pp')" data-cat="pp"><div class="checkbox"></div><div class="item-text">Olive oil spray</div></div>
+    <div class="check-item" onclick="toggle(this,'pp')" data-cat="pp"><div class="checkbox"></div><div class="item-text">Low-sodium chicken broth</div></div>
+    <div class="check-item" onclick="toggle(this,'pp')" data-cat="pp"><div class="checkbox"></div><div class="item-text">Cinnamon</div></div>
+    <div class="check-item" onclick="toggle(this,'pp')" data-cat="pp"><div class="checkbox"></div><div class="item-text">Garlic powder</div></div>
+    <div class="check-item" onclick="toggle(this,'pp')" data-cat="pp"><div class="checkbox"></div><div class="item-text">Onion powder</div></div>
+    <div class="check-item" onclick="toggle(this,'pp')" data-cat="pp"><div class="checkbox"></div><div class="item-text">Italian seasoning</div></div>
+    <div class="check-item" onclick="toggle(this,'pp')" data-cat="pp"><div class="checkbox"></div><div class="item-text">Black pepper</div></div>
+    <div class="check-item" onclick="toggle(this,'pp')" data-cat="pp"><div class="checkbox"></div><div class="item-text">Honey</div></div>
+    <div class="check-item" onclick="toggle(this,'pp')" data-cat="pp"><div class="checkbox"></div><div class="item-text">Peanut butter powder (PB2)</div></div>
+    <div class="check-item" onclick="toggle(this,'pp')" data-cat="pp"><div class="checkbox"></div><div class="item-text">Mustard</div></div>
+  </div>
+
+  <button class="reset-btn" onclick="resetCat()">↺ Uncheck All Grocery Items</button>
+</div>
+
+<!-- WEEK 1 -->
+<div class="tab-content" id="tab-week1">
+
+  <div class="meal-card">
+    <div class="meal-hdr" onclick="toggleMeal(this)">
+      <h3>🌅 Breakfasts</h3><span class="badge badge-b">3 options</span>
+    </div>
+    <div class="meal-body">
+      <div style="font-size:12px;font-weight:700;color:#6b7280;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">1. Banana Oatmeal</div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Cook oatmeal in skim milk</div></div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Top with sliced banana</div></div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Add cinnamon</div></div>
+      <div style="font-size:12px;font-weight:700;color:#6b7280;margin:12px 0 8px;text-transform:uppercase;letter-spacing:.5px">2. Greek Yogurt Bowl</div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Nonfat Greek yogurt</div></div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Blueberries</div></div>
+      <div style="font-size:12px;font-weight:700;color:#6b7280;margin:12px 0 8px;text-transform:uppercase;letter-spacing:.5px">3. Egg White Toast</div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Egg white scramble with spinach</div></div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Whole wheat toast</div></div>
+    </div>
+  </div>
+
+  <div class="meal-card">
+    <div class="meal-hdr" onclick="toggleMeal(this)">
+      <h3>☀️ Lunches</h3><span class="badge badge-l">3 options</span>
+    </div>
+    <div class="meal-body">
+      <div style="font-size:12px;font-weight:700;color:#6b7280;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">1. Chicken & Rice Bowl</div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Grilled chicken breast</div></div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">White rice</div></div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Steamed carrots</div></div>
+      <div style="font-size:12px;font-weight:700;color:#6b7280;margin:12px 0 8px;text-transform:uppercase;letter-spacing:.5px">2. Turkey Sandwich</div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Turkey breast on whole wheat bread</div></div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Lettuce & mustard</div></div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Apple on the side</div></div>
+      <div style="font-size:12px;font-weight:700;color:#6b7280;margin:12px 0 8px;text-transform:uppercase;letter-spacing:.5px">3. Baked Cod Plate</div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Baked cod</div></div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Mashed potatoes</div></div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Green beans</div></div>
+    </div>
+  </div>
+
+  <div class="meal-card">
+    <div class="meal-hdr" onclick="toggleMeal(this)">
+      <h3>🌙 Dinners</h3><span class="badge badge-d">3 options</span>
+    </div>
+    <div class="meal-body">
+      <div style="font-size:12px;font-weight:700;color:#6b7280;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">1. Chicken Vegetable Soup</div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Chicken breast</div></div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Carrots & celery</div></div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Rice & low-sodium broth</div></div>
+      <div style="font-size:12px;font-weight:700;color:#6b7280;margin:12px 0 8px;text-transform:uppercase;letter-spacing:.5px">2. Turkey Meatballs</div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Lean turkey meatballs</div></div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Whole wheat pasta with marinara</div></div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Steamed zucchini</div></div>
+      <div style="font-size:12px;font-weight:700;color:#6b7280;margin:12px 0 8px;text-transform:uppercase;letter-spacing:.5px">3. Tilapia Dinner</div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Baked tilapia</div></div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Sweet potato</div></div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Green beans</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- WEEK 2 -->
+<div class="tab-content" id="tab-week2">
+  <div class="note-box" style="margin-bottom:14px">Continue all Week 1 meals plus add these new options as tolerated.</div>
+
+  <div class="meal-card">
+    <div class="meal-hdr" onclick="toggleMeal(this)">
+      <h3>🌅 Breakfast</h3><span class="badge badge-b">New</span>
+    </div>
+    <div class="meal-body">
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Low-fat cottage cheese</div></div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Strawberries</div></div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Whole wheat toast</div></div>
+    </div>
+  </div>
+
+  <div class="meal-card">
+    <div class="meal-hdr" onclick="toggleMeal(this)">
+      <h3>☀️ Lunch</h3><span class="badge badge-l">New</span>
+    </div>
+    <div class="meal-body">
+      <div style="font-size:12px;font-weight:700;color:#6b7280;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Turkey Wrap</div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Whole wheat tortilla</div></div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Turkey breast</div></div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Spinach & cucumber</div></div>
+    </div>
+  </div>
+
+  <div class="meal-card">
+    <div class="meal-hdr" onclick="toggleMeal(this)">
+      <h3>🌙 Dinners</h3><span class="badge badge-d">3 New</span>
+    </div>
+    <div class="meal-body">
+      <div style="font-size:12px;font-weight:700;color:#6b7280;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">1. Grilled Salmon</div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Grilled salmon (4 oz)</div><div class="mc-note">Week 2 only</div></div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Brown rice</div></div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Broccoli (if tolerated)</div></div>
+      <div style="font-size:12px;font-weight:700;color:#6b7280;margin:12px 0 8px;text-transform:uppercase;letter-spacing:.5px">2. Chicken Stir Fry</div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Chicken breast</div></div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Brown rice</div></div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Carrots & zucchini</div></div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Cook with olive oil spray only</div></div>
+      <div style="font-size:12px;font-weight:700;color:#6b7280;margin:12px 0 8px;text-transform:uppercase;letter-spacing:.5px">3. Turkey Chili</div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">99% lean ground turkey</div></div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Beans (small amount)</div></div>
+      <div class="meal-check" onclick="toggleMeal2(this)"><div class="mc-box"></div><div class="mc-text">Tomatoes & mild seasoning</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SNACKS -->
+<div class="tab-content" id="tab-snacks">
+  <div class="section">
+    <div class="section-hdr">🍎 Approved Snacks</div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Applesauce (unsweetened)</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Banana</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Rice cakes</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Greek yogurt (nonfat)</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Cottage cheese (low-fat)</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Saltine crackers</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Melon</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Strawberries</div></div>
+  </div>
+  <div class="note-box">Keep snacks small. The goal is 5–6 small eating occasions throughout the day rather than large meals.</div>
+</div>
+
+<!-- ALERTS -->
+<div class="tab-content" id="tab-alerts">
+  <div class="alert-box">
+    <div class="alert-hdr">🚨 Call the Surgeon Immediately If Carl Has:</div>
+    <div class="alert-item"><div class="alert-icon">🌡️</div><div>Fever over <strong>101°F (38.3°C)</strong></div></div>
+    <div class="alert-item"><div class="alert-icon">⚠️</div><div>Increasing abdominal pain rather than gradual improvement</div></div>
+    <div class="alert-item"><div class="alert-icon">🤢</div><div>Persistent vomiting</div></div>
+    <div class="alert-item"><div class="alert-icon">👁️</div><div>Yellowing of the skin or eyes <strong>(jaundice)</strong></div></div>
+    <div class="alert-item"><div class="alert-icon">🩹</div><div>Redness, swelling, pus, or worsening pain at the incision sites</div></div>
+    <div class="alert-item"><div class="alert-icon">💧</div><div>Inability to keep fluids down</div></div>
+    <div class="alert-item"><div class="alert-icon">🚽</div><div>Severe diarrhea lasting more than a couple of days</div></div>
+  </div>
+  <div class="note-box">⚕️ This plan does not replace discharge instructions from the surgeon. Always follow the surgical team's guidance first. When in doubt, call.</div>
+</div>
+
+<script>
+var counts={p:0,g:0,v:0,f:0,d:0,pp:0};
+var totals={p:10,g:9,v:11,f:7,d:4,pp:10};
+
+function toggle(el,cat){
+  el.classList.toggle('checked');
+  var cb=el.querySelector('.checkbox');
+  cb.textContent=el.classList.contains('checked')?'✓':'';
+  if(cat) updateCat(cat);
+  updateProgress();
+  saveState();
+}
+
+function toggleMeal(hdr){
+  var body=hdr.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+function toggleMeal2(el){
+  el.classList.toggle('checked');
+  var cb=el.querySelector('.mc-box');
+  cb.textContent=el.classList.contains('checked')?'✓':'';
+  updateProgress();
+  saveState();
+}
+
+function updateCat(cat){
+  var items=document.querySelectorAll('[data-cat="'+cat+'"]');
+  var checked=0;
+  items.forEach(function(i){if(i.classList.contains('checked'))checked++;});
+  var el=document.getElementById('cnt-'+cat);
+  if(el)el.textContent=checked+'/'+items.length;
+}
+
+function updateProgress(){
+  var all=document.querySelectorAll('.check-item,.meal-check');
+  var checked=document.querySelectorAll('.check-item.checked,.meal-check.checked');
+  var pct=all.length?Math.round(checked.length/all.length*100):0;
+  document.getElementById('prog-bar').style.width=pct+'%';
+  document.getElementById('prog-text').textContent=checked.length+' of '+all.length+' items checked';
+}
+
+function showTab(id){
+  document.querySelectorAll('.tab-content').forEach(function(t){t.classList.remove('active');});
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  document.getElementById('tab-'+id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function resetCat(){
+  document.querySelectorAll('[data-cat]').forEach(function(el){
+    el.classList.remove('checked');
+    el.querySelector('.checkbox').textContent='';
+  });
+  ['p','g','v','f','d','pp'].forEach(function(c){
+    var el=document.getElementById('cnt-'+c);
+    if(el){var items=document.querySelectorAll('[data-cat="'+c+'"]');el.textContent='0/'+items.length;}
+  });
+  updateProgress();
+  saveState();
+}
+
+function saveState(){
+  var state={};
+  document.querySelectorAll('.check-item,.meal-check').forEach(function(el,i){
+    state['i'+i]=el.classList.contains('checked');
+  });
+  try{localStorage.setItem('carl_plan',JSON.stringify(state));}catch(e){}
+}
+
+function loadState(){
+  try{
+    var state=JSON.parse(localStorage.getItem('carl_plan')||'{}');
+    document.querySelectorAll('.check-item,.meal-check').forEach(function(el,i){
+      if(state['i'+i]){
+        el.classList.add('checked');
+        var cb=el.querySelector('.checkbox,.mc-box');
+        if(cb)cb.textContent='✓';
+      }
+    });
+    ['p','g','v','f','d','pp'].forEach(updateCat);
+    updateProgress();
+  }catch(e){}
+}
+
+window.onload=function(){loadState();updateProgress();};
+</script>
+</body>
+</html>
