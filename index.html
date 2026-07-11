@@ -749,7 +749,7 @@ renderDay(); calcComm(); renderDeals(); renderPays(); renderFavs();
 
 <!-- CALENDAR WIDGET -->
 <div id="cal-widget" style="background:#fff;border-radius:14px;border:1px solid #e5e7eb;margin:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06)">
-  <div style="background:linear-gradient(135deg,#1B2A4A,#243a6e);padding:12px 16px;display:flex;align-items:center;justify-content:space-between">
+  <div style="background:linear-gradient(135deg,#1B2A4A,#243a6e);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
     <div style="display:flex;align-items:center;gap:10px">
       <span style="font-size:18px">📅</span>
       <div>
@@ -759,7 +759,25 @@ renderDay(); calcComm(); renderDeals(); renderPays(); renderFavs();
     </div>
     <a href="/calendar/" style="background:#C8960C;color:#fff;font-size:11px;font-weight:700;padding:6px 12px;border-radius:6px;text-decoration:none;font-family:Inter,sans-serif">Full Calendar ↗</a>
   </div>
-  <iframe src="https://calendar.google.com/calendar/embed?src=sebastian%40alphatimeshareconsultants.com&ctz=America%2FNew_York&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0&mode=AGENDA" style="border:0;display:block" width="100%" height="320" frameborder="0" scrolling="no"></iframe>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
+    <div style="border-right:1px solid #e5e7eb">
+      <div style="background:#f8f9fa;padding:8px 14px;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:6px">
+        <span style="width:10px;height:10px;border-radius:50%;background:#4285f4;display:inline-block"></span>
+        ATC Work Calendar — Appointments
+      </div>
+      <iframe src="https://calendar.google.com/calendar/embed?src=sebastian%40alphatimeshareconsultants.com&ctz=America%2FNew_York&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0&mode=AGENDA" style="border:0;display:block" width="100%" height="340" frameborder="0" scrolling="no"></iframe>
+    </div>
+    <div>
+      <div style="background:#f8f9fa;padding:8px 14px;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:6px">
+        <span style="width:10px;height:10px;border-radius:50%;background:#34a853;display:inline-block"></span>
+        Personal Calendar — Full Details
+      </div>
+      <iframe src="https://calendar.google.com/calendar/embed?src=sebastianshort624%40gmail.com&ctz=America%2FNew_York&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0&mode=AGENDA" style="border:0;display:block" width="100%" height="340" frameborder="0" scrolling="no"></iframe>
+    </div>
+  </div>
+  <div style="padding:8px 14px;background:#f8f9fa;border-top:1px solid #e5e7eb;font-size:11px;color:#9ca3af;text-align:center">
+    Left: ATC appointments (live, free/busy) &nbsp;·&nbsp; Right: Personal calendar (full details) &nbsp;·&nbsp; Both update in real time
+  </div>
 </div>
 </body>
 </html>
