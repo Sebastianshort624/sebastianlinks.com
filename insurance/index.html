@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Life Insurance Comparison</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e;font-size:13px}
+.header{background:linear-gradient(135deg,#1a1a2e,#2d3561);color:#fff;padding:24px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.header h1{font-size:20px;font-weight:800}
+.header p{font-size:12px;opacity:.65;margin-top:3px}
+.save-status{font-size:12px;font-weight:600;padding:6px 14px;border-radius:100px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.8);transition:.3s}
+.save-status.saved{background:rgba(74,222,128,.15);border-color:#4ade80;color:#4ade80}
+.toolbar{background:#fff;border-bottom:1px solid #e5e7eb;padding:10px 16px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{padding:7px 14px;border:none;border-radius:6px;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;cursor:pointer}
+.btn-blue{background:#2d3561;color:#fff}.btn-blue:hover{background:#1a1a2e}
+.btn-gray{background:#e5e7eb;color:#374151}.btn-gray:hover{background:#d1d5db}
+.btn-green{background:#16a34a;color:#fff}.btn-green:hover{background:#15803d}
+.btn-red{background:#dc2626;color:#fff}.btn-red:hover{background:#b91c1c}
+.wrap{overflow-x:auto;padding:16px}
+table{border-collapse:collapse;width:100%;min-width:1200px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+thead tr{background:#1a1a2e}
+th{padding:11px 10px;text-align:left;font-size:11px;font-weight:700;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.4px;white-space:nowrap;border-right:1px solid rgba(255,255,255,.08)}
+th:last-child{border-right:none}
+th.col-co{min-width:160px}
+tbody tr{border-bottom:1px solid #f3f4f6;transition:.1s}
+tbody tr:hover{background:#f8f9ff}
+tbody tr:last-child{border-bottom:none}
+td{padding:0;border-right:1px solid #f3f4f6;vertical-align:middle}
+td:last-child{border-right:none}
+.co-cell{padding:10px 12px;display:flex;flex-direction:column;gap:3px}
+.co-name{font-size:13px;font-weight:700;color:#1a1a2e}
+.co-link{font-size:11px;color:#4f6ef5;font-weight:500}
+.co-link:hover{text-decoration:underline}
+.cell-input{width:100%;border:none;outline:none;font-family:'Inter',sans-serif;font-size:13px;padding:10px 12px;background:transparent;color:#1a1a2e}
+.cell-input:focus{background:#f0f4ff}
+.cell-input::placeholder{color:#d1d5db}
+select.cell-input{cursor:pointer}
+.yn-cell{display:flex;align-items:center;justify-content:center;padding:4px}
+.yn-select{border:none;border-radius:6px;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;padding:5px 8px;cursor:pointer;text-align:center;background:#f3f4f6;color:#374151;width:90px}
+.yn-select.yes{background:#dcfce7;color:#16a34a}
+.yn-select.no{background:#fee2e2;color:#dc2626}
+.yn-select.unknown{background:#f3f4f6;color:#9ca3af}
+.notes-input{min-width:180px;resize:none;height:52px;padding:8px 10px;border:none;outline:none;font-family:'Inter',sans-serif;font-size:12px;color:#374151;background:transparent;width:100%}
+.notes-input:focus{background:#fffbeb}
+.rating-cell{display:flex;align-items:center;justify-content:center}
+.rating-badge{font-size:13px;font-weight:800;padding:4px 10px;border-radius:6px;background:#f3f4f6;color:#374151;border:none;cursor:pointer;font-family:'Inter',sans-serif;width:70px;text-align:center}
+.rating-badge.a-plus-plus{background:#dcfce7;color:#16a34a}
+.rating-badge.a-plus{background:#d1fae5;color:#065f46}
+.rating-badge.a{background:#dbeafe;color:#1e40af}
+.rating-badge.a-minus{background:#e0e7ff;color:#3730a3}
+.last-saved{font-size:11px;color:#9ca3af;margin-left:auto}
+.legend{background:#fff;border-radius:10px;border:1px solid #e5e7eb;padding:14px 16px;margin:0 16px 16px;font-size:12px;color:#374151;line-height:1.8}
+.legend strong{color:#1a1a2e}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>🛡 15-Year Level Term Life Insurance</h1>
+    <p>Shopping comparison — fills and saves automatically as you type</p>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <div class="save-status" id="save-status">All changes saved</div>
+    <div class="last-saved" id="last-saved"></div>
+  </div>
+</div>
+
+<div class="toolbar">
+  <button class="btn btn-blue" onclick="addRow()">+ Add Company</button>
+  <button class="btn btn-gray" onclick="clearAll()">↺ Clear All Data</button>
+  <button class="btn btn-green" onclick="exportCSV()">⬇ Export CSV</button>
+  <span style="font-size:12px;color:#9ca3af;margin-left:4px">* Living Benefits = critical/chronic/terminal illness riders included at no extra cost</span>
+</div>
+
+<div class="wrap">
+<table id="main-table">
+<thead>
+<tr>
+  <th class="col-co">Company</th>
+  <th>15-Yr Level Term?</th>
+  <th>Monthly Premium</th>
+  <th>$400k Quote</th>
+  <th>$450k Quote</th>
+  <th>Medical Exam?</th>
+  <th>Accelerated Underwriting?</th>
+  <th>Convertible?</th>
+  <th>Living Benefits*</th>
+  <th>AD&D Rider Cost</th>
+  <th>Fixed Premium 15 Yrs?</th>
+  <th>AM Best Rating</th>
+  <th>Questions / Notes</th>
+</tr>
+</thead>
+<tbody id="tbody">
+</tbody>
+</table>
+</div>
+
+<div class="legend">
+  <strong>* Living Benefits:</strong> Accelerated Death Benefit riders that pay out early if diagnosed with terminal, chronic, or critical illness — ideally included at no extra cost. &nbsp;|&nbsp;
+  <strong>AD&D:</strong> Accidental Death & Dismemberment rider. &nbsp;|&nbsp;
+  <strong>Convertible:</strong> Can be converted to permanent policy without new medical exam. &nbsp;|&nbsp;
+  <strong>AM Best Ratings:</strong> A++ (Superior) → A+ (Superior) → A (Excellent) → A- (Excellent)
+</div>
+
+<script>
+var COMPANIES=[
+  {name:'Banner Life',url:'https://www.bannerlife.com'},
+  {name:'Protective Life',url:'https://www.protective.com'},
+  {name:'Pacific Life',url:'https://www.pacificlife.com'},
+  {name:'Corebridge Financial',url:'https://www.corebridgefinancial.com'},
+  {name:'Prudential Financial',url:'https://www.prudential.com'},
+  {name:'Principal Financial Group',url:'https://www.principal.com'},
+  {name:'Lincoln Financial',url:'https://www.lincolnfinancial.com'},
+];
+
+var RATINGS=['','A++','A+','A','A-','B++','B+','NR'];
+var YN=['','Yes','No','TBD'];
+
+function ratingClass(v){
+  if(v==='A++')return 'a-plus-plus';
+  if(v==='A+')return 'a-plus';
+  if(v==='A')return 'a';
+  if(v==='A-')return 'a-minus';
+  return '';
+}
+function ynClass(v){
+  if(v==='Yes')return 'yes';
+  if(v==='No')return 'no';
+  return 'unknown';
+}
+
+function yn(field,row){
+  var id='yn-'+field+'-'+row;
+  var s='<select class="yn-select unknown" id="'+id+'" onchange="ynChange(this,\''+field+'\','+row+')">';
+  YN.forEach(function(o){s+='<option value="'+o+'">'+( o||'—' )+'</option>';});
+  s+='</select>';
+  return s;
+}
+
+function makeRow(data,idx){
+  var d=data||{};
+  var isCustom=idx>=COMPANIES.length;
+  var co=COMPANIES[idx]||{name:'',url:''};
+
+  var row=document.createElement('tr');
+  row.id='row-'+idx;
+
+  // Company name + link
+  var td0=document.createElement('td');
+  if(isCustom){
+    td0.innerHTML='<input class="cell-input" style="font-weight:700" placeholder="Company name" value="'+(d.coName||'')+'" oninput="setField(\'coName\','+idx+',this.value)">';
+  } else {
+    td0.innerHTML='<div class="co-cell"><div class="co-name">'+co.name+'</div><a class="co-link" href="'+co.url+'" target="_blank">'+co.url.replace('https://www.','')+'</a></div>';
+  }
+  row.appendChild(td0);
+
+  // 15-Yr Level Term (yn)
+  var td1=document.createElement('td');td1.className='yn-cell';td1.innerHTML=yn('levelTerm',idx);row.appendChild(td1);
+
+  // Monthly premium
+  var td2=document.createElement('td');
+  td2.innerHTML='<input class="cell-input" placeholder="$0.00/mo" value="'+(d.premium||'')+'" oninput="setField(\'premium\','+idx+',this.value)">';
+  row.appendChild(td2);
+
+  // $400k quote
+  var td3=document.createElement('td');
+  td3.innerHTML='<input class="cell-input" placeholder="$0.00/mo" value="'+(d.q400||'')+'" oninput="setField(\'q400\','+idx+',this.value)">';
+  row.appendChild(td3);
+
+  // $450k quote
+  var td4=document.createElement('td');
+  td4.innerHTML='<input class="cell-input" placeholder="$0.00/mo" value="'+(d.q450||'')+'" oninput="setField(\'q450\','+idx+',this.value)">';
+  row.appendChild(td4);
+
+  // Medical exam (yn)
+  var td5=document.createElement('td');td5.className='yn-cell';td5.innerHTML=yn('medExam',idx);row.appendChild(td5);
+
+  // Accelerated underwriting (yn)
+  var td6=document.createElement('td');td6.className='yn-cell';td6.innerHTML=yn('accUW',idx);row.appendChild(td6);
+
+  // Convertible (yn)
+  var td7=document.createElement('td');td7.className='yn-cell';td7.innerHTML=yn('conv',idx);row.appendChild(td7);
+
+  // Living benefits (yn)
+  var td8=document.createElement('td');td8.className='yn-cell';td8.innerHTML=yn('living',idx);row.appendChild(td8);
+
+  // AD&D rider cost
+  var td9=document.createElement('td');
+  td9.innerHTML='<input class="cell-input" placeholder="e.g. +$2/mo" value="'+(d.addrider||'')+'" oninput="setField(\'addrider\','+idx+',this.value)">';
+  row.appendChild(td9);
+
+  // Fixed premium (yn)
+  var td10=document.createElement('td');td10.className='yn-cell';td10.innerHTML=yn('fixedPrem',idx);row.appendChild(td10);
+
+  // AM Best Rating
+  var td11=document.createElement('td');td11.className='rating-cell';
+  var rs='<select class="rating-badge '+ratingClass(d.rating||'')+'" id="rat-'+idx+'" onchange="ratingChange(this,'+idx+')">';
+  RATINGS.forEach(function(r){rs+='<option value="'+r+'"'+(r===(d.rating||'')?' selected':'')+'>'+( r||'—' )+'</option>';});
+  rs+='</select>';
+  td11.innerHTML=rs;row.appendChild(td11);
+
+  // Notes
+  var td12=document.createElement('td');
+  td12.innerHTML='<textarea class="notes-input" placeholder="Notes..." oninput="setField(\'notes\','+idx+',this.value)">'+(d.notes||'')+'</textarea>';
+  row.appendChild(td12);
+
+  // Delete btn for custom rows
+  if(isCustom){
+    var tdX=document.createElement('td');
+    tdX.innerHTML='<button onclick="deleteRow('+idx+')" style="margin:4px;padding:4px 8px;border:none;border-radius:4px;background:#fee2e2;color:#dc2626;cursor:pointer;font-size:12px;font-weight:700">✕</button>';
+    row.appendChild(tdX);
+  }
+
+  return row;
+}
+
+function ynChange(sel,field,idx){
+  sel.className='yn-select '+ynClass(sel.value);
+  setField(field,idx,sel.value);
+}
+function ratingChange(sel,idx){
+  sel.className='rating-badge '+ratingClass(sel.value);
+  setField('rating',idx,sel.value);
+}
+
+function setField(field,idx,val){
+  var data=loadData();
+  if(!data[idx])data[idx]={};
+  data[idx][field]=val;
+  saveData(data);
+}
+
+function loadData(){
+  try{return JSON.parse(localStorage.getItem('insurance_data')||'{}');}catch(e){return {};}
+}
+
+function saveData(data){
+  localStorage.setItem('insurance_data',JSON.stringify(data));
+  var s=document.getElementById('save-status');
+  s.textContent='✓ Saved';s.className='save-status saved';
+  document.getElementById('last-saved').textContent='Last saved '+new Date().toLocaleTimeString();
+  clearTimeout(window._saveT);
+  window._saveT=setTimeout(function(){s.textContent='All changes saved';s.className='save-status';},2000);
+}
+
+function restoreYN(field,idx,val){
+  var el=document.getElementById('yn-'+field+'-'+idx);
+  if(el&&val){el.value=val;el.className='yn-select '+ynClass(val);}
+}
+
+function render(){
+  var tbody=document.getElementById('tbody');
+  tbody.innerHTML='';
+  var data=loadData();
+  var totalRows=COMPANIES.length+(data._extra||0);
+  for(var i=0;i<totalRows;i++){
+    var row=makeRow(data[i]||{},i);
+    tbody.appendChild(row);
+    // Restore yn selects
+    var d=data[i]||{};
+    ['levelTerm','medExam','accUW','conv','living','fixedPrem'].forEach(function(f){
+      restoreYN(f,i,d[f]);
+    });
+  }
+}
+
+function addRow(){
+  var data=loadData();
+  var extra=(data._extra||0)+1;
+  data._extra=extra;
+  saveData(data);
+  render();
+}
+
+function deleteRow(idx){
+  if(!confirm('Remove this row?'))return;
+  var data=loadData();
+  delete data[idx];
+  // Shift higher indices down
+  var keys=Object.keys(data).filter(function(k){return parseInt(k)>idx && !isNaN(k);}).sort(function(a,b){return a-b;});
+  keys.forEach(function(k){data[parseInt(k)-1]=data[k];delete data[k];});
+  if(data._extra>0)data._extra--;
+  saveData(data);
+  render();
+}
+
+function clearAll(){
+  if(!confirm('Clear ALL saved data? This cannot be undone.'))return;
+  localStorage.removeItem('insurance_data');
+  render();
+}
+
+function exportCSV(){
+  var rows=[['Company','Website','15-Yr Level Term','Monthly Premium','$400k Quote','$450k Quote','Medical Exam','Accelerated Underwriting','Convertible','Living Benefits','AD&D Rider Cost','Fixed Premium 15 Yrs','AM Best Rating','Notes']];
+  var data=loadData();
+  var totalRows=COMPANIES.length+(data._extra||0);
+  for(var i=0;i<totalRows;i++){
+    var d=data[i]||{};
+    var co=COMPANIES[i]||{name:d.coName||'',url:''};
+    rows.push([co.name,co.url,d.levelTerm||'',d.premium||'',d.q400||'',d.q450||'',d.medExam||'',d.accUW||'',d.conv||'',d.living||'',d.addrider||'',d.fixedPrem||'',d.rating||'',d.notes||'']);
+  }
+  var csv=rows.map(function(r){return r.map(function(c){return '"'+(c+'').replace(/"/g,'""')+'"';}).join(',');}).join('\n');
+  var a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download='life_insurance_comparison.csv';a.click();
+}
+
+render();
+</script>
+</body>
+</html>
