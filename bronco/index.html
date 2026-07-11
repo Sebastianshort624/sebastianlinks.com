@@ -183,7 +183,7 @@ textarea.ci{resize:none;height:50px;padding:7px 10px;font-size:12px}
   <th style="min-width:90px">Inspection?</th>
   <th style="min-width:80px">Decision</th>
   <th style="min-width:90px">Location / Dealer</th>
-  <th style="min-width:90px">Phone / Link</th>
+  <th style="min-width:110px">Listing Link</th>
   <th style="min-width:160px">Notes</th>
 </tr>
 </thead>
@@ -270,7 +270,10 @@ function makeRow(d,idx){
     '<td style="text-align:center;padding:4px">'+ynSel('inspection',d.inspection)+'</td>'+
     '<td style="text-align:center;padding:4px">'+starSel('decision',d.decision)+'</td>'+
     '<td>'+inp('dealer',d.dealer,'Dealer name / city')+'</td>'+
-    '<td>'+inp('link',d.link,'Phone or URL')+'</td>'+
+    '<td style="padding:6px 10px;min-width:110px">'+
+      '<input class="ci" data-f="link" value="'+(d.link||'')+'" placeholder="Paste URL here" oninput="saveAll();updateLink(this)" style="font-size:12px;color:#4f6ef5;margin-bottom:4px">'+
+      (d.link?'<a href="'+(d.link||'')+'" target="_blank" style="display:block;font-size:11px;font-weight:700;color:#4f6ef5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px">🔗 Open Listing ↗</a>':'<span style="font-size:11px;color:#d1d5db">Paste URL above</span>')+
+    '</td>'+
     '<td>'+ta('notes',d.notes,'Anything else...')+'</td>'+
     '<td><button class="del-btn" onclick="deleteRow(this)">✕</button></td>';
   return tr;
@@ -310,6 +313,31 @@ function exportCSV(){
 
 render();
 loadCL();
+
+function updateLink(inp){
+  // Re-render just the link cell so the anchor updates live
+  var row=inp.closest('tr');
+  var anchor=row.querySelector('a[href]');
+  var span=row.querySelector('span[style*="d1d5db"]');
+  var url=inp.value.trim();
+  if(url){
+    if(anchor){anchor.href=url;}
+    else if(span){
+      var a=document.createElement('a');
+      a.href=url;a.target='_blank';
+      a.style.cssText='display:block;font-size:11px;font-weight:700;color:#4f6ef5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px';
+      a.textContent='🔗 Open Listing ↗';
+      span.parentNode.replaceChild(a,span);
+    }
+  } else {
+    if(anchor){
+      var s=document.createElement('span');
+      s.style.cssText='font-size:11px;color:#d1d5db';
+      s.textContent='Paste URL above';
+      anchor.parentNode.replaceChild(s,anchor);
+    }
+  }
+}
 </script>
 </body>
 </html>
