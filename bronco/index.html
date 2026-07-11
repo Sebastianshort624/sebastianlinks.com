@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Bronco Sport Shopping — Under $20k</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#f4f6fa;color:#1a1a2e;font-size:13px;padding-bottom:40px}
+.header{background:linear-gradient(135deg,#1a2e1a,#2d4a1f);color:#fff;padding:24px 20px}
+.header-top{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.header h1{font-size:22px;font-weight:800;margin-bottom:4px}
+.header p{font-size:13px;opacity:.65}
+.save-badge{font-size:12px;font-weight:600;padding:6px 14px;border-radius:100px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.8);white-space:nowrap;transition:.3s}
+.save-badge.saved{background:rgba(74,222,128,.15);border-color:#4ade80;color:#4ade80}
+
+/* GUIDE CARDS */
+.guide{padding:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:0}
+.guide-card{background:#fff;border-radius:10px;border:1px solid #e5e7eb;padding:14px;position:relative}
+.guide-card.best{border-color:#16a34a;border-width:2px}
+.guide-card.good{border-color:#3b82f6;border-width:2px}
+.guide-card.caution{border-color:#f59e0b;border-width:2px}
+.guide-card.avoid{border-color:#e5e7eb;opacity:.6}
+.year-badge{font-size:22px;font-weight:900;color:#1a1a2e;margin-bottom:2px}
+.year-price{font-size:12px;color:#6b7280;margin-bottom:8px}
+.year-trim{font-size:12px;font-weight:600;color:#374151;margin-bottom:6px}
+.year-note{font-size:11px;color:#6b7280;line-height:1.5}
+.corner-badge{position:absolute;top:10px;right:10px;font-size:14px}
+.trim-tag{display:inline-block;background:#dbeafe;color:#1e40af;font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px;margin:1px}
+.trim-tag.avoid{background:#fee2e2;color:#dc2626}
+
+/* RANK TABLE */
+.rank-table{background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin:0 16px 16px;overflow:hidden}
+.rank-hdr{background:#1a2e1a;padding:10px 14px;font-size:12px;font-weight:700;color:#86efac;text-transform:uppercase;letter-spacing:.5px}
+.rank-row{display:flex;align-items:center;gap:12px;padding:10px 14px;border-bottom:1px solid #f3f4f6;font-size:13px}
+.rank-row:last-child{border-bottom:none}
+.rank-medal{font-size:18px;width:28px;text-align:center;flex-shrink:0}
+.rank-yr{font-weight:700;color:#1a1a2e;width:100px;flex-shrink:0}
+.rank-why{color:#6b7280;font-size:12px}
+
+/* CHECKLIST */
+.checklist-section{background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin:0 16px 16px;overflow:hidden}
+.cl-hdr{background:#1a2e1a;padding:10px 14px;font-size:12px;font-weight:700;color:#86efac;text-transform:uppercase;letter-spacing:.5px}
+.cl-item{display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid #f3f4f6;cursor:pointer;transition:.1s}
+.cl-item:last-child{border-bottom:none}
+.cl-item:hover{background:#f8fdf8}
+.cl-item.checked{background:#f0fdf4}
+.cl-item.checked .cl-text{text-decoration:line-through;color:#9ca3af}
+.cl-box{width:22px;height:22px;border-radius:6px;border:2px solid #d1d5db;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;background:#fff;transition:.2s}
+.cl-item.checked .cl-box{background:#16a34a;border-color:#16a34a;color:#fff}
+.cl-text{font-size:13px;font-weight:500;color:#1a1a2e}
+
+/* SHOPPING TABLE */
+.toolbar{background:#fff;border-bottom:1px solid #e5e7eb;border-top:1px solid #e5e7eb;padding:10px 16px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{padding:7px 14px;border:none;border-radius:6px;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;cursor:pointer}
+.btn-green{background:#16a34a;color:#fff}.btn-green:hover{background:#15803d}
+.btn-gray{background:#e5e7eb;color:#374151}.btn-gray:hover{background:#d1d5db}
+.btn-blue{background:#1a2e1a;color:#fff}.btn-blue:hover{background:#0f1f0f}
+.wrap{overflow-x:auto;padding:0 16px 16px}
+table{border-collapse:collapse;width:100%;min-width:1100px;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+thead tr{background:#1a2e1a}
+th{padding:10px 10px;text-align:left;font-size:11px;font-weight:700;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.4px;white-space:nowrap;border-right:1px solid rgba(255,255,255,.08)}
+th:last-child{border-right:none}
+tbody tr{border-bottom:1px solid #f3f4f6;transition:.1s}
+tbody tr:hover{background:#f8fdf8}
+tbody tr:last-child{border-bottom:none}
+td{padding:0;border-right:1px solid #f3f4f6;vertical-align:middle}
+td:last-child{border-right:none}
+.ci{width:100%;border:none;outline:none;font-family:'Inter',sans-serif;font-size:13px;padding:9px 10px;background:transparent;color:#1a1a2e}
+.ci:focus{background:#f0fdf4}
+.ci::placeholder{color:#d1d5db}
+select.ci{cursor:pointer}
+textarea.ci{resize:none;height:50px;padding:7px 10px;font-size:12px}
+.yn-sel{border:none;border-radius:6px;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;padding:5px 6px;cursor:pointer;background:#f3f4f6;color:#6b7280;width:80px}
+.yn-sel.yes{background:#dcfce7;color:#16a34a}
+.yn-sel.no{background:#fee2e2;color:#dc2626}
+.price-cell{font-weight:700;color:#16a34a}
+.star-sel{border:none;border-radius:6px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;padding:5px 8px;cursor:pointer;background:#f3f4f6;color:#374151;width:90px}
+.star-sel.go{background:#dcfce7;color:#16a34a}
+.star-sel.maybe{background:#fef3c7;color:#92400e}
+.star-sel.skip{background:#fee2e2;color:#dc2626}
+.section-label{padding:10px 16px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#6b7280;background:#f8fdf8;border-bottom:1px solid #e5e7eb}
+.del-btn{padding:4px 8px;border:none;border-radius:4px;background:#fee2e2;color:#dc2626;cursor:pointer;font-size:11px;font-weight:700;margin:4px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <h1>🤠 Ford Bronco Sport Shopping</h1>
+      <p>Under $20,000 · 2021–2024 · All data saves automatically</p>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+      <div class="save-badge" id="save-badge">All changes saved</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.4)" id="last-saved"></div>
+    </div>
+  </div>
+</div>
+
+<!-- YEAR GUIDE -->
+<div class="guide">
+  <div class="guide-card caution">
+    <div class="corner-badge">⚠️</div>
+    <div class="year-badge">2021</div>
+    <div class="year-price">$14,000 – $19,500</div>
+    <div class="year-trim"><span class="trim-tag">Big Bend</span><span class="trim-tag">Outer Banks</span></div>
+    <div class="year-note">First model year — easiest to find under $20k but had more early-production issues. Inspect carefully. Verify all recalls.</div>
+  </div>
+  <div class="guide-card good">
+    <div class="corner-badge">✅</div>
+    <div class="year-badge">2022</div>
+    <div class="year-price">$18,000 – $20,000</div>
+    <div class="year-trim"><span class="trim-tag">Big Bend</span><span class="trim-tag">Base</span></div>
+    <div class="year-note">Harder to find under $20k but generally better than a comparable 2021 at similar price.</div>
+  </div>
+  <div class="guide-card best">
+    <div class="corner-badge">⭐</div>
+    <div class="year-badge">2023</div>
+    <div class="year-price">$18,000 – $20,000</div>
+    <div class="year-trim"><span class="trim-tag">Big Bend</span></div>
+    <div class="year-note">Best value if you can find one. Higher-mileage examples show up under $20k. <strong>Top pick.</strong></div>
+  </div>
+  <div class="guide-card best">
+    <div class="corner-badge">⭐</div>
+    <div class="year-badge">2024</div>
+    <div class="year-price">Rare but possible</div>
+    <div class="year-trim"><span class="trim-tag">Big Bend</span></div>
+    <div class="year-note">Excellent buy if you find one under budget — usually higher-mileage or discounted.</div>
+  </div>
+  <div class="guide-card avoid">
+    <div class="corner-badge">❌</div>
+    <div class="year-badge">2025+</div>
+    <div class="year-price">Over $20,000</div>
+    <div class="year-trim"><span class="trim-tag avoid">Skip</span></div>
+    <div class="year-note">Typically above budget.</div>
+  </div>
+</div>
+
+<!-- RANK TABLE -->
+<div class="rank-table">
+  <div class="rank-hdr">🏆 Recommended Buy Order</div>
+  <div class="rank-row"><div class="rank-medal">🥇</div><div class="rank-yr">2023 Big Bend</div><div class="rank-why">Best balance of age, reliability, and value if you find one under $20k.</div></div>
+  <div class="rank-row"><div class="rank-medal">🥈</div><div class="rank-yr">2022 Big Bend</div><div class="rank-why">Slightly older but generally preferable to a similar-priced 2021.</div></div>
+  <div class="rank-row"><div class="rank-medal">🥉</div><div class="rank-yr">2024 Big Bend</div><div class="rank-why">Excellent buy if you happen to find one under budget.</div></div>
+  <div class="rank-row"><div class="rank-medal">4</div><div class="rank-yr">2021 Outer Banks</div><div class="rank-why">Nice features — inspect carefully, verify recalls and service history.</div></div>
+  <div class="rank-row"><div class="rank-medal">5</div><div class="rank-yr">2021 Big Bend</div><div class="rank-why">Good budget option with clean history and complete maintenance records.</div></div>
+</div>
+
+<!-- PRE-BUY CHECKLIST -->
+<div class="checklist-section">
+  <div class="cl-hdr">✅ Before You Buy Any Bronco Sport</div>
+  <div class="cl-item" onclick="toggleCL(this,'cl0')"><div class="cl-box" id="cl0"></div><div class="cl-text">Verify ALL Ford recalls have been completed — use the VIN at recalls.nhtsa.dot.gov</div></div>
+  <div class="cl-item" onclick="toggleCL(this,'cl1')"><div class="cl-box" id="cl1"></div><div class="cl-text">Get a pre-purchase inspection from an independent mechanic (not the dealer)</div></div>
+  <div class="cl-item" onclick="toggleCL(this,'cl2')"><div class="cl-box" id="cl2"></div><div class="cl-text">Request the CARFAX or AutoCheck vehicle history report</div></div>
+  <div class="cl-item" onclick="toggleCL(this,'cl3')"><div class="cl-box" id="cl3"></div><div class="cl-text">Prefer one-owner vehicles with documented maintenance history</div></div>
+  <div class="cl-item" onclick="toggleCL(this,'cl4')"><div class="cl-box" id="cl4"></div><div class="cl-text">Compare mileage to price — paying a little more for significantly lower mileage is worth it</div></div>
+  <div class="cl-item" onclick="toggleCL(this,'cl5')"><div class="cl-box" id="cl5"></div><div class="cl-text">Test drive and listen for any unusual noises (especially from the AWD system)</div></div>
+  <div class="cl-item" onclick="toggleCL(this,'cl6')"><div class="cl-box" id="cl6"></div><div class="cl-text">Check that all driver assist / SYNC features work correctly</div></div>
+</div>
+
+<!-- SHOPPING TABLE LABEL -->
+<div class="section-label">📋 My Vehicle Comparisons — Fill in as you shop</div>
+
+<div class="toolbar">
+  <button class="btn btn-blue" onclick="addRow()">+ Add Vehicle</button>
+  <button class="btn btn-gray" onclick="clearTable()">↺ Clear Table</button>
+  <button class="btn btn-green" onclick="exportCSV()">⬇ Export CSV</button>
+</div>
+
+<div class="wrap">
+<table>
+<thead>
+<tr>
+  <th style="min-width:120px">Year / Trim</th>
+  <th style="min-width:80px">Price</th>
+  <th style="min-width:80px">Mileage</th>
+  <th style="min-width:110px">Color</th>
+  <th style="min-width:90px">One Owner?</th>
+  <th style="min-width:90px">CARFAX?</th>
+  <th style="min-width:90px">Recalls Done?</th>
+  <th style="min-width:90px">Inspection?</th>
+  <th style="min-width:80px">Decision</th>
+  <th style="min-width:90px">Location / Dealer</th>
+  <th style="min-width:90px">Phone / Link</th>
+  <th style="min-width:160px">Notes</th>
+</tr>
+</thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
+
+<script>
+var SK='bronco_data', CL='bronco_cl';
+
+// CHECKLIST
+function toggleCL(el,id){
+  el.classList.toggle('checked');
+  var box=document.getElementById(id);
+  box.textContent=el.classList.contains('checked')?'✓':'';
+  saveCL();
+}
+function saveCL(){
+  var state={};
+  document.querySelectorAll('.cl-item').forEach(function(el,i){state['c'+i]=el.classList.contains('checked');});
+  localStorage.setItem(CL,JSON.stringify(state));
+  flash();
+}
+function loadCL(){
+  try{
+    var s=JSON.parse(localStorage.getItem(CL)||'{}');
+    document.querySelectorAll('.cl-item').forEach(function(el,i){
+      if(s['c'+i]){el.classList.add('checked');document.getElementById('cl'+i).textContent='✓';}
+    });
+  }catch(e){}
+}
+
+// TABLE
+function getData(){try{return JSON.parse(localStorage.getItem(SK)||'[]');}catch(e){return [];}}
+function saveAll(){
+  var rows=document.querySelectorAll('#tbody tr');
+  var data=[];
+  rows.forEach(function(row){
+    var inputs=row.querySelectorAll('input,select,textarea');
+    var obj={};
+    inputs.forEach(function(inp){if(inp.dataset.f)obj[inp.dataset.f]=inp.value;});
+    data.push(obj);
+  });
+  localStorage.setItem(SK,JSON.stringify(data));
+  flash();
+}
+
+function flash(){
+  var b=document.getElementById('save-badge');
+  b.textContent='✓ Saved';b.className='save-badge saved';
+  document.getElementById('last-saved').textContent='Last saved '+new Date().toLocaleTimeString();
+  clearTimeout(window._t);
+  window._t=setTimeout(function(){b.textContent='All changes saved';b.className='save-badge';},2000);
+}
+
+function ynSel(f,val){
+  var cls=val==='Yes'?'yes':val==='No'?'no':'';
+  return '<select class="yn-sel '+cls+'" data-f="'+f+'" onchange="this.className=\'yn-sel \'+(this.value===\'Yes\'?\'yes\':this.value===\'No\'?\'no\':\'\');saveAll()">'
+    +'<option value="">—</option><option'+(val==='Yes'?' selected':'')+'>Yes</option><option'+(val==='No'?' selected':'')+'>No</option></select>';
+}
+function starSel(f,val){
+  var cls=val==='Go'?'go':val==='Maybe'?'maybe':val==='Skip'?'skip':'';
+  return '<select class="star-sel '+cls+'" data-f="'+f+'" onchange="this.className=\'star-sel \'+(this.value===\'Go\'?\'go\':this.value===\'Maybe\'?\'maybe\':this.value===\'Skip\'?\'skip\':\'\');saveAll()">'
+    +'<option value="">—</option><option'+(val==='Go'?' selected':'')+'>Go</option><option'+(val==='Maybe'?' selected':'')+'>Maybe</option><option'+(val==='Skip'?' selected':'')+'>Skip</option></select>';
+}
+function inp(f,val,ph){
+  return '<input class="ci" data-f="'+f+'" value="'+(val||'')+'" placeholder="'+(ph||'')+'" oninput="saveAll()">';
+}
+function ta(f,val,ph){
+  return '<textarea class="ci" data-f="'+f+'" placeholder="'+(ph||'')+'" oninput="saveAll()">'+(val||'')+'</textarea>';
+}
+
+function makeRow(d,idx){
+  d=d||{};
+  var tr=document.createElement('tr');
+  tr.innerHTML=
+    '<td>'+inp('yr',d.yr,'2023 Big Bend')+'</td>'+
+    '<td>'+inp('price',d.price,'$18,500')+'</td>'+
+    '<td>'+inp('miles',d.miles,'42,000 mi')+'</td>'+
+    '<td>'+inp('color',d.color,'Cactus Gray')+'</td>'+
+    '<td style="text-align:center;padding:4px">'+ynSel('oneowner',d.oneowner)+'</td>'+
+    '<td style="text-align:center;padding:4px">'+ynSel('carfax',d.carfax)+'</td>'+
+    '<td style="text-align:center;padding:4px">'+ynSel('recalls',d.recalls)+'</td>'+
+    '<td style="text-align:center;padding:4px">'+ynSel('inspection',d.inspection)+'</td>'+
+    '<td style="text-align:center;padding:4px">'+starSel('decision',d.decision)+'</td>'+
+    '<td>'+inp('dealer',d.dealer,'Dealer name / city')+'</td>'+
+    '<td>'+inp('link',d.link,'Phone or URL')+'</td>'+
+    '<td>'+ta('notes',d.notes,'Anything else...')+'</td>'+
+    '<td><button class="del-btn" onclick="deleteRow(this)">✕</button></td>';
+  return tr;
+}
+
+function render(){
+  var tbody=document.getElementById('tbody');
+  tbody.innerHTML='';
+  var data=getData();
+  if(!data.length)data=[{}];
+  data.forEach(function(d,i){tbody.appendChild(makeRow(d,i));});
+}
+
+function addRow(){
+  var data=getData();data.push({});localStorage.setItem(SK,JSON.stringify(data));render();}
+function deleteRow(btn){
+  var row=btn.closest('tr');row.parentNode.removeChild(row);saveAll();render();}
+function clearTable(){if(!confirm('Clear all vehicle comparisons?'))return;localStorage.removeItem(SK);render();}
+
+function exportCSV(){
+  var headers=['Year/Trim','Price','Mileage','Color','One Owner','CARFAX','Recalls Done','Inspection','Decision','Dealer/Location','Phone/Link','Notes'];
+  var fields=['yr','price','miles','color','oneowner','carfax','recalls','inspection','decision','dealer','link','notes'];
+  var rows=[headers];
+  document.querySelectorAll('#tbody tr').forEach(function(tr){
+    var r=[];
+    fields.forEach(function(f){
+      var el=tr.querySelector('[data-f="'+f+'"]');
+      r.push(el?el.value:'');
+    });
+    rows.push(r);
+  });
+  var csv=rows.map(function(r){return r.map(function(c){return '"'+(c+'').replace(/"/g,'""')+'"';}).join(',');}).join('\n');
+  var a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download='bronco_sport_comparison.csv';a.click();
+}
+
+render();
+loadCL();
+</script>
+</body>
+</html>
