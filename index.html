@@ -625,6 +625,128 @@ function delFav(e,i) {
 renderDay(); calcComm(); renderDeals(); renderPays(); renderFavs();
 </script>
 
+
+<!-- QUICK NOTES WIDGET -->
+<div id="notes-widget" style="background:#fff;border-radius:14px;border:1px solid #e5e7eb;margin:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06)">
+  <div style="background:linear-gradient(135deg,#1B2A4A,#243a6e);padding:12px 16px;display:flex;align-items:center;justify-content:space-between">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-size:18px">📝</span>
+      <div style="font-family:Inter,sans-serif;font-size:14px;font-weight:800;color:#fff">Quick Notes</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <span id="notes-saved" style="font-size:11px;color:rgba(255,255,255,.45)">Auto-saved</span>
+      <button onclick="addNotesCat()" style="background:#C8960C;color:#fff;font-size:11px;font-weight:700;padding:6px 12px;border-radius:6px;border:none;cursor:pointer;font-family:Inter,sans-serif">+ Category</button>
+    </div>
+  </div>
+  <div id="notes-body" style="padding:14px"></div>
+</div>
+
+<script>
+(function(){
+  var NK='seb_notes';
+  function load(){try{return JSON.parse(localStorage.getItem(NK)||'[]');}catch(e){return[];}}
+  function save(d){localStorage.setItem(NK,JSON.stringify(d));flash();}
+  function flash(){
+    var s=document.getElementById('notes-saved');
+    s.textContent='✓ Saved';s.style.color='#4ade80';
+    clearTimeout(window._nt);
+    window._nt=setTimeout(function(){s.textContent='Auto-saved';s.style.color='rgba(255,255,255,.45)';},1500);
+  }
+
+  var CAT_COLORS=['#1B2A4A','#16a34a','#dc2626','#7c3aed','#0369a1','#92400e','#be185d'];
+
+  function render(){
+    var data=load();
+    var body=document.getElementById('notes-body');
+    if(!data.length){
+      body.innerHTML='<div style="text-align:center;padding:24px;color:#9ca3af;font-size:13px">No categories yet. Click <strong>+ Category</strong> to get started.</div>';
+      return;
+    }
+    body.innerHTML='';
+    data.forEach(function(cat,ci){
+      var col=CAT_COLORS[ci%CAT_COLORS.length];
+      var sec=document.createElement('div');
+      sec.style.cssText='margin-bottom:14px;border-radius:10px;border:1px solid #e5e7eb;overflow:hidden';
+
+      // Category header
+      var hdr=document.createElement('div');
+      hdr.style.cssText='background:'+col+';padding:8px 12px;display:flex;align-items:center;gap:8px';
+      hdr.innerHTML=
+        '<input value="'+escH(cat.name)+'" style="background:transparent;border:none;outline:none;font-family:Inter,sans-serif;font-size:13px;font-weight:700;color:#fff;flex:1" '+
+        'oninput="updateCatName('+ci+',this.value)">'+
+        '<button onclick="addNote('+ci+')" style="background:rgba(255,255,255,.2);color:#fff;border:none;border-radius:5px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">+ Note</button>'+
+        '<button onclick="deleteCat('+ci+')" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);border:none;border-radius:5px;padding:4px 8px;font-size:13px;cursor:pointer;font-family:Inter,sans-serif;margin-left:2px">✕</button>';
+      sec.appendChild(hdr);
+
+      // Notes
+      if(!cat.notes||!cat.notes.length){
+        var empty=document.createElement('div');
+        empty.style.cssText='padding:10px 14px;font-size:12px;color:#d1d5db;font-style:italic';
+        empty.textContent='No notes yet — click + Note';
+        sec.appendChild(empty);
+      } else {
+        cat.notes.forEach(function(note,ni){
+          var row=document.createElement('div');
+          row.style.cssText='display:flex;align-items:flex-start;gap:8px;padding:8px 12px;border-bottom:1px solid #f3f4f6';
+          row.innerHTML=
+            '<textarea rows="1" style="flex:1;border:none;outline:none;font-family:Inter,sans-serif;font-size:13px;color:#374151;resize:none;background:transparent;line-height:1.5;overflow:hidden" '+
+            'oninput="updateNote('+ci+','+ni+',this.value);autoH(this)" onkeydown="noteKey(event,'+ci+','+ni+')">'+escH(note)+'</textarea>'+
+            '<button onclick="deleteNote('+ci+','+ni+')" style="background:none;border:none;color:#d1d5db;cursor:pointer;font-size:14px;padding:2px 4px;flex-shrink:0" title="Delete">✕</button>';
+          sec.appendChild(row);
+        });
+      }
+      body.appendChild(sec);
+    });
+    // Auto-height all textareas
+    body.querySelectorAll('textarea').forEach(function(t){autoH(t);});
+  }
+
+  function escH(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+  function autoH(t){t.style.height='auto';t.style.height=t.scrollHeight+'px';}
+
+  window.addNotesCat=function(){
+    var d=load();
+    d.push({name:'New Category',notes:[]});
+    save(d);render();
+    // Focus the new category name
+    setTimeout(function(){
+      var inputs=document.querySelectorAll('#notes-body input');
+      if(inputs.length)inputs[inputs.length-1].select();
+    },50);
+  };
+  window.deleteCat=function(ci){
+    if(!confirm('Delete this category and all its notes?'))return;
+    var d=load();d.splice(ci,1);save(d);render();
+  };
+  window.addNote=function(ci){
+    var d=load();
+    if(!d[ci].notes)d[ci].notes=[];
+    d[ci].notes.push('');
+    save(d);render();
+    setTimeout(function(){
+      var tas=document.querySelectorAll('#notes-body textarea');
+      if(tas.length)tas[tas.length-1].focus();
+    },50);
+  };
+  window.deleteNote=function(ci,ni){
+    var d=load();d[ci].notes.splice(ni,1);save(d);render();
+  };
+  window.updateCatName=function(ci,val){
+    var d=load();d[ci].name=val;save(d);
+  };
+  window.updateNote=function(ci,ni,val){
+    var d=load();
+    if(!d[ci].notes)d[ci].notes=[];
+    d[ci].notes[ni]=val;save(d);
+  };
+  window.noteKey=function(e,ci,ni){
+    if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();addNote(ci);}
+  };
+
+  render();
+})();
+</script>
+
 <!-- CALENDAR WIDGET -->
 <div id="cal-widget" style="background:#fff;border-radius:14px;border:1px solid #e5e7eb;margin:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06)">
   <div style="background:linear-gradient(135deg,#1B2A4A,#243a6e);padding:12px 16px;display:flex;align-items:center;justify-content:space-between">
