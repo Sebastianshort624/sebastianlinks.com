@@ -3,598 +3,636 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Sebastian's House — Life OS</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<title>Sebastian's Town — Life OS</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;0,900;1,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --navy:#1B2A4A;--gold:#C8960C;
-  --room-office:#1B2A4A;
-  --room-family:#2d6a4f;
-  --room-recovery:#7b2d8b;
-  --room-garage:#b5451b;
-  --room-finance:#1a5276;
-  --room-health:#1a7a4a;
-  --room-library:#4a3728;
-  --room-foyer:#2c3e50;
-}
-body{font-family:Inter,sans-serif;background:#0d1117;color:#fff;min-height:100vh;overflow-x:hidden}
+body{font-family:Inter,sans-serif;background:#0a0e1a;color:#fff;min-height:100vh;overflow-x:hidden}
 
-/* NAV */
-.nav{background:rgba(13,17,23,.95);backdrop-filter:blur(10px);padding:0 20px;height:52px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.08);position:sticky;top:0;z-index:1000}
-.nav-home{display:flex;align-items:center;gap:8px;cursor:pointer;text-decoration:none}
-.nav-house{font-size:20px}
-.nav-title{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;color:#fff;letter-spacing:.3px}
-.nav-breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,.4)}
-.nav-breadcrumb span{color:rgba(255,255,255,.2)}
-.nav-breadcrumb .current{color:var(--gold);font-weight:700}
-.nav-actions{display:flex;gap:8px}
-.nav-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.6);border-radius:6px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;text-decoration:none;font-family:Inter,sans-serif;transition:.15s}
-.nav-btn:hover{background:rgba(255,255,255,.15);color:#fff}
-.nav-btn.gold{background:rgba(200,150,12,.2);border-color:rgba(200,150,12,.4);color:var(--gold)}
+/* ── SKY / ATMOSPHERE ── */
+.sky{background:linear-gradient(180deg,#0a0e1a 0%,#0d1a2e 40%,#111f38 100%);min-height:100vh;position:relative}
 
-/* FOYER */
-.foyer{padding:32px 20px;max-width:1100px;margin:0 auto}
-.foyer-greeting{text-align:center;margin-bottom:40px}
-.foyer-time{font-size:48px;font-weight:800;font-family:'Barlow Condensed',sans-serif;color:var(--gold);letter-spacing:-1px}
-.foyer-date{font-size:16px;color:rgba(255,255,255,.45);margin-top:4px}
-.foyer-sub{font-size:14px;color:rgba(255,255,255,.3);margin-top:8px}
+/* ── STARS ── */
+.stars{position:fixed;inset:0;pointer-events:none;z-index:0}
+.star{position:absolute;border-radius:50%;background:#fff;animation:twinkle 3s infinite}
+@keyframes twinkle{0%,100%{opacity:.3}50%{opacity:1}}
 
-.house-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.room-card{border-radius:16px;padding:0;cursor:pointer;transition:.25s;position:relative;overflow:hidden;min-height:180px;display:flex;flex-direction:column;justify-content:flex-end;text-decoration:none}
-.room-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.4)}
-.room-bg{position:absolute;inset:0;opacity:.9}
-.room-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.7) 0%,rgba(0,0,0,.1) 60%,transparent 100%)}
-.room-content{position:relative;z-index:1;padding:18px 20px}
-.room-icon{font-size:32px;margin-bottom:8px;display:block}
-.room-name{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;color:#fff;letter-spacing:.3px}
-.room-desc{font-size:12px;color:rgba(255,255,255,.6);margin-top:3px}
-.room-count{position:absolute;top:14px;right:14px;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.15);border-radius:100px;padding:3px 10px;font-size:11px;font-weight:700;color:rgba(255,255,255,.7);z-index:1}
+/* ── NAV ── */
+.nav{background:rgba(10,14,26,.92);backdrop-filter:blur(12px);padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.07);position:sticky;top:0;z-index:1000}
+.nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none}
+.nav-icon{font-size:22px}
+.nav-name{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;letter-spacing:.5px;color:#fff}
+.nav-name span{color:#f4c542}
+.nav-center{display:flex;align-items:center;gap:6px}
+.xp-bar-wrap{background:rgba(255,255,255,.08);border-radius:100px;height:8px;width:140px;overflow:hidden}
+.xp-bar{background:linear-gradient(90deg,#f4c542,#e8a020);height:100%;border-radius:100px;transition:.6s}
+.xp-label{font-size:11px;font-weight:700;color:#f4c542;margin-left:6px}
+.nav-level{background:#f4c542;color:#0a0e1a;border-radius:100px;padding:3px 12px;font-size:12px;font-weight:900;font-family:'Barlow Condensed',sans-serif;letter-spacing:.5px}
+.nav-right{display:flex;gap:8px}
+.nav-btn{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.6);border-radius:7px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;text-decoration:none;font-family:Inter,sans-serif;transition:.15s}
+.nav-btn:hover{background:rgba(255,255,255,.13);color:#fff}
+.nav-btn.accent{background:rgba(244,197,66,.15);border-color:rgba(244,197,66,.4);color:#f4c542}
 
-/* ROOM VIEW */
-.room-view{display:none;min-height:calc(100vh - 52px)}
-.room-view.active{display:flex;flex-direction:column}
-.room-header{padding:24px 20px;border-bottom:1px solid rgba(255,255,255,.08)}
-.room-header-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:16px}
-.room-header-icon{font-size:36px}
-.room-header-name{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;color:#fff;letter-spacing:.3px}
-.room-header-desc{font-size:13px;color:rgba(255,255,255,.45);margin-top:3px}
-.room-body{flex:1;display:grid;grid-template-columns:1fr 280px;gap:0;max-width:100%}
+/* ── TOWN VIEW ── */
+.town{position:relative;z-index:1;padding:24px 16px 80px}
+.town-header{text-align:center;margin-bottom:36px}
+.town-title{font-family:'Barlow Condensed',sans-serif;font-size:42px;font-weight:900;letter-spacing:-1px;color:#fff;margin-bottom:6px}
+.town-title span{color:#f4c542}
+.town-subtitle{font-size:13px;color:rgba(255,255,255,.35);letter-spacing:.3px}
+.daily-quest{display:inline-flex;align-items:center;gap:8px;background:rgba(244,197,66,.1);border:1px solid rgba(244,197,66,.25);border-radius:100px;padding:6px 16px;font-size:12px;font-weight:700;color:#f4c542;margin-top:12px;cursor:pointer;transition:.15s}
+.daily-quest:hover{background:rgba(244,197,66,.18)}
+.dq-dot{width:8px;height:8px;border-radius:50%;background:#f4c542;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ── NEIGHBORHOODS ── */
+.neighborhoods{display:flex;flex-direction:column;gap:28px;max-width:1080px;margin:0 auto}
+.neighborhood{border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.06)}
+.nh-header{padding:14px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,.06)}
+.nh-icon{font-size:24px;flex-shrink:0}
+.nh-name{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:#fff;letter-spacing:.3px}
+.nh-desc{font-size:12px;color:rgba(255,255,255,.4);margin-top:2px}
+.nh-pop{margin-left:auto;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.5)}
+.nh-body{padding:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+
+/* ── BUILDINGS ── */
+.building{border-radius:14px;padding:16px;cursor:pointer;transition:.2s;position:relative;border:1.5px solid rgba(255,255,255,.06);background:rgba(255,255,255,.03);text-decoration:none;display:flex;flex-direction:column;gap:0}
+.building:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.07)}
+.building.has-quest{border-color:rgba(244,197,66,.4)}
+.building.has-quest::before{content:'!';position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:#f4c542;color:#0a0e1a;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;animation:pulse 1.5s infinite;z-index:2}
+.building.locked{opacity:.4;cursor:not-allowed;filter:grayscale(.8)}
+.bld-icon{font-size:28px;margin-bottom:10px;display:block}
+.bld-name{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;color:#fff;letter-spacing:.2px;margin-bottom:3px}
+.bld-desc{font-size:11px;color:rgba(255,255,255,.4);line-height:1.4;margin-bottom:10px}
+.bld-level{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.level-stars{display:flex;gap:2px}
+.star-pip{width:8px;height:8px;border-radius:50%}
+.star-pip.on{background:#f4c542}
+.star-pip.off{background:rgba(255,255,255,.12)}
+.level-label{font-size:10px;font-weight:700;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.5px}
+.bld-progress{height:4px;background:rgba(255,255,255,.08);border-radius:100px;margin-bottom:10px;overflow:hidden}
+.bld-progress-bar{height:100%;border-radius:100px;transition:.6s}
+.bld-quest{background:rgba(244,197,66,.1);border:1px solid rgba(244,197,66,.25);border-radius:8px;padding:7px 10px;margin-bottom:8px;display:none}
+.building.has-quest .bld-quest{display:block}
+.bld-quest-label{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#f4c542;margin-bottom:3px}
+.bld-quest-text{font-size:11px;color:rgba(255,255,255,.7);line-height:1.4}
+.bld-action{display:flex;align-items:center;justify-content:space-between;margin-top:auto}
+.bld-tag{font-size:10px;font-weight:700;padding:3px 8px;border-radius:100px;background:rgba(255,255,255,.07);color:rgba(255,255,255,.4)}
+.bld-go{font-size:11px;font-weight:800;color:#f4c542;display:flex;align-items:center;gap:3px}
+
+/* STATUS DOTS */
+.bld-tag.active{background:rgba(74,222,128,.1);color:#4ade80}
+.bld-tag.progress{background:rgba(244,197,66,.1);color:#f4c542}
+.bld-tag.attention{background:rgba(248,113,113,.1);color:#f87171}
+.bld-tag.planned{background:rgba(255,255,255,.07);color:rgba(255,255,255,.35)}
+
+/* ── ROOM OVERLAY ── */
+.room-overlay{display:none;position:fixed;inset:0;z-index:2000;background:#0a0e1a;overflow-y:auto}
+.room-overlay.open{display:flex;flex-direction:column}
+.room-top{padding:16px 20px;display:flex;align-items:center;gap:14px;border-bottom:1px solid rgba(255,255,255,.08);position:sticky;top:0;background:rgba(10,14,26,.95);backdrop-filter:blur(10px);z-index:10}
+.room-top-icon{font-size:28px}
+.room-top-name{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;color:#fff}
+.room-top-desc{font-size:12px;color:rgba(255,255,255,.4);margin-top:2px}
+.room-close{margin-left:auto;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.6);border-radius:7px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif}
+.room-content{display:grid;grid-template-columns:1fr 280px;flex:1}
 .room-main{padding:20px;overflow-y:auto}
-.room-sidebar{border-left:1px solid rgba(255,255,255,.08);padding:20px;background:rgba(255,255,255,.02)}
+.room-side{border-left:1px solid rgba(255,255,255,.07);padding:20px;background:rgba(255,255,255,.015)}
 
-/* LINKS GRID */
-.links-section{margin-bottom:24px}
-.links-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.3);margin-bottom:10px}
-.links-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
-.link-tile{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px;text-decoration:none;display:flex;flex-direction:column;gap:6px;transition:.15s;cursor:pointer}
-.link-tile:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.25);transform:translateY(-1px)}
-.link-tile-icon{font-size:20px}
-.link-tile-name{font-size:12px;font-weight:700;color:#fff;line-height:1.3}
-.link-tile-desc{font-size:10px;color:rgba(255,255,255,.4)}
+/* ── QUESTS PANEL ── */
+.quests-panel{margin-bottom:20px}
+.quests-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.3);margin-bottom:10px}
+.quest-item{background:rgba(244,197,66,.07);border:1px solid rgba(244,197,66,.2);border-radius:10px;padding:12px;margin-bottom:8px;display:flex;align-items:flex-start;gap:10px}
+.quest-item.done{background:rgba(74,222,128,.05);border-color:rgba(74,222,128,.2);opacity:.6}
+.qi-icon{font-size:18px;flex-shrink:0}
+.qi-text{font-size:12px;color:rgba(255,255,255,.75);line-height:1.5;flex:1}
+.qi-xp{font-size:10px;font-weight:800;color:#f4c542;margin-top:4px;display:block}
+.qi-btn{background:rgba(244,197,66,.2);border:1px solid rgba(244,197,66,.4);color:#f4c542;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;flex-shrink:0;transition:.15s;margin-top:2px}
+.qi-btn:hover{background:#f4c542;color:#0a0e1a}
 
-/* NOTES PANEL */
-.notes-panel{display:flex;flex-direction:column;gap:12px}
-.notes-panel h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:rgba(255,255,255,.35);margin-bottom:4px}
-.notes-cats{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
-.notes-cat{font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px;cursor:pointer;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);background:transparent;transition:.15s;font-family:Inter,sans-serif}
-.notes-cat:hover,.notes-cat.active{background:var(--gold);border-color:var(--gold);color:#fff}
-.notes-input-row{display:flex;gap:6px}
-.notes-text{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:8px 10px;font-family:Inter,sans-serif;font-size:13px;color:#fff;outline:none;resize:none;min-height:60px;line-height:1.5}
-.notes-text::placeholder{color:rgba(255,255,255,.2)}
-.notes-text:focus{border-color:rgba(200,150,12,.5)}
-.notes-add-btn{background:var(--gold);border:none;border-radius:8px;padding:8px 12px;color:#fff;font-size:16px;font-weight:800;cursor:pointer;font-family:Inter,sans-serif;align-self:flex-end}
-.note-item{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:10px 12px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px}
-.note-item-text{font-size:13px;color:rgba(255,255,255,.75);line-height:1.5;flex:1}
-.note-item-meta{font-size:10px;color:rgba(255,255,255,.25);margin-top:4px}
-.note-del{background:none;border:none;color:rgba(255,255,255,.2);cursor:pointer;font-size:13px;flex-shrink:0;padding:0 2px}
-.note-del:hover{color:rgba(255,255,255,.6)}
-.notes-empty{font-size:12px;color:rgba(255,255,255,.2);text-align:center;padding:20px 0;font-style:italic}
+/* ── LINKS ── */
+.link-section{margin-bottom:18px}
+.link-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.3);margin-bottom:8px}
+.link-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.link-tile{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:5px;transition:.15s;text-decoration:none;cursor:pointer}
+.link-tile:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.18)}
+.lt-icon{font-size:20px}
+.lt-name{font-size:12px;font-weight:700;color:#fff}
+.lt-desc{font-size:10px;color:rgba(255,255,255,.35)}
 
-/* EMBED FRAME */
-.embed-frame{width:100%;height:500px;border:none;border-radius:10px;background:rgba(255,255,255,.03)}
+/* NOTES */
+.notes-cat-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.nc-btn{font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.5);background:transparent;cursor:pointer;font-family:Inter,sans-serif;transition:.15s}
+.nc-btn.active{background:#f4c542;border-color:#f4c542;color:#0a0e1a}
+.nc-btn:hover:not(.active){border-color:rgba(255,255,255,.3);color:#fff}
+.note-ta{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px;color:#fff;font-size:13px;font-family:Inter,sans-serif;outline:none;resize:none;min-height:70px;line-height:1.5}
+.note-ta::placeholder{color:rgba(255,255,255,.2)}
+.note-ta:focus{border-color:rgba(244,197,66,.4)}
+.note-add-btn{width:100%;background:rgba(244,197,66,.15);border:1px solid rgba(244,197,66,.3);color:#f4c542;border-radius:8px;padding:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;margin:8px 0 12px;transition:.15s}
+.note-add-btn:hover{background:#f4c542;color:#0a0e1a}
+.note-entry{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:8px;padding:10px 12px;margin-bottom:6px;display:flex;gap:8px;align-items:flex-start}
+.ne-text{font-size:12px;color:rgba(255,255,255,.7);line-height:1.5;flex:1}
+.ne-meta{font-size:10px;color:rgba(255,255,255,.2);margin-top:3px}
+.ne-del{background:none;border:none;color:rgba(255,255,255,.2);cursor:pointer;font-size:12px;flex-shrink:0;padding:0}
 
-/* FAMILY MEMBERS */
-.family-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
-.family-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:16px;text-align:center;cursor:pointer;transition:.15s;text-decoration:none}
-.family-card:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.25)}
-.family-avatar{font-size:32px;margin-bottom:8px}
-.family-name{font-size:14px;font-weight:700;color:#fff}
-.family-role{font-size:11px;color:rgba(255,255,255,.4);margin-top:3px}
+/* COIN TOAST */
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#f4c542;color:#0a0e1a;border-radius:100px;padding:10px 22px;font-size:14px;font-weight:800;font-family:'Barlow Condensed',sans-serif;letter-spacing:.5px;z-index:9999;display:none;animation:toastIn .3s ease}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 
-/* CALENDAR IN ROOM */
-.cal-mini{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);border-radius:10px;overflow:hidden;margin-bottom:16px}
-.cal-mini-hdr{background:rgba(255,255,255,.06);padding:8px 14px;font-size:12px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.5px}
-
-@media(max-width:768px){
-  .house-grid{grid-template-columns:1fr 1fr}
-  .room-body{grid-template-columns:1fr}
-  .room-sidebar{border-left:none;border-top:1px solid rgba(255,255,255,.08)}
+@media(max-width:700px){
+  .nh-body{grid-template-columns:1fr 1fr}
+  .room-content{grid-template-columns:1fr}
+  .room-side{border-left:none;border-top:1px solid rgba(255,255,255,.07)}
 }
-@media(max-width:480px){
-  .house-grid{grid-template-columns:1fr}
+@media(max-width:400px){
+  .nh-body{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
 
+<!-- STARS -->
+<div class="stars" id="stars"></div>
+<div class="toast" id="toast"></div>
+
 <!-- NAV -->
 <nav class="nav">
-  <a class="nav-home" onclick="showFoyer()" href="#" style="text-decoration:none">
-    <span class="nav-house">🏠</span>
-    <span class="nav-title">Sebastian's House</span>
+  <a class="nav-logo" href="#" onclick="closeRoom()">
+    <span class="nav-icon">🏙</span>
+    <span class="nav-name">Sebastian's <span>Town</span></span>
   </a>
-  <div class="nav-breadcrumb" id="breadcrumb" style="display:none">
-    <a onclick="showFoyer()" href="#" style="color:rgba(255,255,255,.4);text-decoration:none">Home</a>
-    <span>›</span>
-    <span class="current" id="breadcrumb-room">—</span>
+  <div class="nav-center">
+    <div class="xp-bar-wrap"><div class="xp-bar" id="xp-bar" style="width:0%"></div></div>
+    <span class="xp-label" id="xp-label">0 XP</span>
+    <span class="nav-level" id="nav-level">LVL 1</span>
   </div>
-  <div class="nav-actions">
+  <div class="nav-right">
     <a href="https://alphafiles.net/vitals/" class="nav-btn">⚡ ATC</a>
-    <a href="https://alphafiles.net/alpha/" class="nav-btn">📋 Alpha</a>
-    <a href="/calendar/" class="nav-btn">📅 Cal</a>
-    <button class="nav-btn gold" onclick="showFoyer()">🏠 All Rooms</button>
+    <span class="nav-btn accent" id="coin-display">🪙 0</span>
   </div>
 </nav>
 
-<!-- ══════════════ FOYER ══════════════ -->
-<div id="foyer">
-  <div class="foyer">
-    <div class="foyer-greeting">
-      <div class="foyer-time" id="clock">--:--</div>
-      <div class="foyer-date" id="today-date">—</div>
-      <div class="foyer-sub">Welcome home, Sebastian.</div>
+<!-- ══════════ TOWN VIEW ══════════ -->
+<div class="town sky" id="town-view">
+  <div class="town-header">
+    <div class="town-title">Welcome to Your <span>Town</span></div>
+    <div class="town-subtitle">Every project is a building. Every step levels it up.</div>
+    <div class="daily-quest" id="daily-quest-btn" onclick="openDailyQuests()">
+      <div class="dq-dot"></div>
+      <span id="dq-label">Loading daily quests...</span>
+    </div>
+  </div>
+
+  <div class="neighborhoods" id="neighborhoods">
+
+    <!-- ══ BUSINESS PARK ══ -->
+    <div class="neighborhood" style="background:linear-gradient(135deg,rgba(27,42,74,.6),rgba(36,58,110,.3))">
+      <div class="nh-header" style="background:rgba(27,42,74,.5)">
+        <span class="nh-icon">🏢</span>
+        <div><div class="nh-name">Business Park</div><div class="nh-desc">ATC · Sales · CRM · Presentations</div></div>
+        <div class="nh-pop" id="pop-business">Loading...</div>
+      </div>
+      <div class="nh-body">
+        <div class="building has-quest" onclick="openBuilding('atc-vitals')" data-room="atc-vitals">
+          <span class="bld-icon">⚡</span>
+          <div class="bld-name">ATC Headquarters</div>
+          <div class="bld-desc">CRM vitals, client files, email generator</div>
+          <div class="bld-level"><div class="level-stars" id="stars-atc-vitals"></div><span class="level-label">Level</span></div>
+          <div class="bld-progress"><div class="bld-progress-bar" style="background:linear-gradient(90deg,#1B2A4A,#C8960C)" id="prog-atc-vitals"></div></div>
+          <div class="bld-quest"><div class="bld-quest-label">🎯 Active Quest</div><div class="bld-quest-text">Paste CRM data for your next call</div></div>
+          <div class="bld-action"><span class="bld-tag active">Active</span><span class="bld-go">Enter →</span></div>
+        </div>
+        <div class="building has-quest" onclick="openBuilding('presentation')" data-room="presentation">
+          <span class="bld-icon">▶️</span>
+          <div class="bld-name">Presentation Hall</div>
+          <div class="bld-desc">Live sales presentation engine</div>
+          <div class="bld-level"><div class="level-stars" id="stars-presentation"></div><span class="level-label">Level</span></div>
+          <div class="bld-progress"><div class="bld-progress-bar" style="background:linear-gradient(90deg,#7c3aed,#C8960C)" id="prog-presentation"></div></div>
+          <div class="bld-quest"><div class="bld-quest-label">🎯 Active Quest</div><div class="bld-quest-text">Run your next presentation all the way through</div></div>
+          <div class="bld-action"><span class="bld-tag progress">In Use</span><span class="bld-go">Enter →</span></div>
+        </div>
+        <div class="building" onclick="openBuilding('clients')" data-room="clients">
+          <span class="bld-icon">👥</span>
+          <div class="bld-name">Client Village</div>
+          <div class="bld-desc">All active client portals and hub</div>
+          <div class="bld-level"><div class="level-stars" id="stars-clients"></div><span class="level-label">Level</span></div>
+          <div class="bld-progress"><div class="bld-progress-bar" style="background:linear-gradient(90deg,#16a34a,#C8960C)" id="prog-clients"></div></div>
+          <div class="bld-action"><span class="bld-tag active">Active</span><span class="bld-go">Enter →</span></div>
+        </div>
+        <div class="building" onclick="openBuilding('build-console')" data-room="build-console">
+          <span class="bld-icon">🚀</span>
+          <div class="bld-name">Launch Pad</div>
+          <div class="bld-desc">Build console — push quote pages live</div>
+          <div class="bld-level"><div class="level-stars" id="stars-build-console"></div><span class="level-label">Level</span></div>
+          <div class="bld-progress"><div class="bld-progress-bar" style="background:linear-gradient(90deg,#dc2626,#f4c542)" id="prog-build-console"></div></div>
+          <div class="bld-action"><span class="bld-tag active">Active</span><span class="bld-go">Enter →</span></div>
+        </div>
+      </div>
     </div>
 
-    <div class="house-grid">
-
-      <!-- OFFICE -->
-      <div class="room-card" onclick="openRoom('office')">
-        <div class="room-bg" style="background:linear-gradient(135deg,#1B2A4A,#243a6e)"></div>
-        <div class="room-overlay"></div>
-        <div class="room-count" id="cnt-office">ATC</div>
-        <div class="room-content">
-          <span class="room-icon">💼</span>
-          <div class="room-name">The Office</div>
-          <div class="room-desc">ATC · CRM · Sales tools · Emails</div>
+    <!-- ══ FINANCE DISTRICT ══ -->
+    <div class="neighborhood" style="background:linear-gradient(135deg,rgba(21,67,96,.6),rgba(26,82,118,.3))">
+      <div class="nh-header" style="background:rgba(21,67,96,.5)">
+        <span class="nh-icon">🏦</span>
+        <div><div class="nh-name">Finance District</div><div class="nh-desc">Insurance · Budgets · Estate planning</div></div>
+        <div class="nh-pop" id="pop-finance">Loading...</div>
+      </div>
+      <div class="nh-body">
+        <div class="building has-quest" onclick="openBuilding('estate-planning')" data-room="estate-planning">
+          <span class="bld-icon">🏠</span>
+          <div class="bld-name">Estate Planning House</div>
+          <div class="bld-desc">Life insurance comparison · 7 companies</div>
+          <div class="bld-level"><div class="level-stars" id="stars-estate-planning"></div><span class="level-label">Level</span></div>
+          <div class="bld-progress"><div class="bld-progress-bar" style="background:linear-gradient(90deg,#1a5276,#f4c542)" id="prog-estate-planning"></div></div>
+          <div class="bld-quest"><div class="bld-quest-label">🎯 Quest</div><div class="bld-quest-text">Fill in quotes from 3 more insurers</div></div>
+          <div class="bld-action"><span class="bld-tag progress">In Progress</span><span class="bld-go">Enter →</span></div>
+        </div>
+        <div class="building" onclick="openBuilding('joshua-finance')" data-room="joshua-finance">
+          <span class="bld-icon">🪖</span>
+          <div class="bld-name">Military Finance</div>
+          <div class="bld-desc">Joshua's Army Dave Ramsey plan</div>
+          <div class="bld-level"><div class="level-stars" id="stars-joshua-finance"></div><span class="level-label">Level</span></div>
+          <div class="bld-progress"><div class="bld-progress-bar" style="background:linear-gradient(90deg,#1a7a4a,#f4c542)" id="prog-joshua-finance"></div></div>
+          <div class="bld-action"><span class="bld-tag active">Active</span><span class="bld-go">Enter →</span></div>
+        </div>
+        <div class="building has-quest" onclick="openBuilding('income')" data-room="income">
+          <span class="bld-icon">💰</span>
+          <div class="bld-name">Income Office</div>
+          <div class="bld-desc">Commission tracking · Pay history</div>
+          <div class="bld-level"><div class="level-stars" id="stars-income"></div><span class="level-label">Level</span></div>
+          <div class="bld-progress"><div class="bld-progress-bar" style="background:linear-gradient(90deg,#b8860b,#f4c542)" id="prog-income"></div></div>
+          <div class="bld-quest"><div class="bld-quest-label">🎯 Quest</div><div class="bld-quest-text">Log this week's commissions</div></div>
+          <div class="bld-action"><span class="bld-tag attention">Needs Update</span><span class="bld-go">Enter →</span></div>
         </div>
       </div>
-
-      <!-- LIVING ROOM / DAILY HUB -->
-      <div class="room-card" onclick="openRoom('living')">
-        <div class="room-bg" style="background:linear-gradient(135deg,#2c3e50,#34495e)"></div>
-        <div class="room-overlay"></div>
-        <div class="room-count">Daily</div>
-        <div class="room-content">
-          <span class="room-icon">🛋</span>
-          <div class="room-name">Living Room</div>
-          <div class="room-desc">Calendar · Hit list · Quick notes</div>
-        </div>
-      </div>
-
-      <!-- FAMILY ROOM -->
-      <div class="room-card" onclick="openRoom('family')">
-        <div class="room-bg" style="background:linear-gradient(135deg,#1a5e3a,#27ae60)"></div>
-        <div class="room-overlay"></div>
-        <div class="room-count">4 Members</div>
-        <div class="room-content">
-          <span class="room-icon">👨‍👩‍👧‍👦</span>
-          <div class="room-name">Family Room</div>
-          <div class="room-desc">Joshua · Ever · Carl · Colombia</div>
-        </div>
-      </div>
-
-      <!-- RECOVERY ROOM -->
-      <div class="room-card" onclick="openRoom('recovery')">
-        <div class="room-bg" style="background:linear-gradient(135deg,#6c3483,#8e44ad)"></div>
-        <div class="room-overlay"></div>
-        <div class="room-count">12 Steps</div>
-        <div class="room-content">
-          <span class="room-icon">❤️‍🔥</span>
-          <div class="room-name">Recovery Room</div>
-          <div class="room-desc">12 Steps · Vapeless · Palabras</div>
-        </div>
-      </div>
-
-      <!-- FINANCE ROOM -->
-      <div class="room-card" onclick="openRoom('finance')">
-        <div class="room-bg" style="background:linear-gradient(135deg,#154360,#1a5276)"></div>
-        <div class="room-overlay"></div>
-        <div class="room-count">$$$</div>
-        <div class="room-content">
-          <span class="room-icon">💰</span>
-          <div class="room-name">Finance Room</div>
-          <div class="room-desc">Income · Insurance · Joshua budget</div>
-        </div>
-      </div>
-
-      <!-- GARAGE / PROJECTS -->
-      <div class="room-card" onclick="openRoom('garage')">
-        <div class="room-bg" style="background:linear-gradient(135deg,#784212,#a04000)"></div>
-        <div class="room-overlay"></div>
-        <div class="room-count">4 Projects</div>
-        <div class="room-content">
-          <span class="room-icon">🔧</span>
-          <div class="room-name">The Garage</div>
-          <div class="room-desc">DP Movers · 48 States · Roofing</div>
-        </div>
-      </div>
-
-      <!-- HEALTH / KITCHEN -->
-      <div class="room-card" onclick="openRoom('health')">
-        <div class="room-bg" style="background:linear-gradient(135deg,#1d6a3e,#239a5c)"></div>
-        <div class="room-overlay"></div>
-        <div class="room-count">Wellness</div>
-        <div class="room-content">
-          <span class="room-icon">🥗</span>
-          <div class="room-name">Health & Kitchen</div>
-          <div class="room-desc">Meal plans · Wellness · Carl's plan</div>
-        </div>
-      </div>
-
-      <!-- LIBRARY -->
-      <div class="room-card" onclick="openRoom('library')">
-        <div class="room-bg" style="background:linear-gradient(135deg,#4a2c2a,#6d4c41)"></div>
-        <div class="room-overlay"></div>
-        <div class="room-count">Resources</div>
-        <div class="room-content">
-          <span class="room-icon">📚</span>
-          <div class="room-name">The Library</div>
-          <div class="room-desc">Research · Bronco · Links · Docs</div>
-        </div>
-      </div>
-
-      <!-- ADD ROOM -->
-      <div class="room-card" onclick="addRoom()" style="border:2px dashed rgba(255,255,255,.15);background:transparent;min-height:180px;align-items:center;justify-content:center">
-        <div class="room-content" style="text-align:center">
-          <span class="room-icon" style="display:block;text-align:center">+</span>
-          <div class="room-name" style="color:rgba(255,255,255,.3)">Add a Room</div>
-          <div class="room-desc">Create your own space</div>
-        </div>
-      </div>
-
     </div>
+
+    <!-- ══ MOVING COMPANY ZONE ══ -->
+    <div class="neighborhood" style="background:linear-gradient(135deg,rgba(120,66,18,.5),rgba(160,64,0,.3))">
+      <div class="nh-header" style="background:rgba(120,66,18,.5)">
+        <span class="nh-icon">🚛</span>
+        <div><div class="nh-name">Industrial Zone</div><div class="nh-desc">DP Movers · 48 States · Roofing</div></div>
+        <div class="nh-pop" id="pop-industrial">Loading...</div>
+      </div>
+      <div class="nh-body">
+        <div class="building has-quest" onclick="openBuilding('dp-movers')" data-room="dp-movers">
+          <span class="bld-icon">🚛</span>
+          <div class="bld-name">DP Movers HQ</div>
+          <div class="bld-desc">dpmoversrelocation.com · Live site</div>
+          <div class="bld-level"><div class="level-stars" id="stars-dp-movers"></div><span class="level-label">Level</span></div>
+          <div class="bld-progress"><div class="bld-progress-bar" style="background:linear-gradient(90deg,#e8522a,#f4c542)" id="prog-dp-movers"></div></div>
+          <div class="bld-quest"><div class="bld-quest-label">🎯 Quest</div><div class="bld-quest-text">Verify HTTPS is enforced on live domain</div></div>
+          <div class="bld-action"><span class="bld-tag progress">DNS Live</span><span class="bld-go">Enter →</span></div>
+        </div>
+        <div class="building has-quest" onclick="openBuilding('48-states')" data-room="48-states">
+          <span class="bld-icon">📦</span>
+          <div class="bld-name">48 States Depot</div>
+          <div class="bld-desc">48statesmovingandstorage.com · Live</div>
+          <div class="bld-level"><div class="level-stars" id="stars-48-states"></div><span class="level-label">Level</span></div>
+          <div class="bld-progress"><div class="bld-progress-bar" style="background:linear-gradient(90deg,#154360,#e8522a)" id="prog-48-states"></div></div>
+          <div class="bld-quest"><div class="bld-quest-label">🎯 Quest</div><div class="bld-quest-text">Add DNS records for 48statesmovingandstorage.com</div></div>
+          <div class="bld-action"><span class="bld-tag progress">Deploying</span><span class="bld-go">Enter →</span></div>
+        </div>
+        <div class="building has-quest" onclick="openBuilding('national-install')" data-room="national-install">
+          <span class="bld-icon">🏗</span>
+          <div class="bld-name">National Install Co</div>
+          <div class="bld-desc">Roofing brokerage · Business plan</div>
+          <div class="bld-level"><div class="level-stars" id="stars-national-install"></div><span class="level-label">Level</span></div>
+          <div class="bld-progress"><div class="bld-progress-bar" style="background:linear-gradient(90deg,#6b7280,#f4c542)" id="prog-national-install"></div></div>
+          <div class="bld-quest"><div class="bld-quest-label">🎯 Quest</div><div class="bld-quest-text">Follow up with Chris on S-corp formation</div></div>
+          <div class="bld-action"><span class="bld-tag planned">Planning</span><span class="bld-go">Enter →</span></div>
+        </div>
+        <div class="building" onclick="openBuilding('bbb-scraper')" data-room="bbb-scraper">
+          <span class="bld-icon">🔍</span>
+          <div class="bld-name">BBB Research Lab</div>
+          <div class="bld-desc">Moving company scraper · Lead gen</div>
+          <div class="bld-level"><div class="level-stars" id="stars-bbb-scraper"></div><span class="level-label">Level</span></div>
+          <div class="bld-progress"><div class="bld-progress-bar" style="background:linear-gradient(90deg,#2563eb,#f4c542)" id="prog-bbb-scraper"></div></div>
+          <div class="bld-action"><span class="bld-tag progress">Running</span><span class="bld-go">Enter →</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ FAMILY SQUARE ══ -->
+    <div class="neighborhood" style="background:linear-gradient(135deg,rgba(26,94,58,.5),rgba(39,174,96,.2))">
+      <div class="nh-header" style="background:rgba(26,94,58,.5)">
+        <span class="nh-icon">👨‍👩‍👧‍👦</span>
+        <div><div class="nh-name">Family Square</div><div class="nh-desc">Joshua · Ever · Carl · Colombia</div></div>
+        <div class="nh-pop" id="pop-family">4 members</div>
+      </div>
+      <div class="nh-body">
+        <div class="building" onclick="openBuilding('joshua')" data-room="joshua">
+          <span class="bld-icon">🪖</span>
+          <div class="bld-name">Joshua's Barracks</div>
+          <div class="bld-desc">Active duty Army · Finance dashboard</div>
+          <div class="bld-level"><div class="level-stars" id="stars-joshua"></div><span class="level-label">Level</span></div>
+          <div class="bld-progress"><div class="bld-progress-bar" style="background:linear-gradient(90deg,#4b5320,#4ade80)" id="prog-joshua"></div></div>
+          <div class="bld-action"><span class="bld-tag active">Active</span><span class="bld-go">Enter →</span></div>
+        </div>
+        <div class="building" onclick="openBuilding('ever')" data-room="ever">
+          <span class="bld-icon">👩‍⚕️</span>
+          <div class="bld-name">Ever's School</div>
+          <div class="bld-desc">Pediatric surgery path · Resources</div>
+          <div class="bld-level"><div class="level-stars" id="stars-ever"></div><span class="level-label">Level</span></div>
+          <div class="bld-progress"><div class="bld-progress-bar" style="background:linear-gradient(90deg,#e879f9,#4ade80)" id="prog-ever"></div></div>
+          <div class="bld-action"><span class="bld-tag planned">Building</span><span class="bld-go">Enter →</span></div>
+        </div>
+        <div class="building has-quest" onclick="openBuilding('carl')" data-room="carl">
+          <span class="bld-icon">🏥</span>
+          <div class="bld-name">Carl's Recovery</div>
+          <div class="bld-desc">Post-surgery meal plan · Checklist</div>
+          <div class="bld-level"><div class="level-stars" id="stars-carl"></div><span class="level-label">Level</span></div>
+          <div class="bld-progress"><div class="bld-progress-bar" style="background:linear-gradient(90deg,#dc2626,#4ade80)" id="prog-carl"></div></div>
+          <div class="bld-quest"><div class="bld-quest-label">🎯 Quest</div><div class="bld-quest-text">Check in on Carl's meal plan progress</div></div>
+          <div class="bld-action"><span class="bld-tag attention">Active Care</span><span class="bld-go">Enter →</span></div>
+        </div>
+        <div class="building" onclick="openBuilding('colombia')" data-room="colombia">
+          <span class="bld-icon">🇨🇴</span>
+          <div class="bld-name">Colombia House</div>
+          <div class="bld-desc">Cali family · Safety plan · Travel</div>
+          <div class="bld-level"><div class="level-stars" id="stars-colombia"></div><span class="level-label">Level</span></div>
+          <div class="bld-progress"><div class="bld-progress-bar" style="background:linear-gradient(90deg,#f4e542,#4ade80)" id="prog-colombia"></div></div>
+          <div class="bld-action"><span class="bld-tag active">Active</span><span class="bld-go">Enter →</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ RECOVERY VILLAGE ══ -->
+    <div class="neighborhood" style="background:linear-gradient(135deg,rgba(108,52,131,.5),rgba(142,68,173,.2))">
+      <div class="nh-header" style="background:rgba(108,52,131,.5)">
+        <span class="nh-icon">❤️‍🔥</span>
+        <div><div class="nh-name">Recovery Village</div><div class="nh-desc">12 Steps · Vapeless · Wellness</div></div>
+        <div class="nh-pop" id="pop-recovery">One day at a time</div>
+      </div>
+      <div class="nh-body">
+        <div class="building has-quest" onclick="openBuilding('twelve-steps')" data-room="twelve-steps">
+          <span class="bld-icon">📖</span>
+          <div class="bld-name">Step House</div>
+          <div class="bld-desc">12easysteps.org · Daily inventory</div>
+          <div class="bld-level"><div class="level-stars" id="stars-twelve-steps"></div><span class="level-label">Level</span></div>
+          <div class="bld-progress"><div class="bld-progress-bar" style="background:linear-gradient(90deg,#7c3aed,#e879f9)" id="prog-twelve-steps"></div></div>
+          <div class="bld-quest"><div class="bld-quest-label">🎯 Daily Quest</div><div class="bld-quest-text">Complete today's Step 10 inventory</div></div>
+          <div class="bld-action"><span class="bld-tag active">Daily</span><span class="bld-go">Enter →</span></div>
+        </div>
+        <div class="building" onclick="openBuilding('vapeless')" data-room="vapeless">
+          <span class="bld-icon">🚭</span>
+          <div class="bld-name">Vapor-Free Clinic</div>
+          <div class="bld-desc">Nicotine recovery app · Daily tracking</div>
+          <div class="bld-level"><div class="level-stars" id="stars-vapeless"></div><span class="level-label">Level</span></div>
+          <div class="bld-progress"><div class="bld-progress-bar" style="background:linear-gradient(90deg,#6366f1,#e879f9)" id="prog-vapeless"></div></div>
+          <div class="bld-action"><span class="bld-tag active">Active</span><span class="bld-go">Enter →</span></div>
+        </div>
+        <div class="building" onclick="openBuilding('palabras')" data-room="palabras">
+          <span class="bld-icon">💬</span>
+          <div class="bld-name">Word Garden</div>
+          <div class="bld-desc">333 Spanish positive words · TTS</div>
+          <div class="bld-level"><div class="level-stars" id="stars-palabras"></div><span class="level-label">Level</span></div>
+          <div class="bld-progress"><div class="bld-progress-bar" style="background:linear-gradient(90deg,#0891b2,#e879f9)" id="prog-palabras"></div></div>
+          <div class="bld-action"><span class="bld-tag active">Active</span><span class="bld-go">Enter →</span></div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
-<!-- ══════════════ ROOMS ══════════════ -->
-
-<!-- OFFICE -->
-<div class="room-view" id="room-office">
-  <div class="room-header" style="background:linear-gradient(135deg,#1B2A4A,#243a6e)">
-    <div class="room-header-inner">
-      <div class="room-header-icon">💼</div>
-      <div>
-        <div class="room-header-name">The Office</div>
-        <div class="room-header-desc">ATC CRM · Sales tools · Emails · Presentations</div>
-      </div>
+<!-- ══════════ ROOM OVERLAY ══════════ -->
+<div class="room-overlay" id="room-overlay">
+  <div class="room-top">
+    <span class="room-top-icon" id="ro-icon">🏢</span>
+    <div>
+      <div class="room-top-name" id="ro-name">Building</div>
+      <div class="room-top-desc" id="ro-desc">Description</div>
     </div>
+    <button class="room-close" onclick="closeRoom()">← Back to Town</button>
   </div>
-  <div class="room-body">
-    <div class="room-main">
-      <div class="links-section">
-        <div class="links-label">ATC Core</div>
-        <div class="links-grid">
-          <a href="https://alphafiles.net/vitals/" class="link-tile"><div class="link-tile-icon">⚡</div><div class="link-tile-name">Vitals</div><div class="link-tile-desc">CRM workspace</div></a>
-          <a href="https://alphafiles.net/present/" class="link-tile"><div class="link-tile-icon">▶️</div><div class="link-tile-name">Present</div><div class="link-tile-desc">Live presentation</div></a>
-          <a href="https://alphafiles.net/clients/" class="link-tile"><div class="link-tile-icon">👥</div><div class="link-tile-name">Clients</div><div class="link-tile-desc">All clients</div></a>
-          <a href="https://alphafiles.net/alpha/" class="link-tile"><div class="link-tile-icon">📋</div><div class="link-tile-name">Alpha Hub</div><div class="link-tile-desc">All pages + emails</div></a>
-          <a href="https://alphafiles.net/build/" class="link-tile"><div class="link-tile-icon">🚀</div><div class="link-tile-name">Build Console</div><div class="link-tile-desc">Push quote pages</div></a>
-          <a href="https://alphafiles.net/overview/" class="link-tile"><div class="link-tile-icon">🗺</div><div class="link-tile-name">CRM Overview</div><div class="link-tile-desc">System map</div></a>
-          <a href="https://alphafiles.net/history/" class="link-tile"><div class="link-tile-icon">⭐</div><div class="link-tile-name">Track Record</div><div class="link-tile-desc">History + reviews</div></a>
-          <a href="https://alphafiles.net/proof/" class="link-tile"><div class="link-tile-icon">✅</div><div class="link-tile-name">Proof</div><div class="link-tile-desc">Case database</div></a>
-        </div>
-      </div>
-      <div class="links-section">
-        <div class="links-label">External Tools</div>
-        <div class="links-grid">
-          <a href="https://crmplus.zoho.com" target="_blank" class="link-tile"><div class="link-tile-icon">📊</div><div class="link-tile-name">Zoho CRM</div><div class="link-tile-desc">Lead management</div></a>
-          <a href="https://mail.google.com" target="_blank" class="link-tile"><div class="link-tile-icon">✉️</div><div class="link-tile-name">Gmail</div><div class="link-tile-desc">ATC email</div></a>
-          <a href="https://calendar.google.com" target="_blank" class="link-tile"><div class="link-tile-icon">📅</div><div class="link-tile-name">Calendar</div><div class="link-tile-desc">ATC appointments</div></a>
-          <a href="https://www.docusign.com" target="_blank" class="link-tile"><div class="link-tile-icon">✍️</div><div class="link-tile-name">DocuSign</div><div class="link-tile-desc">E-signatures</div></a>
-        </div>
-      </div>
+  <div class="room-content">
+    <div class="room-main" id="ro-main">
+      <!-- Dynamic content -->
     </div>
-    <div class="room-sidebar" id="sidebar-office"></div>
-  </div>
-</div>
-
-<!-- LIVING ROOM -->
-<div class="room-view" id="room-living">
-  <div class="room-header" style="background:linear-gradient(135deg,#2c3e50,#34495e)">
-    <div class="room-header-inner">
-      <div class="room-header-icon">🛋</div>
-      <div>
-        <div class="room-header-name">Living Room</div>
-        <div class="room-header-desc">Your daily hub — calendar, hit list, notes</div>
-      </div>
+    <div class="room-side" id="ro-side">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.3);margin-bottom:12px">📝 Building Notes</div>
+      <div id="ro-notes-cats" class="notes-cat-row"></div>
+      <textarea class="note-ta" id="ro-note-input" placeholder="Add a note..."></textarea>
+      <button class="note-add-btn" onclick="addBuildingNote()">+ Add Note</button>
+      <div id="ro-notes-list"></div>
     </div>
-  </div>
-  <div class="room-body">
-    <div class="room-main">
-      <div class="links-label" style="color:rgba(255,255,255,.3);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Today's Calendar</div>
-      <div class="cal-mini">
-        <div class="cal-mini-hdr">📅 Upcoming</div>
-        <iframe src="https://calendar.google.com/calendar/embed?src=sebastianshort624%40gmail.com&ctz=America%2FNew_York&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0&mode=AGENDA" style="border:0;display:block;width:100%;height:280px" frameborder="0" scrolling="no"></iframe>
-      </div>
-      <div class="links-label" style="color:rgba(255,255,255,.3);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">🎯 Today's Hit List</div>
-      <div id="living-hitlist"></div>
-      <div style="display:flex;gap:6px;margin-top:8px">
-        <input id="living-hit-input" placeholder="Add to hit list..." style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:8px 12px;font-size:13px;color:#fff;outline:none;font-family:Inter,sans-serif" onkeydown="if(event.key==='Enter')addLivingHit()">
-        <button onclick="addLivingHit()" style="background:var(--gold);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-weight:800;cursor:pointer;font-size:16px">+</button>
-      </div>
-    </div>
-    <div class="room-sidebar" id="sidebar-living"></div>
-  </div>
-</div>
-
-<!-- FAMILY ROOM -->
-<div class="room-view" id="room-family">
-  <div class="room-header" style="background:linear-gradient(135deg,#1a5e3a,#27ae60)">
-    <div class="room-header-inner">
-      <div class="room-header-icon">👨‍👩‍👧‍👦</div>
-      <div>
-        <div class="room-header-name">Family Room</div>
-        <div class="room-header-desc">Each family member has their own space</div>
-      </div>
-    </div>
-  </div>
-  <div class="room-body">
-    <div class="room-main">
-      <div class="links-label" style="color:rgba(255,255,255,.3);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">Family Members</div>
-      <div class="family-grid">
-        <a href="/joshuason/" class="family-card"><div class="family-avatar">🪖</div><div class="family-name">Joshua</div><div class="family-role">Active Duty Army · Finance</div></a>
-        <a href="#" class="family-card" onclick="alert('Ever's room coming soon!')"><div class="family-avatar">👩‍⚕️</div><div class="family-name">Ever</div><div class="family-role">Pediatric Surgery</div></a>
-        <a href="/carl/" class="family-card"><div class="family-avatar">🏥</div><div class="family-name">Carl</div><div class="family-role">Post-Surgery Recovery</div></a>
-        <a href="/safe/" class="family-card"><div class="family-avatar">🇨🇴</div><div class="family-name">Colombia Family</div><div class="family-role">Cali · Safety Plan</div></a>
-      </div>
-      <div class="links-label" style="color:rgba(255,255,255,.3);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Family Tools</div>
-      <div class="links-grid">
-        <a href="/joshuason/" class="link-tile"><div class="link-tile-icon">💰</div><div class="link-tile-name">Joshua Finance</div><div class="link-tile-desc">Army Dave Ramsey</div></a>
-        <a href="/carl/" class="link-tile"><div class="link-tile-icon">🍽</div><div class="link-tile-name">Carl's Meal Plan</div><div class="link-tile-desc">Post-surgery diet</div></a>
-        <a href="/safe/" class="link-tile"><div class="link-tile-icon">🛡</div><div class="link-tile-name">Colombia Safety</div><div class="link-tile-desc">Cali safety plan</div></a>
-        <a href="#" class="link-tile" onclick="alert('Add new family member page soon!')"><div class="link-tile-icon">+</div><div class="link-tile-name">Add Member</div><div class="link-tile-desc">New family space</div></a>
-      </div>
-    </div>
-    <div class="room-sidebar" id="sidebar-family"></div>
-  </div>
-</div>
-
-<!-- RECOVERY ROOM -->
-<div class="room-view" id="room-recovery">
-  <div class="room-header" style="background:linear-gradient(135deg,#6c3483,#8e44ad)">
-    <div class="room-header-inner">
-      <div class="room-header-icon">❤️‍🔥</div>
-      <div>
-        <div class="room-header-name">Recovery Room</div>
-        <div class="room-header-desc">One day at a time</div>
-      </div>
-    </div>
-  </div>
-  <div class="room-body">
-    <div class="room-main">
-      <div class="links-grid" style="margin-bottom:20px">
-        <a href="https://12easysteps.org" target="_blank" class="link-tile"><div class="link-tile-icon">📖</div><div class="link-tile-name">12 Easy Steps</div><div class="link-tile-desc">Recovery platform</div></a>
-        <a href="https://12easysteps.org/10" target="_blank" class="link-tile"><div class="link-tile-icon">📝</div><div class="link-tile-name">Step 10</div><div class="link-tile-desc">Daily inventory</div></a>
-        <a href="/vapeless/" class="link-tile"><div class="link-tile-icon">🚭</div><div class="link-tile-name">Vapeless</div><div class="link-tile-desc">Vaping recovery app</div></a>
-        <a href="/palabras/" class="link-tile"><div class="link-tile-icon">💬</div><div class="link-tile-name">Palabras</div><div class="link-tile-desc">333 positive words</div></a>
-        <a href="https://12easysteps.org/safe/" target="_blank" class="link-tile"><div class="link-tile-icon">🛡</div><div class="link-tile-name">Safety Plan</div><div class="link-tile-desc">Colombia safety</div></a>
-        <a href="https://www.aa.org" target="_blank" class="link-tile"><div class="link-tile-icon">🔵</div><div class="link-tile-name">AA.org</div><div class="link-tile-desc">Meeting finder</div></a>
-      </div>
-    </div>
-    <div class="room-sidebar" id="sidebar-recovery"></div>
-  </div>
-</div>
-
-<!-- FINANCE ROOM -->
-<div class="room-view" id="room-finance">
-  <div class="room-header" style="background:linear-gradient(135deg,#154360,#1a5276)">
-    <div class="room-header-inner">
-      <div class="room-header-icon">💰</div>
-      <div>
-        <div class="room-header-name">Finance Room</div>
-        <div class="room-header-desc">Money · Insurance · Budgets</div>
-      </div>
-    </div>
-  </div>
-  <div class="room-body">
-    <div class="room-main">
-      <div class="links-grid">
-        <a href="/insurance/" class="link-tile"><div class="link-tile-icon">🛡</div><div class="link-tile-name">Insurance</div><div class="link-tile-desc">Life insurance compare</div></a>
-        <a href="/joshuason/" class="link-tile"><div class="link-tile-icon">🪖</div><div class="link-tile-name">Joshua Budget</div><div class="link-tile-desc">Army Dave Ramsey</div></a>
-        <a href="#" class="link-tile"><div class="link-tile-icon">📊</div><div class="link-tile-name">Commission</div><div class="link-tile-desc">ATC pay tracker</div></a>
-        <a href="#" class="link-tile"><div class="link-tile-icon">💳</div><div class="link-tile-name">Budget</div><div class="link-tile-desc">Monthly budget</div></a>
-      </div>
-    </div>
-    <div class="room-sidebar" id="sidebar-finance"></div>
-  </div>
-</div>
-
-<!-- GARAGE -->
-<div class="room-view" id="room-garage">
-  <div class="room-header" style="background:linear-gradient(135deg,#784212,#a04000)">
-    <div class="room-header-inner">
-      <div class="room-header-icon">🔧</div>
-      <div>
-        <div class="room-header-name">The Garage</div>
-        <div class="room-header-desc">Business projects · Moving companies · Roofing</div>
-      </div>
-    </div>
-  </div>
-  <div class="room-body">
-    <div class="room-main">
-      <div class="links-section">
-        <div class="links-label">Moving Company Sites</div>
-        <div class="links-grid">
-          <a href="https://dpmoversrelocation.com" target="_blank" class="link-tile"><div class="link-tile-icon">🚛</div><div class="link-tile-name">DP Movers</div><div class="link-tile-desc">dpmoversrelocation.com</div></a>
-          <a href="https://48statesmovingandstorage.com" target="_blank" class="link-tile"><div class="link-tile-icon">📦</div><div class="link-tile-name">48 States</div><div class="link-tile-desc">48statesmoving...</div></a>
-          <a href="/dp/" class="link-tile"><div class="link-tile-icon">📊</div><div class="link-tile-name">DP Intelligence</div><div class="link-tile-desc">Business report</div></a>
-          <a href="/panther/" class="link-tile"><div class="link-tile-icon">🐆</div><div class="link-tile-name">Panther</div><div class="link-tile-desc">Acquisition research</div></a>
-        </div>
-      </div>
-      <div class="links-section">
-        <div class="links-label">Roofing</div>
-        <div class="links-grid">
-          <a href="/nationalinstall/" class="link-tile"><div class="link-tile-icon">🏠</div><div class="link-tile-name">National Install</div><div class="link-tile-desc">Roofing brokerage</div></a>
-          <a href="https://nationalinstall.com" target="_blank" class="link-tile"><div class="link-tile-icon">🌐</div><div class="link-tile-name">NI Website</div><div class="link-tile-desc">nationalinstall.com</div></a>
-        </div>
-      </div>
-    </div>
-    <div class="room-sidebar" id="sidebar-garage"></div>
-  </div>
-</div>
-
-<!-- HEALTH -->
-<div class="room-view" id="room-health">
-  <div class="room-header" style="background:linear-gradient(135deg,#1d6a3e,#239a5c)">
-    <div class="room-header-inner">
-      <div class="room-header-icon">🥗</div>
-      <div>
-        <div class="room-header-name">Health & Kitchen</div>
-        <div class="room-header-desc">Meal plans · Wellness · Recovery nutrition</div>
-      </div>
-    </div>
-  </div>
-  <div class="room-body">
-    <div class="room-main">
-      <div class="links-grid">
-        <a href="/carl/" class="link-tile"><div class="link-tile-icon">🏥</div><div class="link-tile-name">Carl's Meal Plan</div><div class="link-tile-desc">Post-cholecystectomy</div></a>
-        <a href="/vapeless/" class="link-tile"><div class="link-tile-icon">🚭</div><div class="link-tile-name">Vapeless</div><div class="link-tile-desc">Nicotine recovery</div></a>
-      </div>
-    </div>
-    <div class="room-sidebar" id="sidebar-health"></div>
-  </div>
-</div>
-
-<!-- LIBRARY -->
-<div class="room-view" id="room-library">
-  <div class="room-header" style="background:linear-gradient(135deg,#4a2c2a,#6d4c41)">
-    <div class="room-header-inner">
-      <div class="room-header-icon">📚</div>
-      <div>
-        <div class="room-header-name">The Library</div>
-        <div class="room-header-desc">Research · Shopping guides · Reference</div>
-      </div>
-    </div>
-  </div>
-  <div class="room-body">
-    <div class="room-main">
-      <div class="links-grid">
-        <a href="/bronco/" class="link-tile"><div class="link-tile-icon">🤠</div><div class="link-tile-name">Bronco Guide</div><div class="link-tile-desc">Ford Bronco Sport</div></a>
-        <a href="/palabras/" class="link-tile"><div class="link-tile-icon">🇲🇽</div><div class="link-tile-name">Palabras</div><div class="link-tile-desc">Spanish positive words</div></a>
-        <a href="/62426/" class="link-tile"><div class="link-tile-icon">🗺</div><div class="link-tile-name">Charlotte Trip</div><div class="link-tile-desc">Day trip itinerary</div></a>
-      </div>
-    </div>
-    <div class="room-sidebar" id="sidebar-library"></div>
   </div>
 </div>
 
 <script>
-// ── CLOCK ──
-function tick(){
-  var now=new Date();
-  var h=now.getHours(),m=now.getMinutes();
-  var ampm=h>=12?'PM':'AM';h=h%12||12;
-  document.getElementById('clock').textContent=(h<10?'0':'')+h+':'+(m<10?'0':'')+m+' '+ampm;
-  var days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  var months=['January','February','March','April','May','June','July','August','September','October','November','December'];
-  var d=now;
-  document.getElementById('today-date').textContent=days[d.getDay()]+', '+months[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear();
-}
-tick();setInterval(tick,10000);
+// ── STARS ──
+(function(){
+  var s=document.getElementById('stars');
+  for(var i=0;i<60;i++){
+    var d=document.createElement('div');
+    d.className='star';
+    var sz=Math.random()*2+1;
+    d.style.cssText='width:'+sz+'px;height:'+sz+'px;top:'+Math.random()*100+'%;left:'+Math.random()*100+'%;animation-delay:'+Math.random()*3+'s;animation-duration:'+(2+Math.random()*3)+'s';
+    s.appendChild(d);
+  }
+})();
 
-// ── ROOMS ──
-var currentRoom=null;
-function showFoyer(){
-  document.getElementById('foyer').style.display='block';
-  document.querySelectorAll('.room-view').forEach(function(r){r.classList.remove('active');});
-  document.getElementById('breadcrumb').style.display='none';
-  currentRoom=null;
-  window.scrollTo(0,0);
-}
-function openRoom(id){
-  document.getElementById('foyer').style.display='none';
-  document.querySelectorAll('.room-view').forEach(function(r){r.classList.remove('active');});
-  var room=document.getElementById('room-'+id);
-  if(room){room.classList.add('active');currentRoom=id;}
-  document.getElementById('breadcrumb').style.display='flex';
-  var names={office:'The Office',living:'Living Room',family:'Family Room',recovery:'Recovery Room',finance:'Finance Room',garage:'The Garage',health:'Health & Kitchen',library:'The Library'};
-  document.getElementById('breadcrumb-room').textContent=names[id]||id;
-  buildSidebar(id);
-  window.scrollTo(0,0);
-}
-function addRoom(){alert('Custom rooms coming soon — tell me what room you want added!');}
+// ── GAME DATA ──
+var GK='seb_town_game';
+function loadGame(){try{return JSON.parse(localStorage.getItem(GK)||'{}');}catch(e){return{};}}
+function saveGame(g){localStorage.setItem(GK,JSON.stringify(g));}
 
-// ── NOTES SYSTEM ──
-var NOTES_KEY='seb_house_notes';
-function loadNotes(room){try{var all=JSON.parse(localStorage.getItem(NOTES_KEY)||'{}');return all[room]||{cats:['General','Ideas','To Do'],notes:[]};}catch(e){return{cats:['General','Ideas','To Do'],notes:[]};}}
-function saveNotes(room,data){try{var all=JSON.parse(localStorage.getItem(NOTES_KEY)||'{}');all[room]=data;localStorage.setItem(NOTES_KEY,JSON.stringify(all));}catch(e){}}
-
-function buildSidebar(room){
-  var sid=document.getElementById('sidebar-'+room);
-  if(!sid)return;
-  var data=loadNotes(room);
-  var activeCat=data.activeCat||data.cats[0]||'General';
-  renderSidebar(room,data,activeCat,sid);
-}
-
-function renderSidebar(room,data,activeCat,sid){
-  var filteredNotes=data.notes.filter(function(n){return n.cat===activeCat;});
-  sid.innerHTML='<div class="notes-panel">'
-    +'<h3>📝 Room Notes</h3>'
-    +'<div class="notes-cats" id="cats-'+room+'">'
-    +data.cats.map(function(c){return '<button class="notes-cat'+(c===activeCat?' active':'')+'" onclick="switchCat(''+room+'',''+c+'')">'+(c)+'</button>';}).join('')
-    +'<button class="notes-cat" onclick="addCat(''+room+'')" style="border-style:dashed">+</button>'
-    +'</div>'
-    +'<div class="notes-input-row">'
-    +'<textarea class="notes-text" id="note-text-'+room+'" placeholder="Add a note..." rows="3"></textarea>'
-    +'</div>'
-    +'<button onclick="addNote(''+room+'',''+activeCat+'')" style="background:var(--gold);color:#fff;border:none;border-radius:7px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;width:100%;margin-bottom:12px">+ Add Note</button>'
-    +'<div id="notes-list-'+room+'">'
-    +(filteredNotes.length?filteredNotes.map(function(n,i){
-      var realIdx=data.notes.indexOf(n);
-      return '<div class="note-item"><div><div class="note-item-text">'+n.text+'</div><div class="note-item-meta">'+n.ts+'</div></div><button class="note-del" onclick="delNote(''+room+'','+realIdx+')">✕</button></div>';
-    }).join(''):'<div class="notes-empty">No notes in '+activeCat+' yet.</div>')
-    +'</div></div>';
-}
-
-window.switchCat=function(room,cat){var data=loadNotes(room);data.activeCat=cat;saveNotes(room,data);buildSidebar(room);};
-window.addCat=function(room){var name=prompt('Category name:');if(!name)return;var data=loadNotes(room);if(!data.cats.includes(name))data.cats.push(name);data.activeCat=name;saveNotes(room,data);buildSidebar(room);};
-window.addNote=function(room,cat){
-  var inp=document.getElementById('note-text-'+room);
-  var val=inp?inp.value.trim():'';
-  if(!val)return;
-  var data=loadNotes(room);
-  var now=new Date();
-  data.notes.unshift({cat:cat,text:val,ts:now.toLocaleDateString()+' '+now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})});
-  data.activeCat=cat;
-  saveNotes(room,data);
-  buildSidebar(room);
+// Default building data
+var BUILDINGS={
+  'atc-vitals':{icon:'⚡',name:'ATC Headquarters',desc:'CRM vitals, email generator, client files',xp:85,url:'https://alphafiles.net/vitals/',quests:['Populate CRM data for your next call','Push a quote page to a live client URL','Review all email templates'],links:[{icon:'⚡',name:'Vitals',desc:'CRM workspace',url:'https://alphafiles.net/vitals/'},{icon:'📋',name:'Alpha Hub',desc:'All pages',url:'https://alphafiles.net/alpha/'},{icon:'👥',name:'Clients',desc:'Client hub',url:'https://alphafiles.net/clients/'},{icon:'🚀',name:'Build Console',desc:'Push pages',url:'https://alphafiles.net/build/'},{icon:'▶️',name:'Present',desc:'Live presentation',url:'https://alphafiles.net/present/'}]},
+  'presentation':{icon:'▶️',name:'Presentation Hall',desc:'Live sales presentation engine — 10 pages, progressive reveal',xp:60,url:'https://alphafiles.net/present/',quests:['Run a full presentation from Page 1 to close','Test CBOR section with a real call','Push presentation improvements'],links:[{icon:'▶️',name:'Present',url:'https://alphafiles.net/present/'},{icon:'⚡',name:'Vitals',url:'https://alphafiles.net/vitals/'},{icon:'📋',name:'Alpha Hub',url:'https://alphafiles.net/alpha/'}]},
+  'clients':{icon:'👥',name:'Client Village',desc:'All active client portals and the clients hub',xp:70,url:'https://alphafiles.net/clients/',quests:['Add a new client to the hub','Push a client portal to live URL'],links:[{icon:'👥',name:'Clients Hub',url:'https://alphafiles.net/clients/'},{icon:'🚀',name:'Build Console',url:'https://alphafiles.net/build/'}]},
+  'build-console':{icon:'🚀',name:'Launch Pad',desc:'Build console for pushing quote pages live to GitHub Pages',xp:75,url:'https://alphafiles.net/build/',quests:['Push a quote for your next client'],links:[{icon:'🚀',name:'Build Console',url:'https://alphafiles.net/build/'},{icon:'👥',name:'Clients',url:'https://alphafiles.net/clients/'}]},
+  'estate-planning':{icon:'🏠',name:'Estate Planning House',desc:'Life insurance comparison table — 7 companies, fillable, auto-saves',xp:30,url:'/insurance/',quests:['Get quotes from Banner Life','Get quotes from Protective Life','Compare $400k vs $450k for each company','Select a provider and move forward'],links:[{icon:'🛡',name:'Insurance Table',url:'/insurance/'},{icon:'📋',name:'ATC Heirs Email',url:'https://alphafiles.net/heirs/'}]},
+  'joshua-finance':{icon:'🪖',name:'Military Finance',desc:"Joshua's Army Dave Ramsey financial dashboard",xp:65,url:'/joshuason/',quests:['Check Joshua\'s Baby Step progress'],links:[{icon:'🪖',name:"Joshua's Dashboard",url:'/joshuason/'}]},
+  'income':{icon:'💰',name:'Income Office',desc:'Commission tracking and pay history',xp:40,url:'#',quests:['Log this week\'s deals and commissions','Update pay history'],links:[{icon:'⚡',name:'Vitals → Commission',url:'https://alphafiles.net/vitals/'}]},
+  'dp-movers':{icon:'🚛',name:'DP Movers HQ',desc:'dpmoversrelocation.com — live site built and deployed',xp:70,url:'https://dpmoversrelocation.com',quests:['Confirm HTTPS is enforced in GitHub Pages','Add CNAME www DNS record at GoDaddy','Add real mover photos to hero'],links:[{icon:'🌐',name:'Live Site',url:'https://dpmoversrelocation.com',target:'_blank'},{icon:'📊',name:'DP Intelligence',url:'/dp/'},{icon:'🐙',name:'GitHub Repo',url:'https://github.com/Sebastianshort624/dpmoversrelocation.com',target:'_blank'}]},
+  '48-states':{icon:'📦',name:'48 States Depot',desc:'48statesmovingandstorage.com — live site deployed',xp:65,url:'https://48statesmovingandstorage.com',quests:['Confirm DNS propagated at GoDaddy','Enable HTTPS in GitHub Pages','Verify live site loads correctly'],links:[{icon:'🌐',name:'Live Site',url:'https://48statesmovingandstorage.com',target:'_blank'},{icon:'🐙',name:'GitHub Repo',url:'https://github.com/Sebastianshort624/48statesmovingandstorage.com',target:'_blank'}]},
+  'national-install':{icon:'🏗',name:'National Install Co',desc:'Roofing brokerage business plan with financial model',xp:35,url:'/nationalinstall/',quests:['Follow up with Chris on S-corp paperwork','Update the financial model','Expand the service area pitch'],links:[{icon:'📄',name:'Business Plan',url:'/nationalinstall/'},{icon:'🌐',name:'NI Website',url:'https://nationalinstall.com',target:'_blank'}]},
+  'bbb-scraper':{icon:'🔍',name:'BBB Research Lab',desc:'Python scraper for moving company leads across 48 states',xp:55,url:'#',quests:['Run scraper for remaining states','Export CSV for outreach campaign'],links:[{icon:'📊',name:'Panther Research',url:'/panther/'},{icon:'🚛',name:'DP Intelligence',url:'/dp/'}]},
+  'joshua':{icon:'🪖',name:"Joshua's Barracks",desc:'Army finance, Dave Ramsey baby steps, military resources',xp:65,url:'/joshuason/',quests:['Review Baby Step progress'],links:[{icon:'🪖',name:'Finance Dashboard',url:'/joshuason/'}]},
+  'ever':{icon:'👩‍⚕️',name:"Ever's School",desc:'Pediatric surgery path — resources and planning',xp:15,url:'#',quests:["Build Ever's personal page","Add medical school resources"],links:[]},
+  'carl':{icon:'🏥',name:"Carl's Recovery",desc:'Post-cholecystectomy meal plan and checklist',xp:50,url:'/carl/',quests:['Check in on Carl\'s checklist','Update the meal plan if needed'],links:[{icon:'🍽',name:'Meal Plan',url:'/carl/'}]},
+  'colombia':{icon:'🇨🇴',name:'Colombia House',desc:'Cali family safety plan and travel resources',xp:60,url:'https://12easysteps.org/safe/',quests:['Review Colombia safety plan'],links:[{icon:'🛡',name:'Safety Plan',url:'https://12easysteps.org/safe/',target:'_blank'}]},
+  'twelve-steps':{icon:'📖',name:'Step House',desc:'12easysteps.org — recovery education platform, Step 10 daily',xp:80,url:'https://12easysteps.org',quests:['Complete today\'s Step 10 inventory'],links:[{icon:'📖',name:'12 Easy Steps',url:'https://12easysteps.org',target:'_blank'},{icon:'📝',name:'Step 10',url:'https://12easysteps.org/10',target:'_blank'}]},
+  'vapeless':{icon:'🚭',name:'Vapor-Free Clinic',desc:'Full-featured nicotine recovery app — missions, taper, XP',xp:70,url:'/vapeless/',quests:['Log today\'s recovery mission'],links:[{icon:'🚭',name:'Vapeless App',url:'/vapeless/'}]},
+  'palabras':{icon:'💬',name:'Word Garden',desc:'333 Spanish positive words with text-to-speech',xp:60,url:'/palabras/',quests:['Practice 10 new palabras today'],links:[{icon:'💬',name:'Palabras',url:'/palabras/'}]}
 };
-window.delNote=function(room,idx){var data=loadNotes(room);data.notes.splice(idx,1);saveNotes(room,data);buildSidebar(room);};
 
-// ── HIT LIST (living room) ──
-var HK='sl_hitlist';
-function loadHits(){try{return JSON.parse(localStorage.getItem(HK)||'[]');}catch(e){return[];}}
-function saveHits(h){localStorage.setItem(HK,JSON.stringify(h));}
-function renderLivingHits(){
-  var items=loadHits();
-  var el=document.getElementById('living-hitlist');
-  if(!el)return;
-  if(!items.length){el.innerHTML='<div style="font-size:12px;color:rgba(255,255,255,.25);text-align:center;padding:16px;font-style:italic">Hit list is empty</div>';return;}
-  el.innerHTML=items.map(function(item,i){
-    return '<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,255,255,.05);border-radius:7px;margin-bottom:5px">'
-      +'<div style="flex:1;font-size:13px;color:#fff">'+item+'</div>'
-      +'<button onclick="removeLivingHit('+i+')" style="background:none;border:none;color:rgba(255,255,255,.3);cursor:pointer;font-size:13px">✕</button>'
-      +'</div>';
-  }).join('');
+var NP_QUESTS=['atc-vitals','presentation','estate-planning','income','dp-movers','48-states','national-install','bbb-scraper','carl','twelve-steps'];
+
+// ── GAME STATE ──
+var G=loadGame();
+if(!G.xp)G.xp=0;
+if(!G.coins)G.coins=0;
+if(!G.levels)G.levels={};
+if(!G.completed)G.completed={};
+
+function getBldLevel(id){return G.levels[id]||1;}
+function getBldXP(id){return BUILDINGS[id]?BUILDINGS[id].xp:0;}
+function awardXP(amount,label){
+  G.xp=(G.xp||0)+amount;
+  G.coins=(G.coins||0)+Math.round(amount/10);
+  saveGame(G);
+  updateHUD();
+  showToast('+'+amount+' XP — '+label+' 🪙');
 }
-window.addLivingHit=function(){var inp=document.getElementById('living-hit-input');var val=inp.value.trim();if(!val)return;var h=loadHits();h.push(val);saveHits(h);inp.value='';renderLivingHits();};
-window.removeLivingHit=function(i){var h=loadHits();h.splice(i,1);saveHits(h);renderLivingHits();};
+function updateHUD(){
+  var xp=G.xp||0;
+  var lvl=Math.floor(xp/200)+1;
+  var pct=((xp%200)/200)*100;
+  document.getElementById('xp-bar').style.width=pct+'%';
+  document.getElementById('xp-label').textContent=xp+' XP';
+  document.getElementById('nav-level').textContent='LVL '+lvl;
+  document.getElementById('coin-display').textContent='🪙 '+(G.coins||0);
+}
+function showToast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg;t.style.display='block';
+  clearTimeout(window._toast);
+  window._toast=setTimeout(function(){t.style.display='none';},2200);
+}
 
-// Patch openRoom to also render living hits
-var _origOpen=openRoom;
-openRoom=function(id){_origOpen(id);if(id==='living')setTimeout(renderLivingHits,100);};
+// ── RENDER BUILDINGS ──
+function renderStars(id,xp){
+  var el=document.getElementById('stars-'+id);
+  if(!el)return;
+  var lvl=Math.min(5,Math.ceil(xp/20));
+  el.innerHTML='';
+  for(var i=0;i<5;i++){
+    var s=document.createElement('div');
+    s.className='star-pip '+(i<lvl?'on':'off');
+    el.appendChild(s);
+  }
+  var label=el.nextElementSibling;
+  if(label)label.textContent='Lv '+lvl;
+}
+function renderProgress(id,xp){
+  var el=document.getElementById('prog-'+id);
+  if(el)el.style.width=xp+'%';
+}
+function renderPops(){
+  document.getElementById('pop-business').textContent='4 buildings';
+  document.getElementById('pop-finance').textContent='3 buildings';
+  document.getElementById('pop-industrial').textContent='4 buildings';
+}
+
+function initBuildings(){
+  Object.keys(BUILDINGS).forEach(function(id){
+    var b=BUILDINGS[id];
+    renderStars(id,b.xp);
+    renderProgress(id,b.xp);
+  });
+  renderPops();
+  updateHUD();
+  var activeQ=NP_QUESTS.filter(function(id){
+    return BUILDINGS[id]&&BUILDINGS[id].quests&&BUILDINGS[id].quests.length;
+  }).length;
+  document.getElementById('dq-label').textContent=activeQ+' active quests today';
+}
+
+// ── ROOM OPEN/CLOSE ──
+var currentBuilding=null;
+var currentNoteCat=null;
+
+function openBuilding(id){
+  var b=BUILDINGS[id];
+  if(!b){alert('Coming soon!');return;}
+  currentBuilding=id;
+  document.getElementById('ro-icon').textContent=b.icon;
+  document.getElementById('ro-name').textContent=b.name;
+  document.getElementById('ro-desc').textContent=b.desc;
+
+  // Build main content
+  var main=document.getElementById('ro-main');
+  var questsHtml='';
+  if(b.quests&&b.quests.length){
+    questsHtml='<div class="quests-panel"><div class="quests-title">🎯 Active Quests</div>'
+      +b.quests.map(function(q,i){
+        var qid=id+'-q'+i;
+        var done=G.completed[qid];
+        return '<div class="quest-item'+(done?' done':'')+'" id="qi-'+qid+'">'
+          +'<span class="qi-icon">'+(done?'✅':'⭐')+'</span>'
+          +'<div><div class="qi-text">'+q+'</div>'+(done?'<span class="qi-xp" style="color:#4ade80">Completed!</span>':'<span class="qi-xp">+25 XP on completion</span>')+'</div>'
+          +(done?'':'<button class="qi-btn" onclick="completeQuest(\''+qid+'\',\''+q.substring(0,30)+'...\')">Done ✓</button>')
+          +'</div>';
+      }).join('')+'</div>';
+  }
+  var linksHtml='';
+  if(b.links&&b.links.length){
+    linksHtml='<div class="link-section"><div class="link-section-title">Quick Links</div><div class="link-grid">'
+      +b.links.map(function(l){
+        return '<a href="'+(l.url||'#')+'" '+(l.target?'target="'+l.target+'"':'')+' class="link-tile">'
+          +'<div class="lt-icon">'+(l.icon||'🔗')+'</div>'
+          +'<div class="lt-name">'+(l.name||'Link')+'</div>'
+          +(l.desc?'<div class="lt-desc">'+l.desc+'</div>':'')
+          +'</a>';
+      }).join('')+'</div></div>';
+  }
+  var xpHtml='<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:16px;margin-bottom:16px;display:flex;align-items:center;gap:16px">'
+    +'<div style="flex:1"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:rgba(255,255,255,.35);margin-bottom:6px">Building Progress</div>'
+    +'<div style="background:rgba(255,255,255,.08);border-radius:100px;height:8px;overflow:hidden"><div style="background:linear-gradient(90deg,#f4c542,#e8a020);height:100%;border-radius:100px;width:'+b.xp+'%;transition:.6s"></div></div>'
+    +'<div style="font-size:11px;color:rgba(255,255,255,.35);margin-top:5px">'+b.xp+'% developed · Lv '+Math.min(5,Math.ceil(b.xp/20))+'</div></div>'
+    +'<button onclick="awardXP(10,\'Visited '+b.name+'\')" style="background:rgba(244,197,66,.15);border:1px solid rgba(244,197,66,.3);color:#f4c542;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;white-space:nowrap">+10 XP Visit</button>'
+    +'</div>';
+  main.innerHTML=xpHtml+questsHtml+linksHtml;
+
+  // Notes sidebar
+  renderBuildingNotes(id);
+
+  document.getElementById('room-overlay').classList.add('open');
+  window.scrollTo(0,0);
+}
+function closeRoom(){
+  document.getElementById('room-overlay').classList.remove('open');
+  currentBuilding=null;
+}
+
+// ── QUESTS ──
+function completeQuest(qid,label){
+  G.completed[qid]=true;
+  saveGame(G);
+  awardXP(25,label);
+  if(currentBuilding)openBuilding(currentBuilding);
+}
+function openDailyQuests(){
+  var msgs=NP_QUESTS.filter(function(id){return BUILDINGS[id]&&BUILDINGS[id].quests&&BUILDINGS[id].quests.length;})
+    .map(function(id){return BUILDINGS[id].icon+' '+BUILDINGS[id].name+': '+BUILDINGS[id].quests[0];}).join('\n\n');
+  alert('Today\'s Active Quests:\n\n'+msgs);
+}
+
+// ── NOTES ──
+var NOTES_KEY='seb_town_notes';
+function loadBNotes(id){try{var all=JSON.parse(localStorage.getItem(NOTES_KEY)||'{}');return all[id]||{cats:['General','Next Steps','Ideas'],notes:[],activeCat:'General'};}catch(e){return{cats:['General','Next Steps','Ideas'],notes:[],activeCat:'General'};}}
+function saveBNotes(id,d){try{var all=JSON.parse(localStorage.getItem(NOTES_KEY)||'{}');all[id]=d;localStorage.setItem(NOTES_KEY,JSON.stringify(all));}catch(e){}}
+function renderBuildingNotes(id){
+  var d=loadBNotes(id);
+  var activeCat=d.activeCat||d.cats[0]||'General';
+  currentNoteCat=activeCat;
+  var catsEl=document.getElementById('ro-notes-cats');
+  catsEl.innerHTML=d.cats.map(function(c){return '<button class="nc-btn'+(c===activeCat?' active':'')+'" onclick="switchNotesCat(\''+c+'\')">'+c+'</button>';}).join('')+'<button class="nc-btn" onclick="addNotesCat()" style="border-style:dashed">+</button>';
+  var list=document.getElementById('ro-notes-list');
+  var filtered=d.notes.filter(function(n){return n.cat===activeCat;});
+  list.innerHTML=filtered.length?filtered.map(function(n,i){
+    var realIdx=d.notes.indexOf(n);
+    return '<div class="note-entry"><div><div class="ne-text">'+n.text+'</div><div class="ne-meta">'+n.ts+'</div></div><button class="ne-del" onclick="delBNote('+realIdx+')">✕</button></div>';
+  }).join(''):'<div style="font-size:12px;color:rgba(255,255,255,.2);text-align:center;padding:16px;font-style:italic">No notes yet</div>';
+}
+window.switchNotesCat=function(cat){if(!currentBuilding)return;var d=loadBNotes(currentBuilding);d.activeCat=cat;currentNoteCat=cat;saveBNotes(currentBuilding,d);renderBuildingNotes(currentBuilding);};
+window.addNotesCat=function(){var n=prompt('New category:');if(!n||!currentBuilding)return;var d=loadBNotes(currentBuilding);if(!d.cats.includes(n))d.cats.push(n);d.activeCat=n;saveBNotes(currentBuilding,d);renderBuildingNotes(currentBuilding);};
+window.addBuildingNote=function(){
+  var inp=document.getElementById('ro-note-input');
+  var val=inp.value.trim();if(!val||!currentBuilding)return;
+  var d=loadBNotes(currentBuilding);
+  var now=new Date();
+  d.notes.unshift({cat:currentNoteCat||d.cats[0]||'General',text:val,ts:now.toLocaleDateString()+' '+now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})});
+  saveBNotes(currentBuilding,d);inp.value='';
+  renderBuildingNotes(currentBuilding);
+  awardXP(5,'Note added');
+};
+window.delBNote=function(i){if(!currentBuilding)return;var d=loadBNotes(currentBuilding);d.notes.splice(i,1);saveBNotes(currentBuilding,d);renderBuildingNotes(currentBuilding);};
+
+// ── INIT ──
+initBuildings();
 </script>
 </body>
 </html>
