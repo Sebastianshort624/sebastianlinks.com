@@ -199,6 +199,13 @@ body{font-family:'Inter',sans-serif;background:#c8e6b0;overflow:hidden;height:10
 .ap-item:hover{border-color:#2d6a2d;background:#f0f9e8}
 .ap-item .ap-icon{font-size:18px}
 @media(max-width:600px){.ap-grid{grid-template-columns:repeat(3,1fr)}}
+/* MOVE ONLY — no transforms in keyframes (direction set by inline style) */
+@keyframes goRight{0%{left:-120px}100%{left:2520px}}
+@keyframes goLeft {0%{left:2520px}100%{left:-120px}}
+@keyframes goDown {0%{top:-120px}100%{top:1920px}}
+@keyframes goUp   {0%{top:1920px}100%{top:-120px}}
+@keyframes dogWander{0%{margin-left:0;margin-top:0}25%{margin-left:40px;margin-top:-20px}50%{margin-left:80px;margin-top:10px}75%{margin-left:30px;margin-top:40px}100%{margin-left:0;margin-top:0}}
+@keyframes bikePath{0%{transform:rotate(0deg) translateX(72px) rotate(0deg)}100%{transform:rotate(360deg) translateX(72px) rotate(-360deg)}}
 </style>
 </head>
 <body>
@@ -208,8 +215,8 @@ body{font-family:'Inter',sans-serif;background:#c8e6b0;overflow:hidden;height:10
   <div class="nav-logo">🏙 Greenville</div>
   <div class="nav-tools">
     <button class="nb" onclick="zoomFit()">⊡ Fit</button>
-    <button class="nb" onclick="zoom(0.08)">🔍+</button>
-    <button class="nb" onclick="zoom(-0.08)">🔍−</button>
+    <button class="nb" onclick="zoom(0.15)" style="font-size:16px;padding:4px 14px">＋</button>
+    <button class="nb" onclick="zoom(-0.15)" style="font-size:16px;padding:4px 14px">－</button>
     <button class="nb gold active" id="wiggle-btn" onclick="toggleWiggleMode()">✏️ Edit</button>
     
     <a href="https://alphafiles.net/vitals/" class="nb">⚡ ATC</a>
@@ -220,7 +227,7 @@ body{font-family:'Inter',sans-serif;background:#c8e6b0;overflow:hidden;height:10
 <!-- ZOOM HUD -->
 <div class="zoom-hud" id="zoom-hud">100%</div>
 <!-- REFRESH BUTTON — always visible, hard reloads page -->
-<button onclick="location.reload(true)" title="Hard Refresh" style="position:fixed;top:54px;right:10px;z-index:2000;background:rgba(255,255,255,.9);border:2px solid #b8dca0;border-radius:50%;width:36px;height:36px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.15)">↺</button>
+<button onclick="location.reload(true)" title="Hard Refresh" style="position:fixed;top:54px;right:10px;z-index:2000;background:#2d5a27;color:#fff;border:none;border-radius:50%;width:40px;height:40px;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(0,0,0,.25);font-weight:900">↺</button>
 <!-- WIGGLE BANNER -->
 <div class="wiggle-banner" id="wiggle-banner" onclick="exitWiggleMode()">✏️ Edit Mode — Tap here to finish</div>
 
@@ -408,30 +415,39 @@ body{font-family:'Inter',sans-serif;background:#c8e6b0;overflow:hidden;height:10
   </svg>
 </div>
 
-<!-- ANIMATED NPC CHARACTERS — sidewalks, streets, park -->
-<!-- Street cars: h-road 740 -->
-<!-- CARS on h-road 740 -->
-<div class="char" style="top:748px;animation:carH 14s linear infinite;animation-delay:0s">🚗</div>
-<div class="char" style="top:754px;animation:carHr 18s linear infinite;animation-delay:3s">🚙</div>
-<div class="char" style="top:748px;animation:carH 22s linear infinite;animation-delay:8s">🚕</div>
-<!-- CARS on h-road 440 -->
-<div class="char" style="top:448px;animation:carHr 16s linear infinite;animation-delay:1s">🚗</div>
-<div class="char" style="top:454px;animation:carH 20s linear infinite;animation-delay:6s">🚙</div>
-<!-- EMERGENCY on h-road 1160 -->
-<div class="char" style="top:1168px;animation:carH 11s linear infinite;animation-delay:2s">🚑</div>
-<div class="char" style="top:1168px;animation:carHr 15s linear infinite;animation-delay:5s">🚒</div>
-<div class="char" style="top:1168px;animation:carH 19s linear infinite;animation-delay:9s">🚓</div>
-<!-- CARS on v-road 840 -->
-<div class="char" style="left:848px;animation:carV 13s linear infinite;animation-delay:4s">🚗</div>
-<div class="char" style="left:852px;animation:carVr 17s linear infinite;animation-delay:7s">🚙</div>
-<!-- CARS v-road 480 -->
-<div class="char" style="left:488px;animation:carV 20s linear infinite;animation-delay:2s">🚕</div>
-<div class="char" style="left:488px;animation:carVr 14s linear infinite;animation-delay:10s">🚗</div>
-<!-- PEOPLE walking -->
-<div class="char" style="top:760px;font-size:14px;animation:walkH 20s linear infinite;animation-delay:0s">🚶</div>
-<div class="char" style="top:762px;font-size:14px;animation:walkHr 26s linear infinite;animation-delay:5s">🚶‍♀️</div>
-<div class="char" style="top:456px;font-size:14px;animation:walkH 24s linear infinite;animation-delay:3s">🚶‍♂️</div>
-<!-- DOGS wandering (js-controlled) -->
+<!-- ANIMATED NPC CHARACTERS — goRight / goLeft / goDown / goUp, no transform conflicts -->
+<!-- CARS going RIGHT on h-road 740 -->
+<div class="char" style="top:748px;animation:goRight 14s linear infinite">🚗</div>
+<div class="char" style="top:750px;animation:goRight 22s linear infinite;animation-delay:6s">🚕</div>
+<!-- CARS going LEFT on h-road 740 (flipped with inline style) -->
+<div class="char" style="top:756px;transform:scaleX(-1);animation:goLeft 18s linear infinite;animation-delay:3s">🚙</div>
+<div class="char" style="top:754px;transform:scaleX(-1);animation:goLeft 25s linear infinite;animation-delay:10s">🚗</div>
+<!-- CARS going RIGHT on h-road 440 -->
+<div class="char" style="top:448px;animation:goRight 20s linear infinite;animation-delay:2s">🚙</div>
+<!-- CARS going LEFT on h-road 440 -->
+<div class="char" style="top:450px;transform:scaleX(-1);animation:goLeft 16s linear infinite;animation-delay:7s">🚗</div>
+<!-- EMERGENCY on h-road 1160 going RIGHT -->
+<div class="char" style="top:1168px;animation:goRight 11s linear infinite;animation-delay:1s">🚑</div>
+<div class="char" style="top:1168px;animation:goRight 19s linear infinite;animation-delay:9s">🚓</div>
+<!-- EMERGENCY going LEFT -->
+<div class="char" style="top:1170px;transform:scaleX(-1);animation:goLeft 15s linear infinite;animation-delay:5s">🚒</div>
+<!-- CARS on v-road 840 going DOWN -->
+<div class="char" style="left:848px;animation:goDown 13s linear infinite;animation-delay:4s">🚗</div>
+<!-- CARS on v-road 840 going UP (flipped) -->
+<div class="char" style="left:852px;transform:scaleY(-1);animation:goUp 17s linear infinite;animation-delay:7s">🚙</div>
+<!-- CARS on v-road 480 going DOWN -->
+<div class="char" style="left:488px;animation:goDown 20s linear infinite;animation-delay:2s">🚕</div>
+<!-- SIDEWALK PEOPLE going RIGHT -->
+<div class="char swalk-char" style="top:736px;font-size:13px;animation:goRight 28s linear infinite">🚶‍♀️</div>
+<div class="char swalk-char" style="top:784px;font-size:13px;animation:goRight 22s linear infinite;animation-delay:8s">🚴</div>
+<div class="char swalk-char" style="top:436px;font-size:13px;animation:goRight 20s linear infinite;animation-delay:4s">🚶</div>
+<div class="char swalk-char" style="top:484px;font-size:13px;animation:goRight 32s linear infinite;animation-delay:12s">🚴‍♀️</div>
+<!-- SIDEWALK PEOPLE going LEFT (flipped) -->
+<div class="char swalk-char" style="top:738px;font-size:13px;transform:scaleX(-1);animation:goLeft 24s linear infinite;animation-delay:5s">🚶‍♂️</div>
+<div class="char swalk-char" style="top:786px;font-size:13px;transform:scaleX(-1);animation:goLeft 18s linear infinite;animation-delay:11s">🚴</div>
+<div class="char swalk-char" style="top:1156px;font-size:13px;animation:goRight 20s linear infinite;animation-delay:3s">🚶‍♀️</div>
+<div class="char swalk-char" style="top:1204px;font-size:13px;transform:scaleX(-1);animation:goLeft 27s linear infinite;animation-delay:6s">🚴</div>
+<!-- DOGS WANDERING (position-based, no left animation conflict) -->
 <div class="char" id="dog1" style="left:660px;top:620px;font-size:18px;animation:dogWander 8s ease-in-out infinite">🐕</div>
 <div class="char" id="dog2" style="left:360px;top:820px;font-size:16px;animation:dogWander 11s ease-in-out infinite;animation-delay:3s">🐶</div>
 <div class="char" id="dog3" style="left:1100px;top:360px;font-size:17px;animation:dogWander 9s ease-in-out infinite;animation-delay:5s">🦮</div>
