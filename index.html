@@ -59,6 +59,17 @@ body{font-family:'Inter',sans-serif;background:#c8e6b0;overflow:hidden;height:10
 .bld::after{content:'';position:absolute;right:-8px;top:6px;width:8px;height:calc(100% - 4px);border-radius:0 4px 4px 0;background:rgba(0,0,0,.22);clip-path:polygon(0 0,100% 5%,100% 95%,0 100%)}
 /* Bottom shadow */
 .bld-shadow{position:absolute;bottom:-10px;left:6px;right:-6px;height:10px;border-radius:0 0 6px 6px;background:rgba(0,0,0,.18);clip-path:polygon(0 0,100% 0,100% 100%,4% 100%)}
+/* Windows on building face */
+.bld-windows{position:absolute;top:38%;left:10%;right:10%;bottom:16%;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:3px;pointer-events:none;z-index:1}
+.bld-win{background:rgba(180,225,255,.55);border-radius:2px;border:1px solid rgba(140,200,240,.4)}
+.bld-win.lit{background:rgba(255,230,120,.7);border-color:rgba(200,170,60,.5)}
+/* Better roof ridge */
+.bld-ridge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);width:3px;height:14px;background:rgba(0,0,0,.3);border-radius:2px 2px 0 0;z-index:2}
+/* Awning for shops */
+.bld-awning{position:absolute;bottom:22%;left:15%;right:15%;height:8px;background:repeating-linear-gradient(90deg,#e03030 0,#e03030 6px,#fff 6px,#fff 12px);border-radius:0 0 4px 4px;z-index:2;display:none}
+.bld.shop .bld-awning{display:block}
+/* Bike path animation */
+@keyframes bikePath{0%{transform:rotate(0deg) translateX(60px) rotate(0deg)}100%{transform:rotate(360deg) translateX(60px) rotate(-360deg)}}
 /* ROOF */
 .bld-roof{width:calc(100% + 14px);height:20px;clip-path:polygon(0 100%,50% 0,100% 100%);margin-bottom:-2px;position:relative;left:-7px;flex-shrink:0;filter:brightness(.85)}
 .bld-icon{font-size:24px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.2));flex-shrink:0;line-height:1}
@@ -194,8 +205,8 @@ body{font-family:'Inter',sans-serif;background:#c8e6b0;overflow:hidden;height:10
   <div class="nav-logo">🏙 Greenville</div>
   <div class="nav-tools">
     <button class="nb" onclick="zoomFit()">⊡ Fit</button>
-    <button class="nb" onclick="zoom(0.2)">🔍+</button>
-    <button class="nb" onclick="zoom(-0.2)">🔍−</button>
+    <button class="nb" onclick="zoom(0.08)">🔍+</button>
+    <button class="nb" onclick="zoom(-0.08)">🔍−</button>
     <button class="nb gold active" id="wiggle-btn" onclick="toggleWiggleMode()">✏️ Edit</button>
     
     <a href="https://alphafiles.net/vitals/" class="nb">⚡ ATC</a>
@@ -274,17 +285,126 @@ body{font-family:'Inter',sans-serif;background:#c8e6b0;overflow:hidden;height:10
 <div class="char swalk-char" style="top:1204px;font-size:13px;animation:walkHr 27s linear infinite;animation-delay:6s">🚴</div>
 
 <!-- PARKS -->
-<div class="park" id="park-main" style="left:590px;top:500px;width:210px;height:200px" onclick="openRec()">
-  <div class="park-icon">⛲</div>
-  <div class="park-name">Recreation Plaza</div>
-  <div style="font-size:8px;color:#2d5a27;font-weight:700;margin-top:2px;opacity:.7">Click to explore ↗</div>
+<!-- CENTRAL PARK — Rich SVG Version -->
+<div id="park-main" style="position:absolute;left:520px;top:460px;width:280px;height:260px;z-index:3;cursor:pointer" onclick="openRec()">
+<svg viewBox="0 0 280 260" style="width:100%;height:100%;overflow:visible">
+  <!-- Park outer ground -->
+  <ellipse cx="140" cy="130" rx="134" ry="124" fill="#6ab040" stroke="#4a8a28" stroke-width="3"/>
+  <!-- Inner texture -->
+  <ellipse cx="140" cy="130" rx="110" ry="100" fill="#78c050"/>
+  <!-- STREAM cutting through park -->
+  <path d="M 40 220 Q 80 190 100 160 Q 115 138 140 130 Q 165 122 185 100 Q 200 82 220 60" stroke="#5ab8d8" stroke-width="10" fill="none" stroke-linecap="round" opacity=".8"/>
+  <path d="M 40 220 Q 80 190 100 160 Q 115 138 140 130 Q 165 122 185 100 Q 200 82 220 60" stroke="#8ad0f0" stroke-width="4" fill="none" stroke-linecap="round" opacity=".6" stroke-dasharray="8,6"/>
+  <!-- BIKE / WALKING PATH (oval loop) -->
+  <ellipse cx="140" cy="130" rx="80" ry="70" fill="none" stroke="#c8a86a" stroke-width="9" opacity=".9"/>
+  <ellipse cx="140" cy="130" rx="80" ry="70" fill="none" stroke="#e8c890" stroke-width="3" stroke-dasharray="12,8" opacity=".7"/>
+  <!-- Inner grass -->
+  <ellipse cx="140" cy="130" rx="68" ry="58" fill="#5a9e38"/>
+  <!-- POND / LAKE -->
+  <ellipse cx="148" cy="148" rx="32" ry="24" fill="#4ab0d0" stroke="#38a0c0" stroke-width="2"/>
+  <ellipse cx="148" cy="148" rx="22" ry="14" fill="#60c8e8" opacity=".6"/>
+  <!-- Lily pads -->
+  <circle cx="138" cy="155" r="4" fill="#3a8a28" opacity=".7"/>
+  <circle cx="158" cy="142" r="3" fill="#3a8a28" opacity=".7"/>
+  <!-- FOUNTAIN -->
+  <circle cx="140" cy="112" r="10" fill="#c0e8f8" stroke="#80c8e8" stroke-width="2"/>
+  <circle cx="140" cy="112" r="5" fill="#fff" opacity=".8"/>
+  <line x1="140" y1="102" x2="140" y2="96" stroke="#80c8e8" stroke-width="2"/>
+  <line x1="134" y1="104" x2="130" y2="99" stroke="#80c8e8" stroke-width="1.5"/>
+  <line x1="146" y1="104" x2="150" y2="99" stroke="#80c8e8" stroke-width="1.5"/>
+  <!-- TREES around path -->
+  <text x="72" y="72" font-size="22">🌳</text>
+  <text x="178" y="68" font-size="20">🌲</text>
+  <text x="52" y="148" font-size="18">🌳</text>
+  <text x="194" y="152" font-size="20">🌲</text>
+  <text x="100" y="210" font-size="16">🌸</text>
+  <text x="160" y="215" font-size="16">🌺</text>
+  <text x="76" y="108" font-size="14">🌿</text>
+  <text x="190" y="108" font-size="14">🌿</text>
+  <!-- BENCHES -->
+  <rect x="104" y="75" width="14" height="5" rx="2" fill="#8B5E3C"/>
+  <rect x="160" y="75" width="14" height="5" rx="2" fill="#8B5E3C"/>
+  <rect x="68" y="165" width="14" height="5" rx="2" fill="#8B5E3C"/>
+  <rect x="196" y="165" width="14" height="5" rx="2" fill="#8B5E3C"/>
+  <!-- FLOWER BEDS -->
+  <circle cx="116" cy="192" r="6" fill="#f080a0" opacity=".8"/>
+  <circle cx="164" cy="192" r="6" fill="#f0a030" opacity=".8"/>
+  <circle cx="90" cy="180" r="5" fill="#c060f0" opacity=".8"/>
+  <circle cx="188" cy="180" r="5" fill="#f04040" opacity=".8"/>
+  <!-- LABEL -->
+  <rect x="70" y="228" width="140" height="22" rx="11" fill="rgba(255,255,255,.75)"/>
+  <text x="140" y="243" font-size="11" font-weight="900" fill="#1a4a10" text-anchor="middle" font-family="Nunito,sans-serif">🌿 Recreation Plaza ↗</text>
+</svg>
+<!-- Animated cyclists on the bike path -->
+<div style="position:absolute;top:40%;left:15%;font-size:13px;animation:bikePath 7s linear infinite">🚴</div>
+<div style="position:absolute;top:60%;left:70%;font-size:13px;animation:bikePath 9s linear infinite reverse;animation-delay:3s">🚴‍♀️</div>
+<div style="position:absolute;top:28%;left:50%;font-size:12px;animation:bikePath 11s linear infinite;animation-delay:5s">🚶‍♂️</div>
 </div>
-<div class="park" style="left:920px;top:810px;width:130px;height:120px;pointer-events:none;background:radial-gradient(ellipse,#98d678,#80c460);border:2px solid #50a030">
-  <div style="font-size:20px">🌳🌲🌳</div>
-  <div style="font-family:Nunito,sans-serif;font-size:8px;font-weight:900;color:#1a4a10">Forest</div>
+<!-- FOREST ZONES -->
+<div style="position:absolute;left:920px;top:820px;width:160px;height:140px;pointer-events:none;z-index:4">
+  <svg viewBox="0 0 160 140" style="width:100%;height:100%">
+    <ellipse cx="80" cy="70" rx="74" ry="64" fill="#4a8e28" opacity=".85"/>
+    <ellipse cx="80" cy="70" rx="60" ry="50" fill="#5aa032"/>
+    <text x="18" y="50" font-size="26">🌲</text><text x="60" y="40" font-size="22">🌳</text>
+    <text x="98" y="48" font-size="24">🌲</text><text x="12" y="90" font-size="20">🌳</text>
+    <text x="50" y="98" font-size="18">🌲</text><text x="90" y="95" font-size="22">🌳</text>
+    <text x="120" y="88" font-size="20">🌲</text><text x="40" y="128" font-size="16">🌿</text>
+    <text x="80" y="130" font-size="16">🌿</text>
+    <rect x="35" y="118" width="90" height="16" rx="8" fill="rgba(255,255,255,.6)"/>
+    <text x="80" y="130" font-size="9" font-weight="900" fill="#1a4a10" text-anchor="middle" font-family="Nunito,sans-serif">Greenville Forest</text>
+  </svg>
 </div>
 
-<!-- ANIMATED NPC CHARACTERS (not draggable) -->
+<!-- SECOND SMALL FOREST (top-right) -->
+<div style="position:absolute;left:1700px;top:300px;width:120px;height:110px;pointer-events:none;z-index:4">
+  <svg viewBox="0 0 120 110" style="width:100%;height:100%">
+    <ellipse cx="60" cy="55" rx="56" ry="50" fill="#4a8e28" opacity=".8"/>
+    <text x="10" y="42" font-size="22">🌳</text><text x="46" y="36" font-size="20">🌲</text>
+    <text x="78" y="42" font-size="22">🌳</text><text x="8" y="78" font-size="18">🌲</text>
+    <text x="50" y="82" font-size="20">🌳</text><text x="84" y="78" font-size="18">🌲</text>
+  </svg>
+</div>
+
+<!-- RIVER / STREAM across the world -->
+<svg style="position:absolute;left:0;top:0;width:2400px;height:1800px;pointer-events:none;z-index:4" viewBox="0 0 2400 1800">
+  <!-- Main stream winding through town -->
+  <path d="M 80 1700 Q 200 1500 320 1300 Q 430 1160 480 1000 Q 530 860 580 700 Q 640 560 700 500 Q 760 440 820 380 Q 880 320 920 220 Q 950 140 980 60" stroke="#5ab8d8" stroke-width="16" fill="none" stroke-linecap="round" opacity=".75"/>
+  <path d="M 80 1700 Q 200 1500 320 1300 Q 430 1160 480 1000 Q 530 860 580 700 Q 640 560 700 500 Q 760 440 820 380 Q 880 320 920 220 Q 950 140 980 60" stroke="#8ad0f0" stroke-width="6" fill="none" stroke-linecap="round" opacity=".5" stroke-dasharray="20,15"/>
+  <!-- Small bridge where stream crosses road at 740 -->
+  <rect x="470" y="730" width="28" height="26" rx="4" fill="#c8a86a" opacity=".9"/>
+  <text x="484" y="748" font-size="10" text-anchor="middle" fill="#8B5E3C">🌉</text>
+</svg>
+
+<!-- FARM AREA (bottom-left corner) -->
+<div style="position:absolute;left:60px;top:1260px;width:300px;height:200px;pointer-events:none;z-index:4">
+  <svg viewBox="0 0 300 200" style="width:100%;height:100%">
+    <rect x="0" y="0" width="300" height="200" rx="14" fill="#c8e890" stroke="#90b840" stroke-width="2"/>
+    <!-- Field rows -->
+    <line x1="20" y1="60" x2="280" y2="60" stroke="#a0c050" stroke-width="2" stroke-dasharray="8,6"/>
+    <line x1="20" y1="80" x2="280" y2="80" stroke="#a0c050" stroke-width="2" stroke-dasharray="8,6"/>
+    <line x1="20" y1="100" x2="280" y2="100" stroke="#a0c050" stroke-width="2" stroke-dasharray="8,6"/>
+    <line x1="20" y1="120" x2="280" y2="120" stroke="#a0c050" stroke-width="2" stroke-dasharray="8,6"/>
+    <line x1="20" y1="140" x2="280" y2="140" stroke="#a0c050" stroke-width="2" stroke-dasharray="8,6"/>
+    <!-- Crops -->
+    <text x="30" y="55" font-size="14">🌽🌽🌽🌽🌽🌽🌽🌽</text>
+    <text x="30" y="95" font-size="14">🥕🥕🥕🥕🥕🥕🥕🥕</text>
+    <text x="30" y="135" font-size="14">🌻🌻🌻🌻🌻🌻🌻🌻</text>
+    <!-- Barn -->
+    <rect x="220" y="20" width="60" height="50" rx="4" fill="#c84030"/>
+    <polygon points="220,20 250,4 280,20" fill="#8b1a10"/>
+    <rect x="234" y="38" width="18" height="22" rx="2" fill="#6b3010"/>
+    <text x="248" y="10" font-size="10" text-anchor="middle">🏚️</text>
+    <!-- Animals -->
+    <text x="20" y="178" font-size="14">🐄 🐖 🐓 🐑</text>
+    <text x="180" y="178" font-size="12">🚜</text>
+    <!-- Label -->
+    <rect x="60" y="155" width="100" height="16" rx="8" fill="rgba(255,255,255,.7)"/>
+    <text x="110" y="167" font-size="9" font-weight="900" fill="#3a6010" text-anchor="middle" font-family="Nunito,sans-serif">Greenville Farm</text>
+  </svg>
+</div>
+
+<!-- ANIMATED NPC CHARACTERS — sidewalks, streets, park -->
+<!-- Street cars: h-road 740 -->
 <!-- CARS on h-road 740 -->
 <div class="char" style="top:748px;animation:carH 14s linear infinite;animation-delay:0s">🚗</div>
 <div class="char" style="top:754px;animation:carHr 18s linear infinite;animation-delay:3s">🚙</div>
@@ -548,7 +668,7 @@ document.getElementById('canvas').addEventListener('pointerdown',function(e){
 });
 
 // Scroll wheel zoom
-document.getElementById('canvas').addEventListener('wheel',function(e){e.preventDefault();zoom(e.deltaY<0?0.12:-0.15,e.clientX,e.clientY);},{passive:false});
+document.getElementById('canvas').addEventListener('wheel',function(e){e.preventDefault();zoom(e.deltaY<0?0.04:-0.04,e.clientX,e.clientY);},{passive:false});
 
 // Pinch
 var pinch0=null,pinchScale0=1;
@@ -602,6 +722,7 @@ function renderBld(b){
     +'<div class="bld-name">'+b.name+'</div>'
     +(b.desc?'<div class="bld-sub">'+b.desc+'</div>':'')
     +rc
+    +'<div class="bld-windows"><div class="bld-win"></div><div class="bld-win lit"></div><div class="bld-win"></div><div class="bld-win lit"></div></div>'+'<div class="bld-windows"><div class="bld-win"></div><div class="bld-win lit"></div><div class="bld-win lit"></div><div class="bld-win"></div></div>'
     +'<div class="bld-shadow"></div>'
     +'<div class="bld-resize" onpointerdown="startResize(event,\''+b.id+'\')"></div>';
   el.addEventListener('pointerdown',function(e){onBldDown(e,b.id);});
