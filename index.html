@@ -23,7 +23,7 @@ body{font-family:'Inter',sans-serif;background:#c8e6b0;overflow:hidden;height:10
 .canvas.panning{cursor:grabbing}
 
 /* ── WORLD ── */
-.world{position:absolute;width:2400px;height:1800px;transform-origin:0 0;background-image:url("/assets/coc-map.png");background-size:cover;background-position:center}
+.world{position:absolute;width:2400px;height:1800px;transform-origin:0 0;background-size:cover;background-position:center}
 .world-ground{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 40%,#b8de98 0%,#c8e6b0 50%,#b0d890 100%)}
 
 /* ── ROADS ── */
@@ -209,8 +209,8 @@ body{font-family:'Inter',sans-serif;background:#c8e6b0;overflow:hidden;height:10
 
 <!-- CANVAS -->
 <div class="canvas" id="canvas">
-<div class="world" id="world">
-<div class="world-ground"></div>
+<div class="world" id="world"><img src="/assets/coc-map.png" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none" onerror="this.style.display='none'">
+
 
 <!-- ROADS -->
 <div class="road h" style="left:0;right:0;top:740px"></div>
