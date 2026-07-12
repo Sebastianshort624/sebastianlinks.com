@@ -148,7 +148,7 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
 .fav-card{background:var(--white);border:1px solid var(--border);border-radius:6px;padding:10px 12px;text-decoration:none;color:var(--text);display:flex;align-items:center;gap:8px;transition:all .15s;box-shadow:var(--shadow);}
 .fav-card:hover{background:var(--blue-light);border-color:var(--blue-mid);}
 .fav-icon{font-size:18px;flex-shrink:0;}
-.fav-name{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;color:var(--text);letter-spacing:.5px;}
+.fav-name{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;color:var(--text);letter-spacing:.5px;}
 .fav-url{font-size:9px;color:var(--muted);}
 
 /* PAY HISTORY TABLE */
@@ -182,14 +182,11 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
     </div>
   </div>
 <div style="background:#fff;border:1px solid #e5e7eb;border-radius:14px;overflow:hidden;margin-top:16px">
-  <div style="background:#f8f9fa;padding:10px 16px;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:6px">
-    <span style="width:10px;height:10px;border-radius:50%;background:#34a853;display:inline-block"></span>
-    Personal Calendar — Full Details
-  </div>
-  <iframe src="https://calendar.google.com/calendar/embed?src=sebastianshort624%40gmail.com&ctz=America%2FNew_York&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0&mode=AGENDA" style="border:0;display:block" width="100%" height="280" frameborder="0" scrolling="no"></iframe>
-</div>
+  
 
   <div class="topbar-date" id="topDate"></div>
+<button onclick="toggleAdmin()" id="admin-btn" style="background:#7c3aed;color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;display:flex;align-items:center;gap:5px">⚙️ Admin</button>
+<div style="display:none" ></div>
   <div class="tabs">
     <button class="tab active" onclick="showTab('dashboard',this)">🏠 Dashboard</button>
     <button class="tab" onclick="showTab('day',this)">📅 Day Build</button>
@@ -947,6 +944,145 @@ document.addEventListener('DOMContentLoaded',function(){
 [contenteditable=true]:focus{outline:none}
 #fmt-bar button:hover{background:rgba(255,255,255,.15)!important}
 </style>
+
+
+<!-- ══ ADMIN PANEL ══ -->
+<div id="admin-panel" style="display:none;position:fixed;top:0;right:0;width:340px;height:100vh;background:#fff;box-shadow:-4px 0 24px rgba(0,0,0,.15);z-index:9998;overflow-y:auto;font-family:Inter,sans-serif">
+  <div style="background:#7c3aed;padding:16px 18px;display:flex;align-items:center;justify-content:space-between">
+    <div style="font-size:16px;font-weight:800;color:#fff">⚙️ Admin Panel</div>
+    <button onclick="toggleAdmin()" style="background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:6px;padding:5px 10px;cursor:pointer;font-size:13px">✕ Close</button>
+  </div>
+  <div style="padding:16px">
+
+    <!-- FONT SIZE -->
+    <div style="margin-bottom:20px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#9ca3af;margin-bottom:8px">Quick Links Font Size</div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <input type="range" min="10" max="22" value="15" oninput="setFavFont(this.value)" style="flex:1">
+        <span id="fav-font-val" style="font-size:12px;font-weight:700;color:#374151;width:30px">15px</span>
+      </div>
+    </div>
+
+    <!-- ADD QUICK LINK -->
+    <div style="margin-bottom:20px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#9ca3af;margin-bottom:8px">Add Quick Link</div>
+      <input id="a-name" placeholder="Name" style="width:100%;border:1.5px solid #e5e7eb;border-radius:7px;padding:7px 10px;font-size:13px;outline:none;margin-bottom:6px;font-family:Inter,sans-serif">
+      <input id="a-url" placeholder="URL (https://...)" style="width:100%;border:1.5px solid #e5e7eb;border-radius:7px;padding:7px 10px;font-size:13px;outline:none;margin-bottom:6px;font-family:Inter,sans-serif">
+      <input id="a-icon" placeholder="Emoji icon" style="width:100%;border:1.5px solid #e5e7eb;border-radius:7px;padding:7px 10px;font-size:13px;outline:none;margin-bottom:8px;font-family:Inter,sans-serif">
+      <button onclick="adminAddLink()" style="width:100%;background:#7c3aed;color:#fff;border:none;border-radius:7px;padding:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">+ Add Link</button>
+    </div>
+
+    <!-- ADD NOTE CATEGORY -->
+    <div style="margin-bottom:20px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#9ca3af;margin-bottom:8px">Add Note Category</div>
+      <div style="display:flex;gap:6px">
+        <input id="a-cat" placeholder="Category name" style="flex:1;border:1.5px solid #e5e7eb;border-radius:7px;padding:7px 10px;font-size:13px;outline:none;font-family:Inter,sans-serif">
+        <button onclick="adminAddCat()" style="background:#7c3aed;color:#fff;border:none;border-radius:7px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer">+</button>
+      </div>
+    </div>
+
+    <!-- TOGGLE SECTIONS -->
+    <div style="margin-bottom:20px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#9ca3af;margin-bottom:8px">Show / Hide Sections</div>
+      <div id="section-toggles"></div>
+    </div>
+
+    <!-- CLEAR DATA -->
+    <div style="margin-bottom:20px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#9ca3af;margin-bottom:8px">Reset</div>
+      <button onclick="if(confirm('Clear all notes?'))clearNotes()" style="width:100%;background:#fee2e2;color:#dc2626;border:1px solid #fca5a5;border-radius:7px;padding:8px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:6px;font-family:Inter,sans-serif">🗑 Clear All Notes</button>
+      <button onclick="if(confirm('Clear Quick Links?'))clearLinks()" style="width:100%;background:#fee2e2;color:#dc2626;border:1px solid #fca5a5;border-radius:7px;padding:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">🗑 Clear Quick Links</button>
+    </div>
+
+    <!-- KEYBOARD SHORTCUTS REFERENCE -->
+    <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:12px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#9ca3af;margin-bottom:8px">Notes Shortcuts</div>
+      <div style="font-size:12px;color:#374151;line-height:1.9">
+        <b>Ctrl+B</b> — Bold<br>
+        <b>Ctrl+I</b> — Italic<br>
+        <b>Ctrl+U</b> — Underline<br>
+        <b>Ctrl+Z</b> — Undo<br>
+        <b>Ctrl+A</b> — Select All<br>
+        <i>Select text → toolbar appears</i>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div id="admin-overlay" onclick="toggleAdmin()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:9997"></div>
+
+<script>
+function toggleAdmin(){
+  var p=document.getElementById('admin-panel');
+  var o=document.getElementById('admin-overlay');
+  var open=p.style.display==='none'||p.style.display==='';
+  p.style.display=open?'block':'none';
+  o.style.display=open?'block':'none';
+  if(open) buildSectionToggles();
+}
+function setFavFont(size){
+  document.getElementById('fav-font-val').textContent=size+'px';
+  document.querySelectorAll('.fav-name').forEach(function(el){el.style.fontSize=size+'px';});
+  localStorage.setItem('fav_font_size',size);
+}
+// Apply saved font size on load
+(function(){
+  var saved=localStorage.getItem('fav_font_size');
+  if(saved){
+    document.querySelectorAll('.fav-name').forEach(function(el){el.style.fontSize=saved+'px';});
+    setTimeout(function(){
+      var slider=document.querySelector('#admin-panel input[type=range]');
+      if(slider){slider.value=saved;document.getElementById('fav-font-val').textContent=saved+'px';}
+    },500);
+  }
+})();
+function adminAddLink(){
+  var n=document.getElementById('a-name').value.trim();
+  var u=document.getElementById('a-url').value.trim();
+  var i=document.getElementById('a-icon').value.trim();
+  if(!n||!u)return alert('Name and URL required');
+  if(window.addFav){window.addFav&&(document.getElementById('favName').value=n,document.getElementById('favUrl').value=u,document.getElementById('favIcon').value=i||'🔗',window.addFav());}
+  document.getElementById('a-name').value='';document.getElementById('a-url').value='';document.getElementById('a-icon').value='';
+  alert('Link added! ✓');
+}
+function adminAddCat(){
+  var n=document.getElementById('a-cat').value.trim();if(!n)return;
+  if(window.addCategory){window.addCategory(n);}
+  else{
+    var cats=[];try{cats=JSON.parse(localStorage.getItem('noteCategories')||'[]');}catch(e){}
+    cats.push({name:n,color:'#6b7280',notes:[]});
+    localStorage.setItem('noteCategories',JSON.stringify(cats));
+    location.reload();
+  }
+  document.getElementById('a-cat').value='';
+  alert('Category added! Refresh to see it.');
+}
+function buildSectionToggles(){
+  var sections=[
+    {label:'Quick Links',id:'fav-section'},
+    {label:'Quick Notes',id:'notes-section'},
+    {label:'Calendar',id:'cal-section'},
+    {label:'Hit List',id:'hl-body'}
+  ];
+  var cont=document.getElementById('section-toggles');
+  cont.innerHTML=sections.map(function(s){
+    var el=document.getElementById(s.id);
+    var vis=!el||(el.closest('div')&&el.closest('div').style.display!=='none');
+    return '<label style="display:flex;align-items:center;gap:10px;margin-bottom:8px;cursor:pointer">'
+      +'<input type="checkbox" '+(vis?'checked':'')+' onchange="toggleSection(''+s.id+'',this.checked)" style="width:16px;height:16px;cursor:pointer">'
+      +'<span style="font-size:13px;font-weight:600;color:#374151">'+s.label+'</span>'
+      +'</label>';
+  }).join('');
+}
+function toggleSection(id,show){
+  var el=document.getElementById(id);
+  if(!el)return;
+  var parent=el.closest('[class]')||el.parentNode;
+  parent.style.display=show?'':'none';
+}
+function clearNotes(){localStorage.removeItem('noteCategories');location.reload();}
+function clearLinks(){localStorage.removeItem('favorites');location.reload();}
+</script>
 
 </body>
 </html>
