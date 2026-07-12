@@ -816,5 +816,137 @@ window.hlRemove=function(i){var h=hlLoad();h.splice(i,1);hlSave(h);hlRender();};
 window.addEventListener('load',hlRender);
 </script>
 
+
+<script>
+// ── NOTES FORMATTING SHORTCUTS ──
+// Works on any contenteditable or textarea in the notes section
+
+// Convert all note textareas to contenteditable divs with formatting
+function upgradeNoteInputs(){
+  document.querySelectorAll('textarea[data-note-input]').forEach(function(ta){
+    var div=document.createElement('div');
+    div.contentEditable='true';
+    div.style.cssText=ta.style.cssText;
+    div.style.minHeight='60px';
+    div.style.outline='none';
+    div.style.whiteSpace='pre-wrap';
+    div.className=ta.className;
+    div.setAttribute('data-note-ce','1');
+    div.setAttribute('placeholder',ta.getAttribute('placeholder')||'');
+    ta.parentNode.replaceChild(div,ta);
+  });
+}
+
+// Keyboard shortcut handler — attach to any contenteditable in notes
+document.addEventListener('keydown',function(e){
+  var active=document.activeElement;
+  var inNote=active&&(active.contentEditable==='true'||active.tagName==='TEXTAREA');
+  if(!inNote) return;
+
+  var ctrl=e.ctrlKey||e.metaKey;
+  if(!ctrl) return;
+
+  switch(e.key.toLowerCase()){
+    case 'b': e.preventDefault(); document.execCommand('bold',false,null); break;
+    case 'i': e.preventDefault(); document.execCommand('italic',false,null); break;
+    case 'u': e.preventDefault(); document.execCommand('underline',false,null); break;
+    case 's': e.preventDefault(); /* auto-saved */ showFmtToast('Auto-saved ✓'); break;
+    case 'z': /* let browser handle undo */; break;
+    case 'a': /* select all — let browser handle */; break;
+  }
+});
+
+// Floating mini toolbar that appears on text selection in notes
+var fmtBar=null;
+function createFmtBar(){
+  if(fmtBar) return;
+  fmtBar=document.createElement('div');
+  fmtBar.id='fmt-bar';
+  fmtBar.style.cssText='position:fixed;display:none;background:#1a1a2e;border-radius:8px;padding:4px 6px;box-shadow:0 4px 16px rgba(0,0,0,.35);z-index:9999;display:none;align-items:center;gap:2px;pointer-events:auto';
+  var btns=[
+    {label:'<b>B</b>',cmd:'bold',title:'Bold (Ctrl+B)'},
+    {label:'<i>I</i>',cmd:'italic',title:'Italic (Ctrl+I)'},
+    {label:'<u>U</u>',cmd:'underline',title:'Underline (Ctrl+U)'},
+    {label:'H1',cmd:'fontSize',val:'5',title:'Heading'},
+    {label:'H2',cmd:'fontSize',val:'4',title:'Sub-heading'},
+    {label:'≡',cmd:'insertUnorderedList',title:'Bullet list'},
+    {label:'1.',cmd:'insertOrderedList',title:'Numbered list'},
+    {label:'↩',cmd:'removeFormat',title:'Clear formatting'},
+  ];
+  btns.forEach(function(b){
+    var btn=document.createElement('button');
+    btn.innerHTML=b.label;
+    btn.title=b.title;
+    btn.style.cssText='background:none;border:none;color:#fff;font-size:13px;font-weight:700;padding:4px 8px;cursor:pointer;border-radius:5px;font-family:Inter,sans-serif;min-width:28px;transition:.1s';
+    btn.onmouseenter=function(){this.style.background='rgba(255,255,255,.15)'};
+    btn.onmouseleave=function(){this.style.background='none'};
+    btn.onmousedown=function(e){
+      e.preventDefault();
+      document.execCommand(b.cmd,false,b.val||null);
+      hideFmtBar();
+    };
+    fmtBar.appendChild(btn);
+  });
+  // Separator
+  var sep=document.createElement('div');
+  sep.style.cssText='width:1px;height:18px;background:rgba(255,255,255,.2);margin:0 3px';
+  fmtBar.insertBefore(sep,fmtBar.children[4]);
+  document.body.appendChild(fmtBar);
+}
+
+function showFmtBar(x,y){
+  if(!fmtBar)createFmtBar();
+  fmtBar.style.display='flex';
+  var bw=fmtBar.offsetWidth||200;
+  var vw=window.innerWidth;
+  fmtBar.style.left=Math.min(x,vw-bw-8)+'px';
+  fmtBar.style.top=(y-44)+'px';
+}
+function hideFmtBar(){if(fmtBar)fmtBar.style.display='none';}
+
+document.addEventListener('mouseup',function(e){
+  setTimeout(function(){
+    var sel=window.getSelection();
+    if(!sel||sel.isCollapsed||!sel.toString().trim()){hideFmtBar();return;}
+    // Only show in notes area
+    var node=sel.anchorNode;
+    var inNotes=false;
+    var el=node&&node.nodeType===3?node.parentNode:node;
+    while(el){
+      if(el.contentEditable==='true'||el.tagName==='TEXTAREA'){inNotes=true;break;}
+      el=el.parentNode;
+    }
+    if(!inNotes){hideFmtBar();return;}
+    var range=sel.getRangeAt(0);
+    var rect=range.getBoundingClientRect();
+    showFmtBar(rect.left+rect.width/2-100,rect.top+window.scrollY);
+  },10);
+});
+document.addEventListener('mousedown',function(e){if(fmtBar&&!fmtBar.contains(e.target))hideFmtBar();});
+document.addEventListener('keyup',function(){if(window.getSelection()&&window.getSelection().isCollapsed)hideFmtBar();});
+
+function showFmtToast(msg){
+  var t=document.getElementById('fmt-toast');
+  if(!t){t=document.createElement('div');t.id='fmt-toast';t.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1a1a2e;color:#fff;border-radius:100px;padding:8px 20px;font-size:13px;font-weight:700;z-index:9999;font-family:Inter,sans-serif;pointer-events:none;opacity:0;transition:opacity .3s';document.body.appendChild(t);}
+  t.textContent=msg;t.style.opacity='1';
+  clearTimeout(window._ft);window._ft=setTimeout(function(){t.style.opacity='0';},1800);
+}
+
+// Add keyboard shortcut hint to page
+document.addEventListener('DOMContentLoaded',function(){
+  createFmtBar();
+  // Add subtle hint to any note textarea label
+  var hints=document.querySelectorAll('[data-notes-label]');
+  hints.forEach(function(h){h.title='Select text to format · Ctrl+B Bold · Ctrl+I Italic · Ctrl+U Underline';});
+});
+</script>
+
+<style>
+/* contenteditable placeholder */
+[contenteditable=true]:empty:before{content:attr(placeholder);color:#9ca3af;pointer-events:none}
+[contenteditable=true]:focus{outline:none}
+#fmt-bar button:hover{background:rgba(255,255,255,.15)!important}
+</style>
+
 </body>
 </html>
