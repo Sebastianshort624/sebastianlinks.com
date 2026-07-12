@@ -72,6 +72,15 @@ body{font-family:'Inter',sans-serif;background:#c8e6b0;overflow:hidden;height:10
 @keyframes wiggle{0%,100%{transform:rotate(-2.5deg)}50%{transform:rotate(2.5deg)}}
 .bld.wiggling .bld-delete{display:flex}
 .bld.wiggling .bld-resize{display:block}
+/* LIFTED — dragging after long press */
+.bld.lifted{
+  transform:scale(1.12) rotate(1.5deg)!important;
+  box-shadow:0 20px 40px rgba(0,0,0,.35),4px 4px 0 rgba(0,0,0,.2)!important;
+  z-index:900!important;
+  transition:transform .12s,box-shadow .12s;
+  cursor:grabbing!important;
+  animation:none!important;
+}
 .bld-delete{display:none;position:absolute;top:-12px;left:-12px;width:22px;height:22px;background:#ff3b30;border:2px solid #fff;border-radius:50%;color:#fff;font-size:13px;font-weight:900;align-items:center;justify-content:center;z-index:20;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.3)}
 .bld-resize{display:none;position:absolute;bottom:-8px;right:-8px;width:18px;height:18px;background:#007aff;border:2px solid #fff;border-radius:4px;cursor:se-resize;z-index:20}
 .bld-resize::after{content:'⤡';font-size:10px;color:#fff;display:flex;align-items:center;justify-content:center;height:100%;font-weight:900}
@@ -450,26 +459,51 @@ function zoomFit(){
   applyTransform();
 }
 
-// Pan
-var isPanning=false,panStart=null;
-document.getElementById('canvas').addEventListener('pointerdown',function(e){
-  if(wiggleMode) return;
-  if(e.target===e.currentTarget||e.target.id==='world'||e.target.classList.contains('road')||e.target.classList.contains('world-ground')||e.target.classList.contains('cross')||e.target.classList.contains('sidewalk')){
-    isPanning=true;panStart={x:e.clientX-panX,y:e.clientY-panY};
-    document.getElementById('canvas').classList.add('panning');
-  }
-});
+// ══════════════════════════════════════
+// INTERACTION — Pan / Long-press-drag / Double-tap-open
+// ══════════════════════════════════════
+var isPanning=false, panStart=null;
+var lpTimer=null, lpBldId=null, lpStartX=0, lpStartY=0;
+var liftedBld=null;  // building being dragged after long press
+var lastTapMap={};   // id → timestamp of last tap
+var LP_DELAY=550;    // ms to hold before drag starts
+var MOVE_CANCEL=10;  // px movement before long press is cancelled
+var DBL_TAP_MS=380;  // ms window for double tap
+
+// Single global pointermove + pointerup
 document.addEventListener('pointermove',function(e){
-  if(isPanning&&panStart){panX=e.clientX-panStart.x;panY=e.clientY-panStart.y;applyTransform(false);}
-  if(activeDrag) moveDrag(e);
+  // Cancel long press if finger moved too far
+  if(lpTimer && (Math.abs(e.clientX-lpStartX)>MOVE_CANCEL || Math.abs(e.clientY-lpStartY)>MOVE_CANCEL)){
+    clearTimeout(lpTimer);lpTimer=null;lpBldId=null;
+    // Fall through to pan
+    if(!isPanning&&panStart===null){
+      isPanning=true;
+      panStart={x:e.clientX-panX,y:e.clientY-panY};
+      document.getElementById('canvas').classList.add('panning');
+    }
+  }
+  if(isPanning&&panStart){panX=e.clientX-panStart.x;panY=e.clientY-panStart.y;clampPan();applyTransform(false);}
+  if(liftedBld) moveLiftedBld(e);
   if(activeSignDrag) moveSignDrag(e);
   if(activeDecoDrag) moveDecoDrag(e);
 });
+
 document.addEventListener('pointerup',function(e){
+  clearTimeout(lpTimer);lpTimer=null;lpBldId=null;
   if(isPanning){isPanning=false;panStart=null;document.getElementById('canvas').classList.remove('panning');}
-  if(activeDrag) endDrag(e);
+  if(liftedBld) dropLiftedBld(e);
   if(activeSignDrag) endSignDrag(e);
   if(activeDecoDrag) endDecoDrag(e);
+});
+
+// Canvas background → pan
+document.getElementById('canvas').addEventListener('pointerdown',function(e){
+  var t=e.target;
+  var onEmpty=t===e.currentTarget||t.id==='world'||t.classList.contains('road')||t.classList.contains('world-ground')||t.classList.contains('cross')||t.classList.contains('sidewalk')||t.classList.contains('park')||t.classList.contains('park-icon')||t.classList.contains('park-name');
+  if(onEmpty){
+    isPanning=true;panStart={x:e.clientX-panX,y:e.clientY-panY};
+    document.getElementById('canvas').classList.add('panning');
+  }
 });
 
 // Scroll wheel zoom
@@ -482,7 +516,7 @@ document.getElementById('canvas').addEventListener('touchmove',function(e){if(e.
 document.getElementById('canvas').addEventListener('touchend',function(){pinch0=null;},{passive:true});
 
 // ══════════════════════════════════════
-// WIGGLE MODE
+// WIGGLE MODE (visual only — drag uses long-press directly)
 // ══════════════════════════════════════
 var wiggleMode=false;
 function toggleWiggleMode(){wiggleMode?exitWiggleMode():enterWiggleMode();}
@@ -502,15 +536,6 @@ function exitWiggleMode(){
   document.getElementById('wiggle-btn').classList.remove('active');
   document.getElementById('wiggle-btn').textContent='✏️ Edit';
 }
-// Long press to enter wiggle
-var lpTimer=null;
-document.getElementById('canvas').addEventListener('pointerdown',function(e){
-  if(wiggleMode) return;
-  if(e.target.classList.contains('bld')||e.target.closest('.bld')){
-    lpTimer=setTimeout(function(){enterWiggleMode();},600);
-  }
-});
-document.addEventListener('pointerup',function(){clearTimeout(lpTimer);lpTimer=null;});
 
 // ══════════════════════════════════════
 // RENDER BUILDINGS
@@ -543,9 +568,10 @@ function renderBld(b){
 }
 
 // ══════════════════════════════════════
-// BUILDING DRAG + TAP
+// BUILDING INTERACTION
+// Double-tap = open · Long-press+slide = move
 // ══════════════════════════════════════
-var activeDrag=null,dropTimer=null,dropTarget=null;
+var dropTarget=null;
 
 function worldPt(cx,cy){
   var wr=document.getElementById('world').getBoundingClientRect();
@@ -555,56 +581,82 @@ function worldPt(cx,cy){
 function onBldDown(e,id){
   if(e.target.classList.contains('bld-delete')||e.target.classList.contains('bld-resize')) return;
   e.stopPropagation();e.preventDefault();
-  clearTimeout(lpTimer);lpTimer=null;
+  // Stop any pan
+  isPanning=false;panStart=null;
+
   var el=document.getElementById('bld-'+id);
-  var wr=document.getElementById('world').getBoundingClientRect();
-  var bx=parseFloat(el.style.left),by=parseFloat(el.style.top);
-  var ex=(bx*scale+wr.left),ey=(by*scale+wr.top);
-  activeDrag={id:id,el:el,offX:(e.clientX-ex)/scale,offY:(e.clientY-ey)/scale,moved:false,sx:e.clientX,sy:e.clientY};
-}
-function moveDrag(e){
-  var ds=activeDrag;
-  if(Math.abs(e.clientX-ds.sx)<5&&Math.abs(e.clientY-ds.sy)<5&&!ds.moved) return;
-  if(!wiggleMode&&!ds.moved) return; // can't drag in non-wiggle mode
-  if(!ds.moved){ds.moved=true;ds.el.classList.add('drag-active','wiggling');}
   var wp=worldPt(e.clientX,e.clientY);
-  ds.el.style.left=(wp.x-ds.offX)+'px';
-  ds.el.style.top=(wp.y-ds.offY)+'px';
-  // Drop target highlight
+  var bx=parseFloat(el.style.left)||0, by=parseFloat(el.style.top)||0;
+
+  lpStartX=e.clientX; lpStartY=e.clientY; lpBldId=id;
+
+  // Double-tap detection
+  var now=Date.now();
+  if(lastTapMap[id] && (now-lastTapMap[id])<DBL_TAP_MS){
+    lastTapMap[id]=0;
+    clearTimeout(lpTimer);lpTimer=null;lpBldId=null;
+    openBld(id);
+    return;
+  }
+  lastTapMap[id]=now;
+
+  // Start long-press timer for drag
+  clearTimeout(lpTimer);
+  lpTimer=setTimeout(function(){
+    lpTimer=null;
+    // Lift the building
+    var offX=wp.x-bx, offY=wp.y-by;
+    liftedBld={id:id,el:el,offX:offX,offY:offY};
+    el.classList.add('lifted');
+    if(wiggleMode) el.classList.remove('wiggling');
+    if(navigator.vibrate) navigator.vibrate(40);
+    // Show drop hint
+    document.getElementById('wiggle-banner').textContent='📦 Drag to move · Drop on another to nest inside';
+    document.getElementById('wiggle-banner').classList.add('show');
+  }, LP_DELAY);
+}
+
+function moveLiftedBld(e){
+  var lb=liftedBld;
+  var wp=worldPt(e.clientX,e.clientY);
+  lb.el.style.left=(wp.x-lb.offX)+'px';
+  lb.el.style.top=(wp.y-lb.offY)+'px';
+  // Drop target detection
   var hit=null;
   buildings.forEach(function(b){
-    if(b.id===ds.id) return;
+    if(b.id===lb.id) return;
     var te=document.getElementById('bld-'+b.id);if(!te) return;
     var tr=te.getBoundingClientRect();
     if(e.clientX>=tr.left&&e.clientX<=tr.right&&e.clientY>=tr.top&&e.clientY<=tr.bottom) hit=b.id;
     te.style.outline='';
   });
   if(hit){document.getElementById('bld-'+hit).style.outline='3px dashed #f59e0b';dropTarget=hit;}
-  else{dropTarget=null;}
+  else dropTarget=null;
 }
-function endDrag(e){
-  var ds=activeDrag;activeDrag=null;
+
+function dropLiftedBld(e){
+  var lb=liftedBld; liftedBld=null;
+  lb.el.classList.remove('lifted');
   buildings.forEach(function(b){var te=document.getElementById('bld-'+b.id);if(te)te.style.outline='';});
-  if(!ds.moved){openBld(ds.id);return;}
-  ds.el.classList.remove('drag-active');
+  if(wiggleMode) lb.el.classList.add('wiggling');
+  document.getElementById('wiggle-banner').classList.remove('show');
+
   if(dropTarget){
-    var dragged=getBld(ds.id),target=getBld(dropTarget);
-    showConfirm('Add as room?','"'+dragged.name+'" → room inside "'+target.name+'"',function(){
+    var dragged=getBld(lb.id), target=getBld(dropTarget);
+    showConfirm('Add as room?','"'+dragged.name+'" becomes a room inside "'+target.name+'".',function(){
       if(!target.rooms) target.rooms=[];
       target.rooms.push({id:dragged.id,icon:dragged.icon,name:dragged.name,desc:dragged.desc||'',url:dragged.url});
       buildings=buildings.filter(function(b){return b.id!==dragged.id;});
       save();render();
     });
-    // snap back
-    var b=getBld(ds.id);if(b){ds.el.style.left=b.x+'px';ds.el.style.top=b.y+'px';}
+    var b=getBld(lb.id);if(b){lb.el.style.left=b.x+'px';lb.el.style.top=b.y+'px';}
   } else {
     var wp=worldPt(e.clientX,e.clientY);
-    var b=getBld(ds.id);
-    if(b){b.x=Math.round(wp.x-ds.offX);b.y=Math.round(wp.y-ds.offY);}
+    var b=getBld(lb.id);
+    if(b){b.x=Math.round(wp.x-lb.offX);b.y=Math.round(wp.y-lb.offY);}
     save();
   }
   dropTarget=null;
-  if(wiggleMode) ds.el.classList.add('wiggling');
 }
 
 // ══════════════════════════════════════
