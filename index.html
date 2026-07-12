@@ -179,19 +179,16 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
     <div>
       <div class="topbar-logo">⚡ Life OS</div>
       <div class="topbar-sub">Sebastian S. — Personal Operating System</div>
-<!-- PERSONAL CALENDAR — FULL WIDTH BELOW -->
-<div style="background:linear-gradient(135deg,#1B2A4A,#243a6e);border-radius:14px;padding:20px;margin-top:16px">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.55);display:flex;align-items:center;gap:6px">
-      <span style="width:8px;height:8px;border-radius:50%;background:#34d399;display:inline-block"></span>
-      PERSONAL CALENDAR — FULL DETAILS
     </div>
   </div>
-  <iframe src="https://calendar.google.com/calendar/embed?src=sebastianshort624%40gmail.com&ctz=America%2FNew_York&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0&mode=AGENDA" style="border:0;border-radius:8px" width="100%" height="280" frameborder="0" scrolling="no"></iframe>
+<div style="background:#fff;border:1px solid #e5e7eb;border-radius:14px;overflow:hidden;margin-top:16px">
+  <div style="background:#f8f9fa;padding:10px 16px;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:6px">
+    <span style="width:10px;height:10px;border-radius:50%;background:#34a853;display:inline-block"></span>
+    Personal Calendar — Full Details
+  </div>
+  <iframe src="https://calendar.google.com/calendar/embed?src=sebastianshort624%40gmail.com&ctz=America%2FNew_York&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0&mode=AGENDA" style="border:0;display:block" width="100%" height="280" frameborder="0" scrolling="no"></iframe>
 </div>
 
-    </div>
-  </div>
   <div class="topbar-date" id="topDate"></div>
   <div class="tabs">
     <button class="tab active" onclick="showTab('dashboard',this)">🏠 Dashboard</button>
@@ -779,47 +776,44 @@ renderDay(); calcComm(); renderDeals(); renderPays(); renderFavs();
       <iframe src="https://calendar.google.com/calendar/embed?src=sebastian%40alphatimeshareconsultants.com&ctz=America%2FNew_York&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0&mode=AGENDA" style="border:0;display:block" width="100%" height="340" frameborder="0" scrolling="no"></iframe>
     </div>
     <div>
-      <div style="background:#f8f9fa;padding:8px 14px;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:6px">
-        <span style="width:10px;height:10px;border-radius:50%;background:#34a853;display:inline-block"></span>
-        Personal Calendar — Full Details
+      <div style="border-left:2px solid #e5e7eb;padding:0 0 0 16px">
+      <div style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e5e7eb;padding-bottom:8px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between">
+        <span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:50%;background:#C8960C;display:inline-block"></span>🎯 Today's Hit List</span>
+        <span id="hl-count" style="background:#C8960C;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px">0</span>
       </div>
-      <iframe src="https://calendar.google.com/calendar/embed?src=sebastianshort624%40gmail.com&ctz=America%2FNew_York&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0&mode=AGENDA" style="border:0;display:block" width="100%" height="340" frameborder="0" scrolling="no"></iframe>
+      <div id="hl-body" style="min-height:220px;max-height:280px;overflow-y:auto;margin-bottom:10px"></div>
+      <div style="display:flex;gap:6px">
+        <input id="hl-inp" placeholder="Add client or note..." onkeydown="if(event.key==='Enter')hlAdd()" style="flex:1;border:1px solid #e5e7eb;border-radius:8px;padding:7px 10px;font-size:12px;font-family:Inter,sans-serif;outline:none;color:#1a1a2e">
+        <button onclick="hlAdd()" style="background:#C8960C;color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:16px;font-weight:900;cursor:pointer">+</button>
+      </div>
     </div>
-  </div>
   <div style="padding:8px 14px;background:#f8f9fa;border-top:1px solid #e5e7eb;font-size:11px;color:#9ca3af;text-align:center">
     Left: ATC appointments (live, free/busy) &nbsp;·&nbsp; Right: Personal calendar (full details) &nbsp;·&nbsp; Both update in real time
   </div>
 </div>
 
 <script>
-// HIT LIST — calendar section
-var HK='sl_hitlist';
-var HC=['#1B2A4A','#C8960C','#16a34a','#dc2626','#7c3aed','#0891b2','#d97706','#db2777'];
-function loadHitsCal(){try{return JSON.parse(localStorage.getItem(HK)||'[]');}catch(e){return[];}}
-function saveHitsCal(h){localStorage.setItem(HK,JSON.stringify(h));}
-function renderHitsCal(){
-  var items=loadHitsCal();
-  var body=document.getElementById('hit-list-cal');
-  var count=document.getElementById('hit-count-cal');
+var _HK='sl_hitlist';
+var _HC=['#1B2A4A','#C8960C','#16a34a','#dc2626','#7c3aed','#0891b2','#d97706','#db2777'];
+function hlLoad(){try{return JSON.parse(localStorage.getItem(_HK)||'[]');}catch(e){return[];}}
+function hlSave(h){localStorage.setItem(_HK,JSON.stringify(h));}
+function hlRender(){
+  var items=hlLoad();
+  var body=document.getElementById('hl-body');
+  var cnt=document.getElementById('hl-count');
   if(!body)return;
-  if(count)count.textContent=items.length;
-  if(!items.length){body.innerHTML='<div style="font-size:12px;color:rgba(255,255,255,.35);text-align:center;padding:20px 0;font-style:italic">No clients on hit list yet.<br>Add one below.</div>';return;}
+  if(cnt)cnt.textContent=items.length;
+  if(!items.length){body.innerHTML='<div style="font-size:12px;color:#9ca3af;text-align:center;padding:24px 0;font-style:italic">No clients on hit list.<br>Add one below.</div>';return;}
   body.innerHTML=items.map(function(item,i){
-    return '<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:rgba(255,255,255,.07);border-left:3px solid '+HC[i%HC.length]+';border-radius:6px;margin-bottom:5px">'
-      +'<div style="flex:1;font-size:12px;font-weight:600;color:#fff;line-height:1.3">'+item+'</div>'
-      +'<button onclick="removeHitCal('+i+')" style="background:none;border:none;color:rgba(255,255,255,.3);cursor:pointer;font-size:13px;padding:0">✕</button>'
+    return '<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-left:3px solid '+_HC[i%_HC.length]+';border-radius:6px;margin-bottom:5px;background:#f8fafc">'
+      +'<div style="flex:1;font-size:13px;font-weight:600;color:#1a1a2e;line-height:1.3">'+item+'</div>'
+      +'<button onclick="hlRemove('+i+')" style="background:none;border:none;color:#d1d5db;cursor:pointer;font-size:13px">✕</button>'
       +'</div>';
   }).join('');
 }
-window.addHitCal=function(){
-  var inp=document.getElementById('hit-inp-cal');
-  var val=inp?inp.value.trim():'';if(!val)return;
-  var h=loadHitsCal();h.push(val);saveHitsCal(h);inp.value='';renderHitsCal();
-};
-window.removeHitCal=function(i){var h=loadHitsCal();h.splice(i,1);saveHitsCal(h);renderHitsCal();};
-// Init
-document.addEventListener('DOMContentLoaded',function(){renderHitsCal();});
-setTimeout(renderHitsCal, 300);
+window.hlAdd=function(){var i=document.getElementById('hl-inp');var v=i?i.value.trim():'';if(!v)return;var h=hlLoad();h.push(v);hlSave(h);i.value='';hlRender();};
+window.hlRemove=function(i){var h=hlLoad();h.splice(i,1);hlSave(h);hlRender();};
+window.addEventListener('load',hlRender);
 </script>
 
 </body>
