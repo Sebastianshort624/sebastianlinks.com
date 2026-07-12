@@ -558,8 +558,8 @@ function renderBld(b){
   el.innerHTML=
     '<div class="bld-delete" onclick="deleteBld(event,\''+b.id+'\')">−</div>'
     +'<div class="bld-icon">'+b.icon+'</div>'
-    +'<div class="bld-post"></div>'
-    +'<div class="bld-name" style="background:'+(b.bc||'#1a6b1a')+';border-color:rgba(0,0,0,.3)">'+b.name+'</div>'
+    +''
+    +'<div class="bld-name">'+b.name+'</div>'
     +(b.rooms&&b.rooms.length?'<div class="bld-rooms">'+b.rooms.length+' rooms</div>':'');
   el.addEventListener('pointerdown',function(e){onBldDown(e,b.id);});
   document.getElementById('world').appendChild(el);
