@@ -555,14 +555,12 @@ function renderBld(b){
   var w=b.w||120;
   el.style.cssText='left:'+b.x+'px;top:'+b.y+'px';
   var rc=b.rooms&&b.rooms.length?'<div class="bld-badge">'+b.rooms.length+' rooms</div>':'';
-  el.innerHTML='<div class="bld-delete" onclick="deleteBld(event,\''+b.id+'\')">−</div>'
-    +'<div class="bld-roof" style="background:'+b.roof+'"></div>'
+  el.innerHTML=
+    '<div class="bld-delete" onclick="deleteBld(event,\''+b.id+'\')">−</div>'
     +'<div class="bld-icon">'+b.icon+'</div>'
+    +'<div class="bld-post"></div>'
     +'<div class="bld-name" style="background:'+(b.bc||'#1a6b1a')+';border-color:rgba(0,0,0,.3)">'+b.name+'</div>'
-    +(b.desc?'<div class="bld-sub">'+b.desc+'</div>':'')
-    +rc
-    +'<div class="bld-shadow"></div>'
-    +'<div class="bld-resize" onpointerdown="startResize(event,\''+b.id+'\')"></div>';
+    +(b.rooms&&b.rooms.length?'<div class="bld-rooms">'+b.rooms.length+' rooms</div>':'');
   el.addEventListener('pointerdown',function(e){onBldDown(e,b.id);});
   document.getElementById('world').appendChild(el);
 }
