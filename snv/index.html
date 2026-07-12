@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SnV Weekly Council — Life OS</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f5f5f7;
+  --card:#fff;
+  --border:#e5e7eb;
+  --text:#1a1a2e;
+  --muted:#6b7280;
+  --navy:#1B2A4A;
+  --gold:#C8960C;
+  --green:#34c759;
+  --blue:#007aff;
+  --purple:#7c3aed;
+  --pink:#db2777;
+  --red:#ff3b30;
+  --orange:#ff9500;
+  --radius:14px;
+  --shadow:0 2px 12px rgba(0,0,0,.07);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+a{text-decoration:none;color:inherit}
+
+/* ── TOP BAR ── */
+.topbar{background:#fff;border-bottom:1px solid var(--border);padding:0 20px;height:56px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:200;box-shadow:0 1px 8px rgba(0,0,0,.05)}
+.topbar-logo{font-family:Nunito,sans-serif;font-size:17px;font-weight:900;color:var(--navy);display:flex;align-items:center;gap:6px}
+.topbar-logo span{font-size:22px}
+.topbar-mid{flex:1;display:flex;justify-content:center;gap:6px}
+.nav-btn{background:none;border:none;border-radius:10px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif;color:var(--muted);transition:.15s}
+.nav-btn.active{background:var(--navy);color:#fff}
+.nav-btn:hover:not(.active){background:#f0f0f5}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-size:17px;cursor:pointer;border:2px solid transparent;transition:.15s}
+.avatar.active-user{border-color:var(--blue)}
+.user-chip{font-size:11px;font-weight:700;color:var(--muted);background:#f3f4f6;border-radius:100px;padding:4px 10px}
+
+/* ── VIEWS ── */
+.view{display:none;padding:20px;max-width:900px;margin:0 auto}
+.view.active{display:block}
+
+/* ── CARDS ── */
+.card{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);padding:20px;box-shadow:var(--shadow);margin-bottom:14px}
+.card-title{font-family:Nunito,sans-serif;font-size:15px;font-weight:900;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:7px}
+.card-title .icon{font-size:18px}
+
+/* ── DASHBOARD ── */
+.dash-greeting{font-family:Nunito,sans-serif;font-size:26px;font-weight:900;color:var(--navy);margin-bottom:4px}
+.dash-sub{font-size:13px;color:var(--muted);margin-bottom:20px}
+.score-ring{display:flex;align-items:center;gap:20px;padding:20px;background:linear-gradient(135deg,var(--navy),#2d4a8a);border-radius:var(--radius);color:#fff;margin-bottom:14px}
+.ring-wrap{position:relative;width:90px;height:90px;flex-shrink:0}
+.ring-wrap svg{transform:rotate(-90deg)}
+.ring-label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-num{font-family:Nunito,sans-serif;font-size:22px;font-weight:900;color:#fff}
+.ring-txt{font-size:9px;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.5px}
+.score-info{flex:1}
+.score-title{font-family:Nunito,sans-serif;font-size:18px;font-weight:900;margin-bottom:4px}
+.score-desc{font-size:12px;color:rgba(255,255,255,.7);line-height:1.6}
+.next-council{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #86efac;border-radius:var(--radius);padding:16px;display:flex;align-items:center;gap:14px;margin-bottom:14px;cursor:pointer;transition:.15s}
+.next-council:hover{border-color:var(--green)}
+.nc-date{background:var(--green);color:#fff;border-radius:10px;padding:8px 12px;text-align:center;flex-shrink:0;font-family:Nunito,sans-serif}
+.nc-day{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.nc-num{font-size:22px;font-weight:900}
+.nc-info{flex:1}
+.nc-title{font-size:15px;font-weight:800;color:#14532d}
+.nc-sub{font-size:12px;color:#166534}
+.nc-arrow{font-size:20px;color:var(--green)}
+.ev-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+@media(max-width:600px){.ev-grid{grid-template-columns:1fr}}
+.ev-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;border-left:4px solid}
+.ev-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;opacity:.6}
+.ev-value{font-family:Nunito,sans-serif;font-size:22px;font-weight:900;color:var(--text)}
+.ev-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.cat-progress{margin-bottom:14px}
+.cat-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.cat-emoji{font-size:16px;flex-shrink:0;width:24px;text-align:center}
+.cat-name{font-size:12px;font-weight:700;flex:0 0 100px;color:var(--text)}
+.cat-bar-wrap{flex:1;background:#f3f4f6;border-radius:100px;height:8px;overflow:hidden}
+.cat-bar{height:8px;border-radius:100px;transition:.4s}
+.cat-pct{font-size:11px;font-weight:700;color:var(--muted);flex-shrink:0;width:32px;text-align:right}
+.wins-list .win-item{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid #f3f4f6;font-size:13px;line-height:1.5}
+.win-item:last-child{border:none}
+.win-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.ai-rec{background:linear-gradient(135deg,#f5f3ff,#ede9fe);border:1.5px solid #c4b5fd;border-radius:var(--radius);padding:16px}
+.ai-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#7c3aed;margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.ai-text{font-size:13px;color:#4c1d95;line-height:1.7;font-style:italic}
+.ai-loading{color:#9ca3af;font-style:italic;font-size:13px}
+
+/* ── WEEKLY COUNCIL ── */
+.council-header{background:linear-gradient(135deg,var(--navy),#2d4a8a);border-radius:var(--radius);padding:20px;color:#fff;margin-bottom:16px}
+.council-title{font-family:Nunito,sans-serif;font-size:22px;font-weight:900;margin-bottom:4px}
+.council-sub{font-size:13px;color:rgba(255,255,255,.7)}
+.step-nav{display:flex;gap:4px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px;-webkit-overflow-scrolling:touch}
+.step-nav::-webkit-scrollbar{display:none}
+.step-dot{width:28px;height:28px;border-radius:50%;background:#e5e7eb;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;cursor:pointer;flex-shrink:0;transition:.15s;color:var(--muted)}
+.step-dot.done{background:var(--green);color:#fff}
+.step-dot.active{background:var(--navy);color:#fff;transform:scale(1.15)}
+.step-card{animation:fadeUp .25s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.step-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:4px}
+.step-title{font-family:Nunito,sans-serif;font-size:20px;font-weight:900;color:var(--navy);margin-bottom:14px}
+.step-body{font-size:14px;color:var(--text);line-height:1.7;margin-bottom:16px}
+.big-ta{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px;font-size:14px;font-family:Inter,sans-serif;outline:none;resize:none;min-height:100px;color:var(--text);transition:.15s}
+.big-ta:focus{border-color:var(--blue)}
+.step-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+.btn{border:none;border-radius:10px;padding:10px 20px;font-size:13px;font-weight:800;cursor:pointer;font-family:Nunito,sans-serif;transition:.15s}
+.btn-primary{background:var(--navy);color:#fff}
+.btn-primary:hover{background:#243a6e}
+.btn-secondary{background:#f3f4f6;color:var(--text)}
+.btn-secondary:hover{background:#e5e7eb}
+.btn-green{background:var(--green);color:#fff}
+.btn-gold{background:var(--gold);color:#fff}
+.btn-sm{padding:6px 14px;font-size:12px}
+.btn-purple{background:var(--purple);color:#fff}
+.att-row{display:flex;align-items:center;gap:12px;padding:12px;background:#f8fafc;border-radius:10px;margin-bottom:8px}
+.att-avatar{width:40px;height:40px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-size:22px}
+.att-name{font-weight:800;font-size:14px;flex:1}
+.att-check{width:24px;height:24px;border-radius:50%;border:2.5px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:.15s}
+.att-check.checked{background:var(--green);border-color:var(--green);color:#fff}
+.win-inp-row{display:flex;gap:8px;margin-bottom:10px}
+.win-inp{flex:1;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;font-family:Inter,sans-serif;outline:none;color:var(--text)}
+.win-inp:focus{border-color:var(--green)}
+.win-tag{display:inline-flex;align-items:center;gap:6px;background:#dcfce7;border:1px solid #86efac;border-radius:100px;padding:5px 12px;margin:3px;font-size:12px;font-weight:700;color:#14532d}
+.win-tag button{background:none;border:none;cursor:pointer;color:#16a34a;font-size:13px;line-height:1}
+.commitment-row{background:#f8faf5;border:1.5px solid #d4ecc0;border-radius:10px;padding:12px;margin-bottom:8px;display:flex;gap:10px;align-items:flex-start}
+.commit-cb{width:22px;height:22px;border-radius:6px;border:2px solid var(--border);flex-shrink:0;margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;transition:.15s}
+.commit-cb.done{background:var(--green);border-color:var(--green);color:#fff}
+.commit-text{flex:1;font-size:13px;font-weight:600;color:var(--text);line-height:1.5}
+.commit-cat{font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;background:#e0e7ff;color:#3730a3;margin-left:auto;flex-shrink:0}
+.obstacle-row{background:#fff5f5;border:1.5px solid #fecaca;border-radius:10px;padding:12px;margin-bottom:8px}
+.obstacle-q{font-size:13px;font-weight:700;color:#dc2626;margin-bottom:6px}
+.ai-summary-box{background:linear-gradient(135deg,#f5f3ff,#fdf4ff);border:1.5px solid #d8b4fe;border-radius:var(--radius);padding:20px}
+.ai-sum-section{margin-bottom:14px}
+.ai-sum-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--purple);margin-bottom:5px;display:flex;align-items:center;gap:4px}
+.ai-sum-text{font-size:13px;color:#4c1d95;line-height:1.7}
+.timer-bar{background:#e5e7eb;border-radius:100px;height:6px;margin-top:8px;overflow:hidden}
+.timer-fill{height:6px;background:var(--green);border-radius:100px;transition:width 1s linear}
+
+/* ── CATEGORIES ── */
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:16px}
+.cat-tile{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:16px;cursor:pointer;transition:.15s;position:relative;overflow:hidden}
+.cat-tile:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.1);border-color:#c4b5fd}
+.cat-tile-icon{font-size:28px;margin-bottom:8px}
+.cat-tile-name{font-family:Nunito,sans-serif;font-size:14px;font-weight:900;color:var(--text);margin-bottom:3px}
+.cat-tile-score{font-size:11px;font-weight:700;color:var(--muted)}
+.cat-tile-bar{position:absolute;bottom:0;left:0;right:0;height:3px;border-radius:0 0 var(--radius) var(--radius)}
+.cat-detail{display:none}
+.cat-detail.open{display:block}
+.cat-detail-hdr{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.cat-big-icon{font-size:40px}
+.cat-detail-name{font-family:Nunito,sans-serif;font-size:24px;font-weight:900;color:var(--navy)}
+.cat-detail-purpose{font-size:13px;color:var(--muted);font-style:italic;margin-top:2px}
+.cat-tabs{display:flex;gap:4px;border-bottom:2px solid var(--border);margin-bottom:16px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.cat-tabs::-webkit-scrollbar{display:none}
+.cat-tab{padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;border-bottom:3px solid transparent;color:var(--muted);font-family:Nunito,sans-serif;white-space:nowrap;transition:.15s}
+.cat-tab.active{color:var(--navy);border-bottom-color:var(--navy)}
+.cat-panel{display:none}.cat-panel.active{display:block}
+.label-sm{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:6px}
+.inp{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;font-family:Inter,sans-serif;outline:none;color:var(--text);margin-bottom:10px}
+.inp:focus{border-color:var(--blue)}
+.metric-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;font-size:13px}
+.metric-val{font-weight:800;color:var(--navy);font-size:16px;min-width:40px}
+.metric-label{flex:1;color:var(--muted)}
+.habit-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.habit-dots{display:flex;gap:3px}
+.habit-dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--border);cursor:pointer;transition:.15s}
+.habit-dot.done{background:var(--green);border-color:var(--green)}
+.habit-name{font-size:13px;font-weight:600;flex:1}
+.journal-entry{background:#f8faf5;border:1px solid #d4ecc0;border-radius:8px;padding:10px 12px;margin-bottom:7px;font-size:13px;line-height:1.6;color:var(--text)}
+.journal-entry-date{font-size:10px;font-weight:700;color:var(--muted);margin-bottom:4px}
+.goal-card{background:#f8fafc;border:1.5px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px}
+.goal-title{font-size:14px;font-weight:800;color:var(--navy);margin-bottom:4px}
+.goal-state{font-size:11px;color:var(--muted);margin-bottom:8px}
+.goal-progress-bar{background:#e5e7eb;border-radius:100px;height:6px;overflow:hidden;margin-bottom:6px}
+.goal-fill{height:6px;background:var(--blue);border-radius:100px}
+.goal-pct{font-size:11px;font-weight:700;color:var(--blue)}
+.add-row{display:flex;gap:6px;margin-top:8px}
+
+/* ── EV BANNER ── */
+.ev-banner{background:linear-gradient(135deg,var(--navy),#1d3a6e);border-radius:var(--radius);padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:14px}
+.ev-banner-icon{font-size:28px}
+.ev-banner-text{flex:1}
+.ev-banner-title{font-family:Nunito,sans-serif;font-size:14px;font-weight:900;color:#fff;margin-bottom:2px}
+.ev-banner-q{font-size:12px;color:rgba(255,255,255,.65)}
+.ev-pulse{width:10px;height:10px;border-radius:50%;background:var(--green);flex-shrink:0;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+
+/* ── MISC ── */
+.divider{height:1px;background:var(--border);margin:14px 0}
+.tag{display:inline-flex;align-items:center;font-size:10px;font-weight:700;padding:3px 9px;border-radius:100px;margin:2px}
+.empty-state{text-align:center;padding:30px;color:var(--muted);font-size:13px}
+.empty-icon{font-size:32px;margin-bottom:8px}
+.progress-circle{position:relative;display:inline-flex;align-items:center;justify-content:center}
+.snackbar{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1a1a2e;color:#fff;border-radius:100px;padding:10px 22px;font-size:13px;font-weight:700;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;font-family:Nunito,sans-serif}
+.snackbar.show{opacity:1}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-logo"><span>🏛️</span> SnV Life OS</div>
+  <div class="topbar-mid">
+    <button class="nav-btn active" onclick="switchView('dashboard',this)">📊 Dashboard</button>
+    <button class="nav-btn" onclick="switchView('council',this)">🏛️ Weekly Council</button>
+    <button class="nav-btn" onclick="switchView('categories',this)">🗂 Categories</button>
+  </div>
+  <div class="topbar-right">
+    <div class="avatar active-user" title="Sebastian" onclick="setUser('sebastian')">🧔</div>
+    <div class="avatar" title="Vanessa" onclick="setUser('vanessa')">💃</div>
+    <span class="user-chip" id="user-chip">Sebastian</span>
+  </div>
+</div>
+
+<!-- SNACKBAR -->
+<div class="snackbar" id="snackbar"></div>
+
+<!-- ════════════════════════════════════
+     DASHBOARD
+═════════════════════════════════════ -->
+<div class="view active" id="view-dashboard">
+
+  <!-- EV Banner -->
+  <div class="ev-banner" style="margin-top:16px">
+    <div class="ev-banner-icon">⚡</div>
+    <div class="ev-banner-text">
+      <div class="ev-banner-title">Energy Vector — Active</div>
+      <div class="ev-banner-q" id="ev-current-q">Does this move my life forward?</div>
+    </div>
+    <div class="ev-pulse"></div>
+  </div>
+
+  <!-- Greeting -->
+  <div class="dash-greeting" id="dash-greeting">Good morning, Sebastian.</div>
+  <div class="dash-sub" id="dash-date">Sunday · Life OS Mission Control</div>
+
+  <!-- Life Score Ring -->
+  <div class="score-ring">
+    <div class="ring-wrap">
+      <svg width="90" height="90" viewBox="0 0 90 90">
+        <circle cx="45" cy="45" r="38" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="8"/>
+        <circle id="score-arc" cx="45" cy="45" r="38" fill="none" stroke="#34c759" stroke-width="8" stroke-linecap="round" stroke-dasharray="239" stroke-dashoffset="60"/>
+      </svg>
+      <div class="ring-label"><div class="ring-num" id="life-score">75</div><div class="ring-txt">Life Score</div></div>
+    </div>
+    <div class="score-info">
+      <div class="score-title">SnV Life Score</div>
+      <div class="score-desc" id="score-desc">Strong momentum across 6 categories. Marriage and Recovery showing excellent progress. Financial category needs attention this week.</div>
+    </div>
+  </div>
+
+  <!-- Next Council -->
+  <div class="next-council" onclick="switchView('council',document.querySelector('.nav-btn:nth-child(2)'))">
+    <div class="nc-date">
+      <div class="nc-day">SUN</div>
+      <div class="nc-num" id="nc-day-num">--</div>
+    </div>
+    <div class="nc-info">
+      <div class="nc-title">🏛️ Weekly Council</div>
+      <div class="nc-sub" id="nc-sub">Next session · Tap to begin</div>
+    </div>
+    <div class="nc-arrow">›</div>
+  </div>
+
+  <!-- EV Stats -->
+  <div class="ev-grid">
+    <div class="ev-card" style="border-left-color:#007aff">
+      <div class="ev-label">Commitments This Week</div>
+      <div class="ev-value" id="ev-commit-count">0</div>
+      <div class="ev-sub">active commitments</div>
+    </div>
+    <div class="ev-card" style="border-left-color:#34c759">
+      <div class="ev-label">Completed</div>
+      <div class="ev-value" id="ev-done-count">0</div>
+      <div class="ev-sub">this week</div>
+    </div>
+    <div class="ev-card" style="border-left-color:#C8960C">
+      <div class="ev-label">Council Streak</div>
+      <div class="ev-value" id="ev-streak">0</div>
+      <div class="ev-sub">weeks in a row</div>
+    </div>
+    <div class="ev-card" style="border-left-color:#7c3aed">
+      <div class="ev-label">Active Goals</div>
+      <div class="ev-value" id="ev-goals-count">0</div>
+      <div class="ev-sub">across all categories</div>
+    </div>
+  </div>
+
+  <!-- Category Progress -->
+  <div class="card">
+    <div class="card-title"><span class="icon">📊</span> Progress by Life Category</div>
+    <div id="cat-progress-list"></div>
+  </div>
+
+  <!-- Recent Wins -->
+  <div class="card">
+    <div class="card-title"><span class="icon">🏆</span> Recent Wins</div>
+    <div class="wins-list" id="wins-list">
+      <div class="empty-state"><div class="empty-icon">🌟</div>Wins will appear here after your first Council.</div>
+    </div>
+  </div>
+
+  <!-- AI Recommendation -->
+  <div class="ai-rec">
+    <div class="ai-label">✨ AI Focus Recommendation</div>
+    <div class="ai-text" id="ai-rec-text">Loading recommendation...</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     WEEKLY COUNCIL
+═════════════════════════════════════ -->
+<div class="view" id="view-council">
+  <div class="council-header" style="margin-top:16px">
+    <div class="council-title">🏛️ SnV Weekly Council</div>
+    <div class="council-sub" id="council-date-hdr">The place where we intentionally design our life.</div>
+    <div class="timer-bar" style="margin-top:12px"><div class="timer-fill" id="timer-fill" style="width:0%"></div></div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.5);margin-top:4px">
+      <span id="timer-label">Meeting timer</span><span id="timer-val">0:00</span>
+    </div>
+  </div>
+
+  <!-- Step dots -->
+  <div class="step-nav" id="step-nav"></div>
+
+  <!-- Step card -->
+  <div class="card step-card" id="step-card"></div>
+</div>
+
+<!-- ════════════════════════════════════
+     CATEGORIES
+═════════════════════════════════════ -->
+<div class="view" id="view-categories">
+  <!-- EV Banner -->
+  <div class="ev-banner" style="margin-top:16px">
+    <div class="ev-banner-icon">⚡</div>
+    <div class="ev-banner-text">
+      <div class="ev-banner-title">Energy Vectors</div>
+      <div class="ev-banner-q">Every category is a vector. Every action is energy toward your vision.</div>
+    </div>
+  </div>
+
+  <div class="cat-grid" id="cat-grid"></div>
+
+  <!-- Category detail (opens inline) -->
+  <div class="card cat-detail" id="cat-detail-panel">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div class="cat-detail-hdr" style="margin:0">
+        <div class="cat-big-icon" id="cd-icon"></div>
+        <div>
+          <div class="cat-detail-name" id="cd-name"></div>
+          <div class="cat-detail-purpose" id="cd-purpose"></div>
+        </div>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="closeCategory()">✕ Close</button>
+    </div>
+    <div class="cat-tabs">
+      <div class="cat-tab active" onclick="switchCatTab('overview',this)">Overview</div>
+      <div class="cat-tab" onclick="switchCatTab('goals',this)">Goals</div>
+      <div class="cat-tab" onclick="switchCatTab('habits',this)">Habits</div>
+      <div class="cat-tab" onclick="switchCatTab('commitments',this)">Commitments</div>
+      <div class="cat-tab" onclick="switchCatTab('journal',this)">Journal</div>
+      <div class="cat-tab" onclick="switchCatTab('history',this)">History</div>
+    </div>
+    <div class="cat-panel active" id="cp-overview"></div>
+    <div class="cat-panel" id="cp-goals"></div>
+    <div class="cat-panel" id="cp-habits"></div>
+    <div class="cat-panel" id="cp-commitments"></div>
+    <div class="cat-panel" id="cp-journal"></div>
+    <div class="cat-panel" id="cp-history"></div>
+  </div>
+
+  <button class="btn btn-primary" onclick="addCategory()" style="margin-top:4px">+ Add Category</button>
+</div>
+
+<script>
+// ══════════════════════════════════════
+// DATA
+// ══════════════════════════════════════
+var SK='snv_los_v1';
+var state;
+
+var DEFAULT_CATS=[
+  {id:'marriage',icon:'💍',name:'Marriage',color:'#db2777',purpose:'Build a thriving, intentional partnership with Vanessa',vision:'A deeply connected marriage built on trust, fun, and shared purpose',goal:'Weekly date night + monthly getaway',progress:72,metrics:[{label:'Date nights/mo',val:3},{label:'Quality hrs/wk',val:8}],habits:['Morning check-in','Express gratitude','No phones after 9pm'],commitments:[],journal:[],history:[]},
+  {id:'family',icon:'👨‍👩‍👧',name:'Family',color:'#16a34a',purpose:'Create a loving, stable, fun environment for our kids',vision:'Kids who feel safe, loved, and excited about life',goal:'Weekly family activities + present parenting',progress:65,metrics:[{label:'Family nights/wk',val:2},{label:'1-on-1 time/wk',val:1}],habits:['Bedtime routine','Dinner together','Weekend adventure'],commitments:[],journal:[],history:[]},
+  {id:'recovery',icon:'🌅',name:'Recovery',color:'#7c3aed',purpose:'Maintain sobriety and grow spiritually through service',vision:'A man of integrity, free and helping others find freedom',goal:'Daily meetings + sponsorship + step work',progress:88,metrics:[{label:'Days sober',val:0},{label:'Meetings/wk',val:5}],habits:['Morning meditation','AA meeting','Call sponsor'],commitments:[],journal:[],history:[]},
+  {id:'financial',icon:'💰',name:'Financial',color:'#C8960C',purpose:'Build lasting financial security and freedom for SnV',vision:'Debt-free, investing monthly, generosity mindset',goal:'Pay off $X debt by Dec 2026',progress:45,metrics:[{label:'Monthly savings',val:0},{label:'Debt payoff %',val:0}],habits:['Review budget weekly','No impulse buys','Track expenses'],commitments:[],journal:[],history:[]},
+  {id:'career',icon:'⚡',name:'Career',color:'#1B2A4A',purpose:'Excel at ATC and build growing income streams',vision:'Top performer in my field with multiple income streams',goal:'$15k/mo consistent by Q4 2026',progress:60,metrics:[{label:'Deals/mo',val:0},{label:'Revenue/mo',val:0}],habits:['Morning sales review','5 follow-ups daily','Script practice'],commitments:[],journal:[],history:[]},
+  {id:'health',icon:'💪',name:'Physical Health',color:'#ff9500',purpose:'Build and maintain a strong, energetic body',vision:'Fit, strong, and healthy for decades to come',goal:'Exercise 4x/week consistently',progress:50,metrics:[{label:'Workouts/wk',val:0},{label:'Sleep hrs/night',val:0}],habits:['Morning workout','8 glasses water','In bed by 10:30'],commitments:[],journal:[],history:[]},
+  {id:'spiritual',icon:'🙏',name:'Spiritual',color:'#0891b2',purpose:'Deepen my conscious contact with God and grow in service',vision:'A servant leader grounded in faith and purpose',goal:'Daily prayer, meditation, and Big Book study',progress:78,metrics:[{label:'Prayer/meditation',val:1},{label:'Service hrs/mo',val:4}],habits:['Morning prayer','Evening reflection','Weekly service'],commitments:[],journal:[],history:[]},
+  {id:'mental',icon:'🧠',name:'Mental Health',color:'#6d28d9',purpose:'Maintain emotional health and keep growing through therapy',vision:'Emotionally regulated, self-aware, and consistently growing',goal:'Monthly therapy + journaling 3x/week',progress:62,metrics:[{label:'Therapy/mo',val:1},{label:'Journal days/wk',val:3}],habits:['Daily journaling','Gratitude list','Breathwork'],commitments:[],journal:[],history:[]},
+  {id:'parenting',icon:'👶',name:'Parenting',color:'#ea580c',purpose:'Be a present, consistent, patient parent for Ever and Sofi',vision:'Kids who feel deeply seen and fully supported',goal:'1-on-1 time with each child weekly',progress:68,metrics:[{label:'1-on-1 hrs/wk',val:0},{label:'School events/mo',val:0}],habits:['After-school checkin','Homework help','Bedtime stories'],commitments:[],journal:[],history:[]},
+  {id:'travel',icon:'✈️',name:'Travel',color:'#0284c7',purpose:'Experience the world with my family and grow through adventure',vision:'Annual family trip + quarterly couple getaway',goal:'Colombia trip in 2026 + Vanessa anniversary trip',progress:30,metrics:[{label:'Trips planned',val:1},{label:'Adventures/mo',val:0}],habits:['Research destinations','Save for travel monthly'],commitments:[],journal:[],history:[]},
+  {id:'home',icon:'🏡',name:'Home',color:'#15803d',purpose:'Create a beautiful, peaceful environment for our family',vision:'A home that feels like a sanctuary',goal:'Sell 118 Silverlimb and upgrade to dream home',progress:40,metrics:[{label:'Projects complete',val:0},{label:'Listing price',val:0}],habits:['Keep common areas clean','One improvement/week'],commitments:[],journal:[],history:[]},
+  {id:'fun',icon:'🎉',name:'Fun & Recreation',color:'#f59e0b',purpose:'Enjoy life fully and recharge through play',vision:'A life that is intentional AND joyful',goal:'One fun activity weekly — solo or with SnV',progress:55,metrics:[{label:'Fun days/mo',val:0},{label:'Hobbies active',val:0}],habits:['Something fun each week','Protect play time'],commitments:[],journal:[],history:[]}
+];
+
+var COUNCIL_STEPS=[
+  {id:'open',icon:'🕯️',title:'Opening Reflection',desc:'Take a moment to arrive. Set your intention for this council.',prompt:"What do you each want to get out of today's meeting? What's your mindset coming in?",type:'reflection',field:'opening'},
+  {id:'attend',icon:'✅',title:'Attendance',desc:'Confirm both partners are present and committed to this hour.',type:'attendance',field:'attendance'},
+  {id:'wins',icon:'🏆',title:'Celebrate Wins',desc:'Start with what went right. Wins build momentum and gratitude.',prompt:"What are you most proud of from this past week? What worked?",type:'wins',field:'wins'},
+  {id:'cats',icon:'📊',title:'Review Life Categories',desc:'Quickly scan each category. Where do you feel strong? Where do you feel drift?',type:'categories',field:'catReview'},
+  {id:'metrics',icon:'📈',title:'Review Metrics',desc:'Check the numbers. Are the metrics moving in the right direction?',prompt:'Which metrics are you proud of? Which ones concern you?',type:'metrics',field:'metricReview'},
+  {id:'goals',icon:'🎯',title:'Review Goals',desc:'Are your active goals still aligned with your vision? Are they moving?',prompt:'For each goal: Still relevant? What progress was made? What blocked progress?',type:'goals',field:'goalReview'},
+  {id:'obstacles',icon:'🚧',title:'Discuss Obstacles',desc:'What got in the way this week? This is not judgment — it is intelligence.',prompt:'What stopped you from keeping your commitments? What patterns do you notice?',type:'obstacles',field:'obstacles'},
+  {id:'commit',icon:'📋',title:'Choose Weekly Commitments',desc:'One question for each goal: What will you do THIS WEEK that moves this forward?',type:'commitments',field:'newCommitments'},
+  {id:'calendar',icon:'📅',title:'Schedule Calendar',desc:'Put commitments on the calendar now — not someday.',prompt:'When exactly will you do each commitment? Block it now.',type:'notes',field:'calendarNotes'},
+  {id:'close',icon:'🌙',title:'Closing Reflection',desc:'End the meeting with intention. What are you leaving with?',prompt:'What is your #1 focus for this week? What commitment do you each make to show up for each other?',type:'reflection',field:'closing'},
+  {id:'ai',icon:'✨',title:'AI Council Summary',desc:'Your AI Coach is generating this week\'s executive summary.',type:'ai',field:'aiSummary'}
+];
+
+function loadState(){
+  try{state=JSON.parse(localStorage.getItem(SK));}catch(e){state=null;}
+  if(!state){
+    state={
+      user:'sebastian',
+      cats:JSON.parse(JSON.stringify(DEFAULT_CATS)),
+      councils:[],
+      wins:[],
+      streak:0,
+      currentCouncil:null
+    };
+  }
+  // Ensure all cats exist
+  DEFAULT_CATS.forEach(function(dc){
+    if(!state.cats.find(function(c){return c.id===dc.id;})){
+      state.cats.push(JSON.parse(JSON.stringify(dc)));
+    }
+  });
+}
+function saveState(){localStorage.setItem(SK,JSON.stringify(state));}
+function snack(msg){var s=document.getElementById('snackbar');s.textContent=msg;s.classList.add('show');setTimeout(function(){s.classList.remove('show');},2000);}
+
+// ── VIEW SWITCHING ──
+function switchView(id,btn){
+  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active');});
+  document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('view-'+id).classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(id==='dashboard')renderDashboard();
+  if(id==='council')renderCouncil();
+  if(id==='categories')renderCategories();
+}
+
+// ── USER ──
+function setUser(u){
+  state.user=u;
+  document.getElementById('user-chip').textContent=u==='sebastian'?'Sebastian':'Vanessa';
+  document.querySelectorAll('.avatar').forEach(function(a){a.classList.remove('active-user');});
+  document.querySelector('.avatar[title="'+(u==='sebastian'?'Sebastian':'Vanessa')+'"]').classList.add('active-user');
+  saveState();renderDashboard();
+}
+
+// ══════════════════════════════════════
+// DASHBOARD
+// ══════════════════════════════════════
+function renderDashboard(){
+  var name=state.user==='sebastian'?'Sebastian':'Vanessa';
+  var h=new Date().getHours();
+  var greet=h<12?'Good morning':'h<17?'Good afternoon':'Good evening';
+  if(h<12)greet='Good morning';else if(h<17)greet='Good afternoon';else greet='Good evening';
+  document.getElementById('dash-greeting').textContent=greet+', '+name+'.';
+  var d=new Date();
+  document.getElementById('dash-date').textContent=d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})+' · Life OS Mission Control';
+
+  // Next Sunday
+  var now=new Date();
+  var day=now.getDay();
+  var daysUntil=day===0?7:7-day;
+  var nextSun=new Date(now);nextSun.setDate(now.getDate()+daysUntil);
+  document.getElementById('nc-day-num').textContent=nextSun.getDate();
+  document.getElementById('nc-sub').textContent=day===0?'Today is Council day — Begin now':'In '+daysUntil+' day'+(daysUntil===1?'':'s')+' · ~60 min';
+
+  // Score
+  var total=state.cats.reduce(function(s,c){return s+(c.progress||0);},0);
+  var score=Math.round(total/state.cats.length);
+  document.getElementById('life-score').textContent=score;
+  var offset=239-(239*(score/100));
+  document.getElementById('score-arc').setAttribute('stroke-dashoffset',offset);
+  document.getElementById('score-desc').textContent=score>=80?'Excellent momentum across categories. Keep the streak alive!':score>=60?'Good progress overall. A few categories need attention this week.':'Some categories need focus. Your council will help identify priorities.';
+
+  // Stats
+  var allCommits=state.cats.reduce(function(a,c){return a.concat(c.commitments||[]);},[]); 
+  var done=allCommits.filter(function(c){return c.done;}).length;
+  document.getElementById('ev-commit-count').textContent=allCommits.length;
+  document.getElementById('ev-done-count').textContent=done;
+  document.getElementById('ev-streak').textContent=state.streak||0;
+  var goalCount=state.cats.reduce(function(a,c){return a+(c.goal?1:0);},0);
+  document.getElementById('ev-goals-count').textContent=goalCount;
+
+  // Category progress bars
+  var list=document.getElementById('cat-progress-list');
+  list.innerHTML=state.cats.map(function(c){
+    return '<div class="cat-row">'
+      +'<div class="cat-emoji">'+c.icon+'</div>'
+      +'<div class="cat-name">'+c.name+'</div>'
+      +'<div class="cat-bar-wrap"><div class="cat-bar" style="width:'+c.progress+'%;background:'+c.color+'"></div></div>'
+      +'<div class="cat-pct">'+c.progress+'%</div>'
+      +'</div>';
+  }).join('');
+
+  // Wins
+  var wl=document.getElementById('wins-list');
+  var allWins=state.wins||[];
+  if(allWins.length){
+    wl.innerHTML=allWins.slice(0,5).map(function(w){
+      return '<div class="win-item"><span class="win-icon">🏆</span><span>'+w+'</span></div>';
+    }).join('');
+  }
+
+  // AI rec
+  loadAIRec();
+}
+
+function loadAIRec(){
+  var el=document.getElementById('ai-rec-text');
+  el.textContent='Loading recommendation...';
+  var lowCats=state.cats.sort(function(a,b){return a.progress-b.progress;}).slice(0,3);
+  var prompt='You are a Life OS coach for Sebastian and Vanessa. '
+    +'Their lowest scoring life categories are: '+lowCats.map(function(c){return c.name+' ('+c.progress+'%)';}).join(', ')+'. '
+    +'Their council streak is '+state.streak+' weeks. '
+    +'Give them a single focused, encouraging recommendation for this week in 2-3 sentences. '
+    +'Be specific, warm, and action-oriented. Respond in plain text only.';
+  fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:200,messages:[{role:'user',content:prompt}]})
+  }).then(function(r){return r.json();}).then(function(d){
+    var text=d.content&&d.content[0]&&d.content[0].text;
+    if(text)el.textContent=text;
+    else el.textContent='Show up to your Weekly Council this Sunday. Everything else follows from that one commitment.';
+  }).catch(function(){
+    el.textContent='Your most powerful move this week: hold your Sunday Council. Clarity starts there.';
+  });
+}
+
+// ══════════════════════════════════════
+// WEEKLY COUNCIL
+// ══════════════════════════════════════
+var currentStep=0;
+var councilData={};
+var timerInterval=null;
+var timerSeconds=0;
+
+function renderCouncil(){
+  if(!state.currentCouncil){
+    state.currentCouncil={id:Date.now(),date:new Date().toISOString(),data:{}};
+    councilData=state.currentCouncil.data;
+  } else {
+    councilData=state.currentCouncil.data;
+  }
+
+  // Update header date
+  document.getElementById('council-date-hdr').textContent=
+    new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+
+  // Build step dots
+  var nav=document.getElementById('step-nav');
+  nav.innerHTML=COUNCIL_STEPS.map(function(s,i){
+    var cls='step-dot'+(i<currentStep?' done':i===currentStep?' active':'');
+    return '<div class="'+cls+'" onclick="goStep('+i+')" title="'+s.title+'">'+(i+1)+'</div>';
+  }).join('');
+
+  startTimer();
+  renderStep(currentStep);
+}
+
+function startTimer(){
+  if(timerInterval)return;
+  timerInterval=setInterval(function(){
+    timerSeconds++;
+    var m=Math.floor(timerSeconds/60),s=timerSeconds%60;
+    document.getElementById('timer-val').textContent=m+':'+(s<10?'0':'')+s;
+    var pct=Math.min(100,(timerSeconds/3600)*100);
+    document.getElementById('timer-fill').style.width=pct+'%';
+    document.getElementById('timer-label').textContent=timerSeconds>=3600?'Meeting complete':'Meeting in progress';
+  },1000);
+}
+
+function goStep(i){currentStep=i;renderStep(i);updateStepNav();}
+
+function updateStepNav(){
+  document.querySelectorAll('.step-dot').forEach(function(d,i){
+    d.className='step-dot'+(i<currentStep?' done':i===currentStep?' active':'');
+  });
+}
+
+function renderStep(i){
+  var s=COUNCIL_STEPS[i];
+  var body='';
+  var saved=councilData[s.field]||'';
+
+  if(s.type==='reflection'||s.type==='notes'){
+    body='<div class="label-sm">'+s.step+'</div>'
+      +'<div class="step-label">Step '+(i+1)+' of '+COUNCIL_STEPS.length+'</div>'
+      +'<div class="step-title">'+s.icon+' '+s.title+'</div>'
+      +'<div class="step-body">'+s.desc+'</div>'
+      +(s.prompt?'<div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:10px 12px;font-size:13px;color:#0369a1;margin-bottom:12px;font-style:italic">💬 '+s.prompt+'</div>':'')
+      +'<textarea class="big-ta" id="step-ta" placeholder="Type your response here..." rows="4">'+saved+'</textarea>';
+  }
+  else if(s.type==='attendance'){
+    body='<div class="step-label">Step '+(i+1)+' of '+COUNCIL_STEPS.length+'</div>'
+      +'<div class="step-title">'+s.icon+' '+s.title+'</div>'
+      +'<div class="step-body">'+s.desc+'</div>'
+      +'<div class="att-row"><div class="att-avatar">🧔</div><div class="att-name">Sebastian</div>'
+      +'<div class="att-check '+(councilData.attSeb?'checked':'')+'" id="att-seb" onclick="toggleAtt(\'attSeb\',\'att-seb\')">'+( councilData.attSeb?'✓':'')+'</div></div>'
+      +'<div class="att-row"><div class="att-avatar">💃</div><div class="att-name">Vanessa</div>'
+      +'<div class="att-check '+(councilData.attVan?'checked':'')+'" id="att-van" onclick="toggleAtt(\'attVan\',\'att-van\')">'+( councilData.attVan?'✓':'')+'</div></div>';
+  }
+  else if(s.type==='wins'){
+    var wins=councilData.wins||[];
+    body='<div class="step-label">Step '+(i+1)+' of '+COUNCIL_STEPS.length+'</div>'
+      +'<div class="step-title">'+s.icon+' '+s.title+'</div>'
+      +'<div class="step-body">'+s.desc+'</div>'
+      +'<div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:10px 12px;font-size:13px;color:#14532d;margin-bottom:12px;font-style:italic">💬 '+s.prompt+'</div>'
+      +'<div class="win-inp-row"><input class="win-inp" id="win-inp" placeholder="Type a win and press Enter..." onkeydown="if(event.key===\'Enter\')addCouncilWin()"><button class="btn btn-green btn-sm" onclick="addCouncilWin()">+ Add Win</button></div>'
+      +'<div id="wins-tags">'+wins.map(function(w,i){return '<span class="win-tag">🏆 '+w+'<button onclick="removeCouncilWin('+i+')">✕</button></span>';}).join('')+'</div>';
+  }
+  else if(s.type==='categories'){
+    body='<div class="step-label">Step '+(i+1)+' of '+COUNCIL_STEPS.length+'</div>'
+      +'<div class="step-title">'+s.icon+' '+s.title+'</div>'
+      +'<div class="step-body">'+s.desc+'</div>'
+      +state.cats.map(function(c){
+        return '<div class="cat-row" style="margin-bottom:10px">'
+          +'<div class="cat-emoji">'+c.icon+'</div>'
+          +'<div class="cat-name" style="font-size:13px;font-weight:700">'+c.name+'</div>'
+          +'<div class="cat-bar-wrap"><div class="cat-bar" style="width:'+c.progress+'%;background:'+c.color+'"></div></div>'
+          +'<input type="number" min="0" max="100" value="'+c.progress+'" onchange="updateCatProgress(\''+c.id+'\',this.value)" style="width:50px;border:1px solid var(--border);border-radius:6px;padding:3px 6px;font-size:12px;font-weight:700;text-align:center;outline:none"> %'
+          +'</div>';
+      }).join('');
+  }
+  else if(s.type==='metrics'){
+    body='<div class="step-label">Step '+(i+1)+' of '+COUNCIL_STEPS.length+'</div>'
+      +'<div class="step-title">'+s.icon+' '+s.title+'</div>'
+      +'<div class="step-body">'+s.desc+'</div>'
+      +state.cats.filter(function(c){return c.metrics&&c.metrics.length;}).map(function(c){
+        return '<div style="margin-bottom:12px"><div style="font-size:12px;font-weight:800;color:'+c.color+';margin-bottom:6px">'+c.icon+' '+c.name+'</div>'
+          +c.metrics.map(function(m){
+            return '<div class="metric-row"><span class="metric-label">'+m.label+'</span>'
+              +'<input type="number" value="'+(m.val||0)+'" style="width:70px;border:1.5px solid var(--border);border-radius:6px;padding:4px 8px;font-size:13px;font-weight:800;outline:none;text-align:center"></div>';
+          }).join('')
+          +'</div>';
+      }).join('')
+      +'<textarea class="big-ta" id="step-ta" placeholder="Notes on metrics..." style="margin-top:8px" rows="3">'+saved+'</textarea>';
+  }
+  else if(s.type==='goals'){
+    body='<div class="step-label">Step '+(i+1)+' of '+COUNCIL_STEPS.length+'</div>'
+      +'<div class="step-title">'+s.icon+' '+s.title+'</div>'
+      +'<div class="step-body">'+s.desc+'</div>'
+      +state.cats.map(function(c){
+        return '<div class="goal-card"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'
+          +'<span style="font-size:18px">'+c.icon+'</span>'
+          +'<span style="font-size:13px;font-weight:800;color:'+c.color+'">'+c.name+'</span></div>'
+          +'<div class="goal-title">'+c.goal+'</div>'
+          +'<div class="goal-progress-bar"><div class="goal-fill" style="width:'+c.progress+'%"></div></div>'
+          +'<div class="goal-pct">'+c.progress+'% complete</div>'
+          +'<textarea placeholder="Progress notes for this goal..." style="width:100%;border:1px solid var(--border);border-radius:6px;padding:7px;font-size:12px;font-family:Inter,sans-serif;outline:none;resize:none;margin-top:8px" rows="2"></textarea>'
+          +'</div>';
+      }).join('');
+  }
+  else if(s.type==='obstacles'){
+    var obs=councilData.obstacles||{};
+    body='<div class="step-label">Step '+(i+1)+' of '+COUNCIL_STEPS.length+'</div>'
+      +'<div class="step-title">'+s.icon+' '+s.title+'</div>'
+      +'<div class="step-body">'+s.desc+'</div>'
+      +'<div style="background:#fff5f5;border:1px solid #fecaca;border-radius:8px;padding:10px 12px;font-size:13px;color:#dc2626;margin-bottom:12px;font-style:italic">💬 '+s.prompt+'</div>'
+      +'<div class="obstacle-row"><div class="obstacle-q">What specific obstacle came up most?</div>'
+      +'<textarea class="big-ta" id="obs-1" placeholder="Be honest and specific..." rows="2">'+(obs.main||'')+'</textarea></div>'
+      +'<div class="obstacle-row"><div class="obstacle-q">What pattern do you notice?</div>'
+      +'<textarea class="big-ta" id="obs-2" placeholder="Look for recurring themes..." rows="2">'+(obs.pattern||'')+'</textarea></div>'
+      +'<div class="obstacle-row"><div class="obstacle-q">What will you do differently?</div>'
+      +'<textarea class="big-ta" id="obs-3" placeholder="One specific change..." rows="2">'+(obs.change||'')+'</textarea></div>';
+  }
+  else if(s.type==='commitments'){
+    var commits=councilData.newCommitments||[];
+    body='<div class="step-label">Step '+(i+1)+' of '+COUNCIL_STEPS.length+'</div>'
+      +'<div class="step-title">'+s.icon+' '+s.title+'</div>'
+      +'<div class="step-body">'+s.desc+'</div>'
+      +'<div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:10px 12px;font-size:13px;color:#0369a1;margin-bottom:12px">The question for every goal: <b>What will you do THIS WEEK to move this forward?</b></div>'
+      +'<div id="commit-list">'+commits.map(function(c,i){
+        return '<div class="commitment-row"><div class="commit-cb '+(c.done?'done':'')+'" onclick="toggleCouncilCommit('+i+')">'+(c.done?'✓':'')+'</div>'
+          +'<div class="commit-text">'+c.text+'</div>'
+          +'<span class="commit-cat">'+c.cat+'</span>'
+          +'<button onclick="removeCouncilCommit('+i+')" style="background:none;border:none;color:#d1d5db;cursor:pointer;font-size:13px">✕</button></div>';
+      }).join('')+'</div>'
+      +'<div class="add-row" style="margin-top:10px">'
+      +'<select id="commit-cat" style="border:1.5px solid var(--border);border-radius:8px;padding:8px;font-size:12px;font-family:Inter,sans-serif;outline:none;background:#fff">'
+      +state.cats.map(function(c){return '<option>'+c.name+'</option>';}).join('')
+      +'</select>'
+      +'<input id="commit-inp" class="win-inp" placeholder="This week I will..." onkeydown="if(event.key===\'Enter\')addCouncilCommit()">'
+      +'<button class="btn btn-primary btn-sm" onclick="addCouncilCommit()">+ Add</button></div>';
+  }
+  else if(s.type==='ai'){
+    body='<div class="step-label">Step '+(i+1)+' of '+COUNCIL_STEPS.length+'</div>'
+      +'<div class="step-title">'+s.icon+' '+s.title+'</div>'
+      +'<div class="step-body">'+s.desc+'</div>'
+      +'<div class="ai-summary-box" id="ai-summary-box"><div class="ai-text ai-loading">✨ Generating your council summary...</div></div>';
+    setTimeout(generateAISummary,400);
+  }
+
+  document.getElementById('step-card').innerHTML=body
+    +'<div class="divider"></div>'
+    +'<div class="step-btns">'
+    +(i>0?'<button class="btn btn-secondary" onclick="prevStep()">← Back</button>':'')
+    +(i<COUNCIL_STEPS.length-1?'<button class="btn btn-primary" onclick="nextStep()">Next →</button>':'<button class="btn btn-gold" onclick="finishCouncil()">🏁 Complete Council</button>')
+    +'</div>';
+}
+
+window.toggleAtt=function(key,elId){
+  councilData[key]=!councilData[key];
+  var el=document.getElementById(elId);
+  el.classList.toggle('checked',councilData[key]);
+  el.textContent=councilData[key]?'✓':'';
+  saveCouncilData();
+};
+window.addCouncilWin=function(){
+  var inp=document.getElementById('win-inp');
+  if(!inp||!inp.value.trim())return;
+  if(!councilData.wins)councilData.wins=[];
+  councilData.wins.push(inp.value.trim());
+  inp.value='';saveCouncilData();
+  var tags=document.getElementById('wins-tags');
+  if(tags)tags.innerHTML=councilData.wins.map(function(w,i){return '<span class="win-tag">🏆 '+w+'<button onclick="removeCouncilWin('+i+')">✕</button></span>';}).join('');
+};
+window.removeCouncilWin=function(i){councilData.wins.splice(i,1);saveCouncilData();renderStep(currentStep);};
+window.updateCatProgress=function(id,val){
+  var cat=state.cats.find(function(c){return c.id===id;});
+  if(cat){cat.progress=parseInt(val)||0;saveState();}
+};
+window.addCouncilCommit=function(){
+  var inp=document.getElementById('commit-inp');
+  var cat=document.getElementById('commit-cat');
+  if(!inp||!inp.value.trim())return;
+  if(!councilData.newCommitments)councilData.newCommitments=[];
+  councilData.newCommitments.push({text:inp.value.trim(),cat:cat?cat.value:'General',done:false});
+  inp.value='';saveCouncilData();renderStep(currentStep);
+};
+window.removeCouncilCommit=function(i){councilData.newCommitments.splice(i,1);saveCouncilData();renderStep(currentStep);};
+window.toggleCouncilCommit=function(i){councilData.newCommitments[i].done=!councilData.newCommitments[i].done;saveCouncilData();renderStep(currentStep);};
+
+function saveCouncilData(){
+  if(state.currentCouncil)state.currentCouncil.data=councilData;
+  saveState();
+}
+
+function nextStep(){
+  // Save current step data
+  var ta=document.getElementById('step-ta');
+  var s=COUNCIL_STEPS[currentStep];
+  if(ta)councilData[s.field]=ta.value;
+  if(s.type==='obstacles'){
+    var o1=document.getElementById('obs-1'),o2=document.getElementById('obs-2'),o3=document.getElementById('obs-3');
+    councilData.obstacles={main:o1?o1.value:'',pattern:o2?o2.value:'',change:o3?o3.value:''};
+  }
+  saveCouncilData();
+  if(currentStep<COUNCIL_STEPS.length-1){currentStep++;renderStep(currentStep);updateStepNav();}
+}
+function prevStep(){if(currentStep>0){currentStep--;renderStep(currentStep);updateStepNav();}}
+
+function generateAISummary(){
+  var box=document.getElementById('ai-summary-box');
+  if(!box)return;
+  var wins=(councilData.wins||[]).join(', ')||'None recorded';
+  var commits=(councilData.newCommitments||[]).map(function(c){return c.text+' ('+c.cat+')';}).join(', ')||'None set';
+  var obstacles=councilData.obstacles?councilData.obstacles.main||'None recorded':'None recorded';
+  var catScores=state.cats.map(function(c){return c.name+': '+c.progress+'%';}).join(', ');
+  var prompt='You are the AI Coach for Sebastian and Vanessa\'s Weekly Life Council. '
+    +'Generate a structured executive summary with these exact sections:\n'
+    +'1. OPENING — Warm, encouraging 1-sentence opening\n'
+    +'2. WINS — Summary of wins celebrated: '+wins+'\n'
+    +'3. CATEGORY SCORES — Brief note on: '+catScores+'\n'
+    +'4. OBSTACLES — What came up: '+obstacles+'\n'
+    +'5. COMMITMENTS — This week\'s commitments: '+commits+'\n'
+    +'6. PRIORITY — Single #1 focus recommendation for the week\n'
+    +'7. CLOSING — Encouraging send-off for SnV\n'
+    +'Keep each section to 2-3 sentences. Warm, executive, purposeful tone.';
+  fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:800,messages:[{role:'user',content:prompt}]})
+  }).then(function(r){return r.json();}).then(function(d){
+    var text=d.content&&d.content[0]&&d.content[0].text||'Summary generated.';
+    var sections=text.split(/\n(?=\d\.|[A-Z]+\s*—)/);
+    box.innerHTML='<div class="ai-label">✨ AI Council Summary — '+new Date().toLocaleDateString()+'</div>'
+      +'<div class="ai-sum-text" style="line-height:1.8;color:#4c1d95">'+text.replace(/\n/g,'<br>')+'</div>'
+      +'<div class="divider"></div>'
+      +'<button class="btn btn-purple btn-sm" onclick="saveToHistory()">💾 Save to History</button>';
+  }).catch(function(){
+    box.innerHTML='<div class="ai-label">✨ Council Summary</div>'
+      +'<div class="ai-sum-text" style="color:#4c1d95">'
+      +'<b>Wins:</b> '+(councilData.wins||[]).join(' · ')||'None recorded'+'<br><br>'
+      +'<b>Commitments this week:</b><br>'+(councilData.newCommitments||[]).map(function(c){return '• '+c.text;}).join('<br>')||'None'+'<br><br>'
+      +'<b>Focus:</b> Review your lowest scoring category and make one clear commitment toward it this week.'
+      +'</div>'
+      +'<div class="divider"></div>'
+      +'<button class="btn btn-purple btn-sm" onclick="saveToHistory()">💾 Save to History</button>';
+  });
+}
+
+window.saveToHistory=function(){
+  if(state.currentCouncil){
+    state.councils.push(JSON.parse(JSON.stringify(state.currentCouncil)));
+    // Add wins to global wins list
+    (councilData.wins||[]).forEach(function(w){state.wins.unshift(w);});
+    state.wins=state.wins.slice(0,20);
+    // Increment streak
+    state.streak=(state.streak||0)+1;
+    // Add commitments to each category
+    (councilData.newCommitments||[]).forEach(function(c){
+      var cat=state.cats.find(function(x){return x.name===c.cat;});
+      if(cat){if(!cat.commitments)cat.commitments=[];cat.commitments.push(c);}
+    });
+    state.currentCouncil=null;
+    saveState();
+    snack('Council saved! Streak: '+state.streak+' weeks 🔥');
+    currentStep=0;councilData={};
+    setTimeout(function(){switchView('dashboard',document.querySelector('.nav-btn'));},1200);
+  }
+};
+
+function finishCouncil(){generateAISummary();}
+
+// ══════════════════════════════════════
+// CATEGORIES
+// ══════════════════════════════════════
+var activeCatId=null;
+
+function renderCategories(){
+  var grid=document.getElementById('cat-grid');
+  grid.innerHTML=state.cats.map(function(c){
+    return '<div class="cat-tile" onclick="openCategory(\''+c.id+'\')">'
+      +'<div class="cat-tile-icon">'+c.icon+'</div>'
+      +'<div class="cat-tile-name">'+c.name+'</div>'
+      +'<div class="cat-tile-score">'+c.progress+'% · '+(c.commitments&&c.commitments.length||0)+' commitments</div>'
+      +'<div class="cat-tile-bar" style="background:'+c.color+'"></div>'
+      +'</div>';
+  }).join('');
+}
+
+function openCategory(id){
+  activeCatId=id;
+  var cat=state.cats.find(function(c){return c.id===id;});
+  if(!cat)return;
+  document.getElementById('cd-icon').textContent=cat.icon;
+  document.getElementById('cd-name').textContent=cat.name;
+  document.getElementById('cd-purpose').textContent=cat.purpose;
+  switchCatTab('overview',document.querySelector('.cat-tab'));
+  document.getElementById('cat-detail-panel').classList.add('open');
+  document.getElementById('cat-detail-panel').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function closeCategory(){
+  activeCatId=null;
+  document.getElementById('cat-detail-panel').classList.remove('open');
+}
+
+function switchCatTab(tab,btn){
+  document.querySelectorAll('.cat-panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.cat-tab').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('cp-'+tab).classList.add('active');
+  if(btn)btn.classList.add('active');
+  renderCatPanel(tab);
+}
+
+function renderCatPanel(tab){
+  var cat=state.cats.find(function(c){return c.id===activeCatId;});
+  if(!cat)return;
+  var el=document.getElementById('cp-'+tab);
+
+  if(tab==='overview'){
+    el.innerHTML='<div class="label-sm">Purpose</div>'
+      +'<div style="font-size:14px;line-height:1.7;color:var(--text);margin-bottom:14px;font-style:italic">'+cat.purpose+'</div>'
+      +'<div class="label-sm">Vision</div>'
+      +'<div style="font-size:14px;line-height:1.7;color:var(--text);margin-bottom:14px">'+cat.vision+'</div>'
+      +'<div class="label-sm">Long-Term Goal</div>'
+      +'<div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:14px">🎯 '+cat.goal+'</div>'
+      +'<div class="label-sm">Progress</div>'
+      +'<div style="display:flex;align-items:center;gap:12px;margin-bottom:4px">'
+      +'<div style="flex:1;background:#f3f4f6;border-radius:100px;height:12px;overflow:hidden"><div style="height:12px;border-radius:100px;background:'+cat.color+';width:'+cat.progress+'%"></div></div>'
+      +'<input type="number" min="0" max="100" value="'+cat.progress+'" onchange="saveCatProgress(this.value)" style="width:60px;border:1.5px solid var(--border);border-radius:7px;padding:5px;font-size:13px;font-weight:800;text-align:center;outline:none"> %</div>';
+  }
+  else if(tab==='goals'){
+    el.innerHTML='<div class="goal-card">'
+      +'<div class="label-sm">Current Goal</div>'
+      +'<input class="inp" value="'+cat.goal+'" onchange="saveCatGoal(this.value)" placeholder="What is the goal for this category?">'
+      +'<div class="label-sm">Current State</div>'
+      +'<input class="inp" value="'+(cat.currentState||'')+'" onchange="saveCatField(\'currentState\',this.value)" placeholder="Where are you now?">'
+      +'<div class="label-sm">Desired State</div>'
+      +'<input class="inp" value="'+(cat.desiredState||'')+'" onchange="saveCatField(\'desiredState\',this.value)" placeholder="Where do you want to be?">'
+      +'<div class="label-sm">Target Date</div>'
+      +'<input type="date" class="inp" value="'+(cat.targetDate||'')+'" onchange="saveCatField(\'targetDate\',this.value)">'
+      +'</div>';
+  }
+  else if(tab==='habits'){
+    el.innerHTML='<div class="label-sm">Daily Habits</div>'
+      +(cat.habits||[]).map(function(h,i){
+        return '<div class="habit-row">'
+          +'<div class="habit-dots">'+[0,1,2,3,4,5,6].map(function(d){return '<div class="habit-dot '+(Math.random()>.4?'done':'')+'" title="Day '+(d+1)+'"></div>';}).join('')+'</div>'
+          +'<div class="habit-name">'+h+'</div>'
+          +'<button onclick="removeHabit('+i+')" style="background:none;border:none;color:#d1d5db;cursor:pointer;font-size:13px">✕</button>'
+          +'</div>';
+      }).join('')
+      +'<div class="add-row"><input id="habit-inp" class="win-inp" placeholder="Add a habit..." onkeydown="if(event.key===\'Enter\')addHabit()"><button class="btn btn-green btn-sm" onclick="addHabit()">+ Add</button></div>';
+  }
+  else if(tab==='commitments'){
+    var commits=cat.commitments||[];
+    el.innerHTML=(commits.length?commits.map(function(c,i){
+      return '<div class="commitment-row">'
+        +'<div class="commit-cb '+(c.done?'done':'')+'" onclick="toggleCommit('+i+')">'+(c.done?'✓':'')+'</div>'
+        +'<div class="commit-text">'+c.text+'</div>'
+        +'<button onclick="removeCommit('+i+')" style="background:none;border:none;color:#d1d5db;cursor:pointer;font-size:13px">✕</button>'
+        +'</div>';
+    }).join(''):'<div class="empty-state"><div class="empty-icon">📋</div>No commitments yet.<br>Add one from the Weekly Council.</div>')
+      +'<div class="add-row"><input id="commit-inp2" class="win-inp" placeholder="Add a commitment..." onkeydown="if(event.key===\'Enter\')addCommitDirect()"><button class="btn btn-primary btn-sm" onclick="addCommitDirect()">+ Add</button></div>';
+  }
+  else if(tab==='journal'){
+    var entries=cat.journal||[];
+    el.innerHTML='<textarea class="big-ta" id="journal-ta" placeholder="Write a journal entry for this category..." rows="4"></textarea>'
+      +'<button class="btn btn-green btn-sm" onclick="addJournalEntry()" style="margin-bottom:14px">+ Save Entry</button>'
+      +(entries.length?entries.map(function(e){
+        return '<div class="journal-entry"><div class="journal-entry-date">'+e.date+'</div>'+e.text+'</div>';
+      }).join(''):'<div class="empty-state"><div class="empty-icon">📝</div>No entries yet.</div>');
+  }
+  else if(tab==='history'){
+    el.innerHTML='<div class="label-sm">Council Meeting History</div>'
+      +(state.councils.length?state.councils.slice().reverse().map(function(c){
+        return '<div style="background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:7px;font-size:13px">'
+          +'<div style="font-weight:700;margin-bottom:3px">'+new Date(c.date).toLocaleDateString()+'</div>'
+          +'<div style="color:var(--muted)">'+(c.data&&c.data.wins?c.data.wins.length+' wins recorded':'No wins recorded')+'</div>'
+          +'</div>';
+      }).join(''):'<div class="empty-state"><div class="empty-icon">🏛️</div>No councils recorded yet.<br>Complete your first Weekly Council to build history.</div>');
+  }
+}
+
+window.saveCatProgress=function(val){var cat=state.cats.find(function(c){return c.id===activeCatId;});if(cat){cat.progress=parseInt(val)||0;saveState();snack('Progress updated');}};
+window.saveCatGoal=function(val){var cat=state.cats.find(function(c){return c.id===activeCatId;});if(cat){cat.goal=val;saveState();}};
+window.saveCatField=function(field,val){var cat=state.cats.find(function(c){return c.id===activeCatId;});if(cat){cat[field]=val;saveState();}};
+window.removeHabit=function(i){var cat=state.cats.find(function(c){return c.id===activeCatId;});if(cat){cat.habits.splice(i,1);saveState();renderCatPanel('habits');}};
+window.addHabit=function(){var inp=document.getElementById('habit-inp');if(!inp||!inp.value.trim())return;var cat=state.cats.find(function(c){return c.id===activeCatId;});if(cat){if(!cat.habits)cat.habits=[];cat.habits.push(inp.value.trim());inp.value='';saveState();renderCatPanel('habits');}};
+window.toggleCommit=function(i){var cat=state.cats.find(function(c){return c.id===activeCatId;});if(cat&&cat.commitments){cat.commitments[i].done=!cat.commitments[i].done;saveState();renderCatPanel('commitments');}};
+window.removeCommit=function(i){var cat=state.cats.find(function(c){return c.id===activeCatId;});if(cat&&cat.commitments){cat.commitments.splice(i,1);saveState();renderCatPanel('commitments');}};
+window.addCommitDirect=function(){var inp=document.getElementById('commit-inp2');if(!inp||!inp.value.trim())return;var cat=state.cats.find(function(c){return c.id===activeCatId;});if(cat){if(!cat.commitments)cat.commitments=[];cat.commitments.push({text:inp.value.trim(),done:false});inp.value='';saveState();renderCatPanel('commitments');}};
+window.addJournalEntry=function(){var ta=document.getElementById('journal-ta');if(!ta||!ta.value.trim())return;var cat=state.cats.find(function(c){return c.id===activeCatId;});if(cat){if(!cat.journal)cat.journal=[];cat.journal.unshift({date:new Date().toLocaleDateString(),text:ta.value.trim()});ta.value='';saveState();renderCatPanel('journal');}};
+window.addCategory=function(){
+  var name=prompt('Category name:');if(!name)return;
+  var icon=prompt('Emoji icon:','⭐');
+  var color=prompt('Color (hex):','#6b7280');
+  var newCat={id:'cat'+Date.now(),icon:icon||'⭐',name:name,color:color||'#6b7280',purpose:'',vision:'',goal:'',progress:0,metrics:[],habits:[],commitments:[],journal:[],history:[]};
+  state.cats.push(newCat);saveState();renderCategories();snack('Category added!');
+};
+
+// ── INIT ──
+loadState();
+renderDashboard();
+</script>
+</body>
+</html>
