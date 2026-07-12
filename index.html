@@ -24,7 +24,7 @@ body{font-family:'Inter',sans-serif;background:#c8e6b0;overflow:hidden;height:10
 .canvas.panning{cursor:grabbing}
 
 /* ── WORLD ── */
-.world{position:absolute;width:2400px;height:1800px;transform-origin:0 0;background:#c8e6b0}
+.world{position:absolute;width:2400px;height:1800px;transform-origin:0 0;background:#c8e6b0 url("/assets/coc-map.png") center/cover no-repeat}
 .world-ground{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 40%,#b8de98 0%,#c8e6b0 50%,#b0d890 100%)}
 
 /* ── ROADS ── */
@@ -508,65 +508,65 @@ var SK='seb_town_v4', SIGN_K='seb_town_signs_v4', DECO_K='seb_town_decos';
 // DEFAULT DATA
 // ══════════════════════════════════════
 var DEFAULT_BLDS=[
-  {id:'alpha-office',icon:'⚡',name:'Alpha Office',desc:'CRM · Clients',url:'https://alphafiles.net/vitals/',bg:'#dbeafe',bc:'#3b82f6',co:'#1e3a8a',roof:'#2563eb',x:320,y:380,w:120,rooms:[]},
-  {id:'present',icon:'▶️',name:'Present',desc:'Live calls',url:'https://alphafiles.net/present/',bg:'#ede9fe',bc:'#a78bfa',co:'#4c1d95',roof:'#7c3aed',x:470,y:380,w:110,rooms:[]},
-  {id:'clients',icon:'👥',name:'Clients',desc:'All files',url:'https://alphafiles.net/clients/',bg:'#cffafe',bc:'#22d3ee',co:'#164e63',roof:'#0891b2',x:320,y:520,w:110,rooms:[]},
-  {id:'side-proj',icon:'🔧',name:'Side Projects',desc:'DP · 48 · NI',url:'',bg:'#f3f4f6',bc:'#9ca3af',co:'#374151',roof:'#6b7280',x:470,y:520,w:120,rooms:[
+  {id:'alpha-office',icon:'⚡',name:'Alpha Office',desc:'CRM · Clients',url:'https://alphafiles.net/vitals/',bg:'#dbeafe',bc:'#3b82f6',co:'#1e3a8a',roof:'#2563eb',x:60,y:80,w:120,rooms:[]},
+  {id:'present',icon:'▶️',name:'Present',desc:'Live calls',url:'https://alphafiles.net/present/',bg:'#ede9fe',bc:'#a78bfa',co:'#4c1d95',roof:'#7c3aed',x:210,y:80,w:110,rooms:[]},
+  {id:'clients',icon:'👥',name:'Clients',desc:'All files',url:'https://alphafiles.net/clients/',bg:'#cffafe',bc:'#22d3ee',co:'#164e63',roof:'#0891b2',x:60,y:220,w:110,rooms:[]},
+  {id:'side-proj',icon:'🔧',name:'Side Projects',desc:'DP · 48 · NI',url:'',bg:'#f3f4f6',bc:'#9ca3af',co:'#374151',roof:'#6b7280',x:210,y:220,w:120,rooms:[
     {id:'dp-movers',icon:'🚛',name:'DP Movers',url:'https://dpmoversrelocation.com'},
     {id:'48-states',icon:'📦',name:'48 States',url:'https://48statesmovingandstorage.com'},
     {id:'national-install',icon:'🏗️',name:'National Install',url:'/nationalinstall/'},
     {id:'reputation',icon:'📊',name:'Reputation',url:'/dp/'},
     {id:'mgmt',icon:'🐆',name:'Management',url:'/panther/'}
   ]},
-  {id:'crm-map',icon:'🗺️',name:'CRM Overview',desc:'System map',url:'https://alphafiles.net/overview/',bg:'#e0e7ff',bc:'#a5b4fc',co:'#312e81',roof:'#4338ca',x:615,y:380,w:110,rooms:[]},
-  {id:'estate',icon:'🏠',name:'Estate Planning',desc:'Insurance',url:'',bg:'#fef3c7',bc:'#fcd34d',co:'#78350f',roof:'#d97706',x:1160,y:360,w:120,rooms:[
+  {id:'crm-map',icon:'🗺️',name:'CRM Overview',desc:'System map',url:'https://alphafiles.net/overview/',bg:'#e0e7ff',bc:'#a5b4fc',co:'#312e81',roof:'#4338ca',x:355,y:80,w:110,rooms:[]},
+  {id:'estate',icon:'🏠',name:'Estate Planning',desc:'Insurance',url:'',bg:'#fef3c7',bc:'#fcd34d',co:'#78350f',roof:'#d97706',x:900,y:60,w:120,rooms:[
     {id:'insurance',icon:'🛡️',name:'Insurance Table',url:'/insurance/'},
     {id:'joshuason2',icon:'🪖',name:'Military Finance',url:'/joshuason/'}
   ]},
-  {id:'home-sale',icon:'🏡',name:'118 Silverlimb',desc:'For Sale',url:'/home/',bg:'#dcfce7',bc:'#4ade80',co:'#14532d',roof:'#16a34a',x:1340,y:360,w:120,rooms:[]},
-  {id:'fire-escape',icon:'🔥',name:'Fire Escape',desc:'Plan',url:'/fireescape/',bg:'#fee2e2',bc:'#f87171',co:'#7f1d1d',roof:'#dc2626',x:1160,y:500,w:110,rooms:[]},
-  {id:'joshua',icon:'🪖',name:"Joshua's Barracks",desc:'Army · Finance',url:'/joshuason/',bg:'#dcfce7',bc:'#86efac',co:'#14532d',roof:'#15803d',x:1600,y:360,w:120,rooms:[]},
-  {id:'ever',icon:'🌸',name:"Ever's Room",desc:'Fiber plan',url:'/ever/',bg:'#fce7f3',bc:'#f9a8d4',co:'#9d174d',roof:'#db2777',x:1740,y:360,w:110,rooms:[]},
-  {id:'carl',icon:'🏥',name:"Carl's Recovery",url:'/carl/',bg:'#fee2e2',bc:'#fca5a5',co:'#991b1b',roof:'#dc2626',x:1600,y:500,w:120,rooms:[]},
-  {id:'colombia',icon:'🇨🇴',name:'Colombia House',desc:'Cali · Safety',url:'https://12easysteps.org/safe/',bg:'#fef9c3',bc:'#fde047',co:'#713f12',roof:'#ca8a04',x:1740,y:500,w:110,rooms:[]},
-  {id:'step-house',icon:'📖',name:'Step House',desc:'12easysteps.org',url:'https://12easysteps.org',bg:'#ede9fe',bc:'#c4b5fd',co:'#4c1d95',roof:'#7c3aed',x:320,y:1180,w:120,rooms:[]},
-  {id:'vapeless',icon:'🚭',name:'Vapor-Free Clinic',url:'/vapeless/',bg:'#f5f3ff',bc:'#c4b5fd',co:'#5b21b6',roof:'#6d28d9',x:470,y:1180,w:120,rooms:[]},
-  {id:'palabras',icon:'💬',name:'Word Garden',desc:'333 words',url:'/palabras/',bg:'#ecfeff',bc:'#67e8f9',co:'#164e63',roof:'#0891b2',x:320,y:1320,w:110,rooms:[]},
-  {id:'hospital',icon:'🏥',name:'General Hospital',desc:'Health resources',url:'',bg:'#fee2e2',bc:'#f87171',co:'#7f1d1d',roof:'#dc2626',x:1160,y:1180,w:130,rooms:[
+  {id:'home-sale',icon:'🏡',name:'118 Silverlimb',desc:'For Sale',url:'/home/',bg:'#dcfce7',bc:'#4ade80',co:'#14532d',roof:'#16a34a',x:1080,y:60,w:120,rooms:[]},
+  {id:'fire-escape',icon:'🔥',name:'Fire Escape',desc:'Plan',url:'/fireescape/',bg:'#fee2e2',bc:'#f87171',co:'#7f1d1d',roof:'#dc2626',x:900,y:200,w:110,rooms:[]},
+  {id:'joshua',icon:'🪖',name:"Joshua's Barracks",desc:'Army · Finance',url:'/joshuason/',bg:'#dcfce7',bc:'#86efac',co:'#14532d',roof:'#15803d',x:1340,y:60,w:120,rooms:[]},
+  {id:'ever',icon:'🌸',name:"Ever's Room",desc:'Fiber plan',url:'/ever/',bg:'#fce7f3',bc:'#f9a8d4',co:'#9d174d',roof:'#db2777',x:1480,y:60,w:110,rooms:[]},
+  {id:'carl',icon:'🏥',name:"Carl's Recovery",url:'/carl/',bg:'#fee2e2',bc:'#fca5a5',co:'#991b1b',roof:'#dc2626',x:1340,y:200,w:120,rooms:[]},
+  {id:'colombia',icon:'🇨🇴',name:'Colombia House',desc:'Cali · Safety',url:'https://12easysteps.org/safe/',bg:'#fef9c3',bc:'#fde047',co:'#713f12',roof:'#ca8a04',x:1480,y:200,w:110,rooms:[]},
+  {id:'step-house',icon:'📖',name:'Step House',desc:'12easysteps.org',url:'https://12easysteps.org',bg:'#ede9fe',bc:'#c4b5fd',co:'#4c1d95',roof:'#7c3aed',x:60,y:880,w:120,rooms:[]},
+  {id:'vapeless',icon:'🚭',name:'Vapor-Free Clinic',url:'/vapeless/',bg:'#f5f3ff',bc:'#c4b5fd',co:'#5b21b6',roof:'#6d28d9',x:210,y:880,w:120,rooms:[]},
+  {id:'palabras',icon:'💬',name:'Word Garden',desc:'333 words',url:'/palabras/',bg:'#ecfeff',bc:'#67e8f9',co:'#164e63',roof:'#0891b2',x:60,y:1020,w:110,rooms:[]},
+  {id:'hospital',icon:'🏥',name:'General Hospital',desc:'Health resources',url:'',bg:'#fee2e2',bc:'#f87171',co:'#7f1d1d',roof:'#dc2626',x:900,y:880,w:130,rooms:[
     {id:'h-ever',icon:'🌸',name:"Ever's Health",url:'/ever/'},
     {id:'h-carl',icon:'🏥',name:"Carl's Recovery",url:'/carl/'}
   ]},
-  {id:'police-station',icon:'🚓',name:'Police Station',desc:'Safety resources',url:'',bg:'#dbeafe',bc:'#3b82f6',co:'#1e3a8a',roof:'#1d4ed8',x:1330,y:1180,w:120,rooms:[
+  {id:'police-station',icon:'🚓',name:'Police Station',desc:'Safety resources',url:'',bg:'#dbeafe',bc:'#3b82f6',co:'#1e3a8a',roof:'#1d4ed8',x:1070,y:880,w:120,rooms:[
     {id:'ps-fireescape',icon:'🔥',name:'Fire Escape Plan',url:'/fireescape/'}
   ]},
-  {id:'fire-station',icon:'🚒',name:'Fire Station',desc:'Emergency',url:'/fireescape/',bg:'#fef3c7',bc:'#fb923c',co:'#7c2d12',roof:'#ea580c',x:1160,y:1320,w:120,rooms:[]},
-  {id:'daily-hub',icon:'🛋️',name:'Daily Hub',desc:'Calendar · Hit List',url:'/calendar/',bg:'#e0f2fe',bc:'#7dd3fc',co:'#0c4a6e',roof:'#0284c7',x:890,y:1170,w:130,rooms:[]},
-  {id:'library',icon:'📚',name:'The Library',desc:'Research · Docs',url:'/bronco/',bg:'#fde68a',bc:'#fbbf24',co:'#78350f',roof:'#d97706',x:890,y:1320,w:110,rooms:[]},
-  {id:'restaurants',icon:'🍽',name:'Restaurant Row',desc:'Greenville hot spots',url:'',bg:'#fef3c7',bc:'#fbbf24',co:'#78350f',roof:'#d97706',x:1600,y:1180,w:130,rooms:[]},
-  {id:'venues',icon:'🎭',name:'Venues',desc:'Arena · Peace Center',url:'',bg:'#ede9fe',bc:'#a78bfa',co:'#4c1d95',roof:'#7c3aed',x:1770,y:1180,w:120,rooms:[]},
-  {id:'this-month',icon:'📅',name:'This Month',desc:'Upcoming events',url:'',bg:'#dbeafe',bc:'#3b82f6',co:'#1e3a8a',roof:'#2563eb',x:1600,y:1320,w:120,rooms:[]},
-  {id:'civil-eng',icon:'⚙️',name:'Civil Engineer',desc:'Admin · Settings',url:'',bg:'#f3f4f6',bc:'#6b7280',co:'#1a1a2e',roof:'#374151',x:630,y:630,w:100,rooms:[]}
+  {id:'fire-station',icon:'🚒',name:'Fire Station',desc:'Emergency',url:'/fireescape/',bg:'#fef3c7',bc:'#fb923c',co:'#7c2d12',roof:'#ea580c',x:900,y:1020,w:120,rooms:[]},
+  {id:'daily-hub',icon:'🛋️',name:'Daily Hub',desc:'Calendar · Hit List',url:'/calendar/',bg:'#e0f2fe',bc:'#7dd3fc',co:'#0c4a6e',roof:'#0284c7',x:630,y:870,w:130,rooms:[]},
+  {id:'library',icon:'📚',name:'The Library',desc:'Research · Docs',url:'/bronco/',bg:'#fde68a',bc:'#fbbf24',co:'#78350f',roof:'#d97706',x:630,y:1020,w:110,rooms:[]},
+  {id:'restaurants',icon:'🍽',name:'Restaurant Row',desc:'Greenville hot spots',url:'',bg:'#fef3c7',bc:'#fbbf24',co:'#78350f',roof:'#d97706',x:1340,y:880,w:130,rooms:[]},
+  {id:'venues',icon:'🎭',name:'Venues',desc:'Arena · Peace Center',url:'',bg:'#ede9fe',bc:'#a78bfa',co:'#4c1d95',roof:'#7c3aed',x:1510,y:880,w:120,rooms:[]},
+  {id:'this-month',icon:'📅',name:'This Month',desc:'Upcoming events',url:'',bg:'#dbeafe',bc:'#3b82f6',co:'#1e3a8a',roof:'#2563eb',x:1340,y:1020,w:120,rooms:[]},
+  {id:'civil-eng',icon:'⚙️',name:'Civil Engineer',desc:'Admin · Settings',url:'',bg:'#f3f4f6',bc:'#6b7280',co:'#1a1a2e',roof:'#374151',x:370,y:330,w:100,rooms:[]}
 ];
 
 var DEFAULT_SIGNS=[
-  {id:'s1',name:'THE OFFICE',x:440,y:328,style:''},
-  {id:'s2',name:'WALL STREET',x:1320,y:328,style:''},
-  {id:'s3',name:'FAMILY SQUARE',x:1760,y:328,style:''},
-  {id:'s4',name:'RECOVERY VILLAGE',x:320,y:1140,style:''},
-  {id:'s5',name:'EMERGENCY DISTRICT',x:1240,y:1140,style:'red-sign'},
-  {id:'s6',name:'DOWNTOWN GREENVILLE',x:1640,y:1140,style:'blue-sign'},
-  {id:'s7',name:'TOWN PLAZA',x:930,y:780,style:''}
+  {id:'s1',name:'THE OFFICE',x:180,y:28,style:''},
+  {id:'s2',name:'WALL STREET',x:1060,y:28,style:''},
+  {id:'s3',name:'FAMILY SQUARE',x:1500,y:28,style:''},
+  {id:'s4',name:'RECOVERY VILLAGE',x:60,y:840,style:''},
+  {id:'s5',name:'EMERGENCY DISTRICT',x:980,y:840,style:'red-sign'},
+  {id:'s6',name:'DOWNTOWN GREENVILLE',x:1380,y:840,style:'blue-sign'},
+  {id:'s7',name:'TOWN PLAZA',x:670,y:480,style:''}
 ];
 
 var DEFAULT_DECOS=[
-  {id:'tr1',icon:'🌳',x:290,y:350},{id:'tr2',icon:'🌲',x:370,y:340},{id:'tr3',icon:'🌳',x:440,y:370},
-  {id:'tr4',icon:'🌿',x:330,y:640},{id:'tr5',icon:'🌳',x:640,y:360},{id:'tr6',icon:'🌲',x:960,y:340},
-  {id:'tr7',icon:'🌳',x:1060,y:370},{id:'tr8',icon:'🌿',x:1410,y:350},{id:'tr9',icon:'🌳',x:1500,y:370},
-  {id:'tr10',icon:'🌲',x:1860,y:340},{id:'tr11',icon:'🌳',x:1960,y:370},{id:'tr12',icon:'🌿',x:2060,y:350},
-  {id:'tr13',icon:'🌳',x:290,y:1080},{id:'tr14',icon:'🌲',x:420,y:1100},{id:'tr15',icon:'🌳',x:840,y:1070},
-  {id:'tr16',icon:'🌿',x:1010,y:1100},{id:'tr17',icon:'🌳',x:1380,y:1080},{id:'tr18',icon:'🌲',x:1910,y:1080},
-  {id:'tr19',icon:'🌳',x:2060,y:1100},{id:'tr20',icon:'🌲',x:290,y:1500},{id:'tr21',icon:'🌳',x:2160,y:500},
-  {id:'fl1',icon:'🌸',x:825,y:980},{id:'fl2',icon:'🌺',x:1060,y:1000},{id:'fl3',icon:'🌻',x:1640,y:1000},
+  {id:'tr1',icon:'🌳',x:30,y:50},{id:'tr2',icon:'🌲',x:110,y:40},{id:'tr3',icon:'🌳',x:180,y:70},
+  {id:'tr4',icon:'🌿',x:70,y:340},{id:'tr5',icon:'🌳',x:380,y:60},{id:'tr6',icon:'🌲',x:700,y:40},
+  {id:'tr7',icon:'🌳',x:800,y:70},{id:'tr8',icon:'🌿',x:1150,y:50},{id:'tr9',icon:'🌳',x:1240,y:70},
+  {id:'tr10',icon:'🌲',x:1600,y:40},{id:'tr11',icon:'🌳',x:1700,y:70},{id:'tr12',icon:'🌿',x:1800,y:50},
+  {id:'tr13',icon:'🌳',x:30,y:780},{id:'tr14',icon:'🌲',x:160,y:800},{id:'tr15',icon:'🌳',x:580,y:770},
+  {id:'tr16',icon:'🌿',x:750,y:800},{id:'tr17',icon:'🌳',x:1120,y:780},{id:'tr18',icon:'🌲',x:1650,y:780},
+  {id:'tr19',icon:'🌳',x:1800,y:800},{id:'tr20',icon:'🌲',x:30,y:1200},{id:'tr21',icon:'🌳',x:1900,y:200},
+  {id:'fl1',icon:'🌸',x:565,y:680},{id:'fl2',icon:'🌺',x:800,y:700},{id:'fl3',icon:'🌻',x:1380,y:700},
 ];
 
 // ══════════════════════════════════════
@@ -574,6 +574,12 @@ var DEFAULT_DECOS=[
 // ══════════════════════════════════════
 var buildings,signs,decos;
 function loadState(){
+  // Version check — clears old shifted positions
+  var VER='v5';
+  if(localStorage.getItem('town_ver')!==VER){
+    localStorage.removeItem(SK);localStorage.removeItem(SIGN_K);localStorage.removeItem(DECO_K);
+    localStorage.setItem('town_ver',VER);
+  }
   try{buildings=JSON.parse(localStorage.getItem(SK));}catch(e){buildings=null;}
   if(!buildings||!buildings.length) buildings=JSON.parse(JSON.stringify(DEFAULT_BLDS));
   try{signs=JSON.parse(localStorage.getItem(SIGN_K));}catch(e){signs=null;}
@@ -1213,7 +1219,14 @@ window.addSignPreset=function(i){
 // ══════════════════════════════════════
 loadState();
 render();
-setTimeout(zoomFit, 50);
+setTimeout(function(){
+  var cv=document.getElementById('canvas').getBoundingClientRect();
+  var W2=2400,H2=1800;
+  scale=Math.min((cv.width||375)/W2,(cv.height||700)/H2);
+  panX=((cv.width||375)-W2*scale)/2;
+  panY=10;
+  applyTransform(false);
+},80);
 </script>
 </body>
 </html>
