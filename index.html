@@ -44,12 +44,26 @@ body{font-family:'Nunito',sans-serif;background:#d4ecc0;min-height:100vh;overflo
 /* ── BUILDINGS ── */
 .bld{position:absolute;border-radius:14px;cursor:pointer;transition:.2s;border:3px solid;box-shadow:4px 6px 0 rgba(0,0,0,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-decoration:none;padding:10px 8px}
 .bld:hover{transform:translateY(-4px) scale(1.04);box-shadow:6px 10px 0 rgba(0,0,0,.15);z-index:50}
+.bld{overflow:visible!important}
 .bld:active{transform:translateY(-2px) scale(1.02)}
 .bld-icon{font-size:28px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.15))}
 .bld-name{font-size:10px;font-weight:900;text-align:center;line-height:1.2;letter-spacing:.2px}
 .bld-sub{font-size:9px;font-weight:700;opacity:.7;text-align:center;line-height:1.2}
-/* Roof accent */
-.bld::before{content:'';position:absolute;top:-8px;left:12px;right:12px;height:8px;border-radius:4px 4px 0 0;opacity:.6}
+/* PEAKED ROOF */
+.bld{padding-top:28px!important}
+.bld::before{
+  content:'';position:absolute;
+  top:-18px;left:-3px;right:-3px;height:28px;
+  clip-path:polygon(0% 100%, 50% 0%, 100% 100%);
+  background:inherit;filter:brightness(.75) saturate(1.2);
+  border:none;
+}
+.bld::after{
+  content:'';position:absolute;
+  top:-18px;left:-3px;right:-3px;height:28px;
+  clip-path:polygon(0% 100%,50% 0%,100% 100%,97% 100%,50% 5%,3% 100%);
+  background:rgba(0,0,0,.15);
+}
 
 /* NEIGHBORHOOD LABELS */
 .nh-label{position:absolute;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:1px;opacity:.5;pointer-events:none;white-space:nowrap}
@@ -85,9 +99,16 @@ body{font-family:'Nunito',sans-serif;background:#d4ecc0;min-height:100vh;overflo
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#2d5a27;color:#fff;border-radius:100px;padding:10px 22px;font-size:14px;font-weight:800;font-family:'Nunito',sans-serif;z-index:9999;display:none;box-shadow:0 4px 16px rgba(0,0,0,.2)}
 
 @media(max-width:1020px){
-  .town{width:100%;min-height:600px;transform-origin:top center;transform:scale(0.75)}
-  .map-wrap{padding:10px;overflow:hidden}
+  .map-wrap{padding:8px;overflow:auto;-webkit-overflow-scrolling:touch}
+  .town{width:980px;min-height:860px}
 }
+@media(max-width:600px){
+  .map-wrap{padding:4px}
+  .nav-logo span:not(:first-child){display:none}
+}
+/* Pinch zoom hint */
+.zoom-hint{display:none;text-align:center;padding:6px;font-size:11px;font-weight:700;color:#2d5a27;background:rgba(255,255,255,.8);position:sticky;top:52px;z-index:99;border-bottom:1px solid #b8dca0}
+@media(max-width:1020px){.zoom-hint{display:block}}
 </style>
 </head>
 <body>
@@ -102,6 +123,7 @@ body{font-family:'Nunito',sans-serif;background:#d4ecc0;min-height:100vh;overflo
   </div>
 </nav>
 
+<div class="zoom-hint">📍 Scroll to explore your town · Pinch to zoom</div>
 <div class="map-wrap">
 <div class="town">
 
