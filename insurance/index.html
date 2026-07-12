@@ -36,13 +36,13 @@ td:last-child{border-right:none}
 .co-link:hover{text-decoration:underline}
 .cell-input{width:100%;border:none;outline:none;font-family:'Inter',sans-serif;font-size:13px;padding:10px 12px;background:transparent;color:#1a1a2e}
 .cell-input:focus{background:#f0f4ff}
-.cell-input::placeholder{color:#d1d5db}
+.cell-input::placeholder{color:#374151}
 select.cell-input{cursor:pointer}
 .yn-cell{display:flex;align-items:center;justify-content:center;padding:4px}
 .yn-select{border:none;border-radius:6px;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;padding:5px 8px;cursor:pointer;text-align:center;background:#f3f4f6;color:#374151;width:90px}
 .yn-select.yes{background:#dcfce7;color:#16a34a}
 .yn-select.no{background:#fee2e2;color:#dc2626}
-.yn-select.unknown{background:#f3f4f6;color:#9ca3af}
+.yn-select.unknown{background:#f3f4f6;color:#374151}
 .notes-input{min-width:180px;resize:none;height:52px;padding:8px 10px;border:none;outline:none;font-family:'Inter',sans-serif;font-size:12px;color:#374151;background:transparent;width:100%}
 .notes-input:focus{background:#fffbeb}
 .rating-cell{display:flex;align-items:center;justify-content:center}
@@ -51,9 +51,13 @@ select.cell-input{cursor:pointer}
 .rating-badge.a-plus{background:#d1fae5;color:#065f46}
 .rating-badge.a{background:#dbeafe;color:#1e40af}
 .rating-badge.a-minus{background:#e0e7ff;color:#3730a3}
-.last-saved{font-size:11px;color:#9ca3af;margin-left:auto}
+.last-saved{font-size:11px;color:#374151;margin-left:auto}
 .legend{background:#fff;border-radius:10px;border:1px solid #e5e7eb;padding:14px 16px;margin:0 16px 16px;font-size:12px;color:#374151;line-height:1.8}
 .legend strong{color:#1a1a2e}
+input,select,textarea{color:#111827!important}
+.ci,.ci::placeholder{color:#111827!important}
+td{color:#111827}
+tbody tr td{color:#111827!important}
 </style>
 </head>
 <body>
@@ -73,7 +77,7 @@ select.cell-input{cursor:pointer}
   <button class="btn btn-blue" onclick="addRow()">+ Add Company</button>
   <button class="btn btn-gray" onclick="clearAll()">↺ Clear All Data</button>
   <button class="btn btn-green" onclick="exportCSV()">⬇ Export CSV</button>
-  <span style="font-size:12px;color:#9ca3af;margin-left:4px">* Living Benefits = critical/chronic/terminal illness riders included at no extra cost</span>
+  <span style="font-size:12px;color:#374151;margin-left:4px">* Living Benefits = critical/chronic/terminal illness riders included at no extra cost</span>
 </div>
 
 <div class="wrap">
