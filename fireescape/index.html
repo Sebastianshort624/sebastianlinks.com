@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>🔥 Fire Escape Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#fff5f5;color:#1a1a2e;padding-bottom:40px}
+.hero{background:linear-gradient(135deg,#7f1d1d,#dc2626);color:#fff;padding:26px 20px;text-align:center}
+.hero-emoji{font-size:42px;margin-bottom:8px}
+.hero h1{font-size:22px;font-weight:800;margin-bottom:4px}
+.hero p{font-size:13px;opacity:.75}
+.progress-bar-wrap{background:rgba(255,255,255,.2);border-radius:100px;height:10px;margin:14px auto 4px;max-width:300px}
+.progress-bar{background:#fecaca;height:10px;border-radius:100px;transition:.4s;width:0%}
+.progress-label{font-size:12px;opacity:.8}
+.tabs{display:flex;background:#fff;border-bottom:2px solid #fee2e2;position:sticky;top:0;z-index:100;overflow-x:auto;gap:3px;padding:8px 8px 0}
+.tab{flex-shrink:0;padding:10px 14px;font-size:13px;font-weight:700;color:rgba(127,29,29,.5);cursor:pointer;border-radius:8px 8px 0 0;background:rgba(127,29,29,.05);white-space:nowrap;transition:.15s;border-bottom:3px solid transparent}
+.tab.active{color:#7f1d1d;background:#fff;border-bottom-color:#dc2626;font-weight:800}
+.tab-content{display:none;padding:14px}
+.tab-content.active{display:block}
+.section{background:#fff;border-radius:12px;border:1px solid #fee2e2;margin-bottom:14px;overflow:hidden}
+.section-hdr{background:#fff5f5;padding:11px 16px;font-size:13px;font-weight:700;color:#7f1d1d;border-bottom:1px solid #fee2e2;display:flex;align-items:center;justify-content:space-between}
+.badge{font-size:10px;font-weight:700;background:#dc2626;color:#fff;border-radius:100px;padding:2px 8px}
+.check-item{display:flex;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid #fff5f5;cursor:pointer;transition:.1s}
+.check-item:last-child{border-bottom:none}
+.check-item:hover{background:#fff5f5}
+.check-item.checked{background:#fff5f5}
+.check-item.checked .item-text{text-decoration:line-through;color:#fca5a5}
+.checkbox{width:22px;height:22px;border-radius:6px;border:2px solid #fca5a5;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;background:#fff;transition:.2s}
+.check-item.checked .checkbox{background:#dc2626;border-color:#dc2626;color:#fff}
+.item-text{font-size:14px;font-weight:500;flex:1}
+.alert-box{background:#fff;border-radius:12px;border:2px solid #dc2626;overflow:hidden;margin-bottom:12px}
+.alert-hdr{background:#dc2626;padding:10px 16px;font-size:13px;font-weight:700;color:#fff}
+.alert-item{display:flex;gap:10px;padding:10px 16px;border-bottom:1px solid #fff5f5;font-size:13px;color:#374151;align-items:flex-start}
+.alert-item:last-child{border-bottom:none}
+.alert-icon{font-size:18px;flex-shrink:0}
+
+/* MAP */
+.floor-plan{background:#fff;border-radius:12px;border:2px solid #fee2e2;padding:16px;margin-bottom:14px}
+.fp-title{font-size:13px;font-weight:700;color:#7f1d1d;margin-bottom:12px;text-align:center;text-transform:uppercase;letter-spacing:.5px}
+.floor-map{position:relative;background:#f0f9ff;border:2px solid #bae6fd;border-radius:10px;width:100%;max-width:500px;height:320px;margin:0 auto;overflow:hidden}
+/* House outline */
+.room-box{position:absolute;border:2px solid #60a5fa;background:rgba(219,234,254,.5);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px;font-size:11px;font-weight:700;color:#1e40af;text-align:center}
+.exit-arrow{position:absolute;font-size:20px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.2))}
+.exit-label{position:absolute;font-size:9px;font-weight:800;color:#dc2626;text-transform:uppercase;letter-spacing:.5px;text-align:center;background:#fee2e2;padding:1px 4px;border-radius:3px}
+.meeting-spot{position:absolute;background:#fef9c3;border:2px solid #fde047;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.wall{position:absolute;background:#6b7280}
+.door{position:absolute;font-size:14px}
+
+.tip-box{background:#fff5f5;border:1px solid #fecaca;border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:13px;color:#7f1d1d;line-height:1.6;display:flex;gap:8px}
+.note-box{background:#fef9c3;border:1px solid #fde047;border-radius:10px;padding:12px 16px;margin-top:8px;font-size:13px;color:#713f12;line-height:1.6}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-emoji">🔥</div>
+  <h1>Family Fire Escape Plan</h1>
+  <p>4-Bedroom Single-Story Home · Practice every 6 months</p>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="prog-bar"></div></div>
+  <div class="progress-label"><span id="prog-text">0 of 0 items ready</span></div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('plan',event)">🗺️ Escape Plan</div>
+  <div class="tab" onclick="showTab('drill',event)">🏃 Drill Checklist</div>
+  <div class="tab" onclick="showTab('prevention',event)">🛡️ Prevention</div>
+  <div class="tab" onclick="showTab('emergency',event)">📞 Emergency Info</div>
+</div>
+
+<!-- ESCAPE PLAN -->
+<div class="tab-content active" id="tab-plan">
+
+  <div class="floor-plan">
+    <div class="fp-title">🏠 Floor Plan — Escape Routes</div>
+    <div class="floor-map">
+      <!-- Outer walls -->
+      <div class="wall" style="top:0;left:0;right:0;height:4px"></div>
+      <div class="wall" style="bottom:0;left:0;right:0;height:4px"></div>
+      <div class="wall" style="top:0;bottom:0;left:0;width:4px"></div>
+      <div class="wall" style="top:0;bottom:0;right:0;width:4px"></div>
+      <!-- Interior walls -->
+      <div class="wall" style="top:4px;left:250px;width:4px;height:160px"></div>
+      <div class="wall" style="top:160px;left:4px;right:4px;height:4px"></div>
+      <div class="wall" style="top:160px;left:125px;width:4px;height:80px"></div>
+      <div class="wall" style="top:160px;left:375px;width:4px;height:80px"></div>
+
+      <!-- ROOMS -->
+      <div class="room-box" style="top:10px;left:10px;width:230px;height:145px">
+        <div>🛏️ Master</div>
+        <div style="font-size:9px;opacity:.7">Bedroom 1</div>
+      </div>
+      <div class="room-box" style="top:10px;left:260px;width:228px;height:145px">
+        <div>🛏️ Bedroom 2</div>
+      </div>
+      <div class="room-box" style="top:170px;left:10px;width:110px;height:144px">
+        <div>🛏️</div>
+        <div>Bedroom 3</div>
+      </div>
+      <div class="room-box" style="top:170px;left:130px;width:240px;height:72px;background:rgba(254,240,138,.4);border-color:#fbbf24">
+        <div>🍳 Kitchen / Living</div>
+      </div>
+      <div class="room-box" style="top:248px;left:130px;width:240px;height:68px;background:rgba(254,240,138,.4);border-color:#fbbf24">
+        <div>🚿 Bath + Hallway</div>
+      </div>
+      <div class="room-box" style="top:170px;left:384px;width:108px;height:144px">
+        <div>🛏️</div>
+        <div>Bedroom 4</div>
+      </div>
+
+      <!-- EXIT ARROWS -->
+      <!-- Front door -->
+      <div class="exit-arrow" style="bottom:10px;left:200px">🚪⬇️</div>
+      <div class="exit-label" style="bottom:2px;left:185px">FRONT EXIT</div>
+      <!-- Master window -->
+      <div class="exit-arrow" style="top:30px;left:8px">⬅️🪟</div>
+      <div class="exit-label" style="top:22px;left:12px">EXIT</div>
+      <!-- Bedroom 2 window -->
+      <div class="exit-arrow" style="top:30px;right:8px">🪟➡️</div>
+      <div class="exit-label" style="top:22px;right:8px">EXIT</div>
+      <!-- Bedroom 3 window -->
+      <div class="exit-arrow" style="bottom:30px;left:8px">⬅️🪟</div>
+      <div class="exit-label" style="bottom:22px;left:12px">EXIT</div>
+      <!-- Bedroom 4 window -->
+      <div class="exit-arrow" style="bottom:30px;right:8px">🪟➡️</div>
+      <div class="exit-label" style="bottom:22px;right:8px">EXIT</div>
+      <!-- Back door -->
+      <div class="exit-arrow" style="top:10px;right:80px">⬆️🚪</div>
+      <div class="exit-label" style="top:2px;right:65px">BACK</div>
+
+      <!-- MEETING SPOT -->
+      <div class="meeting-spot" style="bottom:8px;right:8px" title="Meeting Spot">⭐</div>
+    </div>
+    <div style="display:flex;gap:14px;justify-content:center;margin-top:10px;flex-wrap:wrap;font-size:11px;font-weight:700">
+      <span>🚪⬇️ Primary Exit — Front Door</span>
+      <span>🪟 Secondary — Windows</span>
+      <span>⭐ Meet Here — Neighbor's Driveway</span>
+    </div>
+  </div>
+
+  <div class="alert-box">
+    <div class="alert-hdr">🚨 IF THERE IS A FIRE — DO THESE IN ORDER</div>
+    <div class="alert-item"><div class="alert-icon">1️⃣</div><div><strong>FEEL THE DOOR</strong> before opening — if hot, use window exit instead</div></div>
+    <div class="alert-item"><div class="alert-icon">2️⃣</div><div><strong>STAY LOW</strong> — crawl under smoke, smoke rises</div></div>
+    <div class="alert-item"><div class="alert-icon">3️⃣</div><div><strong>GET OUT FAST</strong> — do not stop to grab belongings</div></div>
+    <div class="alert-item"><div class="alert-icon">4️⃣</div><div><strong>CLOSE DOORS BEHIND YOU</strong> — slows fire spread by up to 3 minutes</div></div>
+    <div class="alert-item"><div class="alert-icon">5️⃣</div><div><strong>MEET AT THE STAR ⭐</strong> — neighbor's driveway across the street</div></div>
+    <div class="alert-item"><div class="alert-icon">6️⃣</div><div><strong>CALL 911</strong> — from outside, never go back in</div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-hdr">🛏️ Each Bedroom — Know Your Exit</div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Master Bedroom — primary: hallway to front door · backup: left side window</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Bedroom 2 — primary: hallway to front door · backup: right side window</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Bedroom 3 — primary: hallway · backup: back-left window</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Bedroom 4 — primary: hallway · backup: back-right window</div></div>
+  </div>
+
+  <div class="note-box">⭐ <strong>Meeting Spot:</strong> Designate a specific spot outside — a neighbor's mailbox, a tree, a driveway marker. Everyone meets there. Do not leave to look for someone who might still be inside — tell the firefighters.</div>
+</div>
+
+<!-- DRILL CHECKLIST -->
+<div class="tab-content" id="tab-drill">
+  <div class="tip-box"><div style="font-size:18px">🏃</div><div>Practice this drill every 6 months — once at night when everyone is asleep. That's the most important one.</div></div>
+
+  <div class="section">
+    <div class="section-hdr">📋 Before the Drill</div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Tell everyone there will be a drill (except nighttime surprise drill)</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Confirm everyone knows their primary and backup exit</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Confirm everyone knows the meeting spot</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Make sure all windows can be opened from the inside</div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-hdr">🔔 During the Drill</div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Sound the smoke alarm manually</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Everyone stops what they're doing immediately</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Feel the bedroom door before opening</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Crawl low to the exit</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Everyone meets at the designated spot</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Do a headcount — everyone accounted for?</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Time it — goal is under 2 minutes from alarm to meeting spot</div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-hdr">📅 Drill Log</div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Last drill date: _____________ &nbsp;Time: _______ minutes</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Night drill completed this year</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Next drill scheduled: _____________</div></div>
+  </div>
+</div>
+
+<!-- PREVENTION -->
+<div class="tab-content" id="tab-prevention">
+  <div class="section">
+    <div class="section-hdr">🔋 Smoke Alarms <span class="badge">Check monthly</span></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Alarm in every bedroom</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Alarm outside each sleeping area</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Alarm on every level of the home</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Test all alarms — press test button monthly</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Replace batteries every year (or use 10-year sealed battery alarms)</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Replace alarm units every 10 years</div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-hdr">🧯 Fire Extinguisher</div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">ABC extinguisher in the kitchen</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Everyone knows where it is</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Everyone knows how to use PASS: Pull · Aim · Squeeze · Sweep</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Inspection tag is current</div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-hdr">🍳 Kitchen Safety</div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Never leave stovetop cooking unattended</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Keep flammables away from stove (towels, paper)</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Clean grease from stovetop regularly</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Toaster, microwave, and appliances are unplugged when not in use</div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-hdr">⚡ Electrical</div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">No overloaded outlets or power strips</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">No damaged or frayed cords</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Space heaters kept 3 feet from anything flammable</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Dryer lint trap cleaned after every use</div></div>
+  </div>
+</div>
+
+<!-- EMERGENCY INFO -->
+<div class="tab-content" id="tab-emergency">
+  <div class="alert-box">
+    <div class="alert-hdr">📞 Emergency Numbers</div>
+    <div class="alert-item"><div class="alert-icon">🚒</div><div><strong>Fire / Emergency:</strong> 911</div></div>
+    <div class="alert-item"><div class="alert-icon">🏠</div><div><strong>Home Address:</strong> Write it here so kids can tell 911</div></div>
+    <div class="alert-item"><div class="alert-icon">👤</div><div><strong>Out-of-state contact:</strong> _______________________</div></div>
+    <div class="alert-item"><div class="alert-icon">🏥</div><div><strong>Nearest hospital:</strong> _______________________</div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-hdr">✅ Every Family Member Knows</div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Our full home address by heart</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">How to call 911</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Their bedroom's two escape routes</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">The meeting spot — and to STAY THERE</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">NEVER go back inside for anything</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">How to feel a door for heat before opening</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">To crawl low under smoke</div></div>
+  </div>
+
+  <div class="note-box">🖨️ <strong>Tip:</strong> Print this plan and post a copy inside every bedroom closet door and on the refrigerator so everyone can see it every day.</div>
+</div>
+
+<script>
+function toggle(el){
+  el.classList.toggle('checked');
+  el.querySelector('.checkbox').textContent=el.classList.contains('checked')?'✓':'';
+  update();save();
+}
+function update(){
+  var all=document.querySelectorAll('.check-item');
+  var checked=document.querySelectorAll('.check-item.checked');
+  var pct=all.length?Math.round(checked.length/all.length*100):0;
+  document.getElementById('prog-bar').style.width=pct+'%';
+  document.getElementById('prog-text').textContent=checked.length+' of '+all.length+' items ready';
+}
+function showTab(id,e){
+  document.querySelectorAll('.tab-content').forEach(function(t){t.classList.remove('active');});
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  document.getElementById('tab-'+id).classList.add('active');
+  if(e&&e.target)e.target.classList.add('active');
+}
+function save(){
+  var s={};
+  document.querySelectorAll('.check-item').forEach(function(el,i){s['i'+i]=el.classList.contains('checked');});
+  try{localStorage.setItem('fire_plan',JSON.stringify(s));}catch(e){}
+}
+function load(){
+  try{
+    var s=JSON.parse(localStorage.getItem('fire_plan')||'{}');
+    document.querySelectorAll('.check-item').forEach(function(el,i){
+      if(s['i'+i]){el.classList.add('checked');el.querySelector('.checkbox').textContent='✓';}
+    });update();
+  }catch(e){}
+}
+window.onload=function(){load();update();};
+</script>
+</body>
+</html>
