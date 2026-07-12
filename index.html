@@ -2,113 +2,116 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <title>Sebastian's Town</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Nunito',sans-serif;background:#d4ecc0;min-height:100vh;overflow-x:hidden}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Inter',sans-serif;background:#d4ecc0;overflow:hidden;height:100vh;width:100vw;touch-action:none;user-select:none;-webkit-user-select:none}
 
 /* ── NAV ── */
-.nav{background:rgba(255,255,255,.92);backdrop-filter:blur(8px);padding:0 20px;height:52px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid #b8dca0;position:relative;z-index:10}
-.nav-logo{font-size:18px;font-weight:900;color:#2d5a27;display:flex;align-items:center;gap:8px}
-.nav-right{display:flex;gap:8px}
-.nav-btn{background:#fff;border:2px solid #b8dca0;color:#2d5a27;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:800;cursor:pointer;text-decoration:none;font-family:'Nunito',sans-serif;transition:.15s}
-.nav-btn:hover{background:#2d5a27;color:#fff;border-color:#2d5a27}
+.nav{background:rgba(255,255,255,.88);backdrop-filter:blur(8px);padding:0 16px;height:48px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid #b8dca0;z-index:1000;position:relative}
+.nav-logo{font-family:'Nunito',sans-serif;font-size:16px;font-weight:900;color:#2d5a27;display:flex;align-items:center;gap:6px}
+.nav-tools{display:flex;gap:6px}
+.nav-btn{background:#fff;border:2px solid #b8dca0;color:#2d5a27;border-radius:16px;padding:4px 12px;font-size:11px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;white-space:nowrap}
+.nav-btn:hover{background:#2d5a27;color:#fff}
+.nav-btn.red{border-color:#fca5a5;color:#dc2626}
+.nav-btn.red:hover{background:#dc2626;color:#fff}
 
-/* ── MAP CONTAINER ── */
-.map-wrap{position:relative;min-height:calc(100vh - 52px);padding:20px;display:flex;align-items:flex-start;justify-content:center}
-.town{position:relative;width:980px;min-height:860px;margin:0 auto}
+/* ── TOWN CANVAS ── */
+.canvas{position:absolute;top:48px;left:0;right:0;bottom:0;overflow:hidden;background:#d4ecc0;cursor:grab}
+.canvas.grabbing{cursor:grabbing}
+.world{position:absolute;width:1800px;height:1400px;background:#c8e6b0}
 
-/* ── GROUND ── */
-.ground{position:absolute;inset:0;background:#c8e6b0;border-radius:24px;border:3px solid #a8cc90;box-shadow:0 8px 32px rgba(0,0,0,.1)}
+/* ── GROUND TEXTURE ── */
+.world::before{content:'';position:absolute;inset:0;background:
+  radial-gradient(circle at 20% 30%,rgba(255,255,255,.08) 0%,transparent 50%),
+  radial-gradient(circle at 80% 70%,rgba(255,255,255,.06) 0%,transparent 50%);
+  pointer-events:none}
 
 /* ── ROADS ── */
-.road{position:absolute;background:#c0c0c0;border-radius:4px}
-.road::after{content:'';position:absolute;background:repeating-linear-gradient(90deg,#fff 0,#fff 20px,transparent 20px,transparent 40px);height:3px;top:50%;transform:translateY(-50%);left:0;right:0}
-.road.v::after{background:repeating-linear-gradient(180deg,#fff 0,#fff 20px,transparent 20px,transparent 40px);width:3px;height:100%;left:50%;top:0;transform:translateX(-50%)}
-.road-h{height:38px}
-.road-v{width:38px}
-/* Intersection */
-.cross{position:absolute;background:#b8b8b8;border-radius:4px;z-index:2}
+.road{position:absolute;background:#bdbdbd}
+.road.h{height:36px}
+.road.v{width:36px}
+.road.h::after{content:'';position:absolute;top:50%;left:0;right:0;height:3px;transform:translateY(-50%);background:repeating-linear-gradient(90deg,#fff 0,#fff 24px,transparent 24px,transparent 48px)}
+.road.v::after{content:'';position:absolute;left:50%;top:0;bottom:0;width:3px;transform:translateX(-50%);background:repeating-linear-gradient(180deg,#fff 0,#fff 24px,transparent 24px,transparent 48px)}
+.road.cross{background:#b0b0b0}
 
-/* ── PARK ── */
-.park{position:absolute;background:#a8d890;border-radius:16px;border:2px solid #88c070;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
-.park-title{font-size:11px;font-weight:900;color:#2d5a27;text-transform:uppercase;letter-spacing:.5px;text-align:center}
-.fountain{font-size:28px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.15))}
+/* ── STREET SIGNS ── */
+.sign-wrap{position:absolute;display:flex;flex-direction:column;align-items:center;cursor:move;z-index:30}
+.sign-wrap.dragging{opacity:.8;z-index:500}
+.sign-post{width:4px;height:20px;background:linear-gradient(#888,#666);border-radius:0 0 2px 2px}
+.sign-board{background:#1a6b1a;color:#fff;font-family:'Nunito',sans-serif;font-size:10px;font-weight:900;padding:3px 10px;border-radius:3px;border:2px solid #0f4a0f;letter-spacing:1.5px;text-transform:uppercase;white-space:nowrap;box-shadow:2px 2px 0 rgba(0,0,0,.3);cursor:pointer}
+.sign-board:hover{background:#0f4a0f}
 
-/* ── TREES ── */
-.tree{position:absolute;font-size:22px;filter:drop-shadow(0 3px 4px rgba(0,0,0,.2));cursor:default;animation:sway 3s ease-in-out infinite}
+/* ── TREES & DECORATIONS ── */
+.deco{position:absolute;pointer-events:none;font-size:20px;filter:drop-shadow(0 3px 4px rgba(0,0,0,.2));animation:sway 3s ease-in-out infinite}
 @keyframes sway{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+.car{position:absolute;pointer-events:none;font-size:14px}
 
 /* ── BUILDINGS ── */
-.bld{position:absolute;border-radius:14px;cursor:pointer;transition:.2s;border:3px solid;box-shadow:4px 6px 0 rgba(0,0,0,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-decoration:none;padding:10px 8px}
-.bld:hover{transform:translateY(-4px) scale(1.04);box-shadow:6px 10px 0 rgba(0,0,0,.15);z-index:50}
-.bld{overflow:visible!important}
-.bld:active{transform:translateY(-2px) scale(1.02)}
-.bld-icon{font-size:28px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.15))}
-.bld-name{font-size:10px;font-weight:900;text-align:center;line-height:1.2;letter-spacing:.2px}
-.bld-sub{font-size:9px;font-weight:700;opacity:.7;text-align:center;line-height:1.2}
-/* PEAKED ROOF */
-.bld{padding-top:28px!important}
-.bld::before{
-  content:'';position:absolute;
-  top:-18px;left:-3px;right:-3px;height:28px;
-  clip-path:polygon(0% 100%, 50% 0%, 100% 100%);
-  background:inherit;filter:brightness(.75) saturate(1.2);
-  border:none;
-}
-.bld::after{
-  content:'';position:absolute;
-  top:-18px;left:-3px;right:-3px;height:28px;
-  clip-path:polygon(0% 100%,50% 0%,100% 100%,97% 100%,50% 5%,3% 100%);
-  background:rgba(0,0,0,.15);
-}
+.bld{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border-radius:12px;border:3px solid;box-shadow:4px 6px 0 rgba(0,0,0,.13);cursor:pointer;touch-action:none;transition:box-shadow .15s;padding:8px 6px 8px;text-align:center;min-width:100px;min-height:100px;z-index:10}
+.bld:hover{box-shadow:6px 8px 0 rgba(0,0,0,.18)}
+.bld.dragging{opacity:.85;z-index:900;box-shadow:8px 14px 20px rgba(0,0,0,.3);transform:scale(1.06);cursor:grabbing}
+.bld.drop-target{outline:3px dashed #f59e0b;outline-offset:3px;animation:pulse-border .6s infinite}
+@keyframes pulse-border{0%,100%{outline-color:#f59e0b}50%{outline-color:#ef4444}}
 
-/* NEIGHBORHOOD LABELS */
-.nh-label{position:absolute;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:1px;opacity:.5;pointer-events:none;white-space:nowrap}
+/* ROOF */
+.bld-roof{width:calc(100% + 6px);height:22px;clip-path:polygon(0 100%,50% 0,100% 100%);margin-bottom:-4px;position:relative;left:-3px;border-radius:3px 3px 0 0;flex-shrink:0}
+.bld-icon{font-size:26px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.15));flex-shrink:0}
+.bld-name{font-family:'Nunito',sans-serif;font-size:11px;font-weight:900;line-height:1.2;flex-shrink:0}
+.bld-sub{font-size:9px;font-weight:700;opacity:.65;line-height:1.2;flex-shrink:0}
+.bld-rooms-badge{background:rgba(0,0,0,.15);border-radius:100px;padding:1px 6px;font-size:9px;font-weight:800;flex-shrink:0}
 
-/* ── PEOPLE ── */
-.person{position:absolute;font-size:18px;animation:walk 4s linear infinite}
-@keyframes walk{0%{transform:translateX(0)}50%{transform:translateX(30px)}100%{transform:translateX(0)}}
+/* ── PARK ── */
+.park{position:absolute;background:#a8d890;border-radius:16px;border:2px solid #7ac060;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;pointer-events:none}
+.park-icon{font-size:26px}
+.park-name{font-family:'Nunito',sans-serif;font-size:10px;font-weight:900;color:#2d5a27;text-transform:uppercase;letter-spacing:.5px}
 
-/* ── ROOM OVERLAY ── */
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:2000;align-items:center;justify-content:center;padding:20px}
-.overlay.open{display:flex}
-.overlay-card{background:#fff;border-radius:20px;width:640px;max-width:95vw;max-height:88vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.25)}
-.ov-hdr{padding:16px 20px;display:flex;align-items:center;gap:12px}
-.ov-hdr-icon{font-size:32px}
-.ov-hdr-name{font-family:'Nunito',sans-serif;font-size:20px;font-weight:900}
-.ov-close{margin-left:auto;background:#f3f4f6;border:none;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif}
-.ov-body{overflow-y:auto;flex:1;padding:16px 20px 20px}
-.ov-links{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
-.ov-link{background:#f8fafc;border:2px solid #e5e7eb;border-radius:12px;padding:12px;display:flex;align-items:center;gap:10px;text-decoration:none;transition:.15s}
-.ov-link:hover{border-color:#2d5a27;background:#f0fdf4}
-.ov-link-icon{font-size:22px}
-.ov-link-name{font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:#1a1a2e}
-.ov-link-desc{font-size:11px;color:#6b7280}
-.ov-note-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:#9ca3af;margin-bottom:8px}
-.ov-note-ta{width:100%;border:2px solid #e5e7eb;border-radius:10px;padding:10px;font-family:'Nunito',sans-serif;font-size:13px;resize:none;min-height:70px;outline:none;color:#1a1a2e}
-.ov-note-ta:focus{border-color:#2d5a27}
-.ov-note-btn{background:#2d5a27;color:#fff;border:none;border-radius:8px;padding:8px 18px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer;margin-top:8px}
-.note-entry{background:#f8fafc;border:1px solid #e5e7eb;border-radius:8px;padding:9px 12px;margin-bottom:6px;font-size:12px;color:#374151;display:flex;justify-content:space-between;gap:8px}
-.note-del{background:none;border:none;color:#d1d5db;cursor:pointer;font-size:12px}
-.note-del:hover{color:#ef4444}
+/* ── MODALS ── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:2000;align-items:center;justify-content:center;padding:16px}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:20px;width:480px;max-width:96vw;max-height:86vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.modal-hdr{padding:16px 18px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #f3f4f6}
+.modal-hdr-icon{font-size:28px}
+.modal-hdr-name{font-family:'Nunito',sans-serif;font-size:18px;font-weight:900;color:#1a1a2e;flex:1}
+.modal-close{background:#f3f4f6;border:none;border-radius:50%;width:30px;height:30px;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.modal-body{overflow-y:auto;padding:16px 18px 20px;flex:1}
+.room-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.room-btn{display:flex;align-items:center;gap:12px;background:#f8faf5;border:2px solid #d4ecc0;border-radius:12px;padding:12px 14px;cursor:pointer;transition:.15s;text-decoration:none}
+.room-btn:hover{border-color:#2d6a2d;background:#f0f9e8}
+.room-icon{font-size:22px;flex-shrink:0}
+.room-name{font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;color:#1a1a2e;flex:1}
+.room-desc{font-size:11px;color:#6b7280}
+.room-eject{background:none;border:1px solid #fca5a5;color:#dc2626;border-radius:6px;padding:3px 8px;font-size:10px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;flex-shrink:0}
+.modal-divider{height:1px;background:#f3f4f6;margin:12px 0}
+.modal-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#9ca3af;margin-bottom:8px}
+.note-ta{width:100%;border:1.5px solid #e5e7eb;border-radius:8px;padding:9px;font-family:'Inter',sans-serif;font-size:13px;resize:none;min-height:60px;outline:none;color:#1a1a2e}
+.note-ta:focus{border-color:#2d6a2d}
+.note-add{background:#2d6a2d;color:#fff;border:none;border-radius:7px;padding:7px 14px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer;margin-top:6px}
+.note-entry{background:#f8faf5;border:1px solid #e5e7eb;border-radius:7px;padding:8px 10px;margin-bottom:5px;display:flex;gap:8px;align-items:flex-start;font-size:12px;color:#374151}
+.note-del{background:none;border:none;color:#d1d5db;cursor:pointer;font-size:11px;flex-shrink:0}
 
-/* ── XP TOAST ── */
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#2d5a27;color:#fff;border-radius:100px;padding:10px 22px;font-size:14px;font-weight:800;font-family:'Nunito',sans-serif;z-index:9999;display:none;box-shadow:0 4px 16px rgba(0,0,0,.2)}
+/* ADD BUILDING PANEL */
+.add-panel{display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#fff;border-radius:16px;border:2px solid #d4ecc0;padding:12px 16px;box-shadow:0 8px 24px rgba(0,0,0,.15);z-index:1500;width:340px;max-width:94vw}
+.add-panel.open{display:block}
+.ap-title{font-family:'Nunito',sans-serif;font-size:14px;font-weight:900;color:#1d4a1d;margin-bottom:10px}
+.ap-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:10px}
+.ap-item{background:#f8faf5;border:1.5px solid #d4ecc0;border-radius:8px;padding:8px 6px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;transition:.15s;font-size:10px;font-weight:700;color:#1d4a1d;text-align:center}
+.ap-item:hover{border-color:#2d6a2d;background:#f0f9e8}
+.ap-item .icon{font-size:20px}
+.ap-close{background:#f3f4f6;border:none;border-radius:7px;padding:6px;width:100%;font-size:12px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;color:#374151}
 
-@media(max-width:1020px){
-  .map-wrap{padding:8px;overflow:auto;-webkit-overflow-scrolling:touch}
-  .town{width:980px;min-height:860px}
-}
-@media(max-width:600px){
-  .map-wrap{padding:4px}
-  .nav-logo span:not(:first-child){display:none}
-}
-/* Pinch zoom hint */
-.zoom-hint{display:none;text-align:center;padding:6px;font-size:11px;font-weight:700;color:#2d5a27;background:rgba(255,255,255,.8);position:relative;z-index:9;border-bottom:1px solid #b8dca0}
-@media(max-width:1020px){.zoom-hint{display:block}}
+/* CONFIRM MODAL */
+.confirm-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:3000;align-items:center;justify-content:center;padding:20px}
+.confirm-modal.open{display:flex}
+.confirm-box{background:#fff;border-radius:16px;padding:24px;max-width:320px;width:100%;text-align:center;box-shadow:0 16px 40px rgba(0,0,0,.2)}
+.confirm-title{font-family:'Nunito',sans-serif;font-size:16px;font-weight:900;color:#1a1a2e;margin-bottom:8px}
+.confirm-msg{font-size:13px;color:#6b7280;margin-bottom:18px;line-height:1.5}
+.confirm-btns{display:flex;gap:10px}
+.cbtn{flex:1;border:none;border-radius:9px;padding:11px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer}
+.cbtn.yes{background:#2d6a2d;color:#fff}
+.cbtn.no{background:#f3f4f6;color:#374151}
 </style>
 </head>
 <body>
@@ -116,377 +119,542 @@ body{font-family:'Nunito',sans-serif;background:#d4ecc0;min-height:100vh;overflo
 <!-- NAV -->
 <nav class="nav">
   <div class="nav-logo">🏙️ Sebastian's Town</div>
-  <div class="nav-right">
+  <div class="nav-tools">
+    <button class="nav-btn" onclick="toggleAddPanel()">+ Building</button>
+    <button class="nav-btn" onclick="addSign()">🪧 Sign</button>
     <a href="https://alphafiles.net/vitals/" class="nav-btn">⚡ ATC</a>
-    <a href="/calendar/" class="nav-btn">📅 Cal</a>
-    <a href="https://alphafiles.net/alpha/" class="nav-btn">📋 Alpha</a>
+    <button class="nav-btn red" onclick="resetTown()">↺</button>
   </div>
 </nav>
 
-<div class="zoom-hint">📍 Scroll to explore your town · Pinch to zoom</div>
-<div class="map-wrap">
-<div class="town">
-
-<!-- GROUND -->
-<div class="ground"></div>
+<!-- TOWN CANVAS -->
+<div class="canvas" id="canvas">
+<div class="world" id="world">
 
 <!-- ROADS -->
-<!-- Horizontal main road -->
-<div class="road road-h" style="left:0;right:0;top:390px"></div>
-<!-- Vertical main road -->
-<div class="road road-v road-v" style="top:0;bottom:0;left:450px;width:38px"></div>
-<!-- Second horizontal -->
-<div class="road road-h" style="left:0;right:0;top:220px"></div>
-<!-- Second vertical -->
-<div class="road road-v" style="top:0;bottom:0;left:250px;width:38px"></div>
-<!-- Third vertical right -->
-<div class="road road-v" style="top:0;bottom:0;left:680px;width:38px"></div>
+<div class="road h" style="left:0;right:0;top:580px"></div>
+<div class="road v" style="top:0;bottom:0;left:640px"></div>
+<div class="road h" style="left:0;right:0;top:340px"></div>
+<div class="road v" style="top:0;bottom:0;left:370px"></div>
+<div class="road v" style="top:0;bottom:0;left:950px"></div>
+<div class="road cross" style="left:370px;top:340px;width:36px;height:36px"></div>
+<div class="road cross" style="left:640px;top:340px;width:36px;height:36px"></div>
+<div class="road cross" style="left:950px;top:340px;width:36px;height:36px"></div>
+<div class="road cross" style="left:370px;top:580px;width:36px;height:36px"></div>
+<div class="road cross" style="left:640px;top:580px;width:36px;height:36px"></div>
+<div class="road cross" style="left:950px;top:580px;width:36px;height:36px"></div>
 
-<!-- INTERSECTIONS -->
-<div class="cross" style="left:250px;top:220px;width:38px;height:38px"></div>
-<div class="cross" style="left:450px;top:220px;width:38px;height:38px"></div>
-<div class="cross" style="left:680px;top:220px;width:38px;height:38px"></div>
-<div class="cross" style="left:250px;top:390px;width:38px;height:38px"></div>
-<div class="cross" style="left:450px;top:390px;width:38px;height:38px"></div>
-<div class="cross" style="left:680px;top:390px;width:38px;height:38px"></div>
-
-<!-- PARK (center) -->
-<div class="park" style="left:310px;top:254px;width:120px;height:116px">
-  <div class="fountain">⛲</div>
-  <div class="park-title">Town<br>Plaza</div>
+<!-- PARK -->
+<div class="park" style="left:440px;top:380px;width:170px;height:160px">
+  <div class="park-icon">⛲</div>
+  <div class="park-name">Town Plaza</div>
 </div>
 
-<!-- TREES scattered -->
-<div class="tree" style="left:22px;top:30px;animation-delay:0s">🌳</div>
-<div class="tree" style="left:80px;top:60px;animation-delay:.5s">🌲</div>
-<div class="tree" style="left:140px;top:20px;animation-delay:1s">🌳</div>
-<div class="tree" style="left:50px;top:170px;animation-delay:.3s">🌿</div>
-<div class="tree" style="left:160px;top:140px;animation-delay:.8s">🌳</div>
-<div class="tree" style="left:520px;top:30px;animation-delay:.2s">🌳</div>
-<div class="tree" style="left:610px;top:50px;animation-delay:.7s">🌲</div>
-<div class="tree" style="left:750px;top:20px;animation-delay:1.2s">🌳</div>
-<div class="tree" style="left:860px;top:60px;animation-delay:.4s">🌿</div>
-<div class="tree" style="left:920px;top:160px;animation-delay:.9s">🌳</div>
-<div class="tree" style="left:22px;top:460px;animation-delay:.6s">🌲</div>
-<div class="tree" style="left:100px;top:500px;animation-delay:1.1s">🌳</div>
-<div class="tree" style="left:180px;top:460px;animation-delay:.2s">🌿</div>
-<div class="tree" style="left:520px;top:470px;animation-delay:.8s">🌳</div>
-<div class="tree" style="left:600px;top:500px;animation-delay:.3s">🌲</div>
-<div class="tree" style="left:750px;top:460px;animation-delay:1.3s">🌳</div>
-<div class="tree" style="left:880px;top:480px;animation-delay:.5s">🌿</div>
-<div class="tree" style="left:30px;top:730px;animation-delay:.7s">🌳</div>
-<div class="tree" style="left:160px;top:760px;animation-delay:1s">🌲</div>
-<div class="tree" style="left:520px;top:740px;animation-delay:.4s">🌳</div>
-<div class="tree" style="left:650px;top:760px;animation-delay:.6s">🌿</div>
-<div class="tree" style="left:860px;top:720px;animation-delay:1.1s">🌳</div>
-<div class="tree" style="left:920px;top:760px;animation-delay:.2s">🌲</div>
-<div class="tree" style="left:360px;top:30px;animation-delay:.9s">🌳</div>
-<div class="tree" style="left:420px;top:60px;animation-delay:.1s">🌿</div>
-<div class="tree" style="left:310px;top:160px;animation-delay:.6s">🌲</div>
+<!-- DECORATIONS -->
+<div class="deco" style="left:60px;top:60px;animation-delay:0s">🌳</div>
+<div class="deco" style="left:140px;top:40px;animation-delay:.5s">🌲</div>
+<div class="deco" style="left:200px;top:80px;animation-delay:1s">🌳</div>
+<div class="deco" style="left:80px;top:260px;animation-delay:.3s">🌿</div>
+<div class="deco" style="left:250px;top:220px;animation-delay:.8s">🌳</div>
+<div class="deco" style="left:720px;top:40px;animation-delay:.2s">🌳</div>
+<div class="deco" style="left:840px;top:70px;animation-delay:.7s">🌲</div>
+<div class="deco" style="left:1050px;top:50px;animation-delay:1.2s">🌳</div>
+<div class="deco" style="left:1200px;top:80px;animation-delay:.4s">🌿</div>
+<div class="deco" style="left:1350px;top:60px;animation-delay:.9s">🌳</div>
+<div class="deco" style="left:60px;top:680px;animation-delay:.6s">🌲</div>
+<div class="deco" style="left:180px;top:720px;animation-delay:1.1s">🌳</div>
+<div class="deco" style="left:280px;top:680px;animation-delay:.2s">🌿</div>
+<div class="deco" style="left:720px;top:700px;animation-delay:.8s">🌳</div>
+<div class="deco" style="left:860px;top:720px;animation-delay:.3s">🌲</div>
+<div class="deco" style="left:1080px;top:680px;animation-delay:1.3s">🌳</div>
+<div class="deco" style="left:1300px;top:700px;animation-delay:.5s">🌿</div>
+<div class="deco" style="left:60px;top:1000px;animation-delay:.7s">🌳</div>
+<div class="deco" style="left:240px;top:1050px;animation-delay:1s">🌲</div>
+<div class="deco" style="left:750px;top:1020px;animation-delay:.4s">🌳</div>
+<div class="deco" style="left:1000px;top:1040px;animation-delay:.6s">🌿</div>
+<div class="deco" style="left:1380px;top:1000px;animation-delay:1.1s">🌳</div>
+<div class="deco" style="left:500px;top:50px;animation-delay:.9s">🌳</div>
+<div class="deco" style="left:560px;top:80px;animation-delay:.1s">🌿</div>
 
-<!-- PEOPLE -->
-<div class="person" style="left:300px;top:395px;animation-delay:1s">🚶</div>
-<div class="person" style="left:480px;top:225px;animation-delay:2s;animation-direction:alternate">🚶‍♀️</div>
+<div class="car" style="left:430px;top:588px;animation:carH 12s linear infinite">🚗</div>
+<div class="car" style="left:900px;top:592px;animation:carH 8s linear infinite reverse">🚙</div>
+<div class="car" style="left:648px;top:200px;animation:carV 10s linear infinite">🚕</div>
 
-<!-- ══════ NEIGHBORHOOD: ALPHA OFFICE (top-left) ══════ -->
-<div class="nh-label" style="left:20px;top:8px;color:#1B2A4A">🏢 The Office</div>
+</div><!-- end world -->
+</div><!-- end canvas -->
 
-<!-- BIG ATC OFFICE -->
-<a class="bld" href="https://alphafiles.net/vitals/"
-  style="left:22px;top:30px;width:210px;height:130px;background:#dbeafe;border-color:#3b82f6;color:#1e3a8a"
-  onclick="logVisit('The Office')">
-  <div class="bld-icon" style="font-size:34px">⚡</div>
-  <div class="bld-name" style="font-size:13px">Alpha Office</div>
-  <div class="bld-sub">CRM · Clients · Presentations</div>
-</a>
-
-<!-- SIDE PROJECTS (hidden detail) -->
-<div class="bld" 
-  style="left:22px;top:172px;width:100px;height:90px;background:#f3f4f6;border-color:#9ca3af;color:#374151;cursor:pointer"
-  onclick="openSideProjects()">
-  <div class="bld-icon">🔧</div>
-  <div class="bld-name">Side<br>Projects</div>
-</div>
-
-<!-- DAILY WORKFLOW -->
-<a class="bld" href="https://alphafiles.net/present/"
-  style="left:134px;top:172px;width:98px;height:90px;background:#ede9fe;border-color:#a78bfa;color:#4c1d95"
-  onclick="logVisit('Present')">
-  <div class="bld-icon">▶️</div>
-  <div class="bld-name">Present</div>
-  <div class="bld-sub">Live calls</div>
-</a>
-
-<!-- TOP CENTER: CLIENTS -->
-<a class="bld" href="https://alphafiles.net/clients/"
-  style="left:320px;top:28px;width:110px;height:100px;background:#cffafe;border-color:#22d3ee;color:#164e63"
-  onclick="logVisit('Clients')">
-  <div class="bld-icon">👥</div>
-  <div class="bld-name">Clients</div>
-  <div class="bld-sub">All active files</div>
-</a>
-
-<!-- ══════ NEIGHBORHOOD: FINANCE DISTRICT (top-right) ══════ -->
-<div class="nh-label" style="right:20px;top:10px;color:#854d0e">🏦 Finance District</div>
-
-<a class="bld" href="/insurance/"
-  style="left:736px;top:32px;width:110px;height:120px;background:#fef3c7;border-color:#fcd34d;color:#78350f"
-  onclick="openBuilding('estate')">
-  <div class="bld-icon">🏠</div>
-  <div class="bld-name">Estate<br>Planning</div>
-  <div class="bld-sub">Insurance</div>
-</a>
-
-<a class="bld" href="/joshuason/"
-  style="left:862px;top:32px;width:90px;height:100px;background:#d1fae5;border-color:#6ee7b7;color:#064e3b"
-  onclick="logVisit('Military Finance')">
-  <div class="bld-icon">🪖</div>
-  <div class="bld-name">Military<br>Finance</div>
-  <div class="bld-sub">Joshua</div>
-</a>
-
-<a class="bld" href="https://alphafiles.net/overview/"
-  style="left:736px;top:168px;width:90px;height:90px;background:#e0e7ff;border-color:#a5b4fc;color:#312e81"
-  onclick="logVisit('CRM Overview')">
-  <div class="bld-icon">🗺️</div>
-  <div class="bld-name">CRM Map</div>
-</a>
-
-<a class="bld" href="#"
-  style="left:842px;top:148px;width:110px;height:90px;background:#ffe4e6;border-color:#fda4af;color:#881337"
-  onclick="logVisit('Income Office')">
-  <div class="bld-icon">💰</div>
-  <div class="bld-name">Income<br>Office</div>
-  <div class="bld-sub">Commission</div>
-</a>
-
-<!-- ══════ NEIGHBORHOOD: FAMILY SQUARE (middle-right) ══════ -->
-<div class="nh-label" style="right:20px;top:380px;color:#14532d">👨‍👩‍👧‍👦 Family Square</div>
-
-<a class="bld" href="/joshuason/"
-  style="left:736px;top:430px;width:90px;height:100px;background:#dcfce7;border-color:#86efac;color:#14532d"
-  onclick="logVisit('Joshua')">
-  <div class="bld-icon">🪖</div>
-  <div class="bld-name">Joshua's<br>Barracks</div>
-</a>
-
-<a class="bld" href="/ever/"
-  style="left:842px;top:430px;width:90px;height:100px;background:#fce7f3;border-color:#f9a8d4;color:#9d174d"
-  onclick="logVisit('Ever')">
-  <div class="bld-icon">🌸</div>
-  <div class="bld-name">Ever's<br>Room</div>
-  <div class="bld-sub">Fiber plan</div>
-</a>
-
-<a class="bld" href="/carl/"
-  style="left:736px;top:546px;width:90px;height:90px;background:#fee2e2;border-color:#fca5a5;color:#991b1b"
-  onclick="logVisit('Carl')">
-  <div class="bld-icon">🏥</div>
-  <div class="bld-name">Carl's<br>Recovery</div>
-</a>
-
-<a class="bld" href="https://12easysteps.org/safe/"
-  style="left:842px;top:546px;width:90px;height:90px;background:#fef9c3;border-color:#fde047;color:#713f12"
-  onclick="logVisit('Colombia')">
-  <div class="bld-icon">🇨🇴</div>
-  <div class="bld-name">Colombia<br>House</div>
-</a>
-
-<!-- ══════ NEIGHBORHOOD: RECOVERY VILLAGE (middle-left) ══════ -->
-<div class="nh-label" style="left:20px;top:380px;color:#5b21b6">❤️‍🔥 Recovery Village</div>
-
-<a class="bld" href="https://12easysteps.org"
-  style="left:28px;top:430px;width:100px;height:100px;background:#ede9fe;border-color:#c4b5fd;color:#4c1d95"
-  onclick="logVisit('Step House')">
-  <div class="bld-icon">📖</div>
-  <div class="bld-name">Step House</div>
-  <div class="bld-sub">12easysteps.org</div>
-</a>
-
-<a class="bld" href="/vapeless/"
-  style="left:144px;top:430px;width:90px;height:90px;background:#f5f3ff;border-color:#c4b5fd;color:#5b21b6"
-  onclick="logVisit('Vapeless')">
-  <div class="bld-icon">🚭</div>
-  <div class="bld-name">Vapor-Free<br>Clinic</div>
-</a>
-
-<a class="bld" href="/palabras/"
-  style="left:28px;top:546px;width:90px;height:90px;background:#ecfeff;border-color:#67e8f9;color:#164e63"
-  onclick="logVisit('Palabras')">
-  <div class="bld-icon">💬</div>
-  <div class="bld-name">Word<br>Garden</div>
-</a>
-
-<!-- Industrial zone removed from top level — lives inside Side Projects -->
-
-<!-- ══════ HEALTH (bottom center) ══════ -->
-<a class="bld" href="/carl/"
-  style="left:500px;top:680px;width:100px;height:100px;background:#d1fae5;border-color:#6ee7b7;color:#064e3b"
-  onclick="logVisit('Health')">
-  <div class="bld-icon">🥗</div>
-  <div class="bld-name">Health &<br>Kitchen</div>
-  <div class="bld-sub">Meal plans</div>
-</a>
-
-<!-- ══════ LIBRARY (bottom right) ══════ -->
-<a class="bld" href="/bronco/"
-  style="left:670px;top:680px;width:90px;height:100px;background:#fde68a;border-color:#fbbf24;color:#78350f"
-  onclick="logVisit('Library')">
-  <div class="bld-icon">📚</div>
-  <div class="bld-name">The<br>Library</div>
-  <div class="bld-sub">Research</div>
-</a>
-
-<!-- LIVING ROOM / DAILY HUB (center-bottom) -->
-<a class="bld" href="/calendar/"
-  style="left:500px;top:430px;width:140px;height:120px;background:#e0f2fe;border-color:#7dd3fc;color:#0c4a6e;z-index:10"
-  onclick="logVisit('Daily Hub')">
-  <div class="bld-icon">🛋️</div>
-  <div class="bld-name">Daily Hub</div>
-  <div class="bld-sub">Calendar · Hit List<br>Quick Notes</div>
-</a>
-
-<!-- OVERVIEW (center) -->
-<a class="bld" href="https://alphafiles.net/overview/"
-  style="left:380px;top:460px;width:100px;height:90px;background:#f0fdf4;border-color:#86efac;color:#14532d"
-  onclick="logVisit('Overview')">
-  <div class="bld-icon">🗺️</div>
-  <div class="bld-name">ATC<br>Overview</div>
-</a>
-
-<!-- FIRE ESCAPE (family area) -->
-<a class="bld" href="/fireescape/"
-  style="left:700px;top:660px;width:90px;height:100px;background:#fee2e2;border-color:#f87171;color:#7f1d1d"
-  onclick="logVisit('Fire Escape')">
-  <div class="bld-icon">🔥</div>
-  <div class="bld-name">Fire<br>Escape<br>Plan</div>
-</a>
-
-<!-- HOME FOR SALE -->
-<a class="bld" href="/home/"
-  style="left:800px;top:660px;width:100px;height:110px;background:#dcfce7;border-color:#4ade80;color:#14532d"
-  onclick="logVisit('Home Listing')">
-  <div class="bld-icon">🏡</div>
-  <div class="bld-name">118 Silverlimb</div>
-  <div class="bld-sub">For Sale</div>
-</a>
-
-<!-- WATER TOWER decorative -->
-<div style="position:absolute;left:455px;top:555px;font-size:32px;filter:drop-shadow(0 3px 6px rgba(0,0,0,.2));z-index:3">🏗️</div>
-
-<!-- CARS -->
-<div style="position:absolute;left:300px;top:398px;font-size:16px;animation:drive 8s linear infinite">🚗</div>
-<div style="position:absolute;left:700px;top:396px;font-size:16px;animation:drive 12s linear infinite reverse">🚙</div>
-<div style="position:absolute;left:458px;top:280px;font-size:14px;animation:driveV 10s linear infinite">🚕</div>
-@keyframes drive{0%{transform:translateX(0)}100%{transform:translateX(200px)}}
-@keyframes driveV{0%{transform:translateY(0)}100%{transform:translateY(150px)}}
-
-</div><!-- end .town -->
-</div><!-- end .map-wrap -->
-
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
-
-<!-- OVERLAY -->
-<div class="overlay" id="overlay">
-  <div class="overlay-card">
-    <div class="ov-hdr" id="ov-hdr">
-      <span class="ov-hdr-icon" id="ov-icon">🏠</span>
-      <div>
-        <div class="ov-hdr-name" id="ov-name">Building</div>
-        <div style="font-size:12px;color:#9ca3af" id="ov-desc">Description</div>
-      </div>
-      <button class="ov-close" onclick="closeOverlay()">✕</button>
+<!-- BUILDING MODAL -->
+<div class="modal-bg" id="bld-modal">
+  <div class="modal">
+    <div class="modal-hdr" id="modal-hdr">
+      <span class="modal-hdr-icon" id="modal-icon">🏠</span>
+      <div class="modal-hdr-name" id="modal-name">Building</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
-    <div class="ov-body" id="ov-body"></div>
+    <div class="modal-body" id="modal-body"></div>
   </div>
 </div>
 
+<!-- CONFIRM MODAL -->
+<div class="confirm-modal" id="confirm-modal">
+  <div class="confirm-box">
+    <div class="confirm-title" id="confirm-title">Make this a room?</div>
+    <div class="confirm-msg" id="confirm-msg">...</div>
+    <div class="confirm-btns">
+      <button class="cbtn yes" id="confirm-yes">Yes, make it a room</button>
+      <button class="cbtn no" onclick="cancelConfirm()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD BUILDING PANEL -->
+<div class="add-panel" id="add-panel">
+  <div class="ap-title">Add a Building</div>
+  <div class="ap-grid" id="ap-grid"></div>
+  <button class="ap-close" onclick="toggleAddPanel()">✕ Close</button>
+</div>
+
 <style>
-@keyframes drive{0%{transform:translateX(-30px)}100%{transform:translateX(230px)}}
-@keyframes driveV{0%{transform:translateY(-20px)}100%{transform:translateY(160px)}}
+@keyframes carH{0%{transform:translateX(-60px)}100%{transform:translateX(500px)}}
+@keyframes carV{0%{transform:translateY(-40px)}100%{transform:translateY(400px)}}
 </style>
 
 <script>
-// ── SIDE PROJECTS OVERLAY ──
-function openSideProjects(){
-  var overlay=document.getElementById('overlay');
-  document.getElementById('ov-icon').textContent='🔧';
-  document.getElementById('ov-name').textContent='Side Projects';
-  document.getElementById('ov-desc').textContent='Click to open any project';
-  document.getElementById('ov-hdr').style.background='#f3f4f6';
-  var body=document.getElementById('ov-body');
-  body.innerHTML=
-    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">'
-    +'<a href="https://dpmoversrelocation.com" target="_blank" class="ov-link"><span class="ov-link-icon">🚛</span><div><div class="ov-link-name">DP Movers</div><div class="ov-link-desc">dpmoversrelocation.com</div></div></a>'
-    +'<a href="https://48statesmovingandstorage.com" target="_blank" class="ov-link"><span class="ov-link-icon">📦</span><div><div class="ov-link-name">48 States</div><div class="ov-link-desc">48statesmoving...</div></div></a>'
-    +'<a href="/nationalinstall/" class="ov-link"><span class="ov-link-icon">🏗️</span><div><div class="ov-link-name">National Install</div><div class="ov-link-desc">Roofing brokerage</div></div></a>'
-    +'<a href="/dp/" class="ov-link"><span class="ov-link-icon">📊</span><div><div class="ov-link-name">Reputation</div><div class="ov-link-desc">DP intelligence report</div></div></a>'
-    +'<a href="/panther/" class="ov-link"><span class="ov-link-icon">🐆</span><div><div class="ov-link-name">Management</div><div class="ov-link-desc">Panther acquisition</div></div></a>'
-    +'<a href="https://alphafiles.net/build/" class="ov-link"><span class="ov-link-icon">🚀</span><div><div class="ov-link-name">Build Console</div><div class="ov-link-desc">Push pages live</div></div></a>'
-    +'</div>'
-    +'<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#9ca3af;margin-bottom:8px">Notes</div>'
-    +'<textarea class="ov-note-ta" id="note-ta" placeholder="Add a project note..."></textarea>'
-    +'<button class="ov-note-btn" onclick="addNote('side-projects')">+ Add Note</button>'
-    +'<div id="notes-list"></div>';
-  overlay.classList.add('open');
+// ══════════════════════════════════
+// DATA
+// ══════════════════════════════════
+var SK = 'seb_town_v2';
+var SIGN_KEY = 'seb_town_signs';
+
+var DEFAULT_BUILDINGS = [
+  {id:'alpha-office',icon:'⚡',name:'Alpha Office',desc:'CRM · Clients · Presentations',url:'https://alphafiles.net/vitals/',bg:'#dbeafe',border:'#3b82f6',color:'#1e3a8a',roof:'#2563eb',x:40,y:80,rooms:[]},
+  {id:'present',icon:'▶️',name:'Present',desc:'Live calls',url:'https://alphafiles.net/present/',bg:'#ede9fe',border:'#a78bfa',color:'#4c1d95',roof:'#7c3aed',x:200,y:80,rooms:[]},
+  {id:'clients',icon:'👥',name:'Clients',desc:'All active files',url:'https://alphafiles.net/clients/',bg:'#cffafe',border:'#22d3ee',color:'#164e63',roof:'#0891b2',x:40,y:220,rooms:[]},
+  {id:'side-projects',icon:'🔧',name:'Side Projects',desc:'DP · 48 States · NI',url:'',bg:'#f3f4f6',border:'#9ca3af',color:'#374151',roof:'#6b7280',x:200,y:220,rooms:[
+    {id:'dp-movers',icon:'🚛',name:'DP Movers',desc:'dpmoversrelocation.com',url:'https://dpmoversrelocation.com'},
+    {id:'48-states',icon:'📦',name:'48 States',desc:'48statesmoving...',url:'https://48statesmovingandstorage.com'},
+    {id:'national-install',icon:'🏗️',name:'National Install',desc:'Roofing brokerage',url:'/nationalinstall/'},
+    {id:'reputation',icon:'📊',name:'Reputation',desc:'DP intelligence',url:'/dp/'},
+    {id:'management',icon:'🐆',name:'Management',desc:'Panther acquisition',url:'/panther/'}
+  ]},
+  {id:'estate-planning',icon:'🏠',name:'Estate Planning',desc:'Insurance · Life',url:'',bg:'#fef3c7',border:'#fcd34d',color:'#78350f',roof:'#d97706',x:1000,y:60,rooms:[
+    {id:'insurance',icon:'🛡️',name:'Insurance Table',desc:'7-company comparison',url:'/insurance/'},
+    {id:'joshuason',icon:'🪖',name:'Military Finance',desc:"Joshua's budget",url:'/joshuason/'}
+  ]},
+  {id:'home-sale',icon:'🏡',name:'118 Silverlimb',desc:'For Sale',url:'/home/',bg:'#dcfce7',border:'#4ade80',color:'#14532d',roof:'#16a34a',x:1180,y:60,rooms:[]},
+  {id:'fire-escape',icon:'🔥',name:'Fire Escape',desc:'Escape plan',url:'/fireescape/',bg:'#fee2e2',border:'#f87171',color:'#7f1d1d',roof:'#dc2626',x:1000,y:200,rooms:[]},
+  {id:'joshua',icon:'🪖',name:"Joshua's Barracks",desc:'Army · Finance',url:'/joshuason/',bg:'#dcfce7',border:'#86efac',color:'#14532d',roof:'#15803d',x:1000,y:680,rooms:[]},
+  {id:'ever',icon:'🌸',name:"Ever's Room",desc:'Fiber plan',url:'/ever/',bg:'#fce7f3',border:'#f9a8d4',color:'#9d174d',roof:'#db2777',x:1180,y:680,rooms:[]},
+  {id:'carl',icon:'🏥',name:"Carl's Recovery",desc:'Meal plan',url:'/carl/',bg:'#fee2e2',border:'#fca5a5',color:'#991b1b',roof:'#dc2626',x:1000,y:820,rooms:[]},
+  {id:'colombia',icon:'🇨🇴',name:'Colombia House',desc:'Cali · Safety',url:'https://12easysteps.org/safe/',bg:'#fef9c3',border:'#fde047',color:'#713f12',roof:'#ca8a04',x:1180,y:820,rooms:[]},
+  {id:'step-house',icon:'📖',name:'Step House',desc:'12easysteps.org',url:'https://12easysteps.org',bg:'#ede9fe',border:'#c4b5fd',color:'#4c1d95',roof:'#7c3aed',x:40,y:680,rooms:[]},
+  {id:'vapeless',icon:'🚭',name:'Vapor-Free Clinic',desc:'Nicotine recovery',url:'/vapeless/',bg:'#f5f3ff',border:'#c4b5fd',color:'#5b21b6',roof:'#6d28d9',x:220,y:680,rooms:[]},
+  {id:'palabras',icon:'💬',name:'Word Garden',desc:'333 positive words',url:'/palabras/',bg:'#ecfeff',border:'#67e8f9',color:'#164e63',roof:'#0891b2',x:40,y:820,rooms:[]},
+  {id:'daily-hub',icon:'🛋️',name:'Daily Hub',desc:'Calendar · Hit List',url:'/calendar/',bg:'#e0f2fe',border:'#7dd3fc',color:'#0c4a6e',roof:'#0284c7',x:700,y:680,rooms:[]},
+  {id:'library',icon:'📚',name:'The Library',desc:'Research · Docs',url:'/bronco/',bg:'#fde68a',border:'#fbbf24',color:'#78350f',roof:'#d97706',x:700,y:820,rooms:[]},
+  {id:'crm-overview',icon:'🗺️',name:'CRM Overview',desc:'System map',url:'https://alphafiles.net/overview/',bg:'#e0e7ff',border:'#a5b4fc',color:'#312e81',roof:'#4338ca',x:700,y:60,rooms:[]}
+];
+
+var DEFAULT_SIGNS = [
+  {id:'sign-1',name:'THE OFFICE',x:150,y:30},
+  {id:'sign-2',name:'WALL STREET',x:1060,y:30},
+  {id:'sign-3',name:'FAMILY SQUARE',x:1060,y:640},
+  {id:'sign-4',name:'RECOVERY VILLAGE',x:80,y:640},
+  {id:'sign-5',name:'TOWN PLAZA',x:480,y:360}
+];
+
+// ══════════════════════════════════
+// STATE
+// ══════════════════════════════════
+var buildings, signs;
+function load(){
+  try{buildings=JSON.parse(localStorage.getItem(SK));} catch(e){buildings=null;}
+  if(!buildings||!buildings.length) buildings=JSON.parse(JSON.stringify(DEFAULT_BUILDINGS));
+  try{signs=JSON.parse(localStorage.getItem(SIGN_KEY));} catch(e){signs=null;}
+  if(!signs||!signs.length) signs=JSON.parse(JSON.stringify(DEFAULT_SIGNS));
+}
+function save(){
+  localStorage.setItem(SK,JSON.stringify(buildings));
+  localStorage.setItem(SIGN_KEY,JSON.stringify(signs));
+}
+function resetTown(){
+  if(!confirm('Reset town to default? This cannot be undone.')) return;
+  localStorage.removeItem(SK);localStorage.removeItem(SIGN_KEY);location.reload();
 }
 
-var BUILDINGS={
-  estate:{icon:'🏠',name:'Estate Planning House',desc:'Life insurance comparison — 7 companies',hdrColor:'#fef3c7',
-    links:[
-      {icon:'🛡',name:'Insurance Table',desc:'7-company comparison',url:'/insurance/'},
-      {icon:'📋',name:'ATC Heirs Email',desc:'Estate liability',url:'https://alphafiles.net/alpha/'},
-      {icon:'💰',name:'Joshua Finance',desc:'Military budget',url:'/joshuason/'}
-    ]}
-};
+// ══════════════════════════════════
+// RENDER
+// ══════════════════════════════════
+var world;
+function render(){
+  world=document.getElementById('world');
+  // Remove old buildings and signs
+  world.querySelectorAll('.bld,.sign-wrap').forEach(function(el){el.remove();});
+  buildings.forEach(renderBuilding);
+  signs.forEach(renderSign);
+}
 
+function renderBuilding(b){
+  var el=document.createElement('div');
+  el.className='bld';
+  el.id='bld-'+b.id;
+  el.style.cssText='left:'+b.x+'px;top:'+b.y+'px;background:'+b.bg+';border-color:'+b.border+';color:'+b.color+';width:120px;min-height:110px';
+
+  var roomCount=b.rooms?b.rooms.length:0;
+  var roomsBadge=roomCount>0?'<div class="bld-rooms-badge">'+roomCount+' room'+(roomCount>1?'s':'')+'</div>':'';
+
+  el.innerHTML='<div class="bld-roof" style="background:'+b.roof+'"></div>'
+    +'<div class="bld-icon">'+b.icon+'</div>'
+    +'<div class="bld-name">'+b.name+'</div>'
+    +(b.desc?'<div class="bld-sub">'+b.desc+'</div>':'')
+    +roomsBadge;
+
+  // Events
+  el.addEventListener('pointerdown',function(e){onBldPointerDown(e,b.id);});
+  world.appendChild(el);
+}
+
+function renderSign(s){
+  var el=document.createElement('div');
+  el.className='sign-wrap';
+  el.id='sign-'+s.id;
+  el.style.cssText='left:'+s.x+'px;top:'+s.y+'px';
+  el.innerHTML='<div class="sign-board" id="sb-'+s.id+'">'+s.name+'</div><div class="sign-post"></div>';
+  el.querySelector('.sign-board').addEventListener('dblclick',function(e){e.stopPropagation();editSign(s.id);});
+  el.addEventListener('pointerdown',function(e){onSignPointerDown(e,s.id);});
+  world.appendChild(el);
+}
+
+// ══════════════════════════════════
+// CANVAS PAN
+// ══════════════════════════════════
+var panX=0,panY=0,panStart=null,isPanning=false;
+var canvas=document.getElementById('canvas');
+canvas.addEventListener('pointerdown',function(e){
+  if(e.target===canvas||e.target===world||e.target.classList.contains('road')||e.target.classList.contains('deco')||e.target.classList.contains('car')||e.target.classList.contains('world')){
+    isPanning=true;
+    panStart={x:e.clientX-panX,y:e.clientY-panY};
+    canvas.classList.add('grabbing');
+  }
+});
+document.addEventListener('pointermove',function(e){
+  if(isPanning&&panStart){
+    panX=e.clientX-panStart.x;
+    panY=e.clientY-panStart.y;
+    document.getElementById('world').style.transform='translate('+panX+'px,'+panY+'px)';
+  }
+  if(dragState) moveDrag(e);
+  if(signDrag) moveSignDrag(e);
+});
+document.addEventListener('pointerup',function(e){
+  if(isPanning){isPanning=false;canvas.classList.remove('grabbing');panStart=null;}
+  if(dragState) endDrag(e);
+  if(signDrag) endSignDrag(e);
+});
+
+// ══════════════════════════════════
+// BUILDING DRAG
+// ══════════════════════════════════
+var dragState=null;
+var dropTimer=null;
+var pendingDrop=null;
+
+function onBldPointerDown(e,id){
+  e.stopPropagation();
+  e.preventDefault();
+  var el=document.getElementById('bld-'+id);
+  var rect=el.getBoundingClientRect();
+  dragState={
+    id:id,
+    el:el,
+    startX:e.clientX,
+    startY:e.clientY,
+    moved:false,
+    offX:e.clientX-rect.left,
+    offY:e.clientY-rect.top
+  };
+}
+
+function getBldData(id){
+  return buildings.find(function(b){return b.id===id;});
+}
+function worldCoord(clientX,clientY){
+  var wr=document.getElementById('world').getBoundingClientRect();
+  return{x:clientX-wr.left,y:clientY-wr.top};
+}
+
+function moveDrag(e){
+  var ds=dragState;
+  if(Math.abs(e.clientX-ds.startX)<4&&Math.abs(e.clientY-ds.startY)<4&&!ds.moved) return;
+  if(!ds.moved){ds.moved=true;ds.el.classList.add('dragging');}
+  var wc=worldCoord(e.clientX-ds.offX,e.clientY-ds.offY);
+  ds.el.style.left=wc.x+'px';
+  ds.el.style.top=wc.y+'px';
+  // Check hover over another building
+  checkDropTarget(e,ds.id);
+}
+
+function checkDropTarget(e,dragId){
+  var hit=null;
+  buildings.forEach(function(b){
+    if(b.id===dragId) return;
+    var el=document.getElementById('bld-'+b.id);
+    if(!el) return;
+    var r=el.getBoundingClientRect();
+    if(e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom){
+      hit=b.id;
+    }
+    el.classList.remove('drop-target');
+  });
+  if(hit){
+    document.getElementById('bld-'+hit).classList.add('drop-target');
+    if(!dropTimer||pendingDrop!==hit){
+      pendingDrop=hit;
+      clearTimeout(dropTimer);
+      dropTimer=setTimeout(function(){},500);
+    }
+  } else {
+    pendingDrop=null;clearTimeout(dropTimer);dropTimer=null;
+  }
+}
+
+function endDrag(e){
+  var ds=dragState;
+  dragState=null;
+  buildings.forEach(function(b){
+    var el=document.getElementById('bld-'+b.id);
+    if(el) el.classList.remove('drop-target');
+  });
+
+  if(!ds.moved){
+    // It was a tap/click
+    openBuilding(ds.id);
+    return;
+  }
+
+  // Check if dropped on another building
+  var targetId=null;
+  buildings.forEach(function(b){
+    if(b.id===ds.id) return;
+    var el=document.getElementById('bld-'+b.id);
+    if(!el) return;
+    var r=el.getBoundingClientRect();
+    if(e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom){
+      targetId=b.id;
+    }
+  });
+
+  if(targetId){
+    var dragged=getBldData(ds.id);
+    var target=getBldData(targetId);
+    showConfirm(
+      'Add as a room?',
+      '"'+dragged.name+'" will become a room inside "'+target.name+'".',
+      function(){
+        // Add dragged as room in target
+        if(!target.rooms) target.rooms=[];
+        target.rooms.push({id:dragged.id,icon:dragged.icon,name:dragged.name,desc:dragged.desc,url:dragged.url,bg:dragged.bg,border:dragged.border,color:dragged.color,roof:dragged.roof});
+        // Remove dragged from top level
+        buildings=buildings.filter(function(b){return b.id!==dragged.id;});
+        save();render();
+      }
+    );
+    // Snap back while waiting
+    var b=getBldData(ds.id);
+    ds.el.style.left=b.x+'px';
+    ds.el.style.top=b.y+'px';
+  } else {
+    // Save new position
+    var wc=worldCoord(e.clientX-ds.offX,e.clientY-ds.offY);
+    var b=getBldData(ds.id);
+    if(b){b.x=Math.round(wc.x);b.y=Math.round(wc.y);}
+    save();
+  }
+  ds.el.classList.remove('dragging');
+}
+
+// ══════════════════════════════════
+// SIGN DRAG
+// ══════════════════════════════════
+var signDrag=null;
+function onSignPointerDown(e,id){
+  e.stopPropagation();e.preventDefault();
+  var el=document.getElementById('sign-'+id);
+  var r=el.getBoundingClientRect();
+  signDrag={id:id,el:el,offX:e.clientX-r.left,offY:e.clientY-r.top,moved:false,sx:e.clientX,sy:e.clientY};
+}
+function moveSignDrag(e){
+  if(Math.abs(e.clientX-signDrag.sx)<4&&Math.abs(e.clientY-signDrag.sy)<4&&!signDrag.moved) return;
+  signDrag.moved=true;
+  signDrag.el.classList.add('dragging');
+  var wc=worldCoord(e.clientX-signDrag.offX,e.clientY-signDrag.offY);
+  signDrag.el.style.left=wc.x+'px';
+  signDrag.el.style.top=wc.y+'px';
+}
+function endSignDrag(e){
+  var sd=signDrag;signDrag=null;
+  if(!sd.moved) return;
+  var s=signs.find(function(s){return s.id===sd.id;});
+  var wc=worldCoord(e.clientX-sd.offX,e.clientY-sd.offY);
+  if(s){s.x=Math.round(wc.x);s.y=Math.round(wc.y);}
+  sd.el.classList.remove('dragging');
+  save();
+}
+function editSign(id){
+  var s=signs.find(function(s){return s.id===id;});
+  if(!s) return;
+  var name=prompt('Street name:',s.name);
+  if(name===null) return;
+  s.name=name.toUpperCase();
+  save();render();
+}
+function addSign(){
+  var wc=worldCoord(panX?200:200,panY?200:200);
+  var name=prompt('New street name:','MY STREET');
+  if(!name) return;
+  signs.push({id:'sign-'+Date.now(),name:name.toUpperCase(),x:400,y:300});
+  save();render();
+}
+
+// ══════════════════════════════════
+// OPEN BUILDING
+// ══════════════════════════════════
+var modalBldId=null;
 function openBuilding(id){
-  var b=BUILDINGS[id];if(!b)return;
-  document.getElementById('ov-icon').textContent=b.icon;
-  document.getElementById('ov-name').textContent=b.name;
-  document.getElementById('ov-desc').textContent=b.desc;
-  document.getElementById('ov-hdr').style.background=b.hdrColor||'#f8fafc';
-  var body=document.getElementById('ov-body');
-  var linksHtml=b.links?'<div class="ov-links">'+b.links.map(function(l){
-    return '<a href="'+(l.url||'#')+'" class="ov-link"><span class="ov-link-icon">'+l.icon+'</span><div><div class="ov-link-name">'+l.name+'</div><div class="ov-link-desc">'+l.desc+'</div></div></a>';
-  }).join('')+'</div>':'';
-  var notesKey='town_notes_'+id;
-  var notes=[];try{notes=JSON.parse(localStorage.getItem(notesKey)||'[]');}catch(e){}
-  body.innerHTML=linksHtml
-    +'<div class="ov-note-label">Notes</div>'
-    +'<textarea class="ov-note-ta" id="note-ta" placeholder="Add a note..."></textarea>'
-    +'<button class="ov-note-btn" onclick="addNote(\''+id+'\')">+ Add Note</button>'
-    +'<div id="notes-list">'
-    +(notes.length?notes.map(function(n,i){
-      return '<div class="note-entry"><span>'+n.text+'</span><button class="note-del" onclick="delNote(\''+id+'\','+i+')">✕</button></div>';
-    }).join(''):'<div style="font-size:12px;color:#9ca3af;padding:8px 0">No notes yet.</div>')
-    +'</div>';
-  document.getElementById('overlay').classList.add('open');
+  var b=getBldData(id);
+  if(!b) return;
+  var rooms=b.rooms&&b.rooms.length?b.rooms:[];
+  // Single room — go directly
+  if(rooms.length===1&&rooms[0].url){window.open(rooms[0].url,'_self');return;}
+  // No rooms + has URL — go directly
+  if(rooms.length===0&&b.url){window.open(b.url,'_self');return;}
+  // Multiple rooms or special — show modal
+  modalBldId=id;
+  document.getElementById('modal-icon').textContent=b.icon;
+  document.getElementById('modal-name').textContent=b.name;
+  document.getElementById('modal-hdr').style.background=b.bg||'#f8fafc';
+  buildModalBody(b);
+  document.getElementById('bld-modal').classList.add('open');
 }
 
-window.addNote=function(id){
-  var val=document.getElementById('note-ta').value.trim();if(!val)return;
-  var k='town_notes_'+id;
-  var notes=[];try{notes=JSON.parse(localStorage.getItem(k)||'[]');}catch(e){}
-  notes.unshift({text:val,ts:new Date().toLocaleDateString()});
-  localStorage.setItem(k,JSON.stringify(notes));
-  openBuilding(id);
-};
-window.delNote=function(id,i){
-  var k='town_notes_'+id;
-  var notes=[];try{notes=JSON.parse(localStorage.getItem(k)||'[]');}catch(e){}
-  notes.splice(i,1);localStorage.setItem(k,JSON.stringify(notes));
-  openBuilding(id);
-};
-
-function closeOverlay(){document.getElementById('overlay').classList.remove('open');}
-
-function logVisit(name){
-  var t=document.getElementById('toast');
-  t.textContent='📍 '+name;t.style.display='block';
-  clearTimeout(window._t);window._t=setTimeout(function(){t.style.display='none';},1800);
+function buildModalBody(b){
+  var rooms=b.rooms&&b.rooms.length?b.rooms:[];
+  var notes=loadNotes(b.id);
+  var roomsHtml='';
+  if(b.url&&rooms.length===0){
+    roomsHtml='<a href="'+b.url+'" class="room-btn"><span class="room-icon">'+b.icon+'</span><div><div class="room-name">Open '+b.name+'</div></div></a>';
+  } else if(rooms.length){
+    roomsHtml='<div class="room-list">'+rooms.map(function(r){
+      return '<div class="room-btn" style="justify-content:space-between">'
+        +'<a href="'+(r.url||'#')+'" style="display:flex;align-items:center;gap:12px;flex:1;text-decoration:none">'
+        +'<span class="room-icon">'+r.icon+'</span>'
+        +'<div><div class="room-name">'+r.name+'</div><div class="room-desc">'+(r.desc||'')+'</div></div>'
+        +'</a>'
+        +'<button class="room-eject" onclick="ejectRoom(\''+b.id+'\',\''+r.id+'\')">↩ Eject</button>'
+        +'</div>';
+    }).join('')+'</div>';
+  }
+  var notesHtml='<div class="modal-divider"></div>'
+    +'<div class="modal-label">Notes</div>'
+    +'<textarea class="note-ta" id="modal-note-ta" placeholder="Add a note..."></textarea>'
+    +'<button class="note-add" onclick="addBldNote(\''+b.id+'\')">+ Add</button>'
+    +(notes.length?'<div style="margin-top:10px">'+notes.map(function(n,i){
+      return '<div class="note-entry"><span style="flex:1">'+n+'</span><button class="note-del" onclick="delBldNote(\''+b.id+'\','+i+')">✕</button></div>';
+    }).join('')+'</div>':'');
+  document.getElementById('modal-body').innerHTML=roomsHtml+notesHtml;
 }
+
+function ejectRoom(parentId,roomId){
+  var parent=getBldData(parentId);
+  var room=parent.rooms.find(function(r){return r.id===roomId;});
+  if(!room) return;
+  // Add back to top level
+  var newBld=JSON.parse(JSON.stringify(room));
+  newBld.x=parent.x+160;newBld.y=parent.y;newBld.rooms=[];
+  if(!newBld.bg) newBld.bg='#f3f4f6';
+  if(!newBld.border) newBld.border='#9ca3af';
+  if(!newBld.color) newBld.color='#374151';
+  if(!newBld.roof) newBld.roof='#6b7280';
+  buildings.push(newBld);
+  parent.rooms=parent.rooms.filter(function(r){return r.id!==roomId;});
+  save();render();
+  closeModal();
+}
+
+function closeModal(){document.getElementById('bld-modal').classList.remove('open');}
+
+// ══════════════════════════════════
+// NOTES
+// ══════════════════════════════════
+function loadNotes(id){try{return JSON.parse(localStorage.getItem('tn_'+id)||'[]');}catch(e){return[];}}
+function saveNotes(id,n){localStorage.setItem('tn_'+id,JSON.stringify(n));}
+window.addBldNote=function(id){
+  var ta=document.getElementById('modal-note-ta');
+  var val=ta.value.trim();if(!val) return;
+  var n=loadNotes(id);n.unshift(val);saveNotes(id,n);
+  ta.value='';
+  var b=getBldData(id);if(b) buildModalBody(b);
+};
+window.delBldNote=function(id,i){
+  var n=loadNotes(id);n.splice(i,1);saveNotes(id,n);
+  var b=getBldData(id);if(b) buildModalBody(b);
+};
+
+// ══════════════════════════════════
+// CONFIRM
+// ══════════════════════════════════
+var confirmCb=null;
+function showConfirm(title,msg,cb){
+  document.getElementById('confirm-title').textContent=title;
+  document.getElementById('confirm-msg').textContent=msg;
+  confirmCb=cb;
+  document.getElementById('confirm-yes').onclick=function(){confirmCb&&confirmCb();cancelConfirm();};
+  document.getElementById('confirm-modal').classList.add('open');
+}
+function cancelConfirm(){document.getElementById('confirm-modal').classList.remove('open');confirmCb=null;}
+
+// ══════════════════════════════════
+// ADD BUILDING PANEL
+// ══════════════════════════════════
+var PRESETS=[
+  {icon:'🏠',name:'New House',desc:'',url:'',bg:'#dcfce7',border:'#4ade80',color:'#14532d',roof:'#16a34a'},
+  {icon:'🏢',name:'Office',desc:'',url:'',bg:'#dbeafe',border:'#3b82f6',color:'#1e3a8a',roof:'#2563eb'},
+  {icon:'⭐',name:'Favorite',desc:'',url:'',bg:'#fef9c3',border:'#fde047',color:'#713f12',roof:'#ca8a04'},
+  {icon:'📋',name:'Project',desc:'',url:'',bg:'#f3f4f6',border:'#9ca3af',color:'#374151',roof:'#6b7280'},
+  {icon:'❤️',name:'Personal',desc:'',url:'',bg:'#fce7f3',border:'#f9a8d4',color:'#9d174d',roof:'#db2777'},
+  {icon:'📚',name:'Resource',desc:'',url:'',bg:'#fde68a',border:'#fbbf24',color:'#78350f',roof:'#d97706'},
+];
+function toggleAddPanel(){
+  var panel=document.getElementById('add-panel');
+  panel.classList.toggle('open');
+  if(panel.classList.contains('open')){
+    document.getElementById('ap-grid').innerHTML=PRESETS.map(function(p,i){
+      return '<div class="ap-item" onclick="addBuilding('+i+')" ><div class="icon">'+p.icon+'</div><div>'+p.name+'</div></div>';
+    }).join('');
+  }
+}
+function addBuilding(presetIdx){
+  var p=PRESETS[presetIdx];
+  var name=prompt('Building name:',p.name);
+  if(!name) return;
+  var url=prompt('Link URL (or leave blank):','');
+  var newBld=JSON.parse(JSON.stringify(p));
+  newBld.id='bld-'+Date.now();
+  newBld.name=name;
+  newBld.url=url||'';
+  newBld.rooms=[];
+  newBld.x=460;newBld.y=520;
+  buildings.push(newBld);
+  save();render();
+  toggleAddPanel();
+}
+
+// ══════════════════════════════════
+// INIT
+// ══════════════════════════════════
+load();
+world=document.getElementById('world');
+render();
 </script>
 </body>
 </html>
