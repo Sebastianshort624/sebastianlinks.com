@@ -7,33 +7,38 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#f5f5f7;
+  --bg:#f9fafb;
   --card:#fff;
   --border:#e5e7eb;
   --text:#1a1a2e;
   --muted:#6b7280;
   --navy:#1B2A4A;
   --gold:#C8960C;
+  --gold-light:#fff8e0;
+  --gold-border:#f4c542;
   --green:#34c759;
+  --green-light:#f0fdf4;
   --blue:#007aff;
+  --blue-light:#eff6ff;
   --purple:#7c3aed;
+  --purple-light:#f5f3ff;
   --pink:#db2777;
   --red:#ff3b30;
   --orange:#ff9500;
-  --radius:14px;
-  --shadow:0 2px 12px rgba(0,0,0,.07);
+  --radius:16px;
+  --shadow:0 2px 16px rgba(0,0,0,.06);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Inter,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 a{text-decoration:none;color:inherit}
 
 /* ── TOP BAR ── */
-.topbar{background:#fff;border-bottom:1px solid var(--border);padding:0 20px;height:56px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:200;box-shadow:0 1px 8px rgba(0,0,0,.05)}
+.topbar{background:#fff;border-bottom:2px solid var(--gold-border);padding:0 20px;height:56px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:200;box-shadow:0 2px 12px rgba(200,150,12,.1)}
 .topbar-logo{font-family:Nunito,sans-serif;font-size:17px;font-weight:900;color:var(--navy);display:flex;align-items:center;gap:6px}
 .topbar-logo span{font-size:22px}
 .topbar-mid{flex:1;display:flex;justify-content:center;gap:6px}
 .nav-btn{background:none;border:none;border-radius:10px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif;color:var(--muted);transition:.15s}
-.nav-btn.active{background:var(--navy);color:#fff}
+.nav-btn.active{background:var(--gold);color:#fff;box-shadow:0 2px 8px rgba(200,150,12,.3)}
 .nav-btn:hover:not(.active){background:#f0f0f5}
 .topbar-right{display:flex;align-items:center;gap:8px}
 .avatar{width:32px;height:32px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-size:17px;cursor:pointer;border:2px solid transparent;transition:.15s}
@@ -61,15 +66,15 @@ a{text-decoration:none;color:inherit}
 .score-info{flex:1}
 .score-title{font-family:Nunito,sans-serif;font-size:18px;font-weight:900;margin-bottom:4px}
 .score-desc{font-size:12px;color:rgba(255,255,255,.7);line-height:1.6}
-.next-council{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #86efac;border-radius:var(--radius);padding:16px;display:flex;align-items:center;gap:14px;margin-bottom:14px;cursor:pointer;transition:.15s}
+.next-council{background:linear-gradient(135deg,#fff8e0,#fef3c7);border:2px solid var(--gold-border);border-radius:var(--radius);padding:16px;display:flex;align-items:center;gap:14px;margin-bottom:14px;cursor:pointer;transition:.15s}
 .next-council:hover{border-color:var(--green)}
-.nc-date{background:var(--green);color:#fff;border-radius:10px;padding:8px 12px;text-align:center;flex-shrink:0;font-family:Nunito,sans-serif}
+.nc-date{background:var(--gold);color:#fff;border-radius:10px;padding:8px 12px;text-align:center;flex-shrink:0;font-family:Nunito,sans-serif}
 .nc-day{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
 .nc-num{font-size:22px;font-weight:900}
 .nc-info{flex:1}
-.nc-title{font-size:15px;font-weight:800;color:#14532d}
-.nc-sub{font-size:12px;color:#166534}
-.nc-arrow{font-size:20px;color:var(--green)}
+.nc-title{font-size:15px;font-weight:800;color:#92400e}
+.nc-sub{font-size:12px;color:#a16207}
+.nc-arrow{font-size:20px;color:var(--gold)}
 .ev-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
 @media(max-width:600px){.ev-grid{grid-template-columns:1fr}}
 .ev-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;border-left:4px solid}
@@ -92,7 +97,7 @@ a{text-decoration:none;color:inherit}
 .ai-loading{color:#9ca3af;font-style:italic;font-size:13px}
 
 /* ── WEEKLY COUNCIL ── */
-.council-header{background:linear-gradient(135deg,var(--navy),#2d4a8a);border-radius:var(--radius);padding:20px;color:#fff;margin-bottom:16px}
+.council-header{background:linear-gradient(135deg,#fff8e0,#fef3c7);border:2px solid var(--gold-border);border-radius:var(--radius);padding:20px;margin-bottom:16px}
 .council-title{font-family:Nunito,sans-serif;font-size:22px;font-weight:900;margin-bottom:4px}
 .council-sub{font-size:13px;color:rgba(255,255,255,.7)}
 .step-nav{display:flex;gap:4px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px;-webkit-overflow-scrolling:touch}
@@ -109,8 +114,8 @@ a{text-decoration:none;color:inherit}
 .big-ta:focus{border-color:var(--blue)}
 .step-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
 .btn{border:none;border-radius:10px;padding:10px 20px;font-size:13px;font-weight:800;cursor:pointer;font-family:Nunito,sans-serif;transition:.15s}
-.btn-primary{background:var(--navy);color:#fff}
-.btn-primary:hover{background:#243a6e}
+.btn-primary{background:var(--gold);color:#fff;box-shadow:0 2px 8px rgba(200,150,12,.3)}
+.btn-primary:hover{background:#a67a08}
 .btn-secondary{background:#f3f4f6;color:var(--text)}
 .btn-secondary:hover{background:#e5e7eb}
 .btn-green{background:var(--green);color:#fff}
@@ -182,7 +187,7 @@ a{text-decoration:none;color:inherit}
 .add-row{display:flex;gap:6px;margin-top:8px}
 
 /* ── EV BANNER ── */
-.ev-banner{background:linear-gradient(135deg,var(--navy),#1d3a6e);border-radius:var(--radius);padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:14px}
+.ev-banner{background:linear-gradient(135deg,#fff8e0,#fef3c7);border:2px solid var(--gold-border);border-radius:var(--radius);padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:14px}
 .ev-banner-icon{font-size:28px}
 .ev-banner-text{flex:1}
 .ev-banner-title{font-family:Nunito,sans-serif;font-size:14px;font-weight:900;color:#fff;margin-bottom:2px}
@@ -229,8 +234,8 @@ a{text-decoration:none;color:inherit}
   <div class="ev-banner" style="margin-top:16px">
     <div class="ev-banner-icon">⚡</div>
     <div class="ev-banner-text">
-      <div class="ev-banner-title">Energy Vector — Active</div>
-      <div class="ev-banner-q" id="ev-current-q">Does this move my life forward?</div>
+      <div class="ev-banner-title" style="color:#92400e">Energy Vector — Active</div>
+      <div class="ev-banner-q" id="ev-current-q" style="color:#a16207">Does this move my life forward?</div>
     </div>
     <div class="ev-pulse"></div>
   </div>
@@ -246,16 +251,16 @@ a{text-decoration:none;color:inherit}
         <circle cx="45" cy="45" r="38" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="8"/>
         <circle id="score-arc" cx="45" cy="45" r="38" fill="none" stroke="#34c759" stroke-width="8" stroke-linecap="round" stroke-dasharray="239" stroke-dashoffset="60"/>
       </svg>
-      <div class="ring-label"><div class="ring-num" id="life-score">75</div><div class="ring-txt">Life Score</div></div>
+      <div class="ring-label"><div class="ring-num" id="life-score" style="color:#92400e">75</div><div class="ring-txt" style="color:#a16207">Life Score</div></div>
     </div>
     <div class="score-info">
-      <div class="score-title">SnV Life Score</div>
-      <div class="score-desc" id="score-desc">Strong momentum across 6 categories. Marriage and Recovery showing excellent progress. Financial category needs attention this week.</div>
+      <div class="score-title" style="color:#92400e">SnV Life Score</div>
+      <div class="score-desc" id="score-desc" style="color:#a16207">Strong momentum across 6 categories. Marriage and Recovery showing excellent progress. Financial category needs attention this week.</div>
     </div>
   </div>
 
   <!-- Next Council -->
-  <div class="next-council" onclick="switchView('council',document.querySelector('.nav-btn:nth-child(2)'))">
+  <div class="next-council" onclick="goToCouncil()">
     <div class="nc-date">
       <div class="nc-day">SUN</div>
       <div class="nc-num" id="nc-day-num">--</div>
@@ -317,8 +322,8 @@ a{text-decoration:none;color:inherit}
 ═════════════════════════════════════ -->
 <div class="view" id="view-council">
   <div class="council-header" style="margin-top:16px">
-    <div class="council-title">🏛️ SnV Weekly Council</div>
-    <div class="council-sub" id="council-date-hdr">The place where we intentionally design our life.</div>
+    <div class="council-title" style="color:#92400e">🏛️ SnV Weekly Council</div>
+    <div class="council-sub" id="council-date-hdr" style="color:#a16207">The place where we intentionally design our life.</div>
     <div class="timer-bar" style="margin-top:12px"><div class="timer-fill" id="timer-fill" style="width:0%"></div></div>
     <div style="display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.5);margin-top:4px">
       <span id="timer-label">Meeting timer</span><span id="timer-val">0:00</span>
@@ -340,8 +345,8 @@ a{text-decoration:none;color:inherit}
   <div class="ev-banner" style="margin-top:16px">
     <div class="ev-banner-icon">⚡</div>
     <div class="ev-banner-text">
-      <div class="ev-banner-title">Energy Vectors</div>
-      <div class="ev-banner-q">Every category is a vector. Every action is energy toward your vision.</div>
+      <div class="ev-banner-title" style="color:#92400e">Energy Vectors</div>
+      <div class="ev-banner-q" style="color:#a16207">Every category is a vector. Every action is energy toward your vision.</div>
     </div>
   </div>
 
@@ -952,6 +957,13 @@ window.addCategory=function(){
   var color=prompt('Color (hex):','#6b7280');
   var newCat={id:'cat'+Date.now(),icon:icon||'⭐',name:name,color:color||'#6b7280',purpose:'',vision:'',goal:'',progress:0,metrics:[],habits:[],commitments:[],journal:[],history:[]};
   state.cats.push(newCat);saveState();renderCategories();snack('Category added!');
+};
+
+// ── GOTO COUNCIL (fixes next-council button) ──
+window.goToCouncil=function(){
+  var btn=document.querySelector('.nav-btn:nth-child(2)');
+  if(!btn){btn=Array.from(document.querySelectorAll('.nav-btn')).find(function(b){return b.textContent.includes('Council');});}
+  switchView('council',btn);
 };
 
 // ── INIT ──
