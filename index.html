@@ -121,7 +121,7 @@ body{font-family:'Inter',sans-serif;background:#d4ecc0;overflow:hidden;height:10
   <div class="nav-logo">🏙️ Sebastian's Town</div>
   <div class="nav-tools">
     <button class="nav-btn" onclick="toggleAddPanel()">+ Building</button>
-    <button class="nav-btn" onclick="addSign()">🪧 Sign</button>
+    <button class="nav-btn" onclick="addSign()">🪧 Sign</button><button class="nav-btn" onclick="zoom(0.15)" title="Zoom In">🔍+</button><button class="nav-btn" onclick="zoom(-0.15)" title="Zoom Out">🔍−</button><button class="nav-btn" onclick="zoomReset()" title="Fit">⊡</button>
     <a href="https://alphafiles.net/vitals/" class="nav-btn">⚡ ATC</a>
     <button class="nav-btn red" onclick="resetTown()">↺</button>
   </div>
@@ -179,6 +179,30 @@ body{font-family:'Inter',sans-serif;background:#d4ecc0;overflow:hidden;height:10
 <div class="car" style="left:430px;top:588px;animation:carH 12s linear infinite">🚗</div>
 <div class="car" style="left:900px;top:592px;animation:carH 8s linear infinite reverse">🚙</div>
 <div class="car" style="left:648px;top:200px;animation:carV 10s linear infinite">🚕</div>
+
+
+<!-- ══ PARK CLICKABLE ══ -->
+<div class="park" id="park-btn" style="left:440px;top:380px;width:170px;height:160px;pointer-events:all;cursor:pointer" onclick="openRec()">
+  <div class="park-icon">⛲</div>
+  <div class="park-name">Recreation Plaza</div>
+  <div style="font-size:9px;font-weight:800;color:#2d5a27;margin-top:3px;opacity:.7">Click to explore</div>
+</div>
+
+<!-- ══ DOWNTOWN GREENVILLE ══ -->
+<div class="nh-zone" style="left:1400px;top:40px;width:360px;min-height:520px;background:rgba(254,243,199,.4);border:2px dashed #fbbf24;border-radius:18px;padding:8px">
+  <div class="sign-wrap" style="position:relative;left:60px;top:0;margin-bottom:10px">
+    <div class="sign-board" style="font-size:11px">DOWNTOWN GREENVILLE</div>
+    <div class="sign-post"></div>
+  </div>
+  <div id="downtown-buildings"></div>
+</div>
+
+<!-- ══ BULLETIN BOARDS ══ -->
+<div class="bulletin" id="bb-office" onclick="openBulletin('office')" style="left:340px;top:50px">📌</div>
+<div class="bulletin" id="bb-finance" onclick="openBulletin('finance')" style="left:1330px;top:50px">📌</div>
+<div class="bulletin" id="bb-family" onclick="openBulletin('family')" style="left:1330px;top:640px">📌</div>
+<div class="bulletin" id="bb-recovery" onclick="openBulletin('recovery')" style="left:340px;top:640px">📌</div>
+<div class="bulletin" id="bb-downtown" onclick="openBulletin('downtown')" style="left:1760px;top:40px">📌</div>
 
 </div><!-- end world -->
 </div><!-- end canvas -->
@@ -648,6 +672,307 @@ function addBuilding(presetIdx){
   save();render();
   toggleAddPanel();
 }
+
+
+// ══════════════════════════════════
+// ZOOM
+// ══════════════════════════════════
+var scale = 1;
+var pinchDist0 = null;
+var pinchScale0 = 1;
+
+function applyTransform(){
+  document.getElementById('world').style.transform =
+    'translate('+panX+'px,'+panY+'px) scale('+scale+')';
+  showZoomIndicator();
+}
+function zoom(delta){
+  scale = Math.min(2.5, Math.max(0.2, scale + delta));
+  applyTransform();
+}
+function zoomReset(){ scale=1; panX=0; panY=0; applyTransform(); }
+function showZoomIndicator(){
+  var el=document.getElementById('zoom-ind');
+  if(!el){el=document.createElement('div');el.id='zoom-ind';el.className='zoom-indicator';document.body.appendChild(el);}
+  el.textContent=Math.round(scale*100)+'%';
+  el.classList.add('show');
+  clearTimeout(window._zi);
+  window._zi=setTimeout(function(){el.classList.remove('show');},1200);
+}
+
+// Override applyTransform in pan code
+var _origPanX=panX,_origPanY=panY;
+document.addEventListener('pointermove',function(e){
+  if(isPanning&&panStart){
+    panX=e.clientX-panStart.x;
+    panY=e.clientY-panStart.y;
+    applyTransform();
+  }
+});
+
+// Scroll wheel zoom
+document.getElementById('canvas').addEventListener('wheel',function(e){
+  e.preventDefault();
+  zoom(e.deltaY<0?0.1:-0.1);
+},{passive:false});
+
+// Pinch to zoom
+document.getElementById('canvas').addEventListener('touchstart',function(e){
+  if(e.touches.length===2){
+    var dx=e.touches[0].clientX-e.touches[1].clientX;
+    var dy=e.touches[0].clientY-e.touches[1].clientY;
+    pinchDist0=Math.sqrt(dx*dx+dy*dy);
+    pinchScale0=scale;
+  }
+},{passive:true});
+document.getElementById('canvas').addEventListener('touchmove',function(e){
+  if(e.touches.length===2&&pinchDist0){
+    var dx=e.touches[0].clientX-e.touches[1].clientX;
+    var dy=e.touches[0].clientY-e.touches[1].clientY;
+    var dist=Math.sqrt(dx*dx+dy*dy);
+    scale=Math.min(2.5,Math.max(0.2,pinchScale0*(dist/pinchDist0)));
+    applyTransform();
+  }
+},{passive:true});
+document.getElementById('canvas').addEventListener('touchend',function(){pinchDist0=null;},{passive:true});
+
+// ══════════════════════════════════
+// DOWNTOWN BUILDINGS
+// ══════════════════════════════════
+var DOWNTOWN_BLDS = [
+  {id:'restaurants',icon:'🍽',name:'Restaurant Row',desc:'Hot spots in Greenville',bg:'#fef3c7',border:'#fbbf24',color:'#78350f',roof:'#d97706',rooms:[]},
+  {id:'venues',icon:'🎭',name:'Venues & Events',desc:'Arena · Peace Center · Fluor Field',bg:'#ede9fe',border:'#a78bfa',color:'#4c1d95',roof:'#7c3aed',rooms:[]},
+  {id:'this-month',icon:'📅',name:'This Month',desc:'Upcoming events',bg:'#dbeafe',border:'#3b82f6',color:'#1e3a8a',roof:'#2563eb',rooms:[]}
+];
+
+function renderDowntown(){
+  var wrap=document.getElementById('downtown-buildings');
+  if(!wrap) return;
+  wrap.innerHTML='';
+  DOWNTOWN_BLDS.forEach(function(b,i){
+    var el=document.createElement('div');
+    el.className='bld';
+    el.style.cssText='position:relative;left:'+((i%2)*160)+'px;top:'+(Math.floor(i/2)*180+20)+'px;width:120px;background:'+b.bg+';border-color:'+b.border+';color:'+b.color+';display:inline-flex;vertical-align:top;margin:8px';
+    el.innerHTML='<div class="bld-roof" style="background:'+b.roof+'"></div>'
+      +'<div class="bld-icon">'+b.icon+'</div>'
+      +'<div class="bld-name">'+b.name+'</div>'
+      +'<div class="bld-sub">'+b.desc+'</div>';
+    el.addEventListener('pointerdown',function(e){e.stopPropagation();openDowntown(b.id);});
+    wrap.appendChild(el);
+  });
+}
+
+// ══════════════════════════════════
+// BULLETIN BOARDS
+// ══════════════════════════════════
+var BOARDS = {
+  office:  {name:'The Office Board',color:'#1e3a8a',bg:'#dbeafe'},
+  finance: {name:'Wall Street Board',color:'#78350f',bg:'#fef3c7'},
+  family:  {name:'Family Square Board',color:'#14532d',bg:'#dcfce7'},
+  recovery:{name:'Recovery Village Board',color:'#4c1d95',bg:'#ede9fe'},
+  downtown:{name:'Downtown Board',color:'#1a1a2e',bg:'#f8fafc'}
+};
+
+function loadTasks(board){
+  try{return JSON.parse(localStorage.getItem('tasks_'+board)||'[]');}catch(e){return[];}
+}
+function saveTasks(board,tasks){localStorage.setItem('tasks_'+board,JSON.stringify(tasks));}
+
+function openBulletin(board){
+  var b=BOARDS[board];
+  document.getElementById('modal-icon').textContent='📌';
+  document.getElementById('modal-name').textContent=b.name;
+  document.getElementById('modal-hdr').style.background=b.bg;
+  document.getElementById('modal-hdr').querySelector('.modal-hdr-name').style.color=b.color;
+  buildBulletinBody(board);
+  document.getElementById('bld-modal').classList.add('open');
+}
+
+function buildBulletinBody(board){
+  var tasks=loadTasks(board);
+  var today=new Date().toISOString().split('T')[0];
+  tasks.sort(function(a,b){return (a.due||'9999')>(b.due||'9999')?1:-1;});
+  var dueTag=function(due){
+    if(!due) return '';
+    if(due<=today) return '<span class="task-due today">TODAY</span>';
+    var d=new Date(due),n=new Date();
+    if((d-n)<3*86400000) return '<span class="task-due soon">SOON</span>';
+    return '<span class="task-due ok">'+due+'</span>';
+  };
+  var html='<div id="task-list">'
+    +(tasks.length?tasks.map(function(t,i){
+      return '<div class="task-item'+(t.done?' done':'')+'" onclick="toggleTask(''+board+'','+i+')">'
+        +'<div class="task-cb">'+(t.done?'✓':'')+'</div>'
+        +'<div class="task-text">'+t.text+'</div>'
+        +dueTag(t.due)
+        +'<button onclick="event.stopPropagation();delTask(''+board+'','+i+')" style="background:none;border:none;color:#d1d5db;cursor:pointer;font-size:12px">✕</button>'
+        +'</div>';
+    }).join(''):'<div style="font-size:13px;color:#9ca3af;padding:10px 0;text-align:center">No tasks yet. Add one below.</div>')
+    +'</div>'
+    +'<div class="task-add-row">'
+    +'<input class="task-input" id="task-text-'+board+'" placeholder="New task..." onkeydown="if(event.key==='Enter')addTask(''+board+'')">'
+    +'<input type="date" class="task-date" id="task-date-'+board+'">'
+    +'<button class="task-add-btn" onclick="addTask(''+board+'')">+</button>'
+    +'</div>';
+  document.getElementById('modal-body').innerHTML=html;
+  // Pre-fill today's date
+  var dateEl=document.getElementById('task-date-'+board);
+  if(dateEl) dateEl.value=today;
+}
+
+window.addTask=function(board){
+  var t=document.getElementById('task-text-'+board);
+  var d=document.getElementById('task-date-'+board);
+  if(!t||!t.value.trim()) return;
+  var tasks=loadTasks(board);
+  tasks.push({text:t.value.trim(),due:d?d.value:'',done:false});
+  saveTasks(board,tasks);t.value='';
+  buildBulletinBody(board);
+};
+window.toggleTask=function(board,i){
+  var tasks=loadTasks(board);tasks[i].done=!tasks[i].done;
+  saveTasks(board,tasks);buildBulletinBody(board);
+};
+window.delTask=function(board,i){
+  var tasks=loadTasks(board);tasks.splice(i,1);
+  saveTasks(board,tasks);buildBulletinBody(board);
+};
+
+// ══════════════════════════════════
+// RECREATION PLAZA (Central Park)
+// ══════════════════════════════════
+function openRec(){
+  document.getElementById('modal-icon').textContent='⛲';
+  document.getElementById('modal-name').textContent='Recreation & Travel';
+  document.getElementById('modal-hdr').style.background='#d1fae5';
+  var trips=[
+    {icon:'🇨🇴',name:'Cali, Colombia',desc:'Family · June 2026',url:'https://12easysteps.org/safe/'},
+    {icon:'🏙',name:'Charlotte Day Trip',desc:'62426 itinerary',url:'/62426/'},
+    {icon:'🌍',name:'Plan New Trip',desc:'Add a destination',url:'#'}
+  ];
+  var html='<div class="modal-label">Trips & Vacations</div>'
+    +'<div style="margin-bottom:12px">'+trips.map(function(t){
+      return '<a href="'+t.url+'" class="rec-item">'
+        +'<span style="font-size:22px">'+t.icon+'</span>'
+        +'<div><div style="font-size:13px;font-weight:700;color:#1a1a2e">'+t.name+'</div>'
+        +'<div style="font-size:11px;color:#6b7280">'+t.desc+'</div></div>'
+        +'</a>';
+    }).join('')+'</div>'
+    +'<div class="modal-divider"></div>'
+    +'<div class="modal-label">Add a Trip</div>'
+    +'<input class="task-input" id="rec-dest" placeholder="Destination...">'
+    +'<button class="task-add-btn" style="margin-top:8px;width:100%" onclick="addTrip()">+ Add Trip</button>'
+    +'<div id="rec-trips-saved" style="margin-top:10px">'
+    +loadTrips().map(function(t,i){
+      return '<div class="rv-item"><span class="rv-icon">✈️</span><span class="rv-name">'+t+'</span>'
+        +'<button class="rv-btn" onclick="delTrip('+i+')">✕</button></div>';
+    }).join('')+'</div>';
+  document.getElementById('modal-body').innerHTML=html;
+  document.getElementById('bld-modal').classList.add('open');
+}
+function loadTrips(){try{return JSON.parse(localStorage.getItem('rec_trips')||'[]');}catch(e){return[];}}
+window.addTrip=function(){
+  var el=document.getElementById('rec-dest');if(!el||!el.value.trim()) return;
+  var t=loadTrips();t.push(el.value.trim());
+  localStorage.setItem('rec_trips',JSON.stringify(t));openRec();
+};
+window.delTrip=function(i){var t=loadTrips();t.splice(i,1);localStorage.setItem('rec_trips',JSON.stringify(t));openRec();};
+
+// ══════════════════════════════════
+// DOWNTOWN MODALS
+// ══════════════════════════════════
+var RESTAURANTS=[
+  {n:"Soby's New South Cuisine",tag:'hot',map:'https://maps.google.com/?q=Sobys+Greenville+SC'},
+  {n:'Jianna Italian Restaurant',tag:'hot',map:'https://maps.google.com/?q=Jianna+Greenville+SC'},
+  {n:"Halls Chophouse",tag:'hot',map:'https://maps.google.com/?q=Halls+Chophouse+Greenville+SC'},
+  {n:'Nose Dive Gastropub',tag:'want',map:'https://maps.google.com/?q=Nose+Dive+Greenville+SC'},
+  {n:'The Anchorage',tag:'want',map:'https://maps.google.com/?q=Anchorage+Greenville+SC'},
+  {n:'American Grocery Restaurant',tag:'want',map:'https://maps.google.com/?q=American+Grocery+Greenville+SC'},
+  {n:'Smoke on the Water',tag:'want',map:'https://maps.google.com/?q=Smoke+on+the+Water+Greenville+SC'},
+  {n:'Sidewall Pizza',tag:'want',map:'https://maps.google.com/?q=Sidewall+Pizza+Greenville+SC'},
+  {n:'Tupelo Honey',tag:'want',map:'https://maps.google.com/?q=Tupelo+Honey+Greenville+SC'},
+  {n:'The Trappe Door',tag:'want',map:'https://maps.google.com/?q=Trappe+Door+Greenville+SC'},
+  {n:"Rick Erwin's",tag:'want',map:'https://maps.google.com/?q=Rick+Erwins+Greenville+SC'},
+  {n:'Sassafras Southern Bistro',tag:'want',map:'https://maps.google.com/?q=Sassafras+Greenville+SC'},
+];
+var VENUES=[
+  {n:'Bon Secours Wellness Arena',icon:'🏟',map:'https://maps.google.com/?q=Bon+Secours+Wellness+Arena+Greenville+SC'},
+  {n:'Peace Center',icon:'🎭',map:'https://maps.google.com/?q=Peace+Center+Greenville+SC'},
+  {n:'Fluor Field (Greenville Drive)',icon:'⚾',map:'https://maps.google.com/?q=Fluor+Field+Greenville+SC'},
+  {n:'Prisma Health Amphitheater',icon:'🎵',map:'https://maps.google.com/?q=Prisma+Health+Amphitheater+Greenville+SC'},
+  {n:"TD Saturday Market",icon:'🛒',map:'https://maps.google.com/?q=TD+Saturday+Market+Greenville+SC'},
+  {n:'Falls Park on the Reedy',icon:'🌊',map:'https://maps.google.com/?q=Falls+Park+Reedy+River+Greenville+SC'},
+];
+
+function openDowntown(id){
+  var bld=DOWNTOWN_BLDS.find(function(b){return b.id===id;});
+  document.getElementById('modal-hdr').style.background=bld.bg;
+  document.getElementById('modal-icon').textContent=bld.icon;
+  document.getElementById('modal-name').textContent=bld.name;
+  var html='';
+  if(id==='restaurants'){
+    var visited=getVisited();
+    html='<div class="modal-label">🍽 Greenville Hot Spots</div>'
+      +RESTAURANTS.map(function(r){
+        var been=visited[r.n];
+        return '<div class="rv-item">'
+          +'<span class="rv-icon">🍴</span>'
+          +'<span class="rv-name">'+r.n+'</span>'
+          +'<a href="'+r.map+'" target="_blank" class="rv-btn" onclick="event.stopPropagation()">📍 Map</a>'
+          +'<span class="rv-tag '+(been?'been':'want')+'" style="cursor:pointer" onclick="toggleVisited(''+r.n+'')">'+(been?'✅ Been':'Want to go')+'</span>'
+          +'</div>';
+      }).join('');
+  } else if(id==='venues'){
+    html='<div class="modal-label">🎭 Major Venues in Greenville</div>'
+      +VENUES.map(function(v){
+        return '<div class="rv-item">'
+          +'<span class="rv-icon">'+v.icon+'</span>'
+          +'<span class="rv-name">'+v.n+'</span>'
+          +'<a href="'+v.map+'" target="_blank" class="rv-btn">📍 Map</a>'
+          +'</div>';
+      }).join('');
+  } else if(id==='this-month'){
+    var now=new Date();
+    var mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][now.getMonth()];
+    var yr=now.getFullYear();
+    var events=loadEvents();
+    html='<div class="modal-label">📅 '+mo+' '+yr+' — Upcoming Events</div>'
+      +(events.length?events.map(function(ev,i){
+        var parts=ev.date?ev.date.split('-'):[];
+        var day=parts[2]||'?';
+        var moAb=parts[1]?['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][parseInt(parts[1])]:'?';
+        return '<div class="ev-item">'
+          +'<div class="ev-date"><div class="ev-date-mo">'+moAb+'</div><div class="ev-date-day">'+day+'</div></div>'
+          +'<div class="ev-info"><div class="ev-name">'+ev.name+'</div><div class="ev-venue">'+ev.venue+'</div></div>'
+          +'<button class="ev-del" onclick="delEvent('+i+')">✕</button>'
+          +'</div>';
+      }).join(''):'<div style="font-size:13px;color:#9ca3af;text-align:center;padding:14px">No events added yet.</div>')
+      +'<div class="ev-add-form">'
+      +'<div class="modal-label" style="margin-bottom:4px">Add Event</div>'
+      +'<input class="ev-input" id="ev-name" placeholder="Event name...">'
+      +'<input class="ev-input" id="ev-venue" placeholder="Venue...">'
+      +'<input type="date" class="ev-input" id="ev-date">'
+      +'<button class="task-add-btn" onclick="addEvent()" style="align-self:flex-start;margin-top:2px">+ Add</button>'
+      +'</div>';
+  }
+  document.getElementById('modal-body').innerHTML=html;
+  document.getElementById('bld-modal').classList.add('open');
+}
+function getVisited(){try{return JSON.parse(localStorage.getItem('visited_restaurants')||'{}');}catch(e){return{};}}
+window.toggleVisited=function(name){var v=getVisited();v[name]=!v[name];localStorage.setItem('visited_restaurants',JSON.stringify(v));openDowntown('restaurants');};
+function loadEvents(){try{return JSON.parse(localStorage.getItem('gvl_events')||'[]');}catch(e){return[];}}
+window.addEvent=function(){
+  var n=document.getElementById('ev-name'),v=document.getElementById('ev-venue'),d=document.getElementById('ev-date');
+  if(!n||!n.value.trim()) return;
+  var evs=loadEvents();evs.push({name:n.value.trim(),venue:v?v.value.trim():'',date:d?d.value:''});
+  evs.sort(function(a,b){return(a.date||'')>(b.date||'')?1:-1;});
+  localStorage.setItem('gvl_events',JSON.stringify(evs));openDowntown('this-month');
+};
+window.delEvent=function(i){var evs=loadEvents();evs.splice(i,1);localStorage.setItem('gvl_events',JSON.stringify(evs));openDowntown('this-month');};
+
+// Downtown render on init
+setTimeout(renderDowntown, 100);
+
 
 // ══════════════════════════════════
 // INIT
