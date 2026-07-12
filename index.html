@@ -188,47 +188,42 @@ body{font-family:'Nunito',sans-serif;background:#d4ecc0;min-height:100vh;overflo
 <div class="person" style="left:300px;top:395px;animation-delay:1s">🚶</div>
 <div class="person" style="left:480px;top:225px;animation-delay:2s;animation-direction:alternate">🚶‍♀️</div>
 
-<!-- ══════ NEIGHBORHOOD: BUSINESS PARK (top-left) ══════ -->
-<div class="nh-label" style="left:30px;top:10px;color:#1B2A4A">🏢 Business Park</div>
+<!-- ══════ NEIGHBORHOOD: ALPHA OFFICE (top-left) ══════ -->
+<div class="nh-label" style="left:20px;top:8px;color:#1B2A4A">🏢 The Office</div>
 
+<!-- BIG ATC OFFICE -->
 <a class="bld" href="https://alphafiles.net/vitals/"
-  style="left:28px;top:32px;width:100px;height:120px;background:#dbeafe;border-color:#93c5fd;color:#1e3a8a"
-  onclick="logVisit('ATC HQ')">
-  <div class="bld-icon">⚡</div>
-  <div class="bld-name">ATC<br>Headquarters</div>
-  <div class="bld-sub">Vitals · CRM</div>
+  style="left:22px;top:30px;width:210px;height:130px;background:#dbeafe;border-color:#3b82f6;color:#1e3a8a"
+  onclick="logVisit('The Office')">
+  <div class="bld-icon" style="font-size:34px">⚡</div>
+  <div class="bld-name" style="font-size:13px">Alpha Office</div>
+  <div class="bld-sub">CRM · Clients · Presentations</div>
 </a>
 
+<!-- SIDE PROJECTS (hidden detail) -->
+<div class="bld" 
+  style="left:22px;top:172px;width:100px;height:90px;background:#f3f4f6;border-color:#9ca3af;color:#374151;cursor:pointer"
+  onclick="openSideProjects()">
+  <div class="bld-icon">🔧</div>
+  <div class="bld-name">Side<br>Projects</div>
+</div>
+
+<!-- DAILY WORKFLOW -->
 <a class="bld" href="https://alphafiles.net/present/"
-  style="left:144px;top:32px;width:90px;height:100px;background:#ede9fe;border-color:#a78bfa;color:#4c1d95"
-  onclick="logVisit('Presentation Hall')">
+  style="left:134px;top:172px;width:98px;height:90px;background:#ede9fe;border-color:#a78bfa;color:#4c1d95"
+  onclick="logVisit('Present')">
   <div class="bld-icon">▶️</div>
-  <div class="bld-name">Presentation<br>Hall</div>
+  <div class="bld-name">Present</div>
   <div class="bld-sub">Live calls</div>
 </a>
 
+<!-- TOP CENTER: CLIENTS -->
 <a class="bld" href="https://alphafiles.net/clients/"
-  style="left:28px;top:166px;width:90px;height:90px;background:#cffafe;border-color:#67e8f9;color:#164e63"
-  onclick="logVisit('Client Village')">
+  style="left:320px;top:28px;width:110px;height:100px;background:#cffafe;border-color:#22d3ee;color:#164e63"
+  onclick="logVisit('Clients')">
   <div class="bld-icon">👥</div>
-  <div class="bld-name">Client<br>Village</div>
-</a>
-
-<a class="bld" href="https://alphafiles.net/build/"
-  style="left:134px;top:148px;width:90px;height:90px;background:#fce7f3;border-color:#f9a8d4;color:#9d174d"
-  onclick="logVisit('Launch Pad')">
-  <div class="bld-icon">🚀</div>
-  <div class="bld-name">Launch<br>Pad</div>
-  <div class="bld-sub">Build console</div>
-</a>
-
-<!-- ══════ TOP CENTER: ALPHA HUB ══════ -->
-<a class="bld" href="https://alphafiles.net/alpha/"
-  style="left:320px;top:28px;width:110px;height:100px;background:#fef9c3;border-color:#fde047;color:#713f12"
-  onclick="logVisit('Alpha Hub')">
-  <div class="bld-icon">📋</div>
-  <div class="bld-name">Alpha Hub</div>
-  <div class="bld-sub">All pages · Emails</div>
+  <div class="bld-name">Clients</div>
+  <div class="bld-sub">All active files</div>
 </a>
 
 <!-- ══════ NEIGHBORHOOD: FINANCE DISTRICT (top-right) ══════ -->
@@ -322,32 +317,7 @@ body{font-family:'Nunito',sans-serif;background:#d4ecc0;min-height:100vh;overflo
   <div class="bld-name">Word<br>Garden</div>
 </a>
 
-<!-- ══════ NEIGHBORHOOD: INDUSTRIAL ZONE (bottom) ══════ -->
-<div class="nh-label" style="left:280px;top:650px;color:#7c2d12">🚛 Industrial Zone</div>
-
-<a class="bld" href="https://dpmoversrelocation.com"
-  style="left:30px;top:680px;width:100px;height:110px;background:#fed7aa;border-color:#fb923c;color:#7c2d12"
-  onclick="logVisit('DP Movers')">
-  <div class="bld-icon">🚛</div>
-  <div class="bld-name">DP Movers<br>HQ</div>
-  <div class="bld-sub">dpmovers...</div>
-</a>
-
-<a class="bld" href="https://48statesmovingandstorage.com"
-  style="left:146px;top:680px;width:100px;height:110px;background:#ffedd5;border-color:#fb923c;color:#7c2d12"
-  onclick="logVisit('48 States')">
-  <div class="bld-icon">📦</div>
-  <div class="bld-name">48 States<br>Depot</div>
-  <div class="bld-sub">48states...</div>
-</a>
-
-<a class="bld" href="/nationalinstall/"
-  style="left:270px;top:668px;width:100px;height:100px;background:#fef3c7;border-color:#fbbf24;color:#78350f"
-  onclick="logVisit('National Install')">
-  <div class="bld-icon">🏗️</div>
-  <div class="bld-name">National<br>Install Co</div>
-  <div class="bld-sub">Roofing</div>
-</a>
+<!-- Industrial zone removed from top level — lives inside Side Projects -->
 
 <!-- ══════ HEALTH (bottom center) ══════ -->
 <a class="bld" href="/carl/"
@@ -429,6 +399,30 @@ body{font-family:'Nunito',sans-serif;background:#d4ecc0;min-height:100vh;overflo
 </style>
 
 <script>
+// ── SIDE PROJECTS OVERLAY ──
+function openSideProjects(){
+  var overlay=document.getElementById('overlay');
+  document.getElementById('ov-icon').textContent='🔧';
+  document.getElementById('ov-name').textContent='Side Projects';
+  document.getElementById('ov-desc').textContent='Click to open any project';
+  document.getElementById('ov-hdr').style.background='#f3f4f6';
+  var body=document.getElementById('ov-body');
+  body.innerHTML=
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">'
+    +'<a href="https://dpmoversrelocation.com" target="_blank" class="ov-link"><span class="ov-link-icon">🚛</span><div><div class="ov-link-name">DP Movers</div><div class="ov-link-desc">dpmoversrelocation.com</div></div></a>'
+    +'<a href="https://48statesmovingandstorage.com" target="_blank" class="ov-link"><span class="ov-link-icon">📦</span><div><div class="ov-link-name">48 States</div><div class="ov-link-desc">48statesmoving...</div></div></a>'
+    +'<a href="/nationalinstall/" class="ov-link"><span class="ov-link-icon">🏗️</span><div><div class="ov-link-name">National Install</div><div class="ov-link-desc">Roofing brokerage</div></div></a>'
+    +'<a href="/dp/" class="ov-link"><span class="ov-link-icon">📊</span><div><div class="ov-link-name">Reputation</div><div class="ov-link-desc">DP intelligence report</div></div></a>'
+    +'<a href="/panther/" class="ov-link"><span class="ov-link-icon">🐆</span><div><div class="ov-link-name">Management</div><div class="ov-link-desc">Panther acquisition</div></div></a>'
+    +'<a href="https://alphafiles.net/build/" class="ov-link"><span class="ov-link-icon">🚀</span><div><div class="ov-link-name">Build Console</div><div class="ov-link-desc">Push pages live</div></div></a>'
+    +'</div>'
+    +'<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#9ca3af;margin-bottom:8px">Notes</div>'
+    +'<textarea class="ov-note-ta" id="note-ta" placeholder="Add a project note..."></textarea>'
+    +'<button class="ov-note-btn" onclick="addNote('side-projects')">+ Add Note</button>'
+    +'<div id="notes-list"></div>';
+  overlay.classList.add('open');
+}
+
 var BUILDINGS={
   estate:{icon:'🏠',name:'Estate Planning House',desc:'Life insurance comparison — 7 companies',hdrColor:'#fef3c7',
     links:[
