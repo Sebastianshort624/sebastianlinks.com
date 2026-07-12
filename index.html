@@ -2,890 +2,599 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#1B2A4A">
-<link rel="apple-touch-icon" href="/icon-192.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(() => {});
-  });
-}
-</script>
-<title>⚡ Life OS — Sebastian S.</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Sebastian's House — Life OS</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+*{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#F8FAFC;
-  --white:#FFFFFF;
-  --border:#E2E8F0;
-  --border2:#CBD5E1;
-  --text:#1E293B;
-  --text2:#475569;
-  --muted:#94A3B8;
-
-  --blue:#0284C7;
-  --blue2:#0369A1;
-  --blue-light:#E0F2FE;
-  --blue-mid:#BAE6FD;
-
-  --green:#059669;
-  --green2:#047857;
-  --green-light:#D1FAE5;
-  --green-mid:#A7F3D0;
-
-  --yellow:#CA8A04;
-  --yellow2:#A16207;
-  --yellow-light:#FEF9C3;
-  --yellow-mid:#FDE68A;
-
-  --grey:#64748B;
-  --grey-light:#F1F5F9;
-  --grey-mid:#E2E8F0;
-
-  --red:#DC2626;
-  --red-light:#FEE2E2;
-
-  --shadow:0 1px 4px rgba(0,0,0,.07);
-  --shadow2:0 2px 10px rgba(0,0,0,.09);
+  --navy:#1B2A4A;--gold:#C8960C;
+  --room-office:#1B2A4A;
+  --room-family:#2d6a4f;
+  --room-recovery:#7b2d8b;
+  --room-garage:#b5451b;
+  --room-finance:#1a5276;
+  --room-health:#1a7a4a;
+  --room-library:#4a3728;
+  --room-foyer:#2c3e50;
 }
-body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+body{font-family:Inter,sans-serif;background:#0d1117;color:#fff;min-height:100vh;overflow-x:hidden}
 
-/* TOP BAR */
-.topbar{background:var(--white);border-bottom:2px solid var(--blue-mid);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;box-shadow:var(--shadow2);}
-.topbar-left{display:flex;align-items:center;gap:12px;}
-.topbar-logo{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;color:var(--blue);letter-spacing:1px;}
-.topbar-sub{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:1px;}
-.topbar-date{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--text2);letter-spacing:1px;}
+/* NAV */
+.nav{background:rgba(13,17,23,.95);backdrop-filter:blur(10px);padding:0 20px;height:52px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.08);position:sticky;top:0;z-index:1000}
+.nav-home{display:flex;align-items:center;gap:8px;cursor:pointer;text-decoration:none}
+.nav-house{font-size:20px}
+.nav-title{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;color:#fff;letter-spacing:.3px}
+.nav-breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,.4)}
+.nav-breadcrumb span{color:rgba(255,255,255,.2)}
+.nav-breadcrumb .current{color:var(--gold);font-weight:700}
+.nav-actions{display:flex;gap:8px}
+.nav-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.6);border-radius:6px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;text-decoration:none;font-family:Inter,sans-serif;transition:.15s}
+.nav-btn:hover{background:rgba(255,255,255,.15);color:#fff}
+.nav-btn.gold{background:rgba(200,150,12,.2);border-color:rgba(200,150,12,.4);color:var(--gold)}
 
-/* TABS */
-.tabs{display:flex;gap:3px;flex-wrap:wrap;}
-.tab{font-family:'Barlow Condensed',sans-serif;font-size:11px;padding:6px 12px;border-radius:6px;border:1px solid var(--border);background:var(--grey-light);color:var(--text2);cursor:pointer;letter-spacing:.5px;transition:all .15s;}
-.tab:hover{background:var(--blue-light);color:var(--blue);border-color:var(--blue-mid);}
-.tab.active{background:var(--blue);color:#fff;font-weight:700;border-color:var(--blue);}
+/* FOYER */
+.foyer{padding:32px 20px;max-width:1100px;margin:0 auto}
+.foyer-greeting{text-align:center;margin-bottom:40px}
+.foyer-time{font-size:48px;font-weight:800;font-family:'Barlow Condensed',sans-serif;color:var(--gold);letter-spacing:-1px}
+.foyer-date{font-size:16px;color:rgba(255,255,255,.45);margin-top:4px}
+.foyer-sub{font-size:14px;color:rgba(255,255,255,.3);margin-top:8px}
 
-/* PANELS */
-.panel{display:none;padding:16px 20px;}
-.panel.active{display:block;}
+.house-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.room-card{border-radius:16px;padding:0;cursor:pointer;transition:.25s;position:relative;overflow:hidden;min-height:180px;display:flex;flex-direction:column;justify-content:flex-end;text-decoration:none}
+.room-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.4)}
+.room-bg{position:absolute;inset:0;opacity:.9}
+.room-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.7) 0%,rgba(0,0,0,.1) 60%,transparent 100%)}
+.room-content{position:relative;z-index:1;padding:18px 20px}
+.room-icon{font-size:32px;margin-bottom:8px;display:block}
+.room-name{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;color:#fff;letter-spacing:.3px}
+.room-desc{font-size:12px;color:rgba(255,255,255,.6);margin-top:3px}
+.room-count{position:absolute;top:14px;right:14px;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.15);border-radius:100px;padding:3px 10px;font-size:11px;font-weight:700;color:rgba(255,255,255,.7);z-index:1}
 
-/* SECTION HEADERS */
-.sec{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--blue);border-bottom:2px solid var(--blue-light);padding-bottom:5px;margin-bottom:14px;margin-top:22px;}
-.sec:first-child{margin-top:0;}
+/* ROOM VIEW */
+.room-view{display:none;min-height:calc(100vh - 52px)}
+.room-view.active{display:flex;flex-direction:column}
+.room-header{padding:24px 20px;border-bottom:1px solid rgba(255,255,255,.08)}
+.room-header-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:16px}
+.room-header-icon{font-size:36px}
+.room-header-name{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;color:#fff;letter-spacing:.3px}
+.room-header-desc{font-size:13px;color:rgba(255,255,255,.45);margin-top:3px}
+.room-body{flex:1;display:grid;grid-template-columns:1fr 280px;gap:0;max-width:100%}
+.room-main{padding:20px;overflow-y:auto}
+.room-sidebar{border-left:1px solid rgba(255,255,255,.08);padding:20px;background:rgba(255,255,255,.02)}
 
-/* CARDS GRID */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:16px;}
-.card{background:var(--white);border:1px solid var(--border);border-radius:8px;border-top:3px solid var(--blue);padding:12px 14px;text-decoration:none;color:var(--text);display:block;transition:all .15s;box-shadow:var(--shadow);}
-.card:hover{box-shadow:var(--shadow2);border-top-color:var(--blue2);transform:translateY(-2px);}
-.card.gold{border-top-color:var(--yellow);}
-.card.gold:hover{border-top-color:var(--yellow2);}
-.card.red{border-top-color:var(--red);}
-.card.green{border-top-color:var(--green);}
-.card.green:hover{border-top-color:var(--green2);}
-.card-eye{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:3px;}
-.card-title{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;color:var(--blue);margin-bottom:3px;line-height:1.2;}
-.card.gold .card-title{color:var(--yellow);}
-.card.green .card-title{color:var(--green);}
-.card.red .card-title{color:var(--red);}
-.card-desc{font-size:10px;color:var(--text2);line-height:1.4;}
-.card-url{font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--muted);margin-top:6px;letter-spacing:.5px;}
+/* LINKS GRID */
+.links-section{margin-bottom:24px}
+.links-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.3);margin-bottom:10px}
+.links-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+.link-tile{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px;text-decoration:none;display:flex;flex-direction:column;gap:6px;transition:.15s;cursor:pointer}
+.link-tile:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.25);transform:translateY(-1px)}
+.link-tile-icon{font-size:20px}
+.link-tile-name{font-size:12px;font-weight:700;color:#fff;line-height:1.3}
+.link-tile-desc{font-size:10px;color:rgba(255,255,255,.4)}
 
-/* ALPHA GRID */
-.alpha-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-bottom:14px;}
-.acard{background:var(--white);border:1px solid var(--border);border-radius:6px;border-left:3px solid var(--blue);padding:8px 10px;text-decoration:none;color:var(--text);display:block;transition:all .15s;box-shadow:var(--shadow);}
-.acard:hover{background:var(--blue-light);border-left-color:var(--blue2);}
-.acard.gold{border-left-color:var(--yellow);}
-.acard.gold:hover{background:var(--yellow-light);}
-.acard.red{border-left-color:var(--red);}
-.acard.red:hover{background:var(--red-light);}
-.acard.green{border-left-color:var(--green);}
-.acard.green:hover{background:var(--green-light);}
-.acard-title{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--text);letter-spacing:.5px;}
-.acard-desc{font-size:10px;color:var(--text2);margin-top:2px;}
+/* NOTES PANEL */
+.notes-panel{display:flex;flex-direction:column;gap:12px}
+.notes-panel h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:rgba(255,255,255,.35);margin-bottom:4px}
+.notes-cats{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.notes-cat{font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px;cursor:pointer;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);background:transparent;transition:.15s;font-family:Inter,sans-serif}
+.notes-cat:hover,.notes-cat.active{background:var(--gold);border-color:var(--gold);color:#fff}
+.notes-input-row{display:flex;gap:6px}
+.notes-text{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:8px 10px;font-family:Inter,sans-serif;font-size:13px;color:#fff;outline:none;resize:none;min-height:60px;line-height:1.5}
+.notes-text::placeholder{color:rgba(255,255,255,.2)}
+.notes-text:focus{border-color:rgba(200,150,12,.5)}
+.notes-add-btn{background:var(--gold);border:none;border-radius:8px;padding:8px 12px;color:#fff;font-size:16px;font-weight:800;cursor:pointer;font-family:Inter,sans-serif;align-self:flex-end}
+.note-item{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:10px 12px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px}
+.note-item-text{font-size:13px;color:rgba(255,255,255,.75);line-height:1.5;flex:1}
+.note-item-meta{font-size:10px;color:rgba(255,255,255,.25);margin-top:4px}
+.note-del{background:none;border:none;color:rgba(255,255,255,.2);cursor:pointer;font-size:13px;flex-shrink:0;padding:0 2px}
+.note-del:hover{color:rgba(255,255,255,.6)}
+.notes-empty{font-size:12px;color:rgba(255,255,255,.2);text-align:center;padding:20px 0;font-style:italic}
 
-/* DAY BUILD */
-.day-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;}
-.cat-box{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:12px;box-shadow:var(--shadow);}
-.cat-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
-.cat-title span{font-size:9px;color:var(--muted);}
-.task-row{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--border);}
-.task-row:last-child{border-bottom:none;}
-.task-row input[type=checkbox]{accent-color:var(--blue);width:14px;height:14px;cursor:pointer;flex-shrink:0;}
-.task-row label{font-size:12px;color:var(--text2);cursor:pointer;flex:1;}
-.task-row input[type=checkbox]:checked + label{color:var(--muted);text-decoration:line-through;}
-.add-task{width:100%;background:transparent;border:none;border-top:1px dashed var(--border2);color:var(--muted);font-size:11px;padding:5px 2px;margin-top:6px;cursor:pointer;text-align:left;}
-.add-task:hover{color:var(--blue);}
+/* EMBED FRAME */
+.embed-frame{width:100%;height:500px;border:none;border-radius:10px;background:rgba(255,255,255,.03)}
 
-/* QUICK STATS */
-.stats-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
-.stat{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:10px 14px;flex:1;min-width:100px;text-align:center;box-shadow:var(--shadow);}
-.stat-val{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;color:var(--blue);}
-.stat-lbl{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:2px;}
+/* FAMILY MEMBERS */
+.family-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.family-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:16px;text-align:center;cursor:pointer;transition:.15s;text-decoration:none}
+.family-card:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.25)}
+.family-avatar{font-size:32px;margin-bottom:8px}
+.family-name{font-size:14px;font-weight:700;color:#fff}
+.family-role{font-size:11px;color:rgba(255,255,255,.4);margin-top:3px}
 
-/* COMMISSION CALC */
-.calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:500px;}
-.inp-group{display:flex;flex-direction:column;gap:4px;}
-.inp-group label{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text2);}
-.inp-group input,.inp-group select{background:var(--white);border:1px solid var(--border2);border-radius:4px;color:var(--text);padding:7px 10px;font-size:13px;font-family:'Barlow',sans-serif;}
-.inp-group input:focus,.inp-group select:focus{outline:2px solid var(--blue-mid);border-color:var(--blue);}
-.result-box{background:var(--blue-light);border:1.5px solid var(--blue-mid);border-radius:8px;padding:14px;margin-top:14px;max-width:500px;}
-.result-val{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:var(--blue);}
-.result-lbl{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text2);margin-top:2px;}
+/* CALENDAR IN ROOM */
+.cal-mini{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);border-radius:10px;overflow:hidden;margin-bottom:16px}
+.cal-mini-hdr{background:rgba(255,255,255,.06);padding:8px 14px;font-size:12px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.5px}
 
-/* SAVE BTN */
-.btn{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:7px 18px;border-radius:4px;border:none;cursor:pointer;transition:all .15s;}
-.btn-blue{background:var(--blue);color:#fff;}
-.btn-blue:hover{background:var(--blue2);}
-.btn-outline{background:var(--white);color:var(--blue);border:1px solid var(--blue);}
-.btn-outline:hover{background:var(--blue-light);}
-.btn-red{background:var(--red);color:#fff;}
-
-/* FAVORITES */
-.fav-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;}
-.fav-card{background:var(--white);border:1px solid var(--border);border-radius:6px;padding:10px 12px;text-decoration:none;color:var(--text);display:flex;align-items:center;gap:8px;transition:all .15s;box-shadow:var(--shadow);}
-.fav-card:hover{background:var(--blue-light);border-color:var(--blue-mid);}
-.fav-icon{font-size:18px;flex-shrink:0;}
-.fav-name{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;color:var(--text);letter-spacing:.5px;}
-.fav-url{font-size:9px;color:var(--muted);}
-
-/* PAY HISTORY TABLE */
-.pay-table{width:100%;border-collapse:collapse;font-size:12px;background:var(--white);border-radius:8px;overflow:hidden;box-shadow:var(--shadow);}
-.pay-table th{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--blue);padding:8px 10px;border-bottom:2px solid var(--blue-light);text-align:left;background:var(--grey-light);}
-.pay-table td{padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text2);}
-.pay-table tr:hover td{background:var(--blue-light);}
-.tag{font-family:'Barlow Condensed',sans-serif;font-size:9px;padding:2px 6px;border-radius:3px;letter-spacing:1px;text-transform:uppercase;}
-.tag.g{background:var(--green-light);color:var(--green);}
-.tag.r{background:var(--red-light);color:var(--red);}
-
-/* text inputs in tables */
-.text-inp{background:var(--white);border:1px solid var(--border2);border-radius:4px;color:var(--text);padding:6px 10px;font-size:12px;font-family:'Barlow',sans-serif;}
-.text-inp:focus{outline:2px solid var(--blue-mid);border-color:var(--blue);}
-
-@media(max-width:640px){
-  .topbar{padding:8px 12px;}
-  .panel{padding:12px 10px;}
-  .grid,.alpha-grid,.fav-grid{grid-template-columns:1fr 1fr;}
-  .calc-grid{grid-template-columns:1fr;}
+@media(max-width:768px){
+  .house-grid{grid-template-columns:1fr 1fr}
+  .room-body{grid-template-columns:1fr}
+  .room-sidebar{border-left:none;border-top:1px solid rgba(255,255,255,.08)}
+}
+@media(max-width:480px){
+  .house-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
 
-<div class="topbar">
-  <div class="topbar-left">
-    <div>
-      <div class="topbar-logo">⚡ Life OS</div>
-      <div class="topbar-sub">Sebastian S. — Personal Operating System</div>
+<!-- NAV -->
+<nav class="nav">
+  <a class="nav-home" onclick="showFoyer()" href="#" style="text-decoration:none">
+    <span class="nav-house">🏠</span>
+    <span class="nav-title">Sebastian's House</span>
+  </a>
+  <div class="nav-breadcrumb" id="breadcrumb" style="display:none">
+    <a onclick="showFoyer()" href="#" style="color:rgba(255,255,255,.4);text-decoration:none">Home</a>
+    <span>›</span>
+    <span class="current" id="breadcrumb-room">—</span>
+  </div>
+  <div class="nav-actions">
+    <a href="https://alphafiles.net/vitals/" class="nav-btn">⚡ ATC</a>
+    <a href="https://alphafiles.net/alpha/" class="nav-btn">📋 Alpha</a>
+    <a href="/calendar/" class="nav-btn">📅 Cal</a>
+    <button class="nav-btn gold" onclick="showFoyer()">🏠 All Rooms</button>
+  </div>
+</nav>
+
+<!-- ══════════════ FOYER ══════════════ -->
+<div id="foyer">
+  <div class="foyer">
+    <div class="foyer-greeting">
+      <div class="foyer-time" id="clock">--:--</div>
+      <div class="foyer-date" id="today-date">—</div>
+      <div class="foyer-sub">Welcome home, Sebastian.</div>
     </div>
-  </div>
-  <div class="topbar-date" id="topDate"></div>
-  <div class="tabs">
-    <button class="tab active" onclick="showTab('dashboard',this)">🏠 Dashboard</button>
-    <button class="tab" onclick="showTab('day',this)">📅 Day Build</button>
-    <button class="tab" onclick="showTab('sites',this)">🔗 All Sites</button>
-    <button class="tab" onclick="showTab('comm',this)">💰 Commission</button>
-    <button class="tab" onclick="showTab('pay',this)">📈 Pay History</button>
-    <button class="tab" onclick="showTab('favs',this)">⭐ Favorites</button>
-  </div>
-</div>
 
-<!-- DASHBOARD -->
-<div id="tab-dashboard" class="panel active">
-  <div class="stats-row">
-    <div class="stat"><div class="stat-val" id="ds-tasks">0/0</div><div class="stat-lbl">Today's Tasks</div></div>
-    <div class="stat"><div class="stat-val" id="ds-pay">$0</div><div class="stat-lbl">Last Paycheck</div></div>
-    <div class="stat"><div class="stat-val" id="ds-comm">$0</div><div class="stat-lbl">Commission Est.</div></div>
-    <div class="stat"><div class="stat-val" id="ds-streak">0</div><div class="stat-lbl">Day Streak</div></div>
-  </div>
+    <div class="house-grid">
 
-  <div class="sec">Quick Access — My Sites</div>
-  <div class="grid">
-    <a class="card gold" href="/hub">
-      <div class="card-eye">Directory</div>
-      <div class="card-title">📂 Full Hub</div>
-      <div class="card-desc">All pages across all domains</div>
-      <div class="card-url">sebastianlinks.com/hub</div>
-    </a>
-    <a class="card gold" href="/joshuason/">
-      <div class="card-eye">Family · Finance</div>
-      <div class="card-title">🎖️ Joshua Son</div>
-      <div class="card-desc">U.S. Army Tanker personal finance plan</div>
-      <div class="card-url">sebastianlinks.com/joshuason</div>
-    </a>
-    <a class="card" href="https://alphafiles.net" target="_blank">
-      <div class="card-eye">ATC · Sales Tool</div>
-      <div class="card-title">📊 Alpha Files</div>
-      <div class="card-desc">23-page client presentation flow</div>
-      <div class="card-url">alphafiles.net</div>
-    </a>
-    <a class="card green" href="https://12easysteps.org" target="_blank">
-      <div class="card-eye">Recovery · Education</div>
-      <div class="card-title">📖 12 Easy Steps</div>
-      <div class="card-desc">AA Big Book recovery education tools</div>
-      <div class="card-url">12easysteps.org</div>
-    </a>
-    <a class="card" href="/palabras/">
-      <div class="card-eye">Spanish · Vocabulary</div>
-      <div class="card-title">💬 333 Palabras</div>
-      <div class="card-desc">333 positive Spanish words</div>
-      <div class="card-url">sebastianlinks.com/palabras</div>
-    </a>
-    <a class="card red" href="/nationalinstall/">
-      <div class="card-eye">Business · Plan</div>
-      <div class="card-title">🏗️ National Install</div>
-      <div class="card-desc">Business plan 2025–2028</div>
-      <div class="card-url">sebastianlinks.com/nationalinstall</div>
-    </a>
-    <a class="card" href="/panther/">
-      <div class="card-eye">Client · Reputation</div>
-      <div class="card-title">🐆 Panther Van Lines</div>
-      <div class="card-desc">Online reputation audit report</div>
-      <div class="card-url">sebastianlinks.com/panther</div>
-    </a>
-    <a class="card green" href="/vapeless/">
-      <div class="card-eye">Recovery · Tracker</div>
-      <div class="card-title">🚭 Vapeless</div>
-      <div class="card-desc">Daily recovery command center</div>
-      <div class="card-url">sebastianlinks.com/vapeless</div>
-    </a>
-  </div>
-
-  <div class="sec">Vapeless — Recovery Tools</div>
-  <div class="alpha-grid">
-    <a class="acard green" href="/vapeless/#today"><div class="acard-title">🏠 Today</div><div class="acard-desc">Daily missions &amp; review</div></a>
-    <a class="acard green" href="/vapeless/#week"><div class="acard-title">📅 Plan Blocks</div><div class="acard-desc">Weekly schedule</div></a>
-    <a class="acard green" href="/vapeless/#track"><div class="acard-title">📈 Track</div><div class="acard-desc">Exercise, liquids, nutrition</div></a>
-    <a class="acard green" href="/vapeless/#score"><div class="acard-title">🏆 Score</div><div class="acard-desc">XP, rank &amp; streaks</div></a>
-    <a class="acard gold" href="/vapeless/#more"><div class="acard-title">🔗 Links</div><div class="acard-desc">Readings, meetings, prayers &amp; books</div></a>
-  </div>
-
-  <div class="sec">Alpha Files — ATC Presentation Pages</div>
-  <div class="alpha-grid">
-    <a class="acard gold" href="https://alphafiles.net/vitals/" target="_blank"><div class="acard-title">📋 Vitals</div><div class="acard-desc">Client vitals tracker</div></a>
-    <a class="acard" href="https://alphafiles.net/owner/" target="_blank"><div class="acard-title">👤 Owner Info</div><div class="acard-desc">Owner details</div></a>
-    <a class="acard" href="https://alphafiles.net/history/" target="_blank"><div class="acard-title">📜 History</div><div class="acard-desc">Alpha history</div></a>
-    <a class="acard" href="https://alphafiles.net/cost/" target="_blank"><div class="acard-title">💵 True Cost</div><div class="acard-desc">Cost calculator</div></a>
-    <a class="acard" href="https://alphafiles.net/calculator/" target="_blank"><div class="acard-title">🧮 Calculator</div><div class="acard-desc">TCO calculator</div></a>
-    <a class="acard" href="https://alphafiles.net/rights/" target="_blank"><div class="acard-title">⚖️ Rights</div><div class="acard-desc">Consumer rights</div></a>
-    <a class="acard" href="https://alphafiles.net/exit-methods/" target="_blank"><div class="acard-title">🚪 Exit Methods</div><div class="acard-desc">Exit options</div></a>
-    <a class="acard" href="https://alphafiles.net/guarantee/" target="_blank"><div class="acard-title">🛡️ Guarantee</div><div class="acard-desc">Certificate</div></a>
-    <a class="acard gold" href="https://alphafiles.net/quote/" target="_blank"><div class="acard-title">💰 Quote</div><div class="acard-desc">Quote generator</div></a>
-    <a class="acard" href="https://alphafiles.net/proof/" target="_blank"><div class="acard-title">✅ Proof</div><div class="acard-desc">Case database</div></a>
-    <a class="acard" href="https://alphafiles.net/letter/" target="_blank"><div class="acard-title">📄 Letter</div><div class="acard-desc">Mutual release</div></a>
-    <a class="acard" href="https://alphafiles.net/heirs/" target="_blank"><div class="acard-title">👨‍👩‍👧 Heirs</div><div class="acard-desc">Estate liability</div></a>
-    <a class="acard" href="https://alphafiles.net/compensation/" target="_blank"><div class="acard-title">🏦 Compensation</div><div class="acard-desc">Compensation</div></a>
-    <a class="acard" href="https://alphafiles.net/credit/" target="_blank"><div class="acard-title">💳 Credit</div><div class="acard-desc">Credit protection</div></a>
-    <a class="acard" href="https://alphafiles.net/included/" target="_blank"><div class="acard-title">📦 Included</div><div class="acard-desc">What's included</div></a>
-    <a class="acard" href="https://alphafiles.net/followup/" target="_blank"><div class="acard-title">📅 Follow Up</div><div class="acard-desc">Scheduler</div></a>
-    <a class="acard" href="https://alphafiles.net/recap/" target="_blank"><div class="acard-title">🔄 Recap</div><div class="acard-desc">Summary recap</div></a>
-    <a class="acard gold" href="https://alphafiles.net/approval/" target="_blank"><div class="acard-title">⭐ Approval</div><div class="acard-desc">Same-day pricing</div></a>
-    <a class="acard" href="https://alphafiles.net/checklist/" target="_blank"><div class="acard-title">✔️ Checklist</div><div class="acard-desc">Process checklist</div></a>
-    <a class="acard" href="https://alphafiles.net/contract/" target="_blank"><div class="acard-title">📝 Contract</div><div class="acard-desc">Contract page</div></a>
-    <a class="acard" href="https://alphafiles.net/better/" target="_blank"><div class="acard-title">🔝 Better</div><div class="acard-desc">Better offer</div></a>
-    <a class="acard" href="https://alphafiles.net/free/" target="_blank"><div class="acard-title">🎁 Free</div><div class="acard-desc">Free option</div></a>
-    <a class="acard" href="https://alphafiles.net/whyout/" target="_blank"><div class="acard-title">❓ Why Out</div><div class="acard-desc">Why exit</div></a>
-    <a class="acard" href="https://alphafiles.net/group/" target="_blank"><div class="acard-title">👥 Group</div><div class="acard-desc">Group page</div></a>
-    <a class="acard" href="https://alphafiles.net/wait/" target="_blank"><div class="acard-title">⏳ Wait</div><div class="acard-desc">Hold page</div></a>
-    <a class="acard red" href="https://alphafiles.net/admin/" target="_blank"><div class="acard-title">⚙️ Admin</div><div class="acard-desc">Admin panel</div></a>
-    <a class="acard green" href="https://alphafiles.net/crm/" target="_blank"><div class="acard-title">📊 CRM</div><div class="acard-desc">CRM tool</div></a>
-    <a class="acard" href="https://alphafiles.net/report/" target="_blank"><div class="acard-title">📈 Report</div><div class="acard-desc">Report page</div></a>
-  </div>
-
-  <div class="sec">12 Easy Steps — Recovery Tools</div>
-  <div class="alpha-grid">
-    <a class="acard green" href="https://12easysteps.org" target="_blank"><div class="acard-title">🏠 Home</div><div class="acard-desc">Recovery home</div></a>
-    <a class="acard green" href="https://12easysteps.org/steps/" target="_blank"><div class="acard-title">📖 Steps</div><div class="acard-desc">12 steps content</div></a>
-    <a class="acard green" href="https://12easysteps.org/report/" target="_blank"><div class="acard-title">📊 Report Card</div><div class="acard-desc">Daily/weekly tracker</div></a>
-    <a class="acard green" href="https://12easysteps.org/safe/" target="_blank"><div class="acard-title">🇨🇴 Safe</div><div class="acard-desc">Colombia safety plan</div></a>
-  </div>
-</div>
-
-<!-- DAY BUILD -->
-<div id="tab-day" class="panel">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
-    <div>
-      <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:var(--blue);" id="dayTitle">Today's Build</div>
-      <div style="font-size:11px;color:var(--muted);" id="dayDate"></div>
-    </div>
-    <div style="display:flex;gap:8px;">
-      <button class="btn btn-blue" onclick="saveDay()">Save Day</button>
-      <button class="btn btn-outline" onclick="resetDay()">Reset</button>
-    </div>
-  </div>
-  <div class="day-grid" id="dayGrid"></div>
-</div>
-
-<!-- ALL SITES -->
-<div id="tab-sites" class="panel">
-  <div class="sec">sebastianlinks.com — Personal</div>
-  <div class="grid">
-    <a class="card" href="/"><div class="card-eye">Dashboard</div><div class="card-title">⚡ Life OS</div><div class="card-url">sebastianlinks.com</div></a>
-    <a class="card gold" href="/hub/"><div class="card-eye">Directory</div><div class="card-title">📂 Hub</div><div class="card-url">sebastianlinks.com/hub</div></a>
-    <a class="card gold" href="/joshuason/"><div class="card-eye">Family · Finance</div><div class="card-title">🎖️ Joshua Son</div><div class="card-url">sebastianlinks.com/joshuason</div></a>
-    <a class="card" href="/palabras/"><div class="card-eye">Spanish</div><div class="card-title">💬 333 Palabras</div><div class="card-url">sebastianlinks.com/palabras</div></a>
-    <a class="card red" href="/nationalinstall/"><div class="card-eye">Business</div><div class="card-title">🏗️ National Install</div><div class="card-url">sebastianlinks.com/nationalinstall</div></a>
-    <a class="card" href="/panther/"><div class="card-eye">Client · Reputation</div><div class="card-title">🐆 Panther Van Lines</div><div class="card-url">sebastianlinks.com/panther</div></a>
-    <a class="card green" href="/vapeless/"><div class="card-eye">Recovery · Tracker</div><div class="card-title">🚭 Vapeless</div><div class="card-url">sebastianlinks.com/vapeless</div></a>
-  </div>
-
-  <div class="sec">alphafiles.net — ATC Sales Presentation</div>
-  <div class="alpha-grid">
-    <a class="acard gold" href="https://alphafiles.net" target="_blank"><div class="acard-title">🏠 Home</div></a>
-    <a class="acard gold" href="https://alphafiles.net/vitals/" target="_blank"><div class="acard-title">📋 Vitals</div></a>
-    <a class="acard" href="https://alphafiles.net/owner/" target="_blank"><div class="acard-title">👤 Owner</div></a>
-    <a class="acard" href="https://alphafiles.net/history/" target="_blank"><div class="acard-title">📜 History</div></a>
-    <a class="acard" href="https://alphafiles.net/cost/" target="_blank"><div class="acard-title">💵 True Cost</div></a>
-    <a class="acard" href="https://alphafiles.net/calculator/" target="_blank"><div class="acard-title">🧮 Calculator</div></a>
-    <a class="acard" href="https://alphafiles.net/rights/" target="_blank"><div class="acard-title">⚖️ Rights</div></a>
-    <a class="acard" href="https://alphafiles.net/exit-methods/" target="_blank"><div class="acard-title">🚪 Exit Methods</div></a>
-    <a class="acard" href="https://alphafiles.net/guarantee/" target="_blank"><div class="acard-title">🛡️ Guarantee</div></a>
-    <a class="acard gold" href="https://alphafiles.net/quote/" target="_blank"><div class="acard-title">💰 Quote</div></a>
-    <a class="acard" href="https://alphafiles.net/proof/" target="_blank"><div class="acard-title">✅ Proof</div></a>
-    <a class="acard" href="https://alphafiles.net/letter/" target="_blank"><div class="acard-title">📄 Letter</div></a>
-    <a class="acard" href="https://alphafiles.net/heirs/" target="_blank"><div class="acard-title">👨‍👩‍👧 Heirs</div></a>
-    <a class="acard" href="https://alphafiles.net/compensation/" target="_blank"><div class="acard-title">🏦 Compensation</div></a>
-    <a class="acard" href="https://alphafiles.net/credit/" target="_blank"><div class="acard-title">💳 Credit</div></a>
-    <a class="acard" href="https://alphafiles.net/included/" target="_blank"><div class="acard-title">📦 Included</div></a>
-    <a class="acard" href="https://alphafiles.net/followup/" target="_blank"><div class="acard-title">📅 Follow Up</div></a>
-    <a class="acard" href="https://alphafiles.net/recap/" target="_blank"><div class="acard-title">🔄 Recap</div></a>
-    <a class="acard gold" href="https://alphafiles.net/approval/" target="_blank"><div class="acard-title">⭐ Approval</div></a>
-    <a class="acard" href="https://alphafiles.net/checklist/" target="_blank"><div class="acard-title">✔️ Checklist</div></a>
-    <a class="acard" href="https://alphafiles.net/contract/" target="_blank"><div class="acard-title">📝 Contract</div></a>
-    <a class="acard" href="https://alphafiles.net/better/" target="_blank"><div class="acard-title">🔝 Better</div></a>
-    <a class="acard" href="https://alphafiles.net/free/" target="_blank"><div class="acard-title">🎁 Free</div></a>
-    <a class="acard" href="https://alphafiles.net/whyout/" target="_blank"><div class="acard-title">❓ Why Out</div></a>
-    <a class="acard" href="https://alphafiles.net/group/" target="_blank"><div class="acard-title">👥 Group</div></a>
-    <a class="acard" href="https://alphafiles.net/wait/" target="_blank"><div class="acard-title">⏳ Wait</div></a>
-    <a class="acard red" href="https://alphafiles.net/admin/" target="_blank"><div class="acard-title">⚙️ Admin</div></a>
-    <a class="acard green" href="https://alphafiles.net/crm/" target="_blank"><div class="acard-title">📊 CRM</div></a>
-    <a class="acard" href="https://alphafiles.net/report/" target="_blank"><div class="acard-title">📈 Report</div></a>
-  </div>
-
-  <div class="sec">12easysteps.org — Recovery</div>
-  <div class="alpha-grid">
-    <a class="acard green" href="https://12easysteps.org" target="_blank"><div class="acard-title">🏠 Home</div></a>
-    <a class="acard green" href="https://12easysteps.org/steps/" target="_blank"><div class="acard-title">📖 Steps</div></a>
-    <a class="acard green" href="https://12easysteps.org/report/" target="_blank"><div class="acard-title">📊 Report Card</div></a>
-    <a class="acard green" href="https://12easysteps.org/safe/" target="_blank"><div class="acard-title">🇨🇴 Safe Plan</div></a>
-  </div>
-</div>
-
-<!-- COMMISSION -->
-<div id="tab-comm" class="panel">
-  <div class="sec">Commission Calculator</div>
-  <div class="calc-grid">
-    <div class="inp-group">
-      <label>Sale Amount $</label>
-      <input class="text-inp" type="number" id="saleAmt" value="5000" step="100" oninput="calcComm()">
-    </div>
-    <div class="inp-group">
-      <label>Commission %</label>
-      <input class="text-inp" type="number" id="commPct" value="10" step=".5" oninput="calcComm()">
-    </div>
-    <div class="inp-group">
-      <label>Override %</label>
-      <input class="text-inp" type="number" id="overridePct" value="0" step=".5" oninput="calcComm()">
-    </div>
-    <div class="inp-group">
-      <label>Deductions $</label>
-      <input class="text-inp" type="number" id="deductions" value="0" step="50" oninput="calcComm()">
-    </div>
-  </div>
-  <div class="result-box">
-    <div class="result-val" id="commResult">$500</div>
-    <div class="result-lbl">Your Commission</div>
-    <div style="margin-top:10px;display:flex;gap:16px;flex-wrap:wrap;">
-      <div><div style="font-size:11px;color:var(--text2);">Base</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--text);" id="commBase">$500</div></div>
-      <div><div style="font-size:11px;color:var(--text2);">Override</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--text);" id="commOverride">$0</div></div>
-      <div><div style="font-size:11px;color:var(--text2);">Deductions</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--red);" id="commDed">-$0</div></div>
-    </div>
-  </div>
-
-  <div class="sec" style="margin-top:20px;">Deal Log</div>
-  <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
-    <input class="text-inp" type="text" id="dealName" placeholder="Client name" style="flex:1;min-width:120px;">
-    <button class="btn btn-blue" onclick="addDeal()">+ Add Deal</button>
-  </div>
-  <table class="pay-table" id="dealTable">
-    <thead><tr><th>Client</th><th>Sale $</th><th>Commission</th><th>Date</th><th></th></tr></thead>
-    <tbody id="dealBody"></tbody>
-  </table>
-</div>
-
-<!-- PAY HISTORY -->
-<div id="tab-pay" class="panel">
-  <div class="sec">Pay History</div>
-  <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
-    <input class="text-inp" type="date" id="payDate">
-    <input class="text-inp" type="number" id="payAmt" placeholder="Amount $" step="50" style="width:130px;">
-    <input class="text-inp" type="text" id="payNote" placeholder="Note (optional)" style="flex:1;min-width:120px;">
-    <button class="btn btn-blue" onclick="addPay()">+ Add</button>
-  </div>
-  <table class="pay-table">
-    <thead><tr><th>Date</th><th>Amount</th><th>Note</th><th></th></tr></thead>
-    <tbody id="payBody"></tbody>
-  </table>
-</div>
-
-<!-- FAVORITES -->
-<div id="tab-favs" class="panel">
-  <div class="sec">Quick Links</div>
-  <div class="fav-grid" id="favGrid"></div>
-  <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
-    <input class="text-inp" type="text" id="favName" placeholder="Name" style="width:130px;">
-    <input class="text-inp" type="text" id="favUrl" placeholder="URL" style="flex:1;min-width:200px;">
-    <input class="text-inp" type="text" id="favIcon" placeholder="Emoji" style="width:70px;">
-    <button class="btn btn-blue" onclick="addFav()">+ Add</button>
-  </div>
-</div>
-
-<script>
-// ── TABS ──
-function showTab(id, btn) {
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-' + id).classList.add('active');
-  btn.classList.add('active');
-}
-
-// ── DATE ──
-const now = new Date();
-const opts = { weekday:'long', month:'long', day:'numeric', year:'numeric' };
-document.getElementById('topDate').textContent = now.toLocaleDateString('en-US', opts);
-const dd = document.getElementById('dayDate');
-if (dd) dd.textContent = now.toLocaleDateString('en-US', opts);
-
-// ── DAY BUILD ──
-const DAY_CATS = [
-  { name:'Spiritual', emoji:'🙏', tasks:['Morning prayer/meditation','Read Big Book','Gratitude list'] },
-  { name:'Recovery',  emoji:'🛡️', tasks:['Meeting / call sponsor','Step work','Journal'] },
-  { name:'Work',      emoji:'💼', tasks:['Follow up calls','Update CRM / Zoho','Review pipeline'] },
-  { name:'Family',    emoji:'👨‍👧‍👦', tasks:['Connect with Ever','Connect with Sebastian Jr.','Family message'] },
-  { name:'Exercise',  emoji:'💪', tasks:['Workout / walk','Stretch / breathe','Hydrate'] },
-  { name:'Home',      emoji:'🏠', tasks:['Clean / tidy','Errands','Meal prep'] },
-  { name:'Friends',   emoji:'🤝', tasks:['Check in on friend','Social time'] },
-  { name:'Growth',    emoji:'📚', tasks:['Read / learn','Personal development'] },
-];
-
-const todayKey = () => 'day_' + now.toISOString().slice(0,10);
-let dayData = {};
-
-function renderDay() {
-  const saved = localStorage.getItem(todayKey());
-  if (saved) dayData = JSON.parse(saved);
-  const grid = document.getElementById('dayGrid');
-  if (!grid) return;
-  grid.innerHTML = '';
-  let total = 0, done = 0;
-  DAY_CATS.forEach(cat => {
-    const tasks = dayData[cat.name] || cat.tasks.map(t => ({ text:t, checked:false }));
-    dayData[cat.name] = tasks;
-    total += tasks.length;
-    done  += tasks.filter(t => t.checked).length;
-    const box = document.createElement('div');
-    box.className = 'cat-box';
-    const comp = tasks.filter(t => t.checked).length;
-    box.innerHTML = `<div class="cat-title">${cat.emoji} ${cat.name} <span>${comp}/${tasks.length}</span></div>` +
-      tasks.map((t,i) => `
-        <div class="task-row">
-          <input type="checkbox" id="t_${cat.name}_${i}" ${t.checked?'checked':''} onchange="toggleTask('${cat.name}',${i})">
-          <label for="t_${cat.name}_${i}">${t.text}</label>
-        </div>`).join('') +
-      `<button class="add-task" onclick="addTask('${cat.name}')">+ Add task</button>`;
-    grid.appendChild(box);
-  });
-  const ds = document.getElementById('ds-tasks');
-  if (ds) ds.textContent = done + '/' + total;
-}
-
-function toggleTask(cat,i) { dayData[cat][i].checked = !dayData[cat][i].checked; saveDay(); renderDay(); }
-function addTask(cat) {
-  const text = prompt('New task for ' + cat + ':');
-  if (!text) return;
-  dayData[cat] = dayData[cat] || [];
-  dayData[cat].push({ text, checked:false });
-  saveDay(); renderDay();
-}
-function saveDay() { localStorage.setItem(todayKey(), JSON.stringify(dayData)); }
-function resetDay() {
-  if (!confirm('Reset all tasks for today?')) return;
-  localStorage.removeItem(todayKey()); dayData = {}; renderDay();
-}
-
-// ── COMMISSION ──
-let deals = JSON.parse(localStorage.getItem('os_deals') || '[]');
-function calcComm() {
-  const sale = parseFloat(document.getElementById('saleAmt')?.value) || 0;
-  const pct  = parseFloat(document.getElementById('commPct')?.value) || 0;
-  const ovr  = parseFloat(document.getElementById('overridePct')?.value) || 0;
-  const ded  = parseFloat(document.getElementById('deductions')?.value) || 0;
-  const base = sale * pct / 100;
-  const over = sale * ovr / 100;
-  const net  = base + over - ded;
-  const fmt  = n => '$' + Math.round(n).toLocaleString();
-  const e    = id => document.getElementById(id);
-  if (e('commBase'))     e('commBase').textContent    = fmt(base);
-  if (e('commOverride')) e('commOverride').textContent = fmt(over);
-  if (e('commDed'))      e('commDed').textContent      = '-' + fmt(ded);
-  if (e('commResult'))   e('commResult').textContent   = fmt(net);
-  if (e('ds-comm'))      e('ds-comm').textContent      = fmt(net);
-}
-function addDeal() {
-  const name = document.getElementById('dealName')?.value?.trim();
-  const sale = parseFloat(document.getElementById('saleAmt')?.value) || 0;
-  const pct  = parseFloat(document.getElementById('commPct')?.value) || 0;
-  const comm = sale * pct / 100;
-  if (!name || !sale) return alert('Enter client name and sale amount');
-  deals.push({ name, sale, comm, date: now.toLocaleDateString('en-US',{month:'short',day:'numeric'}) });
-  localStorage.setItem('os_deals', JSON.stringify(deals));
-  renderDeals();
-  document.getElementById('dealName').value = '';
-}
-function renderDeals() {
-  const b = document.getElementById('dealBody'); if (!b) return;
-  b.innerHTML = deals.map((d,i) => `
-    <tr>
-      <td>${d.name}</td>
-      <td>$${d.sale.toLocaleString()}</td>
-      <td style="color:var(--blue);font-weight:600;">$${Math.round(d.comm).toLocaleString()}</td>
-      <td>${d.date}</td>
-      <td><button onclick="delDeal(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;">×</button></td>
-    </tr>`).join('');
-}
-function delDeal(i) { deals.splice(i,1); localStorage.setItem('os_deals',JSON.stringify(deals)); renderDeals(); }
-
-// ── PAY HISTORY ──
-let pays = JSON.parse(localStorage.getItem('os_pays') || '[]');
-function addPay() {
-  const date = document.getElementById('payDate')?.value;
-  const amt  = parseFloat(document.getElementById('payAmt')?.value) || 0;
-  const note = document.getElementById('payNote')?.value?.trim() || '';
-  if (!date || !amt) return alert('Enter date and amount');
-  pays.unshift({ date, amt, note });
-  localStorage.setItem('os_pays', JSON.stringify(pays));
-  renderPays();
-  document.getElementById('payAmt').value = '';
-  document.getElementById('payNote').value = '';
-}
-function renderPays() {
-  const b = document.getElementById('payBody'); if (!b) return;
-  b.innerHTML = pays.map((p,i) => `
-    <tr>
-      <td>${p.date}</td>
-      <td style="color:var(--blue);font-weight:600;">$${p.amt.toLocaleString()}</td>
-      <td>${p.note}</td>
-      <td><button onclick="delPay(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;">×</button></td>
-    </tr>`).join('');
-  if (pays.length > 0) { const ds = document.getElementById('ds-pay'); if (ds) ds.textContent = '$' + pays[0].amt.toLocaleString(); }
-}
-function delPay(i) { pays.splice(i,1); localStorage.setItem('os_pays',JSON.stringify(pays)); renderPays(); }
-
-// ── FAVORITES ──
-const DEFAULT_FAVS = [
-  { name:'Alpha Files',  url:'https://alphafiles.net',      icon:'📊' },
-  { name:'12 Easy Steps',url:'https://12easysteps.org',     icon:'📖' },
-  { name:'Joshua Son',   url:'/joshuason/',                  icon:'🎖️' },
-  { name:'Hub',          url:'/hub/',                        icon:'📂' },
-  { name:'Palabras',     url:'/palabras/',                   icon:'💬' },
-  { name:'Panther',      url:'/panther/',                    icon:'🐆' },
-  { name:'Vapeless',     url:'/vapeless/',                   icon:'🚭' },
-  { name:'Gmail',        url:'https://mail.google.com',      icon:'📧' },
-  { name:'Zoho CRM',     url:'https://crm.zoho.com',         icon:'👥' },
-  { name:'RingCentral',  url:'https://app.ringcentral.com',  icon:'📞' },
-];
-let favs = JSON.parse(localStorage.getItem('os_favs') || 'null') || DEFAULT_FAVS;
-function renderFavs() {
-  const g = document.getElementById('favGrid'); if (!g) return;
-  g.innerHTML = favs.map((f,i) => `
-    <a class="fav-card" href="${f.url}" target="${f.url.startsWith('http')?'_blank':'_self'}">
-      <div class="fav-icon">${f.icon||'🔗'}</div>
-      <div><div class="fav-name">${f.name}</div><div class="fav-url">${f.url.replace('https://','')}</div></div>
-      <button onclick="delFav(event,${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;margin-left:auto;">×</button>
-    </a>`).join('');
-}
-function addFav() {
-  const name = document.getElementById('favName')?.value?.trim();
-  const url  = document.getElementById('favUrl')?.value?.trim();
-  const icon = document.getElementById('favIcon')?.value?.trim() || '🔗';
-  if (!name || !url) return;
-  favs.push({ name, url, icon });
-  localStorage.setItem('os_favs', JSON.stringify(favs));
-  renderFavs();
-  ['favName','favUrl','favIcon'].forEach(id => { const e = document.getElementById(id); if(e) e.value=''; });
-}
-function delFav(e,i) {
-  e.preventDefault(); e.stopPropagation();
-  favs.splice(i,1); localStorage.setItem('os_favs',JSON.stringify(favs)); renderFavs();
-}
-
-// ── INIT ──
-renderDay(); calcComm(); renderDeals(); renderPays(); renderFavs();
-</script>
-
-
-<!-- QUICK NOTES WIDGET -->
-<div id="notes-widget" style="background:#fff;border-radius:14px;border:1px solid #e5e7eb;margin:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06)">
-  <div style="background:linear-gradient(135deg,#1B2A4A,#243a6e);padding:12px 16px;display:flex;align-items:center;justify-content:space-between">
-    <div style="display:flex;align-items:center;gap:10px">
-      <span style="font-size:18px">📝</span>
-      <div style="font-family:Inter,sans-serif;font-size:14px;font-weight:800;color:#fff">Quick Notes</div>
-    </div>
-    <div style="display:flex;gap:8px;align-items:center">
-      <span id="notes-saved" style="font-size:11px;color:rgba(255,255,255,.45)">Auto-saved</span>
-      <button onclick="addNotesCat()" style="background:#C8960C;color:#fff;font-size:11px;font-weight:700;padding:6px 12px;border-radius:6px;border:none;cursor:pointer;font-family:Inter,sans-serif">+ Category</button>
-    </div>
-  </div>
-  <div id="notes-body" style="padding:14px"></div>
-</div>
-
-<script>
-(function(){
-  var NK='seb_notes';
-  function load(){try{return JSON.parse(localStorage.getItem(NK)||'[]');}catch(e){return[];}}
-  function save(d){localStorage.setItem(NK,JSON.stringify(d));flash();}
-  function flash(){
-    var s=document.getElementById('notes-saved');
-    s.textContent='✓ Saved';s.style.color='#4ade80';
-    clearTimeout(window._nt);
-    window._nt=setTimeout(function(){s.textContent='Auto-saved';s.style.color='rgba(255,255,255,.45)';},1500);
-  }
-
-  var CAT_COLORS=['#1B2A4A','#16a34a','#dc2626','#7c3aed','#0369a1','#92400e','#be185d'];
-
-  function render(){
-    var data=load();
-    var body=document.getElementById('notes-body');
-    if(!data.length){
-      body.innerHTML='<div style="text-align:center;padding:24px;color:#9ca3af;font-size:13px">No categories yet. Click <strong>+ Category</strong> to get started.</div>';
-      return;
-    }
-    body.innerHTML='';
-    data.forEach(function(cat,ci){
-      var col=CAT_COLORS[ci%CAT_COLORS.length];
-      var sec=document.createElement('div');
-      sec.style.cssText='margin-bottom:14px;border-radius:10px;border:1px solid #e5e7eb;overflow:hidden';
-
-      // Category header
-      var hdr=document.createElement('div');
-      hdr.style.cssText='background:'+col+';padding:8px 12px;display:flex;align-items:center;gap:8px';
-      hdr.innerHTML=
-        '<input value="'+escH(cat.name)+'" style="background:transparent;border:none;outline:none;font-family:Inter,sans-serif;font-size:13px;font-weight:700;color:#fff;flex:1" '+
-        'oninput="updateCatName('+ci+',this.value)">'+
-        '<button onclick="addNote('+ci+')" style="background:rgba(255,255,255,.2);color:#fff;border:none;border-radius:5px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">+ Note</button>'+
-        '<button onclick="deleteCat('+ci+')" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);border:none;border-radius:5px;padding:4px 8px;font-size:13px;cursor:pointer;font-family:Inter,sans-serif;margin-left:2px">✕</button>';
-      sec.appendChild(hdr);
-
-      // Notes
-      if(!cat.notes||!cat.notes.length){
-        var empty=document.createElement('div');
-        empty.style.cssText='padding:10px 14px;font-size:12px;color:#d1d5db;font-style:italic';
-        empty.textContent='No notes yet — click + Note';
-        sec.appendChild(empty);
-      } else {
-        cat.notes.forEach(function(note,ni){
-          var row=document.createElement('div');
-          row.style.cssText='display:flex;align-items:flex-start;gap:8px;padding:8px 12px;border-bottom:1px solid #f3f4f6';
-          row.innerHTML=
-            '<textarea rows="1" style="flex:1;border:none;outline:none;font-family:Inter,sans-serif;font-size:13px;color:#374151;resize:none;background:transparent;line-height:1.5;overflow:hidden" '+
-            'oninput="updateNote('+ci+','+ni+',this.value);autoH(this)" onkeydown="noteKey(event,'+ci+','+ni+')">'+escH(note)+'</textarea>'+
-            '<button onclick="deleteNote('+ci+','+ni+')" style="background:none;border:none;color:#d1d5db;cursor:pointer;font-size:14px;padding:2px 4px;flex-shrink:0" title="Delete">✕</button>';
-          sec.appendChild(row);
-        });
-      }
-      body.appendChild(sec);
-    });
-    // Auto-height all textareas
-    body.querySelectorAll('textarea').forEach(function(t){autoH(t);});
-  }
-
-  function escH(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-  function autoH(t){t.style.height='auto';t.style.height=t.scrollHeight+'px';}
-
-  window.addNotesCat=function(){
-    var d=load();
-    d.push({name:'New Category',notes:[]});
-    save(d);render();
-    // Focus the new category name
-    setTimeout(function(){
-      var inputs=document.querySelectorAll('#notes-body input');
-      if(inputs.length)inputs[inputs.length-1].select();
-    },50);
-  };
-  window.deleteCat=function(ci){
-    if(!confirm('Delete this category and all its notes?'))return;
-    var d=load();d.splice(ci,1);save(d);render();
-  };
-  window.addNote=function(ci){
-    var d=load();
-    if(!d[ci].notes)d[ci].notes=[];
-    d[ci].notes.push('');
-    save(d);render();
-    setTimeout(function(){
-      var tas=document.querySelectorAll('#notes-body textarea');
-      if(tas.length)tas[tas.length-1].focus();
-    },50);
-  };
-  window.deleteNote=function(ci,ni){
-    var d=load();d[ci].notes.splice(ni,1);save(d);render();
-  };
-  window.updateCatName=function(ci,val){
-    var d=load();d[ci].name=val;save(d);
-  };
-  window.updateNote=function(ci,ni,val){
-    var d=load();
-    if(!d[ci].notes)d[ci].notes=[];
-    d[ci].notes[ni]=val;save(d);
-  };
-  window.noteKey=function(e,ci,ni){
-    if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();addNote(ci);}
-  };
-
-  render();
-})();
-</script>
-
-<!-- CALENDAR WIDGET -->
-<div id="cal-widget" style="background:#fff;border-radius:14px;border:1px solid #e5e7eb;margin:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06)">
-  <div style="background:linear-gradient(135deg,#1B2A4A,#243a6e);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
-    <div style="display:flex;align-items:center;gap:10px">
-      <span style="font-size:18px">📅</span>
-      <div style="font-family:Inter,sans-serif;font-size:14px;font-weight:800;color:#fff">My Schedule</div>
-    </div>
-    <div style="display:flex;gap:8px;align-items:center">
-      <button onclick="addHitItem()" style="background:#C8960C;color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">+ Add to Hit List</button>
-      <a href="/calendar/" style="background:rgba(255,255,255,.15);color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;text-decoration:none;font-family:Inter,sans-serif">Full Calendar ↗</a>
-    </div>
-  </div>
-
-  <div style="display:grid;grid-template-columns:260px 1fr;min-height:400px">
-
-    <!-- HIT LIST -->
-    <div style="border-right:1px solid #e5e7eb;display:flex;flex-direction:column">
-      <div style="background:#fef9f0;padding:10px 14px;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;justify-content:space-between">
-        <div style="font-size:12px;font-weight:800;color:#1B2A4A;font-family:Inter,sans-serif;display:flex;align-items:center;gap:6px">
-          🎯 <span>Today's Hit List</span>
-        </div>
-        <span id="hit-count" style="background:#C8960C;color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px;font-family:Inter,sans-serif">0</span>
-      </div>
-      <div id="hit-list-body" style="flex:1;overflow-y:auto;max-height:340px;padding:8px"></div>
-      <div style="padding:10px 14px;border-top:1px solid #e5e7eb">
-        <div style="display:flex;gap:6px">
-          <input id="hit-input" placeholder="Add name or note..." style="flex:1;border:1.5px solid #e5e7eb;border-radius:6px;padding:6px 10px;font-size:12px;font-family:Inter,sans-serif;outline:none" onkeydown="if(event.key==='Enter')addHitItem()">
-          <button onclick="addHitItem()" style="background:#1B2A4A;color:#fff;border:none;border-radius:6px;padding:6px 10px;font-size:18px;cursor:pointer;font-weight:700">+</button>
+      <!-- OFFICE -->
+      <div class="room-card" onclick="openRoom('office')">
+        <div class="room-bg" style="background:linear-gradient(135deg,#1B2A4A,#243a6e)"></div>
+        <div class="room-overlay"></div>
+        <div class="room-count" id="cnt-office">ATC</div>
+        <div class="room-content">
+          <span class="room-icon">💼</span>
+          <div class="room-name">The Office</div>
+          <div class="room-desc">ATC · CRM · Sales tools · Emails</div>
         </div>
       </div>
-    </div>
 
-    <!-- CALENDAR -->
-    <div style="display:flex;flex-direction:column">
-      <!-- Day color strip -->
-      <div id="day-strip" style="display:grid;padding:0;border-bottom:1px solid #e5e7eb"></div>
-      <iframe src="https://calendar.google.com/calendar/embed?src=sebastianshort624%40gmail.com&ctz=America%2FNew_York&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0&mode=AGENDA" style="border:0;display:block;flex:1" width="100%" height="340" frameborder="0" scrolling="no"></iframe>
-    </div>
+      <!-- LIVING ROOM / DAILY HUB -->
+      <div class="room-card" onclick="openRoom('living')">
+        <div class="room-bg" style="background:linear-gradient(135deg,#2c3e50,#34495e)"></div>
+        <div class="room-overlay"></div>
+        <div class="room-count">Daily</div>
+        <div class="room-content">
+          <span class="room-icon">🛋</span>
+          <div class="room-name">Living Room</div>
+          <div class="room-desc">Calendar · Hit list · Quick notes</div>
+        </div>
+      </div>
 
-  </div>
-  <div style="padding:8px 14px;background:#f8f9fa;border-top:1px solid #e5e7eb;font-size:11px;color:#9ca3af;text-align:center;font-family:Inter,sans-serif">
-    Hit List saves automatically · Calendar syncs with Google in real time
+      <!-- FAMILY ROOM -->
+      <div class="room-card" onclick="openRoom('family')">
+        <div class="room-bg" style="background:linear-gradient(135deg,#1a5e3a,#27ae60)"></div>
+        <div class="room-overlay"></div>
+        <div class="room-count">4 Members</div>
+        <div class="room-content">
+          <span class="room-icon">👨‍👩‍👧‍👦</span>
+          <div class="room-name">Family Room</div>
+          <div class="room-desc">Joshua · Ever · Carl · Colombia</div>
+        </div>
+      </div>
+
+      <!-- RECOVERY ROOM -->
+      <div class="room-card" onclick="openRoom('recovery')">
+        <div class="room-bg" style="background:linear-gradient(135deg,#6c3483,#8e44ad)"></div>
+        <div class="room-overlay"></div>
+        <div class="room-count">12 Steps</div>
+        <div class="room-content">
+          <span class="room-icon">❤️‍🔥</span>
+          <div class="room-name">Recovery Room</div>
+          <div class="room-desc">12 Steps · Vapeless · Palabras</div>
+        </div>
+      </div>
+
+      <!-- FINANCE ROOM -->
+      <div class="room-card" onclick="openRoom('finance')">
+        <div class="room-bg" style="background:linear-gradient(135deg,#154360,#1a5276)"></div>
+        <div class="room-overlay"></div>
+        <div class="room-count">$$$</div>
+        <div class="room-content">
+          <span class="room-icon">💰</span>
+          <div class="room-name">Finance Room</div>
+          <div class="room-desc">Income · Insurance · Joshua budget</div>
+        </div>
+      </div>
+
+      <!-- GARAGE / PROJECTS -->
+      <div class="room-card" onclick="openRoom('garage')">
+        <div class="room-bg" style="background:linear-gradient(135deg,#784212,#a04000)"></div>
+        <div class="room-overlay"></div>
+        <div class="room-count">4 Projects</div>
+        <div class="room-content">
+          <span class="room-icon">🔧</span>
+          <div class="room-name">The Garage</div>
+          <div class="room-desc">DP Movers · 48 States · Roofing</div>
+        </div>
+      </div>
+
+      <!-- HEALTH / KITCHEN -->
+      <div class="room-card" onclick="openRoom('health')">
+        <div class="room-bg" style="background:linear-gradient(135deg,#1d6a3e,#239a5c)"></div>
+        <div class="room-overlay"></div>
+        <div class="room-count">Wellness</div>
+        <div class="room-content">
+          <span class="room-icon">🥗</span>
+          <div class="room-name">Health & Kitchen</div>
+          <div class="room-desc">Meal plans · Wellness · Carl's plan</div>
+        </div>
+      </div>
+
+      <!-- LIBRARY -->
+      <div class="room-card" onclick="openRoom('library')">
+        <div class="room-bg" style="background:linear-gradient(135deg,#4a2c2a,#6d4c41)"></div>
+        <div class="room-overlay"></div>
+        <div class="room-count">Resources</div>
+        <div class="room-content">
+          <span class="room-icon">📚</span>
+          <div class="room-name">The Library</div>
+          <div class="room-desc">Research · Bronco · Links · Docs</div>
+        </div>
+      </div>
+
+      <!-- ADD ROOM -->
+      <div class="room-card" onclick="addRoom()" style="border:2px dashed rgba(255,255,255,.15);background:transparent;min-height:180px;align-items:center;justify-content:center">
+        <div class="room-content" style="text-align:center">
+          <span class="room-icon" style="display:block;text-align:center">+</span>
+          <div class="room-name" style="color:rgba(255,255,255,.3)">Add a Room</div>
+          <div class="room-desc">Create your own space</div>
+        </div>
+      </div>
+
+    </div>
   </div>
 </div>
 
-<script>
-(function(){
-  var PASTEL=[
-    {bg:'#fce4ec',text:'#c2185b',label:'Today'},
-    {bg:'#e3f2fd',text:'#1565c0',label:'Tomorrow'},
-    {bg:'#e8f5e9',text:'#2e7d32',label:''},
-    {bg:'#fff8e1',text:'#f57f17',label:''},
-    {bg:'#f3e5f5',text:'#6a1b9a',label:''},
-    {bg:'#e0f7fa',text:'#00695c',label:''},
-    {bg:'#fbe9e7',text:'#bf360c',label:''}
-  ];
+<!-- ══════════════ ROOMS ══════════════ -->
 
-  // Build day strip
-  var strip=document.getElementById('day-strip');
-  var days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  var today=new Date();
-  strip.style.gridTemplateColumns='repeat(3,1fr)';
-  var cols='';
-  for(var i=0;i<3;i++){
-    var d=new Date(today);d.setDate(today.getDate()+i);
-    var p=PASTEL[i];
-    var dayName=days[d.getDay()];
-    var mo=d.getMonth()+1,dt=d.getDate();
-    cols+='<div style="background:'+p.bg+';padding:8px 12px;border-right:1px solid rgba(0,0,0,.06);text-align:center">'
-      +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:'+p.text+';font-family:Inter,sans-serif">'+(i===0?'TODAY':i===1?'TOMORROW':dayName.toUpperCase())+'</div>'
-      +'<div style="font-size:16px;font-weight:900;color:'+p.text+';font-family:Inter,sans-serif;margin-top:1px">'+mo+'/'+dt+'</div>'
-      +'</div>';
-  }
-  strip.innerHTML=cols;
-
-  // HIT LIST
-  var HK='sl_hitlist';
-  function loadHits(){try{return JSON.parse(localStorage.getItem(HK)||'[]');}catch(e){return[];}}
-  function saveHits(items){localStorage.setItem(HK,JSON.stringify(items));}
-  function render(){
-    var items=loadHits();
-    var body=document.getElementById('hit-list-body');
-    document.getElementById('hit-count').textContent=items.length;
-    if(!items.length){
-      body.innerHTML='<div style="text-align:center;padding:24px 12px;color:#d1d5db;font-size:12px;font-family:Inter,sans-serif">No clients on today's list.<br>Click + to add one.</div>';
-      return;
-    }
-    body.innerHTML=items.map(function(item,i){
-      var p=PASTEL[i%PASTEL.length];
-      return '<div style="display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:8px;margin-bottom:5px;background:'+p.bg+';border-left:3px solid '+p.text+'">'
-        +'<div style="flex:1;font-size:12px;font-weight:600;color:#1a1a2e;font-family:Inter,sans-serif;line-height:1.3">'+item+'</div>'
-        +'<button onclick="removeHit('+i+')" style="background:none;border:none;cursor:pointer;color:#9ca3af;font-size:14px;padding:0 2px;flex-shrink:0">✕</button>'
-        +'</div>';
-    }).join('');
-  }
-  window.addHitItem=function(){
-    var inp=document.getElementById('hit-input');
-    var val=inp.value.trim();
-    if(!val)return;
-    var items=loadHits();items.push(val);
-    saveHits(items);inp.value='';render();
-  };
-  window.removeHit=function(i){
-    var items=loadHits();items.splice(i,1);saveHits(items);render();
-  };
-  render();
-})();
-</script>
-<!-- CALENDAR WIDGET -->
-<div id="cal-widget" style="background:#fff;border-radius:14px;border:1px solid #e5e7eb;margin:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06)">
-  <div style="background:linear-gradient(135deg,#1B2A4A,#243a6e);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
-    <div style="display:flex;align-items:center;gap:10px">
-      <span style="font-size:18px">📅</span>
+<!-- OFFICE -->
+<div class="room-view" id="room-office">
+  <div class="room-header" style="background:linear-gradient(135deg,#1B2A4A,#243a6e)">
+    <div class="room-header-inner">
+      <div class="room-header-icon">💼</div>
       <div>
-        <div style="font-family:Inter,sans-serif;font-size:14px;font-weight:800;color:#fff">My Schedule</div>
-        <div style="font-size:11px;color:rgba(255,255,255,.45);margin-top:1px">Eastern Time · Live sync</div>
+        <div class="room-header-name">The Office</div>
+        <div class="room-header-desc">ATC CRM · Sales tools · Emails · Presentations</div>
       </div>
-    </div>
-    <a href="/calendar/" style="background:#C8960C;color:#fff;font-size:11px;font-weight:700;padding:6px 12px;border-radius:6px;text-decoration:none;font-family:Inter,sans-serif">Full Calendar ↗</a>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
-    <div style="border-right:1px solid #e5e7eb">
-      <div style="background:#f8f9fa;padding:8px 14px;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:6px">
-        <span style="width:10px;height:10px;border-radius:50%;background:#4285f4;display:inline-block"></span>
-        ATC Work Calendar — Appointments
-      </div>
-      <iframe src="https://calendar.google.com/calendar/embed?src=sebastian%40alphatimeshareconsultants.com&ctz=America%2FNew_York&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0&mode=AGENDA" style="border:0;display:block" width="100%" height="340" frameborder="0" scrolling="no"></iframe>
-    </div>
-    <div>
-      <div style="background:#f8f9fa;padding:8px 14px;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:6px">
-        <span style="width:10px;height:10px;border-radius:50%;background:#34a853;display:inline-block"></span>
-        Personal Calendar — Full Details
-      </div>
-      <iframe src="https://calendar.google.com/calendar/embed?src=sebastianshort624%40gmail.com&ctz=America%2FNew_York&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0&mode=AGENDA" style="border:0;display:block" width="100%" height="340" frameborder="0" scrolling="no"></iframe>
     </div>
   </div>
-  <div style="padding:8px 14px;background:#f8f9fa;border-top:1px solid #e5e7eb;font-size:11px;color:#9ca3af;text-align:center">
-    Left: ATC appointments (live, free/busy) &nbsp;·&nbsp; Right: Personal calendar (full details) &nbsp;·&nbsp; Both update in real time
+  <div class="room-body">
+    <div class="room-main">
+      <div class="links-section">
+        <div class="links-label">ATC Core</div>
+        <div class="links-grid">
+          <a href="https://alphafiles.net/vitals/" class="link-tile"><div class="link-tile-icon">⚡</div><div class="link-tile-name">Vitals</div><div class="link-tile-desc">CRM workspace</div></a>
+          <a href="https://alphafiles.net/present/" class="link-tile"><div class="link-tile-icon">▶️</div><div class="link-tile-name">Present</div><div class="link-tile-desc">Live presentation</div></a>
+          <a href="https://alphafiles.net/clients/" class="link-tile"><div class="link-tile-icon">👥</div><div class="link-tile-name">Clients</div><div class="link-tile-desc">All clients</div></a>
+          <a href="https://alphafiles.net/alpha/" class="link-tile"><div class="link-tile-icon">📋</div><div class="link-tile-name">Alpha Hub</div><div class="link-tile-desc">All pages + emails</div></a>
+          <a href="https://alphafiles.net/build/" class="link-tile"><div class="link-tile-icon">🚀</div><div class="link-tile-name">Build Console</div><div class="link-tile-desc">Push quote pages</div></a>
+          <a href="https://alphafiles.net/overview/" class="link-tile"><div class="link-tile-icon">🗺</div><div class="link-tile-name">CRM Overview</div><div class="link-tile-desc">System map</div></a>
+          <a href="https://alphafiles.net/history/" class="link-tile"><div class="link-tile-icon">⭐</div><div class="link-tile-name">Track Record</div><div class="link-tile-desc">History + reviews</div></a>
+          <a href="https://alphafiles.net/proof/" class="link-tile"><div class="link-tile-icon">✅</div><div class="link-tile-name">Proof</div><div class="link-tile-desc">Case database</div></a>
+        </div>
+      </div>
+      <div class="links-section">
+        <div class="links-label">External Tools</div>
+        <div class="links-grid">
+          <a href="https://crmplus.zoho.com" target="_blank" class="link-tile"><div class="link-tile-icon">📊</div><div class="link-tile-name">Zoho CRM</div><div class="link-tile-desc">Lead management</div></a>
+          <a href="https://mail.google.com" target="_blank" class="link-tile"><div class="link-tile-icon">✉️</div><div class="link-tile-name">Gmail</div><div class="link-tile-desc">ATC email</div></a>
+          <a href="https://calendar.google.com" target="_blank" class="link-tile"><div class="link-tile-icon">📅</div><div class="link-tile-name">Calendar</div><div class="link-tile-desc">ATC appointments</div></a>
+          <a href="https://www.docusign.com" target="_blank" class="link-tile"><div class="link-tile-icon">✍️</div><div class="link-tile-name">DocuSign</div><div class="link-tile-desc">E-signatures</div></a>
+        </div>
+      </div>
+    </div>
+    <div class="room-sidebar" id="sidebar-office"></div>
   </div>
 </div>
+
+<!-- LIVING ROOM -->
+<div class="room-view" id="room-living">
+  <div class="room-header" style="background:linear-gradient(135deg,#2c3e50,#34495e)">
+    <div class="room-header-inner">
+      <div class="room-header-icon">🛋</div>
+      <div>
+        <div class="room-header-name">Living Room</div>
+        <div class="room-header-desc">Your daily hub — calendar, hit list, notes</div>
+      </div>
+    </div>
+  </div>
+  <div class="room-body">
+    <div class="room-main">
+      <div class="links-label" style="color:rgba(255,255,255,.3);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Today's Calendar</div>
+      <div class="cal-mini">
+        <div class="cal-mini-hdr">📅 Upcoming</div>
+        <iframe src="https://calendar.google.com/calendar/embed?src=sebastianshort624%40gmail.com&ctz=America%2FNew_York&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0&mode=AGENDA" style="border:0;display:block;width:100%;height:280px" frameborder="0" scrolling="no"></iframe>
+      </div>
+      <div class="links-label" style="color:rgba(255,255,255,.3);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">🎯 Today's Hit List</div>
+      <div id="living-hitlist"></div>
+      <div style="display:flex;gap:6px;margin-top:8px">
+        <input id="living-hit-input" placeholder="Add to hit list..." style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:8px 12px;font-size:13px;color:#fff;outline:none;font-family:Inter,sans-serif" onkeydown="if(event.key==='Enter')addLivingHit()">
+        <button onclick="addLivingHit()" style="background:var(--gold);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-weight:800;cursor:pointer;font-size:16px">+</button>
+      </div>
+    </div>
+    <div class="room-sidebar" id="sidebar-living"></div>
+  </div>
+</div>
+
+<!-- FAMILY ROOM -->
+<div class="room-view" id="room-family">
+  <div class="room-header" style="background:linear-gradient(135deg,#1a5e3a,#27ae60)">
+    <div class="room-header-inner">
+      <div class="room-header-icon">👨‍👩‍👧‍👦</div>
+      <div>
+        <div class="room-header-name">Family Room</div>
+        <div class="room-header-desc">Each family member has their own space</div>
+      </div>
+    </div>
+  </div>
+  <div class="room-body">
+    <div class="room-main">
+      <div class="links-label" style="color:rgba(255,255,255,.3);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">Family Members</div>
+      <div class="family-grid">
+        <a href="/joshuason/" class="family-card"><div class="family-avatar">🪖</div><div class="family-name">Joshua</div><div class="family-role">Active Duty Army · Finance</div></a>
+        <a href="#" class="family-card" onclick="alert('Ever's room coming soon!')"><div class="family-avatar">👩‍⚕️</div><div class="family-name">Ever</div><div class="family-role">Pediatric Surgery</div></a>
+        <a href="/carl/" class="family-card"><div class="family-avatar">🏥</div><div class="family-name">Carl</div><div class="family-role">Post-Surgery Recovery</div></a>
+        <a href="/safe/" class="family-card"><div class="family-avatar">🇨🇴</div><div class="family-name">Colombia Family</div><div class="family-role">Cali · Safety Plan</div></a>
+      </div>
+      <div class="links-label" style="color:rgba(255,255,255,.3);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Family Tools</div>
+      <div class="links-grid">
+        <a href="/joshuason/" class="link-tile"><div class="link-tile-icon">💰</div><div class="link-tile-name">Joshua Finance</div><div class="link-tile-desc">Army Dave Ramsey</div></a>
+        <a href="/carl/" class="link-tile"><div class="link-tile-icon">🍽</div><div class="link-tile-name">Carl's Meal Plan</div><div class="link-tile-desc">Post-surgery diet</div></a>
+        <a href="/safe/" class="link-tile"><div class="link-tile-icon">🛡</div><div class="link-tile-name">Colombia Safety</div><div class="link-tile-desc">Cali safety plan</div></a>
+        <a href="#" class="link-tile" onclick="alert('Add new family member page soon!')"><div class="link-tile-icon">+</div><div class="link-tile-name">Add Member</div><div class="link-tile-desc">New family space</div></a>
+      </div>
+    </div>
+    <div class="room-sidebar" id="sidebar-family"></div>
+  </div>
+</div>
+
+<!-- RECOVERY ROOM -->
+<div class="room-view" id="room-recovery">
+  <div class="room-header" style="background:linear-gradient(135deg,#6c3483,#8e44ad)">
+    <div class="room-header-inner">
+      <div class="room-header-icon">❤️‍🔥</div>
+      <div>
+        <div class="room-header-name">Recovery Room</div>
+        <div class="room-header-desc">One day at a time</div>
+      </div>
+    </div>
+  </div>
+  <div class="room-body">
+    <div class="room-main">
+      <div class="links-grid" style="margin-bottom:20px">
+        <a href="https://12easysteps.org" target="_blank" class="link-tile"><div class="link-tile-icon">📖</div><div class="link-tile-name">12 Easy Steps</div><div class="link-tile-desc">Recovery platform</div></a>
+        <a href="https://12easysteps.org/10" target="_blank" class="link-tile"><div class="link-tile-icon">📝</div><div class="link-tile-name">Step 10</div><div class="link-tile-desc">Daily inventory</div></a>
+        <a href="/vapeless/" class="link-tile"><div class="link-tile-icon">🚭</div><div class="link-tile-name">Vapeless</div><div class="link-tile-desc">Vaping recovery app</div></a>
+        <a href="/palabras/" class="link-tile"><div class="link-tile-icon">💬</div><div class="link-tile-name">Palabras</div><div class="link-tile-desc">333 positive words</div></a>
+        <a href="https://12easysteps.org/safe/" target="_blank" class="link-tile"><div class="link-tile-icon">🛡</div><div class="link-tile-name">Safety Plan</div><div class="link-tile-desc">Colombia safety</div></a>
+        <a href="https://www.aa.org" target="_blank" class="link-tile"><div class="link-tile-icon">🔵</div><div class="link-tile-name">AA.org</div><div class="link-tile-desc">Meeting finder</div></a>
+      </div>
+    </div>
+    <div class="room-sidebar" id="sidebar-recovery"></div>
+  </div>
+</div>
+
+<!-- FINANCE ROOM -->
+<div class="room-view" id="room-finance">
+  <div class="room-header" style="background:linear-gradient(135deg,#154360,#1a5276)">
+    <div class="room-header-inner">
+      <div class="room-header-icon">💰</div>
+      <div>
+        <div class="room-header-name">Finance Room</div>
+        <div class="room-header-desc">Money · Insurance · Budgets</div>
+      </div>
+    </div>
+  </div>
+  <div class="room-body">
+    <div class="room-main">
+      <div class="links-grid">
+        <a href="/insurance/" class="link-tile"><div class="link-tile-icon">🛡</div><div class="link-tile-name">Insurance</div><div class="link-tile-desc">Life insurance compare</div></a>
+        <a href="/joshuason/" class="link-tile"><div class="link-tile-icon">🪖</div><div class="link-tile-name">Joshua Budget</div><div class="link-tile-desc">Army Dave Ramsey</div></a>
+        <a href="#" class="link-tile"><div class="link-tile-icon">📊</div><div class="link-tile-name">Commission</div><div class="link-tile-desc">ATC pay tracker</div></a>
+        <a href="#" class="link-tile"><div class="link-tile-icon">💳</div><div class="link-tile-name">Budget</div><div class="link-tile-desc">Monthly budget</div></a>
+      </div>
+    </div>
+    <div class="room-sidebar" id="sidebar-finance"></div>
+  </div>
+</div>
+
+<!-- GARAGE -->
+<div class="room-view" id="room-garage">
+  <div class="room-header" style="background:linear-gradient(135deg,#784212,#a04000)">
+    <div class="room-header-inner">
+      <div class="room-header-icon">🔧</div>
+      <div>
+        <div class="room-header-name">The Garage</div>
+        <div class="room-header-desc">Business projects · Moving companies · Roofing</div>
+      </div>
+    </div>
+  </div>
+  <div class="room-body">
+    <div class="room-main">
+      <div class="links-section">
+        <div class="links-label">Moving Company Sites</div>
+        <div class="links-grid">
+          <a href="https://dpmoversrelocation.com" target="_blank" class="link-tile"><div class="link-tile-icon">🚛</div><div class="link-tile-name">DP Movers</div><div class="link-tile-desc">dpmoversrelocation.com</div></a>
+          <a href="https://48statesmovingandstorage.com" target="_blank" class="link-tile"><div class="link-tile-icon">📦</div><div class="link-tile-name">48 States</div><div class="link-tile-desc">48statesmoving...</div></a>
+          <a href="/dp/" class="link-tile"><div class="link-tile-icon">📊</div><div class="link-tile-name">DP Intelligence</div><div class="link-tile-desc">Business report</div></a>
+          <a href="/panther/" class="link-tile"><div class="link-tile-icon">🐆</div><div class="link-tile-name">Panther</div><div class="link-tile-desc">Acquisition research</div></a>
+        </div>
+      </div>
+      <div class="links-section">
+        <div class="links-label">Roofing</div>
+        <div class="links-grid">
+          <a href="/nationalinstall/" class="link-tile"><div class="link-tile-icon">🏠</div><div class="link-tile-name">National Install</div><div class="link-tile-desc">Roofing brokerage</div></a>
+          <a href="https://nationalinstall.com" target="_blank" class="link-tile"><div class="link-tile-icon">🌐</div><div class="link-tile-name">NI Website</div><div class="link-tile-desc">nationalinstall.com</div></a>
+        </div>
+      </div>
+    </div>
+    <div class="room-sidebar" id="sidebar-garage"></div>
+  </div>
+</div>
+
+<!-- HEALTH -->
+<div class="room-view" id="room-health">
+  <div class="room-header" style="background:linear-gradient(135deg,#1d6a3e,#239a5c)">
+    <div class="room-header-inner">
+      <div class="room-header-icon">🥗</div>
+      <div>
+        <div class="room-header-name">Health & Kitchen</div>
+        <div class="room-header-desc">Meal plans · Wellness · Recovery nutrition</div>
+      </div>
+    </div>
+  </div>
+  <div class="room-body">
+    <div class="room-main">
+      <div class="links-grid">
+        <a href="/carl/" class="link-tile"><div class="link-tile-icon">🏥</div><div class="link-tile-name">Carl's Meal Plan</div><div class="link-tile-desc">Post-cholecystectomy</div></a>
+        <a href="/vapeless/" class="link-tile"><div class="link-tile-icon">🚭</div><div class="link-tile-name">Vapeless</div><div class="link-tile-desc">Nicotine recovery</div></a>
+      </div>
+    </div>
+    <div class="room-sidebar" id="sidebar-health"></div>
+  </div>
+</div>
+
+<!-- LIBRARY -->
+<div class="room-view" id="room-library">
+  <div class="room-header" style="background:linear-gradient(135deg,#4a2c2a,#6d4c41)">
+    <div class="room-header-inner">
+      <div class="room-header-icon">📚</div>
+      <div>
+        <div class="room-header-name">The Library</div>
+        <div class="room-header-desc">Research · Shopping guides · Reference</div>
+      </div>
+    </div>
+  </div>
+  <div class="room-body">
+    <div class="room-main">
+      <div class="links-grid">
+        <a href="/bronco/" class="link-tile"><div class="link-tile-icon">🤠</div><div class="link-tile-name">Bronco Guide</div><div class="link-tile-desc">Ford Bronco Sport</div></a>
+        <a href="/palabras/" class="link-tile"><div class="link-tile-icon">🇲🇽</div><div class="link-tile-name">Palabras</div><div class="link-tile-desc">Spanish positive words</div></a>
+        <a href="/62426/" class="link-tile"><div class="link-tile-icon">🗺</div><div class="link-tile-name">Charlotte Trip</div><div class="link-tile-desc">Day trip itinerary</div></a>
+      </div>
+    </div>
+    <div class="room-sidebar" id="sidebar-library"></div>
+  </div>
+</div>
+
+<script>
+// ── CLOCK ──
+function tick(){
+  var now=new Date();
+  var h=now.getHours(),m=now.getMinutes();
+  var ampm=h>=12?'PM':'AM';h=h%12||12;
+  document.getElementById('clock').textContent=(h<10?'0':'')+h+':'+(m<10?'0':'')+m+' '+ampm;
+  var days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var d=now;
+  document.getElementById('today-date').textContent=days[d.getDay()]+', '+months[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear();
+}
+tick();setInterval(tick,10000);
+
+// ── ROOMS ──
+var currentRoom=null;
+function showFoyer(){
+  document.getElementById('foyer').style.display='block';
+  document.querySelectorAll('.room-view').forEach(function(r){r.classList.remove('active');});
+  document.getElementById('breadcrumb').style.display='none';
+  currentRoom=null;
+  window.scrollTo(0,0);
+}
+function openRoom(id){
+  document.getElementById('foyer').style.display='none';
+  document.querySelectorAll('.room-view').forEach(function(r){r.classList.remove('active');});
+  var room=document.getElementById('room-'+id);
+  if(room){room.classList.add('active');currentRoom=id;}
+  document.getElementById('breadcrumb').style.display='flex';
+  var names={office:'The Office',living:'Living Room',family:'Family Room',recovery:'Recovery Room',finance:'Finance Room',garage:'The Garage',health:'Health & Kitchen',library:'The Library'};
+  document.getElementById('breadcrumb-room').textContent=names[id]||id;
+  buildSidebar(id);
+  window.scrollTo(0,0);
+}
+function addRoom(){alert('Custom rooms coming soon — tell me what room you want added!');}
+
+// ── NOTES SYSTEM ──
+var NOTES_KEY='seb_house_notes';
+function loadNotes(room){try{var all=JSON.parse(localStorage.getItem(NOTES_KEY)||'{}');return all[room]||{cats:['General','Ideas','To Do'],notes:[]};}catch(e){return{cats:['General','Ideas','To Do'],notes:[]};}}
+function saveNotes(room,data){try{var all=JSON.parse(localStorage.getItem(NOTES_KEY)||'{}');all[room]=data;localStorage.setItem(NOTES_KEY,JSON.stringify(all));}catch(e){}}
+
+function buildSidebar(room){
+  var sid=document.getElementById('sidebar-'+room);
+  if(!sid)return;
+  var data=loadNotes(room);
+  var activeCat=data.activeCat||data.cats[0]||'General';
+  renderSidebar(room,data,activeCat,sid);
+}
+
+function renderSidebar(room,data,activeCat,sid){
+  var filteredNotes=data.notes.filter(function(n){return n.cat===activeCat;});
+  sid.innerHTML='<div class="notes-panel">'
+    +'<h3>📝 Room Notes</h3>'
+    +'<div class="notes-cats" id="cats-'+room+'">'
+    +data.cats.map(function(c){return '<button class="notes-cat'+(c===activeCat?' active':'')+'" onclick="switchCat(''+room+'',''+c+'')">'+(c)+'</button>';}).join('')
+    +'<button class="notes-cat" onclick="addCat(''+room+'')" style="border-style:dashed">+</button>'
+    +'</div>'
+    +'<div class="notes-input-row">'
+    +'<textarea class="notes-text" id="note-text-'+room+'" placeholder="Add a note..." rows="3"></textarea>'
+    +'</div>'
+    +'<button onclick="addNote(''+room+'',''+activeCat+'')" style="background:var(--gold);color:#fff;border:none;border-radius:7px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;width:100%;margin-bottom:12px">+ Add Note</button>'
+    +'<div id="notes-list-'+room+'">'
+    +(filteredNotes.length?filteredNotes.map(function(n,i){
+      var realIdx=data.notes.indexOf(n);
+      return '<div class="note-item"><div><div class="note-item-text">'+n.text+'</div><div class="note-item-meta">'+n.ts+'</div></div><button class="note-del" onclick="delNote(''+room+'','+realIdx+')">✕</button></div>';
+    }).join(''):'<div class="notes-empty">No notes in '+activeCat+' yet.</div>')
+    +'</div></div>';
+}
+
+window.switchCat=function(room,cat){var data=loadNotes(room);data.activeCat=cat;saveNotes(room,data);buildSidebar(room);};
+window.addCat=function(room){var name=prompt('Category name:');if(!name)return;var data=loadNotes(room);if(!data.cats.includes(name))data.cats.push(name);data.activeCat=name;saveNotes(room,data);buildSidebar(room);};
+window.addNote=function(room,cat){
+  var inp=document.getElementById('note-text-'+room);
+  var val=inp?inp.value.trim():'';
+  if(!val)return;
+  var data=loadNotes(room);
+  var now=new Date();
+  data.notes.unshift({cat:cat,text:val,ts:now.toLocaleDateString()+' '+now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})});
+  data.activeCat=cat;
+  saveNotes(room,data);
+  buildSidebar(room);
+};
+window.delNote=function(room,idx){var data=loadNotes(room);data.notes.splice(idx,1);saveNotes(room,data);buildSidebar(room);};
+
+// ── HIT LIST (living room) ──
+var HK='sl_hitlist';
+function loadHits(){try{return JSON.parse(localStorage.getItem(HK)||'[]');}catch(e){return[];}}
+function saveHits(h){localStorage.setItem(HK,JSON.stringify(h));}
+function renderLivingHits(){
+  var items=loadHits();
+  var el=document.getElementById('living-hitlist');
+  if(!el)return;
+  if(!items.length){el.innerHTML='<div style="font-size:12px;color:rgba(255,255,255,.25);text-align:center;padding:16px;font-style:italic">Hit list is empty</div>';return;}
+  el.innerHTML=items.map(function(item,i){
+    return '<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,255,255,.05);border-radius:7px;margin-bottom:5px">'
+      +'<div style="flex:1;font-size:13px;color:#fff">'+item+'</div>'
+      +'<button onclick="removeLivingHit('+i+')" style="background:none;border:none;color:rgba(255,255,255,.3);cursor:pointer;font-size:13px">✕</button>'
+      +'</div>';
+  }).join('');
+}
+window.addLivingHit=function(){var inp=document.getElementById('living-hit-input');var val=inp.value.trim();if(!val)return;var h=loadHits();h.push(val);saveHits(h);inp.value='';renderLivingHits();};
+window.removeLivingHit=function(i){var h=loadHits();h.splice(i,1);saveHits(h);renderLivingHits();};
+
+// Patch openRoom to also render living hits
+var _origOpen=openRoom;
+openRoom=function(id){_origOpen(id);if(id==='living')setTimeout(renderLivingHits,100);};
+</script>
 </body>
 </html>
