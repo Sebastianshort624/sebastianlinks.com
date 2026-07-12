@@ -416,19 +416,35 @@ function applyTransform(showHUD){
     clearTimeout(window._zh);window._zh=setTimeout(function(){h.classList.remove('show');},1200);
   }
 }
+var minScale=0.1; // will be set by zoomFit
+
+function getFitScale(){
+  var cv=document.getElementById('canvas').getBoundingClientRect();
+  return Math.min((cv.width-4)/W,(cv.height-4)/H);
+}
 function zoom(d,cx,cy){
   var prev=scale;
-  scale=Math.min(3,Math.max(0.1,scale+d));
-  // zoom toward center of viewport if no coord given
+  minScale=getFitScale();
+  scale=Math.min(3,Math.max(minScale,scale+d));
   if(cx===undefined){var r=document.getElementById('canvas').getBoundingClientRect();cx=r.width/2;cy=r.height/2;}
   panX=cx-(cx-panX)*(scale/prev);
   panY=cy-(cy-panY)*(scale/prev);
+  // Clamp pan so town never goes off screen
+  clampPan();
   applyTransform();
+}
+function clampPan(){
+  var cv=document.getElementById('canvas').getBoundingClientRect();
+  var scaledW=W*scale, scaledH=H*scale;
+  // Don't let town go fully off edges — keep at least 40px in view
+  panX=Math.min(40,Math.max(cv.width-scaledW-4,panX));
+  panY=Math.min(40,Math.max(cv.height-scaledH-4,panY));
 }
 function zoomFit(){
   var cv=document.getElementById('canvas').getBoundingClientRect();
-  var sx=(cv.width-20)/W, sy=(cv.height-20)/H;
+  var sx=(cv.width-4)/W, sy=(cv.height-4)/H;
   scale=Math.min(sx,sy);
+  minScale=scale;
   panX=(cv.width-W*scale)/2;
   panY=(cv.height-H*scale)/2;
   applyTransform();
@@ -457,12 +473,12 @@ document.addEventListener('pointerup',function(e){
 });
 
 // Scroll wheel zoom
-document.getElementById('canvas').addEventListener('wheel',function(e){e.preventDefault();zoom(e.deltaY<0?0.12:-0.12,e.clientX,e.clientY);},{passive:false});
+document.getElementById('canvas').addEventListener('wheel',function(e){e.preventDefault();zoom(e.deltaY<0?0.12:-0.15,e.clientX,e.clientY);},{passive:false});
 
 // Pinch
 var pinch0=null,pinchScale0=1;
 document.getElementById('canvas').addEventListener('touchstart',function(e){if(e.touches.length===2){var dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;pinch0=Math.sqrt(dx*dx+dy*dy);pinchScale0=scale;}},{passive:true});
-document.getElementById('canvas').addEventListener('touchmove',function(e){if(e.touches.length===2&&pinch0){var dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;var d=Math.sqrt(dx*dx+dy*dy);scale=Math.min(3,Math.max(0.1,pinchScale0*(d/pinch0)));applyTransform();}},{passive:true});
+document.getElementById('canvas').addEventListener('touchmove',function(e){if(e.touches.length===2&&pinch0){var dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;var d=Math.sqrt(dx*dx+dy*dy);scale=Math.min(3,Math.max(getFitScale(),pinchScale0*(d/pinch0)));applyTransform();}},{passive:true});
 document.getElementById('canvas').addEventListener('touchend',function(){pinch0=null;},{passive:true});
 
 // ══════════════════════════════════════
