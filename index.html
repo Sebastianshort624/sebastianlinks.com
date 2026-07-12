@@ -3,12 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
 <title>Sebastian's Town — Greenville</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:'Inter',sans-serif;background:#c8e6b0;overflow:hidden;height:100vh;width:100vw;touch-action:none;user-select:none;-webkit-user-select:none;overscroll-behavior:none;-webkit-overflow-scrolling:touch}
+body{font-family:'Inter',sans-serif;background:#c8e6b0;overflow:hidden;height:100vh;width:100vw;touch-action:none;user-select:none;-webkit-user-select:none}
 
 /* ── NAV ── */
 .nav{background:rgba(255,255,255,.92);backdrop-filter:blur(8px);padding:0 12px;height:46px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid #b8dca0;z-index:1000;position:relative;gap:6px}
@@ -24,15 +23,15 @@ body{font-family:'Inter',sans-serif;background:#c8e6b0;overflow:hidden;height:10
 .canvas.panning{cursor:grabbing}
 
 /* ── WORLD ── */
-.world{position:absolute;width:2400px;height:1800px;transform-origin:0 0;background:#c8e6b0 url("/assets/coc-map.png") center/cover no-repeat}
+.world{position:absolute;width:2400px;height:1800px;transform-origin:0 0}
 .world-ground{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 40%,#b8de98 0%,#c8e6b0 50%,#b0d890 100%)}
 
 /* ── ROADS ── */
-.road{position:absolute;background:rgba(80,60,30,.55)}
+.road{position:absolute;background:#b0b0b0}
 .road.h{height:38px}.road.v{width:38px}
 .road.h::after{content:'';position:absolute;top:50%;left:0;right:0;height:3px;transform:translateY(-50%);background:repeating-linear-gradient(90deg,#fff 0,#fff 28px,transparent 28px,transparent 56px)}
 .road.v::after{content:'';position:absolute;left:50%;top:0;bottom:0;width:3px;transform:translateX(-50%);background:repeating-linear-gradient(180deg,#fff 0,#fff 28px,transparent 28px,transparent 56px)}
-.cross{position:absolute;background:rgba(70,50,20,.5);z-index:1}
+.cross{position:absolute;background:#a8a8a8;z-index:1}
 
 /* ── SIDEWALKS ── */
 .sidewalk{position:absolute;background:#d6cfc4;opacity:.6}
@@ -60,17 +59,6 @@ body{font-family:'Inter',sans-serif;background:#c8e6b0;overflow:hidden;height:10
 .bld::after{content:'';position:absolute;right:-8px;top:6px;width:8px;height:calc(100% - 4px);border-radius:0 4px 4px 0;background:rgba(0,0,0,.22);clip-path:polygon(0 0,100% 5%,100% 95%,0 100%)}
 /* Bottom shadow */
 .bld-shadow{position:absolute;bottom:-10px;left:6px;right:-6px;height:10px;border-radius:0 0 6px 6px;background:rgba(0,0,0,.18);clip-path:polygon(0 0,100% 0,100% 100%,4% 100%)}
-/* Windows on building face */
-.bld-windows{position:absolute;top:38%;left:10%;right:10%;bottom:16%;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:3px;pointer-events:none;z-index:1}
-.bld-win{background:rgba(180,225,255,.55);border-radius:2px;border:1px solid rgba(140,200,240,.4)}
-.bld-win.lit{background:rgba(255,230,120,.7);border-color:rgba(200,170,60,.5)}
-/* Better roof ridge */
-.bld-ridge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);width:3px;height:14px;background:rgba(0,0,0,.3);border-radius:2px 2px 0 0;z-index:2}
-/* Awning for shops */
-.bld-awning{position:absolute;bottom:22%;left:15%;right:15%;height:8px;background:repeating-linear-gradient(90deg,#e03030 0,#e03030 6px,#fff 6px,#fff 12px);border-radius:0 0 4px 4px;z-index:2;display:none}
-.bld.shop .bld-awning{display:block}
-/* Bike path animation */
-@keyframes bikePath{0%{transform:rotate(0deg) translateX(60px) rotate(0deg)}100%{transform:rotate(360deg) translateX(60px) rotate(-360deg)}}
 /* ROOF */
 .bld-roof{width:calc(100% + 14px);height:20px;clip-path:polygon(0 100%,50% 0,100% 100%);margin-bottom:-2px;position:relative;left:-7px;flex-shrink:0;filter:brightness(.85)}
 .bld-icon{font-size:24px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.2));flex-shrink:0;line-height:1}
@@ -105,14 +93,12 @@ body{font-family:'Inter',sans-serif;background:#c8e6b0;overflow:hidden;height:10
 /* ANIMATED CHARACTERS (NPC — not draggable) */
 .char{position:absolute;font-size:16px;z-index:6;pointer-events:none;line-height:1}
 /* Horizontal road chars */
-100%{left:2480px}}
-100%{left:-80px;transform:scaleX(-1)}}
+@keyframes carH{0%{left:-80px}100%{left:2480px}}
+@keyframes carHr{0%{left:2480px;transform:scaleX(-1)}100%{left:-80px;transform:scaleX(-1)}}
 @keyframes carV{0%{top:-80px}100%{top:1880px}}
 @keyframes carVr{0%{top:1880px;transform:scaleY(-1)}100%{top:-80px;transform:scaleY(-1)}}
-100%{left:2460px;transform:scaleX(1)}}
-100%{left:-60px;transform:scaleX(-1)}}
-100%{left:2500px;transform:scaleX(1)}}
-100%{left:-100px;transform:scaleX(-1)}}
+@keyframes walkH{0%{left:-60px}100%{left:2460px}}
+@keyframes walkHr{0%{left:2460px;transform:scaleX(-1)}100%{left:-60px;transform:scaleX(-1)}}
 @keyframes dogWander{0%{transform:translate(0,0) rotate(0deg)}25%{transform:translate(40px,-20px) rotate(10deg)}50%{transform:translate(80px,10px) rotate(-5deg)}75%{transform:translate(30px,40px) rotate(8deg)}100%{transform:translate(0,0) rotate(0deg)}}
 
 /* BULLETIN */
@@ -120,8 +106,6 @@ body{font-family:'Inter',sans-serif;background:#c8e6b0;overflow:hidden;height:10
 .bulletin:hover{transform:scale(1.18)}
 .bulletin::after{content:'';position:absolute;top:-7px;left:50%;transform:translateX(-50%);width:3px;height:8px;background:#777;border-radius:2px}
 
-.swalk{position:absolute;background:rgba(200,180,120,.5);opacity:.6;z-index:2}
-.swalk-char{z-index:7}
 /* HEALTH ZONE SPECIAL */
 .nh-zone.health{border-color:#ef4444;background:rgba(254,226,226,.25)}
 
@@ -199,21 +183,6 @@ body{font-family:'Inter',sans-serif;background:#c8e6b0;overflow:hidden;height:10
 .ap-item:hover{border-color:#2d6a2d;background:#f0f9e8}
 .ap-item .ap-icon{font-size:18px}
 @media(max-width:600px){.ap-grid{grid-template-columns:repeat(3,1fr)}}
-/* MOVE ONLY — no transforms in keyframes (direction set by inline style) */
-100%{left:2520px}}
-@keyframes goLeft {0%{left:2520px}100%{left:-120px}}
-@keyframes goDown {0%{top:-120px}100%{top:1920px}}
-@keyframes goUp   {0%{top:1920px}100%{top:-120px}}
-@keyframes dogWander{0%{margin-left:0;margin-top:0}25%{margin-left:40px;margin-top:-20px}50%{margin-left:80px;margin-top:10px}75%{margin-left:30px;margin-top:40px}100%{margin-left:0;margin-top:0}}
-@keyframes bikePath{0%{transform:rotate(0deg) translateX(72px) rotate(0deg)}100%{transform:rotate(360deg) translateX(72px) rotate(-360deg)}}
-
-/* ── CLEAN NPC ANIMATIONS ── */
-@keyframes goRight{from{left:-140px}to{left:2540px}}
-@keyframes goLeft {from{left:2540px}to{left:-140px}}
-@keyframes goDown {from{top:-140px}to{top:1940px}}
-@keyframes goUp   {from{top:1940px}to{top:-140px}}
-@keyframes dogWander{0%,100%{margin-left:0;margin-top:0}25%{margin-left:45px;margin-top:-22px}50%{margin-left:85px;margin-top:12px}75%{margin-left:32px;margin-top:42px}}
-@keyframes bikePath{0%{transform:rotate(0deg) translateX(72px) rotate(0deg)}100%{transform:rotate(360deg) translateX(72px) rotate(-360deg)}}
 </style>
 </head>
 <body>
@@ -223,10 +192,10 @@ body{font-family:'Inter',sans-serif;background:#c8e6b0;overflow:hidden;height:10
   <div class="nav-logo">🏙 Greenville</div>
   <div class="nav-tools">
     <button class="nb" onclick="zoomFit()">⊡ Fit</button>
-    <button class="nb" onclick="zoom(0.3)" style="font-size:16px;padding:4px 14px">＋</button>
-    <button class="nb" onclick="zoom(-0.3)" style="font-size:16px;padding:4px 14px">－</button>
+    <button class="nb" onclick="zoom(0.2)">🔍+</button>
+    <button class="nb" onclick="zoom(-0.2)">🔍−</button>
     <button class="nb gold active" id="wiggle-btn" onclick="toggleWiggleMode()">✏️ Edit</button>
-    
+    <button class="nb" onclick="toggleAddPanel()">+ Add</button>
     <a href="https://alphafiles.net/vitals/" class="nb">⚡ ATC</a>
     <button class="nb red" onclick="resetTown()">↺</button>
   </div>
@@ -234,15 +203,14 @@ body{font-family:'Inter',sans-serif;background:#c8e6b0;overflow:hidden;height:10
 
 <!-- ZOOM HUD -->
 <div class="zoom-hud" id="zoom-hud">100%</div>
-<!-- REFRESH BUTTON — always visible, hard reloads page -->
-<button onclick="location.reload(true)" title="Hard Refresh" style="position:fixed;top:54px;right:10px;z-index:2000;background:#2d5a27;color:#fff;border:none;border-radius:50%;width:40px;height:40px;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(0,0,0,.25);font-weight:900">↺</button>
+<button onclick="location.reload(true)" style="position:fixed;top:54px;right:10px;z-index:2000;background:#2d5a27;color:#fff;border:none;border-radius:50%;width:40px;height:40px;font-size:20px;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.25)">↺</button>
 <!-- WIGGLE BANNER -->
 <div class="wiggle-banner" id="wiggle-banner" onclick="exitWiggleMode()">✏️ Edit Mode — Tap here to finish</div>
 
 <!-- CANVAS -->
 <div class="canvas" id="canvas">
-<div class="world" id="world" style="background:url('/assets/coc-map.png') center/cover no-repeat,#3a6b1a;">
-<!-- CoC map renders as CSS background on .world -->
+<div class="world" id="world">
+<div class="world-ground"></div>
 
 <!-- ROADS -->
 <div class="road h" style="left:0;right:0;top:740px"></div>
@@ -265,189 +233,43 @@ body{font-family:'Inter',sans-serif;background:#c8e6b0;overflow:hidden;height:10
 <div class="cross" style="left:1280px;top:1160px;width:38px;height:38px"></div>
 <div class="cross" style="left:1720px;top:1160px;width:38px;height:38px"></div>
 
-<!-- SIDEWALKS (run alongside roads, people walk here) -->
-<!-- H-road 440 sidewalks -->
-<div class="swalk" style="left:0;right:0;top:432px;height:6px"></div>
-<div class="swalk" style="left:0;right:0;top:480px;height:6px"></div>
-<!-- H-road 740 sidewalks -->
-<div class="swalk" style="left:0;right:0;top:732px;height:6px"></div>
-<div class="swalk" style="left:0;right:0;top:780px;height:6px"></div>
-<!-- H-road 1160 sidewalks -->
-<div class="swalk" style="left:0;right:0;top:1152px;height:6px"></div>
-<div class="swalk" style="left:0;right:0;top:1200px;height:6px"></div>
-<!-- V-road 480 sidewalks -->
-<div class="swalk" style="left:472px;top:0;bottom:0;width:6px"></div>
-<div class="swalk" style="left:520px;top:0;bottom:0;width:6px"></div>
-<!-- V-road 840 sidewalks -->
-<div class="swalk" style="left:832px;top:0;bottom:0;width:6px"></div>
-<div class="swalk" style="left:880px;top:0;bottom:0;width:6px"></div>
-<!-- V-road 1280 sidewalks -->
-<div class="swalk" style="left:1272px;top:0;bottom:0;width:6px"></div>
-<div class="swalk" style="left:1320px;top:0;bottom:0;width:6px"></div>
-
-<!-- ANIMATED SIDEWALK PEOPLE & BIKES -->
-<!-- Sidewalk h-440 -->
-<div class="char swalk-char" style="top:436px;font-size:13px;animation:walkH 28s linear infinite;animation-delay:0s">🚶‍♀️</div>
-<div class="char swalk-char" style="top:436px;font-size:13px;animation:walkHr 22s linear infinite;animation-delay:6s">🚴</div>
-<div class="char swalk-char" style="top:484px;font-size:13px;animation:walkH 19s linear infinite;animation-delay:3s">🚶</div>
-<div class="char swalk-char" style="top:484px;font-size:13px;animation:walkHr 25s linear infinite;animation-delay:9s">🚴‍♀️</div>
-<!-- Sidewalk h-740 -->
-<div class="char swalk-char" style="top:736px;font-size:13px;animation:walkHr 24s linear infinite;animation-delay:2s">🚶‍♂️</div>
-<div class="char swalk-char" style="top:736px;font-size:13px;animation:walkH 30s linear infinite;animation-delay:7s">🚴</div>
-<div class="char swalk-char" style="top:784px;font-size:13px;animation:walkH 21s linear infinite;animation-delay:4s">🚶</div>
-<div class="char swalk-char" style="top:784px;font-size:13px;animation:walkHr 17s linear infinite;animation-delay:11s">🚴‍♀️</div>
-<!-- Sidewalk v-840 -->
-<div class="char swalk-char" style="left:836px;font-size:12px;animation:carV 26s linear infinite;animation-delay:5s">🚶‍♀️</div>
-<div class="char swalk-char" style="left:836px;font-size:12px;animation:carVr 20s linear infinite;animation-delay:8s">🚴</div>
-<div class="char swalk-char" style="left:884px;font-size:12px;animation:carV 23s linear infinite;animation-delay:1s">🚶</div>
-<!-- H-road 1160 sidewalk -->
-<div class="char swalk-char" style="top:1156px;font-size:13px;animation:walkH 20s linear infinite;animation-delay:3s">🚶‍♀️</div>
-<div class="char swalk-char" style="top:1204px;font-size:13px;animation:walkHr 27s linear infinite;animation-delay:6s">🚴</div>
-
 <!-- PARKS -->
-<!-- CENTRAL PARK — Rich SVG Version -->
-<div id="park-main" style="position:absolute;left:520px;top:460px;width:280px;height:260px;z-index:3;cursor:pointer" onclick="openRec()">
-<svg viewBox="0 0 280 260" style="width:100%;height:100%;overflow:visible">
-  <!-- Park outer ground -->
-  <ellipse cx="140" cy="130" rx="134" ry="124" fill="rgba(80,160,40,.7)" stroke="#4a8a28" stroke-width="2"/>
-  <!-- Inner texture -->
-  <ellipse cx="140" cy="130" rx="110" ry="100" fill="#78c050"/>
-  <!-- STREAM cutting through park -->
-  <path d="M 40 220 Q 80 190 100 160 Q 115 138 140 130 Q 165 122 185 100 Q 200 82 220 60" stroke="#5ab8d8" stroke-width="10" fill="none" stroke-linecap="round" opacity=".8"/>
-  <path d="M 40 220 Q 80 190 100 160 Q 115 138 140 130 Q 165 122 185 100 Q 200 82 220 60" stroke="#8ad0f0" stroke-width="4" fill="none" stroke-linecap="round" opacity=".6" stroke-dasharray="8,6"/>
-  <!-- BIKE / WALKING PATH (oval loop) -->
-  <ellipse cx="140" cy="130" rx="80" ry="70" fill="none" stroke="#c8a86a" stroke-width="9" opacity=".9"/>
-  <ellipse cx="140" cy="130" rx="80" ry="70" fill="none" stroke="#e8c890" stroke-width="3" stroke-dasharray="12,8" opacity=".7"/>
-  <!-- Inner grass -->
-  <ellipse cx="140" cy="130" rx="68" ry="58" fill="#5a9e38"/>
-  <!-- POND / LAKE -->
-  <ellipse cx="148" cy="148" rx="32" ry="24" fill="#4ab0d0" stroke="#38a0c0" stroke-width="2"/>
-  <ellipse cx="148" cy="148" rx="22" ry="14" fill="#60c8e8" opacity=".6"/>
-  <!-- Lily pads -->
-  <circle cx="138" cy="155" r="4" fill="#3a8a28" opacity=".7"/>
-  <circle cx="158" cy="142" r="3" fill="#3a8a28" opacity=".7"/>
-  <!-- FOUNTAIN -->
-  <circle cx="140" cy="112" r="10" fill="#c0e8f8" stroke="#80c8e8" stroke-width="2"/>
-  <circle cx="140" cy="112" r="5" fill="#fff" opacity=".8"/>
-  <line x1="140" y1="102" x2="140" y2="96" stroke="#80c8e8" stroke-width="2"/>
-  <line x1="134" y1="104" x2="130" y2="99" stroke="#80c8e8" stroke-width="1.5"/>
-  <line x1="146" y1="104" x2="150" y2="99" stroke="#80c8e8" stroke-width="1.5"/>
-  <!-- TREES around path -->
-  <text x="72" y="72" font-size="22">🌳</text>
-  <text x="178" y="68" font-size="20">🌲</text>
-  <text x="52" y="148" font-size="18">🌳</text>
-  <text x="194" y="152" font-size="20">🌲</text>
-  <text x="100" y="210" font-size="16">🌸</text>
-  <text x="160" y="215" font-size="16">🌺</text>
-  <text x="76" y="108" font-size="14">🌿</text>
-  <text x="190" y="108" font-size="14">🌿</text>
-  <!-- BENCHES -->
-  <rect x="104" y="75" width="14" height="5" rx="2" fill="#8B5E3C"/>
-  <rect x="160" y="75" width="14" height="5" rx="2" fill="#8B5E3C"/>
-  <rect x="68" y="165" width="14" height="5" rx="2" fill="#8B5E3C"/>
-  <rect x="196" y="165" width="14" height="5" rx="2" fill="#8B5E3C"/>
-  <!-- FLOWER BEDS -->
-  <circle cx="116" cy="192" r="6" fill="#f080a0" opacity=".8"/>
-  <circle cx="164" cy="192" r="6" fill="#f0a030" opacity=".8"/>
-  <circle cx="90" cy="180" r="5" fill="#c060f0" opacity=".8"/>
-  <circle cx="188" cy="180" r="5" fill="#f04040" opacity=".8"/>
-  <!-- LABEL -->
-  <rect x="70" y="228" width="140" height="22" rx="11" fill="rgba(255,255,255,.75)"/>
-  <text x="140" y="243" font-size="11" font-weight="900" fill="#1a4a10" text-anchor="middle" font-family="Nunito,sans-serif">🌿 Recreation Plaza ↗</text>
-</svg>
-<!-- Animated cyclists on the bike path -->
-<div style="position:absolute;top:40%;left:15%;font-size:13px;animation:bikePath 7s linear infinite">🚴</div>
-<div style="position:absolute;top:60%;left:70%;font-size:13px;animation:bikePath 9s linear infinite reverse;animation-delay:3s">🚴‍♀️</div>
-<div style="position:absolute;top:28%;left:50%;font-size:12px;animation:bikePath 11s linear infinite;animation-delay:5s">🚶‍♂️</div>
+<div class="park" id="park-main" style="left:590px;top:500px;width:210px;height:200px" onclick="openRec()">
+  <div class="park-icon">⛲</div>
+  <div class="park-name">Recreation Plaza</div>
+  <div style="font-size:8px;color:#2d5a27;font-weight:700;margin-top:2px;opacity:.7">Click to explore ↗</div>
 </div>
-<!-- FOREST ZONES -->
-<div style="position:absolute;left:920px;top:820px;width:160px;height:140px;pointer-events:none;z-index:4">
-  <svg viewBox="0 0 160 140" style="width:100%;height:100%">
-    <ellipse cx="80" cy="70" rx="74" ry="64" fill="#4a8e28" opacity=".85"/>
-    <ellipse cx="80" cy="70" rx="60" ry="50" fill="#5aa032"/>
-    <text x="18" y="50" font-size="26">🌲</text><text x="60" y="40" font-size="22">🌳</text>
-    <text x="98" y="48" font-size="24">🌲</text><text x="12" y="90" font-size="20">🌳</text>
-    <text x="50" y="98" font-size="18">🌲</text><text x="90" y="95" font-size="22">🌳</text>
-    <text x="120" y="88" font-size="20">🌲</text><text x="40" y="128" font-size="16">🌿</text>
-    <text x="80" y="130" font-size="16">🌿</text>
-    <rect x="35" y="118" width="90" height="16" rx="8" fill="rgba(255,255,255,.6)"/>
-    <text x="80" y="130" font-size="9" font-weight="900" fill="#1a4a10" text-anchor="middle" font-family="Nunito,sans-serif">Greenville Forest</text>
-  </svg>
+<div class="park" style="left:920px;top:810px;width:130px;height:120px;pointer-events:none;background:radial-gradient(ellipse,#98d678,#80c460);border:2px solid #50a030">
+  <div style="font-size:20px">🌳🌲🌳</div>
+  <div style="font-family:Nunito,sans-serif;font-size:8px;font-weight:900;color:#1a4a10">Forest</div>
 </div>
 
-<!-- SECOND SMALL FOREST (top-right) -->
-<div style="position:absolute;left:1700px;top:300px;width:120px;height:110px;pointer-events:none;z-index:4">
-  <svg viewBox="0 0 120 110" style="width:100%;height:100%">
-    <ellipse cx="60" cy="55" rx="56" ry="50" fill="#4a8e28" opacity=".8"/>
-    <text x="10" y="42" font-size="22">🌳</text><text x="46" y="36" font-size="20">🌲</text>
-    <text x="78" y="42" font-size="22">🌳</text><text x="8" y="78" font-size="18">🌲</text>
-    <text x="50" y="82" font-size="20">🌳</text><text x="84" y="78" font-size="18">🌲</text>
-  </svg>
-</div>
-
-<!-- RIVER / STREAM across the world -->
-<svg style="position:absolute;left:0;top:0;width:2400px;height:1800px;pointer-events:none;z-index:4" viewBox="0 0 2400 1800">
-  <!-- Main stream winding through town -->
-  <path d="M 80 1700 Q 200 1500 320 1300 Q 430 1160 480 1000 Q 530 860 580 700 Q 640 560 700 500 Q 760 440 820 380 Q 880 320 920 220 Q 950 140 980 60" stroke="#5ab8d8" stroke-width="16" fill="none" stroke-linecap="round" opacity=".75"/>
-  <path d="M 80 1700 Q 200 1500 320 1300 Q 430 1160 480 1000 Q 530 860 580 700 Q 640 560 700 500 Q 760 440 820 380 Q 880 320 920 220 Q 950 140 980 60" stroke="#8ad0f0" stroke-width="6" fill="none" stroke-linecap="round" opacity=".5" stroke-dasharray="20,15"/>
-  <!-- Small bridge where stream crosses road at 740 -->
-  <rect x="470" y="730" width="28" height="26" rx="4" fill="#c8a86a" opacity=".9"/>
-  <text x="484" y="748" font-size="10" text-anchor="middle" fill="#8B5E3C">🌉</text>
-</svg>
-
-<!-- FARM AREA (bottom-left corner) -->
-<div style="position:absolute;left:60px;top:1260px;width:300px;height:200px;pointer-events:none;z-index:4">
-  <svg viewBox="0 0 300 200" style="width:100%;height:100%">
-    <rect x="0" y="0" width="300" height="200" rx="14" fill="#c8e890" stroke="#90b840" stroke-width="2"/>
-    <!-- Field rows -->
-    <line x1="20" y1="60" x2="280" y2="60" stroke="#a0c050" stroke-width="2" stroke-dasharray="8,6"/>
-    <line x1="20" y1="80" x2="280" y2="80" stroke="#a0c050" stroke-width="2" stroke-dasharray="8,6"/>
-    <line x1="20" y1="100" x2="280" y2="100" stroke="#a0c050" stroke-width="2" stroke-dasharray="8,6"/>
-    <line x1="20" y1="120" x2="280" y2="120" stroke="#a0c050" stroke-width="2" stroke-dasharray="8,6"/>
-    <line x1="20" y1="140" x2="280" y2="140" stroke="#a0c050" stroke-width="2" stroke-dasharray="8,6"/>
-    <!-- Crops -->
-    <text x="30" y="55" font-size="14">🌽🌽🌽🌽🌽🌽🌽🌽</text>
-    <text x="30" y="95" font-size="14">🥕🥕🥕🥕🥕🥕🥕🥕</text>
-    <text x="30" y="135" font-size="14">🌻🌻🌻🌻🌻🌻🌻🌻</text>
-    <!-- Barn -->
-    <rect x="220" y="20" width="60" height="50" rx="4" fill="#c84030"/>
-    <polygon points="220,20 250,4 280,20" fill="#8b1a10"/>
-    <rect x="234" y="38" width="18" height="22" rx="2" fill="#6b3010"/>
-    <text x="248" y="10" font-size="10" text-anchor="middle">🏚️</text>
-    <!-- Animals -->
-    <text x="20" y="178" font-size="14">🐄 🐖 🐓 🐑</text>
-    <text x="180" y="178" font-size="12">🚜</text>
-    <!-- Label -->
-    <rect x="60" y="155" width="100" height="16" rx="8" fill="rgba(255,255,255,.7)"/>
-    <text x="110" y="167" font-size="9" font-weight="900" fill="#3a6010" text-anchor="middle" font-family="Nunito,sans-serif">Greenville Farm</text>
-  </svg>
-</div>
-
-<!-- NPC CHARACTERS — goRight/goLeft only move left, flip via wrapper -->
-<div class="char" style="top:750px;animation:goRight 13s linear infinite 0s">🚗</div>
-<div class="char" style="top:752px;animation:goRight 20s linear infinite 5s">🚕</div>
-<div class="char" style="top:756px;animation:goRight 17s linear infinite 9s">🚙</div>
-<div class="char" style="top:750px"><span style="display:inline-block;transform:scaleX(-1);animation:goLeft 16s linear infinite 2s;position:absolute">🚙</span></div>
-<div class="char" style="top:754px"><span style="display:inline-block;transform:scaleX(-1);animation:goLeft 23s linear infinite 7s;position:absolute">🚗</span></div>
-<div class="char" style="top:450px;animation:goRight 18s linear infinite 1s">🚙</div>
-<div class="char" style="top:452px"><span style="display:inline-block;transform:scaleX(-1);animation:goLeft 14s linear infinite 6s;position:absolute">🚗</span></div>
-<div class="char" style="top:1170px;animation:goRight 11s linear infinite 0s">🚑</div>
-<div class="char" style="top:1170px;animation:goRight 19s linear infinite 8s">🚓</div>
-<div class="char" style="top:1172px"><span style="display:inline-block;transform:scaleX(-1);animation:goLeft 15s linear infinite 4s;position:absolute">🚒</span></div>
-<div class="char" style="left:850px;animation:goDown 14s linear infinite 3s">🚗</div>
-<div class="char" style="left:854px;animation:goDown 21s linear infinite 8s">🚙</div>
-<div class="char" style="left:490px;animation:goDown 18s linear infinite 1s">🚕</div>
-<div class="char swalk-char" style="top:738px;font-size:13px;animation:goRight 26s linear infinite 0s">🚶‍♀️</div>
-<div class="char swalk-char" style="top:786px;font-size:13px;animation:goRight 20s linear infinite 7s">🚴</div>
-<div class="char swalk-char" style="top:438px;font-size:13px;animation:goRight 22s linear infinite 3s">🚶</div>
-<div class="char swalk-char" style="top:486px;font-size:13px;animation:goRight 30s linear infinite 11s">🚴‍♀️</div>
-<div class="char swalk-char" style="top:740px;font-size:13px"><span style="display:inline-block;transform:scaleX(-1);animation:goLeft 22s linear infinite 5s;position:absolute">🚶‍♂️</span></div>
-<div class="char swalk-char" style="top:788px;font-size:13px"><span style="display:inline-block;transform:scaleX(-1);animation:goLeft 17s linear infinite 10s;position:absolute">🚴</span></div>
-<div class="char swalk-char" style="top:1158px;font-size:13px;animation:goRight 19s linear infinite 2s">🚶‍♀️</div>
-<div class="char swalk-char" style="top:1206px;font-size:13px"><span style="display:inline-block;transform:scaleX(-1);animation:goLeft 25s linear infinite 6s;position:absolute">🚴</span></div>
-<div class="char" id="dog1" style="left:700px;top:650px;font-size:18px;animation:dogWander 8s ease-in-out infinite">🐕</div>
-<div class="char" id="dog2" style="left:400px;top:860px;font-size:16px;animation:dogWander 11s ease-in-out infinite 3s">🐶</div>
-<div class="char" id="dog3" style="left:1140px;top:400px;font-size:17px;animation:dogWander 9s ease-in-out infinite 5s">🦮</div>
+<!-- ANIMATED NPC CHARACTERS (not draggable) -->
+<!-- CARS on h-road 740 -->
+<div class="char" style="top:748px;animation:carH 14s linear infinite;animation-delay:0s">🚗</div>
+<div class="char" style="top:754px;animation:carHr 18s linear infinite;animation-delay:3s">🚙</div>
+<div class="char" style="top:748px;animation:carH 22s linear infinite;animation-delay:8s">🚕</div>
+<!-- CARS on h-road 440 -->
+<div class="char" style="top:448px;animation:carHr 16s linear infinite;animation-delay:1s">🚗</div>
+<div class="char" style="top:454px;animation:carH 20s linear infinite;animation-delay:6s">🚙</div>
+<!-- EMERGENCY on h-road 1160 -->
+<div class="char" style="top:1168px;animation:carH 11s linear infinite;animation-delay:2s">🚑</div>
+<div class="char" style="top:1168px;animation:carHr 15s linear infinite;animation-delay:5s">🚒</div>
+<div class="char" style="top:1168px;animation:carH 19s linear infinite;animation-delay:9s">🚓</div>
+<!-- CARS on v-road 840 -->
+<div class="char" style="left:848px;animation:carV 13s linear infinite;animation-delay:4s">🚗</div>
+<div class="char" style="left:852px;animation:carVr 17s linear infinite;animation-delay:7s">🚙</div>
+<!-- CARS v-road 480 -->
+<div class="char" style="left:488px;animation:carV 20s linear infinite;animation-delay:2s">🚕</div>
+<div class="char" style="left:488px;animation:carVr 14s linear infinite;animation-delay:10s">🚗</div>
+<!-- PEOPLE walking -->
+<div class="char" style="top:760px;font-size:14px;animation:walkH 20s linear infinite;animation-delay:0s">🚶</div>
+<div class="char" style="top:762px;font-size:14px;animation:walkHr 26s linear infinite;animation-delay:5s">🚶‍♀️</div>
+<div class="char" style="top:456px;font-size:14px;animation:walkH 24s linear infinite;animation-delay:3s">🚶‍♂️</div>
+<!-- DOGS wandering (js-controlled) -->
+<div class="char" id="dog1" style="left:660px;top:620px;font-size:18px;animation:dogWander 8s ease-in-out infinite">🐕</div>
+<div class="char" id="dog2" style="left:360px;top:820px;font-size:16px;animation:dogWander 11s ease-in-out infinite;animation-delay:3s">🐶</div>
+<div class="char" id="dog3" style="left:1100px;top:360px;font-size:17px;animation:dogWander 9s ease-in-out infinite;animation-delay:5s">🦮</div>
 
 <!-- BULLETIN BOARDS -->
 <div class="bulletin" id="bb-office"   title="Office Board"   style="left:460px;top:60px"  onclick="openBulletin('office')">📌</div>
@@ -574,12 +396,6 @@ var DEFAULT_DECOS=[
 // ══════════════════════════════════════
 var buildings,signs,decos;
 function loadState(){
-  // Version check — clears old shifted positions
-  var VER='v5';
-  if(localStorage.getItem('town_ver')!==VER){
-    localStorage.removeItem(SK);localStorage.removeItem(SIGN_K);localStorage.removeItem(DECO_K);
-    localStorage.setItem('town_ver',VER);
-  }
   try{buildings=JSON.parse(localStorage.getItem(SK));}catch(e){buildings=null;}
   if(!buildings||!buildings.length) buildings=JSON.parse(JSON.stringify(DEFAULT_BLDS));
   try{signs=JSON.parse(localStorage.getItem(SIGN_K));}catch(e){signs=null;}
@@ -619,7 +435,7 @@ function getFitScale(){
 function zoom(d,cx,cy){
   var prev=scale;
   minScale=getFitScale();
-  scale=Math.min(3,Math.max(0.08,scale+d));
+  scale=Math.min(3,Math.max(minScale,scale+d));
   if(cx===undefined){var r=document.getElementById('canvas').getBoundingClientRect();cx=r.width/2;cy=r.height/2;}
   panX=cx-(cx-panX)*(scale/prev);
   panY=cy-(cy-panY)*(scale/prev);
@@ -692,42 +508,13 @@ document.getElementById('canvas').addEventListener('pointerdown',function(e){
 });
 
 // Scroll wheel zoom
-document.getElementById('canvas').addEventListener('wheel',function(e){e.preventDefault();zoom(e.deltaY<0?0.04:-0.04,e.clientX,e.clientY);},{passive:false});
+document.getElementById('canvas').addEventListener('wheel',function(e){e.preventDefault();zoom(e.deltaY<0?0.12:-0.15,e.clientX,e.clientY);},{passive:false});
 
 // Pinch
-var pinch0=null,pinchScale0=1,pinchMidX=0,pinchMidY=0;
-document.getElementById('canvas').addEventListener('touchstart',function(e){
-  if(e.touches.length===2){
-    e.preventDefault();
-    // Cancel any building drag — pinch takes priority
-    isPanning=false;panStart=null;
-    liftedBld=null;
-    clearTimeout(lpTimer);lpTimer=null;
-    var t0=e.touches[0],t1=e.touches[1];
-    var dx=t0.clientX-t1.clientX,dy=t0.clientY-t1.clientY;
-    pinch0=Math.sqrt(dx*dx+dy*dy);
-    pinchScale0=scale;
-    pinchMidX=(t0.clientX+t1.clientX)/2;
-    pinchMidY=(t0.clientY+t1.clientY)/2;
-  }
-},{passive:false});
-document.getElementById('canvas').addEventListener('touchmove',function(e){
-  if(e.touches.length===2&&pinch0){
-    e.preventDefault();
-    var t0=e.touches[0],t1=e.touches[1];
-    var dx=t0.clientX-t1.clientX,dy=t0.clientY-t1.clientY;
-    var d=Math.sqrt(dx*dx+dy*dy);
-    var prev=scale;
-    var fs=getFitScale();
-    scale=Math.min(3,Math.max(0.08,pinchScale0*(d/pinch0)));
-    panX=pinchMidX-(pinchMidX-panX)*(scale/prev);
-    panY=pinchMidY-(pinchMidY-panY)*(scale/prev);
-    clampPan();applyTransform();
-  }
-},{passive:false});
-document.getElementById('canvas').addEventListener('touchend',function(e){
-  if(e.touches.length<2)pinch0=null;
-},{passive:true});
+var pinch0=null,pinchScale0=1;
+document.getElementById('canvas').addEventListener('touchstart',function(e){if(e.touches.length===2){var dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;pinch0=Math.sqrt(dx*dx+dy*dy);pinchScale0=scale;}},{passive:true});
+document.getElementById('canvas').addEventListener('touchmove',function(e){if(e.touches.length===2&&pinch0){var dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;var d=Math.sqrt(dx*dx+dy*dy);scale=Math.min(3,Math.max(getFitScale(),pinchScale0*(d/pinch0)));applyTransform();}},{passive:true});
+document.getElementById('canvas').addEventListener('touchend',function(){pinch0=null;},{passive:true});
 
 // ══════════════════════════════════════
 // WIGGLE MODE (visual only — drag uses long-press directly)
@@ -775,7 +562,6 @@ function renderBld(b){
     +'<div class="bld-name">'+b.name+'</div>'
     +(b.desc?'<div class="bld-sub">'+b.desc+'</div>':'')
     +rc
-    +'<div class="bld-windows"><div class="bld-win"></div><div class="bld-win lit"></div><div class="bld-win"></div><div class="bld-win lit"></div></div>'+'<div class="bld-windows"><div class="bld-win"></div><div class="bld-win lit"></div><div class="bld-win lit"></div><div class="bld-win"></div></div>'
     +'<div class="bld-shadow"></div>'
     +'<div class="bld-resize" onpointerdown="startResize(event,\''+b.id+'\')"></div>';
   el.addEventListener('pointerdown',function(e){onBldDown(e,b.id);});
@@ -815,25 +601,17 @@ function onBldDown(e,id){
   }
   lastTapMap[id]=now;
 
-  // EDIT MODE: lift immediately, no wait
-  if(wiggleMode){
-    clearTimeout(lpTimer);lpTimer=null;
-    var offX=wp.x-bx, offY=wp.y-by;
-    liftedBld={id:id,el:el,offX:offX,offY:offY};
-    el.classList.add('lifted');el.classList.remove('wiggling');
-    document.getElementById('wiggle-banner').textContent='📦 Drag to move · Drop on another to nest';
-    document.getElementById('wiggle-banner').classList.add('show');
-    return;
-  }
-
-  // NORMAL MODE: long-press timer
+  // Start long-press timer for drag
   clearTimeout(lpTimer);
   lpTimer=setTimeout(function(){
     lpTimer=null;
+    // Lift the building
     var offX=wp.x-bx, offY=wp.y-by;
     liftedBld={id:id,el:el,offX:offX,offY:offY};
     el.classList.add('lifted');
+    if(wiggleMode) el.classList.remove('wiggling');
     if(navigator.vibrate) navigator.vibrate(40);
+    // Show drop hint
     document.getElementById('wiggle-banner').textContent='📦 Drag to move · Drop on another to nest inside';
     document.getElementById('wiggle-banner').classList.add('show');
   }, LP_DELAY);
@@ -1096,68 +874,19 @@ window.delEv=function(i){var evs=loadEvents();evs.splice(i,1);localStorage.setIt
 // ══════════════════════════════════════
 function openCivilEng(){
   document.getElementById('modal-icon').textContent='⚙️';
-  document.getElementById('modal-name').textContent='Civil Engineer';
+  document.getElementById('modal-name').textContent='Civil Engineer — Admin';
   document.getElementById('modal-hdr').style.background='#f3f4f6';
-
-  var TREES=[{i:'🌳',n:'Oak'},{i:'🌲',n:'Pine'},{i:'🌴',n:'Palm'},{i:'🌵',n:'Cactus'},{i:'🎋',n:'Bamboo'},{i:'🎄',n:'Fir'},{i:'🌿',n:'Bush'},{i:'🌾',n:'Wheat'},{i:'☘️',n:'Clover'},{i:'🍀',n:'Patch'}];
-  var ANIMALS=[{i:'🐕',n:'Dog'},{i:'🐶',n:'Puppy'},{i:'🦮',n:'Guide Dog'},{i:'🐈',n:'Cat'},{i:'🐄',n:'Cow'},{i:'🐖',n:'Pig'},{i:'🐓',n:'Chicken'},{i:'🐑',n:'Sheep'},{i:'🐎',n:'Horse'},{i:'🦆',n:'Duck'},{i:'🐇',n:'Rabbit'},{i:'🦋',n:'Butterfly'},{i:'🐝',n:'Bee'},{i:'🦅',n:'Eagle'},{i:'🐟',n:'Fish'}];
-  var FARMS=[{i:'🌽',n:'Corn'},{i:'🥕',n:'Carrots'},{i:'🍅',n:'Tomatoes'},{i:'🥦',n:'Broccoli'},{i:'🏚️',n:'Barn'},{i:'🛖',n:'Farmhouse'},{i:'⛺',n:'Tent'},{i:'🪣',n:'Water'},{i:'🚜',n:'Tractor'},{i:'🌻',n:'Sunflower'},{i:'🍇',n:'Grapes'},{i:'🫐',n:'Berries'}];
-  var STRUCTURES=[{i:'🏠',n:'House'},{i:'🏢',n:'Office'},{i:'🏪',n:'Shop'},{i:'🏥',n:'Hospital'},{i:'⛪',n:'Church'},{i:'🏛️',n:'Hall'},{i:'🏗️',n:'Build'},{i:'🏋️',n:'Gym'},{i:'🎭',n:'Theater'},{i:'🏟️',n:'Arena'},{i:'🏦',n:'Bank'},{i:'🚉',n:'Station'}];
-  var SIGNS=[{i:'🟢',n:'Green St',s:''},{i:'🔴',n:'Red St',s:'red-sign'},{i:'🔵',n:'Blue St',s:'blue-sign'}];
-
-  function makeGrid(items,type){
-    return items.map(function(it,i){
-      return '<div class="ap-item" onclick="ceAdd(''+type+'','+i+')"><div class="ap-icon">'+it.i+'</div><div>'+it.n+'</div></div>';
-    }).join('');
-  }
-
-  var html='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">'
-    +'<button class="note-add" onclick="enterWiggleMode();closeModal()" style="background:#007aff">✏️ Edit Mode</button>'
-    +'<button class="note-add" onclick="zoomFit();closeModal()" style="background:#34c759">⊡ Fit Town</button>'
-    +'<button class="note-add" onclick="exportTown()" style="background:#5856d6">📤 Export</button>'
-    +'<button class="note-add" onclick="importTown()" style="background:#5856d6">📥 Import</button>'
-    +'<button class="note-add" onclick="resetTown()" style="background:#ff3b30">↺ Reset</button>'
-    +'</div>'
+  var html='<div class="modal-label">Town Settings</div>'
+    +'<div class="room-btn" onclick="enterWiggleMode();closeModal()"><span class="room-icon">✏️</span><div><div class="room-name">Edit Mode</div><div class="room-desc">Move and resize buildings</div></div></div>'
+    +'<div class="room-btn" onclick="toggleAddPanel();closeModal()"><span class="room-icon">+</span><div><div class="room-name">Add Buildings</div><div class="room-desc">Open the add panel</div></div></div>'
+    +'<div class="room-btn" onclick="zoomFit();closeModal()"><span class="room-icon">⊡</span><div><div class="room-name">Fit Town to Screen</div><div class="room-desc">See the entire town</div></div></div>'
+    +'<div class="room-btn" onclick="exportTown()"><span class="room-icon">📤</span><div><div class="room-name">Export Town Data</div><div class="room-desc">Save a backup</div></div></div>'
+    +'<div class="room-btn" onclick="importTown()"><span class="room-icon">📥</span><div><div class="room-name">Import Town Data</div><div class="room-desc">Restore a backup</div></div></div>'
     +'<div class="modal-divider"></div>'
-    +'<div class="modal-label">🌳 Trees & Plants</div>'
-    +'<div class="ap-grid">'+makeGrid(TREES,'tree')+'</div>'
-    +'<div class="modal-label" style="margin-top:10px">🐄 Animals</div>'
-    +'<div class="ap-grid">'+makeGrid(ANIMALS,'animal')+'</div>'
-    +'<div class="modal-label" style="margin-top:10px">🌾 Farm Items</div>'
-    +'<div class="ap-grid">'+makeGrid(FARMS,'farm')+'</div>'
-    +'<div class="modal-label" style="margin-top:10px">🏠 Structures</div>'
-    +'<div class="ap-grid">'+makeGrid(STRUCTURES,'structure')+'</div>'
-    +'<div class="modal-label" style="margin-top:10px">🪧 Street Signs</div>'
-    +'<div class="ap-grid">'+makeGrid(SIGNS,'sign')+'</div>';
-
+    +'<div class="room-btn" style="border-color:#fca5a5" onclick="resetTown()"><span class="room-icon">↺</span><div><div class="room-name" style="color:#dc2626">Reset to Default</div><div class="room-desc">Cannot be undone</div></div></div>';
   document.getElementById('modal-body').innerHTML=html;
   document.getElementById('bld-modal').classList.add('open');
-
-  // Store refs for ceAdd
-  window._CE={trees:TREES,animals:ANIMALS,farms:FARMS,structures:STRUCTURES,signs:SIGNS};
 }
-
-window.ceAdd=function(type,i){
-  var it=window._CE[type+'s']||window._CE[type];
-  if(!it||!it[i]) return;
-  var item=it[i];
-  if(type==='structure'){
-    var n=prompt('Name:',item.n);if(!n) return;
-    var u=prompt('Link URL (or blank):','');
-    var bld={id:'b'+Date.now(),icon:item.i,name:n,url:u||'',bg:'#f3f4f6',bc:'#9ca3af',co:'#374151',roof:'#6b7280',x:580,y:620,w:120,rooms:[]};
-    buildings.push(bld);save();renderBld(bld);
-  } else if(type==='sign'){
-    var n=prompt('Street name:','MY STREET');if(!n) return;
-    var s={id:'s'+Date.now(),name:n.toUpperCase(),x:500,y:400,style:item.s||''};
-    signs.push(s);save();renderSign(s);
-  } else {
-    var d={id:'d'+Date.now(),icon:item.i,x:580,y:620};
-    decos.push(d);save();renderDeco(d);
-  }
-  closeModal();
-  // Auto-enter edit mode so they can position it
-  enterWiggleMode();
-};
 function exportTown(){var data={buildings:buildings,signs:signs,decos:decos};var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='my_town.json';a.click();}
 function importTown(){var inp=document.createElement('input');inp.type='file';inp.accept='.json';inp.onchange=function(e){var f=e.target.files[0];if(!f) return;var r=new FileReader();r.onload=function(ev){try{var d=JSON.parse(ev.target.result);if(d.buildings){buildings=d.buildings;signs=d.signs||signs;decos=d.decos||decos;save();render();closeModal();}}catch(err){alert('Invalid file');}};r.readAsText(f);};inp.click();}
 
@@ -1219,14 +948,7 @@ window.addSignPreset=function(i){
 // ══════════════════════════════════════
 loadState();
 render();
-setTimeout(function(){
-  var cv=document.getElementById('canvas').getBoundingClientRect();
-  var W2=2400,H2=1800;
-  scale=Math.min((cv.width||375)/W2,(cv.height||700)/H2);
-  panX=((cv.width||375)-W2*scale)/2;
-  panY=10;
-  applyTransform(false);
-},80);
+zoomFit();
 </script>
 </body>
 </html>
