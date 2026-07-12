@@ -2,950 +2,825 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>Sebastian's Town — Greenville</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-<style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:'Inter',sans-serif;background:#c8e6b0;overflow:hidden;height:100vh;width:100vw;touch-action:none;user-select:none;-webkit-user-select:none}
-
-/* ── NAV ── */
-.nav{background:rgba(255,255,255,.92);backdrop-filter:blur(8px);padding:0 12px;height:46px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid #b8dca0;z-index:1000;position:relative;gap:6px}
-.nav-logo{font-family:'Nunito',sans-serif;font-size:15px;font-weight:900;color:#2d5a27;white-space:nowrap}
-.nav-tools{display:flex;gap:4px;flex-wrap:nowrap;overflow-x:auto}
-.nb{background:#fff;border:2px solid #b8dca0;color:#2d5a27;border-radius:14px;padding:3px 10px;font-size:11px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;white-space:nowrap;flex-shrink:0}
-.nb:hover,.nb.active{background:#2d5a27;color:#fff;border-color:#2d5a27}
-.nb.red{border-color:#fca5a5;color:#dc2626}.nb.red:hover{background:#dc2626;color:#fff;border-color:#dc2626}
-.nb.gold{border-color:#fbbf24;color:#92400e;background:#fef3c7}.nb.gold:hover,.nb.gold.active{background:#d97706;color:#fff;border-color:#d97706}
-
-/* ── CANVAS ── */
-.canvas{position:absolute;top:46px;left:0;right:0;bottom:0;overflow:hidden;cursor:grab}
-.canvas.panning{cursor:grabbing}
-
-/* ── WORLD ── */
-.world{position:absolute;width:2400px;height:1800px;transform-origin:0 0}
-.world-ground{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 40%,#b8de98 0%,#c8e6b0 50%,#b0d890 100%)}
-
-/* ── ROADS ── */
-.road{position:absolute;background:#b0b0b0}
-.road.h{height:38px}.road.v{width:38px}
-.road.h::after{content:'';position:absolute;top:50%;left:0;right:0;height:3px;transform:translateY(-50%);background:repeating-linear-gradient(90deg,#fff 0,#fff 28px,transparent 28px,transparent 56px)}
-.road.v::after{content:'';position:absolute;left:50%;top:0;bottom:0;width:3px;transform:translateX(-50%);background:repeating-linear-gradient(180deg,#fff 0,#fff 28px,transparent 28px,transparent 56px)}
-.cross{position:absolute;background:#a8a8a8;z-index:1}
-
-/* ── SIDEWALKS ── */
-.sidewalk{position:absolute;background:#d6cfc4;opacity:.6}
-
-/* ── PARK ── */
-.park{position:absolute;background:radial-gradient(ellipse,#90cc70,#78bb58);border-radius:50%;border:3px solid #60a840;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;transition:.2s;z-index:3}
-.park:hover{transform:scale(1.03)}
-.park-icon{font-size:28px}
-.park-name{font-family:'Nunito',sans-serif;font-size:10px;font-weight:900;color:#1a4a10;text-transform:uppercase;letter-spacing:.5px}
-
-/* ── NEIGHBORHOOD ZONES ── */
-.nh-zone{position:absolute;border-radius:20px;border:3px dashed;padding:40px 12px 12px}
-.nh-zone-label{position:absolute;top:8px;left:50%;transform:translateX(-50%);white-space:nowrap}
-
-/* ── SIGN ── */
-.sign-wrap{position:absolute;display:flex;flex-direction:column;align-items:center;z-index:25;cursor:move}
-.sign-post{width:4px;height:22px;background:linear-gradient(#999,#666);border-radius:0 0 2px 2px}
-.sign-board{background:#1a6b1a;color:#fff;font-family:'Nunito',sans-serif;font-size:10px;font-weight:900;padding:3px 10px;border-radius:3px;border:2px solid #0f4a0f;letter-spacing:1.5px;text-transform:uppercase;white-space:nowrap;box-shadow:2px 2px 0 rgba(0,0,0,.3);cursor:pointer}
-.sign-board.red-sign{background:#b91c1c;border-color:#7f1d1d}
-.sign-board.blue-sign{background:#1d4ed8;border-color:#1e3a8a}
-
-/* ── BUILDINGS ── */
-.bld{position:absolute;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;z-index:10;padding:0;background:none;border:none;box-shadow:none}
-/* 3D effect */
-.bld::after{content:'';position:absolute;right:-8px;top:6px;width:8px;height:calc(100% - 4px);border-radius:0 4px 4px 0;background:rgba(0,0,0,.22);clip-path:polygon(0 0,100% 5%,100% 95%,0 100%)}
-/* Bottom shadow */
-.bld-shadow{position:absolute;bottom:-10px;left:6px;right:-6px;height:10px;border-radius:0 0 6px 6px;background:rgba(0,0,0,.18);clip-path:polygon(0 0,100% 0,100% 100%,4% 100%)}
-/* ROOF */
-.bld-roof{width:calc(100% + 14px);height:20px;clip-path:polygon(0 100%,50% 0,100% 100%);margin-bottom:-2px;position:relative;left:-7px;flex-shrink:0;filter:brightness(.85)}
-.bld-icon{font-size:24px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.2));flex-shrink:0;line-height:1}
-.bld-name{font-family:Nunito,sans-serif;font-size:18px;font-weight:900;line-height:1.3;color:#fff;text-shadow:0 1px 5px rgba(0,0,0,.95),0 0 10px rgba(0,0,0,.8);text-transform:uppercase;white-space:nowrap;text-align:center;background:none;border:none;padding:0}
-.bld-sub{font-size:8px;font-weight:700;opacity:.65;line-height:1.1;flex-shrink:0}
-.bld-badge{background:rgba(0,0,0,.12);border-radius:100px;padding:1px 6px;font-size:8px;font-weight:800;flex-shrink:0}
-
-/* WIGGLE MODE */
-.bld.wiggling{animation:wiggle .25s ease-in-out infinite;cursor:grab}
-.bld.wiggling.drag-active{cursor:grabbing;z-index:900;opacity:.88;animation:none}
-@keyframes wiggle{0%,100%{transform:rotate(-2.5deg)}50%{transform:rotate(2.5deg)}}
-.bld.wiggling .bld-delete{display:flex}
-.bld.wiggling .bld-resize{display:block}
-/* LIFTED — dragging after long press */
-.bld.lifted{
-  transform:scale(1.12) rotate(1.5deg)!important;
-  box-shadow:0 20px 40px rgba(0,0,0,.35),4px 4px 0 rgba(0,0,0,.2)!important;
-  z-index:900!important;
-  transition:transform .12s,box-shadow .12s;
-  cursor:grabbing!important;
-  animation:none!important;
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1B2A4A">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
 }
-.bld-delete{display:none;position:absolute;top:-12px;left:-12px;width:22px;height:22px;background:#ff3b30;border:2px solid #fff;border-radius:50%;color:#fff;font-size:13px;font-weight:900;align-items:center;justify-content:center;z-index:20;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.3)}
-.bld-resize{display:none;position:absolute;bottom:-8px;right:-8px;width:18px;height:18px;background:#007aff;border:2px solid #fff;border-radius:4px;cursor:se-resize;z-index:20}
-.bld-resize::after{content:'⤡';font-size:10px;color:#fff;display:flex;align-items:center;justify-content:center;height:100%;font-weight:900}
+</script>
+<title>⚡ Life OS — Sebastian S.</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#F8FAFC;
+  --white:#FFFFFF;
+  --border:#E2E8F0;
+  --border2:#CBD5E1;
+  --text:#1E293B;
+  --text2:#475569;
+  --muted:#94A3B8;
 
-/* DECORATION ELEMENTS */
-.deco-el{position:absolute;font-size:22px;cursor:default;z-index:8;line-height:1;filter:drop-shadow(0 3px 4px rgba(0,0,0,.2))}
-.deco-el.movable{cursor:grab;animation:wiggle .25s ease-in-out infinite}
-.deco-el.drag-active{cursor:grabbing;animation:none;z-index:900}
+  --blue:#0284C7;
+  --blue2:#0369A1;
+  --blue-light:#E0F2FE;
+  --blue-mid:#BAE6FD;
 
-/* ANIMATED CHARACTERS (NPC — not draggable) */
-.char{position:absolute;font-size:16px;z-index:6;pointer-events:none;line-height:1}
-/* Horizontal road chars */
-@keyframes carH{0%{left:-80px}100%{left:2480px}}
-@keyframes carHr{0%{left:2480px;transform:scaleX(-1)}100%{left:-80px;transform:scaleX(-1)}}
-@keyframes carV{0%{top:-80px}100%{top:1880px}}
-@keyframes carVr{0%{top:1880px;transform:scaleY(-1)}100%{top:-80px;transform:scaleY(-1)}}
-@keyframes walkH{0%{left:-60px}100%{left:2460px}}
-@keyframes walkHr{0%{left:2460px;transform:scaleX(-1)}100%{left:-60px;transform:scaleX(-1)}}
-@keyframes dogWander{0%{transform:translate(0,0) rotate(0deg)}25%{transform:translate(40px,-20px) rotate(10deg)}50%{transform:translate(80px,10px) rotate(-5deg)}75%{transform:translate(30px,40px) rotate(8deg)}100%{transform:translate(0,0) rotate(0deg)}}
+  --green:#059669;
+  --green2:#047857;
+  --green-light:#D1FAE5;
+  --green-mid:#A7F3D0;
 
-/* BULLETIN */
-.bulletin{position:absolute;width:34px;height:32px;background:#92400e;border:2px solid #78350f;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;z-index:20;box-shadow:2px 3px 0 rgba(0,0,0,.2);transition:.15s}
-.bulletin:hover{transform:scale(1.18)}
-.bulletin::after{content:'';position:absolute;top:-7px;left:50%;transform:translateX(-50%);width:3px;height:8px;background:#777;border-radius:2px}
+  --yellow:#CA8A04;
+  --yellow2:#A16207;
+  --yellow-light:#FEF9C3;
+  --yellow-mid:#FDE68A;
 
-/* HEALTH ZONE SPECIAL */
-.nh-zone.health{border-color:#ef4444;background:rgba(254,226,226,.25)}
+  --grey:#64748B;
+  --grey-light:#F1F5F9;
+  --grey-mid:#E2E8F0;
 
-/* ZOOM INDICATOR */
-.zoom-hud{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.65);color:#fff;border-radius:100px;padding:5px 16px;font-size:12px;font-weight:700;z-index:2000;pointer-events:none;opacity:0;transition:opacity .5s;white-space:nowrap}
-.zoom-hud.show{opacity:1}
+  --red:#DC2626;
+  --red-light:#FEE2E2;
 
-/* WIGGLE BANNER */
-.wiggle-banner{display:none;position:fixed;bottom:14px;left:50%;transform:translateX(-50%);background:#ff9500;color:#fff;border-radius:100px;padding:8px 22px;font-size:13px;font-weight:800;z-index:2000;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.2);font-family:'Nunito',sans-serif}
-.wiggle-banner.show{display:block}
+  --shadow:0 1px 4px rgba(0,0,0,.07);
+  --shadow2:0 2px 10px rgba(0,0,0,.09);
+}
+body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 
-/* MODALS */
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:3000;align-items:center;justify-content:center;padding:14px}
-.modal-bg.open{display:flex}
-.modal{background:#fff;border-radius:18px;width:480px;max-width:96vw;max-height:86vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.25)}
-.modal-hdr{padding:14px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #f3f4f6;flex-shrink:0}
-.modal-hdr-icon{font-size:26px}
-.modal-hdr-name{font-family:'Nunito',sans-serif;font-size:17px;font-weight:900;color:#1a1a2e;flex:1}
-.modal-close{background:#f3f4f6;border:none;border-radius:50%;width:28px;height:28px;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.modal-body{overflow-y:auto;padding:14px 16px 18px;flex:1}
-.modal-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#9ca3af;margin-bottom:7px}
-.modal-divider{height:1px;background:#f3f4f6;margin:10px 0}
-.room-btn{display:flex;align-items:center;gap:10px;background:#f8faf5;border:2px solid #d4ecc0;border-radius:10px;padding:10px 12px;cursor:pointer;transition:.15s;text-decoration:none;margin-bottom:8px}
-.room-btn:hover{border-color:#2d6a2d;background:#f0f9e8}
-.room-icon{font-size:20px;flex-shrink:0}
-.room-name{font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:#1a1a2e;flex:1}
-.room-desc{font-size:10px;color:#6b7280}
-.room-eject{background:none;border:1px solid #fca5a5;color:#dc2626;border-radius:5px;padding:2px 7px;font-size:10px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;flex-shrink:0}
-.note-ta{width:100%;border:1.5px solid #e5e7eb;border-radius:7px;padding:8px;font-family:'Inter',sans-serif;font-size:13px;resize:none;min-height:56px;outline:none;color:#1a1a2e}
-.note-ta:focus{border-color:#2d6a2d}
-.note-add{background:#2d6a2d;color:#fff;border:none;border-radius:7px;padding:6px 14px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;cursor:pointer;margin-top:5px}
-.note-entry{background:#f8faf5;border:1px solid #e5e7eb;border-radius:7px;padding:7px 10px;margin-bottom:5px;display:flex;gap:8px;align-items:flex-start;font-size:12px;color:#374151}
-.note-del{background:none;border:none;color:#d1d5db;cursor:pointer;font-size:11px;flex-shrink:0}
-.task-item{display:flex;align-items:center;gap:7px;padding:8px 0;border-bottom:1px solid #f3f4f6;cursor:pointer}
-.task-cb{width:17px;height:17px;border-radius:4px;border:2px solid #d1d5db;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;transition:.15s}
-.task-item.done .task-cb{background:#16a34a;border-color:#16a34a;color:#fff}
-.task-item.done .task-text{text-decoration:line-through;color:#9ca3af}
-.task-text{font-size:12px;font-weight:600;flex:1;color:#374151}
-.task-due{font-size:9px;font-weight:700;padding:2px 6px;border-radius:100px;flex-shrink:0}
-.task-due.today{background:#fee2e2;color:#dc2626}
-.task-due.soon{background:#fef3c7;color:#d97706}
-.task-due.ok{background:#dcfce7;color:#16a34a}
-.task-add-row{display:flex;gap:5px;margin-top:8px}
-.task-input{flex:1;border:1.5px solid #e5e7eb;border-radius:7px;padding:6px 9px;font-family:Inter,sans-serif;font-size:12px;outline:none;color:#1a1a2e}
-.task-date{border:1.5px solid #e5e7eb;border-radius:7px;padding:6px 5px;font-size:11px;font-family:Inter,sans-serif;outline:none;color:#374151;width:120px}
-.task-add-btn{background:#2d6a2d;color:#fff;border:none;border-radius:7px;padding:6px 10px;font-weight:800;cursor:pointer;font-family:Nunito,sans-serif;font-size:14px}
-.rv-item{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f3f4f6;font-size:12px}
-.rv-name{font-weight:700;color:#1a1a2e;flex:1}
-.rv-tag{font-size:9px;font-weight:700;padding:2px 6px;border-radius:100px;flex-shrink:0}
-.rv-tag.want{background:#fef3c7;color:#92400e}
-.rv-tag.been{background:#dcfce7;color:#14532d}
-.rv-btn-s{background:none;border:1px solid #d1d5db;border-radius:5px;padding:2px 6px;font-size:9px;cursor:pointer;color:#6b7280;font-family:Inter,sans-serif;flex-shrink:0}
-.ev-item{background:#f8faf5;border:1px solid #d4ecc0;border-radius:9px;padding:9px 11px;margin-bottom:7px;display:flex;gap:8px;align-items:center}
-.ev-date-box{background:#2d6a2d;color:#fff;border-radius:7px;padding:4px 7px;font-size:10px;font-weight:800;text-align:center;flex-shrink:0;min-width:38px}
-.ev-info{flex:1}
-.ev-name{font-size:12px;font-weight:700;color:#1a1a2e}
-.ev-venue{font-size:10px;color:#6b7280;margin-top:1px}
-.ev-del{background:none;border:none;color:#d1d5db;cursor:pointer;font-size:12px}
-.add-ev-form{background:#f0f9e8;border:1px solid #d4ecc0;border-radius:9px;padding:10px;margin-top:8px;display:flex;flex-direction:column;gap:6px}
-.ev-input{border:1.5px solid #d4ecc0;border-radius:7px;padding:7px 9px;font-family:Inter,sans-serif;font-size:12px;outline:none;color:#1a1a2e;width:100%}
-.confirm-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:5000;align-items:center;justify-content:center;padding:20px}
-.confirm-modal.open{display:flex}
-.confirm-box{background:#fff;border-radius:16px;padding:22px;max-width:300px;width:100%;text-align:center;box-shadow:0 16px 40px rgba(0,0,0,.2)}
-.confirm-title{font-family:'Nunito',sans-serif;font-size:15px;font-weight:900;color:#1a1a2e;margin-bottom:6px}
-.confirm-msg{font-size:12px;color:#6b7280;margin-bottom:16px;line-height:1.5}
-.confirm-btns{display:flex;gap:8px}
-.cbtn{flex:1;border:none;border-radius:8px;padding:10px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer}
-.cbtn.yes{background:#2d6a2d;color:#fff}.cbtn.no{background:#f3f4f6;color:#374151}
-.add-panel{display:none;position:fixed;bottom:18px;right:14px;background:#fff;border-radius:16px;border:2px solid #d4ecc0;padding:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);z-index:2000;width:300px;max-height:70vh;overflow-y:auto}
-.add-panel.open{display:block}
-.ap-title{font-family:'Nunito',sans-serif;font-size:13px;font-weight:900;color:#1d4a1d;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
-.ap-section{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#9ca3af;margin:8px 0 5px}
-.ap-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:6px}
-.ap-item{background:#f8faf5;border:1.5px solid #d4ecc0;border-radius:8px;padding:7px 4px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;transition:.15s;font-size:9px;font-weight:700;color:#1d4a1d;text-align:center}
-.ap-item:hover{border-color:#2d6a2d;background:#f0f9e8}
-.ap-item .ap-icon{font-size:18px}
-@media(max-width:600px){.ap-grid{grid-template-columns:repeat(3,1fr)}}
+/* TOP BAR */
+.topbar{background:var(--white);border-bottom:2px solid var(--blue-mid);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;box-shadow:var(--shadow2);}
+.topbar-left{display:flex;align-items:center;gap:12px;}
+.topbar-logo{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;color:var(--blue);letter-spacing:1px;}
+.topbar-sub{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:1px;}
+.topbar-date{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--text2);letter-spacing:1px;}
+
+/* TABS */
+.tabs{display:flex;gap:3px;flex-wrap:wrap;}
+.tab{font-family:'Barlow Condensed',sans-serif;font-size:11px;padding:6px 12px;border-radius:6px;border:1px solid var(--border);background:var(--grey-light);color:var(--text2);cursor:pointer;letter-spacing:.5px;transition:all .15s;}
+.tab:hover{background:var(--blue-light);color:var(--blue);border-color:var(--blue-mid);}
+.tab.active{background:var(--blue);color:#fff;font-weight:700;border-color:var(--blue);}
+
+/* PANELS */
+.panel{display:none;padding:16px 20px;}
+.panel.active{display:block;}
+
+/* SECTION HEADERS */
+.sec{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--blue);border-bottom:2px solid var(--blue-light);padding-bottom:5px;margin-bottom:14px;margin-top:22px;}
+.sec:first-child{margin-top:0;}
+
+/* CARDS GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:16px;}
+.card{background:var(--white);border:1px solid var(--border);border-radius:8px;border-top:3px solid var(--blue);padding:12px 14px;text-decoration:none;color:var(--text);display:block;transition:all .15s;box-shadow:var(--shadow);}
+.card:hover{box-shadow:var(--shadow2);border-top-color:var(--blue2);transform:translateY(-2px);}
+.card.gold{border-top-color:var(--yellow);}
+.card.gold:hover{border-top-color:var(--yellow2);}
+.card.red{border-top-color:var(--red);}
+.card.green{border-top-color:var(--green);}
+.card.green:hover{border-top-color:var(--green2);}
+.card-eye{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:3px;}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;color:var(--blue);margin-bottom:3px;line-height:1.2;}
+.card.gold .card-title{color:var(--yellow);}
+.card.green .card-title{color:var(--green);}
+.card.red .card-title{color:var(--red);}
+.card-desc{font-size:10px;color:var(--text2);line-height:1.4;}
+.card-url{font-family:'Barlow Condensed',sans-serif;font-size:9px;color:var(--muted);margin-top:6px;letter-spacing:.5px;}
+
+/* ALPHA GRID */
+.alpha-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-bottom:14px;}
+.acard{background:var(--white);border:1px solid var(--border);border-radius:6px;border-left:3px solid var(--blue);padding:8px 10px;text-decoration:none;color:var(--text);display:block;transition:all .15s;box-shadow:var(--shadow);}
+.acard:hover{background:var(--blue-light);border-left-color:var(--blue2);}
+.acard.gold{border-left-color:var(--yellow);}
+.acard.gold:hover{background:var(--yellow-light);}
+.acard.red{border-left-color:var(--red);}
+.acard.red:hover{background:var(--red-light);}
+.acard.green{border-left-color:var(--green);}
+.acard.green:hover{background:var(--green-light);}
+.acard-title{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--text);letter-spacing:.5px;}
+.acard-desc{font-size:10px;color:var(--text2);margin-top:2px;}
+
+/* DAY BUILD */
+.day-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;}
+.cat-box{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:12px;box-shadow:var(--shadow);}
+.cat-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
+.cat-title span{font-size:9px;color:var(--muted);}
+.task-row{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--border);}
+.task-row:last-child{border-bottom:none;}
+.task-row input[type=checkbox]{accent-color:var(--blue);width:14px;height:14px;cursor:pointer;flex-shrink:0;}
+.task-row label{font-size:12px;color:var(--text2);cursor:pointer;flex:1;}
+.task-row input[type=checkbox]:checked + label{color:var(--muted);text-decoration:line-through;}
+.add-task{width:100%;background:transparent;border:none;border-top:1px dashed var(--border2);color:var(--muted);font-size:11px;padding:5px 2px;margin-top:6px;cursor:pointer;text-align:left;}
+.add-task:hover{color:var(--blue);}
+
+/* QUICK STATS */
+.stats-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
+.stat{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:10px 14px;flex:1;min-width:100px;text-align:center;box-shadow:var(--shadow);}
+.stat-val{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;color:var(--blue);}
+.stat-lbl{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:2px;}
+
+/* COMMISSION CALC */
+.calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:500px;}
+.inp-group{display:flex;flex-direction:column;gap:4px;}
+.inp-group label{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text2);}
+.inp-group input,.inp-group select{background:var(--white);border:1px solid var(--border2);border-radius:4px;color:var(--text);padding:7px 10px;font-size:13px;font-family:'Barlow',sans-serif;}
+.inp-group input:focus,.inp-group select:focus{outline:2px solid var(--blue-mid);border-color:var(--blue);}
+.result-box{background:var(--blue-light);border:1.5px solid var(--blue-mid);border-radius:8px;padding:14px;margin-top:14px;max-width:500px;}
+.result-val{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:var(--blue);}
+.result-lbl{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text2);margin-top:2px;}
+
+/* SAVE BTN */
+.btn{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:7px 18px;border-radius:4px;border:none;cursor:pointer;transition:all .15s;}
+.btn-blue{background:var(--blue);color:#fff;}
+.btn-blue:hover{background:var(--blue2);}
+.btn-outline{background:var(--white);color:var(--blue);border:1px solid var(--blue);}
+.btn-outline:hover{background:var(--blue-light);}
+.btn-red{background:var(--red);color:#fff;}
+
+/* FAVORITES */
+.fav-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;}
+.fav-card{background:var(--white);border:1px solid var(--border);border-radius:6px;padding:10px 12px;text-decoration:none;color:var(--text);display:flex;align-items:center;gap:8px;transition:all .15s;box-shadow:var(--shadow);}
+.fav-card:hover{background:var(--blue-light);border-color:var(--blue-mid);}
+.fav-icon{font-size:18px;flex-shrink:0;}
+.fav-name{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;color:var(--text);letter-spacing:.5px;}
+.fav-url{font-size:9px;color:var(--muted);}
+
+/* PAY HISTORY TABLE */
+.pay-table{width:100%;border-collapse:collapse;font-size:12px;background:var(--white);border-radius:8px;overflow:hidden;box-shadow:var(--shadow);}
+.pay-table th{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--blue);padding:8px 10px;border-bottom:2px solid var(--blue-light);text-align:left;background:var(--grey-light);}
+.pay-table td{padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text2);}
+.pay-table tr:hover td{background:var(--blue-light);}
+.tag{font-family:'Barlow Condensed',sans-serif;font-size:9px;padding:2px 6px;border-radius:3px;letter-spacing:1px;text-transform:uppercase;}
+.tag.g{background:var(--green-light);color:var(--green);}
+.tag.r{background:var(--red-light);color:var(--red);}
+
+/* text inputs in tables */
+.text-inp{background:var(--white);border:1px solid var(--border2);border-radius:4px;color:var(--text);padding:6px 10px;font-size:12px;font-family:'Barlow',sans-serif;}
+.text-inp:focus{outline:2px solid var(--blue-mid);border-color:var(--blue);}
+
+@media(max-width:640px){
+  .topbar{padding:8px 12px;}
+  .panel{padding:12px 10px;}
+  .grid,.alpha-grid,.fav-grid{grid-template-columns:1fr 1fr;}
+  .calc-grid{grid-template-columns:1fr;}
+}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav class="nav">
-  <div class="nav-logo">🏙 Greenville</div>
-  <div class="nav-tools">
-    <button class="nb" onclick="zoomFit()">⊡ Fit</button>
-    <button class="nb" onclick="zoom(0.2)">🔍+</button>
-    <button class="nb" onclick="zoom(-0.2)">🔍−</button>
-    <button class="nb gold active" id="wiggle-btn" onclick="toggleWiggleMode()">✏️ Edit</button>
-    <button class="nb" onclick="toggleAddPanel()">+ Add</button>
-    <a href="https://alphafiles.net/vitals/" class="nb">⚡ ATC</a>
-    <button class="nb red" onclick="resetTown()">↺</button>
-  </div>
-</nav>
-
-<!-- ZOOM HUD -->
-<div class="zoom-hud" id="zoom-hud">100%</div>
-<!-- WIGGLE BANNER -->
-<div class="wiggle-banner" id="wiggle-banner" onclick="exitWiggleMode()">✏️ Edit Mode — Tap here to finish</div>
-
-<!-- CANVAS -->
-<div class="canvas" id="canvas">
-<div class="world" id="world">
-<div class="world-ground"></div>
-
-<!-- ROADS -->
-<div class="road h" style="left:0;right:0;top:740px"></div>
-<div class="road h" style="left:0;right:0;top:440px"></div>
-<div class="road h" style="left:0;right:0;top:1160px"></div>
-<div class="road v" style="top:0;bottom:0;left:480px"></div>
-<div class="road v" style="top:0;bottom:0;left:840px"></div>
-<div class="road v" style="top:0;bottom:0;left:1280px"></div>
-<div class="road v" style="top:0;bottom:0;left:1720px"></div>
-<div class="cross" style="left:480px;top:440px;width:38px;height:38px"></div>
-<div class="cross" style="left:840px;top:440px;width:38px;height:38px"></div>
-<div class="cross" style="left:1280px;top:440px;width:38px;height:38px"></div>
-<div class="cross" style="left:1720px;top:440px;width:38px;height:38px"></div>
-<div class="cross" style="left:480px;top:740px;width:38px;height:38px"></div>
-<div class="cross" style="left:840px;top:740px;width:38px;height:38px"></div>
-<div class="cross" style="left:1280px;top:740px;width:38px;height:38px"></div>
-<div class="cross" style="left:1720px;top:740px;width:38px;height:38px"></div>
-<div class="cross" style="left:480px;top:1160px;width:38px;height:38px"></div>
-<div class="cross" style="left:840px;top:1160px;width:38px;height:38px"></div>
-<div class="cross" style="left:1280px;top:1160px;width:38px;height:38px"></div>
-<div class="cross" style="left:1720px;top:1160px;width:38px;height:38px"></div>
-
-<!-- PARKS -->
-<div class="park" id="park-main" style="left:590px;top:500px;width:210px;height:200px" onclick="openRec()">
-  <div class="park-icon">⛲</div>
-  <div class="park-name">Recreation Plaza</div>
-  <div style="font-size:8px;color:#2d5a27;font-weight:700;margin-top:2px;opacity:.7">Click to explore ↗</div>
-</div>
-<div class="park" style="left:920px;top:810px;width:130px;height:120px;pointer-events:none;background:radial-gradient(ellipse,#98d678,#80c460);border:2px solid #50a030">
-  <div style="font-size:20px">🌳🌲🌳</div>
-  <div style="font-family:Nunito,sans-serif;font-size:8px;font-weight:900;color:#1a4a10">Forest</div>
-</div>
-
-<!-- ANIMATED NPC CHARACTERS (not draggable) -->
-<!-- CARS on h-road 740 -->
-<div class="char" style="top:748px;animation:carH 14s linear infinite;animation-delay:0s">🚗</div>
-<div class="char" style="top:754px;animation:carHr 18s linear infinite;animation-delay:3s">🚙</div>
-<div class="char" style="top:748px;animation:carH 22s linear infinite;animation-delay:8s">🚕</div>
-<!-- CARS on h-road 440 -->
-<div class="char" style="top:448px;animation:carHr 16s linear infinite;animation-delay:1s">🚗</div>
-<div class="char" style="top:454px;animation:carH 20s linear infinite;animation-delay:6s">🚙</div>
-<!-- EMERGENCY on h-road 1160 -->
-<div class="char" style="top:1168px;animation:carH 11s linear infinite;animation-delay:2s">🚑</div>
-<div class="char" style="top:1168px;animation:carHr 15s linear infinite;animation-delay:5s">🚒</div>
-<div class="char" style="top:1168px;animation:carH 19s linear infinite;animation-delay:9s">🚓</div>
-<!-- CARS on v-road 840 -->
-<div class="char" style="left:848px;animation:carV 13s linear infinite;animation-delay:4s">🚗</div>
-<div class="char" style="left:852px;animation:carVr 17s linear infinite;animation-delay:7s">🚙</div>
-<!-- CARS v-road 480 -->
-<div class="char" style="left:488px;animation:carV 20s linear infinite;animation-delay:2s">🚕</div>
-<div class="char" style="left:488px;animation:carVr 14s linear infinite;animation-delay:10s">🚗</div>
-<!-- PEOPLE walking -->
-<div class="char" style="top:760px;font-size:14px;animation:walkH 20s linear infinite;animation-delay:0s">🚶</div>
-<div class="char" style="top:762px;font-size:14px;animation:walkHr 26s linear infinite;animation-delay:5s">🚶‍♀️</div>
-<div class="char" style="top:456px;font-size:14px;animation:walkH 24s linear infinite;animation-delay:3s">🚶‍♂️</div>
-<!-- DOGS wandering (js-controlled) -->
-<div class="char" id="dog1" style="left:660px;top:620px;font-size:18px;animation:dogWander 8s ease-in-out infinite">🐕</div>
-<div class="char" id="dog2" style="left:360px;top:820px;font-size:16px;animation:dogWander 11s ease-in-out infinite;animation-delay:3s">🐶</div>
-<div class="char" id="dog3" style="left:1100px;top:360px;font-size:17px;animation:dogWander 9s ease-in-out infinite;animation-delay:5s">🦮</div>
-
-<!-- BULLETIN BOARDS -->
-<div class="bulletin" id="bb-office"   title="Office Board"   style="left:460px;top:60px"  onclick="openBulletin('office')">📌</div>
-<div class="bulletin" id="bb-finance"  title="Finance Board"  style="left:1260px;top:60px" onclick="openBulletin('finance')">📌</div>
-<div class="bulletin" id="bb-family"   title="Family Board"   style="left:1700px;top:60px" onclick="openBulletin('family')">📌</div>
-<div class="bulletin" id="bb-recovery" title="Recovery Board" style="left:460px;top:820px" onclick="openBulletin('recovery')">📌</div>
-<div class="bulletin" id="bb-health"   title="Health Board"   style="left:1260px;top:820px" onclick="openBulletin('health')">📌</div>
-<div class="bulletin" id="bb-downtown" title="Downtown Board"  style="left:1700px;top:820px" onclick="openBulletin('downtown')">📌</div>
-
-</div><!-- end world -->
-</div><!-- end canvas -->
-
-<!-- MODALS -->
-<div class="modal-bg" id="bld-modal">
-  <div class="modal">
-    <div class="modal-hdr" id="modal-hdr">
-      <span class="modal-hdr-icon" id="modal-icon">🏠</span>
-      <div class="modal-hdr-name" id="modal-name">Building</div>
-      <button class="modal-close" onclick="closeModal()">✕</button>
-    </div>
-    <div class="modal-body" id="modal-body"></div>
-  </div>
-</div>
-
-<!-- CONFIRM -->
-<div class="confirm-modal" id="confirm-modal">
-  <div class="confirm-box">
-    <div class="confirm-title" id="confirm-title"></div>
-    <div class="confirm-msg" id="confirm-msg"></div>
-    <div class="confirm-btns">
-      <button class="cbtn yes" id="confirm-yes">Yes</button>
-      <button class="cbtn no" onclick="cancelConfirm()">Cancel</button>
+<div class="topbar">
+  <div class="topbar-left">
+    <div>
+      <div class="topbar-logo">⚡ Life OS</div>
+      <div class="topbar-sub">Sebastian S. — Personal Operating System</div>
+<!-- PERSONAL CALENDAR — FULL WIDTH BELOW -->
+<div style="background:linear-gradient(135deg,#1B2A4A,#243a6e);border-radius:14px;padding:20px;margin-top:16px">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.55);display:flex;align-items:center;gap:6px">
+      <span style="width:8px;height:8px;border-radius:50%;background:#34d399;display:inline-block"></span>
+      PERSONAL CALENDAR — FULL DETAILS
     </div>
   </div>
+  <iframe src="https://calendar.google.com/calendar/embed?src=sebastianshort624%40gmail.com&ctz=America%2FNew_York&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0&mode=AGENDA" style="border:0;border-radius:8px" width="100%" height="280" frameborder="0" scrolling="no"></iframe>
 </div>
 
-<!-- ADD PANEL -->
-<div class="add-panel" id="add-panel">
-  <div class="ap-title">
-    <span>Add to Town</span>
-    <button class="modal-close" onclick="toggleAddPanel()">✕</button>
+    </div>
   </div>
-  <div class="ap-section">🏠 Buildings</div>
-  <div class="ap-grid" id="ap-buildings"></div>
-  <div class="ap-section">🌳 Nature & Decorations</div>
-  <div class="ap-grid" id="ap-decos"></div>
-  <div class="ap-section">🪧 Signs</div>
-  <div class="ap-grid" id="ap-signs"></div>
+  <div class="topbar-date" id="topDate"></div>
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('dashboard',this)">🏠 Dashboard</button>
+    <button class="tab" onclick="showTab('day',this)">📅 Day Build</button>
+    <button class="tab" onclick="showTab('sites',this)">🔗 All Sites</button>
+    <button class="tab" onclick="showTab('comm',this)">💰 Commission</button>
+    <button class="tab" onclick="showTab('pay',this)">📈 Pay History</button>
+    <button class="tab" onclick="showTab('favs',this)">⭐ Favorites</button>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="tab-dashboard" class="panel active">
+  <div class="stats-row">
+    <div class="stat"><div class="stat-val" id="ds-tasks">0/0</div><div class="stat-lbl">Today's Tasks</div></div>
+    <div class="stat"><div class="stat-val" id="ds-pay">$0</div><div class="stat-lbl">Last Paycheck</div></div>
+    <div class="stat"><div class="stat-val" id="ds-comm">$0</div><div class="stat-lbl">Commission Est.</div></div>
+    <div class="stat"><div class="stat-val" id="ds-streak">0</div><div class="stat-lbl">Day Streak</div></div>
+  </div>
+
+  <div class="sec">Quick Access — My Sites</div>
+  <div class="grid">
+    <a class="card gold" href="/hub">
+      <div class="card-eye">Directory</div>
+      <div class="card-title">📂 Full Hub</div>
+      <div class="card-desc">All pages across all domains</div>
+      <div class="card-url">sebastianlinks.com/hub</div>
+    </a>
+    <a class="card gold" href="/joshuason/">
+      <div class="card-eye">Family · Finance</div>
+      <div class="card-title">🎖️ Joshua Son</div>
+      <div class="card-desc">U.S. Army Tanker personal finance plan</div>
+      <div class="card-url">sebastianlinks.com/joshuason</div>
+    </a>
+    <a class="card" href="https://alphafiles.net" target="_blank">
+      <div class="card-eye">ATC · Sales Tool</div>
+      <div class="card-title">📊 Alpha Files</div>
+      <div class="card-desc">23-page client presentation flow</div>
+      <div class="card-url">alphafiles.net</div>
+    </a>
+    <a class="card green" href="https://12easysteps.org" target="_blank">
+      <div class="card-eye">Recovery · Education</div>
+      <div class="card-title">📖 12 Easy Steps</div>
+      <div class="card-desc">AA Big Book recovery education tools</div>
+      <div class="card-url">12easysteps.org</div>
+    </a>
+    <a class="card" href="/palabras/">
+      <div class="card-eye">Spanish · Vocabulary</div>
+      <div class="card-title">💬 333 Palabras</div>
+      <div class="card-desc">333 positive Spanish words</div>
+      <div class="card-url">sebastianlinks.com/palabras</div>
+    </a>
+    <a class="card red" href="/nationalinstall/">
+      <div class="card-eye">Business · Plan</div>
+      <div class="card-title">🏗️ National Install</div>
+      <div class="card-desc">Business plan 2025–2028</div>
+      <div class="card-url">sebastianlinks.com/nationalinstall</div>
+    </a>
+    <a class="card" href="/panther/">
+      <div class="card-eye">Client · Reputation</div>
+      <div class="card-title">🐆 Panther Van Lines</div>
+      <div class="card-desc">Online reputation audit report</div>
+      <div class="card-url">sebastianlinks.com/panther</div>
+    </a>
+    <a class="card green" href="/vapeless/">
+      <div class="card-eye">Recovery · Tracker</div>
+      <div class="card-title">🚭 Vapeless</div>
+      <div class="card-desc">Daily recovery command center</div>
+      <div class="card-url">sebastianlinks.com/vapeless</div>
+    </a>
+  </div>
+
+  <div class="sec">Vapeless — Recovery Tools</div>
+  <div class="alpha-grid">
+    <a class="acard green" href="/vapeless/#today"><div class="acard-title">🏠 Today</div><div class="acard-desc">Daily missions &amp; review</div></a>
+    <a class="acard green" href="/vapeless/#week"><div class="acard-title">📅 Plan Blocks</div><div class="acard-desc">Weekly schedule</div></a>
+    <a class="acard green" href="/vapeless/#track"><div class="acard-title">📈 Track</div><div class="acard-desc">Exercise, liquids, nutrition</div></a>
+    <a class="acard green" href="/vapeless/#score"><div class="acard-title">🏆 Score</div><div class="acard-desc">XP, rank &amp; streaks</div></a>
+    <a class="acard gold" href="/vapeless/#more"><div class="acard-title">🔗 Links</div><div class="acard-desc">Readings, meetings, prayers &amp; books</div></a>
+  </div>
+
+  <div class="sec">Alpha Files — ATC Presentation Pages</div>
+  <div class="alpha-grid">
+    <a class="acard gold" href="https://alphafiles.net/vitals/" target="_blank"><div class="acard-title">📋 Vitals</div><div class="acard-desc">Client vitals tracker</div></a>
+    <a class="acard" href="https://alphafiles.net/owner/" target="_blank"><div class="acard-title">👤 Owner Info</div><div class="acard-desc">Owner details</div></a>
+    <a class="acard" href="https://alphafiles.net/history/" target="_blank"><div class="acard-title">📜 History</div><div class="acard-desc">Alpha history</div></a>
+    <a class="acard" href="https://alphafiles.net/cost/" target="_blank"><div class="acard-title">💵 True Cost</div><div class="acard-desc">Cost calculator</div></a>
+    <a class="acard" href="https://alphafiles.net/calculator/" target="_blank"><div class="acard-title">🧮 Calculator</div><div class="acard-desc">TCO calculator</div></a>
+    <a class="acard" href="https://alphafiles.net/rights/" target="_blank"><div class="acard-title">⚖️ Rights</div><div class="acard-desc">Consumer rights</div></a>
+    <a class="acard" href="https://alphafiles.net/exit-methods/" target="_blank"><div class="acard-title">🚪 Exit Methods</div><div class="acard-desc">Exit options</div></a>
+    <a class="acard" href="https://alphafiles.net/guarantee/" target="_blank"><div class="acard-title">🛡️ Guarantee</div><div class="acard-desc">Certificate</div></a>
+    <a class="acard gold" href="https://alphafiles.net/quote/" target="_blank"><div class="acard-title">💰 Quote</div><div class="acard-desc">Quote generator</div></a>
+    <a class="acard" href="https://alphafiles.net/proof/" target="_blank"><div class="acard-title">✅ Proof</div><div class="acard-desc">Case database</div></a>
+    <a class="acard" href="https://alphafiles.net/letter/" target="_blank"><div class="acard-title">📄 Letter</div><div class="acard-desc">Mutual release</div></a>
+    <a class="acard" href="https://alphafiles.net/heirs/" target="_blank"><div class="acard-title">👨‍👩‍👧 Heirs</div><div class="acard-desc">Estate liability</div></a>
+    <a class="acard" href="https://alphafiles.net/compensation/" target="_blank"><div class="acard-title">🏦 Compensation</div><div class="acard-desc">Compensation</div></a>
+    <a class="acard" href="https://alphafiles.net/credit/" target="_blank"><div class="acard-title">💳 Credit</div><div class="acard-desc">Credit protection</div></a>
+    <a class="acard" href="https://alphafiles.net/included/" target="_blank"><div class="acard-title">📦 Included</div><div class="acard-desc">What's included</div></a>
+    <a class="acard" href="https://alphafiles.net/followup/" target="_blank"><div class="acard-title">📅 Follow Up</div><div class="acard-desc">Scheduler</div></a>
+    <a class="acard" href="https://alphafiles.net/recap/" target="_blank"><div class="acard-title">🔄 Recap</div><div class="acard-desc">Summary recap</div></a>
+    <a class="acard gold" href="https://alphafiles.net/approval/" target="_blank"><div class="acard-title">⭐ Approval</div><div class="acard-desc">Same-day pricing</div></a>
+    <a class="acard" href="https://alphafiles.net/checklist/" target="_blank"><div class="acard-title">✔️ Checklist</div><div class="acard-desc">Process checklist</div></a>
+    <a class="acard" href="https://alphafiles.net/contract/" target="_blank"><div class="acard-title">📝 Contract</div><div class="acard-desc">Contract page</div></a>
+    <a class="acard" href="https://alphafiles.net/better/" target="_blank"><div class="acard-title">🔝 Better</div><div class="acard-desc">Better offer</div></a>
+    <a class="acard" href="https://alphafiles.net/free/" target="_blank"><div class="acard-title">🎁 Free</div><div class="acard-desc">Free option</div></a>
+    <a class="acard" href="https://alphafiles.net/whyout/" target="_blank"><div class="acard-title">❓ Why Out</div><div class="acard-desc">Why exit</div></a>
+    <a class="acard" href="https://alphafiles.net/group/" target="_blank"><div class="acard-title">👥 Group</div><div class="acard-desc">Group page</div></a>
+    <a class="acard" href="https://alphafiles.net/wait/" target="_blank"><div class="acard-title">⏳ Wait</div><div class="acard-desc">Hold page</div></a>
+    <a class="acard red" href="https://alphafiles.net/admin/" target="_blank"><div class="acard-title">⚙️ Admin</div><div class="acard-desc">Admin panel</div></a>
+    <a class="acard green" href="https://alphafiles.net/crm/" target="_blank"><div class="acard-title">📊 CRM</div><div class="acard-desc">CRM tool</div></a>
+    <a class="acard" href="https://alphafiles.net/report/" target="_blank"><div class="acard-title">📈 Report</div><div class="acard-desc">Report page</div></a>
+  </div>
+
+  <div class="sec">12 Easy Steps — Recovery Tools</div>
+  <div class="alpha-grid">
+    <a class="acard green" href="https://12easysteps.org" target="_blank"><div class="acard-title">🏠 Home</div><div class="acard-desc">Recovery home</div></a>
+    <a class="acard green" href="https://12easysteps.org/steps/" target="_blank"><div class="acard-title">📖 Steps</div><div class="acard-desc">12 steps content</div></a>
+    <a class="acard green" href="https://12easysteps.org/report/" target="_blank"><div class="acard-title">📊 Report Card</div><div class="acard-desc">Daily/weekly tracker</div></a>
+    <a class="acard green" href="https://12easysteps.org/safe/" target="_blank"><div class="acard-title">🇨🇴 Safe</div><div class="acard-desc">Colombia safety plan</div></a>
+  </div>
+</div>
+
+<!-- DAY BUILD -->
+<div id="tab-day" class="panel">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+    <div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:var(--blue);" id="dayTitle">Today's Build</div>
+      <div style="font-size:11px;color:var(--muted);" id="dayDate"></div>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-blue" onclick="saveDay()">Save Day</button>
+      <button class="btn btn-outline" onclick="resetDay()">Reset</button>
+    </div>
+  </div>
+  <div class="day-grid" id="dayGrid"></div>
+</div>
+
+<!-- ALL SITES -->
+<div id="tab-sites" class="panel">
+  <div class="sec">sebastianlinks.com — Personal</div>
+  <div class="grid">
+    <a class="card" href="/"><div class="card-eye">Dashboard</div><div class="card-title">⚡ Life OS</div><div class="card-url">sebastianlinks.com</div></a>
+    <a class="card gold" href="/hub/"><div class="card-eye">Directory</div><div class="card-title">📂 Hub</div><div class="card-url">sebastianlinks.com/hub</div></a>
+    <a class="card gold" href="/joshuason/"><div class="card-eye">Family · Finance</div><div class="card-title">🎖️ Joshua Son</div><div class="card-url">sebastianlinks.com/joshuason</div></a>
+    <a class="card" href="/palabras/"><div class="card-eye">Spanish</div><div class="card-title">💬 333 Palabras</div><div class="card-url">sebastianlinks.com/palabras</div></a>
+    <a class="card red" href="/nationalinstall/"><div class="card-eye">Business</div><div class="card-title">🏗️ National Install</div><div class="card-url">sebastianlinks.com/nationalinstall</div></a>
+    <a class="card" href="/panther/"><div class="card-eye">Client · Reputation</div><div class="card-title">🐆 Panther Van Lines</div><div class="card-url">sebastianlinks.com/panther</div></a>
+    <a class="card green" href="/vapeless/"><div class="card-eye">Recovery · Tracker</div><div class="card-title">🚭 Vapeless</div><div class="card-url">sebastianlinks.com/vapeless</div></a>
+  </div>
+
+  <div class="sec">alphafiles.net — ATC Sales Presentation</div>
+  <div class="alpha-grid">
+    <a class="acard gold" href="https://alphafiles.net" target="_blank"><div class="acard-title">🏠 Home</div></a>
+    <a class="acard gold" href="https://alphafiles.net/vitals/" target="_blank"><div class="acard-title">📋 Vitals</div></a>
+    <a class="acard" href="https://alphafiles.net/owner/" target="_blank"><div class="acard-title">👤 Owner</div></a>
+    <a class="acard" href="https://alphafiles.net/history/" target="_blank"><div class="acard-title">📜 History</div></a>
+    <a class="acard" href="https://alphafiles.net/cost/" target="_blank"><div class="acard-title">💵 True Cost</div></a>
+    <a class="acard" href="https://alphafiles.net/calculator/" target="_blank"><div class="acard-title">🧮 Calculator</div></a>
+    <a class="acard" href="https://alphafiles.net/rights/" target="_blank"><div class="acard-title">⚖️ Rights</div></a>
+    <a class="acard" href="https://alphafiles.net/exit-methods/" target="_blank"><div class="acard-title">🚪 Exit Methods</div></a>
+    <a class="acard" href="https://alphafiles.net/guarantee/" target="_blank"><div class="acard-title">🛡️ Guarantee</div></a>
+    <a class="acard gold" href="https://alphafiles.net/quote/" target="_blank"><div class="acard-title">💰 Quote</div></a>
+    <a class="acard" href="https://alphafiles.net/proof/" target="_blank"><div class="acard-title">✅ Proof</div></a>
+    <a class="acard" href="https://alphafiles.net/letter/" target="_blank"><div class="acard-title">📄 Letter</div></a>
+    <a class="acard" href="https://alphafiles.net/heirs/" target="_blank"><div class="acard-title">👨‍👩‍👧 Heirs</div></a>
+    <a class="acard" href="https://alphafiles.net/compensation/" target="_blank"><div class="acard-title">🏦 Compensation</div></a>
+    <a class="acard" href="https://alphafiles.net/credit/" target="_blank"><div class="acard-title">💳 Credit</div></a>
+    <a class="acard" href="https://alphafiles.net/included/" target="_blank"><div class="acard-title">📦 Included</div></a>
+    <a class="acard" href="https://alphafiles.net/followup/" target="_blank"><div class="acard-title">📅 Follow Up</div></a>
+    <a class="acard" href="https://alphafiles.net/recap/" target="_blank"><div class="acard-title">🔄 Recap</div></a>
+    <a class="acard gold" href="https://alphafiles.net/approval/" target="_blank"><div class="acard-title">⭐ Approval</div></a>
+    <a class="acard" href="https://alphafiles.net/checklist/" target="_blank"><div class="acard-title">✔️ Checklist</div></a>
+    <a class="acard" href="https://alphafiles.net/contract/" target="_blank"><div class="acard-title">📝 Contract</div></a>
+    <a class="acard" href="https://alphafiles.net/better/" target="_blank"><div class="acard-title">🔝 Better</div></a>
+    <a class="acard" href="https://alphafiles.net/free/" target="_blank"><div class="acard-title">🎁 Free</div></a>
+    <a class="acard" href="https://alphafiles.net/whyout/" target="_blank"><div class="acard-title">❓ Why Out</div></a>
+    <a class="acard" href="https://alphafiles.net/group/" target="_blank"><div class="acard-title">👥 Group</div></a>
+    <a class="acard" href="https://alphafiles.net/wait/" target="_blank"><div class="acard-title">⏳ Wait</div></a>
+    <a class="acard red" href="https://alphafiles.net/admin/" target="_blank"><div class="acard-title">⚙️ Admin</div></a>
+    <a class="acard green" href="https://alphafiles.net/crm/" target="_blank"><div class="acard-title">📊 CRM</div></a>
+    <a class="acard" href="https://alphafiles.net/report/" target="_blank"><div class="acard-title">📈 Report</div></a>
+  </div>
+
+  <div class="sec">12easysteps.org — Recovery</div>
+  <div class="alpha-grid">
+    <a class="acard green" href="https://12easysteps.org" target="_blank"><div class="acard-title">🏠 Home</div></a>
+    <a class="acard green" href="https://12easysteps.org/steps/" target="_blank"><div class="acard-title">📖 Steps</div></a>
+    <a class="acard green" href="https://12easysteps.org/report/" target="_blank"><div class="acard-title">📊 Report Card</div></a>
+    <a class="acard green" href="https://12easysteps.org/safe/" target="_blank"><div class="acard-title">🇨🇴 Safe Plan</div></a>
+  </div>
+</div>
+
+<!-- COMMISSION -->
+<div id="tab-comm" class="panel">
+  <div class="sec">Commission Calculator</div>
+  <div class="calc-grid">
+    <div class="inp-group">
+      <label>Sale Amount $</label>
+      <input class="text-inp" type="number" id="saleAmt" value="5000" step="100" oninput="calcComm()">
+    </div>
+    <div class="inp-group">
+      <label>Commission %</label>
+      <input class="text-inp" type="number" id="commPct" value="10" step=".5" oninput="calcComm()">
+    </div>
+    <div class="inp-group">
+      <label>Override %</label>
+      <input class="text-inp" type="number" id="overridePct" value="0" step=".5" oninput="calcComm()">
+    </div>
+    <div class="inp-group">
+      <label>Deductions $</label>
+      <input class="text-inp" type="number" id="deductions" value="0" step="50" oninput="calcComm()">
+    </div>
+  </div>
+  <div class="result-box">
+    <div class="result-val" id="commResult">$500</div>
+    <div class="result-lbl">Your Commission</div>
+    <div style="margin-top:10px;display:flex;gap:16px;flex-wrap:wrap;">
+      <div><div style="font-size:11px;color:var(--text2);">Base</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--text);" id="commBase">$500</div></div>
+      <div><div style="font-size:11px;color:var(--text2);">Override</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--text);" id="commOverride">$0</div></div>
+      <div><div style="font-size:11px;color:var(--text2);">Deductions</div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--red);" id="commDed">-$0</div></div>
+    </div>
+  </div>
+
+  <div class="sec" style="margin-top:20px;">Deal Log</div>
+  <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+    <input class="text-inp" type="text" id="dealName" placeholder="Client name" style="flex:1;min-width:120px;">
+    <button class="btn btn-blue" onclick="addDeal()">+ Add Deal</button>
+  </div>
+  <table class="pay-table" id="dealTable">
+    <thead><tr><th>Client</th><th>Sale $</th><th>Commission</th><th>Date</th><th></th></tr></thead>
+    <tbody id="dealBody"></tbody>
+  </table>
+</div>
+
+<!-- PAY HISTORY -->
+<div id="tab-pay" class="panel">
+  <div class="sec">Pay History</div>
+  <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+    <input class="text-inp" type="date" id="payDate">
+    <input class="text-inp" type="number" id="payAmt" placeholder="Amount $" step="50" style="width:130px;">
+    <input class="text-inp" type="text" id="payNote" placeholder="Note (optional)" style="flex:1;min-width:120px;">
+    <button class="btn btn-blue" onclick="addPay()">+ Add</button>
+  </div>
+  <table class="pay-table">
+    <thead><tr><th>Date</th><th>Amount</th><th>Note</th><th></th></tr></thead>
+    <tbody id="payBody"></tbody>
+  </table>
+</div>
+
+<!-- FAVORITES -->
+<div id="tab-favs" class="panel">
+  <div class="sec">Quick Links</div>
+  <div class="fav-grid" id="favGrid"></div>
+  <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
+    <input class="text-inp" type="text" id="favName" placeholder="Name" style="width:130px;">
+    <input class="text-inp" type="text" id="favUrl" placeholder="URL" style="flex:1;min-width:200px;">
+    <input class="text-inp" type="text" id="favIcon" placeholder="Emoji" style="width:70px;">
+    <button class="btn btn-blue" onclick="addFav()">+ Add</button>
+  </div>
 </div>
 
 <script>
-// ══════════════════════════════════════
-// CONSTANTS & KEYS
-// ══════════════════════════════════════
-var SK='seb_town_v4', SIGN_K='seb_town_signs_v4', DECO_K='seb_town_decos';
+// ── TABS ──
+function showTab(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
 
-// ══════════════════════════════════════
-// DEFAULT DATA
-// ══════════════════════════════════════
-var DEFAULT_BLDS=[
-  {id:'alpha-office',icon:'⚡',name:'Alpha Office',desc:'CRM · Clients',url:'https://alphafiles.net/vitals/',bg:'#dbeafe',bc:'#3b82f6',co:'#1e3a8a',roof:'#2563eb',x:60,y:80,w:120,rooms:[]},
-  {id:'present',icon:'▶️',name:'Present',desc:'Live calls',url:'https://alphafiles.net/present/',bg:'#ede9fe',bc:'#a78bfa',co:'#4c1d95',roof:'#7c3aed',x:210,y:80,w:110,rooms:[]},
-  {id:'clients',icon:'👥',name:'Clients',desc:'All files',url:'https://alphafiles.net/clients/',bg:'#cffafe',bc:'#22d3ee',co:'#164e63',roof:'#0891b2',x:60,y:220,w:110,rooms:[]},
-  {id:'side-proj',icon:'🔧',name:'Side Projects',desc:'DP · 48 · NI',url:'',bg:'#f3f4f6',bc:'#9ca3af',co:'#374151',roof:'#6b7280',x:210,y:220,w:120,rooms:[
-    {id:'dp-movers',icon:'🚛',name:'DP Movers',url:'https://dpmoversrelocation.com'},
-    {id:'48-states',icon:'📦',name:'48 States',url:'https://48statesmovingandstorage.com'},
-    {id:'national-install',icon:'🏗️',name:'National Install',url:'/nationalinstall/'},
-    {id:'reputation',icon:'📊',name:'Reputation',url:'/dp/'},
-    {id:'mgmt',icon:'🐆',name:'Management',url:'/panther/'}
-  ]},
-  {id:'crm-map',icon:'🗺️',name:'CRM Overview',desc:'System map',url:'https://alphafiles.net/overview/',bg:'#e0e7ff',bc:'#a5b4fc',co:'#312e81',roof:'#4338ca',x:355,y:80,w:110,rooms:[]},
-  {id:'estate',icon:'🏠',name:'Estate Planning',desc:'Insurance',url:'',bg:'#fef3c7',bc:'#fcd34d',co:'#78350f',roof:'#d97706',x:900,y:60,w:120,rooms:[
-    {id:'insurance',icon:'🛡️',name:'Insurance Table',url:'/insurance/'},
-    {id:'joshuason2',icon:'🪖',name:'Military Finance',url:'/joshuason/'}
-  ]},
-  {id:'home-sale',icon:'🏡',name:'118 Silverlimb',desc:'For Sale',url:'/home/',bg:'#dcfce7',bc:'#4ade80',co:'#14532d',roof:'#16a34a',x:1080,y:60,w:120,rooms:[]},
-  {id:'fire-escape',icon:'🔥',name:'Fire Escape',desc:'Plan',url:'/fireescape/',bg:'#fee2e2',bc:'#f87171',co:'#7f1d1d',roof:'#dc2626',x:900,y:200,w:110,rooms:[]},
-  {id:'joshua',icon:'🪖',name:"Joshua's Barracks",desc:'Army · Finance',url:'/joshuason/',bg:'#dcfce7',bc:'#86efac',co:'#14532d',roof:'#15803d',x:1340,y:60,w:120,rooms:[]},
-  {id:'ever',icon:'🌸',name:"Ever's Room",desc:'Fiber plan',url:'/ever/',bg:'#fce7f3',bc:'#f9a8d4',co:'#9d174d',roof:'#db2777',x:1480,y:60,w:110,rooms:[]},
-  {id:'carl',icon:'🏥',name:"Carl's Recovery",url:'/carl/',bg:'#fee2e2',bc:'#fca5a5',co:'#991b1b',roof:'#dc2626',x:1340,y:200,w:120,rooms:[]},
-  {id:'colombia',icon:'🇨🇴',name:'Colombia House',desc:'Cali · Safety',url:'https://12easysteps.org/safe/',bg:'#fef9c3',bc:'#fde047',co:'#713f12',roof:'#ca8a04',x:1480,y:200,w:110,rooms:[]},
-  {id:'step-house',icon:'📖',name:'Step House',desc:'12easysteps.org',url:'https://12easysteps.org',bg:'#ede9fe',bc:'#c4b5fd',co:'#4c1d95',roof:'#7c3aed',x:60,y:880,w:120,rooms:[]},
-  {id:'vapeless',icon:'🚭',name:'Vapor-Free Clinic',url:'/vapeless/',bg:'#f5f3ff',bc:'#c4b5fd',co:'#5b21b6',roof:'#6d28d9',x:210,y:880,w:120,rooms:[]},
-  {id:'palabras',icon:'💬',name:'Word Garden',desc:'333 words',url:'/palabras/',bg:'#ecfeff',bc:'#67e8f9',co:'#164e63',roof:'#0891b2',x:60,y:1020,w:110,rooms:[]},
-  {id:'hospital',icon:'🏥',name:'General Hospital',desc:'Health resources',url:'',bg:'#fee2e2',bc:'#f87171',co:'#7f1d1d',roof:'#dc2626',x:900,y:880,w:130,rooms:[
-    {id:'h-ever',icon:'🌸',name:"Ever's Health",url:'/ever/'},
-    {id:'h-carl',icon:'🏥',name:"Carl's Recovery",url:'/carl/'}
-  ]},
-  {id:'police-station',icon:'🚓',name:'Police Station',desc:'Safety resources',url:'',bg:'#dbeafe',bc:'#3b82f6',co:'#1e3a8a',roof:'#1d4ed8',x:1070,y:880,w:120,rooms:[
-    {id:'ps-fireescape',icon:'🔥',name:'Fire Escape Plan',url:'/fireescape/'}
-  ]},
-  {id:'fire-station',icon:'🚒',name:'Fire Station',desc:'Emergency',url:'/fireescape/',bg:'#fef3c7',bc:'#fb923c',co:'#7c2d12',roof:'#ea580c',x:900,y:1020,w:120,rooms:[]},
-  {id:'daily-hub',icon:'🛋️',name:'Daily Hub',desc:'Calendar · Hit List',url:'/calendar/',bg:'#e0f2fe',bc:'#7dd3fc',co:'#0c4a6e',roof:'#0284c7',x:630,y:870,w:130,rooms:[]},
-  {id:'library',icon:'📚',name:'The Library',desc:'Research · Docs',url:'/bronco/',bg:'#fde68a',bc:'#fbbf24',co:'#78350f',roof:'#d97706',x:630,y:1020,w:110,rooms:[]},
-  {id:'restaurants',icon:'🍽',name:'Restaurant Row',desc:'Greenville hot spots',url:'',bg:'#fef3c7',bc:'#fbbf24',co:'#78350f',roof:'#d97706',x:1340,y:880,w:130,rooms:[]},
-  {id:'venues',icon:'🎭',name:'Venues',desc:'Arena · Peace Center',url:'',bg:'#ede9fe',bc:'#a78bfa',co:'#4c1d95',roof:'#7c3aed',x:1510,y:880,w:120,rooms:[]},
-  {id:'this-month',icon:'📅',name:'This Month',desc:'Upcoming events',url:'',bg:'#dbeafe',bc:'#3b82f6',co:'#1e3a8a',roof:'#2563eb',x:1340,y:1020,w:120,rooms:[]},
-  {id:'civil-eng',icon:'⚙️',name:'Civil Engineer',desc:'Admin · Settings',url:'',bg:'#f3f4f6',bc:'#6b7280',co:'#1a1a2e',roof:'#374151',x:370,y:330,w:100,rooms:[]}
+// ── DATE ──
+const now = new Date();
+const opts = { weekday:'long', month:'long', day:'numeric', year:'numeric' };
+document.getElementById('topDate').textContent = now.toLocaleDateString('en-US', opts);
+const dd = document.getElementById('dayDate');
+if (dd) dd.textContent = now.toLocaleDateString('en-US', opts);
+
+// ── DAY BUILD ──
+const DAY_CATS = [
+  { name:'Spiritual', emoji:'🙏', tasks:['Morning prayer/meditation','Read Big Book','Gratitude list'] },
+  { name:'Recovery',  emoji:'🛡️', tasks:['Meeting / call sponsor','Step work','Journal'] },
+  { name:'Work',      emoji:'💼', tasks:['Follow up calls','Update CRM / Zoho','Review pipeline'] },
+  { name:'Family',    emoji:'👨‍👧‍👦', tasks:['Connect with Ever','Connect with Sebastian Jr.','Family message'] },
+  { name:'Exercise',  emoji:'💪', tasks:['Workout / walk','Stretch / breathe','Hydrate'] },
+  { name:'Home',      emoji:'🏠', tasks:['Clean / tidy','Errands','Meal prep'] },
+  { name:'Friends',   emoji:'🤝', tasks:['Check in on friend','Social time'] },
+  { name:'Growth',    emoji:'📚', tasks:['Read / learn','Personal development'] },
 ];
 
-var DEFAULT_SIGNS=[
-  {id:'s1',name:'THE OFFICE',x:180,y:28,style:''},
-  {id:'s2',name:'WALL STREET',x:1060,y:28,style:''},
-  {id:'s3',name:'FAMILY SQUARE',x:1500,y:28,style:''},
-  {id:'s4',name:'RECOVERY VILLAGE',x:60,y:840,style:''},
-  {id:'s5',name:'EMERGENCY DISTRICT',x:980,y:840,style:'red-sign'},
-  {id:'s6',name:'DOWNTOWN GREENVILLE',x:1380,y:840,style:'blue-sign'},
-  {id:'s7',name:'TOWN PLAZA',x:670,y:480,style:''}
-];
+const todayKey = () => 'day_' + now.toISOString().slice(0,10);
+let dayData = {};
 
-var DEFAULT_DECOS=[
-  {id:'tr1',icon:'🌳',x:30,y:50},{id:'tr2',icon:'🌲',x:110,y:40},{id:'tr3',icon:'🌳',x:180,y:70},
-  {id:'tr4',icon:'🌿',x:70,y:340},{id:'tr5',icon:'🌳',x:380,y:60},{id:'tr6',icon:'🌲',x:700,y:40},
-  {id:'tr7',icon:'🌳',x:800,y:70},{id:'tr8',icon:'🌿',x:1150,y:50},{id:'tr9',icon:'🌳',x:1240,y:70},
-  {id:'tr10',icon:'🌲',x:1600,y:40},{id:'tr11',icon:'🌳',x:1700,y:70},{id:'tr12',icon:'🌿',x:1800,y:50},
-  {id:'tr13',icon:'🌳',x:30,y:780},{id:'tr14',icon:'🌲',x:160,y:800},{id:'tr15',icon:'🌳',x:580,y:770},
-  {id:'tr16',icon:'🌿',x:750,y:800},{id:'tr17',icon:'🌳',x:1120,y:780},{id:'tr18',icon:'🌲',x:1650,y:780},
-  {id:'tr19',icon:'🌳',x:1800,y:800},{id:'tr20',icon:'🌲',x:30,y:1200},{id:'tr21',icon:'🌳',x:1900,y:200},
-  {id:'fl1',icon:'🌸',x:565,y:680},{id:'fl2',icon:'🌺',x:800,y:700},{id:'fl3',icon:'🌻',x:1380,y:700},
-];
-
-// ══════════════════════════════════════
-// STATE
-// ══════════════════════════════════════
-var buildings,signs,decos;
-function loadState(){
-  try{buildings=JSON.parse(localStorage.getItem(SK));}catch(e){buildings=null;}
-  if(!buildings||!buildings.length) buildings=JSON.parse(JSON.stringify(DEFAULT_BLDS));
-  try{signs=JSON.parse(localStorage.getItem(SIGN_K));}catch(e){signs=null;}
-  if(!signs||!signs.length) signs=JSON.parse(JSON.stringify(DEFAULT_SIGNS));
-  try{decos=JSON.parse(localStorage.getItem(DECO_K));}catch(e){decos=null;}
-  if(!decos||!decos.length) decos=JSON.parse(JSON.stringify(DEFAULT_DECOS));
-}
-function save(){
-  localStorage.setItem(SK,JSON.stringify(buildings));
-  localStorage.setItem(SIGN_K,JSON.stringify(signs));
-  localStorage.setItem(DECO_K,JSON.stringify(decos));
-}
-function resetTown(){if(!confirm('Reset town to default?'))return;localStorage.removeItem(SK);localStorage.removeItem(SIGN_K);localStorage.removeItem(DECO_K);location.reload();}
-function getBld(id){return buildings.find(function(b){return b.id===id;});}
-
-// ══════════════════════════════════════
-// ZOOM + PAN
-// ══════════════════════════════════════
-var scale=0.55,panX=20,panY=10;
-var W=2400,H=1800;
-
-function applyTransform(showHUD){
-  document.getElementById('world').style.transform='translate('+panX+'px,'+panY+'px) scale('+scale+')';
-  if(showHUD!==false){
-    var h=document.getElementById('zoom-hud');
-    h.textContent=Math.round(scale*100)+'%';
-    h.classList.add('show');
-    clearTimeout(window._zh);window._zh=setTimeout(function(){h.classList.remove('show');},1200);
-  }
-}
-var minScale=0.1; // will be set by zoomFit
-
-function getFitScale(){
-  var cv=document.getElementById('canvas').getBoundingClientRect();
-  return Math.min((cv.width-4)/W,(cv.height-4)/H);
-}
-function zoom(d,cx,cy){
-  var prev=scale;
-  minScale=getFitScale();
-  scale=Math.min(3,Math.max(minScale,scale+d));
-  if(cx===undefined){var r=document.getElementById('canvas').getBoundingClientRect();cx=r.width/2;cy=r.height/2;}
-  panX=cx-(cx-panX)*(scale/prev);
-  panY=cy-(cy-panY)*(scale/prev);
-  // Clamp pan so town never goes off screen
-  clampPan();
-  applyTransform();
-}
-function clampPan(){
-  var cv=document.getElementById('canvas').getBoundingClientRect();
-  var scaledW=W*scale, scaledH=H*scale;
-  // Don't let town go fully off edges — keep at least 40px in view
-  panX=Math.min(40,Math.max(cv.width-scaledW-4,panX));
-  panY=Math.min(40,Math.max(cv.height-scaledH-4,panY));
-}
-function zoomFit(){
-  var cv=document.getElementById('canvas').getBoundingClientRect();
-  var sx=(cv.width-4)/W, sy=(cv.height-4)/H;
-  scale=Math.min(sx,sy);
-  minScale=scale;
-  panX=(cv.width-W*scale)/2;
-  panY=(cv.height-H*scale)/2;
-  applyTransform();
-}
-
-// ══════════════════════════════════════
-// INTERACTION — Pan / Long-press-drag / Double-tap-open
-// ══════════════════════════════════════
-var isPanning=false, panStart=null;
-var lpTimer=null, lpBldId=null, lpStartX=0, lpStartY=0;
-var liftedBld=null;  // building being dragged after long press
-var lastTapMap={};   // id → timestamp of last tap
-var LP_DELAY=550;    // ms to hold before drag starts
-var MOVE_CANCEL=10;  // px movement before long press is cancelled
-var DBL_TAP_MS=380;  // ms window for double tap
-
-// Single global pointermove + pointerup
-document.addEventListener('pointermove',function(e){
-  // Cancel long press if finger moved too far
-  if(lpTimer && (Math.abs(e.clientX-lpStartX)>MOVE_CANCEL || Math.abs(e.clientY-lpStartY)>MOVE_CANCEL)){
-    clearTimeout(lpTimer);lpTimer=null;lpBldId=null;
-    // Fall through to pan
-    if(!isPanning&&panStart===null){
-      isPanning=true;
-      panStart={x:e.clientX-panX,y:e.clientY-panY};
-      document.getElementById('canvas').classList.add('panning');
-    }
-  }
-  if(isPanning&&panStart){panX=e.clientX-panStart.x;panY=e.clientY-panStart.y;clampPan();applyTransform(false);}
-  if(liftedBld) moveLiftedBld(e);
-  if(activeSignDrag) moveSignDrag(e);
-  if(activeDecoDrag) moveDecoDrag(e);
-});
-
-document.addEventListener('pointerup',function(e){
-  clearTimeout(lpTimer);lpTimer=null;lpBldId=null;
-  if(isPanning){isPanning=false;panStart=null;document.getElementById('canvas').classList.remove('panning');}
-  if(liftedBld) dropLiftedBld(e);
-  if(activeSignDrag) endSignDrag(e);
-  if(activeDecoDrag) endDecoDrag(e);
-});
-
-// Canvas background → pan
-document.getElementById('canvas').addEventListener('pointerdown',function(e){
-  var t=e.target;
-  var onEmpty=t===e.currentTarget||t.id==='world'||t.classList.contains('road')||t.classList.contains('world-ground')||t.classList.contains('cross')||t.classList.contains('sidewalk')||t.classList.contains('park')||t.classList.contains('park-icon')||t.classList.contains('park-name');
-  if(onEmpty){
-    isPanning=true;panStart={x:e.clientX-panX,y:e.clientY-panY};
-    document.getElementById('canvas').classList.add('panning');
-  }
-});
-
-// Scroll wheel zoom
-document.getElementById('canvas').addEventListener('wheel',function(e){e.preventDefault();zoom(e.deltaY<0?0.12:-0.15,e.clientX,e.clientY);},{passive:false});
-
-// Pinch
-var pinch0=null,pinchScale0=1;
-document.getElementById('canvas').addEventListener('touchstart',function(e){if(e.touches.length===2){var dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;pinch0=Math.sqrt(dx*dx+dy*dy);pinchScale0=scale;}},{passive:true});
-document.getElementById('canvas').addEventListener('touchmove',function(e){if(e.touches.length===2&&pinch0){var dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;var d=Math.sqrt(dx*dx+dy*dy);scale=Math.min(3,Math.max(getFitScale(),pinchScale0*(d/pinch0)));applyTransform();}},{passive:true});
-document.getElementById('canvas').addEventListener('touchend',function(){pinch0=null;},{passive:true});
-
-// ══════════════════════════════════════
-// WIGGLE MODE (visual only — drag uses long-press directly)
-// ══════════════════════════════════════
-var wiggleMode=false;
-function toggleWiggleMode(){wiggleMode?exitWiggleMode():enterWiggleMode();}
-function enterWiggleMode(){
-  wiggleMode=true;
-  document.querySelectorAll('.bld').forEach(function(el){el.classList.add('wiggling');});
-  document.querySelectorAll('.deco-el').forEach(function(el){el.classList.add('movable');});
-  document.getElementById('wiggle-banner').classList.add('show');
-  document.getElementById('wiggle-btn').classList.add('active');
-  document.getElementById('wiggle-btn').textContent='✅ Done';
-}
-function exitWiggleMode(){
-  wiggleMode=false;
-  document.querySelectorAll('.bld').forEach(function(el){el.classList.remove('wiggling');});
-  document.querySelectorAll('.deco-el').forEach(function(el){el.classList.remove('movable');});
-  document.getElementById('wiggle-banner').classList.remove('show');
-  document.getElementById('wiggle-btn').classList.remove('active');
-  document.getElementById('wiggle-btn').textContent='✏️ Edit';
-}
-
-// ══════════════════════════════════════
-// RENDER BUILDINGS
-// ══════════════════════════════════════
-function render(){
-  var world=document.getElementById('world');
-  world.querySelectorAll('.bld,.sign-wrap,.deco-el').forEach(function(el){el.remove();});
-  buildings.forEach(renderBld);
-  signs.forEach(renderSign);
-  decos.forEach(renderDeco);
-}
-
-function renderBld(b){
-  var el=document.createElement('div');
-  el.className='bld'+(wiggleMode?' wiggling':'');
-  el.id='bld-'+b.id;
-  var w=b.w||120;
-  el.style.cssText='left:'+b.x+'px;top:'+b.y+'px';
-  var rc=b.rooms&&b.rooms.length?'<div class="bld-badge">'+b.rooms.length+' rooms</div>':'';
-  el.innerHTML=
-    '<div class="bld-delete" onclick="deleteBld(event,\''+b.id+'\')">−</div>'
-    +'<div class="bld-icon">'+b.icon+'</div>'
-    +''
-    +'<div class="bld-name">'+b.name+'</div>'
-    +(b.rooms&&b.rooms.length?'<div class="bld-rooms">'+b.rooms.length+' rooms</div>':'');
-  el.addEventListener('pointerdown',function(e){onBldDown(e,b.id);});
-  document.getElementById('world').appendChild(el);
-}
-
-// ══════════════════════════════════════
-// BUILDING INTERACTION
-// Double-tap = open · Long-press+slide = move
-// ══════════════════════════════════════
-var dropTarget=null;
-
-function worldPt(cx,cy){
-  var wr=document.getElementById('world').getBoundingClientRect();
-  return{x:(cx-wr.left)/scale,y:(cy-wr.top)/scale};
-}
-
-function onBldDown(e,id){
-  if(e.target.classList.contains('bld-delete')||e.target.classList.contains('bld-resize')) return;
-  e.stopPropagation();e.preventDefault();
-  // Stop any pan
-  isPanning=false;panStart=null;
-
-  var el=document.getElementById('bld-'+id);
-  var wp=worldPt(e.clientX,e.clientY);
-  var bx=parseFloat(el.style.left)||0, by=parseFloat(el.style.top)||0;
-
-  lpStartX=e.clientX; lpStartY=e.clientY; lpBldId=id;
-
-  // Double-tap detection
-  var now=Date.now();
-  if(lastTapMap[id] && (now-lastTapMap[id])<DBL_TAP_MS){
-    lastTapMap[id]=0;
-    clearTimeout(lpTimer);lpTimer=null;lpBldId=null;
-    openBld(id);
-    return;
-  }
-  lastTapMap[id]=now;
-
-  // Start long-press timer for drag
-  clearTimeout(lpTimer);
-  lpTimer=setTimeout(function(){
-    lpTimer=null;
-    // Lift the building
-    var offX=wp.x-bx, offY=wp.y-by;
-    liftedBld={id:id,el:el,offX:offX,offY:offY};
-    el.classList.add('lifted');
-    if(wiggleMode) el.classList.remove('wiggling');
-    if(navigator.vibrate) navigator.vibrate(40);
-    // Show drop hint
-    document.getElementById('wiggle-banner').textContent='📦 Drag to move · Drop on another to nest inside';
-    document.getElementById('wiggle-banner').classList.add('show');
-  }, LP_DELAY);
-}
-
-function moveLiftedBld(e){
-  var lb=liftedBld;
-  var wp=worldPt(e.clientX,e.clientY);
-  lb.el.style.left=(wp.x-lb.offX)+'px';
-  lb.el.style.top=(wp.y-lb.offY)+'px';
-  // Drop target detection
-  var hit=null;
-  buildings.forEach(function(b){
-    if(b.id===lb.id) return;
-    var te=document.getElementById('bld-'+b.id);if(!te) return;
-    var tr=te.getBoundingClientRect();
-    if(e.clientX>=tr.left&&e.clientX<=tr.right&&e.clientY>=tr.top&&e.clientY<=tr.bottom) hit=b.id;
-    te.style.outline='';
+function renderDay() {
+  const saved = localStorage.getItem(todayKey());
+  if (saved) dayData = JSON.parse(saved);
+  const grid = document.getElementById('dayGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  let total = 0, done = 0;
+  DAY_CATS.forEach(cat => {
+    const tasks = dayData[cat.name] || cat.tasks.map(t => ({ text:t, checked:false }));
+    dayData[cat.name] = tasks;
+    total += tasks.length;
+    done  += tasks.filter(t => t.checked).length;
+    const box = document.createElement('div');
+    box.className = 'cat-box';
+    const comp = tasks.filter(t => t.checked).length;
+    box.innerHTML = `<div class="cat-title">${cat.emoji} ${cat.name} <span>${comp}/${tasks.length}</span></div>` +
+      tasks.map((t,i) => `
+        <div class="task-row">
+          <input type="checkbox" id="t_${cat.name}_${i}" ${t.checked?'checked':''} onchange="toggleTask('${cat.name}',${i})">
+          <label for="t_${cat.name}_${i}">${t.text}</label>
+        </div>`).join('') +
+      `<button class="add-task" onclick="addTask('${cat.name}')">+ Add task</button>`;
+    grid.appendChild(box);
   });
-  if(hit){document.getElementById('bld-'+hit).style.outline='3px dashed #f59e0b';dropTarget=hit;}
-  else dropTarget=null;
+  const ds = document.getElementById('ds-tasks');
+  if (ds) ds.textContent = done + '/' + total;
 }
 
-function dropLiftedBld(e){
-  var lb=liftedBld; liftedBld=null;
-  lb.el.classList.remove('lifted');
-  buildings.forEach(function(b){var te=document.getElementById('bld-'+b.id);if(te)te.style.outline='';});
-  if(wiggleMode) lb.el.classList.add('wiggling');
-  document.getElementById('wiggle-banner').classList.remove('show');
-
-  if(dropTarget){
-    var dragged=getBld(lb.id), target=getBld(dropTarget);
-    showConfirm('Add as room?','"'+dragged.name+'" becomes a room inside "'+target.name+'".',function(){
-      if(!target.rooms) target.rooms=[];
-      target.rooms.push({id:dragged.id,icon:dragged.icon,name:dragged.name,desc:dragged.desc||'',url:dragged.url});
-      buildings=buildings.filter(function(b){return b.id!==dragged.id;});
-      save();render();
-    });
-    var b=getBld(lb.id);if(b){lb.el.style.left=b.x+'px';lb.el.style.top=b.y+'px';}
-  } else {
-    var wp=worldPt(e.clientX,e.clientY);
-    var b=getBld(lb.id);
-    if(b){b.x=Math.round(wp.x-lb.offX);b.y=Math.round(wp.y-lb.offY);}
-    save();
-  }
-  dropTarget=null;
+function toggleTask(cat,i) { dayData[cat][i].checked = !dayData[cat][i].checked; saveDay(); renderDay(); }
+function addTask(cat) {
+  const text = prompt('New task for ' + cat + ':');
+  if (!text) return;
+  dayData[cat] = dayData[cat] || [];
+  dayData[cat].push({ text, checked:false });
+  saveDay(); renderDay();
+}
+function saveDay() { localStorage.setItem(todayKey(), JSON.stringify(dayData)); }
+function resetDay() {
+  if (!confirm('Reset all tasks for today?')) return;
+  localStorage.removeItem(todayKey()); dayData = {}; renderDay();
 }
 
-// ══════════════════════════════════════
-// RESIZE
-// ══════════════════════════════════════
-var resizeState=null;
-window.startResize=function(e,id){
-  e.stopPropagation();e.preventDefault();
-  var b=getBld(id);if(!b) return;
-  resizeState={id:id,startX:e.clientX,startW:b.w||120};
-  function onMove(ev){
-    var dx=(ev.clientX-resizeState.startX)/scale;
-    var newW=Math.max(80,Math.min(220,resizeState.startW+dx));
-    var b2=getBld(resizeState.id);if(b2)b2.w=Math.round(newW);
-    var el=document.getElementById('bld-'+resizeState.id);
-    if(el)el.style.width=newW+'px';
-  }
-  function onUp(){document.removeEventListener('pointermove',onMove);document.removeEventListener('pointerup',onUp);save();}
-  document.addEventListener('pointermove',onMove);
-  document.addEventListener('pointerup',onUp);
-};
-
-// DELETE
-window.deleteBld=function(e,id){
-  e.stopPropagation();e.preventDefault();
-  if(!confirm('Remove this building from the map?')) return;
-  buildings=buildings.filter(function(b){return b.id!==id;});
-  save();render();
-};
-
-// ══════════════════════════════════════
-// OPEN BUILDING
-// ══════════════════════════════════════
-var modalBldId=null;
-function openBld(id){
-  var b=getBld(id);if(!b) return;
-  // Special buildings
-  if(id==='civil-eng'){openCivilEng();return;}
-  if(id==='restaurants'){openDowntown('restaurants');return;}
-  if(id==='venues'){openDowntown('venues');return;}
-  if(id==='this-month'){openDowntown('this-month');return;}
-  var rooms=b.rooms&&b.rooms.length?b.rooms:[];
-  if(rooms.length===1&&rooms[0].url){window.open(rooms[0].url,'_self');return;}
-  if(!rooms.length&&b.url){window.open(b.url,'_self');return;}
-  modalBldId=id;
-  document.getElementById('modal-icon').textContent=b.icon;
-  document.getElementById('modal-name').textContent=b.name;
-  document.getElementById('modal-hdr').style.background=b.bg||'#f8fafc';
-  buildModalBody(b);
-  document.getElementById('bld-modal').classList.add('open');
+// ── COMMISSION ──
+let deals = JSON.parse(localStorage.getItem('os_deals') || '[]');
+function calcComm() {
+  const sale = parseFloat(document.getElementById('saleAmt')?.value) || 0;
+  const pct  = parseFloat(document.getElementById('commPct')?.value) || 0;
+  const ovr  = parseFloat(document.getElementById('overridePct')?.value) || 0;
+  const ded  = parseFloat(document.getElementById('deductions')?.value) || 0;
+  const base = sale * pct / 100;
+  const over = sale * ovr / 100;
+  const net  = base + over - ded;
+  const fmt  = n => '$' + Math.round(n).toLocaleString();
+  const e    = id => document.getElementById(id);
+  if (e('commBase'))     e('commBase').textContent    = fmt(base);
+  if (e('commOverride')) e('commOverride').textContent = fmt(over);
+  if (e('commDed'))      e('commDed').textContent      = '-' + fmt(ded);
+  if (e('commResult'))   e('commResult').textContent   = fmt(net);
+  if (e('ds-comm'))      e('ds-comm').textContent      = fmt(net);
 }
-function buildModalBody(b){
-  var rooms=b.rooms&&b.rooms.length?b.rooms:[];
-  var html='';
-  if(b.url&&!rooms.length){
-    html='<a href="'+b.url+'" class="room-btn"><span class="room-icon">'+b.icon+'</span><div><div class="room-name">Open '+b.name+'</div></div></a>';
-  } else {
-    html=rooms.map(function(r){
-      return '<div class="room-btn" style="display:flex;align-items:center">'
-        +'<a href="'+(r.url||'#')+'" style="display:flex;align-items:center;gap:10px;flex:1;text-decoration:none">'
-        +'<span class="room-icon">'+r.icon+'</span>'
-        +'<div><div class="room-name">'+r.name+'</div>'+(r.desc?'<div class="room-desc">'+r.desc+'</div>':'')+'</div>'
-        +'</a>'
-        +'<button class="room-eject" onclick="ejectRoom(\''+b.id+'\',\''+r.id+'\')">↩</button>'
-        +'</div>';
-    }).join('');
-  }
-  var notes=loadNotes(b.id);
-  html+='<div class="modal-divider"></div>'
-    +'<div class="modal-label">Notes</div>'
-    +'<textarea class="note-ta" id="note-ta" placeholder="Add a note..."></textarea>'
-    +'<button class="note-add" onclick="addNote(\''+b.id+'\')">+ Add</button>'
-    +(notes.length?'<div style="margin-top:8px">'+notes.map(function(n,i){
-      return '<div class="note-entry"><span style="flex:1">'+n+'</span><button class="note-del" onclick="delNote(\''+b.id+'\','+i+')">✕</button></div>';
-    }).join('')+'</div>':'');
-  document.getElementById('modal-body').innerHTML=html;
+function addDeal() {
+  const name = document.getElementById('dealName')?.value?.trim();
+  const sale = parseFloat(document.getElementById('saleAmt')?.value) || 0;
+  const pct  = parseFloat(document.getElementById('commPct')?.value) || 0;
+  const comm = sale * pct / 100;
+  if (!name || !sale) return alert('Enter client name and sale amount');
+  deals.push({ name, sale, comm, date: now.toLocaleDateString('en-US',{month:'short',day:'numeric'}) });
+  localStorage.setItem('os_deals', JSON.stringify(deals));
+  renderDeals();
+  document.getElementById('dealName').value = '';
 }
-window.ejectRoom=function(pid,rid){
-  var p=getBld(pid);var r=p.rooms.find(function(x){return x.id===rid;});
-  if(!r) return;
-  var nb=JSON.parse(JSON.stringify(r));nb.x=(p.x||0)+150;nb.y=p.y||0;nb.rooms=[];nb.bg=nb.bg||'#f3f4f6';nb.bc=nb.bc||'#9ca3af';nb.co=nb.co||'#374151';nb.roof=nb.roof||'#6b7280';nb.w=110;
-  buildings.push(nb);p.rooms=p.rooms.filter(function(x){return x.id!==rid;});
-  save();render();closeModal();
-};
-
-// ══════════════════════════════════════
-// NOTES
-// ══════════════════════════════════════
-function loadNotes(id){try{return JSON.parse(localStorage.getItem('tn_'+id)||'[]');}catch(e){return[];}}
-function saveNotes(id,n){localStorage.setItem('tn_'+id,JSON.stringify(n));}
-window.addNote=function(id){var t=document.getElementById('note-ta');if(!t||!t.value.trim()) return;var n=loadNotes(id);n.unshift(t.value.trim());saveNotes(id,n);t.value='';var b=getBld(id);if(b)buildModalBody(b);};
-window.delNote=function(id,i){var n=loadNotes(id);n.splice(i,1);saveNotes(id,n);var b=getBld(id);if(b)buildModalBody(b);};
-function closeModal(){document.getElementById('bld-modal').classList.remove('open');}
-
-// ══════════════════════════════════════
-// SIGNS
-// ══════════════════════════════════════
-function renderSign(s){
-  var el=document.createElement('div');
-  el.className='sign-wrap';el.id='sign-'+s.id;
-  el.style.cssText='left:'+s.x+'px;top:'+s.y+'px';
-  el.innerHTML='<div class="sign-board '+(s.style||'')+'" id="sb-'+s.id+'">'+s.name+'</div><div class="sign-post"></div>';
-  el.querySelector('.sign-board').addEventListener('dblclick',function(e){e.stopPropagation();editSign(s.id);});
-  el.addEventListener('pointerdown',function(e){onSignDown(e,s.id);});
-  document.getElementById('world').appendChild(el);
+function renderDeals() {
+  const b = document.getElementById('dealBody'); if (!b) return;
+  b.innerHTML = deals.map((d,i) => `
+    <tr>
+      <td>${d.name}</td>
+      <td>$${d.sale.toLocaleString()}</td>
+      <td style="color:var(--blue);font-weight:600;">$${Math.round(d.comm).toLocaleString()}</td>
+      <td>${d.date}</td>
+      <td><button onclick="delDeal(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;">×</button></td>
+    </tr>`).join('');
 }
-var activeSignDrag=null;
-function onSignDown(e,id){e.stopPropagation();e.preventDefault();var el=document.getElementById('sign-'+id);var wr=document.getElementById('world').getBoundingClientRect();var bx=parseFloat(el.style.left),by=parseFloat(el.style.top);activeSignDrag={id:id,el:el,offX:(e.clientX-wr.left)/scale-bx,offY:(e.clientY-wr.top)/scale-by,moved:false};}
-function moveSignDrag(e){var ds=activeSignDrag;if(!ds.moved&&Math.abs(e.clientX)<4)return;ds.moved=true;var wp=worldPt(e.clientX,e.clientY);ds.el.style.left=(wp.x-ds.offX)+'px';ds.el.style.top=(wp.y-ds.offY)+'px';}
-function endSignDrag(e){var ds=activeSignDrag;activeSignDrag=null;if(!ds.moved) return;var wp=worldPt(e.clientX,e.clientY);var s=signs.find(function(x){return x.id===ds.id;});if(s){s.x=Math.round(wp.x-ds.offX);s.y=Math.round(wp.y-ds.offY);}save();}
-function editSign(id){var s=signs.find(function(x){return x.id===id;});if(!s)return;var n=prompt('Street name:',s.name);if(n===null) return;s.name=n.toUpperCase();save();document.getElementById('sb-'+id).textContent=s.name;}
-function addSign(){var n=prompt('New street name:','MY STREET');if(!n) return;var s={id:'s'+Date.now(),name:n.toUpperCase(),x:500,y:400,style:''};signs.push(s);save();renderSign(s);}
+function delDeal(i) { deals.splice(i,1); localStorage.setItem('os_deals',JSON.stringify(deals)); renderDeals(); }
 
-// ══════════════════════════════════════
-// DECORATIONS
-// ══════════════════════════════════════
-function renderDeco(d){
-  var el=document.createElement('div');
-  el.className='deco-el'+(wiggleMode?' movable':'');
-  el.id='deco-'+d.id;
-  el.style.cssText='left:'+d.x+'px;top:'+d.y+'px';
-  el.textContent=d.icon;
-  el.addEventListener('pointerdown',function(e){if(!wiggleMode) return;onDecoDown(e,d.id);});
-  document.getElementById('world').appendChild(el);
+// ── PAY HISTORY ──
+let pays = JSON.parse(localStorage.getItem('os_pays') || '[]');
+function addPay() {
+  const date = document.getElementById('payDate')?.value;
+  const amt  = parseFloat(document.getElementById('payAmt')?.value) || 0;
+  const note = document.getElementById('payNote')?.value?.trim() || '';
+  if (!date || !amt) return alert('Enter date and amount');
+  pays.unshift({ date, amt, note });
+  localStorage.setItem('os_pays', JSON.stringify(pays));
+  renderPays();
+  document.getElementById('payAmt').value = '';
+  document.getElementById('payNote').value = '';
 }
-var activeDecoDrag=null;
-function onDecoDown(e,id){e.stopPropagation();e.preventDefault();var el=document.getElementById('deco-'+id);var wp=worldPt(e.clientX,e.clientY);var bx=parseFloat(el.style.left),by=parseFloat(el.style.top);activeDecoDrag={id:id,el:el,offX:wp.x-bx,offY:wp.y-by};}
-function moveDecoDrag(e){var ds=activeDecoDrag;var wp=worldPt(e.clientX,e.clientY);ds.el.style.left=(wp.x-ds.offX)+'px';ds.el.style.top=(wp.y-ds.offY)+'px';ds.el.classList.add('drag-active');}
-function endDecoDrag(e){var ds=activeDecoDrag;activeDecoDrag=null;ds.el.classList.remove('drag-active');var wp=worldPt(e.clientX,e.clientY);var d=decos.find(function(x){return x.id===ds.id;});if(d){d.x=Math.round(wp.x-ds.offX);d.y=Math.round(wp.y-ds.offY);}save();}
-
-// ══════════════════════════════════════
-// BULLETIN BOARDS
-// ══════════════════════════════════════
-var BOARDS={office:{n:'The Office',bg:'#dbeafe',co:'#1e3a8a'},finance:{n:'Wall Street',bg:'#fef3c7',co:'#78350f'},family:{n:'Family Square',bg:'#dcfce7',co:'#14532d'},recovery:{n:'Recovery Village',bg:'#ede9fe',co:'#4c1d95'},health:{n:'Emergency District',bg:'#fee2e2',co:'#7f1d1d'},downtown:{n:'Downtown Greenville',bg:'#dbeafe',co:'#1e3a8a'}};
-function loadTasks(b){try{return JSON.parse(localStorage.getItem('tasks_'+b)||'[]');}catch(e){return[];}}
-function saveTasks(b,t){localStorage.setItem('tasks_'+b,JSON.stringify(t));}
-function openBulletin(board){
-  var b=BOARDS[board];
-  document.getElementById('modal-icon').textContent='📌';
-  document.getElementById('modal-name').textContent=b.n+' — Board';
-  document.getElementById('modal-hdr').style.background=b.bg;
-  document.getElementById('modal-hdr').querySelector('.modal-hdr-name').style.color=b.co;
-  buildBulletinBody(board);
-  document.getElementById('bld-modal').classList.add('open');
+function renderPays() {
+  const b = document.getElementById('payBody'); if (!b) return;
+  b.innerHTML = pays.map((p,i) => `
+    <tr>
+      <td>${p.date}</td>
+      <td style="color:var(--blue);font-weight:600;">$${p.amt.toLocaleString()}</td>
+      <td>${p.note}</td>
+      <td><button onclick="delPay(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;">×</button></td>
+    </tr>`).join('');
+  if (pays.length > 0) { const ds = document.getElementById('ds-pay'); if (ds) ds.textContent = '$' + pays[0].amt.toLocaleString(); }
 }
-function buildBulletinBody(board){
-  var tasks=loadTasks(board);
-  var today=new Date().toISOString().split('T')[0];
-  tasks.sort(function(a,b){return(a.due||'9999')>(b.due||'9999')?1:-1;});
-  var dtag=function(due){if(!due)return '';if(due<=today)return '<span class="task-due today">TODAY</span>';var d=new Date(due),n=new Date();if((d-n)<3*86400000)return '<span class="task-due soon">SOON</span>';return '<span class="task-due ok">'+due+'</span>';};
-  var html='<div>'+( tasks.length?tasks.map(function(t,i){return '<div class="task-item'+(t.done?' done':'')+'" onclick="toggleTask(\''+board+'\','+i+')">'+'<div class="task-cb">'+(t.done?'✓':'')+'</div><div class="task-text">'+t.text+'</div>'+dtag(t.due)+'<button onclick="event.stopPropagation();delTask(\''+board+'\','+i+')" style="background:none;border:none;color:#d1d5db;cursor:pointer;font-size:11px">✕</button></div>'}).join(''):'<div style="font-size:12px;color:#9ca3af;text-align:center;padding:12px">No tasks yet.</div>')+'</div>'+'<div class="task-add-row"><input class="task-input" id="task-text-'+board+'" placeholder="New task..." onkeydown="if(event.key===\'Enter\')addTask(\''+board+'\')"><input type="date" class="task-date" id="task-date-'+board+'"><button class="task-add-btn" onclick="addTask(\''+board+'\')">+</button></div>';
-  document.getElementById('modal-body').innerHTML=html;
-  var de=document.getElementById('task-date-'+board);if(de)de.value=today;
-}
-window.addTask=function(b){var t=document.getElementById('task-text-'+b),d=document.getElementById('task-date-'+b);if(!t||!t.value.trim())return;var tasks=loadTasks(b);tasks.push({text:t.value.trim(),due:d?d.value:'',done:false});saveTasks(b,tasks);t.value='';buildBulletinBody(b);};
-window.toggleTask=function(b,i){var t=loadTasks(b);t[i].done=!t[i].done;saveTasks(b,t);buildBulletinBody(b);};
-window.delTask=function(b,i){var t=loadTasks(b);t.splice(i,1);saveTasks(b,t);buildBulletinBody(b);};
+function delPay(i) { pays.splice(i,1); localStorage.setItem('os_pays',JSON.stringify(pays)); renderPays(); }
 
-// ══════════════════════════════════════
-// RECREATION PLAZA
-// ══════════════════════════════════════
-function openRec(){
-  document.getElementById('modal-icon').textContent='⛲';
-  document.getElementById('modal-name').textContent='Recreation & Travel';
-  document.getElementById('modal-hdr').style.background='#d1fae5';
-  var saved=loadTrips();
-  var html='<div class="modal-label">Trips & Destinations</div>'
-    +'<a href="/62426/" class="room-btn"><span class="room-icon">🏙</span><div><div class="room-name">Charlotte Day Trip</div><div class="room-desc">Day trip itinerary</div></div></a>'
-    +'<a href="https://12easysteps.org/safe/" class="room-btn"><span class="room-icon">🇨🇴</span><div><div class="room-name">Cali, Colombia</div><div class="room-desc">Family · Safety plan</div></div></a>'
-    +(saved.map(function(t,i){return '<div class="room-btn" style="display:flex;align-items:center"><span class="room-icon">✈️</span><div style="flex:1"><div class="room-name">'+t+'</div></div><button class="room-eject" onclick="delTrip('+i+')">✕</button></div>';}).join(''))
-    +'<div class="modal-divider"></div>'
-    +'<div class="modal-label">Add a Destination</div>'
-    +'<div class="task-add-row"><input class="task-input" id="rec-dest" placeholder="Where to?"><button class="task-add-btn" onclick="addTrip()">+</button></div>';
-  document.getElementById('modal-body').innerHTML=html;
-  document.getElementById('bld-modal').classList.add('open');
-}
-function loadTrips(){try{return JSON.parse(localStorage.getItem('rec_trips')||'[]');}catch(e){return[];}}
-window.addTrip=function(){var e=document.getElementById('rec-dest');if(!e||!e.value.trim())return;var t=loadTrips();t.push(e.value.trim());localStorage.setItem('rec_trips',JSON.stringify(t));openRec();};
-window.delTrip=function(i){var t=loadTrips();t.splice(i,1);localStorage.setItem('rec_trips',JSON.stringify(t));openRec();};
-
-// ══════════════════════════════════════
-// DOWNTOWN
-// ══════════════════════════════════════
-var RESTAURANTS=[{n:"Soby's New South",m:'https://maps.google.com/?q=Sobys+Greenville+SC'},{n:'Jianna Italian',m:'https://maps.google.com/?q=Jianna+Greenville+SC'},{n:'Halls Chophouse',m:'https://maps.google.com/?q=Halls+Chophouse+Greenville+SC'},{n:'Nose Dive Gastropub',m:'https://maps.google.com/?q=Nose+Dive+Greenville+SC'},{n:'The Anchorage',m:'https://maps.google.com/?q=Anchorage+Greenville+SC'},{n:'American Grocery',m:'https://maps.google.com/?q=American+Grocery+Greenville+SC'},{n:'Smoke on the Water',m:'https://maps.google.com/?q=Smoke+Water+Greenville+SC'},{n:'Sidewall Pizza',m:'https://maps.google.com/?q=Sidewall+Pizza+Greenville+SC'},{n:"Rick Erwin's",m:'https://maps.google.com/?q=Rick+Erwins+Greenville+SC'},{n:'Tupelo Honey',m:'https://maps.google.com/?q=Tupelo+Honey+Greenville+SC'},{n:'The Trappe Door',m:'https://maps.google.com/?q=Trappe+Door+Greenville+SC'}];
-var VENUES=[{n:'Bon Secours Wellness Arena',i:'🏟',m:'https://maps.google.com/?q=Bon+Secours+Wellness+Arena+Greenville+SC'},{n:'Peace Center',i:'🎭',m:'https://maps.google.com/?q=Peace+Center+Greenville+SC'},{n:'Fluor Field',i:'⚾',m:'https://maps.google.com/?q=Fluor+Field+Greenville+SC'},{n:'Prisma Health Amphitheater',i:'🎵',m:'https://maps.google.com/?q=Prisma+Health+Amphitheater+Greenville+SC'},{n:'TD Saturday Market',i:'🛒',m:'https://maps.google.com/?q=TD+Saturday+Market+Greenville+SC'},{n:'Falls Park on the Reedy',i:'🌊',m:'https://maps.google.com/?q=Falls+Park+Greenville+SC'}];
-function getVisited(){try{return JSON.parse(localStorage.getItem('visited_r')||'{}');}catch(e){return{};}}
-function loadEvents(){try{return JSON.parse(localStorage.getItem('gvl_events')||'[]').sort(function(a,b){return(a.date||'')>(b.date||'')?1:-1;});}catch(e){return[];}}
-function openDowntown(type){
-  var icons={restaurants:'🍽',venues:'🎭','this-month':'📅'};
-  var names={restaurants:'Restaurant Row',venues:'Venues','this-month':'This Month'};
-  document.getElementById('modal-icon').textContent=icons[type];
-  document.getElementById('modal-name').textContent=names[type];
-  document.getElementById('modal-hdr').style.background='#fef9c3';
-  var html='';
-  if(type==='restaurants'){
-    var v=getVisited();
-    html=RESTAURANTS.map(function(r){return '<div class="rv-item"><span class="rv-icon">🍴</span><span class="rv-name">'+r.n+'</span><a href="'+r.m+'" target="_blank" class="rv-btn-s">📍</a><span class="rv-tag '+(v[r.n]?'been':'want')+'" onclick="toggleV(\''+r.n+'\')" style="cursor:pointer">'+(v[r.n]?'✅ Been':'Want')+'</span></div>';}).join('');
-  } else if(type==='venues'){
-    html=VENUES.map(function(v){return '<div class="rv-item"><span class="rv-icon">'+v.i+'</span><span class="rv-name">'+v.n+'</span><a href="'+v.m+'" target="_blank" class="rv-btn-s">📍</a></div>';}).join('');
-  } else {
-    var evs=loadEvents();
-    html=(evs.length?evs.map(function(ev,i){var p=ev.date?ev.date.split('-'):[];return '<div class="ev-item"><div class="ev-date-box"><div style="font-size:8px">'+(p[1]?['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][parseInt(p[1])]:'?')+'</div><div style="font-size:16px;font-weight:900">'+(p[2]||'?')+'</div></div><div class="ev-info"><div class="ev-name">'+ev.name+'</div><div class="ev-venue">'+ev.venue+'</div></div><button class="ev-del" onclick="delEv('+i+')">✕</button></div>';}).join(''):'<div style="font-size:12px;color:#9ca3af;text-align:center;padding:12px">No events added yet.</div>')
-      +'<div class="add-ev-form"><input class="ev-input" id="ev-name" placeholder="Event name..."><input class="ev-input" id="ev-venue" placeholder="Venue..."><input type="date" class="ev-input" id="ev-date"><button class="task-add-btn" onclick="addEv()">+ Add Event</button></div>';
-  }
-  document.getElementById('modal-body').innerHTML=html;
-  document.getElementById('bld-modal').classList.add('open');
-}
-window.toggleV=function(n){var v=getVisited();v[n]=!v[n];localStorage.setItem('visited_r',JSON.stringify(v));openDowntown('restaurants');};
-window.addEv=function(){var n=document.getElementById('ev-name'),v=document.getElementById('ev-venue'),d=document.getElementById('ev-date');if(!n||!n.value.trim())return;var evs=loadEvents();evs.push({name:n.value.trim(),venue:v?v.value:'',date:d?d.value:''});localStorage.setItem('gvl_events',JSON.stringify(evs));openDowntown('this-month');};
-window.delEv=function(i){var evs=loadEvents();evs.splice(i,1);localStorage.setItem('gvl_events',JSON.stringify(evs));openDowntown('this-month');};
-
-// ══════════════════════════════════════
-// CIVIL ENGINEER (Admin)
-// ══════════════════════════════════════
-function openCivilEng(){
-  document.getElementById('modal-icon').textContent='⚙️';
-  document.getElementById('modal-name').textContent='Civil Engineer — Admin';
-  document.getElementById('modal-hdr').style.background='#f3f4f6';
-  var html='<div class="modal-label">Town Settings</div>'
-    +'<div class="room-btn" onclick="enterWiggleMode();closeModal()"><span class="room-icon">✏️</span><div><div class="room-name">Edit Mode</div><div class="room-desc">Move and resize buildings</div></div></div>'
-    +'<div class="room-btn" onclick="toggleAddPanel();closeModal()"><span class="room-icon">+</span><div><div class="room-name">Add Buildings</div><div class="room-desc">Open the add panel</div></div></div>'
-    +'<div class="room-btn" onclick="zoomFit();closeModal()"><span class="room-icon">⊡</span><div><div class="room-name">Fit Town to Screen</div><div class="room-desc">See the entire town</div></div></div>'
-    +'<div class="room-btn" onclick="exportTown()"><span class="room-icon">📤</span><div><div class="room-name">Export Town Data</div><div class="room-desc">Save a backup</div></div></div>'
-    +'<div class="room-btn" onclick="importTown()"><span class="room-icon">📥</span><div><div class="room-name">Import Town Data</div><div class="room-desc">Restore a backup</div></div></div>'
-    +'<div class="modal-divider"></div>'
-    +'<div class="room-btn" style="border-color:#fca5a5" onclick="resetTown()"><span class="room-icon">↺</span><div><div class="room-name" style="color:#dc2626">Reset to Default</div><div class="room-desc">Cannot be undone</div></div></div>';
-  document.getElementById('modal-body').innerHTML=html;
-  document.getElementById('bld-modal').classList.add('open');
-}
-function exportTown(){var data={buildings:buildings,signs:signs,decos:decos};var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='my_town.json';a.click();}
-function importTown(){var inp=document.createElement('input');inp.type='file';inp.accept='.json';inp.onchange=function(e){var f=e.target.files[0];if(!f) return;var r=new FileReader();r.onload=function(ev){try{var d=JSON.parse(ev.target.result);if(d.buildings){buildings=d.buildings;signs=d.signs||signs;decos=d.decos||decos;save();render();closeModal();}}catch(err){alert('Invalid file');}};r.readAsText(f);};inp.click();}
-
-// ══════════════════════════════════════
-// CONFIRM
-// ══════════════════════════════════════
-var confirmCb=null;
-function showConfirm(title,msg,cb){document.getElementById('confirm-title').textContent=title;document.getElementById('confirm-msg').textContent=msg;confirmCb=cb;document.getElementById('confirm-yes').onclick=function(){confirmCb&&confirmCb();cancelConfirm();};document.getElementById('confirm-modal').classList.add('open');}
-function cancelConfirm(){document.getElementById('confirm-modal').classList.remove('open');confirmCb=null;}
-
-// ══════════════════════════════════════
-// ADD PANEL
-// ══════════════════════════════════════
-var BLD_PRESETS=[
-  {icon:'🏠',name:'House',bg:'#dcfce7',bc:'#4ade80',co:'#14532d',roof:'#16a34a'},
-  {icon:'🏢',name:'Office',bg:'#dbeafe',bc:'#3b82f6',co:'#1e3a8a',roof:'#2563eb'},
-  {icon:'❤️',name:'Personal',bg:'#fce7f3',bc:'#f9a8d4',co:'#9d174d',roof:'#db2777'},
-  {icon:'📋',name:'Project',bg:'#f3f4f6',bc:'#9ca3af',co:'#374151',roof:'#6b7280'},
-  {icon:'⭐',name:'Favorite',bg:'#fef9c3',bc:'#fde047',co:'#713f12',roof:'#ca8a04'},
-  {icon:'🏪',name:'Shop',bg:'#fed7aa',bc:'#fb923c',co:'#7c2d12',roof:'#ea580c'},
-  {icon:'🏥',name:'Health',bg:'#fee2e2',bc:'#f87171',co:'#7f1d1d',roof:'#dc2626'},
-  {icon:'⚙️',name:'Tool',bg:'#e0e7ff',bc:'#a5b4fc',co:'#312e81',roof:'#4338ca'},
+// ── FAVORITES ──
+const DEFAULT_FAVS = [
+  { name:'Alpha Files',  url:'https://alphafiles.net',      icon:'📊' },
+  { name:'12 Easy Steps',url:'https://12easysteps.org',     icon:'📖' },
+  { name:'Joshua Son',   url:'/joshuason/',                  icon:'🎖️' },
+  { name:'Hub',          url:'/hub/',                        icon:'📂' },
+  { name:'Palabras',     url:'/palabras/',                   icon:'💬' },
+  { name:'Panther',      url:'/panther/',                    icon:'🐆' },
+  { name:'Vapeless',     url:'/vapeless/',                   icon:'🚭' },
+  { name:'Gmail',        url:'https://mail.google.com',      icon:'📧' },
+  { name:'Zoho CRM',     url:'https://crm.zoho.com',         icon:'👥' },
+  { name:'RingCentral',  url:'https://app.ringcentral.com',  icon:'📞' },
 ];
-var DECO_PRESETS=[
-  {icon:'🌳',n:'Oak'},{icon:'🌲',n:'Pine'},{icon:'🌴',n:'Palm'},{icon:'🌿',n:'Bush'},
-  {icon:'🌸',n:'Cherry'},{icon:'🌺',n:'Flower'},{icon:'🌻',n:'Sunflower'},{icon:'🌵',n:'Cactus'},
-  {icon:'🐕',n:'Dog'},{icon:'🐶',n:'Puppy'},{icon:'🦮',n:'Guide Dog'},{icon:'🐈',n:'Cat'},
-  {icon:'🦆',n:'Duck'},{icon:'🐦',n:'Bird'},{icon:'🦋',n:'Butterfly'},{icon:'🪴',n:'Plant'},
-  {icon:'⛺',n:'Tent'},{icon:'🪑',n:'Bench'},{icon:'💦',n:'Fountain'},{icon:'🗿',n:'Statue'},
-];
-var SIGN_PRESETS=[
-  {n:'GREEN',style:''},{n:'RED',style:'red-sign'},{n:'BLUE',style:'blue-sign'},
-];
-
-function toggleAddPanel(){
-  var p=document.getElementById('add-panel');p.classList.toggle('open');
-  if(!p.classList.contains('open')) return;
-  document.getElementById('ap-buildings').innerHTML=BLD_PRESETS.map(function(b,i){return '<div class="ap-item" onclick="addBld('+i+')"><div class="ap-icon">'+b.icon+'</div><div>'+b.name+'</div></div>';}).join('');
-  document.getElementById('ap-decos').innerHTML=DECO_PRESETS.map(function(d,i){return '<div class="ap-item" onclick="addDeco('+i+')"><div class="ap-icon">'+d.icon+'</div><div>'+d.n+'</div></div>';}).join('');
-  document.getElementById('ap-signs').innerHTML=SIGN_PRESETS.map(function(s,i){return '<div class="ap-item" onclick="addSignPreset('+i+')"><div class="ap-icon" style="font-size:12px;font-weight:900;color:'+(s.style==='red-sign'?'#dc2626':s.style==='blue-sign'?'#1d4ed8':'#1a6b1a')+'">🪧</div><div>'+s.n+'</div></div>';}).join('');
+let favs = JSON.parse(localStorage.getItem('os_favs') || 'null') || DEFAULT_FAVS;
+function renderFavs() {
+  const g = document.getElementById('favGrid'); if (!g) return;
+  g.innerHTML = favs.map((f,i) => `
+    <a class="fav-card" href="${f.url}" target="${f.url.startsWith('http')?'_blank':'_self'}">
+      <div class="fav-icon">${f.icon||'🔗'}</div>
+      <div><div class="fav-name">${f.name}</div><div class="fav-url">${f.url.replace('https://','')}</div></div>
+      <button onclick="delFav(event,${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;margin-left:auto;">×</button>
+    </a>`).join('');
 }
-window.addBld=function(i){
-  var p=BLD_PRESETS[i];var n=prompt('Building name:',p.name);if(!n) return;var u=prompt('Link URL (or blank):','');
-  var b=JSON.parse(JSON.stringify(p));b.id='b'+Date.now();b.name=n;b.url=u||'';b.rooms=[];b.x=530;b.y=600;b.w=120;
-  buildings.push(b);save();renderBld(b);toggleAddPanel();
-};
-window.addDeco=function(i){
-  var p=DECO_PRESETS[i];var d={id:'d'+Date.now(),icon:p.icon,x:530,y:600};
-  decos.push(d);save();renderDeco(d);toggleAddPanel();
-};
-window.addSignPreset=function(i){
-  var ps=SIGN_PRESETS[i];var n=prompt('Street name:','MY STREET');if(!n) return;
-  var s={id:'s'+Date.now(),name:n.toUpperCase(),x:500,y:400,style:ps.style};
-  signs.push(s);save();renderSign(s);toggleAddPanel();
-};
+function addFav() {
+  const name = document.getElementById('favName')?.value?.trim();
+  const url  = document.getElementById('favUrl')?.value?.trim();
+  const icon = document.getElementById('favIcon')?.value?.trim() || '🔗';
+  if (!name || !url) return;
+  favs.push({ name, url, icon });
+  localStorage.setItem('os_favs', JSON.stringify(favs));
+  renderFavs();
+  ['favName','favUrl','favIcon'].forEach(id => { const e = document.getElementById(id); if(e) e.value=''; });
+}
+function delFav(e,i) {
+  e.preventDefault(); e.stopPropagation();
+  favs.splice(i,1); localStorage.setItem('os_favs',JSON.stringify(favs)); renderFavs();
+}
 
-// ══════════════════════════════════════
-// INIT
-// ══════════════════════════════════════
-loadState();
-render();
-zoomFit();
+// ── INIT ──
+renderDay(); calcComm(); renderDeals(); renderPays(); renderFavs();
 </script>
+
+
+<!-- QUICK NOTES WIDGET -->
+<div id="notes-widget" style="background:#fff;border-radius:14px;border:1px solid #e5e7eb;margin:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06)">
+  <div style="background:linear-gradient(135deg,#1B2A4A,#243a6e);padding:12px 16px;display:flex;align-items:center;justify-content:space-between">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-size:18px">📝</span>
+      <div style="font-family:Inter,sans-serif;font-size:14px;font-weight:800;color:#fff">Quick Notes</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <span id="notes-saved" style="font-size:11px;color:rgba(255,255,255,.45)">Auto-saved</span>
+      <button onclick="addNotesCat()" style="background:#C8960C;color:#fff;font-size:11px;font-weight:700;padding:6px 12px;border-radius:6px;border:none;cursor:pointer;font-family:Inter,sans-serif">+ Category</button>
+    </div>
+  </div>
+  <div id="notes-body" style="padding:14px"></div>
+</div>
+
+<script>
+(function(){
+  var NK='seb_notes';
+  function load(){try{return JSON.parse(localStorage.getItem(NK)||'[]');}catch(e){return[];}}
+  function save(d){localStorage.setItem(NK,JSON.stringify(d));flash();}
+  function flash(){
+    var s=document.getElementById('notes-saved');
+    s.textContent='✓ Saved';s.style.color='#4ade80';
+    clearTimeout(window._nt);
+    window._nt=setTimeout(function(){s.textContent='Auto-saved';s.style.color='rgba(255,255,255,.45)';},1500);
+  }
+
+  var CAT_COLORS=['#1B2A4A','#16a34a','#dc2626','#7c3aed','#0369a1','#92400e','#be185d'];
+
+  function render(){
+    var data=load();
+    var body=document.getElementById('notes-body');
+    if(!data.length){
+      body.innerHTML='<div style="text-align:center;padding:24px;color:#9ca3af;font-size:13px">No categories yet. Click <strong>+ Category</strong> to get started.</div>';
+      return;
+    }
+    body.innerHTML='';
+    data.forEach(function(cat,ci){
+      var col=CAT_COLORS[ci%CAT_COLORS.length];
+      var sec=document.createElement('div');
+      sec.style.cssText='margin-bottom:14px;border-radius:10px;border:1px solid #e5e7eb;overflow:hidden';
+
+      // Category header
+      var hdr=document.createElement('div');
+      hdr.style.cssText='background:'+col+';padding:8px 12px;display:flex;align-items:center;gap:8px';
+      hdr.innerHTML=
+        '<input value="'+escH(cat.name)+'" style="background:transparent;border:none;outline:none;font-family:Inter,sans-serif;font-size:13px;font-weight:700;color:#fff;flex:1" '+
+        'oninput="updateCatName('+ci+',this.value)">'+
+        '<button onclick="addNote('+ci+')" style="background:rgba(255,255,255,.2);color:#fff;border:none;border-radius:5px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif">+ Note</button>'+
+        '<button onclick="deleteCat('+ci+')" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);border:none;border-radius:5px;padding:4px 8px;font-size:13px;cursor:pointer;font-family:Inter,sans-serif;margin-left:2px">✕</button>';
+      sec.appendChild(hdr);
+
+      // Notes
+      if(!cat.notes||!cat.notes.length){
+        var empty=document.createElement('div');
+        empty.style.cssText='padding:10px 14px;font-size:12px;color:#d1d5db;font-style:italic';
+        empty.textContent='No notes yet — click + Note';
+        sec.appendChild(empty);
+      } else {
+        cat.notes.forEach(function(note,ni){
+          var row=document.createElement('div');
+          row.style.cssText='display:flex;align-items:flex-start;gap:8px;padding:8px 12px;border-bottom:1px solid #f3f4f6';
+          row.innerHTML=
+            '<textarea rows="1" style="flex:1;border:none;outline:none;font-family:Inter,sans-serif;font-size:13px;color:#374151;resize:none;background:transparent;line-height:1.5;overflow:hidden" '+
+            'oninput="updateNote('+ci+','+ni+',this.value);autoH(this)" onkeydown="noteKey(event,'+ci+','+ni+')">'+escH(note)+'</textarea>'+
+            '<button onclick="deleteNote('+ci+','+ni+')" style="background:none;border:none;color:#d1d5db;cursor:pointer;font-size:14px;padding:2px 4px;flex-shrink:0" title="Delete">✕</button>';
+          sec.appendChild(row);
+        });
+      }
+      body.appendChild(sec);
+    });
+    // Auto-height all textareas
+    body.querySelectorAll('textarea').forEach(function(t){autoH(t);});
+  }
+
+  function escH(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+  function autoH(t){t.style.height='auto';t.style.height=t.scrollHeight+'px';}
+
+  window.addNotesCat=function(){
+    var d=load();
+    d.push({name:'New Category',notes:[]});
+    save(d);render();
+    // Focus the new category name
+    setTimeout(function(){
+      var inputs=document.querySelectorAll('#notes-body input');
+      if(inputs.length)inputs[inputs.length-1].select();
+    },50);
+  };
+  window.deleteCat=function(ci){
+    if(!confirm('Delete this category and all its notes?'))return;
+    var d=load();d.splice(ci,1);save(d);render();
+  };
+  window.addNote=function(ci){
+    var d=load();
+    if(!d[ci].notes)d[ci].notes=[];
+    d[ci].notes.push('');
+    save(d);render();
+    setTimeout(function(){
+      var tas=document.querySelectorAll('#notes-body textarea');
+      if(tas.length)tas[tas.length-1].focus();
+    },50);
+  };
+  window.deleteNote=function(ci,ni){
+    var d=load();d[ci].notes.splice(ni,1);save(d);render();
+  };
+  window.updateCatName=function(ci,val){
+    var d=load();d[ci].name=val;save(d);
+  };
+  window.updateNote=function(ci,ni,val){
+    var d=load();
+    if(!d[ci].notes)d[ci].notes=[];
+    d[ci].notes[ni]=val;save(d);
+  };
+  window.noteKey=function(e,ci,ni){
+    if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();addNote(ci);}
+  };
+
+  render();
+})();
+</script>
+
+<!-- CALENDAR WIDGET -->
+<div id="cal-widget" style="background:#fff;border-radius:14px;border:1px solid #e5e7eb;margin:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06)">
+  <div style="background:linear-gradient(135deg,#1B2A4A,#243a6e);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-size:18px">📅</span>
+      <div>
+        <div style="font-family:Inter,sans-serif;font-size:14px;font-weight:800;color:#fff">My Schedule</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.45);margin-top:1px">Eastern Time · Live sync</div>
+      </div>
+    </div>
+    <a href="/calendar/" style="background:#C8960C;color:#fff;font-size:11px;font-weight:700;padding:6px 12px;border-radius:6px;text-decoration:none;font-family:Inter,sans-serif">Full Calendar ↗</a>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
+    <div style="border-right:1px solid #e5e7eb">
+      <div style="background:#f8f9fa;padding:8px 14px;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:6px">
+        <span style="width:10px;height:10px;border-radius:50%;background:#4285f4;display:inline-block"></span>
+        ATC Work Calendar — Appointments
+      </div>
+      <iframe src="https://calendar.google.com/calendar/embed?src=sebastian%40alphatimeshareconsultants.com&ctz=America%2FNew_York&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0&mode=AGENDA" style="border:0;display:block" width="100%" height="340" frameborder="0" scrolling="no"></iframe>
+    </div>
+    <div>
+      <div style="background:#f8f9fa;padding:8px 14px;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:6px">
+        <span style="width:10px;height:10px;border-radius:50%;background:#34a853;display:inline-block"></span>
+        Personal Calendar — Full Details
+      </div>
+      <iframe src="https://calendar.google.com/calendar/embed?src=sebastianshort624%40gmail.com&ctz=America%2FNew_York&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0&mode=AGENDA" style="border:0;display:block" width="100%" height="340" frameborder="0" scrolling="no"></iframe>
+    </div>
+  </div>
+  <div style="padding:8px 14px;background:#f8f9fa;border-top:1px solid #e5e7eb;font-size:11px;color:#9ca3af;text-align:center">
+    Left: ATC appointments (live, free/busy) &nbsp;·&nbsp; Right: Personal calendar (full details) &nbsp;·&nbsp; Both update in real time
+  </div>
+</div>
+
+<script>
+// HIT LIST — calendar section
+var HK='sl_hitlist';
+var HC=['#1B2A4A','#C8960C','#16a34a','#dc2626','#7c3aed','#0891b2','#d97706','#db2777'];
+function loadHitsCal(){try{return JSON.parse(localStorage.getItem(HK)||'[]');}catch(e){return[];}}
+function saveHitsCal(h){localStorage.setItem(HK,JSON.stringify(h));}
+function renderHitsCal(){
+  var items=loadHitsCal();
+  var body=document.getElementById('hit-list-cal');
+  var count=document.getElementById('hit-count-cal');
+  if(!body)return;
+  if(count)count.textContent=items.length;
+  if(!items.length){body.innerHTML='<div style="font-size:12px;color:rgba(255,255,255,.35);text-align:center;padding:20px 0;font-style:italic">No clients on hit list yet.<br>Add one below.</div>';return;}
+  body.innerHTML=items.map(function(item,i){
+    return '<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:rgba(255,255,255,.07);border-left:3px solid '+HC[i%HC.length]+';border-radius:6px;margin-bottom:5px">'
+      +'<div style="flex:1;font-size:12px;font-weight:600;color:#fff;line-height:1.3">'+item+'</div>'
+      +'<button onclick="removeHitCal('+i+')" style="background:none;border:none;color:rgba(255,255,255,.3);cursor:pointer;font-size:13px;padding:0">✕</button>'
+      +'</div>';
+  }).join('');
+}
+window.addHitCal=function(){
+  var inp=document.getElementById('hit-inp-cal');
+  var val=inp?inp.value.trim():'';if(!val)return;
+  var h=loadHitsCal();h.push(val);saveHitsCal(h);inp.value='';renderHitsCal();
+};
+window.removeHitCal=function(i){var h=loadHitsCal();h.splice(i,1);saveHitsCal(h);renderHitsCal();};
+// Init
+document.addEventListener('DOMContentLoaded',function(){renderHitsCal();});
+setTimeout(renderHitsCal, 300);
+</script>
+
 </body>
 </html>
