@@ -24,15 +24,37 @@ body{font-family:'Inter',sans-serif;background:#c8e6b0;overflow:hidden;height:10
 .canvas.panning{cursor:grabbing}
 
 /* ── WORLD ── */
-.world{position:absolute;width:2400px;height:1800px;transform-origin:0 0}
+.world{
+  position:absolute;
+  width:2400px;height:1800px;
+  transform-origin:0 0;
+  background:
+    url("/assets/coc-map.png") center center / cover no-repeat;
+  background-color:#3a6b1a;
+}
+/* Darken edges slightly so town center pops */
+.world::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:radial-gradient(
+    ellipse 55% 50% at 50% 52%,
+    transparent 0%,
+    transparent 40%,
+    rgba(0,0,0,.18) 70%,
+    rgba(0,0,0,.35) 100%
+  );
+  pointer-events:none;
+  z-index:0;
+}
 .world-ground{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 40%,#b8de98 0%,#c8e6b0 50%,#b0d890 100%)}
 
 /* ── ROADS ── */
-.road{position:absolute;background:#b0b0b0}
+.road{position:absolute;background:rgba(80,60,30,.55)}
 .road.h{height:38px}.road.v{width:38px}
 .road.h::after{content:'';position:absolute;top:50%;left:0;right:0;height:3px;transform:translateY(-50%);background:repeating-linear-gradient(90deg,#fff 0,#fff 28px,transparent 28px,transparent 56px)}
 .road.v::after{content:'';position:absolute;left:50%;top:0;bottom:0;width:3px;transform:translateX(-50%);background:repeating-linear-gradient(180deg,#fff 0,#fff 28px,transparent 28px,transparent 56px)}
-.cross{position:absolute;background:#a8a8a8;z-index:1}
+.cross{position:absolute;background:rgba(70,50,20,.5);z-index:1}
 
 /* ── SIDEWALKS ── */
 .sidewalk{position:absolute;background:#d6cfc4;opacity:.6}
@@ -120,7 +142,7 @@ body{font-family:'Inter',sans-serif;background:#c8e6b0;overflow:hidden;height:10
 .bulletin:hover{transform:scale(1.18)}
 .bulletin::after{content:'';position:absolute;top:-7px;left:50%;transform:translateX(-50%);width:3px;height:8px;background:#777;border-radius:2px}
 
-.swalk{position:absolute;background:#d0c8bc;opacity:.75;z-index:2}
+.swalk{position:absolute;background:rgba(200,180,120,.5);opacity:.6;z-index:2}
 .swalk-char{z-index:7}
 /* HEALTH ZONE SPECIAL */
 .nh-zone.health{border-color:#ef4444;background:rgba(254,226,226,.25)}
@@ -234,7 +256,7 @@ body{font-family:'Inter',sans-serif;background:#c8e6b0;overflow:hidden;height:10
 <!-- CANVAS -->
 <div class="canvas" id="canvas">
 <div class="world" id="world">
-<div class="world-ground"></div>
+<!-- CoC map renders as CSS background on .world -->
 
 <!-- ROADS -->
 <div class="road h" style="left:0;right:0;top:740px"></div>
@@ -301,7 +323,7 @@ body{font-family:'Inter',sans-serif;background:#c8e6b0;overflow:hidden;height:10
 <div id="park-main" style="position:absolute;left:520px;top:460px;width:280px;height:260px;z-index:3;cursor:pointer" onclick="openRec()">
 <svg viewBox="0 0 280 260" style="width:100%;height:100%;overflow:visible">
   <!-- Park outer ground -->
-  <ellipse cx="140" cy="130" rx="134" ry="124" fill="#6ab040" stroke="#4a8a28" stroke-width="3"/>
+  <ellipse cx="140" cy="130" rx="134" ry="124" fill="rgba(80,160,40,.7)" stroke="#4a8a28" stroke-width="2"/>
   <!-- Inner texture -->
   <ellipse cx="140" cy="130" rx="110" ry="100" fill="#78c050"/>
   <!-- STREAM cutting through park -->
@@ -511,65 +533,65 @@ var SK='seb_town_v4', SIGN_K='seb_town_signs_v4', DECO_K='seb_town_decos';
 // DEFAULT DATA
 // ══════════════════════════════════════
 var DEFAULT_BLDS=[
-  {id:'alpha-office',icon:'⚡',name:'Alpha Office',desc:'CRM · Clients',url:'https://alphafiles.net/vitals/',bg:'#dbeafe',bc:'#3b82f6',co:'#1e3a8a',roof:'#2563eb',x:60,y:80,w:120,rooms:[]},
-  {id:'present',icon:'▶️',name:'Present',desc:'Live calls',url:'https://alphafiles.net/present/',bg:'#ede9fe',bc:'#a78bfa',co:'#4c1d95',roof:'#7c3aed',x:210,y:80,w:110,rooms:[]},
-  {id:'clients',icon:'👥',name:'Clients',desc:'All files',url:'https://alphafiles.net/clients/',bg:'#cffafe',bc:'#22d3ee',co:'#164e63',roof:'#0891b2',x:60,y:220,w:110,rooms:[]},
-  {id:'side-proj',icon:'🔧',name:'Side Projects',desc:'DP · 48 · NI',url:'',bg:'#f3f4f6',bc:'#9ca3af',co:'#374151',roof:'#6b7280',x:210,y:220,w:120,rooms:[
+  {id:'alpha-office',icon:'⚡',name:'Alpha Office',desc:'CRM · Clients',url:'https://alphafiles.net/vitals/',bg:'#dbeafe',bc:'#3b82f6',co:'#1e3a8a',roof:'#2563eb',x:320,y:380,w:120,rooms:[]},
+  {id:'present',icon:'▶️',name:'Present',desc:'Live calls',url:'https://alphafiles.net/present/',bg:'#ede9fe',bc:'#a78bfa',co:'#4c1d95',roof:'#7c3aed',x:470,y:380,w:110,rooms:[]},
+  {id:'clients',icon:'👥',name:'Clients',desc:'All files',url:'https://alphafiles.net/clients/',bg:'#cffafe',bc:'#22d3ee',co:'#164e63',roof:'#0891b2',x:320,y:520,w:110,rooms:[]},
+  {id:'side-proj',icon:'🔧',name:'Side Projects',desc:'DP · 48 · NI',url:'',bg:'#f3f4f6',bc:'#9ca3af',co:'#374151',roof:'#6b7280',x:470,y:520,w:120,rooms:[
     {id:'dp-movers',icon:'🚛',name:'DP Movers',url:'https://dpmoversrelocation.com'},
     {id:'48-states',icon:'📦',name:'48 States',url:'https://48statesmovingandstorage.com'},
     {id:'national-install',icon:'🏗️',name:'National Install',url:'/nationalinstall/'},
     {id:'reputation',icon:'📊',name:'Reputation',url:'/dp/'},
     {id:'mgmt',icon:'🐆',name:'Management',url:'/panther/'}
   ]},
-  {id:'crm-map',icon:'🗺️',name:'CRM Overview',desc:'System map',url:'https://alphafiles.net/overview/',bg:'#e0e7ff',bc:'#a5b4fc',co:'#312e81',roof:'#4338ca',x:355,y:80,w:110,rooms:[]},
-  {id:'estate',icon:'🏠',name:'Estate Planning',desc:'Insurance',url:'',bg:'#fef3c7',bc:'#fcd34d',co:'#78350f',roof:'#d97706',x:900,y:60,w:120,rooms:[
+  {id:'crm-map',icon:'🗺️',name:'CRM Overview',desc:'System map',url:'https://alphafiles.net/overview/',bg:'#e0e7ff',bc:'#a5b4fc',co:'#312e81',roof:'#4338ca',x:615,y:380,w:110,rooms:[]},
+  {id:'estate',icon:'🏠',name:'Estate Planning',desc:'Insurance',url:'',bg:'#fef3c7',bc:'#fcd34d',co:'#78350f',roof:'#d97706',x:1160,y:360,w:120,rooms:[
     {id:'insurance',icon:'🛡️',name:'Insurance Table',url:'/insurance/'},
     {id:'joshuason2',icon:'🪖',name:'Military Finance',url:'/joshuason/'}
   ]},
-  {id:'home-sale',icon:'🏡',name:'118 Silverlimb',desc:'For Sale',url:'/home/',bg:'#dcfce7',bc:'#4ade80',co:'#14532d',roof:'#16a34a',x:1080,y:60,w:120,rooms:[]},
-  {id:'fire-escape',icon:'🔥',name:'Fire Escape',desc:'Plan',url:'/fireescape/',bg:'#fee2e2',bc:'#f87171',co:'#7f1d1d',roof:'#dc2626',x:900,y:200,w:110,rooms:[]},
-  {id:'joshua',icon:'🪖',name:"Joshua's Barracks",desc:'Army · Finance',url:'/joshuason/',bg:'#dcfce7',bc:'#86efac',co:'#14532d',roof:'#15803d',x:1340,y:60,w:120,rooms:[]},
-  {id:'ever',icon:'🌸',name:"Ever's Room",desc:'Fiber plan',url:'/ever/',bg:'#fce7f3',bc:'#f9a8d4',co:'#9d174d',roof:'#db2777',x:1480,y:60,w:110,rooms:[]},
-  {id:'carl',icon:'🏥',name:"Carl's Recovery",url:'/carl/',bg:'#fee2e2',bc:'#fca5a5',co:'#991b1b',roof:'#dc2626',x:1340,y:200,w:120,rooms:[]},
-  {id:'colombia',icon:'🇨🇴',name:'Colombia House',desc:'Cali · Safety',url:'https://12easysteps.org/safe/',bg:'#fef9c3',bc:'#fde047',co:'#713f12',roof:'#ca8a04',x:1480,y:200,w:110,rooms:[]},
-  {id:'step-house',icon:'📖',name:'Step House',desc:'12easysteps.org',url:'https://12easysteps.org',bg:'#ede9fe',bc:'#c4b5fd',co:'#4c1d95',roof:'#7c3aed',x:60,y:880,w:120,rooms:[]},
-  {id:'vapeless',icon:'🚭',name:'Vapor-Free Clinic',url:'/vapeless/',bg:'#f5f3ff',bc:'#c4b5fd',co:'#5b21b6',roof:'#6d28d9',x:210,y:880,w:120,rooms:[]},
-  {id:'palabras',icon:'💬',name:'Word Garden',desc:'333 words',url:'/palabras/',bg:'#ecfeff',bc:'#67e8f9',co:'#164e63',roof:'#0891b2',x:60,y:1020,w:110,rooms:[]},
-  {id:'hospital',icon:'🏥',name:'General Hospital',desc:'Health resources',url:'',bg:'#fee2e2',bc:'#f87171',co:'#7f1d1d',roof:'#dc2626',x:900,y:880,w:130,rooms:[
+  {id:'home-sale',icon:'🏡',name:'118 Silverlimb',desc:'For Sale',url:'/home/',bg:'#dcfce7',bc:'#4ade80',co:'#14532d',roof:'#16a34a',x:1340,y:360,w:120,rooms:[]},
+  {id:'fire-escape',icon:'🔥',name:'Fire Escape',desc:'Plan',url:'/fireescape/',bg:'#fee2e2',bc:'#f87171',co:'#7f1d1d',roof:'#dc2626',x:1160,y:500,w:110,rooms:[]},
+  {id:'joshua',icon:'🪖',name:"Joshua's Barracks",desc:'Army · Finance',url:'/joshuason/',bg:'#dcfce7',bc:'#86efac',co:'#14532d',roof:'#15803d',x:1600,y:360,w:120,rooms:[]},
+  {id:'ever',icon:'🌸',name:"Ever's Room",desc:'Fiber plan',url:'/ever/',bg:'#fce7f3',bc:'#f9a8d4',co:'#9d174d',roof:'#db2777',x:1740,y:360,w:110,rooms:[]},
+  {id:'carl',icon:'🏥',name:"Carl's Recovery",url:'/carl/',bg:'#fee2e2',bc:'#fca5a5',co:'#991b1b',roof:'#dc2626',x:1600,y:500,w:120,rooms:[]},
+  {id:'colombia',icon:'🇨🇴',name:'Colombia House',desc:'Cali · Safety',url:'https://12easysteps.org/safe/',bg:'#fef9c3',bc:'#fde047',co:'#713f12',roof:'#ca8a04',x:1740,y:500,w:110,rooms:[]},
+  {id:'step-house',icon:'📖',name:'Step House',desc:'12easysteps.org',url:'https://12easysteps.org',bg:'#ede9fe',bc:'#c4b5fd',co:'#4c1d95',roof:'#7c3aed',x:320,y:1180,w:120,rooms:[]},
+  {id:'vapeless',icon:'🚭',name:'Vapor-Free Clinic',url:'/vapeless/',bg:'#f5f3ff',bc:'#c4b5fd',co:'#5b21b6',roof:'#6d28d9',x:470,y:1180,w:120,rooms:[]},
+  {id:'palabras',icon:'💬',name:'Word Garden',desc:'333 words',url:'/palabras/',bg:'#ecfeff',bc:'#67e8f9',co:'#164e63',roof:'#0891b2',x:320,y:1320,w:110,rooms:[]},
+  {id:'hospital',icon:'🏥',name:'General Hospital',desc:'Health resources',url:'',bg:'#fee2e2',bc:'#f87171',co:'#7f1d1d',roof:'#dc2626',x:1160,y:1180,w:130,rooms:[
     {id:'h-ever',icon:'🌸',name:"Ever's Health",url:'/ever/'},
     {id:'h-carl',icon:'🏥',name:"Carl's Recovery",url:'/carl/'}
   ]},
-  {id:'police-station',icon:'🚓',name:'Police Station',desc:'Safety resources',url:'',bg:'#dbeafe',bc:'#3b82f6',co:'#1e3a8a',roof:'#1d4ed8',x:1070,y:880,w:120,rooms:[
+  {id:'police-station',icon:'🚓',name:'Police Station',desc:'Safety resources',url:'',bg:'#dbeafe',bc:'#3b82f6',co:'#1e3a8a',roof:'#1d4ed8',x:1330,y:1180,w:120,rooms:[
     {id:'ps-fireescape',icon:'🔥',name:'Fire Escape Plan',url:'/fireescape/'}
   ]},
-  {id:'fire-station',icon:'🚒',name:'Fire Station',desc:'Emergency',url:'/fireescape/',bg:'#fef3c7',bc:'#fb923c',co:'#7c2d12',roof:'#ea580c',x:900,y:1020,w:120,rooms:[]},
-  {id:'daily-hub',icon:'🛋️',name:'Daily Hub',desc:'Calendar · Hit List',url:'/calendar/',bg:'#e0f2fe',bc:'#7dd3fc',co:'#0c4a6e',roof:'#0284c7',x:630,y:870,w:130,rooms:[]},
-  {id:'library',icon:'📚',name:'The Library',desc:'Research · Docs',url:'/bronco/',bg:'#fde68a',bc:'#fbbf24',co:'#78350f',roof:'#d97706',x:630,y:1020,w:110,rooms:[]},
-  {id:'restaurants',icon:'🍽',name:'Restaurant Row',desc:'Greenville hot spots',url:'',bg:'#fef3c7',bc:'#fbbf24',co:'#78350f',roof:'#d97706',x:1340,y:880,w:130,rooms:[]},
-  {id:'venues',icon:'🎭',name:'Venues',desc:'Arena · Peace Center',url:'',bg:'#ede9fe',bc:'#a78bfa',co:'#4c1d95',roof:'#7c3aed',x:1510,y:880,w:120,rooms:[]},
-  {id:'this-month',icon:'📅',name:'This Month',desc:'Upcoming events',url:'',bg:'#dbeafe',bc:'#3b82f6',co:'#1e3a8a',roof:'#2563eb',x:1340,y:1020,w:120,rooms:[]},
-  {id:'civil-eng',icon:'⚙️',name:'Civil Engineer',desc:'Admin · Settings',url:'',bg:'#f3f4f6',bc:'#6b7280',co:'#1a1a2e',roof:'#374151',x:370,y:330,w:100,rooms:[]}
+  {id:'fire-station',icon:'🚒',name:'Fire Station',desc:'Emergency',url:'/fireescape/',bg:'#fef3c7',bc:'#fb923c',co:'#7c2d12',roof:'#ea580c',x:1160,y:1320,w:120,rooms:[]},
+  {id:'daily-hub',icon:'🛋️',name:'Daily Hub',desc:'Calendar · Hit List',url:'/calendar/',bg:'#e0f2fe',bc:'#7dd3fc',co:'#0c4a6e',roof:'#0284c7',x:890,y:1170,w:130,rooms:[]},
+  {id:'library',icon:'📚',name:'The Library',desc:'Research · Docs',url:'/bronco/',bg:'#fde68a',bc:'#fbbf24',co:'#78350f',roof:'#d97706',x:890,y:1320,w:110,rooms:[]},
+  {id:'restaurants',icon:'🍽',name:'Restaurant Row',desc:'Greenville hot spots',url:'',bg:'#fef3c7',bc:'#fbbf24',co:'#78350f',roof:'#d97706',x:1600,y:1180,w:130,rooms:[]},
+  {id:'venues',icon:'🎭',name:'Venues',desc:'Arena · Peace Center',url:'',bg:'#ede9fe',bc:'#a78bfa',co:'#4c1d95',roof:'#7c3aed',x:1770,y:1180,w:120,rooms:[]},
+  {id:'this-month',icon:'📅',name:'This Month',desc:'Upcoming events',url:'',bg:'#dbeafe',bc:'#3b82f6',co:'#1e3a8a',roof:'#2563eb',x:1600,y:1320,w:120,rooms:[]},
+  {id:'civil-eng',icon:'⚙️',name:'Civil Engineer',desc:'Admin · Settings',url:'',bg:'#f3f4f6',bc:'#6b7280',co:'#1a1a2e',roof:'#374151',x:630,y:630,w:100,rooms:[]}
 ];
 
 var DEFAULT_SIGNS=[
-  {id:'s1',name:'THE OFFICE',x:180,y:28,style:''},
-  {id:'s2',name:'WALL STREET',x:1060,y:28,style:''},
-  {id:'s3',name:'FAMILY SQUARE',x:1500,y:28,style:''},
-  {id:'s4',name:'RECOVERY VILLAGE',x:60,y:840,style:''},
-  {id:'s5',name:'EMERGENCY DISTRICT',x:980,y:840,style:'red-sign'},
-  {id:'s6',name:'DOWNTOWN GREENVILLE',x:1380,y:840,style:'blue-sign'},
-  {id:'s7',name:'TOWN PLAZA',x:670,y:480,style:''}
+  {id:'s1',name:'THE OFFICE',x:440,y:328,style:''},
+  {id:'s2',name:'WALL STREET',x:1320,y:328,style:''},
+  {id:'s3',name:'FAMILY SQUARE',x:1760,y:328,style:''},
+  {id:'s4',name:'RECOVERY VILLAGE',x:320,y:1140,style:''},
+  {id:'s5',name:'EMERGENCY DISTRICT',x:1240,y:1140,style:'red-sign'},
+  {id:'s6',name:'DOWNTOWN GREENVILLE',x:1640,y:1140,style:'blue-sign'},
+  {id:'s7',name:'TOWN PLAZA',x:930,y:780,style:''}
 ];
 
 var DEFAULT_DECOS=[
-  {id:'tr1',icon:'🌳',x:30,y:50},{id:'tr2',icon:'🌲',x:110,y:40},{id:'tr3',icon:'🌳',x:180,y:70},
-  {id:'tr4',icon:'🌿',x:70,y:340},{id:'tr5',icon:'🌳',x:380,y:60},{id:'tr6',icon:'🌲',x:700,y:40},
-  {id:'tr7',icon:'🌳',x:800,y:70},{id:'tr8',icon:'🌿',x:1150,y:50},{id:'tr9',icon:'🌳',x:1240,y:70},
-  {id:'tr10',icon:'🌲',x:1600,y:40},{id:'tr11',icon:'🌳',x:1700,y:70},{id:'tr12',icon:'🌿',x:1800,y:50},
-  {id:'tr13',icon:'🌳',x:30,y:780},{id:'tr14',icon:'🌲',x:160,y:800},{id:'tr15',icon:'🌳',x:580,y:770},
-  {id:'tr16',icon:'🌿',x:750,y:800},{id:'tr17',icon:'🌳',x:1120,y:780},{id:'tr18',icon:'🌲',x:1650,y:780},
-  {id:'tr19',icon:'🌳',x:1800,y:800},{id:'tr20',icon:'🌲',x:30,y:1200},{id:'tr21',icon:'🌳',x:1900,y:200},
-  {id:'fl1',icon:'🌸',x:565,y:680},{id:'fl2',icon:'🌺',x:800,y:700},{id:'fl3',icon:'🌻',x:1380,y:700},
+  {id:'tr1',icon:'🌳',x:290,y:350},{id:'tr2',icon:'🌲',x:370,y:340},{id:'tr3',icon:'🌳',x:440,y:370},
+  {id:'tr4',icon:'🌿',x:330,y:640},{id:'tr5',icon:'🌳',x:640,y:360},{id:'tr6',icon:'🌲',x:960,y:340},
+  {id:'tr7',icon:'🌳',x:1060,y:370},{id:'tr8',icon:'🌿',x:1410,y:350},{id:'tr9',icon:'🌳',x:1500,y:370},
+  {id:'tr10',icon:'🌲',x:1860,y:340},{id:'tr11',icon:'🌳',x:1960,y:370},{id:'tr12',icon:'🌿',x:2060,y:350},
+  {id:'tr13',icon:'🌳',x:290,y:1080},{id:'tr14',icon:'🌲',x:420,y:1100},{id:'tr15',icon:'🌳',x:840,y:1070},
+  {id:'tr16',icon:'🌿',x:1010,y:1100},{id:'tr17',icon:'🌳',x:1380,y:1080},{id:'tr18',icon:'🌲',x:1910,y:1080},
+  {id:'tr19',icon:'🌳',x:2060,y:1100},{id:'tr20',icon:'🌲',x:290,y:1500},{id:'tr21',icon:'🌳',x:2160,y:500},
+  {id:'fl1',icon:'🌸',x:825,y:980},{id:'fl2',icon:'🌺',x:1060,y:1000},{id:'fl3',icon:'🌻',x:1640,y:1000},
 ];
 
 // ══════════════════════════════════════
@@ -1211,7 +1233,15 @@ window.addSignPreset=function(i){
 // ══════════════════════════════════════
 loadState();
 render();
-zoomFit();
+// Center on the CoC village area
+setTimeout(function(){
+  var cv=document.getElementById('canvas').getBoundingClientRect();
+  var fitS=Math.min((cv.width-4)/2400,(cv.height-4)/1800);
+  scale=fitS*1.4; // slightly zoomed in to show the village
+  panX=(cv.width - 2400*scale)/2;
+  panY=(cv.height - 1800*scale)/2 - 40;
+  applyTransform(false);
+},100);
 </script>
 </body>
 </html>
