@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>🏡 118 Silverlimb Ln — For Sale</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style id="mob">
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#f8faf5;color:#1a1a2e;padding-bottom:60px}
+.hero{background:linear-gradient(135deg,#1a3a1a,#2d6a2d);color:#fff;padding:28px 20px;text-align:center;position:relative}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:100px;padding:5px 14px;font-size:12px;font-weight:700;margin-bottom:14px}
+.hero h1{font-family:'Nunito',sans-serif;font-size:26px;font-weight:900;margin-bottom:6px}
+.hero-addr{font-size:14px;opacity:.75;margin-bottom:20px}
+.price-row{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-bottom:16px}
+.price-pill{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:12px 20px;text-align:center}
+.pp-num{font-family:'Nunito',sans-serif;font-size:28px;font-weight:900;color:#86efac}
+.pp-label{font-size:11px;opacity:.6;margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
+.stats-row{display:flex;justify-content:center;gap:14px;flex-wrap:wrap}
+.stat-chip{background:rgba(255,255,255,.1);border-radius:100px;padding:6px 14px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px}
+
+/* TABS */
+.tabs{display:flex;background:#fff;border-bottom:2px solid #d4ecc0;position:sticky;top:0;z-index:100;overflow-x:auto;gap:2px;padding:6px 8px 0}
+.tab{flex-shrink:0;padding:9px 14px;font-size:13px;font-weight:700;color:rgba(29,74,29,.5);cursor:pointer;border-radius:8px 8px 0 0;background:rgba(29,74,29,.05);white-space:nowrap;transition:.15s;border-bottom:3px solid transparent}
+.tab.active{color:#1d4a1d;background:#fff;border-bottom-color:#2d6a2d;font-weight:800}
+.tab-content{display:none;padding:16px}
+.tab-content.active{display:block}
+
+/* CARDS */
+.card{background:#fff;border-radius:14px;border:1px solid #d4ecc0;margin-bottom:14px;overflow:hidden}
+.card-hdr{background:#f0f9e8;padding:11px 16px;font-size:13px;font-weight:700;color:#1d4a1d;border-bottom:1px solid #d4ecc0;display:flex;align-items:center;gap:8px}
+.card-body{padding:14px 16px}
+.spec-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.spec-item{background:#f8faf5;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:4px}
+.spec-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#6b7280}
+.spec-val{font-size:15px;font-weight:800;color:#1a1a2e}
+.feature-list{display:flex;flex-wrap:wrap;gap:8px;padding:14px 16px}
+.feat-chip{background:#f0f9e8;border:1px solid #d4ecc0;border-radius:100px;padding:5px 12px;font-size:12px;font-weight:700;color:#1d4a1d}
+.room-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 16px}
+.room-card{background:#f8faf5;border-radius:10px;padding:12px;border:1px solid #d4ecc0}
+.room-name{font-size:12px;font-weight:800;color:#1d4a1d;margin-bottom:3px}
+.room-dims{font-size:13px;font-weight:700;color:#374151}
+.room-area{font-size:11px;color:#9ca3af}
+
+/* FLOOR PLAN */
+.floor-plan-wrap{padding:14px 16px}
+.fp-map{position:relative;background:#e8f5e9;border:2px solid #a5d6a7;border-radius:12px;width:100%;max-width:520px;height:300px;margin:0 auto;overflow:hidden}
+.fp-room{position:absolute;border:2px solid #4caf50;background:rgba(232,245,233,.8);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px;font-size:10px;font-weight:700;color:#1b5e20;text-align:center;border-radius:4px}
+.fp-room.garage{background:rgba(224,224,224,.8);border-color:#9e9e9e;color:#424242}
+.fp-room.master{background:rgba(187,222,251,.8);border-color:#42a5f5;color:#0d47a1}
+.fp-room.great{background:rgba(255,249,196,.8);border-color:#fdd835;color:#f57f17}
+.fp-room.bath{background:rgba(225,245,254,.8);border-color:#29b6f6;color:#01579b}
+.fp-wall{position:absolute;background:#558b2f}
+.exit-arrow{position:absolute;font-size:16px}
+.exit-lbl{position:absolute;font-size:8px;font-weight:800;color:#c62828;background:#ffcdd2;padding:1px 4px;border-radius:3px;text-transform:uppercase}
+.meet-spot{position:absolute;background:#fff9c4;border:2px solid #f9a825;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:14px}
+.fp-compass{position:absolute;top:8px;right:8px;font-size:11px;font-weight:800;color:#2d6a2d;background:rgba(255,255,255,.8);border-radius:6px;padding:3px 6px}
+
+/* SCHOOLS */
+.school-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #f0f9e8}
+.school-item:last-child{border-bottom:none}
+.school-rating{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;flex-shrink:0}
+.rating-6{background:#fef9c3;color:#b45309}
+.rating-5{background:#fee2e2;color:#991b1b}
+.rating-8{background:#dcfce7;color:#166534}
+.school-name{font-size:13px;font-weight:700;color:#1a1a2e}
+.school-grades{font-size:11px;color:#6b7280}
+.school-dist{font-size:11px;color:#9ca3af;margin-left:auto;flex-shrink:0}
+
+/* SELLING TOOLS */
+.cta-btn{display:flex;align-items:center;justify-content:space-between;background:#1d4a1d;color:#fff;border:none;border-radius:12px;padding:14px 18px;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;margin-bottom:10px;width:100%;transition:.15s}
+.cta-btn:hover{background:#2d6a2d}
+.cta-btn.outline{background:#fff;color:#1d4a1d;border:2px solid #d4ecc0}
+.cta-btn.outline:hover{background:#f0f9e8}
+.cta-icon{font-size:20px}
+
+/* CHECKLIST */
+.check-item{display:flex;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid #f0f9e8;cursor:pointer;transition:.1s}
+.check-item:last-child{border-bottom:none}
+.check-item:hover{background:#f0f9e8}
+.check-item.checked .item-text{text-decoration:line-through;color:#a7c9a7}
+.checkbox{width:22px;height:22px;border-radius:6px;border:2px solid #a5d6a7;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;background:#fff;transition:.2s}
+.check-item.checked .checkbox{background:#2d6a2d;border-color:#2d6a2d;color:#fff}
+.item-text{font-size:14px;font-weight:500;flex:1}
+.progress-bar-wrap{background:rgba(255,255,255,.2);border-radius:100px;height:8px;margin:12px auto 4px;max-width:300px}
+.progress-bar{background:#86efac;height:8px;border-radius:100px;transition:.4s}
+.progress-label{font-size:12px;opacity:.7}
+@media(max-width:768px){
+  .spec-grid{grid-template-columns:1fr 1fr}
+  .room-grid{grid-template-columns:1fr 1fr}
+  .fp-map{height:220px}
+  .fp-room{font-size:8px!important}
+  .hero h1{font-size:20px}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">🏡 For Sale — Oak Branch Estates</div>
+  <h1>118 Silverlimb Lane</h1>
+  <div class="hero-addr">Taylors, SC 29687 · Greenville County</div>
+  <div class="price-row">
+    <div class="price-pill">
+      <div class="pp-num">$365,000</div>
+      <div class="pp-label">Last Sold Price</div>
+    </div>
+    <div class="price-pill">
+      <div class="pp-num">$363,900</div>
+      <div class="pp-label">Zestimate®</div>
+    </div>
+    <div class="price-pill">
+      <div class="pp-num">$1,875</div>
+      <div class="pp-label">Rent Estimate/mo</div>
+    </div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-chip">🛏 3 Beds</div>
+    <div class="stat-chip">🚿 2 Baths</div>
+    <div class="stat-chip">📐 1,489 sq ft</div>
+    <div class="stat-chip">🚗 2-Car Garage</div>
+    <div class="stat-chip">📅 Built 2023</div>
+  </div>
+  <div style="margin-top:12px">
+    <div class="progress-bar-wrap"><div class="progress-bar" id="prog-bar"></div></div>
+    <div class="progress-label"><span id="prog-text">Selling checklist: 0 of 0 done</span></div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('overview',event)">🏡 Overview</div>
+  <div class="tab" onclick="showTab('floorplan',event)">🗺️ Floor Plan</div>
+  <div class="tab" onclick="showTab('features',event)">✨ Features</div>
+  <div class="tab" onclick="showTab('schools',event)">🏫 Schools</div>
+  <div class="tab" onclick="showTab('selling',event)">📋 Selling Checklist</div>
+  <div class="tab" onclick="showTab('links',event)">🔗 Links</div>
+</div>
+
+<!-- OVERVIEW -->
+<div class="tab-content active" id="tab-overview">
+  <div class="card">
+    <div class="card-hdr">📐 Property Details</div>
+    <div class="spec-grid" style="padding:14px 16px">
+      <div class="spec-item"><div class="spec-label">Price</div><div class="spec-val">$365,000</div></div>
+      <div class="spec-item"><div class="spec-label">Zestimate</div><div class="spec-val">$363,900</div></div>
+      <div class="spec-item"><div class="spec-label">Sq Footage</div><div class="spec-val">1,489 sqft</div></div>
+      <div class="spec-item"><div class="spec-label">Price/sqft</div><div class="spec-val">$245</div></div>
+      <div class="spec-item"><div class="spec-label">Bedrooms</div><div class="spec-val">3</div></div>
+      <div class="spec-item"><div class="spec-label">Bathrooms</div><div class="spec-val">2 Full</div></div>
+      <div class="spec-item"><div class="spec-label">Garage</div><div class="spec-val">2-Car</div></div>
+      <div class="spec-item"><div class="spec-label">Lot Size</div><div class="spec-val">10,454 sqft</div></div>
+      <div class="spec-item"><div class="spec-label">Year Built</div><div class="spec-val">2023</div></div>
+      <div class="spec-item"><div class="spec-label">Style</div><div class="spec-val">Ranch/Craftsman</div></div>
+      <div class="spec-item"><div class="spec-label">Builder</div><div class="spec-val">McGee-Huntley</div></div>
+      <div class="spec-item"><div class="spec-label">Model</div><div class="spec-val">Princeton</div></div>
+      <div class="spec-item"><div class="spec-label">Construction</div><div class="spec-val">All Brick</div></div>
+      <div class="spec-item"><div class="spec-label">Foundation</div><div class="spec-val">Slab</div></div>
+      <div class="spec-item"><div class="spec-label">Subdivision</div><div class="spec-val">Oak Branch Estates</div></div>
+      <div class="spec-item"><div class="spec-label">MLS #</div><div class="spec-val">1503075</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr">🛏 Room Dimensions</div>
+    <div class="room-grid">
+      <div class="room-card"><div class="room-name">Master Bedroom</div><div class="room-dims">14 × 13</div><div class="room-area">182 sq ft</div></div>
+      <div class="room-card"><div class="room-name">Bedroom 2</div><div class="room-dims">11 × 14</div><div class="room-area">154 sq ft</div></div>
+      <div class="room-card"><div class="room-name">Bedroom 3</div><div class="room-dims">12 × 12</div><div class="room-area">144 sq ft</div></div>
+      <div class="room-card"><div class="room-name">Family Room</div><div class="room-dims">16 × 15</div><div class="room-area">240 sq ft</div></div>
+      <div class="room-card"><div class="room-name">Kitchen</div><div class="room-dims">13 × 12</div><div class="room-area">156 sq ft</div></div>
+      <div class="room-card"><div class="room-name">2-Car Garage</div><div class="room-dims">Attached</div><div class="room-area">Concrete drive</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr">📝 Listing Description</div>
+    <div class="card-body" style="font-size:13px;color:#374151;line-height:1.7">
+      OAK BRANCH ESTATES — Taylors Premier ALL BRICK COMMUNITY. This <strong>"Princeton"</strong> 3BR/2BA floorplan features all main level living at its best. Deluxe "Chef's" kitchen with wall oven, large island, granite counters, subway tile backsplash with eat-in Breakfast Room/Dining Room. Open Floorplan, Large Great Room with gas logs. Private Master Suite with 5 ft shower and double vanity. Mostly sodded yard with irrigation, Covered Back Porch AND separate concrete Grilling Patio.
+    </div>
+  </div>
+</div>
+
+<!-- FLOOR PLAN -->
+<div class="tab-content" id="tab-floorplan">
+  <div class="floor-plan-wrap">
+    <div style="font-size:12px;font-weight:700;color:#2d6a2d;text-align:center;margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px">Princeton Model — 1,489 sq ft · Single Story</div>
+    <div class="fp-map">
+      <!-- Walls -->
+      <div class="fp-wall" style="top:0;left:0;right:0;height:3px"></div>
+      <div class="fp-wall" style="bottom:0;left:0;right:0;height:3px"></div>
+      <div class="fp-wall" style="top:0;bottom:0;left:0;width:3px"></div>
+      <div class="fp-wall" style="top:0;bottom:0;right:0;width:3px"></div>
+      <!-- Interior walls -->
+      <div class="fp-wall" style="top:3px;left:185px;width:3px;height:130px"></div>
+      <div class="fp-wall" style="top:130px;left:3px;right:3px;height:3px"></div>
+      <div class="fp-wall" style="top:130px;left:110px;width:3px;height:90px"></div>
+      <div class="fp-wall" style="top:130px;left:330px;width:3px;height:90px"></div>
+
+      <!-- 2-CAR GARAGE -->
+      <div class="fp-room garage" style="top:6px;left:6px;width:176px;height:121px">
+        <div>🚗🚗</div>
+        <div>2-Car Garage</div>
+        <div style="font-size:8px">Attached · Concrete</div>
+      </div>
+      <!-- MASTER BEDROOM -->
+      <div class="fp-room master" style="top:6px;left:191px;width:200px;height:60px">
+        <div>🛏 Master Bedroom</div>
+        <div style="font-size:8px">14×13 · Walk-in Closet</div>
+      </div>
+      <!-- MASTER BATH -->
+      <div class="fp-room bath" style="top:69px;left:310px;width:81px;height:58px">
+        <div>🚿</div>
+        <div>Master Bath</div>
+        <div style="font-size:8px">5ft shower · Dbl vanity</div>
+      </div>
+      <!-- GREAT ROOM -->
+      <div class="fp-room great" style="top:136px;left:6px;width:101px;height:81px">
+        <div>🛋</div>
+        <div>Great Room</div>
+        <div style="font-size:8px">16×15 · Gas logs</div>
+      </div>
+      <!-- KITCHEN/DINING -->
+      <div class="fp-room" style="top:136px;left:113px;width:214px;height:81px;background:rgba(255,224,178,.8);border-color:#ff9800;color:#e65100">
+        <div>🍳</div>
+        <div>Kitchen + Dining</div>
+        <div style="font-size:8px">13×12 · Island · Granite</div>
+      </div>
+      <!-- BEDROOM 2 -->
+      <div class="fp-room" style="top:136px;left:335px;width:78px;height:81px">
+        <div>🛏</div>
+        <div>Bed 2</div>
+        <div style="font-size:8px">11×14</div>
+      </div>
+      <!-- BEDROOM 3 + LAUNDRY -->
+      <div class="fp-room" style="top:221px;left:6px;width:101px;height:72px">
+        <div>🛏</div>
+        <div>Bedroom 3</div>
+        <div style="font-size:8px">12×12</div>
+      </div>
+      <!-- BATH 2 -->
+      <div class="fp-room bath" style="top:221px;left:113px;width:80px;height:72px">
+        <div>🚿</div>
+        <div>Bath 2</div>
+      </div>
+      <!-- LAUNDRY -->
+      <div class="fp-room" style="top:221px;left:197px;width:70px;height:72px;background:rgba(243,229,245,.8);border-color:#ce93d8;color:#6a1b9a">
+        <div>🧺</div>
+        <div>Laundry</div>
+        <div style="font-size:8px">Walk-in</div>
+      </div>
+
+      <!-- EXITS -->
+      <div class="exit-arrow" style="bottom:6px;left:70px">⬇️🚪</div>
+      <div class="exit-lbl" style="bottom:0;left:55px">Front</div>
+      <div class="exit-arrow" style="top:6px;right:60px">⬆️🚪</div>
+      <div class="exit-lbl" style="top:0;right:45px">Back Porch</div>
+      <div class="exit-arrow" style="top:6px;left:60px">🚗</div>
+      <div class="exit-lbl" style="top:0;left:45px">Garage</div>
+      <!-- Windows -->
+      <div class="exit-arrow" style="top:80px;right:1px;font-size:12px">🪟</div>
+      <div class="exit-arrow" style="bottom:30px;left:1px;font-size:12px">🪟</div>
+      <div class="exit-arrow" style="bottom:30px;right:1px;font-size:12px">🪟</div>
+
+      <!-- MEET SPOT -->
+      <div class="meet-spot" style="bottom:4px;right:4px" title="Meet Here">⭐</div>
+
+      <div class="fp-compass">N ↑</div>
+    </div>
+
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:10px;flex-wrap:wrap;font-size:11px;font-weight:700;color:#374151">
+      <span>🚪 Front Door → Street</span>
+      <span>🚪 Back → Covered Porch</span>
+      <span>🚗 Garage Door</span>
+      <span>⭐ Meet: Neighbor's Driveway</span>
+    </div>
+  </div>
+
+  <div class="card" style="margin:0 0 14px">
+    <div class="card-hdr">🔥 Fire Escape Routes</div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Master Bedroom — primary: hallway to front door · backup: right side window</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Bedroom 2 — primary: hallway · backup: back-right window</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Bedroom 3 — primary: hallway to front door · backup: back-left window</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Garage — open garage door manually (emergency cord) or use side door to yard</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Everyone meets at ⭐ neighbor's driveway</div></div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<div class="tab-content" id="tab-features">
+  <div class="card">
+    <div class="card-hdr">✨ Kitchen & Interior</div>
+    <div class="feature-list">
+      <div class="feat-chip">Large Kitchen Island</div>
+      <div class="feat-chip">Granite Countertops</div>
+      <div class="feat-chip">Wall Oven</div>
+      <div class="feat-chip">Electric Cooktop</div>
+      <div class="feat-chip">Subway Tile Backsplash</div>
+      <div class="feat-chip">Eat-in Dining Room</div>
+      <div class="feat-chip">Open Floorplan</div>
+      <div class="feat-chip">Gas Log Fireplace</div>
+      <div class="feat-chip">High Ceilings</div>
+      <div class="feat-chip">Ceiling Fans</div>
+      <div class="feat-chip">Luxury Vinyl Flooring</div>
+      <div class="feat-chip">Ceramic Tile</div>
+      <div class="feat-chip">Carpet (bedrooms)</div>
+      <div class="feat-chip">Tilt-Out Windows</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-hdr">🛁 Master Suite</div>
+    <div class="feature-list">
+      <div class="feat-chip">Private Master Suite</div>
+      <div class="feat-chip">5 ft Walk-In Shower</div>
+      <div class="feat-chip">Double Vanity</div>
+      <div class="feat-chip">Walk-In Closet</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-hdr">🏡 Exterior & Lot</div>
+    <div class="feature-list">
+      <div class="feat-chip">All Brick Veneer</div>
+      <div class="feat-chip">Covered Back Porch</div>
+      <div class="feat-chip">Concrete Grilling Patio</div>
+      <div class="feat-chip">Underground Irrigation</div>
+      <div class="feat-chip">Mostly Sodded Yard</div>
+      <div class="feat-chip">2-Car Attached Garage</div>
+      <div class="feat-chip">Garage Door Opener</div>
+      <div class="feat-chip">Concrete Driveway</div>
+      <div class="feat-chip">Walk-in Laundry</div>
+      <div class="feat-chip">Pull-Down Attic</div>
+      <div class="feat-chip">Natural Gas Heat</div>
+      <div class="feat-chip">Electric Cooling</div>
+    </div>
+  </div>
+</div>
+
+<!-- SCHOOLS -->
+<div class="tab-content" id="tab-schools">
+  <div class="card">
+    <div class="card-hdr">🏫 Assigned Schools</div>
+    <div class="school-item">
+      <div class="school-rating rating-6">6/10</div>
+      <div><div class="school-name">Taylors Elementary</div><div class="school-grades">Grades K–5</div></div>
+      <div class="school-dist">0.2 mi</div>
+    </div>
+    <div class="school-item">
+      <div class="school-rating rating-5">5/10</div>
+      <div><div class="school-name">Sevier Middle School</div><div class="school-grades">Grades 6–8</div></div>
+      <div class="school-dist">2.7 mi</div>
+    </div>
+    <div class="school-item">
+      <div class="school-rating rating-8">8/10</div>
+      <div><div class="school-name">Wade Hampton High School</div><div class="school-grades">Grades 9–12</div></div>
+      <div class="school-dist">3.7 mi</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-hdr">📍 Comparable Sales — Silverlimb Ln</div>
+    <div class="room-grid">
+      <div class="room-card"><div class="room-name">120 Silverlimb</div><div class="room-dims">$406,298</div><div class="room-area">3bd · 2ba · 1,900 sqft</div></div>
+      <div class="room-card"><div class="room-name">122 Silverlimb</div><div class="room-dims">$435,000</div><div class="room-area">3bd · 2ba · 2,100 sqft</div></div>
+      <div class="room-card"><div class="room-name">124 Silverlimb</div><div class="room-dims">$455,000</div><div class="room-area">3bd · 2ba · 2,000 sqft</div></div>
+      <div class="room-card"><div class="room-name">126 Silverlimb</div><div class="room-dims">$390,914</div><div class="room-area">3bd · 2ba · 1,700 sqft</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SELLING CHECKLIST -->
+<div class="tab-content" id="tab-selling">
+  <div class="card">
+    <div class="card-hdr">📋 Pre-Listing Prep</div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Deep clean entire home</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Declutter and depersonalize rooms</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Touch up paint — walls, trim, doors</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Clean and polish kitchen — island, counters, appliances</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Clean both bathrooms — grout, mirrors, fixtures</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Pressure wash driveway and walkway</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Mow lawn, trim edges, add fresh mulch</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Clean out garage — show the full 2-car space</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Stage covered back porch with furniture</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr">📸 Listing Steps</div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Hire professional photographer</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Get pre-listing inspection (optional but recommended)</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Price it correctly — current comps suggest $380k–$420k</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Choose listing agent or FSBO</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">List on Zillow, Realtor.com, MLS</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Schedule open house</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr">🤝 Closing Steps</div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Review all offers with agent</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Negotiate — price, closing costs, timeline</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Accept offer — sign contract</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Buyer inspection — repair negotiations</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Appraisal completed</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Final walkthrough with buyer</div></div>
+    <div class="check-item" onclick="toggle(this)"><div class="checkbox"></div><div class="item-text">Closing day — sign docs, hand over keys 🗝</div></div>
+  </div>
+</div>
+
+<!-- LINKS -->
+<div class="tab-content" id="tab-links">
+  <a href="https://www.zillow.com/homedetails/118-Silverlimb-Ln-Taylors-SC-29687/2056489965_zpid/" target="_blank" class="cta-btn">
+    <span>View on Zillow</span><span class="cta-icon">🏠</span>
+  </a>
+  <a href="https://www.google.com/maps/search/118+Silverlimb+Ln+Taylors+SC+29687" target="_blank" class="cta-btn outline">
+    <span>View on Google Maps</span><span class="cta-icon">📍</span>
+  </a>
+  <a href="/fireescape/" class="cta-btn outline">
+    <span>Fire Escape Plan</span><span class="cta-icon">🔥</span>
+  </a>
+  <a href="https://www.zillow.com/mortgage-calculator/" target="_blank" class="cta-btn outline">
+    <span>Mortgage Calculator</span><span class="cta-icon">🧮</span>
+  </a>
+  <a href="https://www.greatschools.org" target="_blank" class="cta-btn outline">
+    <span>GreatSchools — View Ratings</span><span class="cta-icon">🏫</span>
+  </a>
+</div>
+
+<script>
+function toggle(el){
+  el.classList.toggle('checked');
+  el.querySelector('.checkbox').textContent=el.classList.contains('checked')?'✓':'';
+  update();save();
+}
+function update(){
+  var all=document.querySelectorAll('.check-item');
+  var checked=document.querySelectorAll('.check-item.checked');
+  var pct=all.length?Math.round(checked.length/all.length*100):0;
+  document.getElementById('prog-bar').style.width=pct+'%';
+  document.getElementById('prog-text').textContent='Selling checklist: '+checked.length+' of '+all.length+' done';
+}
+function showTab(id,e){
+  document.querySelectorAll('.tab-content').forEach(function(t){t.classList.remove('active');});
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  document.getElementById('tab-'+id).classList.add('active');
+  if(e&&e.target)e.target.classList.add('active');
+}
+function save(){
+  var s={};
+  document.querySelectorAll('.check-item').forEach(function(el,i){s['i'+i]=el.classList.contains('checked');});
+  try{localStorage.setItem('home_sell',JSON.stringify(s));}catch(e){}
+}
+function load(){
+  try{
+    var s=JSON.parse(localStorage.getItem('home_sell')||'{}');
+    document.querySelectorAll('.check-item').forEach(function(el,i){
+      if(s['i'+i]){el.classList.add('checked');el.querySelector('.checkbox').textContent='✓';}
+    });update();
+  }catch(e){}
+}
+window.onload=function(){load();update();};
+</script>
+</body>
+</html>
