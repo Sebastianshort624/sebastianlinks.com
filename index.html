@@ -26,16 +26,6 @@ body{font-family:'Inter',sans-serif;background:#c8e6b0;overflow:hidden;height:10
 .world{position:absolute;width:2400px;height:1800px;transform-origin:0 0;background-size:cover;background-position:center}
 .world-ground{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 40%,#b8de98 0%,#c8e6b0 50%,#b0d890 100%)}
 
-/* ── ROADS ── */
-.road{position:absolute;background:#b0b0b0}
-.road.h{height:38px}.road.v{width:38px}
-.road.h::after{content:'';position:absolute;top:50%;left:0;right:0;height:3px;transform:translateY(-50%);background:repeating-linear-gradient(90deg,#fff 0,#fff 28px,transparent 28px,transparent 56px)}
-.road.v::after{content:'';position:absolute;left:50%;top:0;bottom:0;width:3px;transform:translateX(-50%);background:repeating-linear-gradient(180deg,#fff 0,#fff 28px,transparent 28px,transparent 56px)}
-.cross{position:absolute;background:#a8a8a8;z-index:1}
-
-/* ── SIDEWALKS ── */
-.sidewalk{position:absolute;background:#d6cfc4;opacity:.6}
-
 /* ── PARK ── */
 .park{position:absolute;background:radial-gradient(ellipse,#90cc70,#78bb58);border-radius:50%;border:3px solid #60a840;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;transition:.2s;z-index:3}
 .park:hover{transform:scale(1.03)}
@@ -211,27 +201,6 @@ body{font-family:'Inter',sans-serif;background:#c8e6b0;overflow:hidden;height:10
 <div class="canvas" id="canvas">
 <div class="world" id="world"><img src="/assets/coc-map.png" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none" onerror="this.style.display='none'">
 
-
-<!-- ROADS -->
-<div class="road h" style="left:0;right:0;top:740px"></div>
-<div class="road h" style="left:0;right:0;top:440px"></div>
-<div class="road h" style="left:0;right:0;top:1160px"></div>
-<div class="road v" style="top:0;bottom:0;left:480px"></div>
-<div class="road v" style="top:0;bottom:0;left:840px"></div>
-<div class="road v" style="top:0;bottom:0;left:1280px"></div>
-<div class="road v" style="top:0;bottom:0;left:1720px"></div>
-<div class="cross" style="left:480px;top:440px;width:38px;height:38px"></div>
-<div class="cross" style="left:840px;top:440px;width:38px;height:38px"></div>
-<div class="cross" style="left:1280px;top:440px;width:38px;height:38px"></div>
-<div class="cross" style="left:1720px;top:440px;width:38px;height:38px"></div>
-<div class="cross" style="left:480px;top:740px;width:38px;height:38px"></div>
-<div class="cross" style="left:840px;top:740px;width:38px;height:38px"></div>
-<div class="cross" style="left:1280px;top:740px;width:38px;height:38px"></div>
-<div class="cross" style="left:1720px;top:740px;width:38px;height:38px"></div>
-<div class="cross" style="left:480px;top:1160px;width:38px;height:38px"></div>
-<div class="cross" style="left:840px;top:1160px;width:38px;height:38px"></div>
-<div class="cross" style="left:1280px;top:1160px;width:38px;height:38px"></div>
-<div class="cross" style="left:1720px;top:1160px;width:38px;height:38px"></div>
 
 <!-- PARKS -->
 <div class="park" id="park-main" style="left:590px;top:500px;width:210px;height:200px" onclick="openRec()">
