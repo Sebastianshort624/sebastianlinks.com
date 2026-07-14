@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Alpha Files — ATC Presentation Pages</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1B2A4A;--gold:#C8960C;--blue:#2563eb;--blue-light:#dbeafe;--green:#16a34a;--red:#dc2626;--white:#fff;--bg:#f8fafc;--border:#e5e7eb;--text:#1a1a2e}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+.topbar{background:var(--navy);padding:0 20px;height:52px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.topbar-logo{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px;text-decoration:none}
+.topbar-logo span{color:var(--gold)}
+.topbar-back{margin-left:auto;background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:5px 14px;font-size:12px;font-weight:700;cursor:pointer;text-decoration:none;font-family:Inter,sans-serif}
+.topbar-back:hover{background:rgba(255,255,255,.2)}
+
+.wrap{max-width:960px;margin:0 auto;padding:24px 16px}
+
+.page-hdr{margin-bottom:24px}
+.page-hdr-eye{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.page-hdr-title{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;color:var(--navy);margin-bottom:4px}
+.page-hdr-sub{font-size:13px;color:#6b7280}
+
+.sec{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--blue);border-bottom:2px solid var(--blue-light);padding-bottom:5px;margin-bottom:14px;margin-top:22px}
+
+.alpha-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px}
+@media(max-width:600px){.alpha-grid{grid-template-columns:repeat(2,1fr)}}
+
+.acard{background:var(--white);border:1px solid var(--border);border-radius:8px;border-left:4px solid var(--blue);padding:12px 14px;text-decoration:none;color:var(--text);display:block;transition:.15s}
+.acard:hover{box-shadow:0 4px 14px rgba(0,0,0,.1);transform:translateY(-1px);border-left-color:var(--navy)}
+.acard.gold{border-left-color:var(--gold)}
+.acard.gold:hover{border-left-color:var(--gold)}
+.acard.green{border-left-color:var(--green)}
+.acard-title{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;color:var(--navy);margin-bottom:3px}
+.acard.gold .acard-title{color:var(--gold)}
+.acard-desc{font-size:11px;color:#6b7280;line-height:1.4}
+
+.quick-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.qa-btn{background:var(--navy);color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;font-family:'Barlow Condensed',sans-serif;letter-spacing:.5px;display:inline-flex;align-items:center;gap:6px;transition:.15s}
+.qa-btn:hover{background:#243a6e}
+.qa-btn.gold{background:var(--gold)}
+.qa-btn.gold:hover{background:#a67a08}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="topbar-logo" href="/">⚡ <span>Alpha Files</span></a>
+  <a class="topbar-back" href="/">← sebastianlinks.com</a>
+</div>
+
+<div class="wrap">
+
+  <div class="page-hdr">
+    <div class="page-hdr-eye">Alpha Timeshare Consultants</div>
+    <div class="page-hdr-title">Alpha Files</div>
+    <div class="page-hdr-sub">ATC Presentation Pages — Full sales toolkit</div>
+  </div>
+
+  <div class="quick-actions">
+    <a class="qa-btn gold" href="https://alphafiles.net/vitals/" target="_blank">⚾ Client Vitals</a>
+    <a class="qa-btn gold" href="https://alphafiles.net/quick-quote/" target="_blank">⚡ Quick Quote</a>
+    <a class="qa-btn" href="https://alphafiles.net/owner/" target="_blank">🌐 Client View</a>
+    <a class="qa-btn" href="https://alphafiles.net/clients/" target="_blank">👥 All Clients</a>
+  </div>
+
+  <div class="sec">Presentation Flow — Pages 1–24</div>
+  <div class="alpha-grid">
+    <a class="acard" href="https://alphafiles.net/current/" target="_blank"><div class="acard-title">📊 1. Current Situation</div><div class="acard-desc">Opening — where they stand</div></a>
+    <a class="acard" href="https://alphafiles.net/whyout/" target="_blank"><div class="acard-title">❓ 2. Why Do You Want Out</div><div class="acard-desc">Motivation & qualifying</div></a>
+    <a class="acard" href="https://alphafiles.net/leverage/" target="_blank"><div class="acard-title">💪 3. Leverage</div><div class="acard-desc">Their leverage points</div></a>
+    <a class="acard" href="https://alphafiles.net/credit/" target="_blank"><div class="acard-title">💳 4. Credit Protection</div><div class="acard-desc">What Alpha covers</div></a>
+    <a class="acard" href="https://alphafiles.net/wait/" target="_blank"><div class="acard-title">⚠️ 5. If You Do Nothing</div><div class="acard-desc">Cost of waiting</div></a>
+    <a class="acard" href="https://alphafiles.net/group/" target="_blank"><div class="acard-title">🔍 6. Finding Your Group</div><div class="acard-desc">Group filing power</div></a>
+    <a class="acard" href="https://alphafiles.net/approval/" target="_blank"><div class="acard-title">✅ 7. Spot in Group Filing</div><div class="acard-desc">Their specific spot</div></a>
+    <a class="acard" href="https://alphafiles.net/heirs/" target="_blank"><div class="acard-title">👨‍👩‍👧 8. Heirs & Estate</div><div class="acard-desc">Estate liability</div></a>
+    <a class="acard" href="https://alphafiles.net/compensation/" target="_blank"><div class="acard-title">💵 9. Resort Compensation</div><div class="acard-desc">What they may recover</div></a>
+    <a class="acard" href="https://alphafiles.net/proof/" target="_blank"><div class="acard-title">🔗 10. Proof</div><div class="acard-desc">Case database</div></a>
+    <a class="acard" href="https://alphafiles.net/letter/" target="_blank"><div class="acard-title">✉️ 11. Mutual Release Letter</div><div class="acard-desc">The final document</div></a>
+    <a class="acard" href="https://alphafiles.net/exit-methods/" target="_blank"><div class="acard-title">🚪 12. 4 Ways to Exit</div><div class="acard-desc">Exit options explained</div></a>
+    <a class="acard" href="https://alphafiles.net/guarantee/" target="_blank"><div class="acard-title">🛡️ 13. Certificate of Guarantee</div><div class="acard-desc">Written 36-month guarantee</div></a>
+    <a class="acard" href="https://alphafiles.net/history/" target="_blank"><div class="acard-title">⭐ 14. Our Track Record</div><div class="acard-desc">41 years, BBB A+</div></a>
+    <a class="acard" href="https://alphafiles.net/rights/" target="_blank"><div class="acard-title">⚖️ 15. Consumer Rights</div><div class="acard-desc">Violations & statutes</div></a>
+    <a class="acard gold" href="https://alphafiles.net/cost/" target="_blank"><div class="acard-title">💰 16. True Cost</div><div class="acard-desc">30-year cost calculator</div></a>
+    <a class="acard gold" href="https://alphafiles.net/quote/" target="_blank"><div class="acard-title">📄 17. Your Quote</div><div class="acard-desc">Alpha service fee & financing</div></a>
+    <a class="acard" href="https://alphafiles.net/free/" target="_blank"><div class="acard-title">🔗 18. Free</div><div class="acard-desc">Path to freedom</div></a>
+    <a class="acard" href="https://alphafiles.net/better/" target="_blank"><div class="acard-title">🏆 19. What Makes Alpha Better</div><div class="acard-desc">4 differentiators</div></a>
+    <a class="acard" href="https://alphafiles.net/included/" target="_blank"><div class="acard-title">📦 20. What's Included</div><div class="acard-desc">Full program breakdown</div></a>
+    <a class="acard" href="https://alphafiles.net/recap/" target="_blank"><div class="acard-title">📋 21. Recap</div><div class="acard-desc">Summary of everything</div></a>
+    <a class="acard" href="https://alphafiles.net/contract/" target="_blank"><div class="acard-title">📝 22. Alpha Contract</div><div class="acard-desc">Enrollment agreement</div></a>
+    <a class="acard" href="https://alphafiles.net/checklist/" target="_blank"><div class="acard-title">✅ 23. Client Acknowledgment</div><div class="acard-desc">Confirmation checklist</div></a>
+    <a class="acard gold" href="https://alphafiles.net/timeshare-free/" target="_blank"><div class="acard-title">🎉 24. Let's Be Timeshare Free</div><div class="acard-desc">Closing — congratulations</div></a>
+  </div>
+
+  <div class="sec">Tools & Admin</div>
+  <div class="alpha-grid">
+    <a class="acard gold" href="https://alphafiles.net/vitals/" target="_blank"><div class="acard-title">📋 Client Vitals</div><div class="acard-desc">Full client CRM tracker</div></a>
+    <a class="acard gold" href="https://alphafiles.net/quick-quote/" target="_blank"><div class="acard-title">⚡ Quick Quote</div><div class="acard-desc">Instant calculator</div></a>
+    <a class="acard" href="https://alphafiles.net/clients/" target="_blank"><div class="acard-title">👥 All Clients</div><div class="acard-desc">Full client roster</div></a>
+    <a class="acard" href="https://alphafiles.net/owner/" target="_blank"><div class="acard-title">🌐 Client View</div><div class="acard-desc">What the client sees</div></a>
+    <a class="acard" href="https://alphafiles.net/screenshare/" target="_blank"><div class="acard-title">📺 Screen Share</div><div class="acard-desc">Invite link</div></a>
+    <a class="acard" href="https://alphafiles.net/followup/" target="_blank"><div class="acard-title">⏰ Follow-Up</div><div class="acard-desc">Appointment scheduler</div></a>
+    <a class="acard" href="https://alphafiles.net/agreement/" target="_blank"><div class="acard-title">📑 EN Agreement</div><div class="acard-desc">Enrollment agreement</div></a>
+    <a class="acard" href="https://alphafiles.net/acuerdo/" target="_blank"><div class="acard-title">📑 ES Acuerdo</div><div class="acard-desc">Spanish enrollment</div></a>
+  </div>
+
+</div>
+</body>
+</html>
