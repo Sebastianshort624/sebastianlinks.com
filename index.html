@@ -176,17 +176,10 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
 
 <div class="topbar">
   <div class="topbar-left">
-    <div>
-      <div class="topbar-logo">⚡ Life OS</div>
-      <div class="topbar-sub">Sebastian S. — Personal Operating System</div>
-    </div>
+    <div class="topbar-logo">⚡ Life OS</div>
+    <div class="topbar-sub">Sebastian S. — Personal Operating System</div>
   </div>
-<div style="background:#fff;border:1px solid #e5e7eb;border-radius:14px;overflow:hidden;margin-top:16px">
-  
-
   <div class="topbar-date" id="topDate"></div>
-<button onclick="toggleAdmin()" id="admin-btn" style="background:#7c3aed;color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;display:flex;align-items:center;gap:5px">⚙️ Admin</button>
-<div style="display:none" ></div>
   <div class="tabs">
     <button class="tab active" onclick="showTab('dashboard',this)">🏠 Dashboard</button>
     <button class="tab" onclick="showTab('day',this)">📅 Day Build</button>
@@ -195,8 +188,8 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
     <button class="tab" onclick="showTab('pay',this)">📈 Pay History</button>
     <button class="tab" onclick="showTab('favs',this)">⭐ Favorites</button>
   </div>
+  <button onclick="toggleAdmin()" id="admin-btn" style="background:#7c3aed;color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;flex-shrink:0">⚙️ Admin</button>
 </div>
-</div><!-- /topbar -->
 
 <!-- DASHBOARD -->
 <div id="tab-dashboard" class="panel active">
