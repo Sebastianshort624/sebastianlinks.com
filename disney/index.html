@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>4-Day Sober Safety Plan · Holding Down the Fort</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff;
+  --bg2:#fbfdff;
+  --ink:#1c2b3a;
+  --dim:#64748b;
+  --blue:#2E9FE0;
+  --blue-dim:#e7f6ff;
+  --blue-deep:#1B6FA8;
+  --red:#E0524A;
+  --red-dim:#fdeceb;
+  --yellow:#F0A93A;
+  --yellow-dim:#fff5e0;
+  --green:#3FAE7A;
+  --green-dim:#e6f7ee;
+  --line:rgba(28,43,58,0.12);
+  --radius:18px;
+  --disp:'Fredoka',sans-serif;
+  --body:'Inter',sans-serif;
+  --mono:'Space Mono',monospace;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--body);}
+body{padding-bottom:110px;background-image:radial-gradient(circle at 12% 0%, rgba(46,159,224,0.06), transparent 40%),radial-gradient(circle at 90% 6%, rgba(240,169,58,0.08), transparent 38%);}
+h1,h2,h3,h4{font-family:var(--disp);margin:0;}
+button{font-family:inherit;cursor:pointer;}
+.app{max-width:560px;margin:0 auto;padding:0 16px;}
+
+/* ---- HERO ---- */
+.hero{padding:22px 0 14px;}
+.hero .eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:0.14em;color:var(--blue-deep);font-weight:700;font-family:var(--disp);}
+.hero h1{font-size:26px;font-weight:600;color:var(--ink);margin-top:4px;line-height:1.15;}
+.hero p{font-size:13.5px;color:var(--dim);margin-top:8px;line-height:1.5;}
+
+/* ---- TICKET STRIP (day nav) ---- */
+.ticket-strip{display:flex;gap:8px;margin:18px 0 6px;overflow-x:auto;padding-bottom:4px;}
+.ticket{
+  flex:none;width:96px;padding:10px 8px 12px;border-radius:12px;
+  border:1.5px dashed var(--line);background:var(--bg2);text-align:center;position:relative;
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+.ticket .day-eyebrow{font-size:8.5px;text-transform:uppercase;letter-spacing:0.08em;color:var(--dim);font-weight:600;}
+.ticket .day-num{font-family:var(--mono);font-size:20px;font-weight:700;margin:2px 0;}
+.ticket .day-name{font-size:9.5px;color:var(--dim);line-height:1.2;}
+.ticket::after{content:'';position:absolute;top:50%;right:-5px;width:9px;height:9px;border-radius:50%;background:var(--bg);border:1.5px dashed var(--line);transform:translateY(-50%);}
+.ticket:last-child::after{display:none;}
+.ticket.active{border-style:solid;transform:translateY(-2px);box-shadow:0 8px 18px rgba(28,43,58,0.10);}
+.ticket.active .day-num{color:#fff;}
+.ticket[data-day="1"].active{background:var(--blue);border-color:var(--blue);}
+.ticket[data-day="2"].active{background:var(--yellow);border-color:var(--yellow);}
+.ticket[data-day="3"].active{background:var(--red);border-color:var(--red);}
+.ticket[data-day="4"].active{background:var(--green);border-color:var(--green);}
+.ticket[data-day="1"].active .day-eyebrow,.ticket[data-day="1"].active .day-name{color:rgba(255,255,255,0.85);}
+.ticket[data-day="2"].active .day-eyebrow,.ticket[data-day="2"].active .day-name{color:rgba(28,43,58,0.75);}
+.ticket[data-day="2"].active .day-num{color:var(--ink);}
+.ticket[data-day="3"].active .day-eyebrow,.ticket[data-day="3"].active .day-name{color:rgba(255,255,255,0.85);}
+.ticket[data-day="4"].active .day-eyebrow,.ticket[data-day="4"].active .day-name{color:rgba(255,255,255,0.85);}
+.ticket.toolkit{background:var(--ink);border:1.5px solid var(--ink);}
+.ticket.toolkit .day-eyebrow,.ticket.toolkit .day-name{color:rgba(255,255,255,0.7);}
+.ticket.toolkit .day-num{color:#fff;font-size:15px;}
+.ticket.toolkit.active{background:var(--ink);box-shadow:0 8px 18px rgba(28,43,58,0.25);}
+
+/* ---- PROGRESS DOTS ---- */
+.progress-row{display:flex;align-items:center;gap:6px;margin:12px 0 4px;}
+.progress-row .dot{width:7px;height:7px;border-radius:50%;background:var(--line);}
+.progress-row .dot.done{background:var(--green);}
+.progress-row span.lbl{font-size:10.5px;color:var(--dim);margin-left:6px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;}
+
+/* ---- CARD ---- */
+.card{background:var(--bg2);border:1px solid var(--line);border-radius:var(--radius);padding:0 16px 16px;margin-bottom:14px;overflow:hidden;box-shadow:0 2px 10px rgba(28,43,58,0.04);}
+.card-head{display:flex;align-items:center;gap:9px;margin:0 -16px 12px;padding:12px 16px;}
+.card-head h3{font-size:13.5px;text-transform:uppercase;letter-spacing:0.05em;font-weight:600;display:flex;align-items:center;gap:8px;}
+.card-head .tag{margin-left:auto;font-size:10px;color:var(--dim);font-weight:500;}
+.ch-blue{background:var(--blue-dim);} .ch-blue h3{color:var(--blue-deep);}
+.ch-red{background:var(--red-dim);} .ch-red h3{color:var(--red);}
+.ch-yellow{background:var(--yellow-dim);} .ch-yellow h3{color:#8a5a10;}
+.ch-green{background:var(--green-dim);} .ch-green h3{color:var(--green);}
+
+.banner{border-radius:13px;padding:12px 14px;margin-bottom:14px;font-size:13px;line-height:1.5;display:flex;gap:10px;}
+.banner i{margin-top:2px;}
+.banner.blue{background:var(--blue-dim);color:var(--blue-deep);}
+.banner.red{background:var(--red-dim);color:var(--red);}
+
+/* watch-for list */
+.watch{display:flex;gap:11px;padding:10px 0;border-bottom:1px solid var(--line);}
+.watch:last-child{border-bottom:none;}
+.watch .icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;flex:none;background:var(--red-dim);color:var(--red);}
+.watch-body{flex:1;min-width:0;}
+.watch-body .t{font-size:13px;font-weight:600;color:var(--ink);}
+.watch-body .d{font-size:12px;color:var(--dim);margin-top:2px;line-height:1.4;}
+
+/* missions checklist */
+.mission{display:flex;align-items:flex-start;gap:11px;padding:10px 0;border-bottom:1px solid var(--line);}
+.mission:last-child{border-bottom:none;}
+.mission input[type=checkbox]{appearance:none;width:22px;height:22px;border-radius:7px;border:2px solid var(--line);flex:none;margin-top:1px;position:relative;cursor:pointer;background:#fff;}
+.mission input[type=checkbox]:checked{background:var(--green);border-color:var(--green);}
+.mission input[type=checkbox]:checked::after{content:'\f00c';font-family:'Font Awesome 6 Free';font-weight:900;color:#fff;font-size:11px;position:absolute;top:2px;left:4px;}
+.mission label{font-size:13.5px;line-height:1.4;color:var(--ink);}
+.mission.done label{color:var(--dim);text-decoration:line-through;}
+
+textarea.note{width:100%;min-height:64px;border-radius:12px;border:1px solid var(--line);background:#fff;padding:10px 12px;font-family:inherit;font-size:13px;color:var(--ink);resize:vertical;}
+label.prompt{font-size:12px;color:var(--dim);font-weight:600;display:block;margin-bottom:6px;margin-top:12px;}
+label.prompt:first-child{margin-top:0;}
+
+.quote-box{background:var(--yellow-dim);border-radius:13px;padding:14px;font-size:13px;line-height:1.6;color:#6b4409;font-style:italic;margin-bottom:14px;}
+
+/* ---- TOOLKIT ---- */
+.tool-btn{display:flex;align-items:center;gap:12px;width:100%;background:#fff;border:1px solid var(--line);border-radius:13px;padding:12px 14px;margin-bottom:10px;text-align:left;}
+.tool-btn i{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px;flex:none;}
+.tool-btn .txt .t{font-size:13.5px;font-weight:600;color:var(--ink);}
+.tool-btn .txt .d{font-size:11.5px;color:var(--dim);margin-top:1px;}
+.tool-btn .chev{margin-left:auto;color:var(--dim);font-size:12px;}
+
+.field-row{display:flex;gap:8px;margin-bottom:8px;}
+.field-row input{flex:1;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:13px;font-family:inherit;background:#fff;}
+.field-row a.call{flex:none;width:40px;background:var(--green);color:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:14px;}
+
+/* ---- FLOATING HELP BUTTON ---- */
+.help-fab{position:fixed;right:16px;bottom:96px;width:58px;height:58px;border-radius:50%;background:var(--red);color:#fff;border:none;box-shadow:0 8px 20px rgba(224,82,74,0.4);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.02em;z-index:45;}
+.help-fab i{font-size:17px;margin-bottom:2px;}
+
+/* ---- BOTTOM TAB BAR ---- */
+.tabbar{position:fixed;bottom:0;left:0;right:0;background:#ffffff;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:8px 4px calc(8px + env(safe-area-inset-bottom));z-index:40;box-shadow:0 -4px 18px rgba(28,43,58,0.06);}
+.tabbar button{background:none;border:none;color:var(--dim);display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9.5px;font-weight:600;padding:4px 10px;border-radius:10px;}
+.tabbar button i{font-size:16px;}
+.tabbar button.active{color:var(--blue-deep);}
+
+main{padding-top:4px;}
+.view{display:none;animation:fade .25s ease;}
+.view.active{display:block;}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* ---- MODAL ---- */
+.modal-back{position:fixed;inset:0;background:rgba(28,43,58,0.45);display:none;align-items:flex-end;justify-content:center;z-index:100;}
+.modal-back.open{display:flex;}
+.modal{background:#fff;border-radius:22px 22px 0 0;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;padding:20px 20px calc(20px + env(safe-area-inset-bottom));}
+.modal h2{font-size:19px;margin-bottom:12px;color:var(--ink);}
+.modal .close{position:absolute;top:14px;right:20px;background:var(--bg2);border:none;width:30px;height:30px;border-radius:50%;color:var(--dim);}
+.modal-wrap{position:relative;}
+.breath-circle{width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,var(--blue-dim),var(--blue) 130%);margin:20px auto;display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-size:16px;color:#fff;font-weight:600;transition:transform 4s ease;}
+.breath-circle.in{transform:scale(1.25);}
+.breath-circle.out{transform:scale(0.85);}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="hero">
+    <div class="eyebrow">Sebastian · Personal Recovery Tool</div>
+    <h1>Holding Down the Fort — 4-Day Sober Plan</h1>
+    <p>Vanessa and the family are at Disney. You're home doing the right thing. That's its own kind of hard — quiet houses and empty evenings have their own pull. This plan keeps your days structured: in-person AA, Nicotine Anonymous by Zoom, and a check-in every night.</p>
+  </div>
+
+  <div class="ticket-strip" id="ticketStrip">
+    <div class="ticket" data-day="1"><div class="day-eyebrow">Day</div><div class="day-num">01</div><div class="day-name">They Leave</div></div>
+    <div class="ticket" data-day="2"><div class="day-eyebrow">Day</div><div class="day-num">02</div><div class="day-name">Empty House</div></div>
+    <div class="ticket" data-day="3"><div class="day-eyebrow">Day</div><div class="day-num">03</div><div class="day-name">Missing Them</div></div>
+    <div class="ticket" data-day="4"><div class="day-eyebrow">Day</div><div class="day-num">04</div><div class="day-name">They Come Home</div></div>
+    <div class="ticket toolkit" data-day="tool"><div class="day-eyebrow">Fastpass</div><div class="day-num"><i class="fa-solid fa-kit-medical"></i></div><div class="day-name">Toolkit</div></div>
+  </div>
+
+  <div class="progress-row" id="progressRow">
+    <span class="lbl">Days held down</span>
+    <div class="dot" data-d="1"></div><div class="dot" data-d="2"></div><div class="dot" data-d="3"></div><div class="dot" data-d="4"></div>
+  </div>
+
+  <main>
+    <!-- DAY 1 -->
+    <section class="view" id="view-1">
+      <div class="banner blue"><i class="fa-solid fa-house"></i><span><b>They just left.</b> The house goes quiet fast. The first few hours alone are when the routine breaks and the mind starts looking for something to fill the gap.</span></div>
+
+      <div class="card">
+        <div class="card-head ch-blue"><h3><i class="fa-solid fa-sun"></i> Morning Intention</h3></div>
+        <p style="font-size:13px;line-height:1.6;margin:0;">I'm not being punished by staying home — I'm proving something to myself. A quiet house is not an empty house. I decide what fills it.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-head ch-red"><h3><i class="fa-solid fa-eye"></i> Watch For Today</h3></div>
+        <div class="watch"><div class="icon"><i class="fa-solid fa-door-open"></i></div><div class="watch-body"><div class="t">The first quiet evening</div><div class="d">No one's watching the clock but you. That's exactly why tonight's meeting matters most.</div></div></div>
+        <div class="watch"><div class="icon"><i class="fa-solid fa-face-frown"></i></div><div class="watch-body"><div class="t">Feeling left out or resentful</div><div class="d">It's normal to feel a little sad or even resentful that they're at Disney and you're not. Name the feeling — don't medicate it.</div></div></div>
+        <div class="watch"><div class="icon"><i class="fa-solid fa-couch"></i></div><div class="watch-body"><div class="t">"No structure" drift</div><div class="d">Without the family's schedule, the day can go shapeless. Shapeless days are when old habits sneak back in.</div></div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head ch-green"><h3><i class="fa-solid fa-list-check"></i> Today's Missions</h3></div>
+        <div id="missions-1"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head ch-yellow"><h3><i class="fa-solid fa-moon"></i> Evening Check-In</h3></div>
+        <label class="prompt">What's one moment today I felt tempted, even a little?</label>
+        <textarea class="note" data-note="1-a"></textarea>
+        <label class="prompt">What am I grateful for tonight?</label>
+        <textarea class="note" data-note="1-b"></textarea>
+      </div>
+    </section>
+
+    <!-- DAY 2 -->
+    <section class="view" id="view-2">
+      <div class="banner blue"><i class="fa-solid fa-broom"></i><span><b>Full day alone.</b> Work, chores, and free time with nobody to answer to. This is where structure has to be built on purpose, not left to chance.</span></div>
+
+      <div class="card">
+        <div class="card-head ch-blue"><h3><i class="fa-solid fa-sun"></i> Morning Intention</h3></div>
+        <p style="font-size:13px;line-height:1.6;margin:0;">Free time is not danger time if I plan it. I'll build today around people and purpose, not around boredom.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-head ch-red"><h3><i class="fa-solid fa-eye"></i> Watch For Today</h3></div>
+        <div class="watch"><div class="icon"><i class="fa-solid fa-hourglass-half"></i></div><div class="watch-body"><div class="t">Boredom</div><div class="d">An empty afternoon with nothing scheduled is a real trigger. Fill the gaps before they fill themselves.</div></div></div>
+        <div class="watch"><div class="icon"><i class="fa-solid fa-user-slash"></i></div><div class="watch-body"><div class="t">"No one would know" thinking</div><div class="d">Isolation makes secrecy feel possible. That thought itself is the warning sign — bring it into the light immediately.</div></div></div>
+        <div class="watch"><div class="icon"><i class="fa-solid fa-mug-hot"></i></div><div class="watch-body"><div class="t">Extra downtime at night</div><div class="d">Without family around at bedtime, nights can run long and unstructured. Set a real bedtime and keep it.</div></div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head ch-green"><h3><i class="fa-solid fa-list-check"></i> Today's Missions</h3></div>
+        <div id="missions-2"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head ch-yellow"><h3><i class="fa-solid fa-moon"></i> Evening Check-In</h3></div>
+        <label class="prompt">What's one moment today I felt tempted, even a little?</label>
+        <textarea class="note" data-note="2-a"></textarea>
+        <label class="prompt">What am I grateful for tonight?</label>
+        <textarea class="note" data-note="2-b"></textarea>
+      </div>
+    </section>
+
+    <!-- DAY 3 -->
+    <section class="view" id="view-3">
+      <div class="banner red"><i class="fa-solid fa-triangle-exclamation"></i><span><b>Your highest-risk day.</b> This is the midpoint — the novelty of being alone has worn off, missing them hits hardest, and photos or calls from the park can stir up feelings fast. Go in with your plan already made.</span></div>
+
+      <div class="card">
+        <div class="card-head ch-blue"><h3><i class="fa-solid fa-sun"></i> Morning Intention</h3></div>
+        <p style="font-size:13px;line-height:1.6;margin:0;">Missing my family is love, not a problem to solve with a drink or a vape. I already know my answer today — I decided this morning.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-head ch-red"><h3><i class="fa-solid fa-eye"></i> Watch For Today</h3></div>
+        <div class="watch"><div class="icon"><i class="fa-solid fa-images"></i></div><div class="watch-body"><div class="t">Seeing their photos and videos</div><div class="d">Watching them have fun without you can bring up sadness, envy, or self-pity fast. Feel it, then call someone — don't sit with it alone.</div></div></div>
+        <div class="watch"><div class="icon"><i class="fa-solid fa-clock"></i></div><div class="watch-body"><div class="t">The long middle-of-trip evening</div><div class="d">Day three evenings tend to be the loneliest. This is exactly why tonight's in-person meeting is non-negotiable.</div></div></div>
+        <div class="watch"><div class="icon"><i class="fa-solid fa-cloud-rain"></i></div><div class="watch-body"><div class="t">Self-pity spiral</div><div class="d">"I always miss out" thinking is a trigger dressed as a feeling. Write it down, then read your Toolkit reading.</div></div></div>
+      </div>
+
+      <div class="banner blue"><i class="fa-solid fa-shield"></i><span><b>Tonight's rule:</b> if you feel the pull, open the Toolkit tab immediately — don't wait it out alone. Text Vanessa the words "ride it out" and she'll know exactly what it means, even from the park.</span></div>
+
+      <div class="card">
+        <div class="card-head ch-green"><h3><i class="fa-solid fa-list-check"></i> Today's Missions</h3></div>
+        <div id="missions-3"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head ch-yellow"><h3><i class="fa-solid fa-moon"></i> Evening Check-In</h3></div>
+        <label class="prompt">What's one moment today I felt tempted, even a little?</label>
+        <textarea class="note" data-note="3-a"></textarea>
+        <label class="prompt">What am I grateful for tonight?</label>
+        <textarea class="note" data-note="3-b"></textarea>
+      </div>
+    </section>
+
+    <!-- DAY 4 -->
+    <section class="view" id="view-4">
+      <div class="banner blue"><i class="fa-solid fa-house-chimney"></i><span><b>They come home today.</b> Excitement and anticipation are their own kind of high — and the urge to "celebrate" their return can sneak in disguised as joy.</span></div>
+
+      <div class="card">
+        <div class="card-head ch-blue"><h3><i class="fa-solid fa-sun"></i> Morning Intention</h3></div>
+        <p style="font-size:13px;line-height:1.6;margin:0;">I want to greet my family exactly as clear-headed as I've been all week. That's the gift I'm giving them at the door.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-head ch-red"><h3><i class="fa-solid fa-eye"></i> Watch For Today</h3></div>
+        <div class="watch"><div class="icon"><i class="fa-solid fa-champagne-glasses"></i></div><div class="watch-body"><div class="t">"Let's celebrate" urge</div><div class="d">Their homecoming is genuinely happy news. Happy feelings can trigger just as hard as hard ones — plan how you'll celebrate before they walk in.</div></div></div>
+        <div class="watch"><div class="icon"><i class="fa-solid fa-clock-rotate-left"></i></div><div class="watch-body"><div class="t">Waiting-around anxiety</div><div class="d">Watching the clock for their flight or drive home can stir up restlessness. Keep the day scheduled until they're actually home.</div></div></div>
+        <div class="watch"><div class="icon"><i class="fa-solid fa-medal"></i></div><div class="watch-body"><div class="t">Wanting credit</div><div class="d">You did something real this week. You don't need to announce it to feel it — but it's fair to tell your sponsor.</div></div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head ch-green"><h3><i class="fa-solid fa-list-check"></i> Today's Missions</h3></div>
+        <div id="missions-4"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head ch-yellow"><h3><i class="fa-solid fa-flag-checkered"></i> Week Wrap-Up</h3></div>
+        <label class="prompt">What am I proudest of from these 4 days?</label>
+        <textarea class="note" data-note="4-a"></textarea>
+        <label class="prompt">What will I tell my sponsor about this week?</label>
+        <textarea class="note" data-note="4-b"></textarea>
+      </div>
+    </section>
+
+    <!-- TOOLKIT -->
+    <section class="view" id="view-tool">
+      <div class="banner red"><i class="fa-solid fa-kit-medical"></i><span><b>This tab is always here.</b> If a craving hits, come here first — before you decide anything.</span></div>
+
+      <div class="card">
+        <div class="card-head ch-blue"><h3><i class="fa-solid fa-wind"></i> In This Moment</h3></div>
+        <button class="tool-btn" id="openBreathBtn"><i style="background:var(--blue-dim);color:var(--blue-deep);" class="fa-solid fa-lungs"></i><div class="txt"><div class="t">Ride It Out — Breathing</div><div class="d">A guided 60-second breathing reset</div></div><i class="fa-solid fa-chevron-right chev"></i></button>
+        <button class="tool-btn" id="openPrayerBtn"><i style="background:var(--yellow-dim);color:#8a5a10;" class="fa-solid fa-hands-praying"></i><div class="txt"><div class="t">Serenity Prayer</div><div class="d">Quick grounding read</div></div><i class="fa-solid fa-chevron-right chev"></i></button>
+        <button class="tool-btn" id="openReadingBtn"><i style="background:var(--green-dim);color:var(--green);" class="fa-solid fa-book-open"></i><div class="txt"><div class="t">One-Minute Reading</div><div class="d">A short reminder of why you're doing this</div></div><i class="fa-solid fa-chevron-right chev"></i></button>
+      </div>
+
+      <div class="card">
+        <div class="card-head ch-green"><h3><i class="fa-solid fa-people-roof"></i> Meetings</h3></div>
+        <p style="font-size:12px;color:var(--dim);margin:0 0 10px;">In-person AA comes first every day this week. Nicotine Anonymous by Zoom fills the gaps.</p>
+        <a class="tool-btn" href="https://meetingguide.org" target="_blank" style="text-decoration:none;"><i style="background:var(--blue-dim);color:var(--blue-deep);" class="fa-solid fa-magnifying-glass-location"></i><div class="txt"><div class="t">Find an In-Person AA Meeting</div><div class="d">meetingguide.org — search Greenville / Taylors / Spartanburg</div></div><i class="fa-solid fa-arrow-up-right-from-square chev"></i></a>
+        <a class="tool-btn" href="https://aa-intergroup.org" target="_blank" style="text-decoration:none;"><i style="background:var(--yellow-dim);color:#8a5a10;" class="fa-solid fa-globe"></i><div class="txt"><div class="t">AA Online Intergroup</div><div class="d">aa-intergroup.org — backup if in-person timing doesn't work</div></div><i class="fa-solid fa-arrow-up-right-from-square chev"></i></a>
+        <a class="tool-btn" href="https://nicotine-anonymous.org/meetings.html" target="_blank" style="text-decoration:none;"><i style="background:var(--red-dim);color:var(--red);" class="fa-solid fa-video"></i><div class="txt"><div class="t">Nicotine Anonymous — Zoom Meetings</div><div class="d">nicotine-anonymous.org — full Zoom meeting schedule</div></div><i class="fa-solid fa-arrow-up-right-from-square chev"></i></a>
+      </div>
+
+      <div class="card">
+        <div class="card-head ch-red"><h3><i class="fa-solid fa-phone"></i> Call Someone Now</h3></div>
+        <p style="font-size:12px;color:var(--dim);margin:0 0 10px;">Fill these in once — they're saved on this device only.</p>
+        <div class="field-row"><input type="text" id="contactVanessa" placeholder="Vanessa's number"><a class="call" id="callVanessa" href="#"><i class="fa-solid fa-phone"></i></a></div>
+        <div class="field-row"><input type="text" id="contactSponsor" placeholder="Sponsor's number"><a class="call" id="callSponsor" href="#"><i class="fa-solid fa-phone"></i></a></div>
+        <div class="field-row"><input type="text" value="1-800-662-4357" readonly><a class="call" href="tel:18006624357"><i class="fa-solid fa-phone"></i></a></div>
+        <p style="font-size:11px;color:var(--dim);margin:4px 0 0;">Last row is SAMHSA's free, confidential 24/7 helpline.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-head ch-yellow"><h3><i class="fa-solid fa-pen-nib"></i> Why I'm Doing This</h3></div>
+        <textarea class="note" id="whyNote" style="min-height:90px;" placeholder="Write your own reason here — read it back whenever you need to."></textarea>
+      </div>
+    </section>
+  </main>
+
+  <button class="help-fab" id="helpFab"><i class="fa-solid fa-hand"></i>Help Now</button>
+
+  <div class="tabbar">
+    <button class="tabbtn" data-day="1"><i class="fa-solid fa-house"></i>Day 1</button>
+    <button class="tabbtn" data-day="2"><i class="fa-solid fa-broom"></i>Day 2</button>
+    <button class="tabbtn" data-day="3"><i class="fa-solid fa-heart-crack"></i>Day 3</button>
+    <button class="tabbtn" data-day="4"><i class="fa-solid fa-house-chimney"></i>Day 4</button>
+    <button class="tabbtn" data-day="tool"><i class="fa-solid fa-kit-medical"></i>Toolkit</button>
+  </div>
+</div>
+
+<!-- BREATH MODAL -->
+<div class="modal-back" id="breathModal">
+  <div class="modal modal-wrap">
+    <button class="close" data-close="breathModal"><i class="fa-solid fa-xmark"></i></button>
+    <h2>Ride It Out</h2>
+    <p style="font-size:13px;color:var(--dim);">Follow the circle. Breathe in as it grows, hold, breathe out as it shrinks. Cravings are like waves — they peak and pass in under two minutes if you don't feed them.</p>
+    <div class="breath-circle" id="breathCircle">Breathe</div>
+    <button class="tool-btn" id="startBreathBtn" style="justify-content:center;"><span class="txt"><div class="t" style="text-align:center;">Start 60-Second Reset</div></span></button>
+  </div>
+</div>
+
+<!-- PRAYER MODAL -->
+<div class="modal-back" id="prayerModal">
+  <div class="modal modal-wrap">
+    <button class="close" data-close="prayerModal"><i class="fa-solid fa-xmark"></i></button>
+    <h2>Serenity Prayer</h2>
+    <div class="quote-box">God, grant me the serenity to accept the things I cannot change, courage to change the things I can, and wisdom to know the difference.</div>
+    <p style="font-size:13px;color:var(--dim);line-height:1.6;">Say it slow. Say it twice if you need to. It's short on purpose — so you can carry it with you into any quiet room, any long evening alone.</p>
+  </div>
+</div>
+
+<!-- READING MODAL -->
+<div class="modal-back" id="readingModal">
+  <div class="modal modal-wrap">
+    <button class="close" data-close="readingModal"><i class="fa-solid fa-xmark"></i></button>
+    <h2>One-Minute Reading</h2>
+    <div class="quote-box">You are not the one missing out this week. You are the one showing your family — and yourself — what steady looks like. That is not a smaller trip. It might be the most important one you take this year.</div>
+    <p style="font-size:13px;color:var(--dim);line-height:1.6;">Recovery doesn't pause when the house gets quiet — it's proven there. One meeting, one night, one decision at a time.</p>
+  </div>
+</div>
+
+<script>
+const STORE_KEY='disney_sober_plan_v1';
+let store={};
+try{ const raw=localStorage.getItem(STORE_KEY); if(raw) store=JSON.parse(raw); }catch(e){}
+function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(store)); }catch(e){} }
+
+const missionsData={
+  1:["Go to an in-person AA meeting today — not Zoom, in person","Text Vanessa when they land / check into the resort","Fill in one meal, one errand, one call — don't leave the evening open-ended","Do a 5-minute reading or prayer before bed"],
+  2:["Go to an in-person AA meeting today","Join a Nicotine Anonymous Zoom meeting if one fits the schedule","Plan today's hours out loud or on paper before 10am — no unscheduled blocks","Call sponsor or a support person, just to check in"],
+  3:["Go to an in-person AA meeting today — treat it as non-negotiable","Tell someone out loud that today is my hardest day this week","If a photo or call from the trip stirs something up, name it and call someone before reacting","No isolating tonight — be around people, even just a phone call"],
+  4:["Go to an in-person AA meeting today, before the excitement of homecoming builds","Decide now how I'll celebrate their return — no drink involved","Call sponsor before they get home and tell them how the week went","Greet my family clear-headed, and let that be the win"]
+};
+
+function renderMissions(day){
+  const list=missionsData[day];
+  const wrap=document.getElementById('missions-'+day);
+  wrap.innerHTML='';
+  list.forEach((txt,i)=>{
+    const id='m'+day+'-'+i;
+    const checked = store[id]?'checked':'';
+    const div=document.createElement('div');
+    div.className='mission'+(store[id]?' done':'');
+    div.innerHTML=`<input type="checkbox" id="${id}" ${checked}><label for="${id}">${txt}</label>`;
+    wrap.appendChild(div);
+    div.querySelector('input').addEventListener('change',e=>{
+      store[id]=e.target.checked; save();
+      div.classList.toggle('done',e.target.checked);
+      updateProgress();
+    });
+  });
+}
+[1,2,3,4].forEach(renderMissions);
+
+document.querySelectorAll('.note').forEach(t=>{
+  const key='note_'+(t.dataset.note||t.id);
+  if(store[key]) t.value=store[key];
+  t.addEventListener('input',()=>{ store[key]=t.value; save(); });
+});
+
+function dayComplete(day){
+  return missionsData[day].every((_,i)=>store['m'+day+'-'+i]);
+}
+function updateProgress(){
+  document.querySelectorAll('.progress-row .dot').forEach(d=>{
+    const day=d.dataset.d;
+    d.classList.toggle('done',dayComplete(day));
+  });
+}
+updateProgress();
+
+// contacts
+['contactVanessa','contactSponsor'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(store[id]) el.value=store[id];
+  el.addEventListener('input',()=>{ store[id]=el.value; save(); updateCallLinks(); });
+});
+function updateCallLinks(){
+  const v=document.getElementById('contactVanessa').value.replace(/[^0-9+]/g,'');
+  const s=document.getElementById('contactSponsor').value.replace(/[^0-9+]/g,'');
+  document.getElementById('callVanessa').href = v? 'tel:'+v : '#';
+  document.getElementById('callSponsor').href = s? 'tel:'+s : '#';
+}
+updateCallLinks();
+
+if(store.whyNote) document.getElementById('whyNote').value=store.whyNote;
+document.getElementById('whyNote').addEventListener('input',e=>{ store.whyNote=e.target.value; save(); });
+
+// navigation
+function goTo(day){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById(day==='tool'?'view-tool':'view-'+day).classList.add('active');
+  document.querySelectorAll('.ticket').forEach(t=>t.classList.toggle('active',t.dataset.day===day));
+  document.querySelectorAll('.tabbtn').forEach(t=>t.classList.toggle('active',t.dataset.day===day));
+  store.lastDay=day; save();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('.ticket, .tabbtn').forEach(el=>{
+  el.addEventListener('click',()=>goTo(el.dataset.day));
+});
+goTo(store.lastDay || '1');
+
+// modals
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>closeModal(b.dataset.close)));
+document.querySelectorAll('.modal-back').forEach(m=>m.addEventListener('click',e=>{ if(e.target===m) m.classList.remove('open'); }));
+
+document.getElementById('helpFab').addEventListener('click',()=>{ goTo('tool'); openModal('breathModal'); });
+document.getElementById('openBreathBtn').addEventListener('click',()=>openModal('breathModal'));
+document.getElementById('openPrayerBtn').addEventListener('click',()=>openModal('prayerModal'));
+document.getElementById('openReadingBtn').addEventListener('click',()=>openModal('readingModal'));
+
+// breathing animation
+let breathTimer=null;
+document.getElementById('startBreathBtn').addEventListener('click',()=>{
+  const circle=document.getElementById('breathCircle');
+  let step=0;
+  const phases=[
+    {cls:'in',label:'Breathe In',ms:4000},
+    {cls:'',label:'Hold',ms:2000},
+    {cls:'out',label:'Breathe Out',ms:4000},
+    {cls:'',label:'Hold',ms:2000}
+  ];
+  if(breathTimer) clearTimeout(breathTimer);
+  function run(){
+    const p=phases[step%phases.length];
+    circle.className='breath-circle '+p.cls;
+    circle.textContent=p.label;
+    step++;
+    if(step<10) breathTimer=setTimeout(run,p.ms);
+    else { circle.textContent='Nicely done'; circle.className='breath-circle'; }
+  }
+  run();
+});
+</script>
+</body>
+</html>
