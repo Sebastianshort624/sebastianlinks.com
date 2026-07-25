@@ -562,6 +562,10 @@ input,textarea,select{font-family:inherit}
       <input type="text" id="pRuleWeight" placeholder="Wt 1-10" style="max-width:70px">
       <button class="mini-btn" type="button" id="pRuleAddBtn">Add</button>
     </div>
+    <div class="mini-add">
+      <input type="text" id="pRuleDesc" placeholder="Description (what this rule checks)">
+      <input type="text" id="pRuleNotes" placeholder="Notes (optional)">
+    </div>
 
     <div class="modal-btns">
       <button class="btn-danger" id="profileDeleteBtn" style="display:none">Delete</button>
@@ -853,6 +857,115 @@ const INDUSTRY_TEMPLATES={
     {category:'Position',name:'No cold calling',required:false,weight:5,autoKeywords:''},
     {category:'Compensation',name:'Commission plan published',required:true,weight:8,autoKeywords:'commission'},
     {category:'Sales Process',name:'Sales script / training provided',required:false,weight:4,autoKeywords:'script,training,onboarding'}
+  ],
+  'Elite Remote Sales — Full Framework':[
+    {category:'Company',name:'Years in Business ≥ 5',description:'Company has operated long enough to prove a stable model.',required:true,weight:7,autoKeywords:''},
+    {category:'Company',name:'BBB Accredited',description:'Accreditation signals a baseline of ethical business practice.',required:true,weight:8,autoKeywords:'bbb accredited'},
+    {category:'Company',name:'BBB Rating A- or Better',description:'Grade reflects complaint volume and resolution history.',required:false,weight:5,autoKeywords:'',notes:'Check BBB.org directly — rarely stated in a posting.'},
+    {category:'Company',name:'Owner Identified',description:'You can name and research who actually owns the company.',required:true,weight:6,autoKeywords:''},
+    {category:'Company',name:'Owner Interview Available',description:'Willingness to let candidates meet ownership signals transparency.',required:false,weight:4,autoKeywords:''},
+    {category:'Company',name:'No Hidden Partners / Ownership Transparency',description:'Full ownership structure disclosed, not obscured via shell entities.',required:false,weight:5,autoKeywords:''},
+    {category:'Company',name:'Physical Office Exists',description:'A real office, not just a mailing address, reduces fly-by-night risk.',required:false,weight:3,autoKeywords:''},
+    {category:'Company',name:'Licensed / Registered in Operating States',description:'Company holds required state licensing for the industry.',required:true,weight:7,autoKeywords:'licensed,registered'},
+    {category:'Company',name:'No Active Litigation / FTC Complaints',description:'No unresolved lawsuits or regulatory actions on record.',required:true,weight:8,autoKeywords:''},
+    {category:'Company',name:'Professional Website & Online Presence',description:'Public materials look legitimate and current.',required:false,weight:3,autoKeywords:''},
+
+    {category:'Leadership',name:'Interview with Sales Manager',description:'Direct evaluation from the person you would report to.',required:false,weight:5,autoKeywords:''},
+    {category:'Leadership',name:'Interview with Owner',description:'Access to the top of the org before accepting.',required:false,weight:4,autoKeywords:''},
+    {category:'Leadership',name:'Clear Organizational Structure',description:'You can see who reports to whom.',required:false,weight:5,autoKeywords:''},
+    {category:'Leadership',name:'Direct Access to Leadership',description:'Not buried behind layers of management.',required:false,weight:4,autoKeywords:''},
+    {category:'Leadership',name:'Leadership Has Sales Background',description:'Leaders have actually sold, not just managed.',required:false,weight:5,autoKeywords:''},
+    {category:'Leadership',name:'Leadership Tenure ≥ 2 Years',description:'Low turnover at the top suggests stability.',required:false,weight:4,autoKeywords:''},
+
+    {category:'Position',name:'Remote',description:'Position can be performed from anywhere.',required:true,weight:8,autoKeywords:'remote'},
+    {category:'Position',name:'Warm Inbound Appointments',description:'Leads come pre-qualified and interested, not cold.',required:true,weight:9,autoKeywords:'warm inbound,warm lead'},
+    {category:'Position',name:'Appointment Setters Provided',description:'You close — you are not also prospecting from scratch.',required:false,weight:6,autoKeywords:'appointment setter'},
+    {category:'Position',name:'Lead Qualification Criteria Defined',description:'Clear standard for what counts as a real lead.',required:false,weight:5,autoKeywords:''},
+    {category:'Position',name:'Outbound Limited to Warm Contacts',description:'No pure cold-calling requirement.',required:false,weight:5,autoKeywords:'no cold calling'},
+    {category:'Position',name:'Start Date Confirmed',description:'Firm date, not an open-ended "soon."',required:false,weight:3,autoKeywords:''},
+    {category:'Position',name:'Onboarding Timeframe Disclosed',description:'You know how long ramp-up takes before you are live.',required:false,weight:4,autoKeywords:'onboarding'},
+    {category:'Position',name:'Training Schedule Provided',description:'Structured, not "figure it out as you go."',required:false,weight:5,autoKeywords:'training'},
+    {category:'Position',name:'W-2 or 1099 Classification Clear',description:'You know your tax and benefits status upfront.',required:true,weight:6,autoKeywords:'w-2,1099'},
+    {category:'Position',name:'Equipment Provided',description:'Laptop, phone, or software provided rather than self-funded.',required:false,weight:3,autoKeywords:'equipment provided'},
+
+    {category:'Compensation',name:'Weekly Base Guarantee',description:'Guaranteed floor income while ramping.',required:true,weight:9,autoKeywords:'guarantee,base pay'},
+    {category:'Compensation',name:'Guarantee ≥ $800/week',description:'Meets a proven minimum-viable floor.',required:true,weight:9,autoKeywords:''},
+    {category:'Compensation',name:'Average Rep Earnings ≥ $1,800/week Disclosed',description:'Real numbers, not just top-performer anecdotes.',required:false,weight:6,autoKeywords:''},
+    {category:'Compensation',name:'Top Performer Earnings ≥ $20k/month Disclosed',description:'Ceiling is real and quantified.',required:false,weight:4,autoKeywords:''},
+    {category:'Compensation',name:'Commission Tiers Disclosed',description:'You know exactly how commission scales with performance.',required:true,weight:7,autoKeywords:'commission tier'},
+    {category:'Compensation',name:'Gross Commission Ratio Disclosed',description:'Understand what share of the deal you actually earn.',required:false,weight:5,autoKeywords:''},
+    {category:'Compensation',name:'Compensation Plan Fully Transparent',description:'Written, specific, not vague promises.',required:true,weight:8,autoKeywords:''},
+    {category:'Compensation',name:'Payment Schedule Defined',description:'Weekly, biweekly, or monthly — clearly stated.',required:false,weight:4,autoKeywords:'weekly pay,biweekly'},
+    {category:'Compensation',name:'Chargeback Policy Disclosed',description:'Know what happens to your commission if a deal falls through.',required:false,weight:5,autoKeywords:'chargeback'},
+    {category:'Compensation',name:'Clawback Policy Disclosed',description:'Know under what conditions paid commission can be reclaimed.',required:false,weight:5,autoKeywords:'clawback'},
+    {category:'Compensation',name:'Health Benefits Offered',description:'Medical/dental/vision available.',required:false,weight:3,autoKeywords:'health insurance,benefits'},
+    {category:'Compensation',name:'Ramp-Up / Draw Pay During Training',description:'Paid while you are still learning, not just once producing.',required:false,weight:4,autoKeywords:'draw,ramp pay'},
+
+    {category:'Sales Process',name:'CRM Provided',description:'You are not tracking your pipeline in a spreadsheet.',required:false,weight:5,autoKeywords:'crm'},
+    {category:'Sales Process',name:'Sales Scripts Provided',description:'A proven starting framework, not improvisation from day one.',required:false,weight:4,autoKeywords:'script'},
+    {category:'Sales Process',name:'Call Recording / QA Available',description:'You can review and improve your own calls.',required:false,weight:3,autoKeywords:'call recording'},
+    {category:'Sales Process',name:'Objection Handling Training',description:'Structured guidance, not sink-or-swim.',required:false,weight:4,autoKeywords:'objection handling'},
+    {category:'Sales Process',name:'Live Coaching Available',description:'Real-time feedback from someone who has closed before.',required:false,weight:4,autoKeywords:'coaching'},
+    {category:'Sales Process',name:'Sales Manager Support Structure',description:'You are not left entirely on your own.',required:false,weight:5,autoKeywords:''},
+    {category:'Sales Process',name:'KPIs Clearly Defined',description:'You know exactly how performance is measured.',required:false,weight:5,autoKeywords:'kpi'},
+    {category:'Sales Process',name:'Lead Exclusivity',description:'Leads are not shared with, or double-worked by, other reps.',required:false,weight:5,autoKeywords:''},
+
+    {category:'Marketing',name:'Company Runs Its Own Lead Generation',description:'Demand generation is not your job on top of selling.',required:false,weight:6,autoKeywords:'lead generation'},
+    {category:'Marketing',name:'Marketing Spend Consistent / Disclosed',description:'Lead flow is not about to dry up.',required:false,weight:3,autoKeywords:''},
+    {category:'Marketing',name:'Brand Recognition in Target Market',description:'Prospects have heard of the company before you call.',required:false,weight:4,autoKeywords:''},
+    {category:'Marketing',name:'Case Studies / Social Proof Available',description:'Real results you can point to in a pitch.',required:false,weight:3,autoKeywords:'case studies,testimonials'},
+    {category:'Marketing',name:'Co-Branded Marketing Materials Provided',description:'Professional collateral you can actually use.',required:false,weight:2,autoKeywords:''},
+
+    {category:'Fulfillment',name:'Fulfillment Fee Disclosed',description:'You understand what the client is actually paying for delivery.',required:false,weight:4,autoKeywords:'fulfillment fee'},
+    {category:'Fulfillment',name:'Financing Options for Clients',description:'Bigger deals are not blocked by a client\'s cash flow.',required:false,weight:3,autoKeywords:'financing'},
+    {category:'Fulfillment',name:'Client Onboarding Time Disclosed',description:'You can set accurate expectations after the close.',required:false,weight:3,autoKeywords:''},
+    {category:'Fulfillment',name:'Service Delivery Expectations Clear',description:'What you sell is what actually gets delivered.',required:false,weight:4,autoKeywords:''},
+    {category:'Fulfillment',name:'Fulfillment Team Separate from Sales',description:'You are not stuck doing delivery work on top of closing.',required:false,weight:4,autoKeywords:''},
+
+    {category:'Operations',name:'Documented SOPs Exist',description:'Processes are written down, not tribal knowledge.',required:false,weight:3,autoKeywords:''},
+    {category:'Operations',name:'Admin / Back-Office Support Available',description:'Paperwork and logistics are not entirely on you.',required:false,weight:4,autoKeywords:''},
+    {category:'Operations',name:'Contract / Compliance Review Process',description:'Deals get proper legal review before they close.',required:false,weight:4,autoKeywords:''},
+    {category:'Operations',name:'Data Security Practices for Client Info',description:'Client data is handled responsibly.',required:false,weight:3,autoKeywords:''},
+    {category:'Operations',name:'Clear Escalation Path for Issues',description:'You know who to go to when something breaks.',required:false,weight:3,autoKeywords:''},
+
+    {category:'Technology',name:'Modern CRM / Tech Stack',description:'Tools are current, not a decade-old legacy system.',required:false,weight:4,autoKeywords:''},
+    {category:'Technology',name:'Dialer / Communication Tools Provided',description:'You are equipped to actually make contact efficiently.',required:false,weight:4,autoKeywords:'dialer'},
+    {category:'Technology',name:'E-Signature / Contract Tools Provided',description:'Deals can close without printing and scanning paperwork.',required:false,weight:2,autoKeywords:'docusign,e-signature'},
+    {category:'Technology',name:'Mobile / Remote Access to Systems',description:'You can work effectively away from a desktop.',required:false,weight:3,autoKeywords:'mobile app'},
+    {category:'Technology',name:'Integrated Tools (No Manual Re-Entry)',description:'Systems talk to each other; you are not double-entering data.',required:false,weight:2,autoKeywords:''},
+
+    {category:'Culture',name:'Positive Glassdoor / Employee Reviews',description:'Current and former employees speak well of the company.',required:false,weight:5,autoKeywords:''},
+    {category:'Culture',name:'Low Rep Turnover',description:'People stay — a strong signal the model actually works.',required:false,weight:5,autoKeywords:''},
+    {category:'Culture',name:'Recognition / Incentive Programs',description:'Performance is celebrated, not just quota-tracked.',required:false,weight:3,autoKeywords:'incentive,bonus trip'},
+    {category:'Culture',name:'Collaborative Team Environment',description:'Reps help each other rather than cutthroat competition.',required:false,weight:4,autoKeywords:''},
+    {category:'Culture',name:'Responsive Communication Culture',description:'Questions get answered quickly (Slack/Teams, not silence).',required:false,weight:2,autoKeywords:''},
+    {category:'Culture',name:'Diversity & Inclusion Practices',description:'Company has visible, substantive practices, not just a statement.',required:false,weight:2,autoKeywords:''},
+
+    {category:'Growth',name:'Company Revenue Growth Trend',description:'Business is growing, not contracting.',required:false,weight:5,autoKeywords:''},
+    {category:'Growth',name:'Expansion into New Markets/Products',description:'Room to grow with the company, not a shrinking niche.',required:false,weight:3,autoKeywords:'expanding,new markets'},
+    {category:'Growth',name:'Clear Promotion Path to Management',description:'A defined route upward if you want it.',required:false,weight:5,autoKeywords:'promotion,career growth'},
+    {category:'Growth',name:'Financially Stable / Funded',description:'Company is not one bad month from folding.',required:false,weight:5,autoKeywords:'funded,profitable'},
+    {category:'Growth',name:'Favorable Industry Growth Tailwinds',description:'The industry itself is expanding, not dying.',required:false,weight:3,autoKeywords:''},
+
+    {category:'Risk Flags',name:'No Excessive BBB Complaints',description:'Complaint volume is not disproportionate to company size.',required:true,weight:7,autoKeywords:''},
+    {category:'Risk Flags',name:'No Reported Mass Rep Turnover',description:'No pattern of reps leaving en masse.',required:false,weight:5,autoKeywords:''},
+    {category:'Risk Flags',name:'No Upfront Payment Required from Rep',description:'You are never asked to buy leads, kits, or "training" to start.',required:true,weight:9,autoKeywords:'pay to start,buy leads yourself'},
+    {category:'Risk Flags',name:'No Shifting / Unclear Compensation Terms',description:'Comp plan has not changed unpredictably on existing reps.',required:true,weight:7,autoKeywords:''},
+    {category:'Risk Flags',name:'No Pressure to Start Without Proper Vetting',description:'You are given real time to do due diligence before committing.',required:false,weight:4,autoKeywords:''},
+    {category:'Risk Flags',name:'No Frequent Rebranding / Name Changes',description:'Company has not repeatedly changed names — often a reputation-laundering signal.',required:false,weight:3,autoKeywords:''},
+    {category:'Risk Flags',name:'No Excessive Non-Compete Restrictions',description:'You are not signing away your ability to work in the industry after leaving.',required:false,weight:4,autoKeywords:'non-compete'},
+
+    {category:'Networking',name:'Opportunity to Build Owner Relationships',description:'Role puts you in front of decision-makers, not just leads.',required:false,weight:3,autoKeywords:''},
+    {category:'Networking',name:'Maintain CRM of Industry Contacts',description:'You are building a durable personal network, not just quota.',required:false,weight:2,autoKeywords:''},
+    {category:'Networking',name:'Long-Term Networking Value',description:'Relationships here will matter past this specific job.',required:false,weight:3,autoKeywords:''},
+    {category:'Networking',name:'Access to Industry Events / Conferences',description:'Exposure to the broader industry, not just this one company.',required:false,weight:2,autoKeywords:'conference,industry event'},
+    {category:'Networking',name:'Referral Partnership Potential',description:'Role could open doors to other business relationships.',required:false,weight:3,autoKeywords:''},
+
+    {category:'Personal Goals',name:'Aligns with 1-3 Year Career Trajectory',description:'This role is a real step toward where you want to be.',required:false,weight:5,autoKeywords:''},
+    {category:'Personal Goals',name:'Builds a Transferable Skill Set',description:'Skills gained here carry to the next opportunity.',required:false,weight:4,autoKeywords:''},
+    {category:'Personal Goals',name:'Fits Desired Work-Life Balance',description:'Schedule and intensity match what you actually want right now.',required:false,weight:5,autoKeywords:''},
+    {category:'Personal Goals',name:'Aligns with Personal Values / Mission',description:'You would be comfortable telling people what you sell.',required:false,weight:3,autoKeywords:''},
+    {category:'Personal Goals',name:'Income Ceiling Matches Long-Term Goal',description:'The upside here is actually big enough to matter to you.',required:false,weight:5,autoKeywords:''}
   ]
 };
 
@@ -987,7 +1100,7 @@ function renderOpportunityScorecard(){
     ${Object.keys(cats).map(cat=>`
       <div class="crit-cat">${esc(cat)}</div>
       ${cats[cat].map(r=>`<div class="crit-row">
-        <span class="crit-name">${esc(r.rule.name)}${r.rule.required?'<span class="crit-req">REQUIRED</span>':''}${r.auto?'<span class="crit-auto-badge">auto</span>':''}</span>
+        <span class="crit-name">${esc(r.rule.name)}${r.rule.required?'<span class="crit-req">REQUIRED</span>':''}${r.auto?'<span class="crit-auto-badge">auto</span>':''}${r.rule.description?`<br><span class="cc" style="font-weight:400;font-size:11px">${esc(r.rule.description)}</span>`:''}</span>
         <span class="crit-toggle">
           <button class="on-yes ${r.val==='yes'?'picked':''}" onclick="setCritOverride('${r.rule.id}','yes')">Yes</button>
           <button class="on-partial ${r.val==='partial'?'picked':''}" onclick="setCritOverride('${r.rule.id}','partial')">Partial</button>
@@ -1254,7 +1367,7 @@ function ruleId(){return 'r'+Math.random().toString(36).slice(2,9);}
 function renderChecklistEditor(){
   const box=document.getElementById('pChecklist');
   box.innerHTML=editingChecklist.length?editingChecklist.map((r,i)=>
-    `<div class="checklist-editor-row"><span class="cc">${esc(r.category)}</span><span class="cn">${esc(r.name)}${r.required?' <span class="crit-req">REQUIRED</span>':''}</span><span class="cc">wt ${r.weight}</span><button onclick="removeRule(${i})">✕</button></div>`
+    `<div class="checklist-editor-row"><span class="cc">${esc(r.category)}</span><span class="cn">${esc(r.name)}${r.required?' <span class="crit-req">REQUIRED</span>':''}${r.description?`<br><span class="cc" style="font-weight:400">${esc(r.description)}</span>`:''}</span><span class="cc">wt ${r.weight} · ${r.autoKeywords?'auto':'manual'}</span><button onclick="removeRule(${i})">✕</button></div>`
   ).join(''):'<div class="empty-note">No criteria yet — add rules below or load a template.</div>';
 }
 function removeRule(i){editingChecklist.splice(i,1);renderChecklistEditor();}
@@ -1270,8 +1383,10 @@ document.getElementById('pRuleAddBtn').onclick=()=>{
   const weight=parseInt(document.getElementById('pRuleWeight').value)||5;
   const required=document.getElementById('pRuleRequired').checked;
   const autoKeywords=document.getElementById('pRuleAuto').value.trim();
-  editingChecklist.push({id:ruleId(),category,name,required,weight:Math.max(1,Math.min(10,weight)),autoKeywords});
-  ['pRuleCategory','pRuleName','pRuleAuto','pRuleWeight'].forEach(id=>document.getElementById(id).value='');
+  const description=document.getElementById('pRuleDesc').value.trim();
+  const notes=document.getElementById('pRuleNotes').value.trim();
+  editingChecklist.push({id:ruleId(),category,name,required,weight:Math.max(1,Math.min(10,weight)),autoKeywords,description,notes});
+  ['pRuleCategory','pRuleName','pRuleAuto','pRuleWeight','pRuleDesc','pRuleNotes'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('pRuleRequired').checked=false;
   renderChecklistEditor();
 };
