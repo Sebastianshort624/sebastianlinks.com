@@ -235,6 +235,30 @@ input,textarea,select{font-family:inherit}
 .intel-field .ik{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.03em;margin-bottom:3px}
 .intel-field .iv{font-size:13px;color:var(--text);line-height:1.5}
 .intel-field .iv.empty{color:var(--text-muted);font-style:italic}
+
+/* ── CAREER PROFILES ── */
+.target-bar{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;margin-bottom:18px;box-shadow:var(--shadow)}
+.target-label{font-size:11px;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+.target-name{font-size:15px;font-weight:800;color:var(--teal-dark)}
+.target-change{margin-left:auto;background:#f3f4f6;border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;color:var(--text-sec)}
+.profile-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.profile-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
+.profile-card.is-active{border-color:var(--aqua);box-shadow:0 0 0 3px rgba(57,208,200,.15)}
+.profile-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.profile-name{font-weight:800;font-size:15px}
+.profile-badge{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:100px;background:var(--teal-tint);color:var(--teal-dark)}
+.profile-badge.archived{background:#F3F4F6;color:var(--text-muted)}
+.profile-crit{font-size:12px;color:var(--text-sec);line-height:1.7;margin-bottom:10px}
+.profile-crit b{color:var(--text)}
+.profile-actions{display:flex;gap:6px;flex-wrap:wrap}
+.profile-actions button{font-size:11px;font-weight:700;background:#f3f4f6;border:none;border-radius:7px;padding:5px 10px;color:var(--text-sec)}
+.profile-actions button.act-btn{background:var(--aqua);color:#0B3B37}
+.star-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:12.5px}
+.star-row .sr-label{color:var(--text-sec)}
+.star-row .sr-stars{color:var(--gold);letter-spacing:1px}
+.star-row .sr-stars .dim{color:var(--border)}
+.overall-score{display:flex;align-items:center;justify-content:space-between;padding:10px 0;margin-bottom:4px}
+.overall-score .osn{font-size:26px;font-weight:800}
 </style>
 </head>
 <body>
@@ -247,6 +271,7 @@ input,textarea,select{font-family:inherit}
     <button class="tab-btn" data-tab="library">Library</button>
     <button class="tab-btn" data-tab="analyzer">Analyzer</button>
     <button class="tab-btn" data-tab="networking">Networking</button>
+    <button class="tab-btn" data-tab="profiles">Profiles</button>
   </div>
   <button class="btn-add" id="openAddBtn">
     <span class="icon"></span><span class="txt">Add company</span>
@@ -255,6 +280,10 @@ input,textarea,select{font-family:inherit}
 
 <!-- DASHBOARD -->
 <div class="view active" id="view-dashboard">
+  <div class="target-bar">
+    <div><div class="target-label">Current Career Target</div><div class="target-name" id="targetName">General</div></div>
+    <button class="target-change" onclick="document.querySelector('.tab-btn[data-tab=\'profiles\']').click()">Change</button>
+  </div>
   <div class="greeting">
     <div class="greeting-title" id="greetTitle">Good morning, Sebastian</div>
     <div class="greeting-sub" id="greetSub"></div>
@@ -301,6 +330,10 @@ input,textarea,select{font-family:inherit}
     <div class="section-title">Cover Letters</div>
     <div class="lib-grid" id="libCovers"></div>
   </div>
+  <div class="lib-section">
+    <div class="section-title">LinkedIn Versions</div>
+    <div class="lib-grid" id="libLinkedin"></div>
+  </div>
 </div>
 
 <!-- ANALYZER -->
@@ -319,6 +352,18 @@ input,textarea,select{font-family:inherit}
   <div class="section-title" style="margin-bottom:6px">Networking</div>
   <div class="greeting-sub" style="margin-bottom:16px">Companies that don't fit right now — doesn't meet your criteria, in-house only, not remote — but worth staying connected to. Kept separate from your active pipeline and dashboard numbers.</div>
   <div class="card-grid" id="networkingGrid"></div>
+</div>
+
+<!-- PROFILES -->
+<div class="view" id="view-profiles">
+  <div class="section-title" style="margin-bottom:6px">Career Profiles</div>
+  <div class="greeting-sub" style="margin-bottom:16px">Each profile holds its own criteria — keywords, salary floor, remote/travel rules, preferred documents. Everything else in the CRM (dashboard, Analyzer scoring, document selection) follows whichever one is active. No AI needed for any of this — it's rules.</div>
+  <div class="search-row">
+    <button class="btn-primary" onclick="openProfileAdd()">+ New profile</button>
+    <button class="btn-secondary" onclick="document.getElementById('profileImportFile').click()">Import</button>
+    <input type="file" id="profileImportFile" accept="application/json" style="display:none">
+  </div>
+  <div class="profile-grid" id="profileGrid"></div>
 </div>
 
 <!-- DETAIL -->
@@ -448,6 +493,42 @@ input,textarea,select{font-family:inherit}
   </div>
 </div>
 
+<!-- PROFILE MODAL -->
+<div class="overlay" id="profileOverlay">
+  <div class="modal wide">
+    <div class="modal-title" id="profileModalTitle">New career profile</div>
+    <div class="form-field"><label>Profile name</label><input type="text" id="pName" placeholder="e.g. Legal Sales"></div>
+    <div class="form-field"><label>Keywords (comma-separated)</label><input type="text" id="pKeywords" placeholder="legal, litigation, plaintiff, attorney"></div>
+    <div class="form-row2">
+      <div class="form-field"><label>Minimum salary</label><input type="text" id="pMinSalary" placeholder="e.g. $120,000"></div>
+      <div class="form-field"><label>Commission</label><select id="pCommission"><option value="not_important">Not important</option><option value="preferred">Preferred</option><option value="required">Required</option></select></div>
+    </div>
+    <div class="form-row2">
+      <div class="form-field"><label>Remote</label><select id="pRemote"><option value="not_important">Not important</option><option value="preferred">Preferred</option><option value="required">Required</option></select></div>
+      <div class="form-field"><label>&nbsp;</label><label class="form-check"><input type="checkbox" id="pHybridOk"> Hybrid is acceptable</label></div>
+    </div>
+    <div class="form-row2">
+      <div class="form-field"><label>Max travel %</label><input type="text" id="pMaxTravel" placeholder="e.g. 25"></div>
+      <div class="form-field"><label>States (comma-separated)</label><input type="text" id="pStates" placeholder="SC, NC, FL"></div>
+    </div>
+    <div class="form-row2">
+      <div class="form-field"><label>Company size min</label><input type="text" id="pSizeMin" placeholder="20"></div>
+      <div class="form-field"><label>Company size max</label><input type="text" id="pSizeMax" placeholder="500"></div>
+    </div>
+    <div class="form-field"><label>Industries (comma-separated)</label><input type="text" id="pIndustries" placeholder="Legal Services, Mass Tort"></div>
+    <div class="form-row2">
+      <div class="form-field"><label>Preferred résumé</label><select id="pResumeSel"></select></div>
+      <div class="form-field"><label>Preferred cover letter</label><select id="pCoverSel"></select></div>
+    </div>
+    <div class="form-field"><label>Preferred LinkedIn version</label><select id="pLinkedinSel"></select></div>
+    <div class="modal-btns">
+      <button class="btn-danger" id="profileDeleteBtn" style="display:none">Delete</button>
+      <button class="btn-secondary" id="profileCancelBtn">Cancel</button>
+      <button class="btn-primary" id="profileSaveBtn">Save profile</button>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ── ICONS ── */
 const ICONS={
@@ -477,6 +558,7 @@ let state=null;
 try{state=JSON.parse(localStorage.getItem(SK));}catch(e){state=null;}
 if(!state||!state.companies){state={companies:seedData()};}
 if(!state.documents)state.documents=seedDocs();
+if(!state.profiles)state.profiles=seedProfiles();
 state.companies.forEach(c=>{
   if(c.industry===undefined)c.industry='';
   if(c.logo===undefined)c.logo='';
@@ -520,6 +602,12 @@ function seedDocs(){
     {id:did(),name:'Default Cover Letter',type:'cover_letter',tag:'General Sales',content:'I am excited to apply for this role. My background in sales and account management has prepared me to drive results from day one.',isDefault:true,createdAt:now}
   ];
 }
+function seedProfiles(){
+  return [{id:pid(),name:'General',active:true,archived:false,
+    criteria:{keywords:'',minSalary:'',commission:'not_important',remote:'preferred',hybridOk:true,maxTravel:'100',states:'',sizeMin:'',sizeMax:'',industries:''},
+    resumeId:null,coverId:null,linkedinId:null,createdAt:todayISO()}];
+}
+function pid(){return 'p'+Math.random().toString(36).slice(2,9);}
 function cid(){return 'c'+Math.random().toString(36).slice(2,9);}
 function did(){return 'd'+Math.random().toString(36).slice(2,9);}
 function hid(){return 'h'+Math.random().toString(36).slice(2,9);}
@@ -568,6 +656,95 @@ function matchDoc(jdText,docContent){
   return{matchPct,missing:missing.slice(0,6)};
 }
 
+/* ── PROFILE ENGINE ── deterministic, rules-based, no AI dependency.
+   Designed as a standalone reusable module: score(), CRUD, import/export —
+   generic enough to lift out into any "profile-driven matching" context later. */
+const ProfileEngine=(function(){
+  function list(){return state.profiles;}
+  function getActive(){return state.profiles.find(p=>p.active)||state.profiles[0];}
+  function setActive(id){state.profiles.forEach(p=>p.active=(p.id===id));saveState();}
+  function csv(str){return (str||'').split(',').map(s=>s.trim()).filter(Boolean);}
+  function starsHTML(n){const f=Math.max(0,Math.min(5,n));let s='';for(let i=1;i<=5;i++)s+=i<=f?'★':'<span class="dim">★</span>';return s;}
+
+  function scoreCategory_salary(profile,jdText){
+    const min=parseComp(profile.criteria.minSalary);
+    if(!min)return 5;
+    const salM=jdText.match(/\$\s?[\d,]{2,}(?:k)?\s*(?:-|–|to)\s*\$?\s?[\d,]{2,}(?:k)?/i)||jdText.match(/\$\s?[\d,]{3,}(?:k)?/i);
+    if(!salM)return 3;
+    const nums=(salM[0].match(/[\d,]{2,}k?/gi)||[]).map(parseComp);
+    const detected=Math.max(...nums,0);
+    if(!detected)return 3;
+    const ratio=detected/min;
+    if(ratio>=1)return 5;if(ratio>=0.9)return 4;if(ratio>=0.75)return 3;if(ratio>=0.5)return 2;return 1;
+  }
+  function scoreCategory_commission(profile,jdText){
+    if(profile.criteria.commission==='not_important')return 5;
+    const mentioned=/commission/i.test(jdText);
+    if(mentioned)return 5;
+    return profile.criteria.commission==='required'?1:3;
+  }
+  function scoreCategory_remote(profile,jdText,workMode){
+    const pref=profile.criteria.remote;
+    if(pref==='not_important')return 5;
+    if(workMode==='Remote')return 5;
+    if(workMode==='Hybrid')return profile.criteria.hybridOk?4:(pref==='required'?2:3);
+    if(workMode==='On-site')return pref==='required'?1:2;
+    return 3;
+  }
+  function scoreCategory_travel(profile,jdText){
+    const max=parseFloat(profile.criteria.maxTravel);
+    if(!max||max>=75)return 5;
+    if(/\btravel\b/i.test(jdText))return max<=15?1:2;
+    return 5;
+  }
+  function scoreCategory_industry(profile,jdText){
+    const inds=csv(profile.criteria.industries);
+    if(!inds.length)return 5;
+    const lc=jdText.toLowerCase();
+    return inds.some(i=>lc.includes(i.toLowerCase()))?5:2;
+  }
+  function scoreCategory_size(profile){
+    if(!profile.criteria.sizeMin&&!profile.criteria.sizeMax)return 5;
+    return 3; // company size can't be reliably parsed from posting text alone — neutral score
+  }
+  function scoreCategory_keywords(profile,jdText){
+    const kws=csv(profile.criteria.keywords);
+    if(!kws.length)return 5;
+    const lc=jdText.toLowerCase();
+    const hit=kws.filter(k=>lc.includes(k.toLowerCase())).length;
+    const pct=hit/kws.length;
+    if(pct>=0.9)return 5;if(pct>=0.7)return 4;if(pct>=0.5)return 3;if(pct>=0.25)return 2;return 1;
+  }
+  function score(profile,jdText,workMode){
+    const cats=[
+      {label:'Salary',stars:scoreCategory_salary(profile,jdText)},
+      {label:'Commission',stars:scoreCategory_commission(profile,jdText)},
+      {label:'Remote',stars:scoreCategory_remote(profile,jdText,workMode)},
+      {label:'Travel',stars:scoreCategory_travel(profile,jdText)},
+      {label:'Industry',stars:scoreCategory_industry(profile,jdText)},
+      {label:'Company Size',stars:scoreCategory_size(profile)},
+      {label:'Keywords',stars:scoreCategory_keywords(profile,jdText)}
+    ];
+    const overall=Math.round(cats.reduce((n,c)=>n+c.stars,0)/(cats.length*5)*100);
+    return{overall,cats};
+  }
+  function exportJSON(){
+    const blob=new Blob([JSON.stringify(state.profiles,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');a.href=url;a.download='career-profiles.json';a.click();
+    URL.revokeObjectURL(url);
+  }
+  function importJSON(json){
+    try{
+      const incoming=JSON.parse(json);
+      if(!Array.isArray(incoming))throw new Error('bad format');
+      incoming.forEach(p=>{p.id=pid();p.active=false;state.profiles.push(p);});
+      saveState();return true;
+    }catch(e){alert('Could not import — file must be a Career Profiles JSON export.');return false;}
+  }
+  return{list,getActive,setActive,starsHTML,score,exportJSON,importJSON};
+})();
+
 /* ── JOB POSTING ANALYZER ── */
 function analyzeJD(text){
   const lc=text.toLowerCase();
@@ -597,7 +774,14 @@ document.getElementById('anzRunBtn').onclick=()=>{
   const box=document.getElementById('anzResults');
   if(!text){box.innerHTML='';return;}
   const a=analyzeJD(text);
+  const activeProfile=ProfileEngine.getActive();
+  const ps=activeProfile?ProfileEngine.score(activeProfile,text,a.workMode):null;
   box.innerHTML=`
+    ${ps?`<div class="dcard">
+      <div class="dcard-title">Match vs. active profile: ${esc(activeProfile.name)}</div>
+      <div class="overall-score"><span>Overall match</span><span class="osn" style="color:${ps.overall>=80?'var(--success)':ps.overall>=50?'var(--gold)':'var(--coral)'}">${ps.overall}%</span></div>
+      ${ps.cats.map(c=>`<div class="star-row"><span class="sr-label">${c.label}</span><span class="sr-stars">${ProfileEngine.starsHTML(c.stars)}</span></div>`).join('')}
+    </div>`:''}
     <div class="anz-grid">
       <div class="dcard">
         <div class="dcard-title">Posting breakdown</div>
@@ -650,6 +834,7 @@ function showView(id){
   if(id==='library')renderLibrary();
   if(id==='analyzer')renderAnalyzer();
   if(id==='networking')renderNetworking();
+  if(id==='profiles')renderProfiles();
 }
 
 /* ── GREETING + DASHBOARD (unchanged logic from v2) ── */
@@ -665,6 +850,8 @@ function renderGreeting(){
 }
 function renderDashboard(){
   renderGreeting();
+  const activeProfile=ProfileEngine.getActive();
+  document.getElementById('targetName').textContent=activeProfile?activeProfile.name:'General';
   const cos=state.companies.filter(c=>!c.isNetworking);const today=todayISO();
   const weekOut=new Date();weekOut.setDate(weekOut.getDate()+7);const weekOutISO=weekOut.toISOString().slice(0,10);
   const followDue=cos.reduce((n,c)=>n+(c.tasks||[]).filter(t=>!t.done&&t.date<=today).length,0);
@@ -762,8 +949,10 @@ function renderNetworking(){
 function renderLibrary(){
   const resumes=state.documents.filter(d=>d.type==='resume');
   const covers=state.documents.filter(d=>d.type==='cover_letter');
+  const linkedins=state.documents.filter(d=>d.type==='linkedin');
   document.getElementById('libResumes').innerHTML=resumes.map(libCardHTML).join('')+`<div class="lib-add-btn" onclick="openDocAdd('resume')">+ Add résumé</div>`;
   document.getElementById('libCovers').innerHTML=covers.map(libCardHTML).join('')+`<div class="lib-add-btn" onclick="openDocAdd('cover_letter')">+ Add cover letter</div>`;
+  document.getElementById('libLinkedin').innerHTML=linkedins.map(libCardHTML).join('')+`<div class="lib-add-btn" onclick="openDocAdd('linkedin')">+ Add LinkedIn version</div>`;
 }
 function libCardHTML(d){
   return `<div class="lib-card"><div class="lib-top"><div class="lib-name">${esc(d.name)}</div><button class="lib-star ${d.isDefault?'active':''}" onclick="toggleDefault('${d.id}')">★</button></div>
@@ -784,7 +973,7 @@ document.getElementById('docTag').addEventListener('change',e=>{
 });
 function openDocAdd(type){
   editingDocId=null;editingDocType=type;
-  document.getElementById('docModalTitle').textContent=type==='resume'?'Add résumé':'Add cover letter';
+  document.getElementById('docModalTitle').textContent=type==='resume'?'Add résumé':type==='linkedin'?'Add LinkedIn version':'Add cover letter';
   document.getElementById('docName2').value='';document.getElementById('docContent').value='';
   document.getElementById('docTag').value='General Sales';document.getElementById('docTagCustomWrap').style.display='none';
   document.getElementById('docDefault').checked=false;document.getElementById('docDeleteBtn').style.display='none';
@@ -813,6 +1002,104 @@ document.getElementById('docSaveBtn').onclick=()=>{
   saveState();document.getElementById('docOverlay').classList.remove('active');renderLibrary();
 };
 document.getElementById('docDeleteBtn').onclick=()=>{deleteDoc(editingDocId);document.getElementById('docOverlay').classList.remove('active');};
+
+/* ── CAREER PROFILES UI ── */
+let editingProfileId=null;
+function renderProfiles(){
+  const grid=document.getElementById('profileGrid');
+  const list=state.profiles.filter(p=>!p.archived);
+  const archived=state.profiles.filter(p=>p.archived);
+  grid.innerHTML=[...list,...archived].map(profileCardHTML).join('');
+}
+function profileCardHTML(p){
+  const c=p.criteria;
+  const bits=[];
+  if(c.keywords)bits.push(`<b>Keywords</b> ${esc(c.keywords)}`);
+  if(c.minSalary)bits.push(`<b>Min salary</b> ${esc(c.minSalary)}`);
+  if(c.commission!=='not_important')bits.push(`<b>Commission</b> ${c.commission}`);
+  if(c.remote!=='not_important')bits.push(`<b>Remote</b> ${c.remote}${c.hybridOk?' (hybrid ok)':''}`);
+  if(c.maxTravel&&c.maxTravel!=='100')bits.push(`<b>Max travel</b> ${esc(c.maxTravel)}%`);
+  if(c.states)bits.push(`<b>States</b> ${esc(c.states)}`);
+  if(c.industries)bits.push(`<b>Industries</b> ${esc(c.industries)}`);
+  return `<div class="profile-card ${p.active?'is-active':''}">
+    <div class="profile-top"><div class="profile-name">${esc(p.name)} ${p.active?'⭐':''}</div>
+      <span class="profile-badge ${p.archived?'archived':''}">${p.archived?'Archived':p.active?'Active':'Inactive'}</span></div>
+    <div class="profile-crit">${bits.length?bits.join('<br>'):'No criteria set yet.'}</div>
+    <div class="profile-actions">
+      ${!p.active&&!p.archived?`<button class="act-btn" onclick="activateProfile('${p.id}')">Activate</button>`:''}
+      <button onclick="openProfileEdit('${p.id}')">Edit</button>
+      <button onclick="duplicateProfile('${p.id}')">Duplicate</button>
+      <button onclick="toggleArchiveProfile('${p.id}')">${p.archived?'Unarchive':'Archive'}</button>
+      <button onclick="exportOneProfile('${p.id}')">Export</button>
+    </div></div>`;
+}
+function activateProfile(id){ProfileEngine.setActive(id);renderProfiles();renderDashboard();}
+function duplicateProfile(id){
+  const p=state.profiles.find(x=>x.id===id);
+  const copy=JSON.parse(JSON.stringify(p));copy.id=pid();copy.name=p.name+' (copy)';copy.active=false;copy.archived=false;
+  state.profiles.push(copy);saveState();renderProfiles();
+}
+function toggleArchiveProfile(id){
+  const p=state.profiles.find(x=>x.id===id);
+  if(p.active){alert('Activate a different profile before archiving this one.');return;}
+  p.archived=!p.archived;saveState();renderProfiles();
+}
+function exportOneProfile(id){
+  const p=state.profiles.find(x=>x.id===id);
+  const blob=new Blob([JSON.stringify([p],null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=p.name.replace(/\s+/g,'-')+'.json';a.click();URL.revokeObjectURL(url);
+}
+document.getElementById('profileImportFile').addEventListener('change',e=>{
+  const f=e.target.files[0];if(!f)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{if(ProfileEngine.importJSON(ev.target.result))renderProfiles();};
+  reader.readAsText(f);e.target.value='';
+});
+function populateProfileDocSelects(){
+  const resumes=state.documents.filter(d=>d.type==='resume');
+  const covers=state.documents.filter(d=>d.type==='cover_letter');
+  const linkedins=state.documents.filter(d=>d.type==='linkedin');
+  document.getElementById('pResumeSel').innerHTML='<option value="">None</option>'+resumes.map(d=>`<option value="${d.id}">${esc(d.name)}</option>`).join('');
+  document.getElementById('pCoverSel').innerHTML='<option value="">None</option>'+covers.map(d=>`<option value="${d.id}">${esc(d.name)}</option>`).join('');
+  document.getElementById('pLinkedinSel').innerHTML='<option value="">None</option>'+linkedins.map(d=>`<option value="${d.id}">${esc(d.name)}</option>`).join('');
+}
+function openProfileAdd(){
+  editingProfileId=null;populateProfileDocSelects();
+  document.getElementById('profileModalTitle').textContent='New career profile';document.getElementById('profileDeleteBtn').style.display='none';
+  ['pName','pKeywords','pMinSalary','pMaxTravel','pStates','pSizeMin','pSizeMax','pIndustries'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('pMaxTravel').value='100';document.getElementById('pCommission').value='not_important';document.getElementById('pRemote').value='preferred';
+  document.getElementById('pHybridOk').checked=true;document.getElementById('pResumeSel').value='';document.getElementById('pCoverSel').value='';document.getElementById('pLinkedinSel').value='';
+  document.getElementById('profileOverlay').classList.add('active');
+}
+function openProfileEdit(id){
+  editingProfileId=id;const p=state.profiles.find(x=>x.id===id);populateProfileDocSelects();
+  document.getElementById('profileModalTitle').textContent='Edit career profile';document.getElementById('profileDeleteBtn').style.display=p.active?'none':'inline-block';
+  document.getElementById('pName').value=p.name;
+  document.getElementById('pKeywords').value=p.criteria.keywords;document.getElementById('pMinSalary').value=p.criteria.minSalary;
+  document.getElementById('pCommission').value=p.criteria.commission;document.getElementById('pRemote').value=p.criteria.remote;
+  document.getElementById('pHybridOk').checked=!!p.criteria.hybridOk;document.getElementById('pMaxTravel').value=p.criteria.maxTravel;
+  document.getElementById('pStates').value=p.criteria.states;document.getElementById('pSizeMin').value=p.criteria.sizeMin;document.getElementById('pSizeMax').value=p.criteria.sizeMax;
+  document.getElementById('pIndustries').value=p.criteria.industries;
+  document.getElementById('pResumeSel').value=p.resumeId||'';document.getElementById('pCoverSel').value=p.coverId||'';document.getElementById('pLinkedinSel').value=p.linkedinId||'';
+  document.getElementById('profileOverlay').classList.add('active');
+}
+document.getElementById('profileCancelBtn').onclick=()=>document.getElementById('profileOverlay').classList.remove('active');
+document.getElementById('profileSaveBtn').onclick=()=>{
+  const name=document.getElementById('pName').value.trim();if(!name){alert('Profile name is required.');return;}
+  const criteria={keywords:document.getElementById('pKeywords').value.trim(),minSalary:document.getElementById('pMinSalary').value.trim(),
+    commission:document.getElementById('pCommission').value,remote:document.getElementById('pRemote').value,hybridOk:document.getElementById('pHybridOk').checked,
+    maxTravel:document.getElementById('pMaxTravel').value.trim(),states:document.getElementById('pStates').value.trim(),
+    sizeMin:document.getElementById('pSizeMin').value.trim(),sizeMax:document.getElementById('pSizeMax').value.trim(),industries:document.getElementById('pIndustries').value.trim()};
+  const resumeId=document.getElementById('pResumeSel').value||null,coverId=document.getElementById('pCoverSel').value||null,linkedinId=document.getElementById('pLinkedinSel').value||null;
+  if(editingProfileId){const p=state.profiles.find(x=>x.id===editingProfileId);Object.assign(p,{name,criteria,resumeId,coverId,linkedinId});}
+  else{state.profiles.push({id:pid(),name,active:false,archived:false,criteria,resumeId,coverId,linkedinId,createdAt:todayISO()});}
+  saveState();document.getElementById('profileOverlay').classList.remove('active');renderProfiles();renderDashboard();
+};
+document.getElementById('profileDeleteBtn').onclick=()=>{
+  if(!confirm('Delete this profile? This cannot be undone.'))return;
+  state.profiles=state.profiles.filter(x=>x.id!==editingProfileId);saveState();
+  document.getElementById('profileOverlay').classList.remove('active');renderProfiles();
+};
 
 /* ── DETAIL VIEW ── */
 function openDetail(id){
@@ -922,8 +1209,10 @@ function openPrep(){
   document.getElementById('prepJD').value=c.jd||'';
   const resumes=state.documents.filter(d=>d.type==='resume');
   const covers=state.documents.filter(d=>d.type==='cover_letter');
-  document.getElementById('prepResumeSel').innerHTML=resumes.map(d=>`<option value="${d.id}" ${d.isDefault?'selected':''}>${esc(d.name)} (${esc(d.tag)})</option>`).join('')||'<option value="">No résumés in library</option>';
-  document.getElementById('prepCoverSel').innerHTML=covers.map(d=>`<option value="${d.id}" ${d.isDefault?'selected':''}>${esc(d.name)} (${esc(d.tag)})</option>`).join('')||'<option value="">No cover letters in library</option>';
+  const ap=ProfileEngine.getActive();
+  const preferredResumeId=ap&&ap.resumeId;const preferredCoverId=ap&&ap.coverId;
+  document.getElementById('prepResumeSel').innerHTML=resumes.map(d=>`<option value="${d.id}" ${preferredResumeId?(d.id===preferredResumeId?'selected':''):(d.isDefault?'selected':'')}>${esc(d.name)} (${esc(d.tag)})</option>`).join('')||'<option value="">No résumés in library</option>';
+  document.getElementById('prepCoverSel').innerHTML=covers.map(d=>`<option value="${d.id}" ${preferredCoverId?(d.id===preferredCoverId?'selected':''):(d.isDefault?'selected':'')}>${esc(d.name)} (${esc(d.tag)})</option>`).join('')||'<option value="">No cover letters in library</option>';
   document.querySelectorAll('input[name="prepMethod"]').forEach(r=>r.checked=(r.value==='as-is'));
   updateRadioStyles();document.getElementById('aiHelp').classList.remove('show');document.getElementById('aiPaste').value='';
   document.getElementById('prepOverlay').classList.add('active');
