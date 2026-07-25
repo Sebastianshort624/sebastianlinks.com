@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Career CRM — SebastianLinks</title>
+<meta name="description" content="Track opportunities. Land your next role.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -13,7 +14,7 @@
   --bg:#F7F8FA;--card:#FFFFFF;--border:#E6EAF0;
   --text:#1C2733;--text-sec:#4A5560;--text-muted:#8B95A1;
   --coral:#FF7A66;--coral-tint:#FFEDE9;
-  --gold:#C9A227;--success:#2FAE7D;
+  --gold:#C9A227;--gold-tint:#FBF3DC;--success:#2FAE7D;
   --radius:12px;--shadow:0 1px 2px rgba(28,39,51,.04),0 4px 12px rgba(28,39,51,.05);
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -21,6 +22,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 a{text-decoration:none;color:inherit}
 button{font-family:inherit;cursor:pointer}
 input,textarea,select{font-family:inherit}
+.icon{display:inline-flex;flex-shrink:0}
+.icon svg{width:100%;height:100%}
 
 /* ── TOPBAR ── */
 .topbar{background:#fff;border-bottom:1px solid var(--border);padding:0 20px;height:58px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:200}
@@ -30,27 +33,37 @@ input,textarea,select{font-family:inherit}
 .tab-btn{background:none;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;color:var(--text-muted);transition:.15s}
 .tab-btn.active{background:var(--teal-tint);color:var(--teal-dark)}
 .tab-btn:hover:not(.active){background:#f3f4f6}
-.btn-add{background:var(--aqua);color:#0B3B37;border:none;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:700;flex-shrink:0}
-.btn-add:hover{background:var(--aqua-dark)}
-@media(max-width:640px){.topbar{padding:0 12px;gap:8px}.topbar-logo span.txt{display:none}.tab-btn{padding:8px 10px;font-size:12px}}
+.btn-add{background:var(--aqua);color:#0B3B37;border:none;border-radius:11px;padding:11px 18px 11px 14px;font-size:13.5px;font-weight:800;flex-shrink:0;display:flex;align-items:center;gap:7px;box-shadow:0 2px 8px rgba(57,208,200,.35);transition:.15s}
+.btn-add:hover{background:var(--aqua-dark);transform:translateY(-1px)}
+.btn-add .icon{width:16px;height:16px}
+@media(max-width:640px){.topbar{padding:0 12px;gap:8px}.topbar-logo span.txt{display:none}.tab-btn{padding:8px 10px;font-size:12px}.btn-add span.txt{display:none}.btn-add{padding:11px}}
 
 .view{display:none;padding:20px;max-width:1100px;margin:0 auto}
 .view.active{display:block}
 @media(max-width:640px){.view{padding:14px}}
 
+/* ── GREETING HEADER ── */
+.greeting{margin-bottom:20px}
+.greeting-title{font-size:24px;font-weight:800;color:var(--text)}
+.greeting-sub{font-size:14px;color:var(--text-sec);margin-top:4px;line-height:1.6}
+.greeting-sub b{color:var(--teal-dark);font-weight:700}
+
 /* ── KPI ROW ── */
-.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
-@media(max-width:640px){.kpi-row{grid-template-columns:repeat(2,1fr)}}
-.kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
-.kpi-num{font-size:26px;font-weight:800;color:var(--text)}
-.kpi-label{font-size:12px;color:var(--text-muted);font-weight:600;margin-top:2px}
+.kpi-row{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:22px}
+@media(max-width:960px){.kpi-row{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:560px){.kpi-row{grid-template-columns:repeat(2,1fr)}}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow)}
+.kpi-icon{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+.kpi-icon svg{width:14px;height:14px}
+.kpi-num{font-size:22px;font-weight:800;color:var(--text);line-height:1.1}
+.kpi-label{font-size:11px;color:var(--text-muted);font-weight:600;margin-top:3px}
 
 /* ── SEARCH / FILTERS ── */
 .search-row{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
 .search-box{flex:1;min-width:200px;position:relative}
 .search-box input{width:100%;padding:10px 14px 10px 36px;border:1px solid var(--border);border-radius:9px;font-size:14px;background:#fff}
 .search-box input:focus{outline:none;border-color:var(--aqua);box-shadow:0 0 0 3px rgba(57,208,200,.15)}
-.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:14px}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text-muted);width:16px;height:16px}
 .chip-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
 .chip{background:#fff;border:1px solid var(--border);border-radius:100px;padding:7px 14px;font-size:12.5px;font-weight:600;color:var(--text-sec)}
 .chip.active{background:var(--teal);color:#fff;border-color:var(--teal)}
@@ -69,26 +82,34 @@ input,textarea,select{font-family:inherit}
 .list-row .rsub{color:var(--text-muted);font-size:11.5px}
 .list-row .rtag{font-size:11px;font-weight:700;padding:3px 9px;border-radius:100px;flex-shrink:0}
 .tag-overdue{background:var(--coral-tint);color:#B8422F}
-.tag-today{background:#FFF4D6;color:#8A6B10}
+.tag-today{background:var(--gold-tint);color:#8A6B10}
 .tag-soon{background:var(--teal-tint);color:var(--teal-dark)}
 .empty-note{color:var(--text-muted);font-size:12.5px;padding:8px 0}
 
-/* ── COMPANY CARDS ── */
-.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
-.co-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);cursor:pointer;transition:.15s;position:relative}
+/* ── COMPANY CARDS v2 ── */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.co-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);cursor:pointer;transition:.15s}
 .co-card:hover{border-color:var(--aqua);transform:translateY(-1px)}
-.co-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
-.co-avatar{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--teal),var(--aqua));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px}
-.co-star{font-size:16px;color:var(--gold);opacity:.35}
+.co-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+.co-avatar{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,var(--teal),var(--aqua));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;overflow:hidden}
+.co-avatar img{width:100%;height:100%;object-fit:cover}
+.co-star{font-size:16px;color:var(--gold);opacity:.3}
 .co-star.active{opacity:1}
-.co-name{font-weight:700;font-size:15px;margin-bottom:2px}
-.co-role{font-size:12.5px;color:var(--text-muted);margin-bottom:12px}
-.stage-badge{display:inline-block;font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px}
-.co-foot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:11.5px;color:var(--text-muted)}
+.co-name{font-weight:700;font-size:15px;margin-bottom:1px}
+.co-industry{font-size:11.5px;color:var(--text-muted);margin-bottom:10px}
+.stage-badge{display:inline-block;font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px;margin-bottom:10px}
+.co-meta-row{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-sec);margin-bottom:5px}
+.co-meta-row .icon{width:13px;height:13px;color:var(--text-muted)}
+.co-divider{border-top:1px solid #f2f3f5;margin:10px 0 8px}
+.co-foot{display:flex;justify-content:space-between;gap:8px;font-size:11px}
+.co-foot-col{flex:1}
+.co-foot-label{color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.03em;font-size:9.5px;margin-bottom:2px}
+.co-foot-val{font-weight:700;color:var(--text)}
+.co-foot-val.due{color:#B8422F}
 
 /* ── KANBAN ── */
 .kanban-wrap{display:flex;gap:14px;overflow-x:auto;padding-bottom:12px;-webkit-overflow-scrolling:touch}
-.kcol{background:#fff;border:1px solid var(--border);border-radius:var(--radius);min-width:230px;flex-shrink:0;padding:12px;max-height:calc(100vh - 200px);display:flex;flex-direction:column}
+.kcol{background:#fff;border:1px solid var(--border);border-radius:var(--radius);min-width:220px;flex-shrink:0;padding:12px;max-height:calc(100vh - 200px);display:flex;flex-direction:column}
 .kcol.drag-over{border-color:var(--aqua);background:var(--teal-tint)}
 .kcol-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:0 2px}
 .kcol-title{font-size:12.5px;font-weight:700}
@@ -103,7 +124,8 @@ input,textarea,select{font-family:inherit}
 .detail-head{display:flex;align-items:center;gap:14px;margin-bottom:22px}
 .back-btn{background:#fff;border:1px solid var(--border);border-radius:9px;padding:8px 12px;font-size:13px;font-weight:600;color:var(--text-sec)}
 .back-btn:hover{border-color:var(--aqua)}
-.detail-avatar{width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,var(--teal),var(--aqua));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:19px}
+.detail-avatar{width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,var(--teal),var(--aqua));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:19px;overflow:hidden}
+.detail-avatar img{width:100%;height:100%;object-fit:cover}
 .detail-title{font-size:20px;font-weight:800}
 .detail-sub{font-size:13px;color:var(--text-muted);margin-top:2px}
 .detail-actions{margin-left:auto;display:flex;gap:8px}
@@ -166,21 +188,23 @@ input,textarea,select{font-family:inherit}
     <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
     <button class="tab-btn" data-tab="pipeline">Pipeline</button>
   </div>
-  <button class="btn-add" id="openAddBtn">+ Add company</button>
+  <button class="btn-add" id="openAddBtn">
+    <span class="icon"></span><span class="txt">Add company</span>
+  </button>
 </div>
 
 <!-- DASHBOARD -->
 <div class="view active" id="view-dashboard">
-  <div class="kpi-row">
-    <div class="kpi"><div class="kpi-num" id="kpiApplications">0</div><div class="kpi-label">Applications</div></div>
-    <div class="kpi"><div class="kpi-num" id="kpiInterviews">0</div><div class="kpi-label">Interviews</div></div>
-    <div class="kpi"><div class="kpi-num" id="kpiOffers">0</div><div class="kpi-label">Offers</div></div>
-    <div class="kpi"><div class="kpi-num" id="kpiDream">0</div><div class="kpi-label">Dream Companies</div></div>
+  <div class="greeting">
+    <div class="greeting-title" id="greetTitle">Good morning, Sebastian</div>
+    <div class="greeting-sub" id="greetSub"></div>
   </div>
+
+  <div class="kpi-row" id="kpiRow"></div>
 
   <div class="search-row">
     <div class="search-box">
-      <span class="search-icon">🔍</span>
+      <span class="search-icon"></span>
       <input type="text" id="searchInput" placeholder="Search companies, recruiters...">
     </div>
   </div>
@@ -188,16 +212,16 @@ input,textarea,select{font-family:inherit}
 
   <div class="two-col">
     <div>
-      <div class="section-title">📅 Today's Follow-ups <span class="cnt" id="followupCnt">0</span></div>
+      <div class="section-title">Today's Follow-ups <span class="cnt" id="followupCnt">0</span></div>
       <div class="list-card" id="followupList"></div>
     </div>
     <div>
-      <div class="section-title">🤝 Upcoming Interviews <span class="cnt" id="interviewCnt">0</span></div>
+      <div class="section-title">Upcoming Interviews <span class="cnt" id="interviewCnt">0</span></div>
       <div class="list-card" id="interviewList"></div>
     </div>
   </div>
 
-  <div class="section-title">🏢 Companies <span class="cnt" id="companyCnt">0</span></div>
+  <div class="section-title">Companies <span class="cnt" id="companyCnt">0</span></div>
   <div class="card-grid" id="companyGrid"></div>
 </div>
 
@@ -214,25 +238,29 @@ input,textarea,select{font-family:inherit}
   <div class="modal">
     <div class="modal-title" id="modalTitle">Add company</div>
     <div class="form-field"><label>Company name</label><input type="text" id="fName" placeholder="e.g. Stripe"></div>
-    <div class="form-field"><label>Role</label><input type="text" id="fRole" placeholder="e.g. Senior Account Exec"></div>
+    <div class="form-row2">
+      <div class="form-field"><label>Role</label><input type="text" id="fRole" placeholder="e.g. Senior Account Exec"></div>
+      <div class="form-field"><label>Industry</label><input type="text" id="fIndustry" placeholder="e.g. Fintech"></div>
+    </div>
     <div class="form-row2">
       <div class="form-field"><label>Stage</label>
         <select id="fStage">
           <option>Researching</option><option>Applied</option><option>Phone Screen</option>
-          <option>Interview</option><option>Offer</option><option>Rejected</option>
+          <option>Interview</option><option>Offer</option><option>Accepted</option><option>Rejected</option>
         </select>
       </div>
       <div class="form-field"><label>&nbsp;</label>
-        <label class="form-check"><input type="checkbox" id="fDream"> ⭐ Dream company</label>
+        <label class="form-check"><input type="checkbox" id="fDream"> Dream company</label>
       </div>
     </div>
+    <div class="form-field"><label>Logo URL (optional)</label><input type="text" id="fLogo" placeholder="https://..."></div>
     <div class="form-field"><label>Recruiter name</label><input type="text" id="fRecName"></div>
     <div class="form-row2">
       <div class="form-field"><label>Recruiter email</label><input type="text" id="fRecEmail"></div>
       <div class="form-field"><label>Recruiter phone</label><input type="text" id="fRecPhone"></div>
     </div>
     <div class="form-row2">
-      <div class="form-field"><label>Base salary</label><input type="text" id="fBase" placeholder="$"></div>
+      <div class="form-field"><label>Base salary</label><input type="text" id="fBase" placeholder="e.g. $140k"></div>
       <div class="form-field"><label>Bonus / equity</label><input type="text" id="fBonus"></div>
     </div>
     <div class="form-field"><label>Job posting link</label><input type="text" id="fLink"></div>
@@ -245,14 +273,31 @@ input,textarea,select{font-family:inherit}
 </div>
 
 <script>
+/* ── ICONS (consistent outline set, replaces emoji in production chrome) ── */
+const ICONS={
+  building:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18"/><path d="M9 8h1M14 8h1M9 12h1M14 12h1M9 16h1M14 16h1M10 21v-4h4v4"/></svg>',
+  search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>',
+  clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>',
+  calendar:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>',
+  star:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.9-6.3 3.9 1.7-7-5.4-4.7 7.1-.6z"/></svg>',
+  hourglass:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12M6 22h12M6 2c0 6 12 6 12 10s-12 4-12 10M18 2c0 6-12 6-12 10s12 4 12 10"/></svg>',
+  target:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>',
+  trend:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg>',
+  person:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg>',
+  cash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/></svg>'
+};
+document.getElementById('openAddBtn').innerHTML=`<span class="icon">${ICONS.building}</span><span class="txt">Add company</span>`;
+document.querySelector('.search-icon').innerHTML=ICONS.search;
+
 const SK='clcrm_jobs_v1';
-const STAGES=['Researching','Applied','Phone Screen','Interview','Offer','Rejected'];
+const STAGES=['Researching','Applied','Phone Screen','Interview','Offer','Accepted','Rejected'];
 const STAGE_COLOR={
   'Researching':{bg:'#F3F4F6',fg:'#4A5560'},
   'Applied':{bg:'#E3F0F2',fg:'#17606F'},
   'Phone Screen':{bg:'#E0F2FE',fg:'#0369A1'},
   'Interview':{bg:'#FBF3DC',fg:'#8A6B10'},
   'Offer':{bg:'#DCFCE7',fg:'#14532D'},
+  'Accepted':{bg:'#D1FAE5',fg:'#065F46'},
   'Rejected':{bg:'#FFEDE9',fg:'#B8422F'}
 };
 
@@ -262,6 +307,13 @@ if(!state||!state.companies){
   state={companies:seedData()};
   saveState();
 }
+// migrate old records missing new fields
+state.companies.forEach(c=>{
+  if(c.industry===undefined)c.industry='';
+  if(c.logo===undefined)c.logo='';
+  if(c.documents===undefined)c.documents=[];
+});
+saveState();
 function saveState(){localStorage.setItem(SK,JSON.stringify(state));}
 
 function seedData(){
@@ -269,24 +321,54 @@ function seedData(){
   const iso=(d)=>d.toISOString().slice(0,10);
   const plus=(n)=>{const d=new Date(today);d.setDate(d.getDate()+n);return iso(d);};
   return [
-    {id:cid(),name:'Stripe',role:'Enterprise Account Exec',stage:'Interview',dream:true,
+    {id:cid(),name:'Stripe',role:'Enterprise Account Exec',industry:'Fintech',logo:'',stage:'Interview',dream:true,
       recruiter:{name:'Jamie Lin',email:'jamie@stripe.com',phone:''},
       comp:{base:'$140k',bonus:'20% + equity'},
       link:'', timeline:[{date:iso(today),text:'Recruiter screen scheduled'}],
       notes:[], documents:[], interviews:[{date:plus(3),type:'Hiring manager call'}],
       tasks:[{date:iso(today),text:'Send thank-you note',done:false}]},
-    {id:cid(),name:'Ramp',role:'Account Specialist',stage:'Applied',dream:false,
+    {id:cid(),name:'Ramp',role:'Account Specialist',industry:'Fintech',logo:'',stage:'Applied',dream:false,
       recruiter:{name:'',email:'',phone:''},comp:{base:'',bonus:''},link:'',
       timeline:[{date:plus(-2),text:'Application submitted'}],notes:[],documents:[],
       interviews:[],tasks:[{date:plus(-1),text:'Follow up on application',done:false}]},
-    {id:cid(),name:'Mercury',role:'Sales Consultant',stage:'Researching',dream:true,
+    {id:cid(),name:'Mercury',role:'Sales Consultant',industry:'Banking',logo:'',stage:'Researching',dream:true,
       recruiter:{name:'',email:'',phone:''},comp:{base:'',bonus:''},link:'',
       timeline:[],notes:[],documents:[],interviews:[],tasks:[]}
   ];
 }
 function cid(){return 'c'+Math.random().toString(36).slice(2,9);}
 function todayISO(){return new Date().toISOString().slice(0,10);}
-function initials(name){return name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();}
+function initials(name){return (name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();}
+function esc(s){return (s||'').toString().replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));}
+function avatarHTML(c,size){
+  return c.logo?`<img src="${esc(c.logo)}" alt="">`:initials(c.name);
+}
+function parseComp(str){
+  if(!str)return 0;
+  const m=str.match(/([\d,.]+)\s*(k|m)?/i);
+  if(!m)return 0;
+  let n=parseFloat(m[1].replace(/,/g,''));
+  if(/m/i.test(m[2]))n*=1000000;
+  else if(/k/i.test(m[2]))n*=1000;
+  return n;
+}
+function formatMoney(n){
+  if(!n)return '$0';
+  if(n>=1000000)return '$'+(n/1000000).toFixed(1)+'M';
+  if(n>=1000)return '$'+Math.round(n/1000)+'k';
+  return '$'+n;
+}
+function lastActivityText(c){
+  const dates=[];
+  (c.timeline||[]).forEach(t=>dates.push(t.date));
+  if(!dates.length)return '—';
+  dates.sort().reverse();
+  return dates[0];
+}
+function nextFollowupText(c){
+  const due=(c.tasks||[]).filter(t=>!t.done).map(t=>t.date).sort();
+  return due.length?due[0]:'—';
+}
 
 let activeFilter='All';
 let searchTerm='';
@@ -308,34 +390,69 @@ function showView(id){
   if(id==='pipeline')renderKanban();
 }
 
+/* ── GREETING ── */
+function renderGreeting(){
+  const h=new Date().getHours();
+  const part=h<12?'morning':h<18?'afternoon':'evening';
+  document.getElementById('greetTitle').textContent=`Good ${part}, Sebastian`;
+  const cos=state.companies;
+  const today=todayISO();
+  const followDue=cos.reduce((n,c)=>n+(c.tasks||[]).filter(t=>!t.done&&t.date<=today).length,0);
+  const ivSoon=cos.reduce((n,c)=>n+(c.interviews||[]).filter(iv=>iv.date>=today).length,0);
+  const waiting=cos.filter(c=>['Applied','Phone Screen','Interview'].includes(c.stage)&&!(c.tasks||[]).some(t=>!t.done)).length;
+  document.getElementById('greetSub').innerHTML=
+    `Today you have <b>${followDue} follow-up${followDue!==1?'s':''}</b>, <b>${ivSoon} interview${ivSoon!==1?'s':''}</b> coming up, and <b>${waiting} compan${waiting!==1?'ies':'y'}</b> awaiting response.`;
+}
+
 /* ── DASHBOARD ── */
 function renderDashboard(){
+  renderGreeting();
   const cos=state.companies;
-  document.getElementById('kpiApplications').textContent=cos.filter(c=>c.stage!=='Researching').length;
-  document.getElementById('kpiInterviews').textContent=cos.filter(c=>c.stage==='Phone Screen'||c.stage==='Interview').length;
-  document.getElementById('kpiOffers').textContent=cos.filter(c=>c.stage==='Offer').length;
-  document.getElementById('kpiDream').textContent=cos.filter(c=>c.dream).length;
+  const today=todayISO();
+  const weekOut=new Date();weekOut.setDate(weekOut.getDate()+7);
+  const weekOutISO=weekOut.toISOString().slice(0,10);
+
+  const followDue=cos.reduce((n,c)=>n+(c.tasks||[]).filter(t=>!t.done&&t.date<=today).length,0);
+  const ivWeek=cos.reduce((n,c)=>n+(c.interviews||[]).filter(iv=>iv.date>=today&&iv.date<=weekOutISO).length,0);
+  const dreamCnt=cos.filter(c=>c.dream).length;
+  const waiting=cos.filter(c=>['Applied','Phone Screen','Interview'].includes(c.stage)&&!(c.tasks||[]).some(t=>!t.done)).length;
+  const appliedTotal=cos.filter(c=>c.stage!=='Researching').length;
+  const responded=cos.filter(c=>['Phone Screen','Interview','Offer','Accepted','Rejected'].includes(c.stage)).length;
+  const responseRate=appliedTotal?Math.round((responded/appliedTotal)*100):null;
+  const pipelineValue=cos.filter(c=>!['Rejected'].includes(c.stage)).reduce((n,c)=>n+parseComp(c.comp&&c.comp.base),0);
+
+  const kpis=[
+    {icon:'clock',num:followDue,label:'Follow-ups Due'},
+    {icon:'calendar',num:ivWeek,label:'Interviews This Week'},
+    {icon:'star',num:dreamCnt,label:'Dream Companies'},
+    {icon:'hourglass',num:waiting,label:'Waiting on Response'},
+    {icon:'target',num:responseRate===null?'—':responseRate+'%',label:'Response Rate'},
+    {icon:'trend',num:formatMoney(pipelineValue),label:'Pipeline Value'}
+  ];
+  document.getElementById('kpiRow').innerHTML=kpis.map(k=>
+    `<div class="kpi"><div class="kpi-icon" style="background:var(--teal-tint);color:var(--teal-dark)">${ICONS[k.icon]}</div>
+     <div class="kpi-num">${k.num}</div><div class="kpi-label">${k.label}</div></div>`
+  ).join('');
 
   const chipWrap=document.getElementById('filterChips');
   chipWrap.innerHTML='';
-  ['All',...STAGES,'Dream ⭐'].forEach(f=>{
+  ['All',...STAGES,'Dream'].forEach(f=>{
     const chip=document.createElement('button');
     chip.className='chip'+(activeFilter===f?' active':'');
-    chip.textContent=f;
+    chip.textContent=f==='Dream'?'⭐ Dream':f;
     chip.onclick=()=>{activeFilter=f;renderDashboard();};
     chipWrap.appendChild(chip);
   });
 
   // Today's follow-ups
   const fList=document.getElementById('followupList');
-  const today=todayISO();
   let follow=[];
   cos.forEach(c=>(c.tasks||[]).forEach(t=>{if(!t.done && t.date<=today)follow.push({co:c,t});}));
   follow.sort((a,b)=>a.t.date.localeCompare(b.t.date));
   document.getElementById('followupCnt').textContent=follow.length;
   fList.innerHTML=follow.length?follow.map(f=>{
     const overdue=f.t.date<today;
-    return `<div class="list-row"><div class="avatar">${initials(f.co.name)}</div>
+    return `<div class="list-row"><div class="avatar">${avatarHTML(f.co)}</div>
       <div class="rmain"><div class="rname">${esc(f.t.text)}</div><div class="rsub">${esc(f.co.name)}</div></div>
       <div class="rtag ${overdue?'tag-overdue':'tag-today'}">${overdue?'Overdue':'Today'}</div></div>`;
   }).join(''):'<div class="empty-note">Nothing due today.</div>';
@@ -347,17 +464,17 @@ function renderDashboard(){
   ivs.sort((a,b)=>a.iv.date.localeCompare(b.iv.date));
   document.getElementById('interviewCnt').textContent=ivs.length;
   iList.innerHTML=ivs.length?ivs.slice(0,6).map(f=>{
-    return `<div class="list-row"><div class="avatar">${initials(f.co.name)}</div>
+    return `<div class="list-row"><div class="avatar">${avatarHTML(f.co)}</div>
       <div class="rmain"><div class="rname">${esc(f.iv.type||'Interview')}</div><div class="rsub">${esc(f.co.name)}</div></div>
       <div class="rtag tag-soon">${f.iv.date}</div></div>`;
   }).join(''):'<div class="empty-note">No interviews scheduled.</div>';
 
   // Company grid
   let list=cos.filter(c=>{
-    if(activeFilter==='Dream ⭐' && !c.dream)return false;
+    if(activeFilter==='Dream' && !c.dream)return false;
     if(STAGES.includes(activeFilter) && c.stage!==activeFilter)return false;
     if(searchTerm){
-      const hay=(c.name+' '+c.role+' '+(c.recruiter?.name||'')).toLowerCase();
+      const hay=(c.name+' '+c.role+' '+c.industry+' '+(c.recruiter?.name||'')).toLowerCase();
       if(!hay.includes(searchTerm.toLowerCase()))return false;
     }
     return true;
@@ -366,18 +483,25 @@ function renderDashboard(){
   const grid=document.getElementById('companyGrid');
   grid.innerHTML=list.length?list.map(c=>{
     const sc=STAGE_COLOR[c.stage];
+    const nf=nextFollowupText(c);
+    const overdue=nf!=='—'&&nf<today;
     return `<div class="co-card" onclick="openDetail('${c.id}')">
-      <div class="co-top"><div class="co-avatar">${initials(c.name)}</div>
-        <span class="co-star ${c.dream?'active':''}">★</span></div>
+      <div class="co-top"><div class="co-avatar">${avatarHTML(c)}</div>
+        <span class="co-star ${c.dream?'active':''}">${ICONS.star}</span></div>
       <div class="co-name">${esc(c.name)}</div>
-      <div class="co-role">${esc(c.role||'—')}</div>
+      <div class="co-industry">${esc(c.role||'—')}${c.industry?' · '+esc(c.industry):''}</div>
       <span class="stage-badge" style="background:${sc.bg};color:${sc.fg}">${c.stage}</span>
-      <div class="co-foot"><span>${(c.recruiter&&c.recruiter.name)?esc(c.recruiter.name):'No recruiter yet'}</span></div>
+      <div class="co-meta-row"><span class="icon">${ICONS.person}</span>${(c.recruiter&&c.recruiter.name)?esc(c.recruiter.name):'No recruiter yet'}</div>
+      <div class="co-meta-row"><span class="icon">${ICONS.cash}</span>${esc(c.comp?.base)||'—'}${c.comp&&c.comp.bonus?' + '+esc(c.comp.bonus):''}</div>
+      <div class="co-divider"></div>
+      <div class="co-foot">
+        <div class="co-foot-col"><div class="co-foot-label">Last activity</div><div class="co-foot-val">${lastActivityText(c)}</div></div>
+        <div class="co-foot-col"><div class="co-foot-label">Next follow-up</div><div class="co-foot-val ${overdue?'due':''}">${nf}</div></div>
+      </div>
     </div>`;
   }).join(''):'<div class="empty-note">No companies match. Try clearing filters.</div>';
 }
 document.getElementById('searchInput').addEventListener('input',e=>{searchTerm=e.target.value;renderDashboard();});
-function esc(s){return (s||'').toString().replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));}
 
 /* ── KANBAN ── */
 function renderKanban(){
@@ -424,10 +548,10 @@ function renderDetail(){
   v.innerHTML=`
     <div class="detail-head">
       <button class="back-btn" onclick="closeDetail()">← Back</button>
-      <div class="detail-avatar">${initials(c.name)}</div>
+      <div class="detail-avatar">${avatarHTML(c)}</div>
       <div>
         <div class="detail-title">${esc(c.name)} ${c.dream?'⭐':''}</div>
-        <div class="detail-sub">${esc(c.role||'—')} · <span class="stage-badge" style="background:${sc.bg};color:${sc.fg}">${c.stage}</span></div>
+        <div class="detail-sub">${esc(c.role||'—')}${c.industry?' · '+esc(c.industry):''} · <span class="stage-badge" style="background:${sc.bg};color:${sc.fg}">${c.stage}</span></div>
       </div>
       <div class="detail-actions">
         <button class="icon-btn" onclick="openEdit('${c.id}')" title="Edit">✎</button>
@@ -451,6 +575,12 @@ function renderDetail(){
     <div class="dcard">
       <div class="dcard-title">Links</div>
       ${c.link?`<div class="doc-row"><a href="${esc(c.link)}" target="_blank">Job posting →</a></div>`:'<div class="empty-note">No links added.</div>'}
+    </div>
+
+    <div class="dcard">
+      <div class="dcard-title">Documents</div>
+      <div id="docList">${(c.documents||[]).length?c.documents.map(d=>`<div class="doc-row"><a href="${esc(d.url)}" target="_blank">${esc(d.name)} →</a></div>`).join(''):'<div class="empty-note">No documents added.</div>'}</div>
+      <div class="mini-add"><input type="text" id="docName" placeholder="Doc name (e.g. Resume)"><input type="text" id="docUrl" placeholder="URL"><button class="mini-btn" onclick="addDoc()">Add</button></div>
     </div>
 
     <div class="dcard">
@@ -518,6 +648,12 @@ function addNote(){
   const c=getCurrent();c.notes=c.notes||[];c.notes.unshift({date:todayISO(),text:inp.value.trim()});
   saveState();renderDetail();
 }
+function addDoc(){
+  const n=document.getElementById('docName'),u=document.getElementById('docUrl');
+  if(!n.value.trim()||!u.value.trim())return;
+  const c=getCurrent();c.documents=c.documents||[];c.documents.push({name:n.value.trim(),url:u.value.trim()});
+  saveState();renderDetail();
+}
 
 /* ── ADD / EDIT MODAL ── */
 document.getElementById('openAddBtn').onclick=()=>openAdd();
@@ -526,7 +662,7 @@ function openAdd(){
   editingId=null;
   document.getElementById('modalTitle').textContent='Add company';
   document.getElementById('deleteBtn').style.display='none';
-  ['fName','fRole','fRecName','fRecEmail','fRecPhone','fBase','fBonus','fLink'].forEach(id=>document.getElementById(id).value='');
+  ['fName','fRole','fIndustry','fLogo','fRecName','fRecEmail','fRecPhone','fBase','fBonus','fLink'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('fStage').value='Researching';
   document.getElementById('fDream').checked=false;
   document.getElementById('addOverlay').classList.add('active');
@@ -538,6 +674,8 @@ function openEdit(id){
   document.getElementById('deleteBtn').style.display='inline-block';
   document.getElementById('fName').value=c.name||'';
   document.getElementById('fRole').value=c.role||'';
+  document.getElementById('fIndustry').value=c.industry||'';
+  document.getElementById('fLogo').value=c.logo||'';
   document.getElementById('fStage').value=c.stage||'Researching';
   document.getElementById('fDream').checked=!!c.dream;
   document.getElementById('fRecName').value=c.recruiter?.name||'';
@@ -555,6 +693,8 @@ document.getElementById('saveBtn').onclick=()=>{
   const data={
     name,
     role:document.getElementById('fRole').value.trim(),
+    industry:document.getElementById('fIndustry').value.trim(),
+    logo:document.getElementById('fLogo').value.trim(),
     stage:document.getElementById('fStage').value,
     dream:document.getElementById('fDream').checked,
     recruiter:{name:document.getElementById('fRecName').value.trim(),email:document.getElementById('fRecEmail').value.trim(),phone:document.getElementById('fRecPhone').value.trim()},
