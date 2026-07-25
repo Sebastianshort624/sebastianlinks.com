@@ -221,6 +221,20 @@ input,textarea,select{font-family:inherit}
 .ai-help{background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:12px;margin-top:10px;display:none}
 .ai-help.show{display:block}
 .ai-help p{font-size:12px;color:var(--text-sec);margin-bottom:8px;line-height:1.5}
+
+/* ── ANALYZER ── */
+.anz-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+@media(max-width:720px){.anz-grid{grid-template-columns:1fr}}
+.anz-stat{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f2f3f5;font-size:13px}
+.anz-stat:last-child{border:none}
+.anz-createbar{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.anz-createbar input{flex:1;min-width:160px;border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13.5px}
+
+/* ── COMPANY INTEL ── */
+.intel-field{margin-bottom:10px}
+.intel-field .ik{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.03em;margin-bottom:3px}
+.intel-field .iv{font-size:13px;color:var(--text);line-height:1.5}
+.intel-field .iv.empty{color:var(--text-muted);font-style:italic}
 </style>
 </head>
 <body>
@@ -231,6 +245,7 @@ input,textarea,select{font-family:inherit}
     <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
     <button class="tab-btn" data-tab="pipeline">Pipeline</button>
     <button class="tab-btn" data-tab="library">Library</button>
+    <button class="tab-btn" data-tab="analyzer">Analyzer</button>
   </div>
   <button class="btn-add" id="openAddBtn">
     <span class="icon"></span><span class="txt">Add company</span>
@@ -285,6 +300,17 @@ input,textarea,select{font-family:inherit}
     <div class="section-title">Cover Letters</div>
     <div class="lib-grid" id="libCovers"></div>
   </div>
+</div>
+
+<!-- ANALYZER -->
+<div class="view" id="view-analyzer">
+  <div class="section-title" style="margin-bottom:6px">Job Posting Analyzer</div>
+  <div class="greeting-sub" style="margin-bottom:16px">Paste any job posting before you decide to apply — see the real requirements, the keywords your résumé needs, and how your current library stacks up.</div>
+  <div class="dcard">
+    <div class="form-field"><label>Job description</label><textarea id="anzJD" rows="7" placeholder="Paste the full job posting here..."></textarea></div>
+    <button class="btn-primary" id="anzRunBtn">Analyze</button>
+  </div>
+  <div id="anzResults"></div>
 </div>
 
 <!-- DETAIL -->
@@ -392,6 +418,22 @@ input,textarea,select{font-family:inherit}
   </div>
 </div>
 
+<!-- COMPANY INTEL MODAL -->
+<div class="overlay" id="intelOverlay">
+  <div class="modal">
+    <div class="modal-title">Company intelligence</div>
+    <div class="form-field"><label>Company size</label><input type="text" id="iSize" placeholder="e.g. 1,000–5,000 employees"></div>
+    <div class="form-field"><label>Funding / stage</label><input type="text" id="iFunding" placeholder="e.g. Series D, public"></div>
+    <div class="form-field"><label>Culture notes</label><textarea id="iCulture" rows="3" placeholder="Anything about culture, values, work style..."></textarea></div>
+    <div class="form-field"><label>Recent news</label><textarea id="iNews" rows="3" placeholder="Recent headlines, launches, layoffs..."></textarea></div>
+    <div class="form-field"><label>Reviews / reputation</label><textarea id="iReviews" rows="3" placeholder="Glassdoor themes, employee sentiment..."></textarea></div>
+    <div class="modal-btns">
+      <button class="btn-secondary" id="intelCancelBtn">Cancel</button>
+      <button class="btn-primary" id="intelSaveBtn">Save</button>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ── ICONS ── */
 const ICONS={
@@ -432,6 +474,7 @@ state.companies.forEach(c=>{
   if(c.activeCoverId===undefined)c.activeCoverId=null;
   if(c.finalResumeId===undefined)c.finalResumeId=null;
   if(c.finalCoverId===undefined)c.finalCoverId=null;
+  if(c.intel===undefined)c.intel={size:'',funding:'',culture:'',news:'',reviews:''};
 });
 saveState();
 function saveState(){localStorage.setItem(SK,JSON.stringify(state));}
@@ -509,6 +552,73 @@ function matchDoc(jdText,docContent){
   return{matchPct,missing:missing.slice(0,6)};
 }
 
+/* ── JOB POSTING ANALYZER ── */
+function analyzeJD(text){
+  const lc=text.toLowerCase();
+  const kws=extractKeywords(text);
+  let salary=null;
+  const salM=text.match(/\$\s?[\d,]{2,}(?:k)?\s*(?:-|–|to)\s*\$?\s?[\d,]{2,}(?:k)?/i)||text.match(/\$\s?[\d,]{3,}(?:k)?/i);
+  if(salM)salary=salM[0];
+  let workMode='Not specified';
+  if(/\bremote\b/i.test(text))workMode='Remote';
+  if(/\bhybrid\b/i.test(text))workMode='Hybrid';
+  if(/\bon-?site\b|\bin[- ]office\b/i.test(text)&&!/remote/i.test(text))workMode='On-site';
+  let seniority='Not specified';
+  if(/\b(vp|vice president|director|head of)\b/i.test(text))seniority='Director / VP';
+  else if(/\bsenior\b|\bsr\.?\b/i.test(text))seniority='Senior';
+  else if(/\bmanager\b/i.test(text))seniority='Manager';
+  else if(/\bentry[- ]level\b|\bjunior\b/i.test(text))seniority='Entry-level';
+  let travel=/\btravel\b/i.test(text)?'Travel mentioned':'Not mentioned';
+  let bestDoc=null,bestMatch=null;
+  state.documents.filter(d=>d.type==='resume').forEach(d=>{
+    const m=matchDoc(text,d.content);
+    if(!bestMatch||m.matchPct>bestMatch.matchPct){bestMatch=m;bestDoc=d;}
+  });
+  return{kws,salary,workMode,seniority,travel,bestDoc,bestMatch};
+}
+document.getElementById('anzRunBtn').onclick=()=>{
+  const text=document.getElementById('anzJD').value.trim();
+  const box=document.getElementById('anzResults');
+  if(!text){box.innerHTML='';return;}
+  const a=analyzeJD(text);
+  box.innerHTML=`
+    <div class="anz-grid">
+      <div class="dcard">
+        <div class="dcard-title">Posting breakdown</div>
+        <div class="anz-stat"><span class="fk">Salary mentioned</span><span class="fv">${a.salary?esc(a.salary):'Not stated'}</span></div>
+        <div class="anz-stat"><span class="fk">Work mode</span><span class="fv">${a.workMode}</span></div>
+        <div class="anz-stat"><span class="fk">Seniority</span><span class="fv">${a.seniority}</span></div>
+        <div class="anz-stat"><span class="fk">Travel</span><span class="fv">${a.travel}</span></div>
+      </div>
+      <div class="dcard">
+        <div class="dcard-title">Best-matching résumé in your library</div>
+        ${a.bestDoc?`<div class="match-wrap"><span>${esc(a.bestDoc.name)}</span><span class="match-badge" style="color:${a.bestMatch.matchPct>=80?'var(--success)':a.bestMatch.matchPct>=50?'var(--gold)':'var(--coral)'}">${a.bestMatch.matchPct}%</span></div>
+        ${a.bestMatch.missing.length?`<div class="kw-chips">${a.bestMatch.missing.map(k=>`<span class="kw-chip">${esc(k)}</span>`).join('')}</div>`:'<div class="empty-note">No major keyword gaps.</div>'}`:'<div class="empty-note">No résumés in your library yet.</div>'}
+      </div>
+    </div>
+    <div class="dcard">
+      <div class="dcard-title">Top keywords in this posting</div>
+      <div class="kw-chips">${a.kws.slice(0,12).map(k=>`<span class="kw-chip" style="background:var(--teal-tint);color:var(--teal-dark)">${esc(k)}</span>`).join('')||'<span class="empty-note">Not enough text to extract keywords.</span>'}</div>
+      <div class="anz-createbar">
+        <input type="text" id="anzCompanyName" placeholder="Company name — add to pipeline">
+        <button class="btn-primary" id="anzCreateBtn">Add as company</button>
+      </div>
+    </div>`;
+  document.getElementById('anzCreateBtn').onclick=()=>{
+    const name=document.getElementById('anzCompanyName').value.trim();
+    if(!name){alert('Company name is required to add it to your pipeline.');return;}
+    const newCo={id:cid(),name,role:'',industry:'',logo:'',stage:'Researching',dream:false,
+      recruiter:{name:'',email:'',phone:''},comp:{base:a.salary||'',bonus:''},link:'',
+      timeline:[{date:todayISO(),text:'Added from Job Posting Analyzer'}],notes:[],documents:[],
+      interviews:[],tasks:[],resumeHistory:[],coverHistory:[],jd:text,
+      activeResumeId:null,activeCoverId:null,finalResumeId:null,finalCoverId:null,
+      intel:{size:'',funding:'',culture:'',news:'',reviews:''}};
+    state.companies.push(newCo);saveState();
+    openDetail(newCo.id);
+  };
+};
+function renderAnalyzer(){/* stateless view — results render on demand via anzRunBtn */}
+
 let activeFilter='All';let searchTerm='';let currentDetailId=null;let editingId=null;
 let editingDocId=null;let editingDocType='resume';
 
@@ -522,6 +632,7 @@ function showView(id){
   if(id==='dashboard')renderDashboard();
   if(id==='pipeline')renderKanban();
   if(id==='library')renderLibrary();
+  if(id==='analyzer')renderAnalyzer();
 }
 
 /* ── GREETING + DASHBOARD (unchanged logic from v2) ── */
@@ -703,6 +814,15 @@ function renderDetail(){
     </div>
 
     <div class="dcard">
+      <div class="dcard-title">Company Intelligence <button class="mini-btn" onclick="openIntel()">Edit</button></div>
+      <div class="intel-field"><div class="ik">Size</div><div class="iv ${c.intel.size?'':'empty'}">${c.intel.size?esc(c.intel.size):'Not added yet'}</div></div>
+      <div class="intel-field"><div class="ik">Funding / stage</div><div class="iv ${c.intel.funding?'':'empty'}">${c.intel.funding?esc(c.intel.funding):'Not added yet'}</div></div>
+      <div class="intel-field"><div class="ik">Culture</div><div class="iv ${c.intel.culture?'':'empty'}">${c.intel.culture?esc(c.intel.culture):'Not added yet'}</div></div>
+      <div class="intel-field"><div class="ik">Recent news</div><div class="iv ${c.intel.news?'':'empty'}">${c.intel.news?esc(c.intel.news):'Not added yet'}</div></div>
+      <div class="intel-field"><div class="ik">Reviews / reputation</div><div class="iv ${c.intel.reviews?'':'empty'}">${c.intel.reviews?esc(c.intel.reviews):'Not added yet'}</div></div>
+    </div>
+
+    <div class="dcard">
       <div class="dcard-title">Application Materials <button class="mini-btn" onclick="openPrep()">Prepare application</button></div>
       <div class="am-row"><span>Résumé used</span><span class="${resumeAct?'am-check':'am-empty'}">${resumeAct?'✓ '+esc(resumeAct.label):'Not yet prepared'}</span></div>
       <div class="am-row"><span>Cover letter</span><span class="${coverAct?'am-check':'am-empty'}">${coverAct?'✓ '+esc(coverAct.label):'Not yet prepared'}</span></div>
@@ -831,6 +951,24 @@ document.getElementById('prepConfirmBtn').onclick=()=>{
   saveState();document.getElementById('prepOverlay').classList.remove('active');renderDetail();
 };
 
+/* ── COMPANY INTEL ── */
+function openIntel(){
+  const c=getCurrent();
+  document.getElementById('iSize').value=c.intel.size||'';
+  document.getElementById('iFunding').value=c.intel.funding||'';
+  document.getElementById('iCulture').value=c.intel.culture||'';
+  document.getElementById('iNews').value=c.intel.news||'';
+  document.getElementById('iReviews').value=c.intel.reviews||'';
+  document.getElementById('intelOverlay').classList.add('active');
+}
+document.getElementById('intelCancelBtn').onclick=()=>document.getElementById('intelOverlay').classList.remove('active');
+document.getElementById('intelSaveBtn').onclick=()=>{
+  const c=getCurrent();
+  c.intel={size:document.getElementById('iSize').value.trim(),funding:document.getElementById('iFunding').value.trim(),
+    culture:document.getElementById('iCulture').value.trim(),news:document.getElementById('iNews').value.trim(),reviews:document.getElementById('iReviews').value.trim()};
+  saveState();document.getElementById('intelOverlay').classList.remove('active');renderDetail();
+};
+
 /* ── ADD / EDIT COMPANY MODAL ── */
 document.getElementById('openAddBtn').onclick=()=>openAdd();
 document.getElementById('cancelBtn').onclick=()=>closeModal();
@@ -857,7 +995,7 @@ document.getElementById('saveBtn').onclick=()=>{
     recruiter:{name:document.getElementById('fRecName').value.trim(),email:document.getElementById('fRecEmail').value.trim(),phone:document.getElementById('fRecPhone').value.trim()},
     comp:{base:document.getElementById('fBase').value.trim(),bonus:document.getElementById('fBonus').value.trim()},link:document.getElementById('fLink').value.trim()};
   if(editingId){const c=state.companies.find(x=>x.id===editingId);Object.assign(c,data);}
-  else{state.companies.push(Object.assign({id:cid(),timeline:[{date:todayISO(),text:'Added to pipeline'}],notes:[],documents:[],interviews:[],tasks:[],resumeHistory:[],coverHistory:[],jd:'',activeResumeId:null,activeCoverId:null,finalResumeId:null,finalCoverId:null},data));}
+  else{state.companies.push(Object.assign({id:cid(),timeline:[{date:todayISO(),text:'Added to pipeline'}],notes:[],documents:[],interviews:[],tasks:[],resumeHistory:[],coverHistory:[],jd:'',activeResumeId:null,activeCoverId:null,finalResumeId:null,finalCoverId:null,intel:{size:'',funding:'',culture:'',news:'',reviews:''}},data));}
   saveState();closeModal();
   if(document.getElementById('view-detail').classList.contains('active'))renderDetail();
   renderDashboard();
