@@ -29,8 +29,8 @@ input,textarea,select{font-family:inherit}
 .topbar{background:#fff;border-bottom:1px solid var(--border);padding:0 20px;height:58px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:200}
 .topbar-logo{font-weight:800;font-size:15px;color:var(--teal);display:flex;align-items:center;gap:8px;flex-shrink:0}
 .topbar-logo .dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--aqua))}
-.topbar-tabs{display:flex;gap:2px;flex:1}
-.tab-btn{background:none;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;color:var(--text-muted);transition:.15s}
+.topbar-tabs{display:flex;gap:2px;flex:1;overflow-x:auto}
+.tab-btn{background:none;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;color:var(--text-muted);transition:.15s;white-space:nowrap}
 .tab-btn.active{background:var(--teal-tint);color:var(--teal-dark)}
 .tab-btn:hover:not(.active){background:#f3f4f6}
 .btn-add{background:var(--aqua);color:#0B3B37;border:none;border-radius:11px;padding:11px 18px 11px 14px;font-size:13.5px;font-weight:800;flex-shrink:0;display:flex;align-items:center;gap:7px;box-shadow:0 2px 8px rgba(57,208,200,.35);transition:.15s}
@@ -163,10 +163,45 @@ input,textarea,select{font-family:inherit}
 .doc-row:last-child{border:none}
 .doc-row a{color:var(--teal);font-weight:600}
 
+/* ── APPLICATION MATERIALS ── */
+.am-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f2f3f5;font-size:13px}
+.am-row:last-child{border:none}
+.am-check{color:var(--success);font-weight:700}
+.am-empty{color:var(--text-muted)}
+.match-badge{font-size:20px;font-weight:800}
+.match-wrap{display:flex;align-items:center;justify-content:space-between;padding:10px 0}
+.kw-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.kw-chip{background:var(--coral-tint);color:#B8422F;font-size:11px;font-weight:700;padding:3px 9px;border-radius:100px}
+.hist-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f2f3f5;font-size:12.5px}
+.hist-item:last-child{border:none}
+.hist-label{font-weight:600}
+.hist-meta{color:var(--text-muted);font-size:11px}
+.final-badge{background:var(--gold-tint);color:#8A6B10;font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px;margin-left:6px}
+.method-tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px;margin-left:6px}
+.method-as-is{background:#F3F4F6;color:var(--text-sec)}
+.method-ai{background:var(--teal-tint);color:var(--teal-dark)}
+.method-recommend{background:var(--gold-tint);color:#8A6B10}
+.hist-actions button{background:none;border:none;font-size:11px;font-weight:700;color:var(--teal);padding:2px 6px}
+
+/* ── LIBRARY ── */
+.lib-section{margin-bottom:28px}
+.lib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.lib-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow)}
+.lib-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.lib-name{font-weight:700;font-size:13.5px}
+.lib-tag{font-size:11px;color:var(--teal-dark);background:var(--teal-tint);padding:2px 8px;border-radius:100px;display:inline-block;margin-top:4px}
+.lib-star{color:var(--gold);font-size:15px;opacity:.3;background:none;border:none}
+.lib-star.active{opacity:1}
+.lib-actions{display:flex;gap:6px;margin-top:10px}
+.lib-actions button{font-size:11px;font-weight:700;background:#f3f4f6;border:none;border-radius:7px;padding:5px 10px;color:var(--text-sec)}
+.lib-add-btn{background:#fff;border:1.5px dashed var(--border);border-radius:var(--radius);padding:14px;color:var(--text-muted);font-size:13px;font-weight:600;text-align:center;cursor:pointer;display:flex;align-items:center;justify-content:center;min-height:90px}
+.lib-add-btn:hover{border-color:var(--aqua);color:var(--teal)}
+
 /* ── MODAL ── */
 .overlay{display:none;position:fixed;inset:0;background:rgba(28,39,51,.4);z-index:500;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto}
 .overlay.active{display:flex}
 .modal{background:#fff;border-radius:16px;width:100%;max-width:480px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal.wide{max-width:600px}
 .modal-title{font-size:17px;font-weight:800;margin-bottom:16px}
 .form-field{margin-bottom:14px}
 .form-field label{display:block;font-size:12.5px;font-weight:700;color:var(--text-sec);margin-bottom:5px}
@@ -178,6 +213,14 @@ input,textarea,select{font-family:inherit}
 .btn-primary{background:var(--aqua);color:#0B3B37;border:none;border-radius:9px;padding:10px 18px;font-size:13.5px;font-weight:700}
 .btn-secondary{background:#f3f4f6;color:var(--text-sec);border:none;border-radius:9px;padding:10px 18px;font-size:13.5px;font-weight:700}
 .btn-danger{background:var(--coral-tint);color:#B8422F;border:none;border-radius:9px;padding:10px 18px;font-size:13.5px;font-weight:700}
+.radio-opt{display:flex;align-items:flex-start;gap:9px;border:1px solid var(--border);border-radius:9px;padding:10px 12px;margin-bottom:8px;cursor:pointer;font-size:13px}
+.radio-opt input{margin-top:2px}
+.radio-opt.picked{border-color:var(--aqua);background:var(--teal-tint)}
+.radio-opt .ro-title{font-weight:700}
+.radio-opt .ro-sub{color:var(--text-muted);font-size:11.5px;margin-top:2px}
+.ai-help{background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:12px;margin-top:10px;display:none}
+.ai-help.show{display:block}
+.ai-help p{font-size:12px;color:var(--text-sec);margin-bottom:8px;line-height:1.5}
 </style>
 </head>
 <body>
@@ -187,6 +230,7 @@ input,textarea,select{font-family:inherit}
   <div class="topbar-tabs">
     <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
     <button class="tab-btn" data-tab="pipeline">Pipeline</button>
+    <button class="tab-btn" data-tab="library">Library</button>
   </div>
   <button class="btn-add" id="openAddBtn">
     <span class="icon"></span><span class="txt">Add company</span>
@@ -230,10 +274,23 @@ input,textarea,select{font-family:inherit}
   <div class="kanban-wrap" id="kanbanWrap"></div>
 </div>
 
+<!-- LIBRARY -->
+<div class="view" id="view-library">
+  <div class="section-title" style="margin-bottom:16px">Document Library</div>
+  <div class="lib-section">
+    <div class="section-title">Résumés</div>
+    <div class="lib-grid" id="libResumes"></div>
+  </div>
+  <div class="lib-section">
+    <div class="section-title">Cover Letters</div>
+    <div class="lib-grid" id="libCovers"></div>
+  </div>
+</div>
+
 <!-- DETAIL -->
 <div class="view" id="view-detail"></div>
 
-<!-- ADD/EDIT MODAL -->
+<!-- ADD/EDIT COMPANY MODAL -->
 <div class="overlay" id="addOverlay">
   <div class="modal">
     <div class="modal-title" id="modalTitle">Add company</div>
@@ -272,8 +329,71 @@ input,textarea,select{font-family:inherit}
   </div>
 </div>
 
+<!-- DOC LIBRARY MODAL -->
+<div class="overlay" id="docOverlay">
+  <div class="modal">
+    <div class="modal-title" id="docModalTitle">Add résumé</div>
+    <input type="hidden" id="docType">
+    <div class="form-field"><label>Name</label><input type="text" id="docName2" placeholder="e.g. General Sales"></div>
+    <div class="form-field"><label>Tag</label>
+      <select id="docTag">
+        <option>General Sales</option><option>SaaS</option><option>Legal</option>
+        <option>Immigration</option><option>Mortgage</option><option>Recovery</option><option>Custom</option>
+      </select>
+    </div>
+    <div class="form-field" id="docTagCustomWrap" style="display:none"><label>Custom tag name</label><input type="text" id="docTagCustom"></div>
+    <div class="form-field"><label>Content (paste text)</label><textarea id="docContent" rows="6" placeholder="Paste the résumé or cover letter text..."></textarea></div>
+    <label class="form-check" style="margin-bottom:14px"><input type="checkbox" id="docDefault"> Set as default</label>
+    <div class="modal-btns">
+      <button class="btn-danger" id="docDeleteBtn" style="display:none">Delete</button>
+      <button class="btn-secondary" id="docCancelBtn">Cancel</button>
+      <button class="btn-primary" id="docSaveBtn">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- PREPARE APPLICATION MODAL -->
+<div class="overlay" id="prepOverlay">
+  <div class="modal wide">
+    <div class="modal-title">Prepare application materials</div>
+    <div class="form-field"><label>Job description</label><textarea id="prepJD" rows="5" placeholder="Paste the job description here..."></textarea></div>
+    <div class="form-row2">
+      <div class="form-field"><label>Résumé</label><select id="prepResumeSel"></select></div>
+      <div class="form-field"><label>Cover letter</label><select id="prepCoverSel"></select></div>
+    </div>
+
+    <label class="radio-opt" data-val="as-is">
+      <input type="radio" name="prepMethod" value="as-is" checked>
+      <div><div class="ro-title">Use selected documents as-is</div><div class="ro-sub">Snapshot exactly what's in the library today.</div></div>
+    </label>
+    <label class="radio-opt" data-val="recommend">
+      <input type="radio" name="prepMethod" value="recommend">
+      <div><div class="ro-title">Recommend the best match automatically</div><div class="ro-sub">Keyword-matches every résumé in your library against this JD and picks the best fit.</div></div>
+    </label>
+    <label class="radio-opt" data-val="ai">
+      <input type="radio" name="prepMethod" value="ai">
+      <div><div class="ro-title">Tailor with AI ⭐</div><div class="ro-sub">Generates a prompt to run in Claude chat — paste the result back to save.</div></div>
+    </label>
+    <label class="radio-opt" data-val="new">
+      <input type="radio" name="prepMethod" value="new">
+      <div><div class="ro-title">Create a brand-new résumé for this job</div><div class="ro-sub">Same AI bridge — writes from scratch instead of editing the base doc.</div></div>
+    </label>
+
+    <div class="ai-help" id="aiHelp">
+      <p>This deployment can't safely call an AI model directly from the browser (no backend to hold an API key). Copy this prompt into Claude chat, then paste the result back here to save it as a new version.</p>
+      <button class="mini-btn" id="copyPromptBtn" type="button">Copy AI prompt</button>
+      <div class="form-field" style="margin-top:10px"><label>Paste AI result here</label><textarea id="aiPaste" rows="5" placeholder="Paste tailored résumé text here once generated..."></textarea></div>
+    </div>
+
+    <div class="modal-btns">
+      <button class="btn-secondary" id="prepCancelBtn">Cancel</button>
+      <button class="btn-primary" id="prepConfirmBtn">Save application materials</button>
+    </div>
+  </div>
+</div>
+
 <script>
-/* ── ICONS (consistent outline set, replaces emoji in production chrome) ── */
+/* ── ICONS ── */
 const ICONS={
   building:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18"/><path d="M9 8h1M14 8h1M9 12h1M14 12h1M9 16h1M14 16h1M10 21v-4h4v4"/></svg>',
   search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>',
@@ -292,26 +412,26 @@ document.querySelector('.search-icon').innerHTML=ICONS.search;
 const SK='clcrm_jobs_v1';
 const STAGES=['Researching','Applied','Phone Screen','Interview','Offer','Accepted','Rejected'];
 const STAGE_COLOR={
-  'Researching':{bg:'#F3F4F6',fg:'#4A5560'},
-  'Applied':{bg:'#E3F0F2',fg:'#17606F'},
-  'Phone Screen':{bg:'#E0F2FE',fg:'#0369A1'},
-  'Interview':{bg:'#FBF3DC',fg:'#8A6B10'},
-  'Offer':{bg:'#DCFCE7',fg:'#14532D'},
-  'Accepted':{bg:'#D1FAE5',fg:'#065F46'},
-  'Rejected':{bg:'#FFEDE9',fg:'#B8422F'}
+  'Researching':{bg:'#F3F4F6',fg:'#4A5560'},'Applied':{bg:'#E3F0F2',fg:'#17606F'},
+  'Phone Screen':{bg:'#E0F2FE',fg:'#0369A1'},'Interview':{bg:'#FBF3DC',fg:'#8A6B10'},
+  'Offer':{bg:'#DCFCE7',fg:'#14532D'},'Accepted':{bg:'#D1FAE5',fg:'#065F46'},'Rejected':{bg:'#FFEDE9',fg:'#B8422F'}
 };
 
 let state=null;
 try{state=JSON.parse(localStorage.getItem(SK));}catch(e){state=null;}
-if(!state||!state.companies){
-  state={companies:seedData()};
-  saveState();
-}
-// migrate old records missing new fields
+if(!state||!state.companies){state={companies:seedData()};}
+if(!state.documents)state.documents=seedDocs();
 state.companies.forEach(c=>{
   if(c.industry===undefined)c.industry='';
   if(c.logo===undefined)c.logo='';
   if(c.documents===undefined)c.documents=[];
+  if(c.resumeHistory===undefined)c.resumeHistory=[];
+  if(c.coverHistory===undefined)c.coverHistory=[];
+  if(c.jd===undefined)c.jd='';
+  if(c.activeResumeId===undefined)c.activeResumeId=null;
+  if(c.activeCoverId===undefined)c.activeCoverId=null;
+  if(c.finalResumeId===undefined)c.finalResumeId=null;
+  if(c.finalCoverId===undefined)c.finalCoverId=null;
 });
 saveState();
 function saveState(){localStorage.setItem(SK,JSON.stringify(state));}
@@ -322,11 +442,9 @@ function seedData(){
   const plus=(n)=>{const d=new Date(today);d.setDate(d.getDate()+n);return iso(d);};
   return [
     {id:cid(),name:'Stripe',role:'Enterprise Account Exec',industry:'Fintech',logo:'',stage:'Interview',dream:true,
-      recruiter:{name:'Jamie Lin',email:'jamie@stripe.com',phone:''},
-      comp:{base:'$140k',bonus:'20% + equity'},
-      link:'', timeline:[{date:iso(today),text:'Recruiter screen scheduled'}],
-      notes:[], documents:[], interviews:[{date:plus(3),type:'Hiring manager call'}],
-      tasks:[{date:iso(today),text:'Send thank-you note',done:false}]},
+      recruiter:{name:'Jamie Lin',email:'jamie@stripe.com',phone:''},comp:{base:'$140k',bonus:'20% + equity'},link:'',
+      timeline:[{date:iso(today),text:'Recruiter screen scheduled'}],notes:[],documents:[],
+      interviews:[{date:plus(3),type:'Hiring manager call'}],tasks:[{date:iso(today),text:'Send thank-you note',done:false}]},
     {id:cid(),name:'Ramp',role:'Account Specialist',industry:'Fintech',logo:'',stage:'Applied',dream:false,
       recruiter:{name:'',email:'',phone:''},comp:{base:'',bonus:''},link:'',
       timeline:[{date:plus(-2),text:'Application submitted'}],notes:[],documents:[],
@@ -336,20 +454,26 @@ function seedData(){
       timeline:[],notes:[],documents:[],interviews:[],tasks:[]}
   ];
 }
+function seedDocs(){
+  const now=todayISO();
+  return [
+    {id:did(),name:'General Sales',type:'resume',tag:'General Sales',content:'Sales professional with a track record in CRM management, client acquisition, and pipeline development. Skilled in negotiation, account management, and closing.',isDefault:true,createdAt:now},
+    {id:did(),name:'Default Cover Letter',type:'cover_letter',tag:'General Sales',content:'I am excited to apply for this role. My background in sales and account management has prepared me to drive results from day one.',isDefault:true,createdAt:now}
+  ];
+}
 function cid(){return 'c'+Math.random().toString(36).slice(2,9);}
+function did(){return 'd'+Math.random().toString(36).slice(2,9);}
+function hid(){return 'h'+Math.random().toString(36).slice(2,9);}
 function todayISO(){return new Date().toISOString().slice(0,10);}
 function initials(name){return (name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();}
 function esc(s){return (s||'').toString().replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));}
-function avatarHTML(c,size){
-  return c.logo?`<img src="${esc(c.logo)}" alt="">`:initials(c.name);
-}
+function avatarHTML(c){return c.logo?`<img src="${esc(c.logo)}" alt="">`:initials(c.name);}
 function parseComp(str){
   if(!str)return 0;
   const m=str.match(/([\d,.]+)\s*(k|m)?/i);
   if(!m)return 0;
   let n=parseFloat(m[1].replace(/,/g,''));
-  if(/m/i.test(m[2]))n*=1000000;
-  else if(/k/i.test(m[2]))n*=1000;
+  if(m[2]&&/m/i.test(m[2]))n*=1000000; else if(m[2]&&/k/i.test(m[2]))n*=1000;
   return n;
 }
 function formatMoney(n){
@@ -359,59 +483,62 @@ function formatMoney(n){
   return '$'+n;
 }
 function lastActivityText(c){
-  const dates=[];
-  (c.timeline||[]).forEach(t=>dates.push(t.date));
+  const dates=(c.timeline||[]).map(t=>t.date);
   if(!dates.length)return '—';
-  dates.sort().reverse();
-  return dates[0];
+  dates.sort().reverse();return dates[0];
 }
 function nextFollowupText(c){
   const due=(c.tasks||[]).filter(t=>!t.done).map(t=>t.date).sort();
   return due.length?due[0]:'—';
 }
 
-let activeFilter='All';
-let searchTerm='';
-let currentDetailId=null;
-let editingId=null;
+/* ── KEYWORD MATCHING (rule-based, not semantic AI) ── */
+const STOPWORDS=new Set(['the','and','with','from','that','this','have','will','your','you','are','for','was','were','they','their','our','all','has','not','but','can','who','what','when','where','how','into','than','then','also','role','job','work','team','years','experience','strong','ability','skills','including','using']);
+function extractKeywords(text){
+  if(!text)return [];
+  const words=(text.toLowerCase().match(/[a-z][a-z\-]{3,}/g)||[]).filter(w=>!STOPWORDS.has(w));
+  const freq={};words.forEach(w=>freq[w]=(freq[w]||0)+1);
+  return Object.keys(freq).sort((a,b)=>freq[b]-freq[a]).slice(0,18);
+}
+function matchDoc(jdText,docContent){
+  const kws=extractKeywords(jdText);
+  if(!kws.length)return{matchPct:0,missing:[]};
+  const lc=(docContent||'').toLowerCase();
+  const missing=kws.filter(k=>!lc.includes(k));
+  const matchPct=Math.round(((kws.length-missing.length)/kws.length)*100);
+  return{matchPct,missing:missing.slice(0,6)};
+}
+
+let activeFilter='All';let searchTerm='';let currentDetailId=null;let editingId=null;
+let editingDocId=null;let editingDocType='resume';
 
 /* ── TABS ── */
 document.querySelectorAll('.tab-btn').forEach(b=>{
-  b.onclick=()=>{
-    document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
-    b.classList.add('active');
-    showView(b.dataset.tab);
-  };
+  b.onclick=()=>{document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');showView(b.dataset.tab);};
 });
 function showView(id){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('view-'+id).classList.add('active');
   if(id==='dashboard')renderDashboard();
   if(id==='pipeline')renderKanban();
+  if(id==='library')renderLibrary();
 }
 
-/* ── GREETING ── */
+/* ── GREETING + DASHBOARD (unchanged logic from v2) ── */
 function renderGreeting(){
   const h=new Date().getHours();
   const part=h<12?'morning':h<18?'afternoon':'evening';
   document.getElementById('greetTitle').textContent=`Good ${part}, Sebastian`;
-  const cos=state.companies;
-  const today=todayISO();
+  const cos=state.companies;const today=todayISO();
   const followDue=cos.reduce((n,c)=>n+(c.tasks||[]).filter(t=>!t.done&&t.date<=today).length,0);
   const ivSoon=cos.reduce((n,c)=>n+(c.interviews||[]).filter(iv=>iv.date>=today).length,0);
   const waiting=cos.filter(c=>['Applied','Phone Screen','Interview'].includes(c.stage)&&!(c.tasks||[]).some(t=>!t.done)).length;
-  document.getElementById('greetSub').innerHTML=
-    `Today you have <b>${followDue} follow-up${followDue!==1?'s':''}</b>, <b>${ivSoon} interview${ivSoon!==1?'s':''}</b> coming up, and <b>${waiting} compan${waiting!==1?'ies':'y'}</b> awaiting response.`;
+  document.getElementById('greetSub').innerHTML=`Today you have <b>${followDue} follow-up${followDue!==1?'s':''}</b>, <b>${ivSoon} interview${ivSoon!==1?'s':''}</b> coming up, and <b>${waiting} compan${waiting!==1?'ies':'y'}</b> awaiting response.`;
 }
-
-/* ── DASHBOARD ── */
 function renderDashboard(){
   renderGreeting();
-  const cos=state.companies;
-  const today=todayISO();
-  const weekOut=new Date();weekOut.setDate(weekOut.getDate()+7);
-  const weekOutISO=weekOut.toISOString().slice(0,10);
-
+  const cos=state.companies;const today=todayISO();
+  const weekOut=new Date();weekOut.setDate(weekOut.getDate()+7);const weekOutISO=weekOut.toISOString().slice(0,10);
   const followDue=cos.reduce((n,c)=>n+(c.tasks||[]).filter(t=>!t.done&&t.date<=today).length,0);
   const ivWeek=cos.reduce((n,c)=>n+(c.interviews||[]).filter(iv=>iv.date>=today&&iv.date<=weekOutISO).length,0);
   const dreamCnt=cos.filter(c=>c.dream).length;
@@ -419,85 +546,49 @@ function renderDashboard(){
   const appliedTotal=cos.filter(c=>c.stage!=='Researching').length;
   const responded=cos.filter(c=>['Phone Screen','Interview','Offer','Accepted','Rejected'].includes(c.stage)).length;
   const responseRate=appliedTotal?Math.round((responded/appliedTotal)*100):null;
-  const pipelineValue=cos.filter(c=>!['Rejected'].includes(c.stage)).reduce((n,c)=>n+parseComp(c.comp&&c.comp.base),0);
-
+  const pipelineValue=cos.filter(c=>c.stage!=='Rejected').reduce((n,c)=>n+parseComp(c.comp&&c.comp.base),0);
   const kpis=[
-    {icon:'clock',num:followDue,label:'Follow-ups Due'},
-    {icon:'calendar',num:ivWeek,label:'Interviews This Week'},
-    {icon:'star',num:dreamCnt,label:'Dream Companies'},
-    {icon:'hourglass',num:waiting,label:'Waiting on Response'},
-    {icon:'target',num:responseRate===null?'—':responseRate+'%',label:'Response Rate'},
-    {icon:'trend',num:formatMoney(pipelineValue),label:'Pipeline Value'}
+    {icon:'clock',num:followDue,label:'Follow-ups Due'},{icon:'calendar',num:ivWeek,label:'Interviews This Week'},
+    {icon:'star',num:dreamCnt,label:'Dream Companies'},{icon:'hourglass',num:waiting,label:'Waiting on Response'},
+    {icon:'target',num:responseRate===null?'—':responseRate+'%',label:'Response Rate'},{icon:'trend',num:formatMoney(pipelineValue),label:'Pipeline Value'}
   ];
-  document.getElementById('kpiRow').innerHTML=kpis.map(k=>
-    `<div class="kpi"><div class="kpi-icon" style="background:var(--teal-tint);color:var(--teal-dark)">${ICONS[k.icon]}</div>
-     <div class="kpi-num">${k.num}</div><div class="kpi-label">${k.label}</div></div>`
-  ).join('');
-
-  const chipWrap=document.getElementById('filterChips');
-  chipWrap.innerHTML='';
+  document.getElementById('kpiRow').innerHTML=kpis.map(k=>`<div class="kpi"><div class="kpi-icon" style="background:var(--teal-tint);color:var(--teal-dark)">${ICONS[k.icon]}</div><div class="kpi-num">${k.num}</div><div class="kpi-label">${k.label}</div></div>`).join('');
+  const chipWrap=document.getElementById('filterChips');chipWrap.innerHTML='';
   ['All',...STAGES,'Dream'].forEach(f=>{
-    const chip=document.createElement('button');
-    chip.className='chip'+(activeFilter===f?' active':'');
-    chip.textContent=f==='Dream'?'⭐ Dream':f;
-    chip.onclick=()=>{activeFilter=f;renderDashboard();};
-    chipWrap.appendChild(chip);
+    const chip=document.createElement('button');chip.className='chip'+(activeFilter===f?' active':'');chip.textContent=f==='Dream'?'⭐ Dream':f;
+    chip.onclick=()=>{activeFilter=f;renderDashboard();};chipWrap.appendChild(chip);
   });
-
-  // Today's follow-ups
-  const fList=document.getElementById('followupList');
-  let follow=[];
-  cos.forEach(c=>(c.tasks||[]).forEach(t=>{if(!t.done && t.date<=today)follow.push({co:c,t});}));
+  const fList=document.getElementById('followupList');let follow=[];
+  cos.forEach(c=>(c.tasks||[]).forEach(t=>{if(!t.done&&t.date<=today)follow.push({co:c,t});}));
   follow.sort((a,b)=>a.t.date.localeCompare(b.t.date));
   document.getElementById('followupCnt').textContent=follow.length;
-  fList.innerHTML=follow.length?follow.map(f=>{
-    const overdue=f.t.date<today;
-    return `<div class="list-row"><div class="avatar">${avatarHTML(f.co)}</div>
-      <div class="rmain"><div class="rname">${esc(f.t.text)}</div><div class="rsub">${esc(f.co.name)}</div></div>
-      <div class="rtag ${overdue?'tag-overdue':'tag-today'}">${overdue?'Overdue':'Today'}</div></div>`;
+  fList.innerHTML=follow.length?follow.map(f=>{const overdue=f.t.date<today;
+    return `<div class="list-row"><div class="avatar">${avatarHTML(f.co)}</div><div class="rmain"><div class="rname">${esc(f.t.text)}</div><div class="rsub">${esc(f.co.name)}</div></div><div class="rtag ${overdue?'tag-overdue':'tag-today'}">${overdue?'Overdue':'Today'}</div></div>`;
   }).join(''):'<div class="empty-note">Nothing due today.</div>';
-
-  // Upcoming interviews
-  const iList=document.getElementById('interviewList');
-  let ivs=[];
+  const iList=document.getElementById('interviewList');let ivs=[];
   cos.forEach(c=>(c.interviews||[]).forEach(iv=>{if(iv.date>=today)ivs.push({co:c,iv});}));
   ivs.sort((a,b)=>a.iv.date.localeCompare(b.iv.date));
   document.getElementById('interviewCnt').textContent=ivs.length;
-  iList.innerHTML=ivs.length?ivs.slice(0,6).map(f=>{
-    return `<div class="list-row"><div class="avatar">${avatarHTML(f.co)}</div>
-      <div class="rmain"><div class="rname">${esc(f.iv.type||'Interview')}</div><div class="rsub">${esc(f.co.name)}</div></div>
-      <div class="rtag tag-soon">${f.iv.date}</div></div>`;
-  }).join(''):'<div class="empty-note">No interviews scheduled.</div>';
-
-  // Company grid
+  iList.innerHTML=ivs.length?ivs.slice(0,6).map(f=>`<div class="list-row"><div class="avatar">${avatarHTML(f.co)}</div><div class="rmain"><div class="rname">${esc(f.iv.type||'Interview')}</div><div class="rsub">${esc(f.co.name)}</div></div><div class="rtag tag-soon">${f.iv.date}</div></div>`).join(''):'<div class="empty-note">No interviews scheduled.</div>';
   let list=cos.filter(c=>{
-    if(activeFilter==='Dream' && !c.dream)return false;
-    if(STAGES.includes(activeFilter) && c.stage!==activeFilter)return false;
-    if(searchTerm){
-      const hay=(c.name+' '+c.role+' '+c.industry+' '+(c.recruiter?.name||'')).toLowerCase();
-      if(!hay.includes(searchTerm.toLowerCase()))return false;
-    }
+    if(activeFilter==='Dream'&&!c.dream)return false;
+    if(STAGES.includes(activeFilter)&&c.stage!==activeFilter)return false;
+    if(searchTerm){const hay=(c.name+' '+c.role+' '+c.industry+' '+(c.recruiter?.name||'')).toLowerCase();if(!hay.includes(searchTerm.toLowerCase()))return false;}
     return true;
   });
   document.getElementById('companyCnt').textContent=list.length;
   const grid=document.getElementById('companyGrid');
   grid.innerHTML=list.length?list.map(c=>{
-    const sc=STAGE_COLOR[c.stage];
-    const nf=nextFollowupText(c);
-    const overdue=nf!=='—'&&nf<today;
+    const sc=STAGE_COLOR[c.stage];const nf=nextFollowupText(c);const overdue=nf!=='—'&&nf<today;
     return `<div class="co-card" onclick="openDetail('${c.id}')">
-      <div class="co-top"><div class="co-avatar">${avatarHTML(c)}</div>
-        <span class="co-star ${c.dream?'active':''}">${ICONS.star}</span></div>
-      <div class="co-name">${esc(c.name)}</div>
-      <div class="co-industry">${esc(c.role||'—')}${c.industry?' · '+esc(c.industry):''}</div>
+      <div class="co-top"><div class="co-avatar">${avatarHTML(c)}</div><span class="co-star ${c.dream?'active':''}">${ICONS.star}</span></div>
+      <div class="co-name">${esc(c.name)}</div><div class="co-industry">${esc(c.role||'—')}${c.industry?' · '+esc(c.industry):''}</div>
       <span class="stage-badge" style="background:${sc.bg};color:${sc.fg}">${c.stage}</span>
       <div class="co-meta-row"><span class="icon">${ICONS.person}</span>${(c.recruiter&&c.recruiter.name)?esc(c.recruiter.name):'No recruiter yet'}</div>
       <div class="co-meta-row"><span class="icon">${ICONS.cash}</span>${esc(c.comp?.base)||'—'}${c.comp&&c.comp.bonus?' + '+esc(c.comp.bonus):''}</div>
       <div class="co-divider"></div>
-      <div class="co-foot">
-        <div class="co-foot-col"><div class="co-foot-label">Last activity</div><div class="co-foot-val">${lastActivityText(c)}</div></div>
-        <div class="co-foot-col"><div class="co-foot-label">Next follow-up</div><div class="co-foot-val ${overdue?'due':''}">${nf}</div></div>
-      </div>
+      <div class="co-foot"><div class="co-foot-col"><div class="co-foot-label">Last activity</div><div class="co-foot-val">${lastActivityText(c)}</div></div>
+      <div class="co-foot-col"><div class="co-foot-label">Next follow-up</div><div class="co-foot-val ${overdue?'due':''}">${nf}</div></div></div>
     </div>`;
   }).join(''):'<div class="empty-note">No companies match. Try clearing filters.</div>';
 }
@@ -508,213 +599,272 @@ function renderKanban(){
   const wrap=document.getElementById('kanbanWrap');
   wrap.innerHTML=STAGES.map(stage=>{
     const items=state.companies.filter(c=>c.stage===stage);
-    return `<div class="kcol" data-stage="${stage}">
-      <div class="kcol-head"><span class="kcol-title">${stage}</span><span class="kcol-cnt">${items.length}</span></div>
-      <div class="kcol-body">
-        ${items.map(c=>`<div class="kcard" draggable="true" data-id="${c.id}" onclick="openDetail('${c.id}')">
-          <div class="kn">${esc(c.name)} ${c.dream?'⭐':''}</div>
-          <div class="kr">${esc(c.role||'')}</div></div>`).join('')}
-      </div></div>`;
+    return `<div class="kcol" data-stage="${stage}"><div class="kcol-head"><span class="kcol-title">${stage}</span><span class="kcol-cnt">${items.length}</span></div>
+      <div class="kcol-body">${items.map(c=>`<div class="kcard" draggable="true" data-id="${c.id}" onclick="openDetail('${c.id}')"><div class="kn">${esc(c.name)} ${c.dream?'⭐':''}</div><div class="kr">${esc(c.role||'')}</div></div>`).join('')}</div></div>`;
   }).join('');
-
-  wrap.querySelectorAll('.kcard').forEach(card=>{
-    card.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',card.dataset.id);});
-  });
+  wrap.querySelectorAll('.kcard').forEach(card=>card.addEventListener('dragstart',e=>e.dataTransfer.setData('text/plain',card.dataset.id)));
   wrap.querySelectorAll('.kcol').forEach(col=>{
     col.addEventListener('dragover',e=>{e.preventDefault();col.classList.add('drag-over');});
     col.addEventListener('dragleave',()=>col.classList.remove('drag-over'));
     col.addEventListener('drop',e=>{
       e.preventDefault();col.classList.remove('drag-over');
-      const id=e.dataTransfer.getData('text/plain');
-      const co=state.companies.find(c=>c.id===id);
+      const id=e.dataTransfer.getData('text/plain');const co=state.companies.find(c=>c.id===id);
       if(co){co.stage=col.dataset.stage;co.timeline=co.timeline||[];co.timeline.unshift({date:todayISO(),text:'Moved to '+co.stage});saveState();renderKanban();}
     });
   });
 }
+
+/* ── LIBRARY ── */
+function renderLibrary(){
+  const resumes=state.documents.filter(d=>d.type==='resume');
+  const covers=state.documents.filter(d=>d.type==='cover_letter');
+  document.getElementById('libResumes').innerHTML=resumes.map(libCardHTML).join('')+`<div class="lib-add-btn" onclick="openDocAdd('resume')">+ Add résumé</div>`;
+  document.getElementById('libCovers').innerHTML=covers.map(libCardHTML).join('')+`<div class="lib-add-btn" onclick="openDocAdd('cover_letter')">+ Add cover letter</div>`;
+}
+function libCardHTML(d){
+  return `<div class="lib-card"><div class="lib-top"><div class="lib-name">${esc(d.name)}</div><button class="lib-star ${d.isDefault?'active':''}" onclick="toggleDefault('${d.id}')">★</button></div>
+    <span class="lib-tag">${esc(d.tag)}</span>
+    <div class="lib-actions"><button onclick="openDocEdit('${d.id}')">Edit</button><button onclick="deleteDoc('${d.id}')">Delete</button></div></div>`;
+}
+function toggleDefault(id){
+  const doc=state.documents.find(d=>d.id===id);
+  state.documents.filter(d=>d.type===doc.type).forEach(d=>d.isDefault=false);
+  doc.isDefault=true;saveState();renderLibrary();
+}
+function deleteDoc(id){
+  if(!confirm('Delete this document from the library?'))return;
+  state.documents=state.documents.filter(d=>d.id!==id);saveState();renderLibrary();
+}
+document.getElementById('docTag').addEventListener('change',e=>{
+  document.getElementById('docTagCustomWrap').style.display=e.target.value==='Custom'?'block':'none';
+});
+function openDocAdd(type){
+  editingDocId=null;editingDocType=type;
+  document.getElementById('docModalTitle').textContent=type==='resume'?'Add résumé':'Add cover letter';
+  document.getElementById('docName2').value='';document.getElementById('docContent').value='';
+  document.getElementById('docTag').value='General Sales';document.getElementById('docTagCustomWrap').style.display='none';
+  document.getElementById('docDefault').checked=false;document.getElementById('docDeleteBtn').style.display='none';
+  document.getElementById('docOverlay').classList.add('active');
+}
+function openDocEdit(id){
+  const d=state.documents.find(x=>x.id===id);editingDocId=id;editingDocType=d.type;
+  document.getElementById('docModalTitle').textContent='Edit document';
+  document.getElementById('docName2').value=d.name;document.getElementById('docContent').value=d.content;
+  const known=['General Sales','SaaS','Legal','Immigration','Mortgage','Recovery'];
+  if(known.includes(d.tag)){document.getElementById('docTag').value=d.tag;document.getElementById('docTagCustomWrap').style.display='none';}
+  else{document.getElementById('docTag').value='Custom';document.getElementById('docTagCustom').value=d.tag;document.getElementById('docTagCustomWrap').style.display='block';}
+  document.getElementById('docDefault').checked=!!d.isDefault;document.getElementById('docDeleteBtn').style.display='inline-block';
+  document.getElementById('docOverlay').classList.add('active');
+}
+document.getElementById('docCancelBtn').onclick=()=>document.getElementById('docOverlay').classList.remove('active');
+document.getElementById('docSaveBtn').onclick=()=>{
+  const name=document.getElementById('docName2').value.trim();if(!name){alert('Name is required.');return;}
+  const tagSel=document.getElementById('docTag').value;
+  const tag=tagSel==='Custom'?(document.getElementById('docTagCustom').value.trim()||'Custom'):tagSel;
+  const content=document.getElementById('docContent').value;
+  const isDefault=document.getElementById('docDefault').checked;
+  if(isDefault)state.documents.filter(d=>d.type===editingDocType).forEach(d=>d.isDefault=false);
+  if(editingDocId){const d=state.documents.find(x=>x.id===editingDocId);Object.assign(d,{name,tag,content,isDefault});}
+  else{state.documents.push({id:did(),name,type:editingDocType,tag,content,isDefault,createdAt:todayISO()});}
+  saveState();document.getElementById('docOverlay').classList.remove('active');renderLibrary();
+};
+document.getElementById('docDeleteBtn').onclick=()=>{deleteDoc(editingDocId);document.getElementById('docOverlay').classList.remove('active');};
 
 /* ── DETAIL VIEW ── */
 function openDetail(id){
   currentDetailId=id;
   document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-  document.getElementById('view-detail').classList.add('active');
-  renderDetail();
+  document.getElementById('view-detail').classList.add('active');renderDetail();
 }
+function getCurrent(){return state.companies.find(x=>x.id===currentDetailId);}
 function renderDetail(){
-  const c=state.companies.find(x=>x.id===currentDetailId);
-  if(!c)return;
-  const sc=STAGE_COLOR[c.stage];
-  const v=document.getElementById('view-detail');
+  const c=getCurrent();if(!c)return;
+  const sc=STAGE_COLOR[c.stage];const v=document.getElementById('view-detail');
+  const resumeAct=c.resumeHistory.find(h=>h.id===c.activeResumeId);
+  const coverAct=c.coverHistory.find(h=>h.id===c.activeCoverId);
   v.innerHTML=`
     <div class="detail-head">
       <button class="back-btn" onclick="closeDetail()">← Back</button>
       <div class="detail-avatar">${avatarHTML(c)}</div>
-      <div>
-        <div class="detail-title">${esc(c.name)} ${c.dream?'⭐':''}</div>
-        <div class="detail-sub">${esc(c.role||'—')}${c.industry?' · '+esc(c.industry):''} · <span class="stage-badge" style="background:${sc.bg};color:${sc.fg}">${c.stage}</span></div>
-      </div>
-      <div class="detail-actions">
-        <button class="icon-btn" onclick="openEdit('${c.id}')" title="Edit">✎</button>
-      </div>
+      <div><div class="detail-title">${esc(c.name)} ${c.dream?'⭐':''}</div>
+      <div class="detail-sub">${esc(c.role||'—')}${c.industry?' · '+esc(c.industry):''} · <span class="stage-badge" style="background:${sc.bg};color:${sc.fg}">${c.stage}</span></div></div>
+      <div class="detail-actions"><button class="icon-btn" onclick="openEdit('${c.id}')" title="Edit">✎</button></div>
     </div>
 
     <div class="detail-grid">
-      <div class="dcard">
-        <div class="dcard-title">Recruiter</div>
+      <div class="dcard"><div class="dcard-title">Recruiter</div>
         <div class="field-row"><span class="fk">Name</span><span class="fv">${esc(c.recruiter?.name)||'—'}</span></div>
         <div class="field-row"><span class="fk">Email</span><span class="fv">${esc(c.recruiter?.email)||'—'}</span></div>
-        <div class="field-row"><span class="fk">Phone</span><span class="fv">${esc(c.recruiter?.phone)||'—'}</span></div>
-      </div>
-      <div class="dcard">
-        <div class="dcard-title">Compensation</div>
+        <div class="field-row"><span class="fk">Phone</span><span class="fv">${esc(c.recruiter?.phone)||'—'}</span></div></div>
+      <div class="dcard"><div class="dcard-title">Compensation</div>
         <div class="field-row"><span class="fk">Base</span><span class="fv">${esc(c.comp?.base)||'—'}</span></div>
-        <div class="field-row"><span class="fk">Bonus / Equity</span><span class="fv">${esc(c.comp?.bonus)||'—'}</span></div>
-      </div>
+        <div class="field-row"><span class="fk">Bonus / Equity</span><span class="fv">${esc(c.comp?.bonus)||'—'}</span></div></div>
     </div>
 
     <div class="dcard">
-      <div class="dcard-title">Links</div>
-      ${c.link?`<div class="doc-row"><a href="${esc(c.link)}" target="_blank">Job posting →</a></div>`:'<div class="empty-note">No links added.</div>'}
+      <div class="dcard-title">Application Materials <button class="mini-btn" onclick="openPrep()">Prepare application</button></div>
+      <div class="am-row"><span>Résumé used</span><span class="${resumeAct?'am-check':'am-empty'}">${resumeAct?'✓ '+esc(resumeAct.label):'Not yet prepared'}</span></div>
+      <div class="am-row"><span>Cover letter</span><span class="${coverAct?'am-check':'am-empty'}">${coverAct?'✓ '+esc(coverAct.label):'Not yet prepared'}</span></div>
+      <div class="am-row"><span>Job description</span><span class="${c.jd?'am-check':'am-empty'}">${c.jd?'✓ Saved':'Not saved'}</span></div>
+      ${resumeAct&&resumeAct.matchPct!==undefined?`
+      <div class="match-wrap"><span>Skills match</span><span class="match-badge" style="color:${resumeAct.matchPct>=80?'var(--success)':resumeAct.matchPct>=50?'var(--gold)':'var(--coral)'}">${resumeAct.matchPct}%</span></div>
+      ${resumeAct.missing&&resumeAct.missing.length?`<div class="kw-chips">${resumeAct.missing.map(k=>`<span class="kw-chip">${esc(k)}</span>`).join('')}</div>`:''}
+      <div class="am-row"><span>Generated</span><span>${resumeAct.date}</span></div>`:''}
+      ${(c.resumeHistory.length||c.coverHistory.length)?`
+      <div style="margin-top:14px"><div class="dcard-title" style="margin-bottom:8px">Version history</div>
+      ${c.resumeHistory.map(h=>histRow(h,'resume',c)).join('')}
+      ${c.coverHistory.map(h=>histRow(h,'cover',c)).join('')}
+      </div>`:''}
     </div>
 
-    <div class="dcard">
-      <div class="dcard-title">Documents</div>
+    <div class="dcard"><div class="dcard-title">Links</div>
+      ${c.link?`<div class="doc-row"><a href="${esc(c.link)}" target="_blank">Job posting →</a></div>`:'<div class="empty-note">No links added.</div>'}</div>
+
+    <div class="dcard"><div class="dcard-title">Documents</div>
       <div id="docList">${(c.documents||[]).length?c.documents.map(d=>`<div class="doc-row"><a href="${esc(d.url)}" target="_blank">${esc(d.name)} →</a></div>`).join(''):'<div class="empty-note">No documents added.</div>'}</div>
-      <div class="mini-add"><input type="text" id="docName" placeholder="Doc name (e.g. Resume)"><input type="text" id="docUrl" placeholder="URL"><button class="mini-btn" onclick="addDoc()">Add</button></div>
-    </div>
+      <div class="mini-add"><input type="text" id="docName" placeholder="Doc name (e.g. Offer letter)"><input type="text" id="docUrl" placeholder="URL"><button class="mini-btn" onclick="addDoc()">Add</button></div></div>
 
-    <div class="dcard">
-      <div class="dcard-title">Timeline</div>
+    <div class="dcard"><div class="dcard-title">Timeline</div>
       <div id="tlList">${(c.timeline||[]).length?c.timeline.map(t=>`<div class="tl-item"><div class="tl-dot"></div><div><div>${esc(t.text)}</div><div class="tl-date">${t.date}</div></div></div>`).join(''):'<div class="empty-note">No activity logged yet.</div>'}</div>
-      <div class="mini-add"><input type="text" id="tlInput" placeholder="Log an update..."><button class="mini-btn" onclick="addTimeline()">Add</button></div>
-    </div>
+      <div class="mini-add"><input type="text" id="tlInput" placeholder="Log an update..."><button class="mini-btn" onclick="addTimeline()">Add</button></div></div>
 
-    <div class="dcard">
-      <div class="dcard-title">Interview history</div>
+    <div class="dcard"><div class="dcard-title">Interview history</div>
       <div id="ivList">${(c.interviews||[]).length?c.interviews.map(iv=>`<div class="tl-item"><div class="tl-dot" style="background:var(--gold)"></div><div><div>${esc(iv.type)}</div><div class="tl-date">${iv.date}</div></div></div>`).join(''):'<div class="empty-note">No interviews logged.</div>'}</div>
-      <div class="mini-add">
-        <input type="date" id="ivDate">
-        <input type="text" id="ivType" placeholder="Round (e.g. Panel interview)">
-        <button class="mini-btn" onclick="addInterview()">Add</button>
-      </div>
-    </div>
+      <div class="mini-add"><input type="date" id="ivDate"><input type="text" id="ivType" placeholder="Round (e.g. Panel interview)"><button class="mini-btn" onclick="addInterview()">Add</button></div></div>
 
-    <div class="dcard">
-      <div class="dcard-title">Follow-ups / Tasks</div>
+    <div class="dcard"><div class="dcard-title">Follow-ups / Tasks</div>
       <div id="taskList">${(c.tasks||[]).length?c.tasks.map((t,i)=>`<div class="task-row"><div class="task-cb ${t.done?'done':''}" onclick="toggleTask(${i})">${t.done?'✓':''}</div><div class="task-text ${t.done?'done':''}">${esc(t.text)}</div><div class="task-date">${t.date}</div></div>`).join(''):'<div class="empty-note">No tasks yet.</div>'}</div>
-      <div class="mini-add">
-        <input type="date" id="taskDate">
-        <input type="text" id="taskText" placeholder="Follow up about...">
-        <button class="mini-btn" onclick="addTask()">Add</button>
-      </div>
-    </div>
+      <div class="mini-add"><input type="date" id="taskDate"><input type="text" id="taskText" placeholder="Follow up about..."><button class="mini-btn" onclick="addTask()">Add</button></div></div>
 
-    <div class="dcard">
-      <div class="dcard-title">Notes</div>
+    <div class="dcard"><div class="dcard-title">Notes</div>
       <div id="noteList">${(c.notes||[]).length?c.notes.map(n=>`<div class="tl-item"><div class="tl-dot" style="background:var(--text-muted)"></div><div><div>${esc(n.text)}</div><div class="tl-date">${n.date}</div></div></div>`).join(''):'<div class="empty-note">No notes yet.</div>'}</div>
-      <div class="mini-add"><textarea id="noteInput" rows="2" placeholder="Add a note..."></textarea><button class="mini-btn" onclick="addNote()">Add</button></div>
-    </div>
+      <div class="mini-add"><textarea id="noteInput" rows="2" placeholder="Add a note..."></textarea><button class="mini-btn" onclick="addNote()">Add</button></div></div>
   `;
 }
+function histRow(h,kind,c){
+  const isFinal=(kind==='resume'?c.finalResumeId:c.finalCoverId)===h.id;
+  const isActive=(kind==='resume'?c.activeResumeId:c.activeCoverId)===h.id;
+  const mCls=h.method==='ai'?'method-ai':h.method==='recommend'?'method-recommend':'method-as-is';
+  const mLabel=h.method==='ai'?'AI':h.method==='recommend'?'Recommended':'As-is';
+  return `<div class="hist-item"><div><span class="hist-label">${esc(h.label)}</span><span class="method-tag ${mCls}">${mLabel}</span>${isFinal?'<span class="final-badge">Final Submitted</span>':''}</div>
+    <div class="hist-actions"><span class="hist-meta">${h.date}</span> ${!isActive?`<button onclick="setActive('${kind}','${h.id}')">Use</button>`:''} <button onclick="markFinal('${kind}','${h.id}')">Mark final</button></div></div>`;
+}
+function setActive(kind,id){const c=getCurrent();if(kind==='resume')c.activeResumeId=id;else c.activeCoverId=id;saveState();renderDetail();}
+function markFinal(kind,id){const c=getCurrent();if(kind==='resume')c.finalResumeId=id;else c.finalCoverId=id;saveState();renderDetail();}
 function closeDetail(){
   document.getElementById('view-detail').classList.remove('active');
-  document.querySelector('.tab-btn[data-tab="dashboard"]').classList.add('active');
-  showView('dashboard');
+  document.querySelector('.tab-btn[data-tab="dashboard"]').classList.add('active');showView('dashboard');
 }
-function getCurrent(){return state.companies.find(x=>x.id===currentDetailId);}
-function addTimeline(){
-  const inp=document.getElementById('tlInput');if(!inp.value.trim())return;
-  const c=getCurrent();c.timeline=c.timeline||[];c.timeline.unshift({date:todayISO(),text:inp.value.trim()});
-  saveState();renderDetail();
-}
-function addInterview(){
-  const d=document.getElementById('ivDate').value||todayISO();
-  const t=document.getElementById('ivType');if(!t.value.trim())return;
-  const c=getCurrent();c.interviews=c.interviews||[];c.interviews.push({date:d,type:t.value.trim()});
-  c.interviews.sort((a,b)=>a.date.localeCompare(b.date));
-  saveState();renderDetail();
-}
-function addTask(){
-  const d=document.getElementById('taskDate').value||todayISO();
-  const t=document.getElementById('taskText');if(!t.value.trim())return;
-  const c=getCurrent();c.tasks=c.tasks||[];c.tasks.push({date:d,text:t.value.trim(),done:false});
-  saveState();renderDetail();
-}
-function toggleTask(i){
-  const c=getCurrent();c.tasks[i].done=!c.tasks[i].done;saveState();renderDetail();
-}
-function addNote(){
-  const inp=document.getElementById('noteInput');if(!inp.value.trim())return;
-  const c=getCurrent();c.notes=c.notes||[];c.notes.unshift({date:todayISO(),text:inp.value.trim()});
-  saveState();renderDetail();
-}
-function addDoc(){
-  const n=document.getElementById('docName'),u=document.getElementById('docUrl');
-  if(!n.value.trim()||!u.value.trim())return;
-  const c=getCurrent();c.documents=c.documents||[];c.documents.push({name:n.value.trim(),url:u.value.trim()});
-  saveState();renderDetail();
-}
+function addTimeline(){const inp=document.getElementById('tlInput');if(!inp.value.trim())return;const c=getCurrent();c.timeline.unshift({date:todayISO(),text:inp.value.trim()});saveState();renderDetail();}
+function addInterview(){const d=document.getElementById('ivDate').value||todayISO();const t=document.getElementById('ivType');if(!t.value.trim())return;const c=getCurrent();c.interviews.push({date:d,type:t.value.trim()});c.interviews.sort((a,b)=>a.date.localeCompare(b.date));saveState();renderDetail();}
+function addTask(){const d=document.getElementById('taskDate').value||todayISO();const t=document.getElementById('taskText');if(!t.value.trim())return;const c=getCurrent();c.tasks.push({date:d,text:t.value.trim(),done:false});saveState();renderDetail();}
+function toggleTask(i){const c=getCurrent();c.tasks[i].done=!c.tasks[i].done;saveState();renderDetail();}
+function addNote(){const inp=document.getElementById('noteInput');if(!inp.value.trim())return;const c=getCurrent();c.notes.unshift({date:todayISO(),text:inp.value.trim()});saveState();renderDetail();}
+function addDoc(){const n=document.getElementById('docName'),u=document.getElementById('docUrl');if(!n.value.trim()||!u.value.trim())return;const c=getCurrent();c.documents.push({name:n.value.trim(),url:u.value.trim()});saveState();renderDetail();}
 
-/* ── ADD / EDIT MODAL ── */
+/* ── PREPARE APPLICATION ── */
+function openPrep(){
+  const c=getCurrent();
+  document.getElementById('prepJD').value=c.jd||'';
+  const resumes=state.documents.filter(d=>d.type==='resume');
+  const covers=state.documents.filter(d=>d.type==='cover_letter');
+  document.getElementById('prepResumeSel').innerHTML=resumes.map(d=>`<option value="${d.id}" ${d.isDefault?'selected':''}>${esc(d.name)} (${esc(d.tag)})</option>`).join('')||'<option value="">No résumés in library</option>';
+  document.getElementById('prepCoverSel').innerHTML=covers.map(d=>`<option value="${d.id}" ${d.isDefault?'selected':''}>${esc(d.name)} (${esc(d.tag)})</option>`).join('')||'<option value="">No cover letters in library</option>';
+  document.querySelectorAll('input[name="prepMethod"]').forEach(r=>r.checked=(r.value==='as-is'));
+  updateRadioStyles();document.getElementById('aiHelp').classList.remove('show');document.getElementById('aiPaste').value='';
+  document.getElementById('prepOverlay').classList.add('active');
+}
+document.querySelectorAll('input[name="prepMethod"]').forEach(r=>r.addEventListener('change',()=>{
+  updateRadioStyles();
+  const val=document.querySelector('input[name="prepMethod"]:checked').value;
+  document.getElementById('aiHelp').classList.toggle('show',val==='ai'||val==='new');
+}));
+function updateRadioStyles(){
+  document.querySelectorAll('.radio-opt').forEach(o=>o.classList.toggle('picked',o.querySelector('input').checked));
+}
+document.getElementById('prepCancelBtn').onclick=()=>document.getElementById('prepOverlay').classList.remove('active');
+document.getElementById('copyPromptBtn').onclick=()=>{
+  const jd=document.getElementById('prepJD').value;
+  const resDoc=state.documents.find(d=>d.id===document.getElementById('prepResumeSel').value);
+  const prompt=`Here is my current résumé:\n\n${resDoc?resDoc.content:'(no base résumé selected)'}\n\nHere is the job description I'm applying to:\n\n${jd}\n\nPlease tailor my résumé to this job, emphasizing relevant keywords and experience, while keeping it truthful to my actual background.`;
+  navigator.clipboard.writeText(prompt).then(()=>alert('Prompt copied — paste it into Claude chat, then paste the result back below.')).catch(()=>alert('Could not copy automatically — select and copy manually:\n\n'+prompt));
+};
+document.getElementById('prepConfirmBtn').onclick=()=>{
+  const c=getCurrent();
+  const jd=document.getElementById('prepJD').value.trim();
+  c.jd=jd;
+  const method=document.querySelector('input[name="prepMethod"]:checked').value;
+  const resumes=state.documents.filter(d=>d.type==='resume');
+  const covers=state.documents.filter(d=>d.type==='cover_letter');
+  const chosenResumeId=document.getElementById('prepResumeSel').value;
+  const chosenCoverId=document.getElementById('prepCoverSel').value;
+  const aiPaste=document.getElementById('aiPaste').value.trim();
+
+  // résumé
+  let resDoc=resumes.find(d=>d.id===chosenResumeId);
+  let resContent=resDoc?resDoc.content:'';
+  let resLabel='Resume v'+(c.resumeHistory.length+1);
+  let matchInfo={matchPct:0,missing:[]};
+  if(method==='recommend'&&resumes.length){
+    let best=null;
+    resumes.forEach(d=>{const m=matchDoc(jd,d.content);if(!best||m.matchPct>best.m.matchPct)best={doc:d,m};});
+    resDoc=best.doc;resContent=best.doc.content;matchInfo=best.m;resLabel+=' (Recommended)';
+  }else if(method==='ai'||method==='new'){
+    resContent=aiPaste||resContent;resLabel+=' (AI)';matchInfo=matchDoc(jd,resContent);
+  }else{
+    matchInfo=matchDoc(jd,resContent);
+  }
+  const resSnap={id:hid(),label:resLabel,content:resContent,method:method==='recommend'?'recommend':(method==='ai'||method==='new')?'ai':'as-is',date:todayISO(),matchPct:matchInfo.matchPct,missing:matchInfo.missing};
+  c.resumeHistory.push(resSnap);c.activeResumeId=resSnap.id;
+
+  // cover letter (simpler — as-is or ai paste, recommend just uses default)
+  let covDoc=covers.find(d=>d.id===chosenCoverId);
+  let covContent=covDoc?covDoc.content:'';
+  let covLabel='Cover Letter v'+(c.coverHistory.length+1);
+  if(method==='ai'||method==='new'){covLabel+=' (AI)';}
+  else if(method==='recommend'){covLabel+=' (Recommended)';}
+  const covSnap={id:hid(),label:covLabel,content:covContent,method:method==='recommend'?'recommend':(method==='ai'||method==='new')?'ai':'as-is',date:todayISO()};
+  c.coverHistory.push(covSnap);c.activeCoverId=covSnap.id;
+
+  c.timeline.unshift({date:todayISO(),text:`Prepared application materials (${method})`});
+  saveState();document.getElementById('prepOverlay').classList.remove('active');renderDetail();
+};
+
+/* ── ADD / EDIT COMPANY MODAL ── */
 document.getElementById('openAddBtn').onclick=()=>openAdd();
 document.getElementById('cancelBtn').onclick=()=>closeModal();
 function openAdd(){
-  editingId=null;
-  document.getElementById('modalTitle').textContent='Add company';
-  document.getElementById('deleteBtn').style.display='none';
+  editingId=null;document.getElementById('modalTitle').textContent='Add company';document.getElementById('deleteBtn').style.display='none';
   ['fName','fRole','fIndustry','fLogo','fRecName','fRecEmail','fRecPhone','fBase','fBonus','fLink'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('fStage').value='Researching';
-  document.getElementById('fDream').checked=false;
+  document.getElementById('fStage').value='Researching';document.getElementById('fDream').checked=false;
   document.getElementById('addOverlay').classList.add('active');
 }
 function openEdit(id){
-  editingId=id;
-  const c=state.companies.find(x=>x.id===id);
-  document.getElementById('modalTitle').textContent='Edit company';
-  document.getElementById('deleteBtn').style.display='inline-block';
-  document.getElementById('fName').value=c.name||'';
-  document.getElementById('fRole').value=c.role||'';
-  document.getElementById('fIndustry').value=c.industry||'';
-  document.getElementById('fLogo').value=c.logo||'';
-  document.getElementById('fStage').value=c.stage||'Researching';
-  document.getElementById('fDream').checked=!!c.dream;
-  document.getElementById('fRecName').value=c.recruiter?.name||'';
-  document.getElementById('fRecEmail').value=c.recruiter?.email||'';
-  document.getElementById('fRecPhone').value=c.recruiter?.phone||'';
-  document.getElementById('fBase').value=c.comp?.base||'';
-  document.getElementById('fBonus').value=c.comp?.bonus||'';
-  document.getElementById('fLink').value=c.link||'';
+  editingId=id;const c=state.companies.find(x=>x.id===id);
+  document.getElementById('modalTitle').textContent='Edit company';document.getElementById('deleteBtn').style.display='inline-block';
+  document.getElementById('fName').value=c.name||'';document.getElementById('fRole').value=c.role||'';document.getElementById('fIndustry').value=c.industry||'';
+  document.getElementById('fLogo').value=c.logo||'';document.getElementById('fStage').value=c.stage||'Researching';document.getElementById('fDream').checked=!!c.dream;
+  document.getElementById('fRecName').value=c.recruiter?.name||'';document.getElementById('fRecEmail').value=c.recruiter?.email||'';document.getElementById('fRecPhone').value=c.recruiter?.phone||'';
+  document.getElementById('fBase').value=c.comp?.base||'';document.getElementById('fBonus').value=c.comp?.bonus||'';document.getElementById('fLink').value=c.link||'';
   document.getElementById('addOverlay').classList.add('active');
 }
 function closeModal(){document.getElementById('addOverlay').classList.remove('active');}
 document.getElementById('saveBtn').onclick=()=>{
-  const name=document.getElementById('fName').value.trim();
-  if(!name){alert('Company name is required.');return;}
-  const data={
-    name,
-    role:document.getElementById('fRole').value.trim(),
-    industry:document.getElementById('fIndustry').value.trim(),
-    logo:document.getElementById('fLogo').value.trim(),
-    stage:document.getElementById('fStage').value,
-    dream:document.getElementById('fDream').checked,
+  const name=document.getElementById('fName').value.trim();if(!name){alert('Company name is required.');return;}
+  const data={name,role:document.getElementById('fRole').value.trim(),industry:document.getElementById('fIndustry').value.trim(),logo:document.getElementById('fLogo').value.trim(),
+    stage:document.getElementById('fStage').value,dream:document.getElementById('fDream').checked,
     recruiter:{name:document.getElementById('fRecName').value.trim(),email:document.getElementById('fRecEmail').value.trim(),phone:document.getElementById('fRecPhone').value.trim()},
-    comp:{base:document.getElementById('fBase').value.trim(),bonus:document.getElementById('fBonus').value.trim()},
-    link:document.getElementById('fLink').value.trim()
-  };
-  if(editingId){
-    const c=state.companies.find(x=>x.id===editingId);
-    Object.assign(c,data);
-  }else{
-    state.companies.push(Object.assign({id:cid(),timeline:[{date:todayISO(),text:'Added to pipeline'}],notes:[],documents:[],interviews:[],tasks:[]},data));
-  }
+    comp:{base:document.getElementById('fBase').value.trim(),bonus:document.getElementById('fBonus').value.trim()},link:document.getElementById('fLink').value.trim()};
+  if(editingId){const c=state.companies.find(x=>x.id===editingId);Object.assign(c,data);}
+  else{state.companies.push(Object.assign({id:cid(),timeline:[{date:todayISO(),text:'Added to pipeline'}],notes:[],documents:[],interviews:[],tasks:[],resumeHistory:[],coverHistory:[],jd:'',activeResumeId:null,activeCoverId:null,finalResumeId:null,finalCoverId:null},data));}
   saveState();closeModal();
   if(document.getElementById('view-detail').classList.contains('active'))renderDetail();
   renderDashboard();
 };
 document.getElementById('deleteBtn').onclick=()=>{
   if(!confirm('Delete this company? This cannot be undone.'))return;
-  state.companies=state.companies.filter(x=>x.id!==editingId);
-  saveState();closeModal();closeDetail();
+  state.companies=state.companies.filter(x=>x.id!==editingId);saveState();closeModal();closeDetail();
 };
 
 renderDashboard();
