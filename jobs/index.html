@@ -259,6 +259,32 @@ input,textarea,select{font-family:inherit}
 .star-row .sr-stars .dim{color:var(--border)}
 .overall-score{display:flex;align-items:center;justify-content:space-between;padding:10px 0;margin-bottom:4px}
 .overall-score .osn{font-size:26px;font-weight:800}
+
+/* ── OPPORTUNITY SCORECARD ── */
+.verdict-banner{border-radius:11px;padding:14px 16px;margin-bottom:16px;font-size:13.5px;font-weight:600;line-height:1.5}
+.verdict-green{background:#DCFCE7;color:#14532D}
+.verdict-amber{background:var(--gold-tint);color:#8A6B10}
+.verdict-red{background:var(--coral-tint);color:#B8422F}
+.verdict-none{background:#F3F4F6;color:var(--text-sec)}
+.crit-cat{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;margin:14px 0 6px}
+.crit-cat:first-child{margin-top:0}
+.crit-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid #f2f3f5;font-size:13px}
+.crit-row:last-child{border:none}
+.crit-name{flex:1}
+.crit-req{font-size:10px;font-weight:700;color:var(--coral);margin-left:6px}
+.crit-toggle{display:flex;gap:4px;flex-shrink:0}
+.crit-toggle button{font-size:10.5px;font-weight:700;padding:4px 9px;border-radius:6px;border:1px solid var(--border);background:#fff;color:var(--text-muted)}
+.crit-toggle button.on-yes.picked{background:#DCFCE7;border-color:#8FD9AE;color:#14532D}
+.crit-toggle button.on-partial.picked{background:var(--gold-tint);border-color:#E8CD7E;color:#8A6B10}
+.crit-toggle button.on-no.picked{background:var(--coral-tint);border-color:#F3A99C;color:#B8422F}
+.crit-auto-badge{font-size:9.5px;font-weight:700;color:var(--teal-dark);background:var(--teal-tint);padding:2px 6px;border-radius:100px;margin-left:6px}
+.checklist-editor-row{display:flex;gap:6px;align-items:center;padding:6px 0;border-bottom:1px solid #f2f3f5;font-size:12px}
+.checklist-editor-row:last-child{border:none}
+.checklist-editor-row .cn{flex:1;font-weight:600}
+.checklist-editor-row .cc{color:var(--text-muted)}
+.checklist-editor-row button{background:none;border:none;color:var(--coral);font-weight:700;font-size:11px}
+.template-bar{display:flex;gap:8px;align-items:center;margin:14px 0 10px}
+.template-bar select{flex:1;border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:12.5px}
 </style>
 </head>
 <body>
@@ -269,7 +295,7 @@ input,textarea,select{font-family:inherit}
     <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
     <button class="tab-btn" data-tab="pipeline">Pipeline</button>
     <button class="tab-btn" data-tab="library">Library</button>
-    <button class="tab-btn" data-tab="analyzer">Analyzer</button>
+    <button class="tab-btn" data-tab="analyzer">Opportunity</button>
     <button class="tab-btn" data-tab="networking">Networking</button>
     <button class="tab-btn" data-tab="profiles">Profiles</button>
   </div>
@@ -338,7 +364,7 @@ input,textarea,select{font-family:inherit}
 
 <!-- ANALYZER -->
 <div class="view" id="view-analyzer">
-  <div class="section-title" style="margin-bottom:6px">Job Posting Analyzer</div>
+  <div class="section-title" style="margin-bottom:6px">Opportunity Intelligence Engine</div>
   <div class="greeting-sub" style="margin-bottom:16px">Paste any job posting before you decide to apply — see the real requirements, the keywords your résumé needs, and how your current library stacks up.</div>
   <div class="dcard">
     <div class="form-field"><label>Job description</label><textarea id="anzJD" rows="7" placeholder="Paste the full job posting here..."></textarea></div>
@@ -521,6 +547,22 @@ input,textarea,select{font-family:inherit}
       <div class="form-field"><label>Preferred cover letter</label><select id="pCoverSel"></select></div>
     </div>
     <div class="form-field"><label>Preferred LinkedIn version</label><select id="pLinkedinSel"></select></div>
+
+    <div class="dcard-title" style="margin-top:10px">Hiring Criteria Checklist</div>
+    <div class="template-bar">
+      <select id="pTemplateSel"><option value="">Load an industry template...</option></select>
+      <button class="mini-btn" type="button" id="pLoadTemplateBtn">Load</button>
+    </div>
+    <div id="pChecklist"></div>
+    <div class="mini-add">
+      <input type="text" id="pRuleCategory" placeholder="Category (e.g. Company)" style="max-width:130px">
+      <input type="text" id="pRuleName" placeholder="Rule name (e.g. BBB Accredited)">
+      <input type="text" id="pRuleAuto" placeholder="Auto-keywords (optional)" style="max-width:150px">
+      <label class="form-check" style="flex-shrink:0"><input type="checkbox" id="pRuleRequired"> Required</label>
+      <input type="text" id="pRuleWeight" placeholder="Wt 1-10" style="max-width:70px">
+      <button class="mini-btn" type="button" id="pRuleAddBtn">Add</button>
+    </div>
+
     <div class="modal-btns">
       <button class="btn-danger" id="profileDeleteBtn" style="display:none">Delete</button>
       <button class="btn-secondary" id="profileCancelBtn">Cancel</button>
@@ -547,6 +589,15 @@ document.getElementById('openAddBtn').innerHTML=`<span class="icon">${ICONS.buil
 document.querySelector('.search-icon').innerHTML=ICONS.search;
 
 const SK='clcrm_jobs_v1';
+/* ── STORAGE SERVICE ── the ONLY place that touches localStorage directly.
+   Everything else (CompanyService-equivalent code, ProfileEngine, OpportunityEngine)
+   reads/writes through this. Swapping localStorage for a real backend later means
+   rewriting these two functions only — no UI code changes. */
+const StorageService=(function(){
+  function load(key){try{return JSON.parse(localStorage.getItem(key));}catch(e){return null;}}
+  function persist(key,value){localStorage.setItem(key,JSON.stringify(value));}
+  return{load,persist};
+})();
 const STAGES=['Researching','Applied','Phone Screen','Interview','Offer','Accepted','Rejected'];
 const STAGE_COLOR={
   'Researching':{bg:'#F3F4F6',fg:'#4A5560'},'Applied':{bg:'#E3F0F2',fg:'#17606F'},
@@ -554,11 +605,11 @@ const STAGE_COLOR={
   'Offer':{bg:'#DCFCE7',fg:'#14532D'},'Accepted':{bg:'#D1FAE5',fg:'#065F46'},'Rejected':{bg:'#FFEDE9',fg:'#B8422F'}
 };
 
-let state=null;
-try{state=JSON.parse(localStorage.getItem(SK));}catch(e){state=null;}
+let state=StorageService.load(SK);
 if(!state||!state.companies){state={companies:seedData()};}
 if(!state.documents)state.documents=seedDocs();
 if(!state.profiles)state.profiles=seedProfiles();
+state.profiles.forEach(p=>{if(p.checklist===undefined)p.checklist=[];});
 state.companies.forEach(c=>{
   if(c.industry===undefined)c.industry='';
   if(c.logo===undefined)c.logo='';
@@ -573,9 +624,10 @@ state.companies.forEach(c=>{
   if(c.intel===undefined)c.intel={size:'',funding:'',culture:'',news:'',reviews:''};
   if(c.isNetworking===undefined)c.isNetworking=false;
   if(c.networkingReason===undefined)c.networkingReason='';
+  if(c.opportunityScore===undefined)c.opportunityScore=null;
 });
 saveState();
-function saveState(){localStorage.setItem(SK,JSON.stringify(state));}
+function saveState(){StorageService.persist(SK,state);}
 
 function seedData(){
   const today=new Date();
@@ -745,6 +797,101 @@ const ProfileEngine=(function(){
   return{list,getActive,setActive,starsHTML,score,exportJSON,importJSON};
 })();
 
+/* ── INDUSTRY CHECKLIST TEMPLATES ──
+   Starter rule sets — every rule is editable/deletable once loaded into a profile.
+   autoKeywords: comma list checked against JD text for auto-detection. Empty = manual-only
+   (things a job posting can't tell you, like BBB rating — those come from Company Intelligence). */
+const INDUSTRY_TEMPLATES={
+  'Timeshare Exit':[
+    {category:'Company',name:'BBB Accredited',required:true,weight:8,autoKeywords:''},
+    {category:'Company',name:'Owner identified',required:false,weight:4,autoKeywords:''},
+    {category:'Position',name:'Remote',required:true,weight:8,autoKeywords:'remote'},
+    {category:'Position',name:'Warm leads provided',required:true,weight:7,autoKeywords:'warm lead,warm inbound,leads provided'},
+    {category:'Compensation',name:'Weekly guarantee / base pay',required:true,weight:9,autoKeywords:'guarantee,base pay,base salary'},
+    {category:'Sales Process',name:'CRM provided',required:false,weight:4,autoKeywords:'crm'},
+    {category:'Leadership',name:'Interview with sales manager',required:false,weight:3,autoKeywords:''}
+  ],
+  'Legal Services':[
+    {category:'Company',name:'Firm established 5+ years',required:false,weight:5,autoKeywords:''},
+    {category:'Position',name:'Remote or hybrid',required:true,weight:8,autoKeywords:'remote,hybrid'},
+    {category:'Position',name:'Litigation / plaintiff focus',required:false,weight:6,autoKeywords:'litigation,plaintiff,mass tort'},
+    {category:'Compensation',name:'Base + commission structure',required:true,weight:8,autoKeywords:'commission,base salary'},
+    {category:'Sales Process',name:'CRM provided',required:false,weight:3,autoKeywords:'crm'}
+  ],
+  'Mortgage':[
+    {category:'Company',name:'Licensed / bonded lender',required:true,weight:8,autoKeywords:'licensed,nmls'},
+    {category:'Position',name:'Remote',required:false,weight:5,autoKeywords:'remote'},
+    {category:'Compensation',name:'Commission plan published',required:true,weight:8,autoKeywords:'commission'},
+    {category:'Sales Process',name:'Leads provided',required:true,weight:7,autoKeywords:'leads provided,warm lead'}
+  ],
+  'Immigration':[
+    {category:'Company',name:'Accredited / BBB rated',required:false,weight:5,autoKeywords:''},
+    {category:'Position',name:'Bilingual preferred/required',required:false,weight:4,autoKeywords:'bilingual,spanish'},
+    {category:'Position',name:'Remote or hybrid',required:true,weight:7,autoKeywords:'remote,hybrid'},
+    {category:'Compensation',name:'Base pay stated',required:true,weight:7,autoKeywords:'base pay,base salary,hourly'}
+  ],
+  'SaaS':[
+    {category:'Company',name:'Funded / established (Series A+)',required:false,weight:5,autoKeywords:'series a,series b,series c,funded'},
+    {category:'Position',name:'Remote',required:true,weight:8,autoKeywords:'remote'},
+    {category:'Position',name:'Inbound / warm pipeline',required:false,weight:5,autoKeywords:'inbound,warm pipeline'},
+    {category:'Compensation',name:'OTE disclosed',required:true,weight:8,autoKeywords:'ote,on-target earnings'},
+    {category:'Sales Process',name:'CRM provided (Salesforce/HubSpot)',required:false,weight:3,autoKeywords:'salesforce,hubspot,crm'}
+  ],
+  'Medical Sales':[
+    {category:'Company',name:'Established manufacturer/distributor',required:false,weight:5,autoKeywords:''},
+    {category:'Position',name:'Territory-based',required:false,weight:4,autoKeywords:'territory'},
+    {category:'Compensation',name:'Base + uncapped commission',required:true,weight:8,autoKeywords:'uncapped,commission'},
+    {category:'Position',name:'Travel under 25%',required:false,weight:5,autoKeywords:''}
+  ],
+  'Business Brokerage':[
+    {category:'Company',name:'Licensed brokerage',required:true,weight:7,autoKeywords:'licensed'},
+    {category:'Compensation',name:'Commission-only disclosed upfront',required:true,weight:7,autoKeywords:'commission only,100% commission'},
+    {category:'Sales Process',name:'Deal flow / listings provided',required:false,weight:5,autoKeywords:'listings,deal flow'}
+  ],
+  'High-Ticket Closing':[
+    {category:'Position',name:'Warm inbound leads',required:true,weight:9,autoKeywords:'warm inbound,warm lead'},
+    {category:'Position',name:'No cold calling',required:false,weight:5,autoKeywords:''},
+    {category:'Compensation',name:'Commission plan published',required:true,weight:8,autoKeywords:'commission'},
+    {category:'Sales Process',name:'Sales script / training provided',required:false,weight:4,autoKeywords:'script,training,onboarding'}
+  ]
+};
+
+/* ── OPPORTUNITY INTELLIGENCE ENGINE ──
+   Weighted, rules-based scorecard against a profile's hiring-criteria checklist.
+   No AI. Deterministic. Talks only to StorageService (via ProfileEngine/state), same
+   migration-ready pattern. Auto-detects what a JD can honestly reveal; everything else
+   is an explicit manual call the user makes — never guessed. */
+const OpportunityEngine=(function(){
+  function detectRule(rule,jdText){
+    if(!rule.autoKeywords)return 'unknown';
+    const kws=rule.autoKeywords.split(',').map(s=>s.trim().toLowerCase()).filter(Boolean);
+    const lc=jdText.toLowerCase();
+    return kws.some(k=>lc.includes(k))?'yes':'unknown';
+  }
+  function computeScorecard(profile,jdText,overrides){
+    overrides=overrides||{};
+    const rows=(profile.checklist||[]).map(rule=>{
+      const val=overrides[rule.id]!==undefined?overrides[rule.id]:detectRule(rule,jdText);
+      return{rule,val,auto:overrides[rule.id]===undefined&&!!rule.autoKeywords};
+    });
+    const known=rows.filter(r=>r.val==='yes'||r.val==='no'||r.val==='partial');
+    const weightSum=known.reduce((n,r)=>n+r.rule.weight,0);
+    const earned=known.reduce((n,r)=>n+(r.val==='yes'?r.rule.weight:r.val==='partial'?r.rule.weight*0.5:0),0);
+    const overall=weightSum?Math.round(earned/weightSum*100):null;
+    const requiredFailed=rows.filter(r=>r.rule.required&&r.val==='no');
+    const requiredUnknown=rows.filter(r=>r.rule.required&&r.val==='unknown');
+    let verdict,verdictText;
+    if(!rows.length){verdict='none';verdictText='No checklist on this profile yet — add hiring criteria to the active profile.';}
+    else if(requiredFailed.length){verdict='red';verdictText=`Do not recommend — fails ${requiredFailed.length} required criteri${requiredFailed.length===1?'on':'a'}: ${requiredFailed.map(r=>r.rule.name).join(', ')}.`;}
+    else if(requiredUnknown.length){verdict='amber';verdictText=`Missing data on ${requiredUnknown.length} required criteri${requiredUnknown.length===1?'on':'a'}: ${requiredUnknown.map(r=>r.rule.name).join(', ')}. Fill these in to get a confident verdict.`;}
+    else if(overall!==null&&overall>=80){verdict='green';verdictText=`Recommend applying — satisfies ${known.filter(r=>r.val==='yes').length} of ${known.length} evaluated criteria.`;}
+    else if(overall!==null&&overall>=55){verdict='amber';verdictText=`Worth considering — satisfies ${known.filter(r=>r.val==='yes').length} of ${known.length} evaluated criteria, but not a strong match.`;}
+    else{verdict='red';verdictText='Weak match against your hiring criteria.';}
+    return{rows,overall,verdict,verdictText};
+  }
+  return{computeScorecard};
+})();
+
 /* ── JOB POSTING ANALYZER ── */
 function analyzeJD(text){
   const lc=text.toLowerCase();
@@ -769,16 +916,19 @@ function analyzeJD(text){
   });
   return{kws,salary,workMode,seniority,travel,bestDoc,bestMatch};
 }
+let anzOverrides={};let anzText='';
 document.getElementById('anzRunBtn').onclick=()=>{
   const text=document.getElementById('anzJD').value.trim();
   const box=document.getElementById('anzResults');
   if(!text){box.innerHTML='';return;}
+  anzText=text;anzOverrides={};
   const a=analyzeJD(text);
   const activeProfile=ProfileEngine.getActive();
   const ps=activeProfile?ProfileEngine.score(activeProfile,text,a.workMode):null;
   box.innerHTML=`
+    <div id="anzScorecard"></div>
     ${ps?`<div class="dcard">
-      <div class="dcard-title">Match vs. active profile: ${esc(activeProfile.name)}</div>
+      <div class="dcard-title">Résumé keyword match vs. active profile: ${esc(activeProfile.name)}</div>
       <div class="overall-score"><span>Overall match</span><span class="osn" style="color:${ps.overall>=80?'var(--success)':ps.overall>=50?'var(--gold)':'var(--coral)'}">${ps.overall}%</span></div>
       ${ps.cats.map(c=>`<div class="star-row"><span class="sr-label">${c.label}</span><span class="sr-stars">${ProfileEngine.starsHTML(c.stars)}</span></div>`).join('')}
     </div>`:''}
@@ -804,19 +954,54 @@ document.getElementById('anzRunBtn').onclick=()=>{
         <button class="btn-primary" id="anzCreateBtn">Add as company</button>
       </div>
     </div>`;
+  renderOpportunityScorecard();
   document.getElementById('anzCreateBtn').onclick=()=>{
     const name=document.getElementById('anzCompanyName').value.trim();
     if(!name){alert('Company name is required to add it to your pipeline.');return;}
+    const sc=activeProfile?OpportunityEngine.computeScorecard(activeProfile,anzText,anzOverrides):null;
     const newCo={id:cid(),name,role:'',industry:'',logo:'',stage:'Researching',dream:false,
       recruiter:{name:'',email:'',phone:''},comp:{base:a.salary||'',bonus:''},link:'',
-      timeline:[{date:todayISO(),text:'Added from Job Posting Analyzer'}],notes:[],documents:[],
+      timeline:[{date:todayISO(),text:'Added from Opportunity Intelligence Engine'+(sc?` — ${sc.overall!==null?sc.overall+'% match':'scored'}`:'')}],notes:[],documents:[],
       interviews:[],tasks:[],resumeHistory:[],coverHistory:[],jd:text,
       activeResumeId:null,activeCoverId:null,finalResumeId:null,finalCoverId:null,
-      intel:{size:'',funding:'',culture:'',news:'',reviews:''}};
+      intel:{size:'',funding:'',culture:'',news:'',reviews:''},isNetworking:false,networkingReason:'',
+      opportunityScore:sc?{overall:sc.overall,verdict:sc.verdict,verdictText:sc.verdictText,profileName:activeProfile.name,computedAt:todayISO()}:null};
     state.companies.push(newCo);saveState();
     openDetail(newCo.id);
   };
 };
+function renderOpportunityScorecard(){
+  const container=document.getElementById('anzScorecard');
+  if(!container)return;
+  const activeProfile=ProfileEngine.getActive();
+  if(!activeProfile||!activeProfile.checklist||!activeProfile.checklist.length){
+    container.innerHTML=`<div class="dcard"><div class="dcard-title">Opportunity Scorecard</div><div class="empty-note">The active profile ("${activeProfile?esc(activeProfile.name):'none'}") has no hiring criteria checklist yet. Add one from the Profiles tab — or load an industry template — to get a weighted recommendation here instead of just a keyword score.</div></div>`;
+    return;
+  }
+  const sc=OpportunityEngine.computeScorecard(activeProfile,anzText,anzOverrides);
+  const cats={};
+  sc.rows.forEach(r=>{(cats[r.rule.category]=cats[r.rule.category]||[]).push(r);});
+  container.innerHTML=`<div class="dcard">
+    <div class="dcard-title">Opportunity Scorecard — ${esc(activeProfile.name)}</div>
+    <div class="verdict-banner verdict-${sc.verdict}">${sc.overall!==null?`<span style="font-size:20px;font-weight:800">${sc.overall}/100</span> — `:''}${esc(sc.verdictText)}</div>
+    ${Object.keys(cats).map(cat=>`
+      <div class="crit-cat">${esc(cat)}</div>
+      ${cats[cat].map(r=>`<div class="crit-row">
+        <span class="crit-name">${esc(r.rule.name)}${r.rule.required?'<span class="crit-req">REQUIRED</span>':''}${r.auto?'<span class="crit-auto-badge">auto</span>':''}</span>
+        <span class="crit-toggle">
+          <button class="on-yes ${r.val==='yes'?'picked':''}" onclick="setCritOverride('${r.rule.id}','yes')">Yes</button>
+          <button class="on-partial ${r.val==='partial'?'picked':''}" onclick="setCritOverride('${r.rule.id}','partial')">Partial</button>
+          <button class="on-no ${r.val==='no'?'picked':''}" onclick="setCritOverride('${r.rule.id}','no')">No</button>
+        </span>
+      </div>`).join('')}
+    `).join('')}
+  </div>`;
+}
+function setCritOverride(ruleId,val){
+  anzOverrides[ruleId]=(anzOverrides[ruleId]===val)?undefined:val;
+  if(anzOverrides[ruleId]===undefined)delete anzOverrides[ruleId];
+  renderOpportunityScorecard();
+}
 function renderAnalyzer(){/* stateless view — results render on demand via anzRunBtn */}
 
 let activeFilter='All';let searchTerm='';let currentDetailId=null;let editingId=null;
@@ -1062,9 +1247,36 @@ function populateProfileDocSelects(){
   document.getElementById('pResumeSel').innerHTML='<option value="">None</option>'+resumes.map(d=>`<option value="${d.id}">${esc(d.name)}</option>`).join('');
   document.getElementById('pCoverSel').innerHTML='<option value="">None</option>'+covers.map(d=>`<option value="${d.id}">${esc(d.name)}</option>`).join('');
   document.getElementById('pLinkedinSel').innerHTML='<option value="">None</option>'+linkedins.map(d=>`<option value="${d.id}">${esc(d.name)}</option>`).join('');
+  document.getElementById('pTemplateSel').innerHTML='<option value="">Load an industry template...</option>'+Object.keys(INDUSTRY_TEMPLATES).map(k=>`<option value="${esc(k)}">${esc(k)}</option>`).join('');
 }
+let editingChecklist=[];
+function ruleId(){return 'r'+Math.random().toString(36).slice(2,9);}
+function renderChecklistEditor(){
+  const box=document.getElementById('pChecklist');
+  box.innerHTML=editingChecklist.length?editingChecklist.map((r,i)=>
+    `<div class="checklist-editor-row"><span class="cc">${esc(r.category)}</span><span class="cn">${esc(r.name)}${r.required?' <span class="crit-req">REQUIRED</span>':''}</span><span class="cc">wt ${r.weight}</span><button onclick="removeRule(${i})">✕</button></div>`
+  ).join(''):'<div class="empty-note">No criteria yet — add rules below or load a template.</div>';
+}
+function removeRule(i){editingChecklist.splice(i,1);renderChecklistEditor();}
+document.getElementById('pLoadTemplateBtn').onclick=()=>{
+  const key=document.getElementById('pTemplateSel').value;if(!key)return;
+  if(editingChecklist.length&&!confirm('Replace current checklist with the '+key+' template?'))return;
+  editingChecklist=INDUSTRY_TEMPLATES[key].map(r=>Object.assign({id:ruleId()},r));
+  renderChecklistEditor();
+};
+document.getElementById('pRuleAddBtn').onclick=()=>{
+  const name=document.getElementById('pRuleName').value.trim();if(!name){alert('Rule name is required.');return;}
+  const category=document.getElementById('pRuleCategory').value.trim()||'General';
+  const weight=parseInt(document.getElementById('pRuleWeight').value)||5;
+  const required=document.getElementById('pRuleRequired').checked;
+  const autoKeywords=document.getElementById('pRuleAuto').value.trim();
+  editingChecklist.push({id:ruleId(),category,name,required,weight:Math.max(1,Math.min(10,weight)),autoKeywords});
+  ['pRuleCategory','pRuleName','pRuleAuto','pRuleWeight'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('pRuleRequired').checked=false;
+  renderChecklistEditor();
+};
 function openProfileAdd(){
-  editingProfileId=null;populateProfileDocSelects();
+  editingProfileId=null;editingChecklist=[];populateProfileDocSelects();renderChecklistEditor();
   document.getElementById('profileModalTitle').textContent='New career profile';document.getElementById('profileDeleteBtn').style.display='none';
   ['pName','pKeywords','pMinSalary','pMaxTravel','pStates','pSizeMin','pSizeMax','pIndustries'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('pMaxTravel').value='100';document.getElementById('pCommission').value='not_important';document.getElementById('pRemote').value='preferred';
@@ -1073,6 +1285,7 @@ function openProfileAdd(){
 }
 function openProfileEdit(id){
   editingProfileId=id;const p=state.profiles.find(x=>x.id===id);populateProfileDocSelects();
+  editingChecklist=JSON.parse(JSON.stringify(p.checklist||[]));renderChecklistEditor();
   document.getElementById('profileModalTitle').textContent='Edit career profile';document.getElementById('profileDeleteBtn').style.display=p.active?'none':'inline-block';
   document.getElementById('pName').value=p.name;
   document.getElementById('pKeywords').value=p.criteria.keywords;document.getElementById('pMinSalary').value=p.criteria.minSalary;
@@ -1091,8 +1304,8 @@ document.getElementById('profileSaveBtn').onclick=()=>{
     maxTravel:document.getElementById('pMaxTravel').value.trim(),states:document.getElementById('pStates').value.trim(),
     sizeMin:document.getElementById('pSizeMin').value.trim(),sizeMax:document.getElementById('pSizeMax').value.trim(),industries:document.getElementById('pIndustries').value.trim()};
   const resumeId=document.getElementById('pResumeSel').value||null,coverId=document.getElementById('pCoverSel').value||null,linkedinId=document.getElementById('pLinkedinSel').value||null;
-  if(editingProfileId){const p=state.profiles.find(x=>x.id===editingProfileId);Object.assign(p,{name,criteria,resumeId,coverId,linkedinId});}
-  else{state.profiles.push({id:pid(),name,active:false,archived:false,criteria,resumeId,coverId,linkedinId,createdAt:todayISO()});}
+  if(editingProfileId){const p=state.profiles.find(x=>x.id===editingProfileId);Object.assign(p,{name,criteria,resumeId,coverId,linkedinId,checklist:editingChecklist});}
+  else{state.profiles.push({id:pid(),name,active:false,archived:false,criteria,resumeId,coverId,linkedinId,checklist:editingChecklist,createdAt:todayISO()});}
   saveState();document.getElementById('profileOverlay').classList.remove('active');renderProfiles();renderDashboard();
 };
 document.getElementById('profileDeleteBtn').onclick=()=>{
@@ -1141,6 +1354,12 @@ function renderDetail(){
       <div class="intel-field"><div class="ik">Recent news</div><div class="iv ${c.intel.news?'':'empty'}">${c.intel.news?esc(c.intel.news):'Not added yet'}</div></div>
       <div class="intel-field"><div class="ik">Reviews / reputation</div><div class="iv ${c.intel.reviews?'':'empty'}">${c.intel.reviews?esc(c.intel.reviews):'Not added yet'}</div></div>
     </div>
+
+    ${c.opportunityScore?`<div class="dcard">
+      <div class="dcard-title">Opportunity Score</div>
+      <div class="verdict-banner verdict-${c.opportunityScore.verdict}"><span style="font-size:20px;font-weight:800">${c.opportunityScore.overall!==null?c.opportunityScore.overall+'/100':'—'}</span> — ${esc(c.opportunityScore.verdictText)}</div>
+      <div class="empty-note">Scored against "${esc(c.opportunityScore.profileName)}" on ${c.opportunityScore.computedAt}. Re-run in the Opportunity tab if your criteria have changed.</div>
+    </div>`:''}
 
     <div class="dcard">
       <div class="dcard-title">Application Materials <button class="mini-btn" onclick="openPrep()">Prepare application</button></div>
