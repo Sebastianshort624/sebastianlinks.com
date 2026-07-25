@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Career CRM — SebastianLinks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#1F7A8C;--teal-dark:#17606F;--teal-tint:#E3F0F2;
+  --aqua:#39D0C8;--aqua-dark:#2AB6AF;
+  --bg:#F7F8FA;--card:#FFFFFF;--border:#E6EAF0;
+  --text:#1C2733;--text-sec:#4A5560;--text-muted:#8B95A1;
+  --coral:#FF7A66;--coral-tint:#FFEDE9;
+  --gold:#C9A227;--success:#2FAE7D;
+  --radius:12px;--shadow:0 1px 2px rgba(28,39,51,.04),0 4px 12px rgba(28,39,51,.05);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit;cursor:pointer}
+input,textarea,select{font-family:inherit}
+
+/* ── TOPBAR ── */
+.topbar{background:#fff;border-bottom:1px solid var(--border);padding:0 20px;height:58px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:200}
+.topbar-logo{font-weight:800;font-size:15px;color:var(--teal);display:flex;align-items:center;gap:8px;flex-shrink:0}
+.topbar-logo .dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--aqua))}
+.topbar-tabs{display:flex;gap:2px;flex:1}
+.tab-btn{background:none;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;color:var(--text-muted);transition:.15s}
+.tab-btn.active{background:var(--teal-tint);color:var(--teal-dark)}
+.tab-btn:hover:not(.active){background:#f3f4f6}
+.btn-add{background:var(--aqua);color:#0B3B37;border:none;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:700;flex-shrink:0}
+.btn-add:hover{background:var(--aqua-dark)}
+@media(max-width:640px){.topbar{padding:0 12px;gap:8px}.topbar-logo span.txt{display:none}.tab-btn{padding:8px 10px;font-size:12px}}
+
+.view{display:none;padding:20px;max-width:1100px;margin:0 auto}
+.view.active{display:block}
+@media(max-width:640px){.view{padding:14px}}
+
+/* ── KPI ROW ── */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+@media(max-width:640px){.kpi-row{grid-template-columns:repeat(2,1fr)}}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
+.kpi-num{font-size:26px;font-weight:800;color:var(--text)}
+.kpi-label{font-size:12px;color:var(--text-muted);font-weight:600;margin-top:2px}
+
+/* ── SEARCH / FILTERS ── */
+.search-row{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.search-box{flex:1;min-width:200px;position:relative}
+.search-box input{width:100%;padding:10px 14px 10px 36px;border:1px solid var(--border);border-radius:9px;font-size:14px;background:#fff}
+.search-box input:focus{outline:none;border-color:var(--aqua);box-shadow:0 0 0 3px rgba(57,208,200,.15)}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:14px}
+.chip-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.chip{background:#fff;border:1px solid var(--border);border-radius:100px;padding:7px 14px;font-size:12.5px;font-weight:600;color:var(--text-sec)}
+.chip.active{background:var(--teal);color:#fff;border-color:var(--teal)}
+
+/* ── DASH SECTIONS ── */
+.section-title{font-size:14px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px;color:var(--text)}
+.section-title .cnt{font-size:11px;background:var(--teal-tint);color:var(--teal-dark);padding:1px 8px;border-radius:100px;font-weight:700}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+@media(max-width:720px){.two-col{grid-template-columns:1fr}}
+.list-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow)}
+.list-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f2f3f5;font-size:13px}
+.list-row:last-child{border:none}
+.list-row .avatar{width:30px;height:30px;border-radius:8px;background:var(--teal-tint);color:var(--teal-dark);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0}
+.list-row .rmain{flex:1;min-width:0}
+.list-row .rname{font-weight:600;color:var(--text)}
+.list-row .rsub{color:var(--text-muted);font-size:11.5px}
+.list-row .rtag{font-size:11px;font-weight:700;padding:3px 9px;border-radius:100px;flex-shrink:0}
+.tag-overdue{background:var(--coral-tint);color:#B8422F}
+.tag-today{background:#FFF4D6;color:#8A6B10}
+.tag-soon{background:var(--teal-tint);color:var(--teal-dark)}
+.empty-note{color:var(--text-muted);font-size:12.5px;padding:8px 0}
+
+/* ── COMPANY CARDS ── */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.co-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);cursor:pointer;transition:.15s;position:relative}
+.co-card:hover{border-color:var(--aqua);transform:translateY(-1px)}
+.co-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
+.co-avatar{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--teal),var(--aqua));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px}
+.co-star{font-size:16px;color:var(--gold);opacity:.35}
+.co-star.active{opacity:1}
+.co-name{font-weight:700;font-size:15px;margin-bottom:2px}
+.co-role{font-size:12.5px;color:var(--text-muted);margin-bottom:12px}
+.stage-badge{display:inline-block;font-size:11px;font-weight:700;padding:4px 10px;border-radius:100px}
+.co-foot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:11.5px;color:var(--text-muted)}
+
+/* ── KANBAN ── */
+.kanban-wrap{display:flex;gap:14px;overflow-x:auto;padding-bottom:12px;-webkit-overflow-scrolling:touch}
+.kcol{background:#fff;border:1px solid var(--border);border-radius:var(--radius);min-width:230px;flex-shrink:0;padding:12px;max-height:calc(100vh - 200px);display:flex;flex-direction:column}
+.kcol.drag-over{border-color:var(--aqua);background:var(--teal-tint)}
+.kcol-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:0 2px}
+.kcol-title{font-size:12.5px;font-weight:700}
+.kcol-cnt{font-size:11px;color:var(--text-muted);background:#f3f4f6;padding:1px 8px;border-radius:100px}
+.kcol-body{overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:8px}
+.kcard{background:#fff;border:1px solid var(--border);border-radius:9px;padding:10px 12px;cursor:grab;box-shadow:var(--shadow)}
+.kcard:active{cursor:grabbing}
+.kcard .kn{font-weight:700;font-size:13px}
+.kcard .kr{font-size:11.5px;color:var(--text-muted);margin-top:2px}
+
+/* ── DETAIL VIEW ── */
+.detail-head{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+.back-btn{background:#fff;border:1px solid var(--border);border-radius:9px;padding:8px 12px;font-size:13px;font-weight:600;color:var(--text-sec)}
+.back-btn:hover{border-color:var(--aqua)}
+.detail-avatar{width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,var(--teal),var(--aqua));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:19px}
+.detail-title{font-size:20px;font-weight:800}
+.detail-sub{font-size:13px;color:var(--text-muted);margin-top:2px}
+.detail-actions{margin-left:auto;display:flex;gap:8px}
+.icon-btn{background:#fff;border:1px solid var(--border);border-radius:9px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--text-sec)}
+.icon-btn:hover{border-color:var(--aqua)}
+
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+@media(max-width:720px){.detail-grid{grid-template-columns:1fr}}
+.dcard{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin-bottom:16px}
+.dcard-title{font-size:13px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.field-row{display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid #f2f3f5}
+.field-row:last-child{border:none}
+.field-row .fk{color:var(--text-muted)}
+.field-row .fv{font-weight:600;text-align:right}
+
+.tl-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #f2f3f5;font-size:13px}
+.tl-item:last-child{border:none}
+.tl-dot{width:8px;height:8px;border-radius:50%;background:var(--aqua);margin-top:5px;flex-shrink:0}
+.tl-date{font-size:11px;color:var(--text-muted);margin-top:2px}
+
+.mini-add{display:flex;gap:8px;margin-top:12px}
+.mini-add input,.mini-add textarea,.mini-add select{flex:1;border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:12.5px}
+.mini-add input:focus,.mini-add textarea:focus{outline:none;border-color:var(--aqua)}
+.mini-btn{background:var(--teal);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:12.5px;font-weight:700;flex-shrink:0}
+
+.task-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f2f3f5;font-size:13px}
+.task-row:last-child{border:none}
+.task-cb{width:20px;height:20px;border-radius:6px;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px}
+.task-cb.done{background:var(--success);border-color:var(--success);color:#fff}
+.task-text{flex:1}
+.task-text.done{text-decoration:line-through;color:var(--text-muted)}
+.task-date{font-size:11px;color:var(--text-muted)}
+
+.doc-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f2f3f5;font-size:13px}
+.doc-row:last-child{border:none}
+.doc-row a{color:var(--teal);font-weight:600}
+
+/* ── MODAL ── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(28,39,51,.4);z-index:500;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto}
+.overlay.active{display:flex}
+.modal{background:#fff;border-radius:16px;width:100%;max-width:480px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal-title{font-size:17px;font-weight:800;margin-bottom:16px}
+.form-field{margin-bottom:14px}
+.form-field label{display:block;font-size:12.5px;font-weight:700;color:var(--text-sec);margin-bottom:5px}
+.form-field input,.form-field select,.form-field textarea{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px}
+.form-field input:focus,.form-field select:focus,.form-field textarea:focus{outline:none;border-color:var(--aqua);box-shadow:0 0 0 3px rgba(57,208,200,.15)}
+.form-row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form-check{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600}
+.modal-btns{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+.btn-primary{background:var(--aqua);color:#0B3B37;border:none;border-radius:9px;padding:10px 18px;font-size:13.5px;font-weight:700}
+.btn-secondary{background:#f3f4f6;color:var(--text-sec);border:none;border-radius:9px;padding:10px 18px;font-size:13.5px;font-weight:700}
+.btn-danger{background:var(--coral-tint);color:#B8422F;border:none;border-radius:9px;padding:10px 18px;font-size:13.5px;font-weight:700}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo"><span class="dot"></span><span class="txt">Career CRM</span></div>
+  <div class="topbar-tabs">
+    <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
+    <button class="tab-btn" data-tab="pipeline">Pipeline</button>
+  </div>
+  <button class="btn-add" id="openAddBtn">+ Add company</button>
+</div>
+
+<!-- DASHBOARD -->
+<div class="view active" id="view-dashboard">
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-num" id="kpiApplications">0</div><div class="kpi-label">Applications</div></div>
+    <div class="kpi"><div class="kpi-num" id="kpiInterviews">0</div><div class="kpi-label">Interviews</div></div>
+    <div class="kpi"><div class="kpi-num" id="kpiOffers">0</div><div class="kpi-label">Offers</div></div>
+    <div class="kpi"><div class="kpi-num" id="kpiDream">0</div><div class="kpi-label">Dream Companies</div></div>
+  </div>
+
+  <div class="search-row">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Search companies, recruiters...">
+    </div>
+  </div>
+  <div class="chip-row" id="filterChips"></div>
+
+  <div class="two-col">
+    <div>
+      <div class="section-title">📅 Today's Follow-ups <span class="cnt" id="followupCnt">0</span></div>
+      <div class="list-card" id="followupList"></div>
+    </div>
+    <div>
+      <div class="section-title">🤝 Upcoming Interviews <span class="cnt" id="interviewCnt">0</span></div>
+      <div class="list-card" id="interviewList"></div>
+    </div>
+  </div>
+
+  <div class="section-title">🏢 Companies <span class="cnt" id="companyCnt">0</span></div>
+  <div class="card-grid" id="companyGrid"></div>
+</div>
+
+<!-- PIPELINE -->
+<div class="view" id="view-pipeline">
+  <div class="kanban-wrap" id="kanbanWrap"></div>
+</div>
+
+<!-- DETAIL -->
+<div class="view" id="view-detail"></div>
+
+<!-- ADD/EDIT MODAL -->
+<div class="overlay" id="addOverlay">
+  <div class="modal">
+    <div class="modal-title" id="modalTitle">Add company</div>
+    <div class="form-field"><label>Company name</label><input type="text" id="fName" placeholder="e.g. Stripe"></div>
+    <div class="form-field"><label>Role</label><input type="text" id="fRole" placeholder="e.g. Senior Account Exec"></div>
+    <div class="form-row2">
+      <div class="form-field"><label>Stage</label>
+        <select id="fStage">
+          <option>Researching</option><option>Applied</option><option>Phone Screen</option>
+          <option>Interview</option><option>Offer</option><option>Rejected</option>
+        </select>
+      </div>
+      <div class="form-field"><label>&nbsp;</label>
+        <label class="form-check"><input type="checkbox" id="fDream"> ⭐ Dream company</label>
+      </div>
+    </div>
+    <div class="form-field"><label>Recruiter name</label><input type="text" id="fRecName"></div>
+    <div class="form-row2">
+      <div class="form-field"><label>Recruiter email</label><input type="text" id="fRecEmail"></div>
+      <div class="form-field"><label>Recruiter phone</label><input type="text" id="fRecPhone"></div>
+    </div>
+    <div class="form-row2">
+      <div class="form-field"><label>Base salary</label><input type="text" id="fBase" placeholder="$"></div>
+      <div class="form-field"><label>Bonus / equity</label><input type="text" id="fBonus"></div>
+    </div>
+    <div class="form-field"><label>Job posting link</label><input type="text" id="fLink"></div>
+    <div class="modal-btns">
+      <button class="btn-danger" id="deleteBtn" style="display:none">Delete</button>
+      <button class="btn-secondary" id="cancelBtn">Cancel</button>
+      <button class="btn-primary" id="saveBtn">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SK='clcrm_jobs_v1';
+const STAGES=['Researching','Applied','Phone Screen','Interview','Offer','Rejected'];
+const STAGE_COLOR={
+  'Researching':{bg:'#F3F4F6',fg:'#4A5560'},
+  'Applied':{bg:'#E3F0F2',fg:'#17606F'},
+  'Phone Screen':{bg:'#E0F2FE',fg:'#0369A1'},
+  'Interview':{bg:'#FBF3DC',fg:'#8A6B10'},
+  'Offer':{bg:'#DCFCE7',fg:'#14532D'},
+  'Rejected':{bg:'#FFEDE9',fg:'#B8422F'}
+};
+
+let state=null;
+try{state=JSON.parse(localStorage.getItem(SK));}catch(e){state=null;}
+if(!state||!state.companies){
+  state={companies:seedData()};
+  saveState();
+}
+function saveState(){localStorage.setItem(SK,JSON.stringify(state));}
+
+function seedData(){
+  const today=new Date();
+  const iso=(d)=>d.toISOString().slice(0,10);
+  const plus=(n)=>{const d=new Date(today);d.setDate(d.getDate()+n);return iso(d);};
+  return [
+    {id:cid(),name:'Stripe',role:'Enterprise Account Exec',stage:'Interview',dream:true,
+      recruiter:{name:'Jamie Lin',email:'jamie@stripe.com',phone:''},
+      comp:{base:'$140k',bonus:'20% + equity'},
+      link:'', timeline:[{date:iso(today),text:'Recruiter screen scheduled'}],
+      notes:[], documents:[], interviews:[{date:plus(3),type:'Hiring manager call'}],
+      tasks:[{date:iso(today),text:'Send thank-you note',done:false}]},
+    {id:cid(),name:'Ramp',role:'Account Specialist',stage:'Applied',dream:false,
+      recruiter:{name:'',email:'',phone:''},comp:{base:'',bonus:''},link:'',
+      timeline:[{date:plus(-2),text:'Application submitted'}],notes:[],documents:[],
+      interviews:[],tasks:[{date:plus(-1),text:'Follow up on application',done:false}]},
+    {id:cid(),name:'Mercury',role:'Sales Consultant',stage:'Researching',dream:true,
+      recruiter:{name:'',email:'',phone:''},comp:{base:'',bonus:''},link:'',
+      timeline:[],notes:[],documents:[],interviews:[],tasks:[]}
+  ];
+}
+function cid(){return 'c'+Math.random().toString(36).slice(2,9);}
+function todayISO(){return new Date().toISOString().slice(0,10);}
+function initials(name){return name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();}
+
+let activeFilter='All';
+let searchTerm='';
+let currentDetailId=null;
+let editingId=null;
+
+/* ── TABS ── */
+document.querySelectorAll('.tab-btn').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    showView(b.dataset.tab);
+  };
+});
+function showView(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+id).classList.add('active');
+  if(id==='dashboard')renderDashboard();
+  if(id==='pipeline')renderKanban();
+}
+
+/* ── DASHBOARD ── */
+function renderDashboard(){
+  const cos=state.companies;
+  document.getElementById('kpiApplications').textContent=cos.filter(c=>c.stage!=='Researching').length;
+  document.getElementById('kpiInterviews').textContent=cos.filter(c=>c.stage==='Phone Screen'||c.stage==='Interview').length;
+  document.getElementById('kpiOffers').textContent=cos.filter(c=>c.stage==='Offer').length;
+  document.getElementById('kpiDream').textContent=cos.filter(c=>c.dream).length;
+
+  const chipWrap=document.getElementById('filterChips');
+  chipWrap.innerHTML='';
+  ['All',...STAGES,'Dream ⭐'].forEach(f=>{
+    const chip=document.createElement('button');
+    chip.className='chip'+(activeFilter===f?' active':'');
+    chip.textContent=f;
+    chip.onclick=()=>{activeFilter=f;renderDashboard();};
+    chipWrap.appendChild(chip);
+  });
+
+  // Today's follow-ups
+  const fList=document.getElementById('followupList');
+  const today=todayISO();
+  let follow=[];
+  cos.forEach(c=>(c.tasks||[]).forEach(t=>{if(!t.done && t.date<=today)follow.push({co:c,t});}));
+  follow.sort((a,b)=>a.t.date.localeCompare(b.t.date));
+  document.getElementById('followupCnt').textContent=follow.length;
+  fList.innerHTML=follow.length?follow.map(f=>{
+    const overdue=f.t.date<today;
+    return `<div class="list-row"><div class="avatar">${initials(f.co.name)}</div>
+      <div class="rmain"><div class="rname">${esc(f.t.text)}</div><div class="rsub">${esc(f.co.name)}</div></div>
+      <div class="rtag ${overdue?'tag-overdue':'tag-today'}">${overdue?'Overdue':'Today'}</div></div>`;
+  }).join(''):'<div class="empty-note">Nothing due today.</div>';
+
+  // Upcoming interviews
+  const iList=document.getElementById('interviewList');
+  let ivs=[];
+  cos.forEach(c=>(c.interviews||[]).forEach(iv=>{if(iv.date>=today)ivs.push({co:c,iv});}));
+  ivs.sort((a,b)=>a.iv.date.localeCompare(b.iv.date));
+  document.getElementById('interviewCnt').textContent=ivs.length;
+  iList.innerHTML=ivs.length?ivs.slice(0,6).map(f=>{
+    return `<div class="list-row"><div class="avatar">${initials(f.co.name)}</div>
+      <div class="rmain"><div class="rname">${esc(f.iv.type||'Interview')}</div><div class="rsub">${esc(f.co.name)}</div></div>
+      <div class="rtag tag-soon">${f.iv.date}</div></div>`;
+  }).join(''):'<div class="empty-note">No interviews scheduled.</div>';
+
+  // Company grid
+  let list=cos.filter(c=>{
+    if(activeFilter==='Dream ⭐' && !c.dream)return false;
+    if(STAGES.includes(activeFilter) && c.stage!==activeFilter)return false;
+    if(searchTerm){
+      const hay=(c.name+' '+c.role+' '+(c.recruiter?.name||'')).toLowerCase();
+      if(!hay.includes(searchTerm.toLowerCase()))return false;
+    }
+    return true;
+  });
+  document.getElementById('companyCnt').textContent=list.length;
+  const grid=document.getElementById('companyGrid');
+  grid.innerHTML=list.length?list.map(c=>{
+    const sc=STAGE_COLOR[c.stage];
+    return `<div class="co-card" onclick="openDetail('${c.id}')">
+      <div class="co-top"><div class="co-avatar">${initials(c.name)}</div>
+        <span class="co-star ${c.dream?'active':''}">★</span></div>
+      <div class="co-name">${esc(c.name)}</div>
+      <div class="co-role">${esc(c.role||'—')}</div>
+      <span class="stage-badge" style="background:${sc.bg};color:${sc.fg}">${c.stage}</span>
+      <div class="co-foot"><span>${(c.recruiter&&c.recruiter.name)?esc(c.recruiter.name):'No recruiter yet'}</span></div>
+    </div>`;
+  }).join(''):'<div class="empty-note">No companies match. Try clearing filters.</div>';
+}
+document.getElementById('searchInput').addEventListener('input',e=>{searchTerm=e.target.value;renderDashboard();});
+function esc(s){return (s||'').toString().replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));}
+
+/* ── KANBAN ── */
+function renderKanban(){
+  const wrap=document.getElementById('kanbanWrap');
+  wrap.innerHTML=STAGES.map(stage=>{
+    const items=state.companies.filter(c=>c.stage===stage);
+    return `<div class="kcol" data-stage="${stage}">
+      <div class="kcol-head"><span class="kcol-title">${stage}</span><span class="kcol-cnt">${items.length}</span></div>
+      <div class="kcol-body">
+        ${items.map(c=>`<div class="kcard" draggable="true" data-id="${c.id}" onclick="openDetail('${c.id}')">
+          <div class="kn">${esc(c.name)} ${c.dream?'⭐':''}</div>
+          <div class="kr">${esc(c.role||'')}</div></div>`).join('')}
+      </div></div>`;
+  }).join('');
+
+  wrap.querySelectorAll('.kcard').forEach(card=>{
+    card.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',card.dataset.id);});
+  });
+  wrap.querySelectorAll('.kcol').forEach(col=>{
+    col.addEventListener('dragover',e=>{e.preventDefault();col.classList.add('drag-over');});
+    col.addEventListener('dragleave',()=>col.classList.remove('drag-over'));
+    col.addEventListener('drop',e=>{
+      e.preventDefault();col.classList.remove('drag-over');
+      const id=e.dataTransfer.getData('text/plain');
+      const co=state.companies.find(c=>c.id===id);
+      if(co){co.stage=col.dataset.stage;co.timeline=co.timeline||[];co.timeline.unshift({date:todayISO(),text:'Moved to '+co.stage});saveState();renderKanban();}
+    });
+  });
+}
+
+/* ── DETAIL VIEW ── */
+function openDetail(id){
+  currentDetailId=id;
+  document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-detail').classList.add('active');
+  renderDetail();
+}
+function renderDetail(){
+  const c=state.companies.find(x=>x.id===currentDetailId);
+  if(!c)return;
+  const sc=STAGE_COLOR[c.stage];
+  const v=document.getElementById('view-detail');
+  v.innerHTML=`
+    <div class="detail-head">
+      <button class="back-btn" onclick="closeDetail()">← Back</button>
+      <div class="detail-avatar">${initials(c.name)}</div>
+      <div>
+        <div class="detail-title">${esc(c.name)} ${c.dream?'⭐':''}</div>
+        <div class="detail-sub">${esc(c.role||'—')} · <span class="stage-badge" style="background:${sc.bg};color:${sc.fg}">${c.stage}</span></div>
+      </div>
+      <div class="detail-actions">
+        <button class="icon-btn" onclick="openEdit('${c.id}')" title="Edit">✎</button>
+      </div>
+    </div>
+
+    <div class="detail-grid">
+      <div class="dcard">
+        <div class="dcard-title">Recruiter</div>
+        <div class="field-row"><span class="fk">Name</span><span class="fv">${esc(c.recruiter?.name)||'—'}</span></div>
+        <div class="field-row"><span class="fk">Email</span><span class="fv">${esc(c.recruiter?.email)||'—'}</span></div>
+        <div class="field-row"><span class="fk">Phone</span><span class="fv">${esc(c.recruiter?.phone)||'—'}</span></div>
+      </div>
+      <div class="dcard">
+        <div class="dcard-title">Compensation</div>
+        <div class="field-row"><span class="fk">Base</span><span class="fv">${esc(c.comp?.base)||'—'}</span></div>
+        <div class="field-row"><span class="fk">Bonus / Equity</span><span class="fv">${esc(c.comp?.bonus)||'—'}</span></div>
+      </div>
+    </div>
+
+    <div class="dcard">
+      <div class="dcard-title">Links</div>
+      ${c.link?`<div class="doc-row"><a href="${esc(c.link)}" target="_blank">Job posting →</a></div>`:'<div class="empty-note">No links added.</div>'}
+    </div>
+
+    <div class="dcard">
+      <div class="dcard-title">Timeline</div>
+      <div id="tlList">${(c.timeline||[]).length?c.timeline.map(t=>`<div class="tl-item"><div class="tl-dot"></div><div><div>${esc(t.text)}</div><div class="tl-date">${t.date}</div></div></div>`).join(''):'<div class="empty-note">No activity logged yet.</div>'}</div>
+      <div class="mini-add"><input type="text" id="tlInput" placeholder="Log an update..."><button class="mini-btn" onclick="addTimeline()">Add</button></div>
+    </div>
+
+    <div class="dcard">
+      <div class="dcard-title">Interview history</div>
+      <div id="ivList">${(c.interviews||[]).length?c.interviews.map(iv=>`<div class="tl-item"><div class="tl-dot" style="background:var(--gold)"></div><div><div>${esc(iv.type)}</div><div class="tl-date">${iv.date}</div></div></div>`).join(''):'<div class="empty-note">No interviews logged.</div>'}</div>
+      <div class="mini-add">
+        <input type="date" id="ivDate">
+        <input type="text" id="ivType" placeholder="Round (e.g. Panel interview)">
+        <button class="mini-btn" onclick="addInterview()">Add</button>
+      </div>
+    </div>
+
+    <div class="dcard">
+      <div class="dcard-title">Follow-ups / Tasks</div>
+      <div id="taskList">${(c.tasks||[]).length?c.tasks.map((t,i)=>`<div class="task-row"><div class="task-cb ${t.done?'done':''}" onclick="toggleTask(${i})">${t.done?'✓':''}</div><div class="task-text ${t.done?'done':''}">${esc(t.text)}</div><div class="task-date">${t.date}</div></div>`).join(''):'<div class="empty-note">No tasks yet.</div>'}</div>
+      <div class="mini-add">
+        <input type="date" id="taskDate">
+        <input type="text" id="taskText" placeholder="Follow up about...">
+        <button class="mini-btn" onclick="addTask()">Add</button>
+      </div>
+    </div>
+
+    <div class="dcard">
+      <div class="dcard-title">Notes</div>
+      <div id="noteList">${(c.notes||[]).length?c.notes.map(n=>`<div class="tl-item"><div class="tl-dot" style="background:var(--text-muted)"></div><div><div>${esc(n.text)}</div><div class="tl-date">${n.date}</div></div></div>`).join(''):'<div class="empty-note">No notes yet.</div>'}</div>
+      <div class="mini-add"><textarea id="noteInput" rows="2" placeholder="Add a note..."></textarea><button class="mini-btn" onclick="addNote()">Add</button></div>
+    </div>
+  `;
+}
+function closeDetail(){
+  document.getElementById('view-detail').classList.remove('active');
+  document.querySelector('.tab-btn[data-tab="dashboard"]').classList.add('active');
+  showView('dashboard');
+}
+function getCurrent(){return state.companies.find(x=>x.id===currentDetailId);}
+function addTimeline(){
+  const inp=document.getElementById('tlInput');if(!inp.value.trim())return;
+  const c=getCurrent();c.timeline=c.timeline||[];c.timeline.unshift({date:todayISO(),text:inp.value.trim()});
+  saveState();renderDetail();
+}
+function addInterview(){
+  const d=document.getElementById('ivDate').value||todayISO();
+  const t=document.getElementById('ivType');if(!t.value.trim())return;
+  const c=getCurrent();c.interviews=c.interviews||[];c.interviews.push({date:d,type:t.value.trim()});
+  c.interviews.sort((a,b)=>a.date.localeCompare(b.date));
+  saveState();renderDetail();
+}
+function addTask(){
+  const d=document.getElementById('taskDate').value||todayISO();
+  const t=document.getElementById('taskText');if(!t.value.trim())return;
+  const c=getCurrent();c.tasks=c.tasks||[];c.tasks.push({date:d,text:t.value.trim(),done:false});
+  saveState();renderDetail();
+}
+function toggleTask(i){
+  const c=getCurrent();c.tasks[i].done=!c.tasks[i].done;saveState();renderDetail();
+}
+function addNote(){
+  const inp=document.getElementById('noteInput');if(!inp.value.trim())return;
+  const c=getCurrent();c.notes=c.notes||[];c.notes.unshift({date:todayISO(),text:inp.value.trim()});
+  saveState();renderDetail();
+}
+
+/* ── ADD / EDIT MODAL ── */
+document.getElementById('openAddBtn').onclick=()=>openAdd();
+document.getElementById('cancelBtn').onclick=()=>closeModal();
+function openAdd(){
+  editingId=null;
+  document.getElementById('modalTitle').textContent='Add company';
+  document.getElementById('deleteBtn').style.display='none';
+  ['fName','fRole','fRecName','fRecEmail','fRecPhone','fBase','fBonus','fLink'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('fStage').value='Researching';
+  document.getElementById('fDream').checked=false;
+  document.getElementById('addOverlay').classList.add('active');
+}
+function openEdit(id){
+  editingId=id;
+  const c=state.companies.find(x=>x.id===id);
+  document.getElementById('modalTitle').textContent='Edit company';
+  document.getElementById('deleteBtn').style.display='inline-block';
+  document.getElementById('fName').value=c.name||'';
+  document.getElementById('fRole').value=c.role||'';
+  document.getElementById('fStage').value=c.stage||'Researching';
+  document.getElementById('fDream').checked=!!c.dream;
+  document.getElementById('fRecName').value=c.recruiter?.name||'';
+  document.getElementById('fRecEmail').value=c.recruiter?.email||'';
+  document.getElementById('fRecPhone').value=c.recruiter?.phone||'';
+  document.getElementById('fBase').value=c.comp?.base||'';
+  document.getElementById('fBonus').value=c.comp?.bonus||'';
+  document.getElementById('fLink').value=c.link||'';
+  document.getElementById('addOverlay').classList.add('active');
+}
+function closeModal(){document.getElementById('addOverlay').classList.remove('active');}
+document.getElementById('saveBtn').onclick=()=>{
+  const name=document.getElementById('fName').value.trim();
+  if(!name){alert('Company name is required.');return;}
+  const data={
+    name,
+    role:document.getElementById('fRole').value.trim(),
+    stage:document.getElementById('fStage').value,
+    dream:document.getElementById('fDream').checked,
+    recruiter:{name:document.getElementById('fRecName').value.trim(),email:document.getElementById('fRecEmail').value.trim(),phone:document.getElementById('fRecPhone').value.trim()},
+    comp:{base:document.getElementById('fBase').value.trim(),bonus:document.getElementById('fBonus').value.trim()},
+    link:document.getElementById('fLink').value.trim()
+  };
+  if(editingId){
+    const c=state.companies.find(x=>x.id===editingId);
+    Object.assign(c,data);
+  }else{
+    state.companies.push(Object.assign({id:cid(),timeline:[{date:todayISO(),text:'Added to pipeline'}],notes:[],documents:[],interviews:[],tasks:[]},data));
+  }
+  saveState();closeModal();
+  if(document.getElementById('view-detail').classList.contains('active'))renderDetail();
+  renderDashboard();
+};
+document.getElementById('deleteBtn').onclick=()=>{
+  if(!confirm('Delete this company? This cannot be undone.'))return;
+  state.companies=state.companies.filter(x=>x.id!==editingId);
+  saveState();closeModal();closeDetail();
+};
+
+renderDashboard();
+</script>
+</body>
+</html>
