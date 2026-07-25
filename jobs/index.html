@@ -246,6 +246,7 @@ input,textarea,select{font-family:inherit}
     <button class="tab-btn" data-tab="pipeline">Pipeline</button>
     <button class="tab-btn" data-tab="library">Library</button>
     <button class="tab-btn" data-tab="analyzer">Analyzer</button>
+    <button class="tab-btn" data-tab="networking">Networking</button>
   </div>
   <button class="btn-add" id="openAddBtn">
     <span class="icon"></span><span class="txt">Add company</span>
@@ -313,6 +314,13 @@ input,textarea,select{font-family:inherit}
   <div id="anzResults"></div>
 </div>
 
+<!-- NETWORKING -->
+<div class="view" id="view-networking">
+  <div class="section-title" style="margin-bottom:6px">Networking</div>
+  <div class="greeting-sub" style="margin-bottom:16px">Companies that don't fit right now — doesn't meet your criteria, in-house only, not remote — but worth staying connected to. Kept separate from your active pipeline and dashboard numbers.</div>
+  <div class="card-grid" id="networkingGrid"></div>
+</div>
+
 <!-- DETAIL -->
 <div class="view" id="view-detail"></div>
 
@@ -335,6 +343,12 @@ input,textarea,select{font-family:inherit}
       <div class="form-field"><label>&nbsp;</label>
         <label class="form-check"><input type="checkbox" id="fDream"> Dream company</label>
       </div>
+    </div>
+    <div class="form-row2">
+      <div class="form-field"><label>&nbsp;</label>
+        <label class="form-check"><input type="checkbox" id="fNetworking"> Networking only (not a fit / in-house only)</label>
+      </div>
+      <div class="form-field"><label>Reason (optional)</label><input type="text" id="fNetworkingReason" placeholder="e.g. In-house only, no remote"></div>
     </div>
     <div class="form-field"><label>Logo URL (optional)</label><input type="text" id="fLogo" placeholder="https://..."></div>
     <div class="form-field"><label>Recruiter name</label><input type="text" id="fRecName"></div>
@@ -475,6 +489,8 @@ state.companies.forEach(c=>{
   if(c.finalResumeId===undefined)c.finalResumeId=null;
   if(c.finalCoverId===undefined)c.finalCoverId=null;
   if(c.intel===undefined)c.intel={size:'',funding:'',culture:'',news:'',reviews:''};
+  if(c.isNetworking===undefined)c.isNetworking=false;
+  if(c.networkingReason===undefined)c.networkingReason='';
 });
 saveState();
 function saveState(){localStorage.setItem(SK,JSON.stringify(state));}
@@ -633,6 +649,7 @@ function showView(id){
   if(id==='pipeline')renderKanban();
   if(id==='library')renderLibrary();
   if(id==='analyzer')renderAnalyzer();
+  if(id==='networking')renderNetworking();
 }
 
 /* ── GREETING + DASHBOARD (unchanged logic from v2) ── */
@@ -640,7 +657,7 @@ function renderGreeting(){
   const h=new Date().getHours();
   const part=h<12?'morning':h<18?'afternoon':'evening';
   document.getElementById('greetTitle').textContent=`Good ${part}, Sebastian`;
-  const cos=state.companies;const today=todayISO();
+  const cos=state.companies.filter(c=>!c.isNetworking);const today=todayISO();
   const followDue=cos.reduce((n,c)=>n+(c.tasks||[]).filter(t=>!t.done&&t.date<=today).length,0);
   const ivSoon=cos.reduce((n,c)=>n+(c.interviews||[]).filter(iv=>iv.date>=today).length,0);
   const waiting=cos.filter(c=>['Applied','Phone Screen','Interview'].includes(c.stage)&&!(c.tasks||[]).some(t=>!t.done)).length;
@@ -648,7 +665,7 @@ function renderGreeting(){
 }
 function renderDashboard(){
   renderGreeting();
-  const cos=state.companies;const today=todayISO();
+  const cos=state.companies.filter(c=>!c.isNetworking);const today=todayISO();
   const weekOut=new Date();weekOut.setDate(weekOut.getDate()+7);const weekOutISO=weekOut.toISOString().slice(0,10);
   const followDue=cos.reduce((n,c)=>n+(c.tasks||[]).filter(t=>!t.done&&t.date<=today).length,0);
   const ivWeek=cos.reduce((n,c)=>n+(c.interviews||[]).filter(iv=>iv.date>=today&&iv.date<=weekOutISO).length,0);
@@ -709,7 +726,7 @@ document.getElementById('searchInput').addEventListener('input',e=>{searchTerm=e
 function renderKanban(){
   const wrap=document.getElementById('kanbanWrap');
   wrap.innerHTML=STAGES.map(stage=>{
-    const items=state.companies.filter(c=>c.stage===stage);
+    const items=state.companies.filter(c=>c.stage===stage&&!c.isNetworking);
     return `<div class="kcol" data-stage="${stage}"><div class="kcol-head"><span class="kcol-title">${stage}</span><span class="kcol-cnt">${items.length}</span></div>
       <div class="kcol-body">${items.map(c=>`<div class="kcard" draggable="true" data-id="${c.id}" onclick="openDetail('${c.id}')"><div class="kn">${esc(c.name)} ${c.dream?'⭐':''}</div><div class="kr">${esc(c.role||'')}</div></div>`).join('')}</div></div>`;
   }).join('');
@@ -723,6 +740,22 @@ function renderKanban(){
       if(co){co.stage=col.dataset.stage;co.timeline=co.timeline||[];co.timeline.unshift({date:todayISO(),text:'Moved to '+co.stage});saveState();renderKanban();}
     });
   });
+}
+
+/* ── NETWORKING ── */
+function renderNetworking(){
+  const list=state.companies.filter(c=>c.isNetworking);
+  const grid=document.getElementById('networkingGrid');
+  grid.innerHTML=list.length?list.map(c=>{
+    return `<div class="co-card" onclick="openDetail('${c.id}')">
+      <div class="co-top"><div class="co-avatar">${avatarHTML(c)}</div><span class="co-star ${c.dream?'active':''}">${ICONS.star}</span></div>
+      <div class="co-name">${esc(c.name)}</div><div class="co-industry">${esc(c.role||'—')}${c.industry?' · '+esc(c.industry):''}</div>
+      <span class="stage-badge" style="background:#F3F4F6;color:#4A5560">${esc(c.networkingReason)||'Not a fit right now'}</span>
+      <div class="co-meta-row"><span class="icon">${ICONS.person}</span>${(c.recruiter&&c.recruiter.name)?esc(c.recruiter.name):'No contact yet'}</div>
+      <div class="co-divider"></div>
+      <div class="co-foot"><div class="co-foot-col"><div class="co-foot-label">Last activity</div><div class="co-foot-val">${lastActivityText(c)}</div></div></div>
+    </div>`;
+  }).join(''):'<div class="empty-note">No networking-only companies yet. Mark one as "Networking only" when adding or editing a company.</div>';
 }
 
 /* ── LIBRARY ── */
@@ -974,8 +1007,8 @@ document.getElementById('openAddBtn').onclick=()=>openAdd();
 document.getElementById('cancelBtn').onclick=()=>closeModal();
 function openAdd(){
   editingId=null;document.getElementById('modalTitle').textContent='Add company';document.getElementById('deleteBtn').style.display='none';
-  ['fName','fRole','fIndustry','fLogo','fRecName','fRecEmail','fRecPhone','fBase','fBonus','fLink'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('fStage').value='Researching';document.getElementById('fDream').checked=false;
+  ['fName','fRole','fIndustry','fLogo','fRecName','fRecEmail','fRecPhone','fBase','fBonus','fLink','fNetworkingReason'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('fStage').value='Researching';document.getElementById('fDream').checked=false;document.getElementById('fNetworking').checked=false;
   document.getElementById('addOverlay').classList.add('active');
 }
 function openEdit(id){
@@ -983,6 +1016,7 @@ function openEdit(id){
   document.getElementById('modalTitle').textContent='Edit company';document.getElementById('deleteBtn').style.display='inline-block';
   document.getElementById('fName').value=c.name||'';document.getElementById('fRole').value=c.role||'';document.getElementById('fIndustry').value=c.industry||'';
   document.getElementById('fLogo').value=c.logo||'';document.getElementById('fStage').value=c.stage||'Researching';document.getElementById('fDream').checked=!!c.dream;
+  document.getElementById('fNetworking').checked=!!c.isNetworking;document.getElementById('fNetworkingReason').value=c.networkingReason||'';
   document.getElementById('fRecName').value=c.recruiter?.name||'';document.getElementById('fRecEmail').value=c.recruiter?.email||'';document.getElementById('fRecPhone').value=c.recruiter?.phone||'';
   document.getElementById('fBase').value=c.comp?.base||'';document.getElementById('fBonus').value=c.comp?.bonus||'';document.getElementById('fLink').value=c.link||'';
   document.getElementById('addOverlay').classList.add('active');
@@ -992,6 +1026,7 @@ document.getElementById('saveBtn').onclick=()=>{
   const name=document.getElementById('fName').value.trim();if(!name){alert('Company name is required.');return;}
   const data={name,role:document.getElementById('fRole').value.trim(),industry:document.getElementById('fIndustry').value.trim(),logo:document.getElementById('fLogo').value.trim(),
     stage:document.getElementById('fStage').value,dream:document.getElementById('fDream').checked,
+    isNetworking:document.getElementById('fNetworking').checked,networkingReason:document.getElementById('fNetworkingReason').value.trim(),
     recruiter:{name:document.getElementById('fRecName').value.trim(),email:document.getElementById('fRecEmail').value.trim(),phone:document.getElementById('fRecPhone').value.trim()},
     comp:{base:document.getElementById('fBase').value.trim(),bonus:document.getElementById('fBonus').value.trim()},link:document.getElementById('fLink').value.trim()};
   if(editingId){const c=state.companies.find(x=>x.id===editingId);Object.assign(c,data);}
