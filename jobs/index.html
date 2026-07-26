@@ -345,6 +345,19 @@ input,textarea,select{font-family:inherit}
 .dossier-fact-value{font-size:15px;font-weight:700;color:var(--text)}
 .dossier-fact-value.unknown{color:var(--text-muted);font-weight:400;font-style:italic;font-size:13px}
 .dossier-fact-meta{font-size:10px;color:var(--text-muted);margin-top:1px}
+
+/* ── STAGING ACTION BAR ── */
+.stage-bar{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-bottom:16px}
+.stage-bar-title{font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.04em}
+.stage-btns{display:flex;gap:10px;flex-wrap:wrap}
+.stage-btn{border:none;border-radius:10px;padding:11px 18px;font-size:13.5px;font-weight:700;display:flex;align-items:center;gap:7px}
+.stage-btn.primary{background:var(--success);color:#fff}
+.stage-btn.secondary{background:#f3f4f6;color:var(--text-sec)}
+.stage-btn.danger{background:var(--coral-tint);color:#B8422F}
+.draft-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f2f3f5;font-size:13px}
+.draft-row:last-child{border:none}
+.draft-row button{margin-left:auto;background:var(--teal-tint);color:var(--teal-dark);border:none;border-radius:7px;padding:6px 12px;font-size:12px;font-weight:700}
+.draft-row button.del{background:var(--coral-tint);color:#B8422F;margin-left:8px}
 .section-divider{display:flex;align-items:center;gap:12px;margin:24px 0 16px;color:var(--text-muted);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
 .section-divider::before,.section-divider::after{content:'';flex:1;border-top:1px solid var(--border)}
 </style>
@@ -428,6 +441,8 @@ input,textarea,select{font-family:inherit}
 <div class="view" id="view-analyzer">
   <div class="section-title" style="margin-bottom:6px">Company Profile</div>
   <div class="greeting-sub" style="margin-bottom:16px">Every company gets one living profile. Paste anything — a BBB page, website, LinkedIn, a job posting, an email, interview notes — and it enriches this record instead of creating a new report each time.</div>
+
+  <div id="draftsPanel"></div>
 
   <div class="report-header" id="reportHeader">
     <div class="report-id">
@@ -581,6 +596,17 @@ input,textarea,select{font-family:inherit}
   </div>
 </div>
 
+<!-- DUPLICATE COMPANY MODAL -->
+<div class="overlay" id="dupOverlay">
+  <div class="modal">
+    <div class="modal-title">This company already exists</div>
+    <p style="font-size:13.5px;color:var(--text-sec);margin-bottom:18px;line-height:1.5">A company named "<span id="dupCompanyName" style="font-weight:700"></span>" is already in your CRM. What would you like to do with this new information?</p>
+    <button class="btn-primary" style="width:100%;margin-bottom:8px" onclick="resolveDuplicate('merge')">Merge New Information <span style="font-weight:400;font-size:11.5px">— fill blanks, keep existing notes &amp; history</span></button>
+    <button class="btn-secondary" style="width:100%;margin-bottom:8px" onclick="resolveDuplicate('update')">Update Existing Company <span style="font-weight:400;font-size:11.5px">— replace facts with this new pass</span></button>
+    <button class="btn-secondary" style="width:100%" onclick="document.getElementById('dupOverlay').classList.remove('active')">Cancel</button>
+  </div>
+</div>
+
 <!-- COMPANY INTEL MODAL -->
 <div class="overlay" id="intelOverlay">
   <div class="modal">
@@ -691,6 +717,7 @@ let state=StorageService.load(SK);
 if(!state||!state.companies){state={companies:seedData()};}
 if(!state.documents)state.documents=seedDocs();
 if(!state.profiles)state.profiles=seedProfiles();
+if(!state.drafts)state.drafts=[];
 state.profiles.forEach(p=>{if(p.checklist===undefined)p.checklist=[];});
 state.companies.forEach(c=>{
   if(c.industry===undefined)c.industry='';
@@ -1295,7 +1322,7 @@ function buildReportData(text,companyName,website){
   if(existingCo)sources.push(`Existing CRM record: ${existingCo.name}`);
   sources.push(`Career Profile: ${activeProfile?activeProfile.name:'none active'}`);
   return{
-    companyName,website:effectiveWebsite,dossier,reputation,profileName:activeProfile?activeProfile.name:null,
+    companyName,website:effectiveWebsite,dossier,reputation,rawNewFacts:newFacts,rawNewReputation:extractReputation(text),profileName:activeProfile?activeProfile.name:null,
     overall:sc?sc.overall:null,tier:t.tier,recommendation:t.rec,verdictText:sc?sc.verdictText:'No active profile checklist to score against.',
     salary:{expected:activeProfile&&activeProfile.criteria.minSalary?activeProfile.criteria.minSalary:null,detected:a.salary,gap},
     compensation:{commission:detectAny(text,['commission']),bonus:detectAny(text,['bonus']),overrides:detectAny(text,['override']),residual:detectAny(text,['residual']),equity:detectAny(text,['equity','stock options'])},
@@ -1463,8 +1490,8 @@ function reportHTML(rep,ctx){
 }
 function toggleReportAction(i){
   anzReport.actionItems[i].done=!anzReport.actionItems[i].done;
-  document.getElementById('anzResults').innerHTML=reportHTML(anzReport,{type:'live'})+`<div id="anzScorecard"></div><div class="rep-section"><button class="btn-primary" id="anzCreateBtn">Save company to pipeline</button></div>`;
-  document.getElementById('anzCreateBtn').onclick=saveAnalyzedCompany;
+  document.getElementById('anzResults').innerHTML=reportHTML(anzReport,{type:'live'})+`<div id="anzScorecard"></div>`+stageBarHTML();
+  wireStageBar();
   renderOpportunityScorecard();
 }
 function updateReportHeader(){
@@ -1492,22 +1519,8 @@ function detectImportLabel(text,facts){
   if(/salary|compensation|responsibilities|qualifications|apply now|job description/i.test(text))return 'Imported Job Posting';
   return 'Imported Company Information';
 }
-function saveAnalyzedCompany(){
-  const nm=document.getElementById('anzCompanyName2').value.trim();
-  if(!nm){alert('Add a company name at the top to add it to your pipeline.');return;}
-  const website=document.getElementById('anzWebsite').value.trim();
+function createNewCompanyFrom(nm,website){
   const a=analyzeJD(anzText);
-  const existing=state.companies.find(c=>c.name.toLowerCase()===nm.toLowerCase());
-  if(existing){
-    existing.dossier=anzReport.dossier;
-    existing.reputation=anzReport.reputation;
-    if(website)existing.link=website;
-    existing.jd=anzText;
-    existing.opportunityScore=anzReport.overall!==null?{overall:anzReport.overall,verdict:anzReport.tier,verdictText:anzReport.verdictText,profileName:anzReport.profileName,computedAt:todayISO()}:existing.opportunityScore;
-    existing.intelReport=JSON.parse(JSON.stringify(anzReport));
-    existing.timeline.unshift({date:todayISO(),text:detectImportLabel(anzText,anzReport.dossier)+(anzReport.overall!==null?` — ${anzReport.overall}/100`:'')});
-    saveState();openDetail(existing.id);return;
-  }
   const newCo={id:cid(),name:nm,role:'',industry:'',logo:'',stage:'Researching',dream:false,
     recruiter:{name:'',email:'',phone:''},comp:{base:a.salary||'',bonus:''},link:website,
     timeline:[{date:todayISO(),text:detectImportLabel(anzText,anzReport.dossier)+(anzReport.overall!==null?` — ${anzReport.overall}/100`:'')}],notes:[],documents:[],
@@ -1518,6 +1531,120 @@ function saveAnalyzedCompany(){
     intelReport:JSON.parse(JSON.stringify(anzReport)),dossier:anzReport.dossier,reputation:anzReport.reputation};
   state.companies.push(newCo);saveState();
   openDetail(newCo.id);
+}
+let pendingDupId=null;
+function addCompanyToCRM(){
+  const nm=document.getElementById('anzCompanyName2').value.trim();
+  if(!nm){alert('Add a company name at the top to add it to your CRM.');return;}
+  if(!anzReport){alert('Run Analyze first.');return;}
+  const existing=state.companies.find(c=>c.name.toLowerCase()===nm.toLowerCase());
+  if(existing){
+    pendingDupId=existing.id;
+    document.getElementById('dupCompanyName').textContent=existing.name;
+    document.getElementById('dupOverlay').classList.add('active');
+    return;
+  }
+  const website=document.getElementById('anzWebsite').value.trim();
+  createNewCompanyFrom(nm,website);
+}
+function resolveDuplicate(mode){
+  const existing=state.companies.find(c=>c.id===pendingDupId);
+  const website=document.getElementById('anzWebsite').value.trim();
+  if(mode==='update'){
+    existing.dossier=mergeFacts(Object.fromEntries(Object.keys(existing.dossier).map(k=>[k,nf()])),anzReport.rawNewFacts);
+    existing.reputation=mergeReputation(Object.fromEntries(Object.keys(existing.reputation).map(k=>[k,{rating:'',reviews:'',status:'',updated:''}])),anzReport.rawNewReputation);
+  }else{
+    existing.dossier=anzReport.dossier;
+    existing.reputation=anzReport.reputation;
+  }
+  if(website)existing.link=website;
+  existing.jd=anzText;
+  existing.opportunityScore=anzReport.overall!==null?{overall:anzReport.overall,verdict:anzReport.tier,verdictText:anzReport.verdictText,profileName:anzReport.profileName,computedAt:todayISO()}:existing.opportunityScore;
+  existing.intelReport=JSON.parse(JSON.stringify(anzReport));
+  existing.timeline.unshift({date:todayISO(),text:(mode==='update'?'Updated — ':'Merged — ')+detectImportLabel(anzText,anzReport.dossier)+(anzReport.overall!==null?` — ${anzReport.overall}/100`:'')});
+  saveState();
+  document.getElementById('dupOverlay').classList.remove('active');
+  openDetail(existing.id);
+}
+function stageBarHTML(){
+  return `<div class="stage-bar">
+    <div class="stage-bar-title">Nothing enters your CRM until you approve it</div>
+    <div class="stage-btns">
+      <button class="stage-btn primary" id="btnAddCRM">🟢 Add Company to CRM</button>
+      <button class="stage-btn secondary" id="btnSaveDraft">📝 Save as Draft</button>
+      <button class="stage-btn secondary" id="btnAnalyzeAgain">🔄 Analyze Again</button>
+      <button class="stage-btn secondary" id="btnExportReport">📤 Export Report</button>
+      <button class="stage-btn danger" id="btnDiscard">🗑 Discard</button>
+    </div>
+  </div>`;
+}
+function wireStageBar(){
+  document.getElementById('btnAddCRM').onclick=addCompanyToCRM;
+  document.getElementById('btnSaveDraft').onclick=saveAsDraft;
+  document.getElementById('btnAnalyzeAgain').onclick=analyzeAgainReset;
+  document.getElementById('btnExportReport').onclick=exportReport;
+  document.getElementById('btnDiscard').onclick=discardReport;
+}
+function saveAsDraft(){
+  if(!anzReport){alert('Run Analyze first.');return;}
+  state.drafts.push({id:cid(),name:document.getElementById('anzCompanyName2').value.trim()||'Untitled draft',
+    website:document.getElementById('anzWebsite').value.trim(),text:anzText,report:anzReport,overrides:anzOverrides,savedAt:todayISO()});
+  saveState();renderDrafts();
+  alert('Saved as draft. Find it above the Company Profile whenever you come back to this tab.');
+}
+function renderDrafts(){
+  const box=document.getElementById('draftsPanel');
+  if(!box)return;
+  if(!state.drafts.length){box.innerHTML='';return;}
+  box.innerHTML=`<div class="dcard"><div class="dcard-title">📝 Drafts <span class="cc">(${state.drafts.length})</span></div>
+    ${state.drafts.map(d=>`<div class="draft-row"><span>${esc(d.name)}</span><span class="cc">${d.savedAt}</span><button onclick="resumeDraft('${d.id}')">Resume</button><button class="del" onclick="deleteDraft('${d.id}')">Delete</button></div>`).join('')}
+  </div>`;
+}
+function resumeDraft(id){
+  const d=state.drafts.find(x=>x.id===id);if(!d)return;
+  document.getElementById('anzCompanyName2').value=d.name==='Untitled draft'?'':d.name;
+  document.getElementById('anzWebsite').value=d.website;
+  document.getElementById('anzJD').value=d.text;
+  anzText=d.text;anzOverrides=d.overrides||{};anzReport=d.report;
+  document.getElementById('anzResults').innerHTML=reportHTML(anzReport,{type:'live'})+`<div id="anzScorecard"></div>`+stageBarHTML();
+  wireStageBar();renderOpportunityScorecard();updateReportHeader();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function deleteDraft(id){
+  if(!confirm('Delete this draft?'))return;
+  state.drafts=state.drafts.filter(x=>x.id!==id);saveState();renderDrafts();
+}
+function analyzeAgainReset(){
+  document.getElementById('anzJD').value='';
+  document.getElementById('anzJD').focus();
+  document.getElementById('anzResults').innerHTML='';
+  anzReport=null;anzText='';anzOverrides={};
+  updateReportHeader();
+}
+function exportReport(){
+  if(!anzReport){alert('Run Analyze first.');return;}
+  const r=anzReport,d=r.dossier;
+  const gv=(f)=>f&&f.value?f.value:'Unknown';
+  let md=`# ${r.companyName||'Unnamed company'} — Company Profile\n\n`;
+  md+=`**Overall Match:** ${r.overall!==null?r.overall+'/100':'Not scored'} — ${r.recommendation}\n`;
+  md+=`**Career Profile used:** ${r.profileName||'None'}\n**Generated:** ${r.computedAt}\n\n`;
+  md+=`## Company Facts\n`;
+  ['bbbRating','bbbAccredited','yearsInBusiness','bbbOpened','businessStarted','businessIncorporated','entityType','employees','annualRevenue','owner','ceo','manager','parentCompany','headquarters'].forEach(k=>{md+=`- **${k}:** ${gv(d[k])}\n`;});
+  md+=`\n## Risk Assessment\n- Red flags: ${r.risk.redFlags.join(', ')||'None'}\n- Missing required info: ${r.risk.missingInfo.join(', ')||'None'}\n- Concerns: ${r.risk.concerns.join(', ')||'None'}\n`;
+  md+=`\n## Notes\n${r.notes||'(none)'}\n\n## Sources\n${r.sources.map(s=>'- '+s).join('\n')}\n`;
+  const blob=new Blob([md],{type:'text/markdown'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');
+  a.href=url;a.download=(r.companyName||'company-profile').replace(/\s+/g,'-')+'.md';a.click();
+  URL.revokeObjectURL(url);
+}
+function discardReport(){
+  if(!confirm('Discard this report? Nothing has been saved to your CRM.'))return;
+  document.getElementById('anzCompanyName2').value='';
+  document.getElementById('anzWebsite').value='';
+  document.getElementById('anzJD').value='';
+  document.getElementById('anzResults').innerHTML='';
+  anzReport=null;anzText='';anzOverrides={};
+  updateReportHeader();
 }
 document.getElementById('anzRunBtn').onclick=()=>{
   const text=document.getElementById('anzJD').value.trim();
@@ -1531,13 +1658,10 @@ document.getElementById('anzRunBtn').onclick=()=>{
     document.getElementById('anzCompanyName2').value=anzReport.dossier.name.value;
     anzReport.companyName=anzReport.dossier.name.value;
   }
-  box.innerHTML=reportHTML(anzReport,{type:'live'})+`<div id="anzScorecard"></div>
-    <div class="rep-section">
-      <button class="btn-primary" id="anzCreateBtn">Save company to pipeline</button>
-    </div>`;
+  box.innerHTML=reportHTML(anzReport,{type:'live'})+`<div id="anzScorecard"></div>`+stageBarHTML();
   renderOpportunityScorecard();
   updateReportHeader();
-  document.getElementById('anzCreateBtn').onclick=saveAnalyzedCompany;
+  wireStageBar();
 };
 function renderOpportunityScorecard(){
   const container=document.getElementById('anzScorecard');
@@ -1581,12 +1705,12 @@ function setCritOverride(ruleId,val){
     const notes=anzReport.notes,items=anzReport.actionItems;
     anzReport=buildReportData(anzText,name,website);
     anzReport.notes=notes;anzReport.actionItems=items;
-    document.getElementById('anzResults').innerHTML=reportHTML(anzReport,{type:'live'})+`<div id="anzScorecard"></div><div class="rep-section"><button class="btn-primary" id="anzCreateBtn">Save company to pipeline</button></div>`;
-    document.getElementById('anzCreateBtn').onclick=saveAnalyzedCompany;
+    document.getElementById('anzResults').innerHTML=reportHTML(anzReport,{type:'live'})+`<div id="anzScorecard"></div>`+stageBarHTML();
+    wireStageBar();
     renderOpportunityScorecard();
   }
 }
-function renderAnalyzer(){updateReportHeader();}
+function renderAnalyzer(){updateReportHeader();renderDrafts();}
 
 let activeFilter='All';let searchTerm='';let currentDetailId=null;let editingId=null;
 let editingDocId=null;let editingDocType='resume';
