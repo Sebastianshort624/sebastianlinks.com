@@ -358,6 +358,14 @@ input,textarea,select{font-family:inherit}
 .draft-row:last-child{border:none}
 .draft-row button{margin-left:auto;background:var(--teal-tint);color:var(--teal-dark);border:none;border-radius:7px;padding:6px 12px;font-size:12px;font-weight:700}
 .draft-row button.del{background:var(--coral-tint);color:#B8422F;margin-left:8px}
+
+/* ── QUICK RESEARCH HUB ── */
+.research-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:20px}
+.research-cat{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
+.research-cat-title{font-size:13px;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.research-btns{display:flex;flex-wrap:wrap;gap:8px}
+.research-btn{background:var(--teal-tint);color:var(--teal-dark);border-radius:9px;padding:8px 12px;font-size:11.5px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;transition:.15s}
+.research-btn:hover{background:var(--aqua);color:#0B3B37;transform:translateY(-1px)}
 .section-divider{display:flex;align-items:center;gap:12px;margin:24px 0 16px;color:var(--text-muted);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
 .section-divider::before,.section-divider::after{content:'';flex:1;border-top:1px solid var(--border)}
 </style>
@@ -1262,6 +1270,100 @@ function extractReputation(text){
     consumerAffairs:extractSourceRep(text,/\bConsumer\s?Affairs\b/i)
   };
 }
+/* ── QUICK RESEARCH HUB ──
+   Every button either opens a stored direct URL (BBB, website, LinkedIn, Google Maps —
+   whatever's already in the dossier) or falls back to a pre-filled search using the
+   company name, so every button works even from just a name. */
+const RESEARCH_CATEGORIES=[
+  {icon:'💼',title:'Job Postings',buttons:[
+    {label:'Company Careers Page',kind:'careers'},{label:'LinkedIn Jobs',kind:'linkedin_jobs'},
+    {label:'Indeed',kind:'indeed_jobs'},{label:'ZipRecruiter',kind:'ziprecruiter'},{label:'Glassdoor Jobs',kind:'glassdoor_jobs'}]},
+  {icon:'⭐',title:'Reviews',buttons:[
+    {label:'Google Reviews',kind:'google_reviews'},{label:'Glassdoor',kind:'glassdoor'},{label:'Indeed Reviews',kind:'indeed_reviews'},
+    {label:'Trustpilot',kind:'trustpilot'},{label:'ConsumerAffairs',kind:'consumeraffairs'},{label:'Yelp',kind:'yelp'}]},
+  {icon:'🛡',title:'BBB',buttons:[
+    {label:'Open BBB Profile',kind:'bbb_direct'},{label:'Search BBB',kind:'bbb_search'},{label:'File a Complaint',kind:'bbb_complaint'}]},
+  {icon:'📢',title:'Advertising',buttons:[
+    {label:'Google Search',kind:'google'},{label:'Google News',kind:'google_news'},{label:'Facebook Ads Library',kind:'fb_ads'},
+    {label:'YouTube',kind:'youtube'},{label:'Facebook Page',kind:'facebook'},{label:'Instagram',kind:'instagram'},
+    {label:'LinkedIn Company',kind:'linkedin_company'},{label:'X (Twitter)',kind:'twitter'}]},
+  {icon:'📍',title:'Business Listings',buttons:[
+    {label:'Google Maps',kind:'google_maps'},{label:'Apple Maps',kind:'apple_maps'},{label:'Bing Maps',kind:'bing_maps'},
+    {label:'Yelp',kind:'yelp'},{label:'Yellow Pages',kind:'yellowpages'},{label:'Dun & Bradstreet',kind:'dnb'},
+    {label:'Chamber of Commerce',kind:'chamber'},{label:'Manta',kind:'manta'}]},
+  {icon:'🌐',title:'Company Research',buttons:[
+    {label:'Company Website',kind:'website'},{label:'About Us',kind:'about'},{label:'Leadership Team',kind:'leadership'},
+    {label:'Contact Us',kind:'contact'},{label:'Careers',kind:'careers'},{label:'News',kind:'news'},{label:'Press Releases',kind:'press'}]},
+  {icon:'💰',title:'Financial & Business',buttons:[
+    {label:'Crunchbase',kind:'crunchbase'},{label:'SEC Filings',kind:'sec'},{label:'OpenCorporates',kind:'opencorporates'},
+    {label:'State Business Registration',kind:'state_reg'},{label:'LinkedIn Company',kind:'linkedin_company'}]},
+  {icon:'⚖',title:'Legal & Compliance',buttons:[
+    {label:'Court Records Search',kind:'court_records'},{label:'PACER',kind:'pacer'},
+    {label:'State Licensing Search',kind:'state_license'},{label:'CFPB Complaints',kind:'cfpb'}]}
+];
+function researchURL(kind,name,website,dossier){
+  name=name||'';
+  const q=encodeURIComponent(name);
+  const site=website?website.replace(/^https?:\/\//,'').replace(/\/$/,''):'';
+  const g=(extra)=>`https://www.google.com/search?q=${encodeURIComponent(name+' '+extra)}`;
+  const siteSearch=(label)=>site?`https://www.google.com/search?q=${encodeURIComponent('site:'+site+' '+label)}`:g(label);
+  const dv=(f)=>f&&f.value?f.value:'';
+  switch(kind){
+    case 'website':return website||g('official website');
+    case 'careers':return site?`https://www.google.com/search?q=${encodeURIComponent('site:'+site+' careers')}`:g('careers');
+    case 'about':return siteSearch('about us');
+    case 'leadership':return siteSearch('leadership team');
+    case 'contact':return siteSearch('contact us');
+    case 'news':return g('news');
+    case 'press':return siteSearch('press releases');
+    case 'linkedin_jobs':return `https://www.linkedin.com/jobs/search/?keywords=${q}`;
+    case 'indeed_jobs':return `https://www.indeed.com/jobs?q=${q}`;
+    case 'indeed_reviews':return `https://www.indeed.com/cmp/${q}/reviews`;
+    case 'ziprecruiter':return `https://www.ziprecruiter.com/candidate/search?search=${q}`;
+    case 'glassdoor_jobs':case 'glassdoor':return `https://www.glassdoor.com/Search/results.htm?keyword=${q}`;
+    case 'google_reviews':return `https://www.google.com/maps/search/?api=1&query=${q}`;
+    case 'trustpilot':return `https://www.trustpilot.com/search?query=${q}`;
+    case 'consumeraffairs':return g('consumeraffairs reviews');
+    case 'yelp':return `https://www.yelp.com/search?find_desc=${q}`;
+    case 'bbb_direct':return dv(dossier&&dossier.bbbProfileUrl)||`https://www.bbb.org/search?find_text=${q}`;
+    case 'bbb_search':return `https://www.bbb.org/search?find_text=${q}`;
+    case 'bbb_complaint':return 'https://www.bbb.org/consumer-complaints/file-a-complaint/get-started';
+    case 'google':return `https://www.google.com/search?q=${q}`;
+    case 'google_news':return `https://news.google.com/search?q=${q}`;
+    case 'fb_ads':return `https://www.facebook.com/ads/library/?q=${q}`;
+    case 'youtube':return `https://www.youtube.com/results?search_query=${q}`;
+    case 'facebook':return dv(dossier&&dossier.facebook)||`https://www.facebook.com/search/top?q=${q}`;
+    case 'instagram':return g('instagram');
+    case 'linkedin_company':return dv(dossier&&dossier.linkedin)||`https://www.linkedin.com/search/results/companies/?keywords=${q}`;
+    case 'twitter':return `https://twitter.com/search?q=${q}`;
+    case 'google_maps':return dv(dossier&&dossier.googleMaps)||`https://www.google.com/maps/search/?api=1&query=${q}`;
+    case 'apple_maps':return `https://maps.apple.com/?q=${q}`;
+    case 'bing_maps':return `https://www.bing.com/maps?q=${q}`;
+    case 'yellowpages':return `https://www.yellowpages.com/search?search_terms=${q}`;
+    case 'dnb':return `https://www.dnb.com/business-directory/company-search.html?term=${q}`;
+    case 'chamber':return g('chamber of commerce');
+    case 'manta':return `https://www.manta.com/search?search_source=nav&prov=&search=${q}`;
+    case 'crunchbase':return `https://www.crunchbase.com/textsearch?q=${q}`;
+    case 'sec':return `https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&company=${q}`;
+    case 'opencorporates':return `https://opencorporates.com/companies?q=${q}`;
+    case 'state_reg':return g('secretary of state business registration');
+    case 'court_records':return g('court records');
+    case 'pacer':return 'https://pcl.uscourts.gov/pcl/index.jsf';
+    case 'state_license':return g('state license lookup');
+    case 'cfpb':return `https://www.consumerfinance.gov/data-research/consumer-complaints/search/?searchText=${q}`;
+    default:return g(kind);
+  }
+}
+function researchHubHTML(name,website,dossier){
+  return `<div class="section-title" style="margin-bottom:10px">🔎 Quick Research</div>
+    <div class="research-grid">
+      ${RESEARCH_CATEGORIES.map(cat=>`<div class="research-cat">
+        <div class="research-cat-title">${cat.icon} ${esc(cat.title)}</div>
+        <div class="research-btns">${cat.buttons.map(b=>`<a class="research-btn" href="${esc(researchURL(b.kind,name,website,dossier))}" target="_blank" rel="noopener">${esc(b.label)}</a>`).join('')}</div>
+      </div>`).join('')}
+    </div>`;
+}
+
 function mergeReputation(oldRep,newRep){
   const merged={};
   Object.keys(oldRep).forEach(src=>{
@@ -2128,6 +2230,8 @@ function renderDetail(){
       <div class="detail-sub">${esc(c.role||'—')}${c.industry?' · '+esc(c.industry):''} · <span class="stage-badge" style="background:${sc.bg};color:${sc.fg}">${c.stage}</span></div></div>
       <div class="detail-actions"><button class="icon-btn" onclick="openEdit('${c.id}')" title="Edit">✎</button></div>
     </div>
+
+    ${researchHubHTML(c.name,c.link,c.dossier)}
 
     ${Object.values(c.dossier||{}).some(v=>v&&v.value)?dossierHTML({companyName:c.name,website:c.link,dossier:c.dossier,reputation:c.reputation},false):''}
 
