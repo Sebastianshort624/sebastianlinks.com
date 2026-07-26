@@ -331,6 +331,21 @@ input,textarea,select{font-family:inherit}
 .source-item{font-size:12.5px;color:var(--text-sec);padding:3px 0}
 .rep-grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:720px){.rep-grid2{grid-template-columns:1fr}}
+
+/* ── COMPANY DOSSIER ── */
+.dossier-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:26px 28px;box-shadow:var(--shadow);margin-bottom:18px}
+.dossier-name{font-size:26px;font-weight:800;color:var(--text);line-height:1.15}
+.dossier-category{font-size:14px;color:var(--text-muted);margin-top:2px;margin-bottom:14px}
+.dossier-contact{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:18px;font-size:13px;color:var(--text-sec)}
+.dossier-contact span{display:flex;align-items:center;gap:6px}
+.dossier-divider{border-top:1px solid var(--border);margin:16px 0}
+.dossier-fact-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:18px 20px}
+.dossier-fact{display:flex;flex-direction:column;gap:3px}
+.dossier-fact-label{font-size:10.5px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;display:flex;align-items:center;gap:5px}
+.dossier-fact-value{font-size:15px;font-weight:700;color:var(--text)}
+.dossier-fact-value.unknown{color:var(--text-muted);font-weight:400;font-style:italic;font-size:13px}
+.section-divider{display:flex;align-items:center;gap:12px;margin:24px 0 16px;color:var(--text-muted);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.section-divider::before,.section-divider::after{content:'';flex:1;border-top:1px solid var(--border)}
 </style>
 </head>
 <body>
@@ -691,6 +706,7 @@ state.companies.forEach(c=>{
   if(c.isNetworking===undefined)c.isNetworking=false;
   if(c.networkingReason===undefined)c.networkingReason='';
   if(c.opportunityScore===undefined)c.opportunityScore=null;
+  if(c.dossier===undefined)c.dossier={phone:'',website:'',city:'',state:'',bbbRating:'',bbbAccredited:'',yearsInBusiness:'',bbbOpened:'',businessStarted:'',businessStartedLocally:'',businessIncorporated:'',entityType:'',owner:'',manager:'',employees:'',industry:'',bbbProfileUrl:''};
 });
 saveState();
 function saveState(){StorageService.persist(SK,state);}
@@ -1068,6 +1084,50 @@ const OpportunityEngine=(function(){
 })();
 
 /* ── JOB POSTING ANALYZER ── */
+/* ── COMPANY FACTS EXTRACTOR ──
+   Parses BBB-profile-style pasted text (label + whitespace/colon + value) plus a few
+   standalone patterns (phone, website, city/state). Every field defaults to '' if not
+   found — nothing here is ever guessed or fabricated. */
+function grabField(text,label){
+  const re=new RegExp(label+'\\s*[:\\-]?\\s+([^\\n]+)','i');
+  const m=text.match(re);
+  return m?m[1].trim().replace(/^[✅❌]\s*/,''):'';
+}
+function extractCompanyFacts(text){
+  const facts={
+    phone:'',website:'',city:'',state:'',bbbRating:'',bbbAccredited:'',yearsInBusiness:'',
+    bbbOpened:'',businessStarted:'',businessStartedLocally:'',businessIncorporated:'',
+    entityType:'',owner:'',manager:'',employees:'',industry:'',bbbProfileUrl:''
+  };
+  const phoneM=text.match(/\(?\d{3}\)?[\s.\-]?\d{3}[\s.\-]?\d{4}/);
+  if(phoneM)facts.phone=phoneM[0];
+  const bbbUrlM=text.match(/https?:\/\/(?:www\.)?bbb\.org\/[^\s)]+/i);
+  if(bbbUrlM)facts.bbbProfileUrl=bbbUrlM[0];
+  const siteM=text.match(/\bhttps?:\/\/(?!(?:www\.)?bbb\.org)[^\s)]+/i)||text.match(/\bwww\.[a-z0-9-]+\.[a-z]{2,}[^\s)]*/i);
+  if(siteM)facts.website=siteM[0];
+  const cityStateM=text.match(/\b([A-Z][a-zA-Z ]+),\s*([A-Z]{2})\b/);
+  if(cityStateM){facts.city=cityStateM[1].trim();facts.state=cityStateM[2];}
+  facts.bbbRating=grabField(text,'BBB Rating');
+  const accM=grabField(text,'BBB Accredited');
+  if(accM)facts.bbbAccredited=/yes|✓/i.test(accM)?'Yes':/no|❌/i.test(accM)?'No':accM;
+  facts.yearsInBusiness=grabField(text,'Years? in Business').replace(/\D+$/,'');
+  facts.bbbOpened=grabField(text,'BBB (?:File )?Opened');
+  facts.businessStartedLocally=grabField(text,'Business Started Locally');
+  facts.businessIncorporated=grabField(text,'Business Incorporated');
+  facts.businessStarted=grabField(text,'Business Started(?! Locally)');
+  facts.entityType=grabField(text,'Entity Type');
+  facts.owner=grabField(text,'Owner');
+  facts.manager=grabField(text,'Manager');
+  facts.employees=grabField(text,'(?:Number of )?Employees').replace(/\D+$/,'');
+  facts.industry=grabField(text,'Industry');
+  return facts;
+}
+function mergeFacts(oldF,newF){
+  const merged=Object.assign({},oldF);
+  Object.keys(newF).forEach(k=>{if(newF[k])merged[k]=newF[k];});
+  return merged;
+}
+
 function analyzeJD(text){
   const lc=text.toLowerCase();
   const kws=extractKeywords(text);
@@ -1117,6 +1177,10 @@ function buildReportData(text,companyName,website){
   const sc=(activeProfile&&activeProfile.checklist&&activeProfile.checklist.length)?OpportunityEngine.computeScorecard(activeProfile,text,anzOverrides):null;
   const t=sc?tierFor(sc):{tier:'none',rec:'Not Scored'};
   const existingCo=companyName?state.companies.find(c=>c.name.toLowerCase()===companyName.toLowerCase()):null;
+  const blankDossier={phone:'',website:'',city:'',state:'',bbbRating:'',bbbAccredited:'',yearsInBusiness:'',bbbOpened:'',businessStarted:'',businessStartedLocally:'',businessIncorporated:'',entityType:'',owner:'',manager:'',employees:'',industry:'',bbbProfileUrl:''};
+  const newFacts=extractCompanyFacts(text);
+  const dossier=mergeFacts(existingCo?existingCo.dossier||blankDossier:blankDossier,newFacts);
+  const effectiveWebsite=website||dossier.website;
   const expectedSalary=activeProfile?parseComp(activeProfile.criteria.minSalary):0;
   const detectedSalary=a.salary?parseComp(a.salary):0;
   const gap=(expectedSalary&&detectedSalary)?(detectedSalary-expectedSalary):null;
@@ -1133,11 +1197,12 @@ function buildReportData(text,companyName,website){
   const linkedinDoc=activeProfile&&activeProfile.linkedinId?state.documents.find(d=>d.id===activeProfile.linkedinId):null;
   const sources=[];
   if(text)sources.push(`Pasted text (${text.trim().split(/\s+/).length} words)`);
-  if(website)sources.push(`Website: ${website}`);
+  if(effectiveWebsite)sources.push(`Website: ${effectiveWebsite}`);
+  if(dossier.bbbProfileUrl)sources.push(`BBB profile: ${dossier.bbbProfileUrl}`);
   if(existingCo)sources.push(`Existing CRM record: ${existingCo.name}`);
   sources.push(`Career Profile: ${activeProfile?activeProfile.name:'none active'}`);
   return{
-    companyName,website,profileName:activeProfile?activeProfile.name:null,
+    companyName,website:effectiveWebsite,dossier,profileName:activeProfile?activeProfile.name:null,
     overall:sc?sc.overall:null,tier:t.tier,recommendation:t.rec,verdictText:sc?sc.verdictText:'No active profile checklist to score against.',
     salary:{expected:activeProfile&&activeProfile.criteria.minSalary?activeProfile.criteria.minSalary:null,detected:a.salary,gap},
     compensation:{commission:detectAny(text,['commission']),bonus:detectAny(text,['bonus']),overrides:detectAny(text,['override']),residual:detectAny(text,['residual']),equity:detectAny(text,['equity','stock options'])},
@@ -1152,6 +1217,34 @@ function buildReportData(text,companyName,website){
     notes:'',sources,computedAt:todayISO()
   };
 }
+function dossierHTML(rep,withDivider){
+  if(withDivider===undefined)withDivider=true;
+  const d=rep.dossier;
+  const fact=(icon,label,val)=>`<div class="dossier-fact"><div class="dossier-fact-label">${icon} ${label}</div><div class="dossier-fact-value ${val?'':'unknown'}">${val?esc(val):'Unknown'}</div></div>`;
+  const contactBits=[];
+  if(d.city||d.state)contactBits.push(`<span>📍 ${esc([d.city,d.state].filter(Boolean).join(', '))}</span>`);
+  if(rep.website)contactBits.push(`<span>🌐 ${esc(rep.website)}</span>`);
+  if(d.phone)contactBits.push(`<span>☎ ${esc(d.phone)}</span>`);
+  return `<div class="dossier-card">
+    <div class="dossier-name">🏢 ${esc(rep.companyName||'Unnamed company')}</div>
+    <div class="dossier-category">${d.industry?esc(d.industry):'Industry not detected'}</div>
+    ${contactBits.length?`<div class="dossier-contact">${contactBits.join('')}</div>`:''}
+    <div class="dossier-divider"></div>
+    <div class="dossier-fact-grid">
+      ${fact('⭐','BBB Rating',d.bbbRating)}
+      ${fact(d.bbbAccredited==='Yes'?'✅':d.bbbAccredited==='No'?'❌':'❔','BBB Accredited',d.bbbAccredited)}
+      ${fact('📅','Years in Business',d.yearsInBusiness)}
+      ${fact('📂','BBB Opened',d.bbbOpened)}
+      ${fact('🏗','Business Started',d.businessStarted)}
+      ${fact('🏛','Entity Type',d.entityType)}
+      ${fact('👤','Owner',d.owner)}
+      ${fact('👥','Manager',d.manager)}
+      ${fact('🧑‍🤝‍🧑','Employees',d.employees)}
+      ${d.bbbProfileUrl?`<div class="dossier-fact"><div class="dossier-fact-label">🔗 BBB Profile</div><div class="dossier-fact-value"><a href="${esc(d.bbbProfileUrl)}" target="_blank" style="color:var(--teal)">View BBB Page</a></div></div>`:''}
+    </div>
+  </div>
+  ${withDivider?'<div class="section-divider">Career Intelligence</div>':''}`;
+}
 function ringSVG(pct,tier){
   const colors={excellent:'#2FAE7D',good:'#39D0C8',caution:'#C9A227',avoid:'#FF7A66',none:'#8B95A1'};
   const c=colors[tier]||colors.none;
@@ -1165,6 +1258,7 @@ function reportHTML(rep,ctx){
     return `<div class="compare-item ${bad?'bad':'ok'}">${bad?'✗':'✓'} ${CAT_ICONS[cat]||''} ${esc(cat)} <span class="cc">(${s.ok}/${s.total} yes)</span></div>`;
   }).join('');
   return `
+  ${(ctx&&ctx.type==='saved')?'':dossierHTML(rep)}
   <div class="rep-section">
     <div class="ring-wrap">
       ${ringSVG(rep.overall,rep.tier)}
@@ -1189,8 +1283,8 @@ function reportHTML(rep,ctx){
       <div class="rep-row"><span class="rk">Hours</span><span class="rv ${rep.workArrangement.hours?'':'unknown'}">${rep.workArrangement.hours||'Not detected'}</span></div>
       <div class="rep-row"><span class="rk">Schedule</span><span class="rv unknown">Not detected</span></div>
     </div>
-    <div class="rep-section"><div class="rep-section-title">🏢 Company Intelligence</div>
-      ${rep.companyIntel?['size','funding','culture','news','reviews'].map(k=>`<div class="rep-row"><span class="rk">${k[0].toUpperCase()+k.slice(1)}</span><span class="rv ${rep.companyIntel[k]?'':'unknown'}">${rep.companyIntel[k]?esc(rep.companyIntel[k]):'Not added'}</span></div>`).join(''):'<div class="empty-note">No matching company record in your CRM yet — add Company Intelligence from that company&#39;s detail page once saved.</div>'}
+    <div class="rep-section"><div class="rep-section-title">📝 Additional Company Notes</div>
+      ${rep.companyIntel?['funding','culture','news','reviews'].map(k=>`<div class="rep-row"><span class="rk">${k[0].toUpperCase()+k.slice(1)}</span><span class="rv ${rep.companyIntel[k]?'':'unknown'}">${rep.companyIntel[k]?esc(rep.companyIntel[k]):'Not added'}</span></div>`).join(''):'<div class="empty-note">No matching company record in your CRM yet — add notes from that company&#39;s detail page once saved.</div>'}
     </div>
   </div>
   <div class="rep-grid2">
@@ -1259,6 +1353,16 @@ function saveAnalyzedCompany(){
   if(!nm){alert('Add a company name at the top to add it to your pipeline.');return;}
   const website=document.getElementById('anzWebsite').value.trim();
   const a=analyzeJD(anzText);
+  const existing=state.companies.find(c=>c.name.toLowerCase()===nm.toLowerCase());
+  if(existing){
+    existing.dossier=anzReport.dossier;
+    if(website)existing.link=website;
+    existing.jd=anzText;
+    existing.opportunityScore=anzReport.overall!==null?{overall:anzReport.overall,verdict:anzReport.tier,verdictText:anzReport.verdictText,profileName:anzReport.profileName,computedAt:todayISO()}:existing.opportunityScore;
+    existing.intelReport=JSON.parse(JSON.stringify(anzReport));
+    existing.timeline.unshift({date:todayISO(),text:'Re-analyzed'+(anzReport.overall!==null?` — ${anzReport.overall}/100`:'')});
+    saveState();openDetail(existing.id);return;
+  }
   const newCo={id:cid(),name:nm,role:'',industry:'',logo:'',stage:'Researching',dream:false,
     recruiter:{name:'',email:'',phone:''},comp:{base:a.salary||'',bonus:''},link:website,
     timeline:[{date:todayISO(),text:'Added from Company Intelligence Analyzer'+(anzReport.overall!==null?` — ${anzReport.overall}/100`:'')}],notes:[],documents:[],
@@ -1266,7 +1370,7 @@ function saveAnalyzedCompany(){
     activeResumeId:null,activeCoverId:null,finalResumeId:null,finalCoverId:null,
     intel:{size:'',funding:'',culture:'',news:'',reviews:''},isNetworking:false,networkingReason:'',
     opportunityScore:anzReport.overall!==null?{overall:anzReport.overall,verdict:anzReport.tier,verdictText:anzReport.verdictText,profileName:anzReport.profileName,computedAt:todayISO()}:null,
-    intelReport:JSON.parse(JSON.stringify(anzReport))};
+    intelReport:JSON.parse(JSON.stringify(anzReport)),dossier:anzReport.dossier};
   state.companies.push(newCo);saveState();
   openDetail(newCo.id);
 }
@@ -1668,6 +1772,8 @@ function renderDetail(){
       <div class="detail-sub">${esc(c.role||'—')}${c.industry?' · '+esc(c.industry):''} · <span class="stage-badge" style="background:${sc.bg};color:${sc.fg}">${c.stage}</span></div></div>
       <div class="detail-actions"><button class="icon-btn" onclick="openEdit('${c.id}')" title="Edit">✎</button></div>
     </div>
+
+    ${Object.values(c.dossier||{}).some(v=>v)?dossierHTML({companyName:c.name,website:c.link,dossier:c.dossier},false):''}
 
     <div class="detail-grid">
       <div class="dcard"><div class="dcard-title">Recruiter</div>
