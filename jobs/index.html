@@ -285,6 +285,31 @@ input,textarea,select{font-family:inherit}
 .checklist-editor-row button{background:none;border:none;color:var(--coral);font-weight:700;font-size:11px}
 .template-bar{display:flex;gap:8px;align-items:center;margin:14px 0 10px}
 .template-bar select{flex:1;border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:12.5px}
+
+/* ── COMPANY INTELLIGENCE REPORT ── */
+.report-header{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px;flex-wrap:wrap}
+.report-id{display:flex;align-items:center;gap:14px}
+.report-avatar{width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,var(--teal),var(--aqua));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;flex-shrink:0}
+.report-name-input{font-size:17px;font-weight:800;border:none;background:transparent;padding:2px 0;display:block;width:220px;color:var(--text)}
+.report-name-input:focus{outline:none}
+.report-sub-input{font-size:12.5px;border:none;background:transparent;padding:1px 0;display:block;width:220px;color:var(--text-muted)}
+.report-sub-input:focus{outline:none}
+.report-badge{font-size:13px;font-weight:800;padding:10px 18px;border-radius:11px;text-align:center}
+.report-badge-none{background:#F3F4F6;color:var(--text-muted);font-weight:600;font-size:12.5px}
+.report-badge-excellent{background:#DCFCE7;color:#14532D}
+.report-badge-good{background:var(--teal-tint);color:var(--teal-dark)}
+.report-badge-caution{background:var(--gold-tint);color:#8A6B10}
+.report-badge-avoid{background:var(--coral-tint);color:#B8422F}
+.risk-card{background:var(--coral-tint);border:1px solid #F3A99C;border-radius:var(--radius);padding:16px 18px;margin-bottom:16px}
+.risk-card-title{font-size:13px;font-weight:800;color:#B8422F;margin-bottom:8px}
+.risk-item{font-size:13px;color:#8A2E20;padding:4px 0}
+.risk-none{font-size:12.5px;color:#5B7A5F}
+.q-card{background:var(--teal-tint);border-radius:var(--radius);padding:16px 18px;margin-bottom:16px}
+.q-card-title{font-size:13px;font-weight:800;color:var(--teal-dark);margin-bottom:8px}
+.q-item{font-size:13px;color:var(--teal-dark);padding:4px 0}
+.report-cat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:16px}
+.paste-zone textarea{width:100%;border:1px solid var(--border);border-radius:9px;padding:12px 14px;font-size:13.5px;font-family:'Inter',sans-serif}
+.paste-zone textarea:focus{outline:none;border-color:var(--aqua)}
 </style>
 </head>
 <body>
@@ -295,7 +320,7 @@ input,textarea,select{font-family:inherit}
     <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
     <button class="tab-btn" data-tab="pipeline">Pipeline</button>
     <button class="tab-btn" data-tab="library">Library</button>
-    <button class="tab-btn" data-tab="analyzer">Opportunity</button>
+    <button class="tab-btn" data-tab="analyzer">🔎 Analyze</button>
     <button class="tab-btn" data-tab="networking">Networking</button>
     <button class="tab-btn" data-tab="profiles">Profiles</button>
   </div>
@@ -364,13 +389,29 @@ input,textarea,select{font-family:inherit}
 
 <!-- ANALYZER -->
 <div class="view" id="view-analyzer">
-  <div class="section-title" style="margin-bottom:6px">Opportunity Intelligence Engine</div>
-  <div class="greeting-sub" style="margin-bottom:16px">Paste any job posting before you decide to apply — see the real requirements, the keywords your résumé needs, and how your current library stacks up.</div>
-  <div class="dcard">
-    <div class="form-field"><label>Job description</label><textarea id="anzJD" rows="7" placeholder="Paste the full job posting here..."></textarea></div>
-    <button class="btn-primary" id="anzRunBtn">Analyze</button>
+  <div class="section-title" style="margin-bottom:6px">Company Intelligence Report</div>
+  <div class="greeting-sub" style="margin-bottom:16px">Paste anything about a company — website copy, a BBB page, LinkedIn, a job posting, notes, an email — and get the same scorecard every time, scored against your active profile.</div>
+
+  <div class="report-header" id="reportHeader">
+    <div class="report-id">
+      <div class="report-avatar" id="reportAvatar">?</div>
+      <div>
+        <input type="text" id="anzCompanyName2" class="report-name-input" placeholder="Company name">
+        <input type="text" id="anzWebsite" class="report-sub-input" placeholder="Website (optional)">
+      </div>
+    </div>
+    <div class="report-badge-wrap" id="reportBadgeWrap">
+      <div class="report-badge report-badge-none">Paste something below to analyze</div>
+    </div>
   </div>
+
   <div id="anzResults"></div>
+
+  <div class="dcard paste-zone">
+    <div class="dcard-title">Paste content to analyze</div>
+    <textarea id="anzJD" rows="8" placeholder="Paste website text, a BBB profile, LinkedIn page, job posting, call notes, an email — anything about this company. The more you paste, the more the scorecard can fill in automatically."></textarea>
+    <button class="btn-primary" id="anzRunBtn" style="margin-top:10px">Analyze</button>
+  </div>
 </div>
 
 <!-- NETWORKING -->
@@ -1030,6 +1071,34 @@ function analyzeJD(text){
   return{kws,salary,workMode,seniority,travel,bestDoc,bestMatch};
 }
 let anzOverrides={};let anzText='';
+function updateReportHeader(){
+  const nameEl=document.getElementById('anzCompanyName2');
+  const name=nameEl.value.trim();
+  document.getElementById('reportAvatar').textContent=name?initials(name):'?';
+  const activeProfile=ProfileEngine.getActive();
+  const badgeWrap=document.getElementById('reportBadgeWrap');
+  if(!anzText||!activeProfile||!activeProfile.checklist||!activeProfile.checklist.length){
+    badgeWrap.innerHTML='<div class="report-badge report-badge-none">Paste something below to analyze</div>';
+    return;
+  }
+  const sc=OpportunityEngine.computeScorecard(activeProfile,anzText,anzOverrides);
+  const requiredFailed=sc.rows.filter(r=>r.rule.required&&r.val==='no').length;
+  const requiredUnknown=sc.rows.filter(r=>r.rule.required&&r.val==='unknown').length;
+  let tier,label;
+  if(requiredFailed){tier='avoid';label='🔴 Avoid';}
+  else if(requiredUnknown){tier='caution';label='🟠 Caution — missing required data';}
+  else if(sc.overall===null){tier='none';label='No criteria evaluated yet';}
+  else if(sc.overall>=85){tier='excellent';label='🟢 Excellent';}
+  else if(sc.overall>=65){tier='good';label='🟡 Good';}
+  else if(sc.overall>=40){tier='caution';label='🟠 Caution';}
+  else{tier='avoid';label='🔴 Avoid';}
+  badgeWrap.innerHTML=`<div class="report-badge report-badge-${tier}">${sc.overall!==null?sc.overall+'/100 — ':''}${label}</div>`;
+}
+document.getElementById('anzCompanyName2').addEventListener('input',updateReportHeader);
+function questionForRule(rule){
+  if(/^No /.test(rule.name))return `Can you confirm: ${rule.name.replace(/^No /,'no ')}?`;
+  return `What about — ${rule.name}?`;
+}
 document.getElementById('anzRunBtn').onclick=()=>{
   const text=document.getElementById('anzJD').value.trim();
   const box=document.getElementById('anzResults');
@@ -1060,21 +1129,22 @@ document.getElementById('anzRunBtn').onclick=()=>{
       </div>
     </div>
     <div class="dcard">
-      <div class="dcard-title">Top keywords in this posting</div>
+      <div class="dcard-title">Top keywords found</div>
       <div class="kw-chips">${a.kws.slice(0,12).map(k=>`<span class="kw-chip" style="background:var(--teal-tint);color:var(--teal-dark)">${esc(k)}</span>`).join('')||'<span class="empty-note">Not enough text to extract keywords.</span>'}</div>
       <div class="anz-createbar">
-        <input type="text" id="anzCompanyName" placeholder="Company name — add to pipeline">
         <button class="btn-primary" id="anzCreateBtn">Add as company</button>
       </div>
     </div>`;
   renderOpportunityScorecard();
+  updateReportHeader();
   document.getElementById('anzCreateBtn').onclick=()=>{
-    const name=document.getElementById('anzCompanyName').value.trim();
-    if(!name){alert('Company name is required to add it to your pipeline.');return;}
+    const name=document.getElementById('anzCompanyName2').value.trim();
+    if(!name){alert('Add a company name at the top to add it to your pipeline.');return;}
     const sc=activeProfile?OpportunityEngine.computeScorecard(activeProfile,anzText,anzOverrides):null;
+    const website=document.getElementById('anzWebsite').value.trim();
     const newCo={id:cid(),name,role:'',industry:'',logo:'',stage:'Researching',dream:false,
-      recruiter:{name:'',email:'',phone:''},comp:{base:a.salary||'',bonus:''},link:'',
-      timeline:[{date:todayISO(),text:'Added from Opportunity Intelligence Engine'+(sc?` — ${sc.overall!==null?sc.overall+'% match':'scored'}`:'')}],notes:[],documents:[],
+      recruiter:{name:'',email:'',phone:''},comp:{base:a.salary||'',bonus:''},link:website,
+      timeline:[{date:todayISO(),text:'Added from Company Intelligence Analyzer'+(sc?` — ${sc.overall!==null?sc.overall+'/100':'scored'}`:'')}],notes:[],documents:[],
       interviews:[],tasks:[],resumeHistory:[],coverHistory:[],jd:text,
       activeResumeId:null,activeCoverId:null,finalResumeId:null,finalCoverId:null,
       intel:{size:'',funding:'',culture:'',news:'',reviews:''},isNetworking:false,networkingReason:'',
@@ -1088,34 +1158,41 @@ function renderOpportunityScorecard(){
   if(!container)return;
   const activeProfile=ProfileEngine.getActive();
   if(!activeProfile||!activeProfile.checklist||!activeProfile.checklist.length){
-    container.innerHTML=`<div class="dcard"><div class="dcard-title">Opportunity Scorecard</div><div class="empty-note">The active profile ("${activeProfile?esc(activeProfile.name):'none'}") has no hiring criteria checklist yet. Add one from the Profiles tab — or load an industry template — to get a weighted recommendation here instead of just a keyword score.</div></div>`;
+    container.innerHTML=`<div class="dcard"><div class="dcard-title">Opportunity Scorecard</div><div class="empty-note">The active profile ("${activeProfile?esc(activeProfile.name):'none'}") has no hiring criteria checklist yet. Add one from the Profiles tab — or load the "Elite Remote Sales — Full Framework" template — to get a weighted recommendation here instead of just a keyword score.</div></div>`;
     return;
   }
   const sc=OpportunityEngine.computeScorecard(activeProfile,anzText,anzOverrides);
   const cats={};
   sc.rows.forEach(r=>{(cats[r.rule.category]=cats[r.rule.category]||[]).push(r);});
-  container.innerHTML=`<div class="dcard">
-    <div class="dcard-title">Opportunity Scorecard — ${esc(activeProfile.name)}</div>
-    <div class="verdict-banner verdict-${sc.verdict}">${sc.overall!==null?`<span style="font-size:20px;font-weight:800">${sc.overall}/100</span> — `:''}${esc(sc.verdictText)}</div>
-    ${Object.keys(cats).map(cat=>`
-      <div class="crit-cat">${esc(cat)}</div>
+  const CAT_ICONS={'Company':'🏢','Leadership':'👥','Position':'💼','Compensation':'💰','Sales Process':'📈','Marketing':'📣','Fulfillment':'⚙️','Operations':'🛠️','Technology':'💻','Culture':'🌱','Growth':'📊','Risk Flags':'🚩','Networking':'🤝','Personal Goals':'🎯'};
+  const riskRows=(cats['Risk Flags']||[]).filter(r=>r.val==='no');
+  const unknownRows=sc.rows.filter(r=>r.val==='unknown');
+  let html=`<div class="verdict-banner verdict-${sc.verdict}">${sc.overall!==null?`<span style="font-size:20px;font-weight:800">${sc.overall}/100</span> — `:''}${esc(sc.verdictText)}</div>`;
+  html+=`<div class="risk-card"><div class="risk-card-title">🚩 Risk Flags</div>${riskRows.length?riskRows.map(r=>`<div class="risk-item">⚠ ${esc(r.rule.name)}${r.rule.description?' — '+esc(r.rule.description):''}</div>`).join(''):'<div class="risk-none">No confirmed risk flags yet.</div>'}</div>`;
+  if(unknownRows.length){
+    html+=`<div class="q-card"><div class="q-card-title">❓ Questions to Ask <span class="cc">(${unknownRows.length} unknown${unknownRows.filter(r=>r.rule.required).length?', '+unknownRows.filter(r=>r.rule.required).length+' required':''})</span></div>${unknownRows.slice(0,12).map(r=>`<div class="q-item">${esc(questionForRule(r.rule))}</div>`).join('')}${unknownRows.length>12?`<div class="cc">+ ${unknownRows.length-12} more — see full scorecard below.</div>`:''}</div>`;
+  }
+  html+=`<div class="report-cat-grid">${Object.keys(cats).filter(c=>c!=='Risk Flags').map(cat=>`
+    <div class="dcard">
+      <div class="dcard-title">${CAT_ICONS[cat]||''} ${esc(cat)}</div>
       ${cats[cat].map(r=>`<div class="crit-row">
-        <span class="crit-name">${esc(r.rule.name)}${r.rule.required?'<span class="crit-req">REQUIRED</span>':''}${r.auto?'<span class="crit-auto-badge">auto</span>':''}${r.rule.description?`<br><span class="cc" style="font-weight:400;font-size:11px">${esc(r.rule.description)}</span>`:''}</span>
+        <span class="crit-name">${esc(r.rule.name)}${r.rule.required?'<span class="crit-req">REQUIRED</span>':''}${r.auto?'<span class="crit-auto-badge">auto</span>':''}</span>
         <span class="crit-toggle">
           <button class="on-yes ${r.val==='yes'?'picked':''}" onclick="setCritOverride('${r.rule.id}','yes')">Yes</button>
           <button class="on-partial ${r.val==='partial'?'picked':''}" onclick="setCritOverride('${r.rule.id}','partial')">Partial</button>
           <button class="on-no ${r.val==='no'?'picked':''}" onclick="setCritOverride('${r.rule.id}','no')">No</button>
         </span>
       </div>`).join('')}
-    `).join('')}
-  </div>`;
+    </div>`).join('')}</div>`;
+  container.innerHTML=html;
 }
 function setCritOverride(ruleId,val){
   anzOverrides[ruleId]=(anzOverrides[ruleId]===val)?undefined:val;
   if(anzOverrides[ruleId]===undefined)delete anzOverrides[ruleId];
   renderOpportunityScorecard();
+  updateReportHeader();
 }
-function renderAnalyzer(){/* stateless view — results render on demand via anzRunBtn */}
+function renderAnalyzer(){updateReportHeader();}
 
 let activeFilter='All';let searchTerm='';let currentDetailId=null;let editingId=null;
 let editingDocId=null;let editingDocType='resume';
