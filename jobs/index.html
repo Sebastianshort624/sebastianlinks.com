@@ -310,6 +310,27 @@ input,textarea,select{font-family:inherit}
 .report-cat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:16px}
 .paste-zone textarea{width:100%;border:1px solid var(--border);border-radius:9px;padding:12px 14px;font-size:13.5px;font-family:'Inter',sans-serif}
 .paste-zone textarea:focus{outline:none;border-color:var(--aqua)}
+
+/* ── EXECUTIVE REPORT ── */
+.ring-wrap{display:flex;align-items:center;gap:16px}
+.ring-num{font-size:26px;font-weight:800}
+.ring-rec{font-size:13px;font-weight:700;margin-top:2px}
+.rep-section{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin-bottom:14px}
+.rep-section-title{font-size:13px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:7px}
+.rep-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f3f5;font-size:13px}
+.rep-row:last-child{border:none}
+.rep-row .rk{color:var(--text-muted)}
+.rep-row .rv{font-weight:600;text-align:right}
+.rep-row .rv.unknown{color:var(--text-muted);font-weight:400;font-style:italic}
+.compare-item{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13px}
+.compare-item.ok{color:#14532D}
+.compare-item.bad{color:#B8422F}
+.action-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f2f3f5;font-size:13px}
+.action-row:last-child{border:none}
+.action-row button.act-do{margin-left:auto;background:var(--teal-tint);color:var(--teal-dark);border:none;border-radius:7px;padding:5px 12px;font-size:11.5px;font-weight:700}
+.source-item{font-size:12.5px;color:var(--text-sec);padding:3px 0}
+.rep-grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:720px){.rep-grid2{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -1070,10 +1091,153 @@ function analyzeJD(text){
   });
   return{kws,salary,workMode,seniority,travel,bestDoc,bestMatch};
 }
-let anzOverrides={};let anzText='';
+let anzOverrides={};let anzText='';let anzReport=null;
+const CAT_ICONS={'Company':'🏢','Leadership':'👥','Position':'💼','Compensation':'💰','Sales Process':'📈','Marketing':'📣','Fulfillment':'⚙️','Operations':'🛠️','Technology':'💻','Culture':'🌱','Growth':'📊','Risk Flags':'🚩','Networking':'🤝','Personal Goals':'🎯'};
+const ACTION_DEFS=[
+  {id:'research_hm',label:'Research hiring manager'},{id:'call_recruiter',label:'Call recruiter'},
+  {id:'tailor_resume',label:'Tailor résumé'},{id:'prepare_interview',label:'Prepare for interview'},
+  {id:'follow_up',label:'Follow up'},{id:'save_company',label:'Save company to pipeline'},
+  {id:'archive',label:'Archive'},{id:'reject',label:'Reject'}
+];
+function tierFor(sc){
+  const requiredFailed=sc.rows.filter(r=>r.rule.required&&r.val==='no').length;
+  const requiredUnknown=sc.rows.filter(r=>r.rule.required&&r.val==='unknown').length;
+  if(requiredFailed)return{tier:'avoid',rec:'Not Recommended'};
+  if(requiredUnknown)return{tier:'caution',rec:'Research Further'};
+  if(sc.overall===null)return{tier:'none',rec:'Not Scored'};
+  if(sc.overall>=85)return{tier:'excellent',rec:'Apply Immediately'};
+  if(sc.overall>=65)return{tier:'good',rec:'Strong Consideration'};
+  if(sc.overall>=40)return{tier:'caution',rec:'Research Further'};
+  return{tier:'avoid',rec:'Not Recommended'};
+}
+function detectAny(text,words){const lc=text.toLowerCase();return words.some(w=>lc.includes(w));}
+function buildReportData(text,companyName,website){
+  const activeProfile=ProfileEngine.getActive();
+  const a=analyzeJD(text);
+  const sc=(activeProfile&&activeProfile.checklist&&activeProfile.checklist.length)?OpportunityEngine.computeScorecard(activeProfile,text,anzOverrides):null;
+  const t=sc?tierFor(sc):{tier:'none',rec:'Not Scored'};
+  const existingCo=companyName?state.companies.find(c=>c.name.toLowerCase()===companyName.toLowerCase()):null;
+  const expectedSalary=activeProfile?parseComp(activeProfile.criteria.minSalary):0;
+  const detectedSalary=a.salary?parseComp(a.salary):0;
+  const gap=(expectedSalary&&detectedSalary)?(detectedSalary-expectedSalary):null;
+  const skillsRequired=a.kws.slice(0,10);
+  const matching=a.bestDoc?skillsRequired.filter(k=>a.bestDoc.content.toLowerCase().includes(k)):[];
+  const missing=a.bestDoc?skillsRequired.filter(k=>!a.bestDoc.content.toLowerCase().includes(k)):skillsRequired;
+  const catStatus={};
+  if(sc){sc.rows.forEach(r=>{const cat=r.rule.category;catStatus[cat]=catStatus[cat]||{ok:0,bad:0,total:0};catStatus[cat].total++;if(r.val==='no')catStatus[cat].bad++;else if(r.val==='yes')catStatus[cat].ok++;});}
+  const riskRows=sc?sc.rows.filter(r=>r.rule.category==='Risk Flags'&&r.val==='no'):[];
+  const missingRequired=sc?sc.rows.filter(r=>r.rule.required&&r.val==='unknown'):[];
+  const concerns=sc?sc.rows.filter(r=>!r.rule.required&&r.val==='no'&&r.rule.category!=='Risk Flags'):[];
+  const resumeDoc=activeProfile&&activeProfile.resumeId?state.documents.find(d=>d.id===activeProfile.resumeId):a.bestDoc;
+  const coverDoc=activeProfile&&activeProfile.coverId?state.documents.find(d=>d.id===activeProfile.coverId):null;
+  const linkedinDoc=activeProfile&&activeProfile.linkedinId?state.documents.find(d=>d.id===activeProfile.linkedinId):null;
+  const sources=[];
+  if(text)sources.push(`Pasted text (${text.trim().split(/\s+/).length} words)`);
+  if(website)sources.push(`Website: ${website}`);
+  if(existingCo)sources.push(`Existing CRM record: ${existingCo.name}`);
+  sources.push(`Career Profile: ${activeProfile?activeProfile.name:'none active'}`);
+  return{
+    companyName,website,profileName:activeProfile?activeProfile.name:null,
+    overall:sc?sc.overall:null,tier:t.tier,recommendation:t.rec,verdictText:sc?sc.verdictText:'No active profile checklist to score against.',
+    salary:{expected:activeProfile&&activeProfile.criteria.minSalary?activeProfile.criteria.minSalary:null,detected:a.salary,gap},
+    compensation:{commission:detectAny(text,['commission']),bonus:detectAny(text,['bonus']),overrides:detectAny(text,['override']),residual:detectAny(text,['residual']),equity:detectAny(text,['equity','stock options'])},
+    workArrangement:{mode:a.workMode,travel:a.travel,hours:detectAny(text,['full-time','full time'])?'Full-time':detectAny(text,['part-time','part time'])?'Part-time':null,schedule:null},
+    companyIntel:existingCo?existingCo.intel:null,
+    position:{role:existingCo?existingCo.role:null,seniority:a.seniority,department:null,reportsTo:null,promotionPotential:null},
+    skills:{required:skillsRequired,matching,missing},
+    resumeMatch:{resume:resumeDoc?resumeDoc.name:null,cover:coverDoc?coverDoc.name:null,linkedin:linkedinDoc?linkedinDoc.name:null,keywordMatch:a.bestMatch?a.bestMatch.matchPct:null,atsMatch:a.bestMatch?a.bestMatch.matchPct:null},
+    profileComparison:catStatus,
+    risk:{redFlags:riskRows.map(r=>r.rule.name),missingInfo:missingRequired.map(r=>r.rule.name),concerns:concerns.map(r=>r.rule.name)},
+    actionItems:ACTION_DEFS.map(d=>({id:d.id,label:d.label,done:false})),
+    notes:'',sources,computedAt:todayISO()
+  };
+}
+function ringSVG(pct,tier){
+  const colors={excellent:'#2FAE7D',good:'#39D0C8',caution:'#C9A227',avoid:'#FF7A66',none:'#8B95A1'};
+  const c=colors[tier]||colors.none;
+  const r=32,circ=2*Math.PI*r;const off=pct===null?circ:circ-(circ*pct/100);
+  return `<svg width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="${r}" fill="none" stroke="#E6EAF0" stroke-width="8"/><circle cx="40" cy="40" r="${r}" fill="none" stroke="${c}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${circ}" stroke-dashoffset="${off}" transform="rotate(-90 40 40)"/><text x="40" y="45" text-anchor="middle" font-size="18" font-weight="800" fill="${c}" font-family="Inter">${pct===null?'—':pct}</text></svg>`;
+}
+function reportHTML(rep,ctx){
+  ctx=ctx||null;
+  const catRows=Object.keys(rep.profileComparison).map(cat=>{
+    const s=rep.profileComparison[cat];const bad=s.bad>0;
+    return `<div class="compare-item ${bad?'bad':'ok'}">${bad?'✗':'✓'} ${CAT_ICONS[cat]||''} ${esc(cat)} <span class="cc">(${s.ok}/${s.total} yes)</span></div>`;
+  }).join('');
+  return `
+  <div class="rep-section">
+    <div class="ring-wrap">
+      ${ringSVG(rep.overall,rep.tier)}
+      <div><div class="ring-num">${rep.overall!==null?rep.overall+'/100':'Not scored'}</div><div class="ring-rec report-badge-${rep.tier}" style="display:inline-block;padding:4px 10px;border-radius:8px">${esc(rep.recommendation)}</div>
+      <div class="cc" style="margin-top:6px;max-width:420px">${esc(rep.verdictText)}</div></div>
+    </div>
+  </div>
+  <div class="rep-grid2">
+    <div class="rep-section"><div class="rep-section-title">💰 Salary</div>
+      <div class="rep-row"><span class="rk">Expected (from profile)</span><span class="rv ${rep.salary.expected?'':'unknown'}">${rep.salary.expected?esc(rep.salary.expected):'No minimum set'}</span></div>
+      <div class="rep-row"><span class="rk">Detected in posting</span><span class="rv ${rep.salary.detected?'':'unknown'}">${rep.salary.detected?esc(rep.salary.detected):'Not detected'}</span></div>
+      <div class="rep-row"><span class="rk">Gap</span><span class="rv ${rep.salary.gap===null?'unknown':''}">${rep.salary.gap===null?'Unknown':(rep.salary.gap>=0?'+':'')+formatMoney(rep.salary.gap)}</span></div>
+    </div>
+    <div class="rep-section"><div class="rep-section-title">💵 Compensation</div>
+      ${['commission','bonus','overrides','residual','equity'].map(k=>`<div class="rep-row"><span class="rk">${k[0].toUpperCase()+k.slice(1)}</span><span class="rv">${rep.compensation[k]?'✓ Mentioned':'Not mentioned'}</span></div>`).join('')}
+    </div>
+  </div>
+  <div class="rep-grid2">
+    <div class="rep-section"><div class="rep-section-title">🌍 Work Arrangement</div>
+      <div class="rep-row"><span class="rk">Mode</span><span class="rv">${rep.workArrangement.mode}</span></div>
+      <div class="rep-row"><span class="rk">Travel</span><span class="rv">${rep.workArrangement.travel}</span></div>
+      <div class="rep-row"><span class="rk">Hours</span><span class="rv ${rep.workArrangement.hours?'':'unknown'}">${rep.workArrangement.hours||'Not detected'}</span></div>
+      <div class="rep-row"><span class="rk">Schedule</span><span class="rv unknown">Not detected</span></div>
+    </div>
+    <div class="rep-section"><div class="rep-section-title">🏢 Company Intelligence</div>
+      ${rep.companyIntel?['size','funding','culture','news','reviews'].map(k=>`<div class="rep-row"><span class="rk">${k[0].toUpperCase()+k.slice(1)}</span><span class="rv ${rep.companyIntel[k]?'':'unknown'}">${rep.companyIntel[k]?esc(rep.companyIntel[k]):'Not added'}</span></div>`).join(''):'<div class="empty-note">No matching company record in your CRM yet — add Company Intelligence from that company&#39;s detail page once saved.</div>'}
+    </div>
+  </div>
+  <div class="rep-grid2">
+    <div class="rep-section"><div class="rep-section-title">💼 Position Analysis</div>
+      <div class="rep-row"><span class="rk">Seniority</span><span class="rv">${rep.position.seniority}</span></div>
+      <div class="rep-row"><span class="rk">Role</span><span class="rv ${rep.position.role?'':'unknown'}">${rep.position.role||'Not set'}</span></div>
+      <div class="rep-row"><span class="rk">Department</span><span class="rv unknown">Not detected</span></div>
+      <div class="rep-row"><span class="rk">Reports to</span><span class="rv unknown">Not detected</span></div>
+      <div class="rep-row"><span class="rk">Promotion potential</span><span class="rv unknown">Not detected</span></div>
+    </div>
+    <div class="rep-section"><div class="rep-section-title">🧠 Skills Analysis</div>
+      <div class="rep-row"><span class="rk">Required (top)</span><span class="rv">${rep.skills.required.slice(0,6).join(', ')||'—'}</span></div>
+      <div class="rep-row"><span class="rk">Matching</span><span class="rv">${rep.skills.matching.join(', ')||'None found'}</span></div>
+      <div class="rep-row"><span class="rk">Missing</span><span class="rv">${rep.skills.missing.join(', ')||'None'}</span></div>
+    </div>
+  </div>
+  <div class="rep-section"><div class="rep-section-title">📄 Résumé Match</div>
+    <div class="rep-row"><span class="rk">Recommended résumé</span><span class="rv ${rep.resumeMatch.resume?'':'unknown'}">${rep.resumeMatch.resume||'None in library'}</span></div>
+    <div class="rep-row"><span class="rk">Recommended cover letter</span><span class="rv ${rep.resumeMatch.cover?'':'unknown'}">${rep.resumeMatch.cover||'None set on profile'}</span></div>
+    <div class="rep-row"><span class="rk">Recommended LinkedIn version</span><span class="rv ${rep.resumeMatch.linkedin?'':'unknown'}">${rep.resumeMatch.linkedin||'None set on profile'}</span></div>
+    <div class="rep-row"><span class="rk">Keyword match</span><span class="rv">${rep.resumeMatch.keywordMatch!==null?rep.resumeMatch.keywordMatch+'%':'—'}</span></div>
+    <div class="rep-row"><span class="rk">ATS match</span><span class="rv">${rep.resumeMatch.atsMatch!==null?rep.resumeMatch.atsMatch+'%':'—'} <span class="cc">(same calc as keyword match — no separate ATS simulation)</span></span></div>
+  </div>
+  <div class="rep-section"><div class="rep-section-title">📋 Career Profile Comparison — ${esc(rep.profileName||'no profile')}</div>${catRows||'<div class="empty-note">No checklist scored yet.</div>'}</div>
+  <div class="rep-section"><div class="rep-section-title">🚩 Risk Assessment</div>
+    <div class="rep-row"><span class="rk">Red flags</span><span class="rv">${rep.risk.redFlags.length?rep.risk.redFlags.join(', '):'None confirmed'}</span></div>
+    <div class="rep-row"><span class="rk">Missing required info</span><span class="rv">${rep.risk.missingInfo.length?rep.risk.missingInfo.join(', '):'None'}</span></div>
+    <div class="rep-row"><span class="rk">Concerns</span><span class="rv">${rep.risk.concerns.length?rep.risk.concerns.join(', '):'None'}</span></div>
+  </div>
+  <div class="rep-section"><div class="rep-section-title">✅ Action Items</div>
+    ${rep.actionItems.map((a,i)=>`<div class="action-row"><div class="task-cb ${a.done?'done':''}" ${ctx?`onclick="${ctx.type==='live'?`toggleReportAction(${i})`:`toggleSavedReportAction('${ctx.companyId}',${i})`}"`:''}>${a.done?'✓':''}</div><span>${esc(a.label)}</span></div>`).join('')}
+  </div>
+  <div class="rep-section"><div class="rep-section-title">📝 Notes</div>
+    <textarea rows="3" style="width:100%;border:1px solid var(--border);border-radius:8px;padding:10px" placeholder="Add notes..." ${ctx?(ctx.type==='live'?`oninput="anzReport.notes=this.value"`:`onchange="saveReportNotes('${ctx.companyId}',this.value)"`):'readonly'}>${esc(rep.notes)}</textarea>
+  </div>
+  <div class="rep-section"><div class="rep-section-title">🔗 Sources</div>
+    ${rep.sources.map(s=>`<div class="source-item">• ${esc(s)}</div>`).join('')}
+  </div>`;
+}
+function toggleReportAction(i){
+  anzReport.actionItems[i].done=!anzReport.actionItems[i].done;
+  document.getElementById('anzResults').innerHTML=reportHTML(anzReport,{type:'live'})+`<div id="anzScorecard"></div><div class="rep-section"><button class="btn-primary" id="anzCreateBtn">Save company to pipeline</button></div>`;
+  document.getElementById('anzCreateBtn').onclick=saveAnalyzedCompany;
+  renderOpportunityScorecard();
+}
 function updateReportHeader(){
-  const nameEl=document.getElementById('anzCompanyName2');
-  const name=nameEl.value.trim();
+  const name=document.getElementById('anzCompanyName2').value.trim();
   document.getElementById('reportAvatar').textContent=name?initials(name):'?';
   const activeProfile=ProfileEngine.getActive();
   const badgeWrap=document.getElementById('reportBadgeWrap');
@@ -1082,97 +1246,64 @@ function updateReportHeader(){
     return;
   }
   const sc=OpportunityEngine.computeScorecard(activeProfile,anzText,anzOverrides);
-  const requiredFailed=sc.rows.filter(r=>r.rule.required&&r.val==='no').length;
-  const requiredUnknown=sc.rows.filter(r=>r.rule.required&&r.val==='unknown').length;
-  let tier,label;
-  if(requiredFailed){tier='avoid';label='🔴 Avoid';}
-  else if(requiredUnknown){tier='caution';label='🟠 Caution — missing required data';}
-  else if(sc.overall===null){tier='none';label='No criteria evaluated yet';}
-  else if(sc.overall>=85){tier='excellent';label='🟢 Excellent';}
-  else if(sc.overall>=65){tier='good';label='🟡 Good';}
-  else if(sc.overall>=40){tier='caution';label='🟠 Caution';}
-  else{tier='avoid';label='🔴 Avoid';}
-  badgeWrap.innerHTML=`<div class="report-badge report-badge-${tier}">${sc.overall!==null?sc.overall+'/100 — ':''}${label}</div>`;
+  const t=tierFor(sc);
+  badgeWrap.innerHTML=`<div class="report-badge report-badge-${t.tier}">${sc.overall!==null?sc.overall+'/100 — ':''}${esc(t.rec)}</div>`;
 }
 document.getElementById('anzCompanyName2').addEventListener('input',updateReportHeader);
 function questionForRule(rule){
   if(/^No /.test(rule.name))return `Can you confirm: ${rule.name.replace(/^No /,'no ')}?`;
   return `What about — ${rule.name}?`;
 }
+function saveAnalyzedCompany(){
+  const nm=document.getElementById('anzCompanyName2').value.trim();
+  if(!nm){alert('Add a company name at the top to add it to your pipeline.');return;}
+  const website=document.getElementById('anzWebsite').value.trim();
+  const a=analyzeJD(anzText);
+  const newCo={id:cid(),name:nm,role:'',industry:'',logo:'',stage:'Researching',dream:false,
+    recruiter:{name:'',email:'',phone:''},comp:{base:a.salary||'',bonus:''},link:website,
+    timeline:[{date:todayISO(),text:'Added from Company Intelligence Analyzer'+(anzReport.overall!==null?` — ${anzReport.overall}/100`:'')}],notes:[],documents:[],
+    interviews:[],tasks:[],resumeHistory:[],coverHistory:[],jd:anzText,
+    activeResumeId:null,activeCoverId:null,finalResumeId:null,finalCoverId:null,
+    intel:{size:'',funding:'',culture:'',news:'',reviews:''},isNetworking:false,networkingReason:'',
+    opportunityScore:anzReport.overall!==null?{overall:anzReport.overall,verdict:anzReport.tier,verdictText:anzReport.verdictText,profileName:anzReport.profileName,computedAt:todayISO()}:null,
+    intelReport:JSON.parse(JSON.stringify(anzReport))};
+  state.companies.push(newCo);saveState();
+  openDetail(newCo.id);
+}
 document.getElementById('anzRunBtn').onclick=()=>{
   const text=document.getElementById('anzJD').value.trim();
   const box=document.getElementById('anzResults');
   if(!text){box.innerHTML='';return;}
   anzText=text;anzOverrides={};
-  const a=analyzeJD(text);
-  const activeProfile=ProfileEngine.getActive();
-  const ps=activeProfile?ProfileEngine.score(activeProfile,text,a.workMode):null;
-  box.innerHTML=`
-    <div id="anzScorecard"></div>
-    ${ps?`<div class="dcard">
-      <div class="dcard-title">Résumé keyword match vs. active profile: ${esc(activeProfile.name)}</div>
-      <div class="overall-score"><span>Overall match</span><span class="osn" style="color:${ps.overall>=80?'var(--success)':ps.overall>=50?'var(--gold)':'var(--coral)'}">${ps.overall}%</span></div>
-      ${ps.cats.map(c=>`<div class="star-row"><span class="sr-label">${c.label}</span><span class="sr-stars">${ProfileEngine.starsHTML(c.stars)}</span></div>`).join('')}
-    </div>`:''}
-    <div class="anz-grid">
-      <div class="dcard">
-        <div class="dcard-title">Posting breakdown</div>
-        <div class="anz-stat"><span class="fk">Salary mentioned</span><span class="fv">${a.salary?esc(a.salary):'Not stated'}</span></div>
-        <div class="anz-stat"><span class="fk">Work mode</span><span class="fv">${a.workMode}</span></div>
-        <div class="anz-stat"><span class="fk">Seniority</span><span class="fv">${a.seniority}</span></div>
-        <div class="anz-stat"><span class="fk">Travel</span><span class="fv">${a.travel}</span></div>
-      </div>
-      <div class="dcard">
-        <div class="dcard-title">Best-matching résumé in your library</div>
-        ${a.bestDoc?`<div class="match-wrap"><span>${esc(a.bestDoc.name)}</span><span class="match-badge" style="color:${a.bestMatch.matchPct>=80?'var(--success)':a.bestMatch.matchPct>=50?'var(--gold)':'var(--coral)'}">${a.bestMatch.matchPct}%</span></div>
-        ${a.bestMatch.missing.length?`<div class="kw-chips">${a.bestMatch.missing.map(k=>`<span class="kw-chip">${esc(k)}</span>`).join('')}</div>`:'<div class="empty-note">No major keyword gaps.</div>'}`:'<div class="empty-note">No résumés in your library yet.</div>'}
-      </div>
-    </div>
-    <div class="dcard">
-      <div class="dcard-title">Top keywords found</div>
-      <div class="kw-chips">${a.kws.slice(0,12).map(k=>`<span class="kw-chip" style="background:var(--teal-tint);color:var(--teal-dark)">${esc(k)}</span>`).join('')||'<span class="empty-note">Not enough text to extract keywords.</span>'}</div>
-      <div class="anz-createbar">
-        <button class="btn-primary" id="anzCreateBtn">Add as company</button>
-      </div>
+  const name=document.getElementById('anzCompanyName2').value.trim();
+  const website=document.getElementById('anzWebsite').value.trim();
+  anzReport=buildReportData(text,name,website);
+  box.innerHTML=reportHTML(anzReport,{type:'live'})+`<div id="anzScorecard"></div>
+    <div class="rep-section">
+      <button class="btn-primary" id="anzCreateBtn">Save company to pipeline</button>
     </div>`;
   renderOpportunityScorecard();
   updateReportHeader();
-  document.getElementById('anzCreateBtn').onclick=()=>{
-    const name=document.getElementById('anzCompanyName2').value.trim();
-    if(!name){alert('Add a company name at the top to add it to your pipeline.');return;}
-    const sc=activeProfile?OpportunityEngine.computeScorecard(activeProfile,anzText,anzOverrides):null;
-    const website=document.getElementById('anzWebsite').value.trim();
-    const newCo={id:cid(),name,role:'',industry:'',logo:'',stage:'Researching',dream:false,
-      recruiter:{name:'',email:'',phone:''},comp:{base:a.salary||'',bonus:''},link:website,
-      timeline:[{date:todayISO(),text:'Added from Company Intelligence Analyzer'+(sc?` — ${sc.overall!==null?sc.overall+'/100':'scored'}`:'')}],notes:[],documents:[],
-      interviews:[],tasks:[],resumeHistory:[],coverHistory:[],jd:text,
-      activeResumeId:null,activeCoverId:null,finalResumeId:null,finalCoverId:null,
-      intel:{size:'',funding:'',culture:'',news:'',reviews:''},isNetworking:false,networkingReason:'',
-      opportunityScore:sc?{overall:sc.overall,verdict:sc.verdict,verdictText:sc.verdictText,profileName:activeProfile.name,computedAt:todayISO()}:null};
-    state.companies.push(newCo);saveState();
-    openDetail(newCo.id);
-  };
+  document.getElementById('anzCreateBtn').onclick=saveAnalyzedCompany;
 };
 function renderOpportunityScorecard(){
   const container=document.getElementById('anzScorecard');
   if(!container)return;
   const activeProfile=ProfileEngine.getActive();
   if(!activeProfile||!activeProfile.checklist||!activeProfile.checklist.length){
-    container.innerHTML=`<div class="dcard"><div class="dcard-title">Opportunity Scorecard</div><div class="empty-note">The active profile ("${activeProfile?esc(activeProfile.name):'none'}") has no hiring criteria checklist yet. Add one from the Profiles tab — or load the "Elite Remote Sales — Full Framework" template — to get a weighted recommendation here instead of just a keyword score.</div></div>`;
+    container.innerHTML=`<div class="dcard"><div class="dcard-title">Full Criteria Detail</div><div class="empty-note">The active profile ("${activeProfile?esc(activeProfile.name):'none'}") has no hiring criteria checklist yet. Add one from the Profiles tab — or load the "Elite Remote Sales — Full Framework" template.</div></div>`;
     return;
   }
   const sc=OpportunityEngine.computeScorecard(activeProfile,anzText,anzOverrides);
   const cats={};
   sc.rows.forEach(r=>{(cats[r.rule.category]=cats[r.rule.category]||[]).push(r);});
-  const CAT_ICONS={'Company':'🏢','Leadership':'👥','Position':'💼','Compensation':'💰','Sales Process':'📈','Marketing':'📣','Fulfillment':'⚙️','Operations':'🛠️','Technology':'💻','Culture':'🌱','Growth':'📊','Risk Flags':'🚩','Networking':'🤝','Personal Goals':'🎯'};
   const riskRows=(cats['Risk Flags']||[]).filter(r=>r.val==='no');
   const unknownRows=sc.rows.filter(r=>r.val==='unknown');
-  let html=`<div class="verdict-banner verdict-${sc.verdict}">${sc.overall!==null?`<span style="font-size:20px;font-weight:800">${sc.overall}/100</span> — `:''}${esc(sc.verdictText)}</div>`;
-  html+=`<div class="risk-card"><div class="risk-card-title">🚩 Risk Flags</div>${riskRows.length?riskRows.map(r=>`<div class="risk-item">⚠ ${esc(r.rule.name)}${r.rule.description?' — '+esc(r.rule.description):''}</div>`).join(''):'<div class="risk-none">No confirmed risk flags yet.</div>'}</div>`;
+  let html=`<div class="section-title" style="margin:20px 0 12px">Full Criteria Detail</div>`;
   if(unknownRows.length){
-    html+=`<div class="q-card"><div class="q-card-title">❓ Questions to Ask <span class="cc">(${unknownRows.length} unknown${unknownRows.filter(r=>r.rule.required).length?', '+unknownRows.filter(r=>r.rule.required).length+' required':''})</span></div>${unknownRows.slice(0,12).map(r=>`<div class="q-item">${esc(questionForRule(r.rule))}</div>`).join('')}${unknownRows.length>12?`<div class="cc">+ ${unknownRows.length-12} more — see full scorecard below.</div>`:''}</div>`;
+    html+=`<div class="q-card"><div class="q-card-title">❓ Questions to Ask <span class="cc">(${unknownRows.length} unknown${unknownRows.filter(r=>r.rule.required).length?', '+unknownRows.filter(r=>r.rule.required).length+' required':''})</span></div>${unknownRows.slice(0,12).map(r=>`<div class="q-item">${esc(questionForRule(r.rule))}</div>`).join('')}${unknownRows.length>12?`<div class="cc">+ ${unknownRows.length-12} more below.</div>`:''}</div>`;
   }
-  html+=`<div class="report-cat-grid">${Object.keys(cats).filter(c=>c!=='Risk Flags').map(cat=>`
+  html+=`<div class="report-cat-grid">${Object.keys(cats).map(cat=>`
     <div class="dcard">
       <div class="dcard-title">${CAT_ICONS[cat]||''} ${esc(cat)}</div>
       ${cats[cat].map(r=>`<div class="crit-row">
@@ -1191,6 +1322,16 @@ function setCritOverride(ruleId,val){
   if(anzOverrides[ruleId]===undefined)delete anzOverrides[ruleId];
   renderOpportunityScorecard();
   updateReportHeader();
+  if(anzReport){
+    const name=document.getElementById('anzCompanyName2').value.trim();
+    const website=document.getElementById('anzWebsite').value.trim();
+    const notes=anzReport.notes,items=anzReport.actionItems;
+    anzReport=buildReportData(anzText,name,website);
+    anzReport.notes=notes;anzReport.actionItems=items;
+    document.getElementById('anzResults').innerHTML=reportHTML(anzReport,{type:'live'})+`<div id="anzScorecard"></div><div class="rep-section"><button class="btn-primary" id="anzCreateBtn">Save company to pipeline</button></div>`;
+    document.getElementById('anzCreateBtn').onclick=saveAnalyzedCompany;
+    renderOpportunityScorecard();
+  }
 }
 function renderAnalyzer(){updateReportHeader();}
 
@@ -1547,10 +1688,15 @@ function renderDetail(){
       <div class="intel-field"><div class="ik">Reviews / reputation</div><div class="iv ${c.intel.reviews?'':'empty'}">${c.intel.reviews?esc(c.intel.reviews):'Not added yet'}</div></div>
     </div>
 
-    ${c.opportunityScore?`<div class="dcard">
+    ${c.intelReport?`<div class="dcard">
+      <div class="dcard-title">Career Intelligence Report <button class="mini-btn" onclick="toggleSavedReport('${c.id}')" id="savedReportBtn-${c.id}">View full report</button></div>
+      <div class="verdict-banner verdict-${c.intelReport.tier}"><span style="font-size:20px;font-weight:800">${c.intelReport.overall!==null?c.intelReport.overall+'/100':'—'}</span> — ${esc(c.intelReport.recommendation)}</div>
+      <div class="empty-note">Scored against "${esc(c.intelReport.profileName||'')}" on ${c.intelReport.computedAt}. Re-run from the Analyze tab if your criteria have changed.</div>
+      <div id="savedReportBody-${c.id}"></div>
+    </div>`:c.opportunityScore?`<div class="dcard">
       <div class="dcard-title">Opportunity Score</div>
       <div class="verdict-banner verdict-${c.opportunityScore.verdict}"><span style="font-size:20px;font-weight:800">${c.opportunityScore.overall!==null?c.opportunityScore.overall+'/100':'—'}</span> — ${esc(c.opportunityScore.verdictText)}</div>
-      <div class="empty-note">Scored against "${esc(c.opportunityScore.profileName)}" on ${c.opportunityScore.computedAt}. Re-run in the Opportunity tab if your criteria have changed.</div>
+      <div class="empty-note">Scored against "${esc(c.opportunityScore.profileName)}" on ${c.opportunityScore.computedAt}.</div>
     </div>`:''}
 
     <div class="dcard">
@@ -1603,6 +1749,24 @@ function histRow(h,kind,c){
 }
 function setActive(kind,id){const c=getCurrent();if(kind==='resume')c.activeResumeId=id;else c.activeCoverId=id;saveState();renderDetail();}
 function markFinal(kind,id){const c=getCurrent();if(kind==='resume')c.finalResumeId=id;else c.finalCoverId=id;saveState();renderDetail();}
+function toggleSavedReport(companyId){
+  const body=document.getElementById('savedReportBody-'+companyId);
+  const btn=document.getElementById('savedReportBtn-'+companyId);
+  if(body.innerHTML){body.innerHTML='';btn.textContent='View full report';return;}
+  const c=state.companies.find(x=>x.id===companyId);
+  body.innerHTML=reportHTML(c.intelReport,{type:'saved',companyId});
+  btn.textContent='Hide full report';
+}
+function toggleSavedReportAction(companyId,i){
+  const c=state.companies.find(x=>x.id===companyId);
+  c.intelReport.actionItems[i].done=!c.intelReport.actionItems[i].done;
+  saveState();
+  document.getElementById('savedReportBody-'+companyId).innerHTML=reportHTML(c.intelReport,{type:'saved',companyId});
+}
+function saveReportNotes(companyId,val){
+  const c=state.companies.find(x=>x.id===companyId);
+  c.intelReport.notes=val;saveState();
+}
 function closeDetail(){
   document.getElementById('view-detail').classList.remove('active');
   document.querySelector('.tab-btn[data-tab="dashboard"]').classList.add('active');showView('dashboard');
