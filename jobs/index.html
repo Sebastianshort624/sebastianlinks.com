@@ -718,7 +718,7 @@ if(!state||!state.companies){state={companies:seedData()};}
 if(!state.documents)state.documents=seedDocs();
 if(!state.profiles)state.profiles=seedProfiles();
 if(!state.drafts)state.drafts=[];
-state.profiles.forEach(p=>{if(p.checklist===undefined)p.checklist=[];});
+state.profiles.forEach(p=>{if(p.checklist===undefined)p.checklist=[];if(p.postingsAnalyzed===undefined)p.postingsAnalyzed=0;if(p.keywordStats===undefined)p.keywordStats={};});
 state.companies.forEach(c=>{
   if(c.industry===undefined)c.industry='';
   if(c.logo===undefined)c.logo='';
@@ -1116,6 +1116,36 @@ const OpportunityEngine=(function(){
   }
   return{computeScorecard};
 })();
+
+/* ── CRITERIA LEARNING ──
+   Compares a freshly-analyzed posting against the active profile's existing checklist
+   (the "master criteria") without ever changing it automatically. Nothing is added,
+   removed, or replaced until the user explicitly approves it. Separately tracks
+   keyword frequency across every posting analyzed for that profile, so criteria
+   quality improves from market data over time rather than one employer's posting. */
+function computeCriteriaComparison(profile,jdText,workMode){
+  const kws=extractKeywords(jdText);
+  const checklist=profile.checklist||[];
+  function isCovered(kw){
+    return checklist.some(r=>r.name.toLowerCase().includes(kw)||(r.autoKeywords||'').toLowerCase().split(',').some(a=>a.trim()===kw));
+  }
+  const covered=kws.filter(isCovered);
+  const newCandidates=kws.filter(k=>!isCovered(k)).slice(0,10);
+  const conflicts=[];
+  const remoteRule=checklist.find(r=>/^remote$/i.test(r.name.trim()));
+  if(remoteRule&&remoteRule.required&&workMode==='On-site')conflicts.push({rule:remoteRule.name,issue:'This posting is on-site — your master criteria requires Remote.'});
+  const noColdRule=checklist.find(r=>/no cold calling/i.test(r.name));
+  if(noColdRule&&/\bcold call/i.test(jdText))conflicts.push({rule:noColdRule.name,issue:'This posting mentions cold calling, which conflicts with this criterion.'});
+  return{covered,newCandidates,conflicts};
+}
+function updateProfileKnowledgeBase(profile,jdText){
+  if(!profile)return;
+  const kws=extractKeywords(jdText);
+  profile.postingsAnalyzed=(profile.postingsAnalyzed||0)+1;
+  profile.keywordStats=profile.keywordStats||{};
+  kws.forEach(k=>{profile.keywordStats[k]=(profile.keywordStats[k]||0)+1;});
+  saveState();
+}
 
 /* ── COMPANY FACTS EXTRACTOR (v2) ──
    Parses BBB-profile-style pasted text as a labeled document, not a keyword bag.
@@ -1658,11 +1688,48 @@ document.getElementById('anzRunBtn').onclick=()=>{
     document.getElementById('anzCompanyName2').value=anzReport.dossier.name.value;
     anzReport.companyName=anzReport.dossier.name.value;
   }
-  box.innerHTML=reportHTML(anzReport,{type:'live'})+`<div id="anzScorecard"></div>`+stageBarHTML();
+  updateProfileKnowledgeBase(ProfileEngine.getActive(),text);
+  box.innerHTML=reportHTML(anzReport,{type:'live'})+`<div id="anzScorecard"></div><div id="anzCriteriaCompare"></div>`+stageBarHTML();
   renderOpportunityScorecard();
+  renderCriteriaCompare();
   updateReportHeader();
   wireStageBar();
 };
+function renderCriteriaCompare(){
+  const container=document.getElementById('anzCriteriaCompare');
+  if(!container)return;
+  const activeProfile=ProfileEngine.getActive();
+  if(!activeProfile){container.innerHTML='';return;}
+  const a=analyzeJD(anzText);
+  const cmp=computeCriteriaComparison(activeProfile,anzText,a.workMode);
+  container.innerHTML=`<div class="dcard">
+    <div class="dcard-title">🧬 Criteria Comparison vs. "${esc(activeProfile.name)}" (master profile)</div>
+    <div class="rep-row"><span class="rk">Already covered</span><span class="rv">${cmp.covered.length?esc(cmp.covered.join(', ')):'None matched'}</span></div>
+    ${cmp.conflicts.length?`<div class="risk-card" style="margin-top:10px"><div class="risk-card-title">⚠ Conflicts with master criteria</div>${cmp.conflicts.map(c=>`<div class="risk-item">${esc(c.rule)}: ${esc(c.issue)}</div>`).join('')}</div>`:''}
+    ${cmp.newCandidates.length?`
+    <div style="margin-top:14px"><div class="dcard-title" style="margin-bottom:8px">New criteria found in this posting</div>
+    ${cmp.newCandidates.map(k=>`<label class="form-check" style="margin-bottom:6px;display:flex"><input type="checkbox" class="crit-cand" value="${esc(k)}" checked> ${esc(k)}</label>`).join('')}
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="mini-btn" id="btnAddCriteria">Add selected to master profile</button>
+      <button class="stage-btn secondary" id="btnIgnoreCriteria" type="button">Ignore</button>
+    </div></div>`:'<div class="empty-note" style="margin-top:10px">No new criteria found beyond your master profile.</div>'}
+    <div class="cc" style="margin-top:12px">${activeProfile.postingsAnalyzed||0} posting${(activeProfile.postingsAnalyzed||0)===1?'':'s'} analyzed for this profile so far — see the Profiles tab for market-wide frequency.</div>
+  </div>`;
+  const addBtn=document.getElementById('btnAddCriteria');
+  if(addBtn)addBtn.onclick=()=>{
+    const checked=Array.from(document.querySelectorAll('.crit-cand:checked')).map(el=>el.value);
+    if(!checked.length){alert('Nothing selected.');return;}
+    checked.forEach(kw=>{
+      activeProfile.checklist.push({id:ruleId(),category:'General',name:kw.replace(/\b\w/g,c=>c.toUpperCase()),required:false,weight:5,autoKeywords:kw,description:'Added from a job posting comparison',notes:'Source: '+(anzReport.companyName||'analyzed posting')});
+    });
+    saveState();
+    alert(checked.length+' criteria added to "'+activeProfile.name+'". You can adjust weight/required from the Profiles tab anytime.');
+    renderCriteriaCompare();
+    renderOpportunityScorecard();
+  };
+  const ignoreBtn=document.getElementById('btnIgnoreCriteria');
+  if(ignoreBtn)ignoreBtn.onclick=()=>{document.querySelectorAll('.crit-cand').forEach(el=>el.checked=false);};
+}
 function renderOpportunityScorecard(){
   const container=document.getElementById('anzScorecard');
   if(!container)return;
@@ -1898,6 +1965,19 @@ document.getElementById('docDeleteBtn').onclick=()=>{deleteDoc(editingDocId);doc
 
 /* ── CAREER PROFILES UI ── */
 let editingProfileId=null;
+function toggleMarketIntel(id){
+  const p=state.profiles.find(x=>x.id===id);
+  const box=document.getElementById('mkt-'+id);
+  if(box.innerHTML){box.innerHTML='';box.style.display='none';return;}
+  const stats=p.keywordStats||{};
+  const total=p.postingsAnalyzed||1;
+  const sorted=Object.keys(stats).sort((a,b)=>stats[b]-stats[a]).slice(0,15);
+  box.innerHTML=`<div class="dcard" style="margin:8px 0">
+    <div class="dcard-title">📊 Market Intelligence — ${esc(p.name)} <span class="cc">(${p.postingsAnalyzed||0} postings)</span></div>
+    ${sorted.map(k=>{const pct=Math.round(stats[k]/total*100);return `<div class="rep-row"><span class="rk">Required by ${pct}%</span><span class="rv">${esc(k)}</span></div>`;}).join('')||'<div class="empty-note">No data yet.</div>'}
+  </div>`;
+  box.style.display='block';
+}
 function renderProfiles(){
   const grid=document.getElementById('profileGrid');
   const list=state.profiles.filter(p=>!p.archived);
@@ -1914,10 +1994,13 @@ function profileCardHTML(p){
   if(c.maxTravel&&c.maxTravel!=='100')bits.push(`<b>Max travel</b> ${esc(c.maxTravel)}%`);
   if(c.states)bits.push(`<b>States</b> ${esc(c.states)}`);
   if(c.industries)bits.push(`<b>Industries</b> ${esc(c.industries)}`);
+  const marketId='mkt-'+p.id;
   return `<div class="profile-card ${p.active?'is-active':''}">
     <div class="profile-top"><div class="profile-name">${esc(p.name)} ${p.active?'⭐':''}</div>
       <span class="profile-badge ${p.archived?'archived':''}">${p.archived?'Archived':p.active?'Active':'Inactive'}</span></div>
     <div class="profile-crit">${bits.length?bits.join('<br>'):'No criteria set yet.'}</div>
+    <div class="cc" style="margin:8px 0">📊 ${p.postingsAnalyzed||0} posting${(p.postingsAnalyzed||0)===1?'':'s'} analyzed${p.postingsAnalyzed?` — <a href="#" onclick="event.preventDefault();toggleMarketIntel('${p.id}')" style="color:var(--teal)">view market data</a>`:''}</div>
+    <div id="${marketId}" style="display:none"></div>
     <div class="profile-actions">
       ${!p.active&&!p.archived?`<button class="act-btn" onclick="activateProfile('${p.id}')">Activate</button>`:''}
       <button onclick="openProfileEdit('${p.id}')">Edit</button>
