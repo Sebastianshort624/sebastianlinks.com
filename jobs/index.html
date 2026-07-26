@@ -344,6 +344,7 @@ input,textarea,select{font-family:inherit}
 .dossier-fact-label{font-size:10.5px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;display:flex;align-items:center;gap:5px}
 .dossier-fact-value{font-size:15px;font-weight:700;color:var(--text)}
 .dossier-fact-value.unknown{color:var(--text-muted);font-weight:400;font-style:italic;font-size:13px}
+.dossier-fact-meta{font-size:10px;color:var(--text-muted);margin-top:1px}
 .section-divider{display:flex;align-items:center;gap:12px;margin:24px 0 16px;color:var(--text-muted);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
 .section-divider::before,.section-divider::after{content:'';flex:1;border-top:1px solid var(--border)}
 </style>
@@ -706,7 +707,12 @@ state.companies.forEach(c=>{
   if(c.isNetworking===undefined)c.isNetworking=false;
   if(c.networkingReason===undefined)c.networkingReason='';
   if(c.opportunityScore===undefined)c.opportunityScore=null;
-  if(c.dossier===undefined)c.dossier={phone:'',website:'',street:'',city:'',state:'',zip:'',bbbRating:'',bbbAccredited:'',yearsInBusiness:'',bbbOpened:'',businessStarted:'',businessStartedLocally:'',businessIncorporated:'',entityType:'',owner:'',ceo:'',manager:'',employees:'',industry:'',bbbProfileUrl:'',linkedin:'',facebook:'',googleMaps:'',parentCompany:'',headquarters:'',annualRevenue:'',tagline:''};
+  if(c.dossier===undefined)c.dossier={name:nf(),phone:nf(),website:nf(),street:nf(),city:nf(),state:nf(),zip:nf(),bbbRating:nf(),bbbAccredited:nf(),yearsInBusiness:nf(),bbbOpened:nf(),businessStarted:nf(),businessStartedLocally:nf(),businessIncorporated:nf(),entityType:nf(),owner:nf(),ceo:nf(),manager:nf(),employees:nf(),industry:nf(),bbbProfileUrl:nf(),localBBB:nf(),linkedin:nf(),facebook:nf(),googleMaps:nf(),parentCompany:nf(),headquarters:nf(),annualRevenue:nf(),tagline:nf()};
+  else if(c.dossier.phone!==undefined&&typeof c.dossier.phone==='string'){
+    const upgraded={};
+    Object.keys(c.dossier).forEach(k=>{upgraded[k]=c.dossier[k]?{value:c.dossier[k],confidence:'medium',source:'Previously extracted'}:nf();});
+    c.dossier=upgraded;
+  }
   if(c.reputation===undefined)c.reputation={bbb:{rating:'',reviews:'',status:'',updated:''},google:{rating:'',reviews:'',status:'',updated:''},glassdoor:{rating:'',reviews:'',status:'',updated:''},indeed:{rating:'',reviews:'',status:'',updated:''},facebook:{rating:'',reviews:'',status:'',updated:''},trustpilot:{rating:'',reviews:'',status:'',updated:''},consumerAffairs:{rating:'',reviews:'',status:'',updated:''}};
 });
 saveState();
@@ -1084,57 +1090,103 @@ const OpportunityEngine=(function(){
   return{computeScorecard};
 })();
 
-/* ── JOB POSTING ANALYZER ── */
-/* ── COMPANY FACTS EXTRACTOR ──
-   Parses BBB-profile-style pasted text (label + whitespace/colon + value) plus a few
-   standalone patterns (phone, website, city/state). Every field defaults to '' if not
-   found — nothing here is ever guessed or fabricated. */
-function grabField(text,label){
-  const re=new RegExp(label+'\\s*[:\\-]?\\s+([^\\n]+)','i');
-  const m=text.match(re);
-  return m?m[1].trim().replace(/^[✅❌]\s*/,''):'';
+/* ── COMPANY FACTS EXTRACTOR (v2) ──
+   Parses BBB-profile-style pasted text as a labeled document, not a keyword bag.
+   Every field returns {value, confidence, source} — confidence is 'high' (matched a
+   specific structured pattern), 'medium' (heuristic pattern), or 'none' (not found —
+   never guessed). A candidate value is REJECTED if it looks like another known field
+   label, which is what was causing "Owner: Number of Employees" — grabbing the next
+   label instead of a value on stacked-line BBB paste formats. */
+const KNOWN_LABELS=['BBB Rating','BBB Accredited','Years? in Business','BBB (?:File )?Opened',
+  'Business Started Locally','Business Incorporated','Business Started','Entity Type','Owner','CEO',
+  'Manager','(?:Number of )?Employees','Industry','Business Category','Parent Company','Headquarters',
+  'Annual Revenue','Revenue','Local BBB','Business Profile','Address','Phone','Website'];
+function isLikelyLabel(s){
+  s=s.trim();
+  if(!s||s.length>60)return false;
+  return KNOWN_LABELS.some(l=>new RegExp('^'+l+'\\s*[:\\-]?\\s*$','i').test(s));
+}
+function nf(){return{value:'',confidence:'none',source:''};}
+function fld(value,confidence,source){return{value,confidence,source};}
+function grabField(text,label,source){
+  source=source||'BBB profile';
+  const sameLineRe=new RegExp('^[ \\t]*'+label+'[ \\t]*[:\\-]?[ \\t]+([^\\n]+)$','im');
+  let m=text.match(sameLineRe);
+  if(m){
+    const val=m[1].trim().replace(/^[✅❌]\s*/,'');
+    if(val&&!isLikelyLabel(val))return fld(val,'high',source);
+  }
+  const stackedRe=new RegExp('^[ \\t]*'+label+'[ \\t]*[:\\-]?[ \\t]*$','im');
+  const sm=text.match(stackedRe);
+  if(sm){
+    const rest=text.slice(sm.index+sm[0].length).split('\n').map(l=>l.trim()).filter(Boolean);
+    if(rest.length&&!isLikelyLabel(rest[0]))return fld(rest[0].replace(/^[✅❌]\s*/,''),'high',source);
+  }
+  return nf();
+}
+function extractCompanyName(text){
+  const lines=text.split('\n').map(l=>l.trim()).filter(Boolean);
+  const bpIdx=lines.findIndex(l=>/^business profile$/i.test(l));
+  if(bpIdx>=0&&lines[bpIdx+1]&&!isLikelyLabel(lines[bpIdx+1]))return fld(lines[bpIdx+1],'high','BBB "Business Profile" heading');
+  for(const l of lines){
+    if(isLikelyLabel(l))continue;
+    if(/^https?:\/\//i.test(l))continue;
+    if(/^\(?\d{3}\)?[\s.\-]?\d{3}/.test(l))continue;
+    if(/^[★☆✅❌📍🌐☎️⭐#\s]+$/.test(l))continue;
+    if(l.length<2||l.length>80)continue;
+    return fld(l,'medium','First line of pasted text');
+  }
+  return nf();
 }
 function extractCompanyFacts(text){
   const facts={
-    phone:'',website:'',street:'',city:'',state:'',zip:'',bbbRating:'',bbbAccredited:'',yearsInBusiness:'',
-    bbbOpened:'',businessStarted:'',businessStartedLocally:'',businessIncorporated:'',
-    entityType:'',owner:'',ceo:'',manager:'',employees:'',industry:'',bbbProfileUrl:'',
-    linkedin:'',facebook:'',googleMaps:'',parentCompany:'',headquarters:'',annualRevenue:'',tagline:''
+    name:extractCompanyName(text),
+    phone:nf(),website:nf(),street:nf(),city:nf(),state:nf(),zip:nf(),
+    bbbRating:nf(),bbbAccredited:nf(),yearsInBusiness:nf(),bbbOpened:nf(),businessStarted:nf(),
+    businessStartedLocally:nf(),businessIncorporated:nf(),entityType:nf(),owner:nf(),ceo:nf(),
+    manager:nf(),employees:nf(),industry:nf(),bbbProfileUrl:nf(),localBBB:nf(),
+    linkedin:nf(),facebook:nf(),googleMaps:nf(),parentCompany:nf(),headquarters:nf(),
+    annualRevenue:nf(),tagline:nf()
   };
   const phoneM=text.match(/\(?\d{3}\)?[\s.\-]?\d{3}[\s.\-]?\d{4}/);
-  if(phoneM)facts.phone=phoneM[0];
+  if(phoneM)facts.phone=fld(phoneM[0],'medium','Phone pattern match');
   const bbbUrlM=text.match(/https?:\/\/(?:www\.)?bbb\.org\/[^\s)]+/i);
-  if(bbbUrlM)facts.bbbProfileUrl=bbbUrlM[0];
+  if(bbbUrlM)facts.bbbProfileUrl=fld(bbbUrlM[0],'high','BBB link in text');
   const siteM=text.match(/\bhttps?:\/\/(?!(?:www\.)?(bbb\.org|linkedin\.com|facebook\.com|google\.com))[^\s)]+/i)||text.match(/\bwww\.[a-z0-9-]+\.[a-z]{2,}[^\s)]*/i);
-  if(siteM)facts.website=siteM[0];
+  if(siteM)facts.website=fld(siteM[0],'medium','URL pattern match');
   const liM=text.match(/https?:\/\/(?:www\.)?linkedin\.com\/company\/[^\s)]+/i);
-  if(liM)facts.linkedin=liM[0];
+  if(liM)facts.linkedin=fld(liM[0],'high','LinkedIn link in text');
   const fbM=text.match(/https?:\/\/(?:www\.)?facebook\.com\/[^\s)]+/i);
-  if(fbM)facts.facebook=fbM[0];
+  if(fbM)facts.facebook=fld(fbM[0],'high','Facebook link in text');
   const gmM=text.match(/https?:\/\/(?:www\.)?google\.com\/maps[^\s)]*/i)||text.match(/https?:\/\/goo\.gl\/maps[^\s)]*/i);
-  if(gmM)facts.googleMaps=gmM[0];
+  if(gmM)facts.googleMaps=fld(gmM[0],'high','Google Maps link in text');
   const cityStateM=text.match(/\b([A-Z][a-zA-Z ]+),\s*([A-Z]{2})\s*(\d{5})?\b/);
-  if(cityStateM){facts.city=cityStateM[1].trim();facts.state=cityStateM[2];if(cityStateM[3])facts.zip=cityStateM[3];}
-  if(!facts.zip){const zipM=text.match(/\b\d{5}(-\d{4})?\b/);if(zipM)facts.zip=zipM[0];}
+  if(cityStateM){facts.city=fld(cityStateM[1].trim(),'medium','Address pattern');facts.state=fld(cityStateM[2],'medium','Address pattern');if(cityStateM[3])facts.zip=fld(cityStateM[3],'medium','Address pattern');}
+  if(facts.zip.confidence==='none'){const zipM=text.match(/\b\d{5}(-\d{4})?\b/);if(zipM)facts.zip=fld(zipM[0],'medium','ZIP pattern match');}
   const streetM=text.match(/\d+\s+[A-Za-z0-9.\- ]+(?:St|Street|Ave|Avenue|Blvd|Boulevard|Road|Rd|Dr|Drive|Ln|Lane|Suite|Ste|Way|Hwy)\b[^,\n]*/i);
-  if(streetM)facts.street=streetM[0].trim();
-  facts.bbbRating=grabField(text,'BBB Rating');
-  const accM=grabField(text,'BBB Accredited');
-  if(accM)facts.bbbAccredited=/yes|✓/i.test(accM)?'Yes':/no|❌/i.test(accM)?'No':accM;
-  facts.yearsInBusiness=grabField(text,'Years? in Business').replace(/\D+$/,'');
-  facts.bbbOpened=grabField(text,'BBB (?:File )?Opened');
-  facts.businessStartedLocally=grabField(text,'Business Started Locally');
-  facts.businessIncorporated=grabField(text,'Business Incorporated');
-  facts.businessStarted=grabField(text,'Business Started(?! Locally)');
-  facts.entityType=grabField(text,'Entity Type');
-  facts.owner=grabField(text,'Owner');
-  facts.ceo=grabField(text,'CEO');
-  facts.manager=grabField(text,'Manager');
-  facts.employees=grabField(text,'(?:Number of )?Employees').replace(/\D+$/,'');
-  facts.industry=grabField(text,'Industry');
-  facts.parentCompany=grabField(text,'Parent Company');
-  facts.headquarters=grabField(text,'Headquarters');
-  facts.annualRevenue=grabField(text,'Annual Revenue')||grabField(text,'Revenue');
+  if(streetM)facts.street=fld(streetM[0].trim(),'medium','Street address pattern');
+  facts.bbbRating=grabField(text,'BBB Rating','BBB accreditation & rating');
+  const accF=grabField(text,'BBB Accredited','BBB accreditation & rating');
+  if(accF.value)facts.bbbAccredited=fld(/yes|✓/i.test(accF.value)?'Yes':/no|❌/i.test(accF.value)?'No':accF.value,accF.confidence,accF.source);
+  const yrsF=grabField(text,'Years? in Business','About this business');
+  if(yrsF.value)facts.yearsInBusiness=fld(yrsF.value.replace(/\D+$/,''),yrsF.confidence,yrsF.source);
+  facts.bbbOpened=grabField(text,'BBB (?:File )?Opened','Business details');
+  facts.businessStartedLocally=grabField(text,'Business Started Locally','Business details');
+  facts.businessIncorporated=grabField(text,'Business Incorporated','Business details');
+  facts.businessStarted=grabField(text,'Business Started(?! Locally)','Business details');
+  facts.entityType=grabField(text,'Entity Type','Business details');
+  facts.owner=grabField(text,'Owner','Business management');
+  facts.ceo=grabField(text,'CEO','Business management');
+  facts.manager=grabField(text,'Manager','Business management');
+  const empF=grabField(text,'(?:Number of )?Employees','Business details');
+  if(empF.value)facts.employees=fld(empF.value.replace(/\D+$/,''),empF.confidence,empF.source);
+  facts.industry=grabField(text,'Industry','Business category');
+  if(facts.industry.confidence==='none')facts.industry=grabField(text,'Business Category','Business category');
+  facts.parentCompany=grabField(text,'Parent Company','Business details');
+  facts.headquarters=grabField(text,'Headquarters','Business details');
+  facts.localBBB=grabField(text,'Local BBB','Additional information');
+  const revF=grabField(text,'Annual Revenue','Business details');
+  facts.annualRevenue=revF.value?revF:grabField(text,'Revenue','Business details');
   return facts;
 }
 function extractSourceRep(text,nameRe){
@@ -1163,7 +1215,7 @@ function mergeReputation(oldRep,newRep){
 }
 function mergeFacts(oldF,newF){
   const merged=Object.assign({},oldF);
-  Object.keys(newF).forEach(k=>{if(newF[k])merged[k]=newF[k];});
+  Object.keys(newF).forEach(k=>{if(newF[k]&&newF[k].value)merged[k]=newF[k];});
   return merged;
 }
 
@@ -1216,12 +1268,12 @@ function buildReportData(text,companyName,website){
   const sc=(activeProfile&&activeProfile.checklist&&activeProfile.checklist.length)?OpportunityEngine.computeScorecard(activeProfile,text,anzOverrides):null;
   const t=sc?tierFor(sc):{tier:'none',rec:'Not Scored'};
   const existingCo=companyName?state.companies.find(c=>c.name.toLowerCase()===companyName.toLowerCase()):null;
-  const blankDossier={phone:'',website:'',street:'',city:'',state:'',zip:'',bbbRating:'',bbbAccredited:'',yearsInBusiness:'',bbbOpened:'',businessStarted:'',businessStartedLocally:'',businessIncorporated:'',entityType:'',owner:'',ceo:'',manager:'',employees:'',industry:'',bbbProfileUrl:'',linkedin:'',facebook:'',googleMaps:'',parentCompany:'',headquarters:'',annualRevenue:'',tagline:''};
+  const blankDossier={name:nf(),phone:nf(),website:nf(),street:nf(),city:nf(),state:nf(),zip:nf(),bbbRating:nf(),bbbAccredited:nf(),yearsInBusiness:nf(),bbbOpened:nf(),businessStarted:nf(),businessStartedLocally:nf(),businessIncorporated:nf(),entityType:nf(),owner:nf(),ceo:nf(),manager:nf(),employees:nf(),industry:nf(),bbbProfileUrl:nf(),localBBB:nf(),linkedin:nf(),facebook:nf(),googleMaps:nf(),parentCompany:nf(),headquarters:nf(),annualRevenue:nf(),tagline:nf()};
   const blankRep={bbb:{rating:'',reviews:'',status:'',updated:''},google:{rating:'',reviews:'',status:'',updated:''},glassdoor:{rating:'',reviews:'',status:'',updated:''},indeed:{rating:'',reviews:'',status:'',updated:''},facebook:{rating:'',reviews:'',status:'',updated:''},trustpilot:{rating:'',reviews:'',status:'',updated:''},consumerAffairs:{rating:'',reviews:'',status:'',updated:''}};
   const newFacts=extractCompanyFacts(text);
   const dossier=mergeFacts(existingCo?existingCo.dossier||blankDossier:blankDossier,newFacts);
   const reputation=mergeReputation(existingCo?existingCo.reputation||blankRep:blankRep,extractReputation(text));
-  const effectiveWebsite=website||dossier.website;
+  const effectiveWebsite=website||(dossier.website&&dossier.website.value)||'';
   const expectedSalary=activeProfile?parseComp(activeProfile.criteria.minSalary):0;
   const detectedSalary=a.salary?parseComp(a.salary):0;
   const gap=(expectedSalary&&detectedSalary)?(detectedSalary-expectedSalary):null;
@@ -1239,7 +1291,7 @@ function buildReportData(text,companyName,website){
   const sources=[];
   if(text)sources.push(`Pasted text (${text.trim().split(/\s+/).length} words)`);
   if(effectiveWebsite)sources.push(`Website: ${effectiveWebsite}`);
-  if(dossier.bbbProfileUrl)sources.push(`BBB profile: ${dossier.bbbProfileUrl}`);
+  if(dossier.bbbProfileUrl&&dossier.bbbProfileUrl.value)sources.push(`BBB profile: ${dossier.bbbProfileUrl.value}`);
   if(existingCo)sources.push(`Existing CRM record: ${existingCo.name}`);
   sources.push(`Career Profile: ${activeProfile?activeProfile.name:'none active'}`);
   return{
@@ -1262,24 +1314,35 @@ function dossierHTML(rep,withDivider){
   if(withDivider===undefined)withDivider=true;
   const d=rep.dossier;
   const rp=rep.reputation||{};
-  const fact=(icon,label,val)=>`<div class="dossier-fact"><div class="dossier-fact-label">${icon} ${label}</div><div class="dossier-fact-value ${val?'':'unknown'}">${val?esc(val):'Unknown'}</div></div>`;
-  const addressLine=[d.street,[d.city,d.state].filter(Boolean).join(', '),d.zip].filter(Boolean).join(' · ');
+  const gv=(f)=>f&&f.value?f.value:'';
+  const confStars=(conf)=>conf==='high'?'★★★★★ High confidence':conf==='medium'?'★★★☆☆ Medium confidence':'☆☆☆☆☆ Not found';
+  const fact=(icon,label,f)=>{
+    f=f||nf();
+    return `<div class="dossier-fact"><div class="dossier-fact-label">${icon} ${label}</div>
+      <div class="dossier-fact-value ${f.value?'':'unknown'}">${f.value?esc(f.value):'Unknown'}</div>
+      <div class="dossier-fact-meta">${confStars(f.confidence)}${f.source?' · '+esc(f.source):''}</div>
+    </div>`;
+  };
+  const displayName=gv(d.name)||rep.companyName||'Unnamed company';
+  const addressLine=[gv(d.street),[gv(d.city),gv(d.state)].filter(Boolean).join(', '),gv(d.zip)].filter(Boolean).join(' · ');
   const linkRow=[
     rep.website?`<span>🌐 <a href="${esc(rep.website)}" target="_blank" style="color:inherit">${esc(rep.website)}</a></span>`:'',
-    d.phone?`<span>☎ ${esc(d.phone)}</span>`:'',
-    d.bbbProfileUrl?`<span>🔗 <a href="${esc(d.bbbProfileUrl)}" target="_blank" style="color:inherit">BBB Profile</a></span>`:'',
-    d.linkedin?`<span>💼 <a href="${esc(d.linkedin)}" target="_blank" style="color:inherit">LinkedIn</a></span>`:'',
-    d.facebook?`<span>📘 <a href="${esc(d.facebook)}" target="_blank" style="color:inherit">Facebook</a></span>`:'',
-    d.googleMaps?`<span>📍 <a href="${esc(d.googleMaps)}" target="_blank" style="color:inherit">Google Maps</a></span>`:''
+    gv(d.phone)?`<span>☎ ${esc(gv(d.phone))}</span>`:'',
+    gv(d.bbbProfileUrl)?`<span>🔗 <a href="${esc(gv(d.bbbProfileUrl))}" target="_blank" style="color:inherit">BBB Profile</a></span>`:'',
+    gv(d.linkedin)?`<span>💼 <a href="${esc(gv(d.linkedin))}" target="_blank" style="color:inherit">LinkedIn</a></span>`:'',
+    gv(d.facebook)?`<span>📘 <a href="${esc(gv(d.facebook))}" target="_blank" style="color:inherit">Facebook</a></span>`:'',
+    gv(d.googleMaps)?`<span>📍 <a href="${esc(gv(d.googleMaps))}" target="_blank" style="color:inherit">Google Maps</a></span>`:''
   ].filter(Boolean);
   const repCard=(icon,label,src)=>`<div class="dcard"><div class="dcard-title">${icon} ${label}</div>
     <div class="rep-row"><span class="rk">Rating</span><span class="rv ${src.rating?'':'unknown'}">${src.rating?esc(src.rating)+' ★':'Unknown'}</span></div>
     <div class="rep-row"><span class="rk">Review count</span><span class="rv ${src.reviews?'':'unknown'}">${src.reviews?esc(src.reviews):'Unknown'}</span></div>
     <div class="rep-row"><span class="rk">Status</span><span class="rv ${src.status?'':'unknown'}">${src.status||'Unknown'}</span></div>
   </div>`;
+  const rawId='raw-'+Math.random().toString(36).slice(2,8);
+  const rawRows=Object.keys(d).map(k=>`<div class="rep-row"><span class="rk">${k}</span><span class="rv">${d[k].value?esc(d[k].value):'—'} <span class="cc">(${d[k].confidence}${d[k].source?', '+esc(d[k].source):''})</span></span></div>`).join('');
   return `<div class="dossier-card">
-    <div class="dossier-name">🏢 ${esc(rep.companyName||'Unnamed company')}</div>
-    <div class="dossier-category">${d.industry?esc(d.industry):'Industry not detected'}${d.tagline?' — '+esc(d.tagline):''}</div>
+    <div class="dossier-name">🏢 ${esc(displayName)}</div>
+    <div class="dossier-category">${gv(d.industry)?esc(gv(d.industry)):'Industry not detected'}${gv(d.tagline)?' — '+esc(gv(d.tagline)):''}</div>
     ${addressLine?`<div class="dossier-contact"><span>📍 ${esc(addressLine)}</span></div>`:''}
     ${linkRow.length?`<div class="dossier-contact">${linkRow.join('')}</div>`:''}
   </div>
@@ -1288,7 +1351,7 @@ function dossierHTML(rep,withDivider){
   <div class="dossier-card">
     <div class="dossier-fact-grid">
       ${fact('⭐','BBB Rating',d.bbbRating)}
-      ${fact(d.bbbAccredited==='Yes'?'✅':d.bbbAccredited==='No'?'❌':'❔','BBB Accredited',d.bbbAccredited)}
+      ${fact(gv(d.bbbAccredited)==='Yes'?'✅':gv(d.bbbAccredited)==='No'?'❌':'❔','BBB Accredited',d.bbbAccredited)}
       ${fact('📅','Years in Business',d.yearsInBusiness)}
       ${fact('📂','BBB File Opened',d.bbbOpened)}
       ${fact('🏗','Business Started',d.businessStarted)}
@@ -1301,7 +1364,10 @@ function dossierHTML(rep,withDivider){
       ${fact('👥','Manager',d.manager)}
       ${fact('🏢','Parent Company',d.parentCompany)}
       ${fact('📍','Headquarters',d.headquarters)}
+      ${fact('🏛️','Local BBB',d.localBBB)}
     </div>
+    <button class="mini-btn" style="margin-top:14px" onclick="document.getElementById('${rawId}').style.display=document.getElementById('${rawId}').style.display==='none'?'block':'none'">🛠 Show raw extraction data</button>
+    <div id="${rawId}" style="display:none;margin-top:10px">${rawRows}</div>
   </div>
 
   <div class="section-divider">Reputation</div>
@@ -1420,7 +1486,7 @@ function questionForRule(rule){
   return `What about — ${rule.name}?`;
 }
 function detectImportLabel(text,facts){
-  if(/bbb\.org/i.test(text)||facts.bbbProfileUrl||facts.bbbRating)return 'Imported BBB Profile';
+  if(/bbb\.org/i.test(text)||(facts.bbbProfileUrl&&facts.bbbProfileUrl.value)||(facts.bbbRating&&facts.bbbRating.value))return 'Imported BBB Profile';
   if(/linkedin\.com\/company/i.test(text))return 'Imported LinkedIn Profile';
   if(/dear (hiring|recruiter|team)|regards,|sincerely,|best,\s*$/im.test(text))return 'Imported Recruiter Email';
   if(/salary|compensation|responsibilities|qualifications|apply now|job description/i.test(text))return 'Imported Job Posting';
@@ -1461,6 +1527,10 @@ document.getElementById('anzRunBtn').onclick=()=>{
   const name=document.getElementById('anzCompanyName2').value.trim();
   const website=document.getElementById('anzWebsite').value.trim();
   anzReport=buildReportData(text,name,website);
+  if(!name&&anzReport.dossier.name&&anzReport.dossier.name.value){
+    document.getElementById('anzCompanyName2').value=anzReport.dossier.name.value;
+    anzReport.companyName=anzReport.dossier.name.value;
+  }
   box.innerHTML=reportHTML(anzReport,{type:'live'})+`<div id="anzScorecard"></div>
     <div class="rep-section">
       <button class="btn-primary" id="anzCreateBtn">Save company to pipeline</button>
@@ -1852,7 +1922,7 @@ function renderDetail(){
       <div class="detail-actions"><button class="icon-btn" onclick="openEdit('${c.id}')" title="Edit">✎</button></div>
     </div>
 
-    ${Object.values(c.dossier||{}).some(v=>v)?dossierHTML({companyName:c.name,website:c.link,dossier:c.dossier,reputation:c.reputation},false):''}
+    ${Object.values(c.dossier||{}).some(v=>v&&v.value)?dossierHTML({companyName:c.name,website:c.link,dossier:c.dossier,reputation:c.reputation},false):''}
 
     <div class="detail-grid">
       <div class="dcard"><div class="dcard-title">Recruiter</div>
