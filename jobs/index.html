@@ -366,6 +366,20 @@ input,textarea,select{font-family:inherit}
 .research-btns{display:flex;flex-wrap:wrap;gap:8px}
 .research-btn{background:var(--teal-tint);color:var(--teal-dark);border-radius:9px;padding:8px 12px;font-size:11.5px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;transition:.15s}
 .research-btn:hover{background:var(--aqua);color:#0B3B37;transform:translateY(-1px)}
+
+/* ── ACTION COLOR SYSTEM ── green=primary action, orange=research/search, blue=navigate/open, red=delete/risk */
+.act-btn2{border:none;border-radius:10px;padding:10px 16px;font-size:12.5px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:.15s;cursor:pointer}
+.act-btn2:hover{transform:translateY(-1px)}
+.act-green{background:var(--success);color:#fff}
+.act-orange{background:#FFEDD9;color:#B8540A}
+.act-orange:hover{background:#FFA94D;color:#5C2C00}
+.act-blue{background:#DCEEFB;color:#0B5FA5}
+.act-blue:hover{background:#5BA8E0;color:#fff}
+.act-red{background:var(--coral-tint);color:#B8422F}
+.act-red:hover{background:var(--coral);color:#fff}
+.action-bar-top{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 18px}
+.quicklinks-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.section-actions{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
 .section-divider{display:flex;align-items:center;gap:12px;margin:24px 0 16px;color:var(--text-muted);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
 .section-divider::before,.section-divider::after{content:'';flex:1;border-top:1px solid var(--border)}
 </style>
@@ -1280,7 +1294,8 @@ const RESEARCH_CATEGORIES=[
     {label:'Indeed',kind:'indeed_jobs'},{label:'ZipRecruiter',kind:'ziprecruiter'},{label:'Glassdoor Jobs',kind:'glassdoor_jobs'}]},
   {icon:'⭐',title:'Reviews',buttons:[
     {label:'Google Reviews',kind:'google_reviews'},{label:'Glassdoor',kind:'glassdoor'},{label:'Indeed Reviews',kind:'indeed_reviews'},
-    {label:'Trustpilot',kind:'trustpilot'},{label:'ConsumerAffairs',kind:'consumeraffairs'},{label:'Yelp',kind:'yelp'}]},
+    {label:'Trustpilot',kind:'trustpilot'},{label:'ConsumerAffairs',kind:'consumeraffairs'},{label:'Yelp',kind:'yelp'},
+    {label:'Reddit',kind:'reddit'},{label:'Complaints',kind:'complaints'}]},
   {icon:'🛡',title:'BBB',buttons:[
     {label:'Open BBB Profile',kind:'bbb_direct'},{label:'Search BBB',kind:'bbb_search'},{label:'File a Complaint',kind:'bbb_complaint'}]},
   {icon:'📢',title:'Advertising',buttons:[
@@ -1298,7 +1313,7 @@ const RESEARCH_CATEGORIES=[
     {label:'Crunchbase',kind:'crunchbase'},{label:'SEC Filings',kind:'sec'},{label:'OpenCorporates',kind:'opencorporates'},
     {label:'State Business Registration',kind:'state_reg'},{label:'LinkedIn Company',kind:'linkedin_company'}]},
   {icon:'⚖',title:'Legal & Compliance',buttons:[
-    {label:'Court Records Search',kind:'court_records'},{label:'PACER',kind:'pacer'},
+    {label:'Court Records Search',kind:'court_records'},{label:'Lawsuits',kind:'lawsuits'},{label:'PACER',kind:'pacer'},
     {label:'State Licensing Search',kind:'state_license'},{label:'CFPB Complaints',kind:'cfpb'}]}
 ];
 function researchURL(kind,name,website,dossier){
@@ -1351,17 +1366,76 @@ function researchURL(kind,name,website,dossier){
     case 'pacer':return 'https://pcl.uscourts.gov/pcl/index.jsf';
     case 'state_license':return g('state license lookup');
     case 'cfpb':return `https://www.consumerfinance.gov/data-research/consumer-complaints/search/?searchText=${q}`;
+    case 'reddit':return `https://www.reddit.com/search/?q=${q}`;
+    case 'lawsuits':return g('lawsuit OR litigation');
+    case 'complaints':return g('complaints');
+    case 'secretary_of_state':return g('secretary of state business registration');
+    case 'corp_records':return `https://opencorporates.com/companies?q=${q}`;
+    case 'job_postings':return g('jobs hiring');
     default:return g(kind);
   }
+}
+function hasDirectURL(kind,website,dossier){
+  const dv=(f)=>f&&f.value?f.value:'';
+  if(kind==='website')return !!website;
+  if(kind==='bbb_direct')return !!dv(dossier&&dossier.bbbProfileUrl);
+  if(kind==='facebook')return !!dv(dossier&&dossier.facebook);
+  if(kind==='linkedin_company')return !!dv(dossier&&dossier.linkedin);
+  if(kind==='google_maps')return !!dv(dossier&&dossier.googleMaps);
+  return false;
+}
+function personSearchURL(person,company,kind){
+  if(!person)return `https://www.google.com/search?q=${encodeURIComponent((kind==='ceo'?'CEO of ':kind==='manager'?'sales manager of ':'owner of ')+company)}`;
+  if(kind==='linkedin')return `https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(person+' '+company)}`;
+  return `https://www.google.com/search?q=${encodeURIComponent(person+' '+company)}`;
 }
 function researchHubHTML(name,website,dossier){
   return `<div class="section-title" style="margin-bottom:10px">🔎 Quick Research</div>
     <div class="research-grid">
       ${RESEARCH_CATEGORIES.map(cat=>`<div class="research-cat">
         <div class="research-cat-title">${cat.icon} ${esc(cat.title)}</div>
-        <div class="research-btns">${cat.buttons.map(b=>`<a class="research-btn" href="${esc(researchURL(b.kind,name,website,dossier))}" target="_blank" rel="noopener">${esc(b.label)}</a>`).join('')}</div>
+        <div class="research-btns">${cat.buttons.map(b=>`<a class="act-btn2 ${hasDirectURL(b.kind,website,dossier)?'act-blue':'act-orange'}" href="${esc(researchURL(b.kind,name,website,dossier))}" target="_blank" rel="noopener">${esc(b.label)}</a>`).join('')}</div>
       </div>`).join('')}
     </div>`;
+}
+
+function actionBarHTML(c){
+  const website=c.link,dossier=c.dossier;
+  const websiteURL=website||researchURL('website',c.name,'',dossier);
+  const liURL=(dossier&&dossier.linkedin&&dossier.linkedin.value)||researchURL('linkedin_company',c.name,website,dossier);
+  return `<div class="action-bar-top">
+    <button class="act-btn2 act-green" onclick="reanalyzeCompany('${c.id}')">🔄 Analyze Again</button>
+    <a class="act-btn2 act-orange" href="${esc(researchURL('bbb_search',c.name,website,dossier))}" target="_blank">🔍 Search BBB</a>
+    <a class="act-btn2 act-orange" href="${esc(researchURL('google_reviews',c.name,website,dossier))}" target="_blank">🔍 Search Reviews</a>
+    <a class="act-btn2 act-orange" href="${esc(researchURL('job_postings',c.name,website,dossier))}" target="_blank">🔍 Find Job Postings</a>
+    <a class="act-btn2 act-green" href="${esc(websiteURL)}" target="_blank">🌐 Open Website</a>
+    <a class="act-btn2 act-blue" href="${esc(liURL)}" target="_blank">💼 Open LinkedIn</a>
+    <button class="act-btn2 act-green" onclick="openEdit('${c.id}')">✎ Update Company</button>
+    <button class="act-btn2 act-orange" onclick="copyAIResearchPrompt('${c.id}')">🤖 AI Research</button>
+  </div>`;
+}
+function quickLinksHTML(c){
+  const website=c.link,dossier=c.dossier;
+  const links=[
+    {label:'Website',kind:'website'},{label:'BBB',kind:'bbb_direct'},{label:'Google Reviews',kind:'google_reviews'},
+    {label:'Glassdoor',kind:'glassdoor'},{label:'Indeed',kind:'indeed_jobs'},{label:'Facebook',kind:'facebook'},
+    {label:'Trustpilot',kind:'trustpilot'},{label:'LinkedIn',kind:'linkedin_company'},{label:'YouTube',kind:'youtube'},{label:'News',kind:'news'}
+  ];
+  return `<div class="quicklinks-row">${links.map(l=>`<a class="act-btn2 ${hasDirectURL(l.kind,website,dossier)?'act-blue':'act-orange'}" href="${esc(researchURL(l.kind,c.name,website,dossier))}" target="_blank">${esc(l.label)}</a>`).join('')}</div>`;
+}
+function reanalyzeCompany(id){
+  const c=state.companies.find(x=>x.id===id);
+  document.querySelector('.tab-btn[data-tab="analyzer"]').click();
+  document.getElementById('anzCompanyName2').value=c.name;
+  document.getElementById('anzWebsite').value=c.link||'';
+  document.getElementById('anzJD').value=c.jd||'';
+  document.getElementById('anzJD').focus();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function copyAIResearchPrompt(id){
+  const c=state.companies.find(x=>x.id===id);
+  const prompt=`Research the company "${c.name}"${c.link?' ('+c.link+')':''}. Look up their BBB rating, online reviews, reputation, recent news, and anything a job candidate should know before applying. Summarize what you find.`;
+  navigator.clipboard.writeText(prompt).then(()=>alert('Research prompt copied — paste it into Claude chat, then bring what you find back here to paste into the Analyze tab or Company Intelligence.')).catch(()=>alert('Could not copy automatically — here is the prompt:\\n\\n'+prompt));
 }
 
 function mergeReputation(oldRep,newRep){
@@ -1525,11 +1599,26 @@ function dossierHTML(rep,withDivider){
       ${fact('📍','Headquarters',d.headquarters)}
       ${fact('🏛️','Local BBB',d.localBBB)}
     </div>
-    <button class="mini-btn" style="margin-top:14px" onclick="document.getElementById('${rawId}').style.display=document.getElementById('${rawId}').style.display==='none'?'block':'none'">🛠 Show raw extraction data</button>
+    <div class="section-actions" style="margin-top:14px">
+      <a class="act-btn2 act-orange" href="${esc(researchURL('secretary_of_state',displayName,rep.website,d))}" target="_blank">🔍 Search Secretary of State</a>
+      <a class="act-btn2 act-orange" href="${esc(personSearchURL(gv(d.owner),displayName,'google'))}" target="_blank">🔍 Search Owner</a>
+      <a class="act-btn2 act-orange" href="${esc(researchURL('corp_records',displayName,rep.website,d))}" target="_blank">🔍 Search Corporation Records</a>
+    </div>
+    <div class="section-actions">
+      <a class="act-btn2 act-orange" href="${esc(personSearchURL(gv(d.ceo),displayName,'google'))}" target="_blank">🔍 Find CEO</a>
+      <a class="act-btn2 act-orange" href="${esc(personSearchURL(gv(d.manager),displayName,'google'))}" target="_blank">🔍 Find Sales Manager</a>
+      <a class="act-btn2 act-orange" href="${esc(personSearchURL(gv(d.owner),displayName,'linkedin'))}" target="_blank">🔍 Search LinkedIn</a>
+    </div>
+    <button class="mini-btn" style="margin-top:6px" onclick="document.getElementById('${rawId}').style.display=document.getElementById('${rawId}').style.display==='none'?'block':'none'">🛠 Show raw extraction data</button>
     <div id="${rawId}" style="display:none;margin-top:10px">${rawRows}</div>
   </div>
 
   <div class="section-divider">Reputation</div>
+  <div class="section-actions">
+    <a class="act-btn2 act-orange" href="${esc(researchURL('bbb_search',displayName,rep.website,d))}" target="_blank">🔍 Search BBB</a>
+    <a class="act-btn2 act-orange" href="${esc(researchURL('google_reviews',displayName,rep.website,d))}" target="_blank">🔍 Search Reviews</a>
+    <a class="act-btn2 act-orange" href="${esc(researchURL('complaints',displayName,rep.website,d))}" target="_blank">🔍 Search Complaints</a>
+  </div>
   <div class="report-cat-grid">
     ${repCard('⭐','BBB',rp.bbb||{})}
     ${repCard('🔍','Google',rp.google||{})}
@@ -2231,6 +2320,8 @@ function renderDetail(){
       <div class="detail-actions"><button class="icon-btn" onclick="openEdit('${c.id}')" title="Edit">✎</button></div>
     </div>
 
+    ${actionBarHTML(c)}
+    ${quickLinksHTML(c)}
     ${researchHubHTML(c.name,c.link,c.dossier)}
 
     ${Object.values(c.dossier||{}).some(v=>v&&v.value)?dossierHTML({companyName:c.name,website:c.link,dossier:c.dossier,reputation:c.reputation},false):''}
