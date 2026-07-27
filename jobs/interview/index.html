@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Interview Prep Center — SebastianLinks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#1F7A8C;--teal-dark:#17606F;--teal-tint:#E3F0F2;
+  --aqua:#39D0C8;--aqua-dark:#2AB6AF;
+  --bg:#F7F8FA;--card:#FFFFFF;--border:#E6EAF0;
+  --text:#1C2733;--text-sec:#4A5560;--text-muted:#8B95A1;
+  --coral:#FF7A66;--coral-tint:#FFEDE9;
+  --gold:#C9A227;--gold-tint:#FBF3DC;--success:#2FAE7D;
+  --radius:12px;--shadow:0 1px 2px rgba(28,39,51,.04),0 4px 12px rgba(28,39,51,.05);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit;cursor:pointer}
+input,textarea,select{font-family:inherit}
+
+.topbar{background:#fff;border-bottom:1px solid var(--border);padding:0 20px;height:58px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:200}
+.topbar-logo{font-weight:800;font-size:15px;color:var(--teal);display:flex;align-items:center;gap:8px}
+.topbar-logo .dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--aqua))}
+.topbar-back{font-size:12.5px;font-weight:600;color:var(--text-muted);background:#f3f4f6;border:none;border-radius:8px;padding:7px 12px}
+.topbar-search{flex:1;max-width:340px;position:relative}
+.topbar-search input{width:100%;padding:8px 12px 8px 32px;border:1px solid var(--border);border-radius:8px;font-size:13px}
+.topbar-search .si{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:13px}
+.mode-btns{display:flex;gap:8px;margin-left:auto}
+.mode-btn{background:#f3f4f6;color:var(--text-sec);border:none;border-radius:8px;padding:8px 13px;font-size:12.5px;font-weight:700}
+.mode-btn.active{background:var(--teal);color:#fff}
+.builder-toggle{background:var(--gold-tint);color:#8A6B10;border:none;border-radius:8px;padding:8px 13px;font-size:12.5px;font-weight:700}
+.builder-toggle.on{background:var(--gold);color:#fff}
+
+.layout{display:grid;grid-template-columns:280px 1fr;gap:0;max-width:1280px;margin:0 auto}
+@media(max-width:860px){.layout{grid-template-columns:1fr}}
+
+.sidebar{border-right:1px solid var(--border);padding:18px 14px;min-height:calc(100vh - 58px)}
+@media(max-width:860px){.sidebar{border-right:none;border-bottom:1px solid var(--border)}}
+.cat-group{margin-bottom:6px}
+.cat-head{display:flex;justify-content:space-between;align-items:center;padding:10px 10px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer}
+.cat-head:hover{background:#f3f4f6}
+.cat-head .cnt{font-size:11px;color:var(--text-muted);font-weight:600}
+.cat-body{display:none;padding-left:8px}
+.cat-body.open{display:block}
+.q-item{padding:8px 10px;border-radius:7px;font-size:12.5px;color:var(--text-sec);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:6px}
+.q-item:hover{background:var(--teal-tint)}
+.q-item.selected{background:var(--teal);color:#fff}
+.q-item .mstar{font-size:11px;flex-shrink:0}
+.add-q-btn{width:100%;margin-top:6px;background:var(--teal-tint);color:var(--teal-dark);border:none;border-radius:7px;padding:7px;font-size:12px;font-weight:700}
+
+.main{padding:24px}
+.dcard{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);margin-bottom:16px}
+.dcard-title{font-size:13px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.q-title{font-size:20px;font-weight:800;margin-bottom:4px}
+.q-meta{font-size:12px;color:var(--text-muted);margin-bottom:16px}
+.answer-block{font-size:14.5px;line-height:1.7;color:var(--text);white-space:pre-wrap}
+.field-label{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.03em;margin:14px 0 6px}
+.field-label:first-child{margin-top:0}
+.chip-row{display:flex;flex-wrap:wrap;gap:6px}
+.kchip{background:var(--teal-tint);color:var(--teal-dark);font-size:11px;font-weight:700;padding:3px 9px;border-radius:100px}
+.coaching-note{background:var(--gold-tint);color:#8A6B10;border-radius:9px;padding:10px 12px;font-size:13px;line-height:1.5}
+.followup-item{font-size:13px;padding:5px 0;border-bottom:1px solid #f2f3f5}
+.followup-item:last-child{border:none}
+.mastery-row{display:flex;gap:8px;margin-top:16px}
+.mastery-btn{border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700}
+.m-need{background:var(--coral-tint);color:#B8422F}
+.m-mastered{background:#DCFCE7;color:#14532D}
+.m-fav{background:var(--gold-tint);color:#8A6B10}
+.mastery-btn.on{outline:2px solid currentColor}
+.empty-state{text-align:center;padding:60px 20px;color:var(--text-muted)}
+
+/* Interview / Practice mode */
+.im-card{text-align:center;padding:40px 24px}
+.im-question{font-size:22px;font-weight:800;margin-bottom:18px}
+.im-timer{font-size:34px;font-weight:800;color:var(--teal);margin-bottom:18px}
+.im-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.im-btn{border:none;border-radius:9px;padding:10px 18px;font-size:13px;font-weight:700}
+.im-primary{background:var(--aqua);color:#0B3B37}
+.im-secondary{background:#f3f4f6;color:var(--text-sec)}
+
+/* Timeline */
+.tl-entry{border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;background:#fff}
+.tl-head{display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+.tl-company{font-weight:800;font-size:15px}
+.tl-role{font-size:12.5px;color:var(--text-muted)}
+.tl-body{display:none;margin-top:12px;font-size:13px;line-height:1.6}
+.tl-body.open{display:block}
+
+/* Builder inline edit */
+.builder-panel{background:var(--gold-tint);border:1px solid #E8CD7E;border-radius:var(--radius);padding:16px;margin-bottom:16px}
+.form-field{margin-bottom:12px}
+.form-field label{display:block;font-size:11.5px;font-weight:700;color:var(--text-sec);margin-bottom:4px}
+.form-field input,.form-field select,.form-field textarea{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:8px;font-size:13.5px}
+.form-row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn-primary{background:var(--aqua);color:#0B3B37;border:none;border-radius:9px;padding:9px 16px;font-size:13px;font-weight:700}
+.btn-secondary{background:#f3f4f6;color:var(--text-sec);border:none;border-radius:9px;padding:9px 16px;font-size:13px;font-weight:700}
+.btn-danger{background:var(--coral-tint);color:#B8422F;border:none;border-radius:9px;padding:9px 16px;font-size:13px;font-weight:700}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="topbar-back" href="../">← Career CRM</a>
+  <div class="topbar-logo"><span class="dot"></span>Interview Prep Center</div>
+  <div class="topbar-search"><span class="si">🔍</span><input type="text" id="searchInput" placeholder="Search questions, answers, keywords..."></div>
+  <div class="mode-btns">
+    <button class="mode-btn active" data-mode="browse">Browse</button>
+    <button class="mode-btn" data-mode="interview">Interview Mode</button>
+    <button class="mode-btn" data-mode="practice">Practice Mode</button>
+  </div>
+  <button class="builder-toggle" id="builderToggle">🛠 Builder Mode</button>
+</div>
+
+<div class="layout">
+  <div class="sidebar" id="sidebar"></div>
+  <div class="main" id="main"></div>
+</div>
+
+<script>
+const SK='clcrm_interview_v1';
+const CATEGORIES=['Recruiter Interview','Sales Director','VP Interview','Behavioral','Sales','STAR Stories','Objection Handling','Rapid Fire'];
+
+function qid(){return 'q'+Math.random().toString(36).slice(2,9);}
+function esc(s){return (s||'').toString().replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));}
+
+function seedData(){
+  return{
+    questions:[
+      {id:qid(),category:'Recruiter Interview',difficulty:'Easy',question:'Walk me through your background.',
+        answer:'EXAMPLE — replace with your real answer via Builder Mode. This should be the exact words you plan to say, not notes.',
+        shortAnswer:'EXAMPLE — 30-second version.',longAnswer:'EXAMPLE — 2-minute version with more detail.',
+        keywords:['background','intro'],coaching:'EXAMPLE — e.g. slow down, smile, land on your strongest recent result.',
+        recruiterIntent:'EXAMPLE — what the recruiter is actually evaluating with this question.',
+        followups:['EXAMPLE follow-up question'],favorite:false,mastery:'new'},
+      {id:qid(),category:'STAR Stories',difficulty:'Medium',question:'Tell me about a time you overcame a difficult sales objection.',
+        answer:'',situation:'EXAMPLE — set the scene.',task:'EXAMPLE — what you needed to accomplish.',action:'EXAMPLE — what you actually did.',
+        result:'EXAMPLE — the outcome, ideally with a number.',lesson:'EXAMPLE — what you took from it.',
+        keywords:['objection','resilience'],coaching:'EXAMPLE coaching note.',recruiterIntent:'EXAMPLE — resilience under pressure.',
+        followups:[],favorite:false,mastery:'new'},
+      {id:qid(),category:'Objection Handling',difficulty:'Medium',question:'"I need to think about it."',
+        answer:'EXAMPLE — your real response to this objection, word for word.',
+        shortAnswer:'',longAnswer:'',keywords:['objection','stall'],coaching:'EXAMPLE — tone, pacing.',
+        recruiterIntent:'EXAMPLE — how you handle stalls without being pushy.',followups:[],favorite:false,mastery:'new'}
+    ],
+    timeline:[
+      {id:qid(),company:'Alpha Timeshare Consultants',position:'Account Specialist',dates:'Add your dates',
+        responsibilities:'Add your responsibilities here.',achievements:'Add your achievements here.',
+        reasonForLeaving:'Add if applicable.',skillsLearned:'Add key skills.',
+        transitionSentence:'Add a one-line bridge into your next role.',followups:['EXAMPLE follow-up']}
+    ]
+  };
+}
+
+let state=null;
+try{state=JSON.parse(localStorage.getItem(SK));}catch(e){state=null;}
+if(!state||!state.questions)state=seedData();
+function saveState(){localStorage.setItem(SK,JSON.stringify(state));}
+saveState();
+
+let currentMode='browse';
+let selectedId=null;
+let builderOn=false;
+let searchTerm='';
+let openCats={};
+
+document.querySelectorAll('.mode-btn').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.mode-btn').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');currentMode=b.dataset.mode;selectedId=null;
+  renderMain();
+});
+document.getElementById('builderToggle').onclick=()=>{
+  builderOn=!builderOn;
+  document.getElementById('builderToggle').classList.toggle('on',builderOn);
+  renderSidebar();renderMain();
+};
+document.getElementById('searchInput').addEventListener('input',e=>{searchTerm=e.target.value.toLowerCase();renderSidebar();});
+
+function matchesSearch(q){
+  if(!searchTerm)return true;
+  const hay=[q.question,q.answer,q.shortAnswer,q.longAnswer,(q.keywords||[]).join(' '),q.category].join(' ').toLowerCase();
+  return hay.includes(searchTerm);
+}
+
+function renderSidebar(){
+  const box=document.getElementById('sidebar');
+  let html='';
+  CATEGORIES.forEach(cat=>{
+    const qs=state.questions.filter(q=>q.category===cat&&matchesSearch(q));
+    if(searchTerm&&!qs.length)return;
+    const isOpen=openCats[cat]||!!searchTerm;
+    html+=`<div class="cat-group">
+      <div class="cat-head" onclick="toggleCat('${cat}')"><span>${esc(cat)}</span><span class="cnt">${qs.length}</span></div>
+      <div class="cat-body ${isOpen?'open':''}" id="catbody-${cat.replace(/\s+/g,'')}">
+        ${qs.map(q=>`<div class="q-item ${q.id===selectedId?'selected':''}" onclick="selectQuestion('${q.id}')"><span>${esc(q.question)}</span><span class="mstar">${q.favorite?'⭐':''}${q.mastery==='mastered'?'✓':q.mastery==='needs_practice'?'⚠':''}</span></div>`).join('')}
+        ${builderOn?`<button class="add-q-btn" onclick="addQuestion('${cat}')">+ Add question</button>`:''}
+      </div>
+    </div>`;
+  });
+  const favs=state.questions.filter(q=>q.favorite&&matchesSearch(q));
+  html+=`<div class="cat-group">
+    <div class="cat-head" onclick="toggleCat('Favorites')"><span>⭐ Favorites</span><span class="cnt">${favs.length}</span></div>
+    <div class="cat-body ${openCats['Favorites']||searchTerm?'open':''}">
+      ${favs.map(q=>`<div class="q-item ${q.id===selectedId?'selected':''}" onclick="selectQuestion('${q.id}')">${esc(q.question)}</div>`).join('')}
+    </div></div>
+  <div class="cat-group">
+    <div class="cat-head" onclick="toggleCat('Career Timeline')"><span>📅 Career Timeline</span><span class="cnt">${state.timeline.length}</span></div>
+    <div class="cat-body ${openCats['Career Timeline']?'open':''}">
+      ${state.timeline.map(t=>`<div class="q-item" onclick="selectTimeline('${t.id}')">${esc(t.company)}</div>`).join('')}
+      ${builderOn?`<button class="add-q-btn" onclick="addTimelineEntry()">+ Add employer</button>`:''}
+    </div></div>`;
+  box.innerHTML=html;
+}
+function toggleCat(cat){openCats[cat]=!openCats[cat];renderSidebar();}
+function selectQuestion(id){selectedId=id;currentMode='browse';document.querySelectorAll('.mode-btn').forEach(x=>x.classList.toggle('active',x.dataset.mode==='browse'));renderSidebar();renderMain();}
+
+function renderMain(){
+  const box=document.getElementById('main');
+  if(currentMode==='interview'){renderInterviewMode(box);return;}
+  if(currentMode==='practice'){renderPracticeMode(box);return;}
+  if(!selectedId){box.innerHTML='<div class="empty-state">Select a question from the left, or turn on Builder Mode to start adding your real answers.</div>';return;}
+  const q=state.questions.find(x=>x.id===selectedId);
+  if(!q){box.innerHTML='<div class="empty-state">Question not found.</div>';return;}
+  if(builderOn){renderQuestionEditor(box,q);return;}
+  const isStar=q.category==='STAR Stories';
+  box.innerHTML=`<div class="dcard">
+    <div class="q-title">${esc(q.question)}</div>
+    <div class="q-meta">${esc(q.category)} · ${esc(q.difficulty||'')}</div>
+    ${isStar?`
+      <div class="field-label">Situation</div><div class="answer-block">${esc(q.situation)}</div>
+      <div class="field-label">Task</div><div class="answer-block">${esc(q.task)}</div>
+      <div class="field-label">Action</div><div class="answer-block">${esc(q.action)}</div>
+      <div class="field-label">Result</div><div class="answer-block">${esc(q.result)}</div>
+      <div class="field-label">Lesson</div><div class="answer-block">${esc(q.lesson)}</div>
+    `:`<div class="field-label">Complete Answer</div><div class="answer-block">${esc(q.answer)}</div>
+      ${q.shortAnswer?`<div class="field-label">30-Second Version</div><div class="answer-block">${esc(q.shortAnswer)}</div>`:''}
+      ${q.longAnswer?`<div class="field-label">Two-Minute Version</div><div class="answer-block">${esc(q.longAnswer)}</div>`:''}
+    `}
+    ${(q.keywords||[]).length?`<div class="field-label">Keywords</div><div class="chip-row">${q.keywords.map(k=>`<span class="kchip">${esc(k)}</span>`).join('')}</div>`:''}
+    ${q.recruiterIntent?`<div class="field-label">Recruiter Intent</div><div class="answer-block">${esc(q.recruiterIntent)}</div>`:''}
+    ${q.coaching?`<div class="field-label">Coaching Notes</div><div class="coaching-note">${esc(q.coaching)}</div>`:''}
+    ${(q.followups||[]).length?`<div class="field-label">Follow-Up Questions</div>${q.followups.map(f=>`<div class="followup-item">${esc(f)}</div>`).join('')}`:''}
+    <div class="mastery-row">
+      <button class="mastery-btn m-need ${q.mastery==='needs_practice'?'on':''}" onclick="setMastery('${q.id}','needs_practice')">Need Practice</button>
+      <button class="mastery-btn m-mastered ${q.mastery==='mastered'?'on':''}" onclick="setMastery('${q.id}','mastered')">Mastered</button>
+      <button class="mastery-btn m-fav ${q.favorite?'on':''}" onclick="toggleFavorite('${q.id}')">⭐ Favorite</button>
+    </div>
+  </div>`;
+}
+function setMastery(id,val){const q=state.questions.find(x=>x.id===id);q.mastery=q.mastery===val?'new':val;saveState();renderMain();renderSidebar();}
+function toggleFavorite(id){const q=state.questions.find(x=>x.id===id);q.favorite=!q.favorite;saveState();renderMain();renderSidebar();}
+
+function selectTimeline(id){
+  const box=document.getElementById('main');
+  const t=state.timeline.find(x=>x.id===id);
+  if(builderOn){renderTimelineEditor(box,t);return;}
+  box.innerHTML=`<div class="dcard">
+    <div class="q-title">${esc(t.company)}</div>
+    <div class="q-meta">${esc(t.position)} · ${esc(t.dates)}</div>
+    <div class="field-label">Responsibilities</div><div class="answer-block">${esc(t.responsibilities)}</div>
+    <div class="field-label">Achievements</div><div class="answer-block">${esc(t.achievements)}</div>
+    <div class="field-label">Reason for Leaving</div><div class="answer-block">${esc(t.reasonForLeaving)}</div>
+    <div class="field-label">Skills Learned</div><div class="answer-block">${esc(t.skillsLearned)}</div>
+    <div class="field-label">Transition Sentence</div><div class="answer-block">${esc(t.transitionSentence)}</div>
+    ${(t.followups||[]).length?`<div class="field-label">Potential Follow-Up Questions</div>${t.followups.map(f=>`<div class="followup-item">${esc(f)}</div>`).join('')}`:''}
+  </div>`;
+}
+
+/* ── INTERVIEW MODE ── */
+let imQueue=[],imIdx=0,imTimer=null,imSeconds=0;
+function renderInterviewMode(box){
+  if(!imQueue.length)imQueue=state.questions.slice();
+  if(!imQueue.length){box.innerHTML='<div class="empty-state">No questions yet. Add some in Builder Mode first.</div>';return;}
+  const q=imQueue[imIdx%imQueue.length];
+  box.innerHTML=`<div class="dcard im-card">
+    <div class="im-question">${esc(q.question)}</div>
+    <div class="im-timer" id="imTimerDisplay">0:00</div>
+    <div id="imAnswerArea"></div>
+    <div class="im-btns">
+      <button class="im-btn im-secondary" onclick="imPrev()">Previous</button>
+      <button class="im-btn im-primary" onclick="imShowAnswer()">Show Answer</button>
+      <button class="im-btn im-secondary" onclick="imNext()">Next</button>
+      <button class="im-btn im-secondary" onclick="imRandom()">Random</button>
+    </div>
+  </div>`;
+  clearInterval(imTimer);imSeconds=0;
+  imTimer=setInterval(()=>{imSeconds++;const m=Math.floor(imSeconds/60),s=imSeconds%60;const el=document.getElementById('imTimerDisplay');if(el)el.textContent=m+':'+String(s).padStart(2,'0');},1000);
+}
+function imShowAnswer(){
+  const q=imQueue[imIdx%imQueue.length];
+  document.getElementById('imAnswerArea').innerHTML=`<div class="answer-block" style="text-align:left;margin-top:14px">${esc(q.answer||q.situation||'')}</div>`;
+}
+function imNext(){imIdx++;renderInterviewMode(document.getElementById('main'));}
+function imPrev(){imIdx=Math.max(0,imIdx-1);renderInterviewMode(document.getElementById('main'));}
+function imRandom(){imIdx=Math.floor(Math.random()*imQueue.length);renderInterviewMode(document.getElementById('main'));}
+
+/* ── PRACTICE MODE ── */
+let pmOrder=[],pmIdx=0;
+function renderPracticeMode(box){
+  if(!pmOrder.length)pmOrder=state.questions.map(q=>q.id).sort(()=>Math.random()-0.5);
+  if(!pmOrder.length){box.innerHTML='<div class="empty-state">No questions yet.</div>';return;}
+  const q=state.questions.find(x=>x.id===pmOrder[pmIdx%pmOrder.length]);
+  const mastered=state.questions.filter(x=>x.mastery==='mastered').length;
+  box.innerHTML=`<div class="dcard">
+    <div class="cc" style="color:var(--text-muted);font-size:12px;margin-bottom:10px">Progress: ${mastered}/${state.questions.length} mastered</div>
+    <div class="q-title">${esc(q.question)}</div>
+    <div class="q-meta">${esc(q.category)}</div>
+    <div class="answer-block">${esc(q.answer||q.situation||'')}</div>
+    <div class="mastery-row">
+      <button class="mastery-btn m-need" onclick="setMastery('${q.id}','needs_practice')">Need Practice</button>
+      <button class="mastery-btn m-mastered" onclick="setMastery('${q.id}','mastered')">Mastered</button>
+      <button class="mastery-btn m-fav" onclick="toggleFavorite('${q.id}')">⭐ Favorite</button>
+    </div>
+    <div class="im-btns" style="margin-top:16px;justify-content:flex-start">
+      <button class="im-btn im-primary" onclick="pmNext()">Next Question</button>
+    </div>
+  </div>`;
+}
+function pmNext(){pmIdx++;renderPracticeMode(document.getElementById('main'));}
+
+/* ── BUILDER MODE: question editor ── */
+function renderQuestionEditor(box,q){
+  const isStar=q.category==='STAR Stories';
+  box.innerHTML=`<div class="builder-panel">
+    <div class="dcard-title">🛠 Editing (Builder Mode)</div>
+    <div class="form-row2">
+      <div class="form-field"><label>Category</label><select id="eCategory">${CATEGORIES.map(c=>`<option ${c===q.category?'selected':''}>${c}</option>`).join('')}</select></div>
+      <div class="form-field"><label>Difficulty</label><select id="eDifficulty"><option ${q.difficulty==='Easy'?'selected':''}>Easy</option><option ${q.difficulty==='Medium'?'selected':''}>Medium</option><option ${q.difficulty==='Hard'?'selected':''}>Hard</option></select></div>
+    </div>
+    <div class="form-field"><label>Question</label><input type="text" id="eQuestion" value="${esc(q.question)}"></div>
+    ${isStar?`
+      <div class="form-field"><label>Situation</label><textarea id="eSituation" rows="2">${esc(q.situation)}</textarea></div>
+      <div class="form-field"><label>Task</label><textarea id="eTask" rows="2">${esc(q.task)}</textarea></div>
+      <div class="form-field"><label>Action</label><textarea id="eAction" rows="2">${esc(q.action)}</textarea></div>
+      <div class="form-field"><label>Result</label><textarea id="eResult" rows="2">${esc(q.result)}</textarea></div>
+      <div class="form-field"><label>Lesson</label><textarea id="eLesson" rows="2">${esc(q.lesson)}</textarea></div>
+    `:`
+      <div class="form-field"><label>Complete Answer (say it exactly like this)</label><textarea id="eAnswer" rows="5">${esc(q.answer)}</textarea></div>
+      <div class="form-field"><label>30-Second Version</label><textarea id="eShort" rows="2">${esc(q.shortAnswer)}</textarea></div>
+      <div class="form-field"><label>Two-Minute Version</label><textarea id="eLong" rows="3">${esc(q.longAnswer)}</textarea></div>
+    `}
+    <div class="form-field"><label>Keywords (comma-separated)</label><input type="text" id="eKeywords" value="${esc((q.keywords||[]).join(', '))}"></div>
+    <div class="form-field"><label>Recruiter Intent</label><textarea id="eIntent" rows="2">${esc(q.recruiterIntent)}</textarea></div>
+    <div class="form-field"><label>Coaching Notes</label><textarea id="eCoaching" rows="2">${esc(q.coaching)}</textarea></div>
+    <div class="form-field"><label>Follow-Up Questions (one per line)</label><textarea id="eFollowups" rows="2">${esc((q.followups||[]).join('\n'))}</textarea></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn-primary" onclick="saveQuestionEdit('${q.id}')">Save</button>
+      <button class="btn-danger" onclick="deleteQuestion('${q.id}')">Delete</button>
+      <button class="btn-secondary" onclick="exportDatabase()">Export JSON</button>
+    </div>
+  </div>`;
+}
+function saveQuestionEdit(id){
+  const q=state.questions.find(x=>x.id===id);
+  q.category=document.getElementById('eCategory').value;
+  q.difficulty=document.getElementById('eDifficulty').value;
+  q.question=document.getElementById('eQuestion').value;
+  if(q.category==='STAR Stories'){
+    q.situation=document.getElementById('eSituation').value;q.task=document.getElementById('eTask').value;
+    q.action=document.getElementById('eAction').value;q.result=document.getElementById('eResult').value;q.lesson=document.getElementById('eLesson').value;
+  }else{
+    q.answer=document.getElementById('eAnswer').value;q.shortAnswer=document.getElementById('eShort').value;q.longAnswer=document.getElementById('eLong').value;
+  }
+  q.keywords=document.getElementById('eKeywords').value.split(',').map(s=>s.trim()).filter(Boolean);
+  q.recruiterIntent=document.getElementById('eIntent').value;
+  q.coaching=document.getElementById('eCoaching').value;
+  q.followups=document.getElementById('eFollowups').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  saveState();renderSidebar();renderMain();
+}
+function deleteQuestion(id){
+  if(!confirm('Delete this question?'))return;
+  state.questions=state.questions.filter(x=>x.id!==id);selectedId=null;saveState();renderSidebar();renderMain();
+}
+function addQuestion(cat){
+  const q={id:qid(),category:cat,difficulty:'Medium',question:'New question',answer:'',shortAnswer:'',longAnswer:'',
+    situation:'',task:'',action:'',result:'',lesson:'',keywords:[],recruiterIntent:'',coaching:'',followups:[],favorite:false,mastery:'new'};
+  state.questions.push(q);saveState();selectedId=q.id;openCats[cat]=true;renderSidebar();renderMain();
+}
+function exportDatabase(){
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');
+  a.href=url;a.download='interview-prep-database.json';a.click();URL.revokeObjectURL(url);
+}
+
+/* ── BUILDER MODE: timeline editor ── */
+function renderTimelineEditor(box,t){
+  box.innerHTML=`<div class="builder-panel">
+    <div class="dcard-title">🛠 Editing Employer (Builder Mode)</div>
+    <div class="form-row2">
+      <div class="form-field"><label>Company</label><input type="text" id="tCompany" value="${esc(t.company)}"></div>
+      <div class="form-field"><label>Position</label><input type="text" id="tPosition" value="${esc(t.position)}"></div>
+    </div>
+    <div class="form-field"><label>Dates</label><input type="text" id="tDates" value="${esc(t.dates)}"></div>
+    <div class="form-field"><label>Responsibilities</label><textarea id="tResp" rows="3">${esc(t.responsibilities)}</textarea></div>
+    <div class="form-field"><label>Achievements</label><textarea id="tAch" rows="3">${esc(t.achievements)}</textarea></div>
+    <div class="form-field"><label>Reason for Leaving</label><textarea id="tReason" rows="2">${esc(t.reasonForLeaving)}</textarea></div>
+    <div class="form-field"><label>Skills Learned</label><textarea id="tSkills" rows="2">${esc(t.skillsLearned)}</textarea></div>
+    <div class="form-field"><label>Transition Sentence</label><textarea id="tTrans" rows="2">${esc(t.transitionSentence)}</textarea></div>
+    <div class="form-field"><label>Potential Follow-Up Questions (one per line)</label><textarea id="tFollowups" rows="2">${esc((t.followups||[]).join('\n'))}</textarea></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn-primary" onclick="saveTimelineEdit('${t.id}')">Save</button>
+      <button class="btn-danger" onclick="deleteTimelineEntry('${t.id}')">Delete</button>
+    </div>
+  </div>`;
+}
+function saveTimelineEdit(id){
+  const t=state.timeline.find(x=>x.id===id);
+  t.company=document.getElementById('tCompany').value;t.position=document.getElementById('tPosition').value;
+  t.dates=document.getElementById('tDates').value;t.responsibilities=document.getElementById('tResp').value;
+  t.achievements=document.getElementById('tAch').value;t.reasonForLeaving=document.getElementById('tReason').value;
+  t.skillsLearned=document.getElementById('tSkills').value;t.transitionSentence=document.getElementById('tTrans').value;
+  t.followups=document.getElementById('tFollowups').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  saveState();renderSidebar();
+}
+function deleteTimelineEntry(id){
+  if(!confirm('Delete this employer entry?'))return;
+  state.timeline=state.timeline.filter(x=>x.id!==id);saveState();renderSidebar();
+  document.getElementById('main').innerHTML='<div class="empty-state">Entry deleted.</div>';
+}
+function addTimelineEntry(){
+  const t={id:qid(),company:'New Employer',position:'',dates:'',responsibilities:'',achievements:'',reasonForLeaving:'',skillsLearned:'',transitionSentence:'',followups:[]};
+  state.timeline.push(t);saveState();openCats['Career Timeline']=true;renderSidebar();selectTimeline(t.id);
+}
+
+renderSidebar();
+renderMain();
+</script>
+</body>
+</html>
