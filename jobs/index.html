@@ -1293,25 +1293,24 @@ const RESEARCH_CATEGORIES=[
     {label:'Company Careers Page',kind:'careers'},{label:'LinkedIn Jobs',kind:'linkedin_jobs'},
     {label:'Indeed',kind:'indeed_jobs'},{label:'ZipRecruiter',kind:'ziprecruiter'},{label:'Glassdoor Jobs',kind:'glassdoor_jobs'}]},
   {icon:'⭐',title:'Reviews',buttons:[
-    {label:'Google Reviews',kind:'google_reviews'},{label:'Glassdoor',kind:'glassdoor'},{label:'Indeed Reviews',kind:'indeed_reviews'},
+    {label:'Glassdoor',kind:'glassdoor'},{label:'Indeed Reviews',kind:'indeed_reviews'},
     {label:'Trustpilot',kind:'trustpilot'},{label:'ConsumerAffairs',kind:'consumeraffairs'},{label:'Yelp',kind:'yelp'},
     {label:'Reddit',kind:'reddit'},{label:'Complaints',kind:'complaints'}]},
   {icon:'🛡',title:'BBB',buttons:[
-    {label:'Open BBB Profile',kind:'bbb_direct'},{label:'Search BBB',kind:'bbb_search'},{label:'File a Complaint',kind:'bbb_complaint'}]},
+    {label:'Search BBB',kind:'bbb_search'},{label:'File a Complaint',kind:'bbb_complaint'}]},
   {icon:'📢',title:'Advertising',buttons:[
     {label:'Google Search',kind:'google'},{label:'Google News',kind:'google_news'},{label:'Facebook Ads Library',kind:'fb_ads'},
-    {label:'YouTube',kind:'youtube'},{label:'Facebook Page',kind:'facebook'},{label:'Instagram',kind:'instagram'},
-    {label:'LinkedIn Company',kind:'linkedin_company'},{label:'X (Twitter)',kind:'twitter'}]},
+    {label:'Instagram',kind:'instagram'},{label:'X (Twitter)',kind:'twitter'}]},
   {icon:'📍',title:'Business Listings',buttons:[
     {label:'Google Maps',kind:'google_maps'},{label:'Apple Maps',kind:'apple_maps'},{label:'Bing Maps',kind:'bing_maps'},
     {label:'Yelp',kind:'yelp'},{label:'Yellow Pages',kind:'yellowpages'},{label:'Dun & Bradstreet',kind:'dnb'},
     {label:'Chamber of Commerce',kind:'chamber'},{label:'Manta',kind:'manta'}]},
   {icon:'🌐',title:'Company Research',buttons:[
-    {label:'Company Website',kind:'website'},{label:'About Us',kind:'about'},{label:'Leadership Team',kind:'leadership'},
-    {label:'Contact Us',kind:'contact'},{label:'Careers',kind:'careers'},{label:'News',kind:'news'},{label:'Press Releases',kind:'press'}]},
+    {label:'About Us',kind:'about'},{label:'Leadership Team',kind:'leadership'},
+    {label:'Contact Us',kind:'contact'},{label:'Careers',kind:'careers'},{label:'Press Releases',kind:'press'}]},
   {icon:'💰',title:'Financial & Business',buttons:[
     {label:'Crunchbase',kind:'crunchbase'},{label:'SEC Filings',kind:'sec'},{label:'OpenCorporates',kind:'opencorporates'},
-    {label:'State Business Registration',kind:'state_reg'},{label:'LinkedIn Company',kind:'linkedin_company'}]},
+    {label:'State Business Registration',kind:'state_reg'}]},
   {icon:'⚖',title:'Legal & Compliance',buttons:[
     {label:'Court Records Search',kind:'court_records'},{label:'Lawsuits',kind:'lawsuits'},{label:'PACER',kind:'pacer'},
     {label:'State Licensing Search',kind:'state_license'},{label:'CFPB Complaints',kind:'cfpb'}]}
@@ -1400,16 +1399,8 @@ function researchHubHTML(name,website,dossier){
 }
 
 function actionBarHTML(c){
-  const website=c.link,dossier=c.dossier;
-  const websiteURL=website||researchURL('website',c.name,'',dossier);
-  const liURL=(dossier&&dossier.linkedin&&dossier.linkedin.value)||researchURL('linkedin_company',c.name,website,dossier);
   return `<div class="action-bar-top">
     <button class="act-btn2 act-green" onclick="reanalyzeCompany('${c.id}')">🔄 Analyze Again</button>
-    <a class="act-btn2 act-orange" href="${esc(researchURL('bbb_search',c.name,website,dossier))}" target="_blank">🔍 Search BBB</a>
-    <a class="act-btn2 act-orange" href="${esc(researchURL('google_reviews',c.name,website,dossier))}" target="_blank">🔍 Search Reviews</a>
-    <a class="act-btn2 act-orange" href="${esc(researchURL('job_postings',c.name,website,dossier))}" target="_blank">🔍 Find Job Postings</a>
-    <a class="act-btn2 act-green" href="${esc(websiteURL)}" target="_blank">🌐 Open Website</a>
-    <a class="act-btn2 act-blue" href="${esc(liURL)}" target="_blank">💼 Open LinkedIn</a>
     <button class="act-btn2 act-green" onclick="openEdit('${c.id}')">✎ Update Company</button>
     <button class="act-btn2 act-orange" onclick="copyAIResearchPrompt('${c.id}')">🤖 AI Research</button>
   </div>`;
@@ -1543,14 +1534,16 @@ function buildReportData(text,companyName,website){
     notes:'',sources,computedAt:todayISO()
   };
 }
-function dossierHTML(rep,withDivider){
+function dossierHTML(rep,withDivider,condensed){
   if(withDivider===undefined)withDivider=true;
   const d=rep.dossier;
   const rp=rep.reputation||{};
   const gv=(f)=>f&&f.value?f.value:'';
   const confStars=(conf)=>conf==='high'?'★★★★★ High confidence':conf==='medium'?'★★★☆☆ Medium confidence':'☆☆☆☆☆ Not found';
+  let hiddenCount=0;
   const fact=(icon,label,f)=>{
     f=f||nf();
+    if(condensed&&!f.value){hiddenCount++;return '';}
     return `<div class="dossier-fact"><div class="dossier-fact-label">${icon} ${label}</div>
       <div class="dossier-fact-value ${f.value?'':'unknown'}">${f.value?esc(f.value):'Unknown'}</div>
       <div class="dossier-fact-meta">${confStars(f.confidence)}${f.source?' · '+esc(f.source):''}</div>
@@ -1599,35 +1592,26 @@ function dossierHTML(rep,withDivider){
       ${fact('📍','Headquarters',d.headquarters)}
       ${fact('🏛️','Local BBB',d.localBBB)}
     </div>
-    <div class="section-actions" style="margin-top:14px">
-      <a class="act-btn2 act-orange" href="${esc(researchURL('secretary_of_state',displayName,rep.website,d))}" target="_blank">🔍 Search Secretary of State</a>
-      <a class="act-btn2 act-orange" href="${esc(personSearchURL(gv(d.owner),displayName,'google'))}" target="_blank">🔍 Search Owner</a>
-      <a class="act-btn2 act-orange" href="${esc(researchURL('corp_records',displayName,rep.website,d))}" target="_blank">🔍 Search Corporation Records</a>
-    </div>
+    ${condensed&&hiddenCount>0?`<div class="cc" style="margin-top:8px">${hiddenCount} field${hiddenCount===1?'':'s'} not yet found. <a href="#" onclick="event.preventDefault();reanalyzeCompany('${rep.companyId||''}')" style="color:var(--teal)">Analyze again</a> to fill them in.</div>`:''}
+    <div class="field-label" style="margin-top:14px">Leadership Research</div>
     <div class="section-actions">
+      <a class="act-btn2 act-orange" href="${esc(personSearchURL(gv(d.owner),displayName,'google'))}" target="_blank">🔍 Find Owner</a>
       <a class="act-btn2 act-orange" href="${esc(personSearchURL(gv(d.ceo),displayName,'google'))}" target="_blank">🔍 Find CEO</a>
       <a class="act-btn2 act-orange" href="${esc(personSearchURL(gv(d.manager),displayName,'google'))}" target="_blank">🔍 Find Sales Manager</a>
       <a class="act-btn2 act-orange" href="${esc(personSearchURL(gv(d.owner),displayName,'linkedin'))}" target="_blank">🔍 Search LinkedIn</a>
     </div>
-    <button class="mini-btn" style="margin-top:6px" onclick="document.getElementById('${rawId}').style.display=document.getElementById('${rawId}').style.display==='none'?'block':'none'">🛠 Show raw extraction data</button>
+    <button class="mini-btn" style="margin-top:10px" onclick="document.getElementById('${rawId}').style.display=document.getElementById('${rawId}').style.display==='none'?'block':'none'">🛠 Show raw extraction data</button>
     <div id="${rawId}" style="display:none;margin-top:10px">${rawRows}</div>
   </div>
 
   <div class="section-divider">Reputation</div>
-  <div class="section-actions">
-    <a class="act-btn2 act-orange" href="${esc(researchURL('bbb_search',displayName,rep.website,d))}" target="_blank">🔍 Search BBB</a>
-    <a class="act-btn2 act-orange" href="${esc(researchURL('google_reviews',displayName,rep.website,d))}" target="_blank">🔍 Search Reviews</a>
-    <a class="act-btn2 act-orange" href="${esc(researchURL('complaints',displayName,rep.website,d))}" target="_blank">🔍 Search Complaints</a>
-  </div>
-  <div class="report-cat-grid">
-    ${repCard('⭐','BBB',rp.bbb||{})}
-    ${repCard('🔍','Google',rp.google||{})}
-    ${repCard('🚪','Glassdoor',rp.glassdoor||{})}
-    ${repCard('💼','Indeed',rp.indeed||{})}
-    ${repCard('📘','Facebook',rp.facebook||{})}
-    ${repCard('✅','Trustpilot',rp.trustpilot||{})}
-    ${repCard('🛡️','Consumer Affairs',rp.consumerAffairs||{})}
-  </div>
+  ${(()=>{
+    const sources=[['⭐','BBB',rp.bbb],['🔍','Google',rp.google],['🚪','Glassdoor',rp.glassdoor],['💼','Indeed',rp.indeed],['📘','Facebook',rp.facebook],['✅','Trustpilot',rp.trustpilot],['🛡️','Consumer Affairs',rp.consumerAffairs]];
+    const withData=sources.filter(([,,s])=>s&&(s.rating||s.reviews));
+    if(condensed&&!withData.length)return `<div class="empty-note">No reputation data yet — see Research below, or paste review-site content in the Analyze tab.</div>`;
+    const list=condensed?withData:sources;
+    return `<div class="report-cat-grid">${list.map(([icon,label,s])=>repCard(icon,label,s||{})).join('')}</div>`;
+  })()}
   ${withDivider?'<div class="section-divider">Career Intelligence</div>':''}`;
 }
 function ringSVG(pct,tier){
@@ -2320,11 +2304,12 @@ function renderDetail(){
       <div class="detail-actions"><button class="icon-btn" onclick="openEdit('${c.id}')" title="Edit">✎</button></div>
     </div>
 
-    ${actionBarHTML(c)}
-    ${quickLinksHTML(c)}
-    ${researchHubHTML(c.name,c.link,c.dossier)}
-
-    ${Object.values(c.dossier||{}).some(v=>v&&v.value)?dossierHTML({companyName:c.name,website:c.link,dossier:c.dossier,reputation:c.reputation},false):''}
+    ${c.intelReport?`<div class="verdict-banner verdict-${c.intelReport.tier}" style="margin-bottom:16px">
+      <span style="font-size:22px;font-weight:800">${c.intelReport.overall!==null?c.intelReport.overall+'/100':'—'}</span> — ${esc(c.intelReport.recommendation)}
+      <button class="mini-btn" style="margin-left:10px" onclick="toggleSavedReport('${c.id}')" id="savedReportBtn-${c.id}">View full report</button>
+      <div class="cc" style="margin-top:6px">Scored against "${esc(c.intelReport.profileName||'')}" on ${c.intelReport.computedAt}.</div>
+      <div id="savedReportBody-${c.id}"></div>
+    </div>`:`<div class="verdict-banner verdict-none" style="margin-bottom:16px">Not yet analyzed. <button class="mini-btn" onclick="reanalyzeCompany('${c.id}')">Analyze now</button></div>`}
 
     <div class="detail-grid">
       <div class="dcard"><div class="dcard-title">Recruiter</div>
@@ -2335,26 +2320,6 @@ function renderDetail(){
         <div class="field-row"><span class="fk">Base</span><span class="fv">${esc(c.comp?.base)||'—'}</span></div>
         <div class="field-row"><span class="fk">Bonus / Equity</span><span class="fv">${esc(c.comp?.bonus)||'—'}</span></div></div>
     </div>
-
-    <div class="dcard">
-      <div class="dcard-title">Company Intelligence <button class="mini-btn" onclick="openIntel()">Edit</button></div>
-      <div class="intel-field"><div class="ik">Size</div><div class="iv ${c.intel.size?'':'empty'}">${c.intel.size?esc(c.intel.size):'Not added yet'}</div></div>
-      <div class="intel-field"><div class="ik">Funding / stage</div><div class="iv ${c.intel.funding?'':'empty'}">${c.intel.funding?esc(c.intel.funding):'Not added yet'}</div></div>
-      <div class="intel-field"><div class="ik">Culture</div><div class="iv ${c.intel.culture?'':'empty'}">${c.intel.culture?esc(c.intel.culture):'Not added yet'}</div></div>
-      <div class="intel-field"><div class="ik">Recent news</div><div class="iv ${c.intel.news?'':'empty'}">${c.intel.news?esc(c.intel.news):'Not added yet'}</div></div>
-      <div class="intel-field"><div class="ik">Reviews / reputation</div><div class="iv ${c.intel.reviews?'':'empty'}">${c.intel.reviews?esc(c.intel.reviews):'Not added yet'}</div></div>
-    </div>
-
-    ${c.intelReport?`<div class="dcard">
-      <div class="dcard-title">Career Intelligence Report <button class="mini-btn" onclick="toggleSavedReport('${c.id}')" id="savedReportBtn-${c.id}">View full report</button></div>
-      <div class="verdict-banner verdict-${c.intelReport.tier}"><span style="font-size:20px;font-weight:800">${c.intelReport.overall!==null?c.intelReport.overall+'/100':'—'}</span> — ${esc(c.intelReport.recommendation)}</div>
-      <div class="empty-note">Scored against "${esc(c.intelReport.profileName||'')}" on ${c.intelReport.computedAt}. Re-run from the Analyze tab if your criteria have changed.</div>
-      <div id="savedReportBody-${c.id}"></div>
-    </div>`:c.opportunityScore?`<div class="dcard">
-      <div class="dcard-title">Opportunity Score</div>
-      <div class="verdict-banner verdict-${c.opportunityScore.verdict}"><span style="font-size:20px;font-weight:800">${c.opportunityScore.overall!==null?c.opportunityScore.overall+'/100':'—'}</span> — ${esc(c.opportunityScore.verdictText)}</div>
-      <div class="empty-note">Scored against "${esc(c.opportunityScore.profileName)}" on ${c.opportunityScore.computedAt}.</div>
-    </div>`:''}
 
     <div class="dcard">
       <div class="dcard-title">Application Materials <button class="mini-btn" onclick="openPrep()">Prepare application</button></div>
@@ -2372,8 +2337,19 @@ function renderDetail(){
       </div>`:''}
     </div>
 
-    <div class="dcard"><div class="dcard-title">Links</div>
-      ${c.link?`<div class="doc-row"><a href="${esc(c.link)}" target="_blank">Job posting →</a></div>`:'<div class="empty-note">No links added.</div>'}</div>
+    ${Object.values(c.dossier||{}).some(v=>v&&v.value)?dossierHTML({companyName:c.name,website:c.link,dossier:c.dossier,reputation:c.reputation,companyId:c.id},false,true):''}
+
+    ${(()=>{const notesPopulated=['funding','culture','news','reviews'].filter(k=>c.intel[k]);
+      return notesPopulated.length?`<div class="dcard">
+        <div class="dcard-title">Additional Notes <button class="mini-btn" onclick="openIntel()">Edit</button></div>
+        ${notesPopulated.map(k=>`<div class="intel-field"><div class="ik">${k==='funding'?'Funding / stage':k==='culture'?'Culture':k==='news'?'Recent news':'Reviews / reputation'}</div><div class="iv">${esc(c.intel[k])}</div></div>`).join('')}
+      </div>`:`<div class="dcard"><div class="dcard-title">Additional Notes <button class="mini-btn" onclick="openIntel()">+ Add</button></div><div class="empty-note">Funding, culture, recent news, or reputation notes you want to track manually.</div></div>`;
+    })()}
+
+    <div class="section-title" style="margin:24px 0 10px">Research</div>
+    ${actionBarHTML(c)}
+    ${quickLinksHTML(c)}
+    ${researchHubHTML(c.name,c.link,c.dossier)}
 
     <div class="dcard"><div class="dcard-title">Documents</div>
       <div id="docList">${(c.documents||[]).length?c.documents.map(d=>`<div class="doc-row">${d.category?`<span class="lib-tag" style="margin-right:8px">${esc(d.category)}</span>`:''}<a href="${esc(d.url)}" target="_blank">${esc(d.name)} →</a></div>`).join(''):'<div class="empty-note">No documents added.</div>'}</div>
