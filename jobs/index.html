@@ -359,6 +359,22 @@ input,textarea,select{font-family:inherit}
 .draft-row button{margin-left:auto;background:var(--teal-tint);color:var(--teal-dark);border:none;border-radius:7px;padding:6px 12px;font-size:12px;font-weight:700}
 .draft-row button.del{background:var(--coral-tint);color:#B8422F;margin-left:8px}
 
+/* ── IMPORT STAGING ── */
+.stage-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin-bottom:14px}
+.stage-card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.stage-name{font-size:16px;font-weight:800}
+.match-tag{font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px}
+.match-new{background:#DCFCE7;color:#14532D}
+.match-exact{background:var(--teal-tint);color:var(--teal-dark)}
+.match-fuzzy{background:var(--gold-tint);color:#8A6B10}
+.diff-row{display:flex;gap:10px;padding:6px 0;border-bottom:1px solid #f2f3f5;font-size:12.5px;align-items:center}
+.diff-row:last-child{border:none}
+.diff-field{width:130px;flex-shrink:0;color:var(--text-muted);font-weight:600}
+.diff-old{flex:1;color:var(--coral);text-decoration:line-through;font-size:12px}
+.diff-arrow{color:var(--text-muted)}
+.diff-new{flex:1;color:#14532D;font-weight:600}
+.contact-chip{background:var(--teal-tint);color:var(--teal-dark);font-size:11px;font-weight:700;padding:3px 9px;border-radius:100px;margin-right:6px}
+
 /* ── QUICK RESEARCH HUB ── */
 .research-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:20px}
 .research-cat{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
@@ -395,6 +411,7 @@ input,textarea,select{font-family:inherit}
     <button class="tab-btn" data-tab="analyzer">🔎 Analyze</button>
     <button class="tab-btn" data-tab="networking">Networking</button>
     <button class="tab-btn" data-tab="profiles">Profiles</button>
+    <button class="tab-btn" data-tab="import">📥 Import</button>
   </div>
   <button class="btn-add" id="openAddBtn">
     <span class="icon"></span><span class="txt">Add company</span>
@@ -505,6 +522,31 @@ input,textarea,select{font-family:inherit}
     <input type="file" id="profileImportFile" accept="application/json" style="display:none">
   </div>
   <div class="profile-grid" id="profileGrid"></div>
+</div>
+
+<!-- IMPORT -->
+<div class="view" id="view-import">
+  <div class="section-title" style="margin-bottom:6px">Import Center</div>
+  <div class="greeting-sub" style="margin-bottom:16px">Paste anything about a company, or upload JSON/CSV for bulk import. Nothing writes to your CRM until you review and approve it below — this is a staging area, not a save button.</div>
+
+  <div class="dcard">
+    <div class="dcard-title">Paste text (one company)</div>
+    <textarea id="impPasteArea" rows="6" placeholder="Paste a website, BBB page, LinkedIn company page, job posting, or raw notes about one company..."></textarea>
+    <button class="btn-primary" style="margin-top:10px" onclick="stageFromText()">Stage for Review</button>
+  </div>
+
+  <div class="dcard">
+    <div class="dcard-title">Bulk import (JSON or CSV)</div>
+    <div class="cc" style="margin-bottom:10px">Expected columns: company_name, phone, website, city, state, category/industry, bbb_rating, bbb_accredited, years_in_business, entity_type, employees, owner, ceo, manager, annual_revenue, linkedin_url, facebook_url. Missing columns are just left blank — nothing is required except company_name.</div>
+    <div style="display:flex;gap:8px">
+      <button class="btn-secondary" onclick="document.getElementById('impJsonFile').click()">Upload JSON</button>
+      <button class="btn-secondary" onclick="document.getElementById('impCsvFile').click()">Upload CSV</button>
+      <input type="file" id="impJsonFile" accept="application/json" style="display:none">
+      <input type="file" id="impCsvFile" accept=".csv" style="display:none">
+    </div>
+  </div>
+
+  <div id="stagingQueue"></div>
 </div>
 
 <!-- DETAIL -->
@@ -740,6 +782,8 @@ if(!state||!state.companies){state={companies:seedData()};}
 if(!state.documents)state.documents=seedDocs();
 if(!state.profiles)state.profiles=seedProfiles();
 if(!state.drafts)state.drafts=[];
+if(!state.changeLog)state.changeLog=[];
+if(!state.importStaging)state.importStaging=[];
 state.profiles.forEach(p=>{if(p.checklist===undefined)p.checklist=[];if(p.postingsAnalyzed===undefined)p.postingsAnalyzed=0;if(p.keywordStats===undefined)p.keywordStats={};});
 state.companies.forEach(c=>{
   if(c.industry===undefined)c.industry='';
@@ -756,6 +800,11 @@ state.companies.forEach(c=>{
   if(c.isNetworking===undefined)c.isNetworking=false;
   if(c.networkingReason===undefined)c.networkingReason='';
   if(c.opportunityScore===undefined)c.opportunityScore=null;
+  if(c.contacts===undefined){
+    c.contacts=[];
+    if(c.recruiter&&c.recruiter.name)c.contacts.push({id:cid(),name:c.recruiter.name,title:'Recruiter',department:'',email:c.recruiter.email||'',phone:c.recruiter.phone||'',linkedin:'',status:'Active',notes:''});
+  }
+  (c.documents||[]).forEach(d=>{if(d.id===undefined)d.id=cid();if(d.date===undefined)d.date=todayISO();if(d.notes===undefined)d.notes='';if(d.type===undefined)d.type=d.category||'Other';});
   if(c.dossier===undefined)c.dossier={name:nf(),phone:nf(),website:nf(),street:nf(),city:nf(),state:nf(),zip:nf(),bbbRating:nf(),bbbAccredited:nf(),yearsInBusiness:nf(),bbbOpened:nf(),businessStarted:nf(),businessStartedLocally:nf(),businessIncorporated:nf(),entityType:nf(),owner:nf(),ceo:nf(),manager:nf(),employees:nf(),industry:nf(),bbbProfileUrl:nf(),localBBB:nf(),linkedin:nf(),facebook:nf(),googleMaps:nf(),parentCompany:nf(),headquarters:nf(),annualRevenue:nf(),tagline:nf()};
   else if(c.dossier.phone!==undefined&&typeof c.dossier.phone==='string'){
     const upgraded={};
@@ -1717,6 +1766,191 @@ function questionForRule(rule){
   if(/^No /.test(rule.name))return `Can you confirm: ${rule.name.replace(/^No /,'no ')}?`;
   return `What about — ${rule.name}?`;
 }
+/* ── FUZZY COMPANY MATCHING ── strips common suffixes/punctuation so
+   "Wesley Financial" and "Wesley Financial Group LLC" are recognized as
+   likely the same company — flagged for approval, never auto-merged. */
+function normalizeCompanyName(name){
+  return (name||'').toLowerCase()
+    .replace(/[.,]/g,'')
+    .replace(/\b(llc|inc|incorporated|corp|corporation|co|company|group|ltd|llp)\b/g,'')
+    .replace(/\s+/g,' ').trim();
+}
+function findCompanyMatch(name,companies){
+  const exact=companies.find(c=>c.name.toLowerCase()===name.toLowerCase());
+  if(exact)return{type:'exact',company:exact};
+  const norm=normalizeCompanyName(name);
+  if(norm){
+    const fuzzy=companies.find(c=>{
+      const cn=normalizeCompanyName(c.name);
+      return cn&&(cn===norm||cn.includes(norm)||norm.includes(cn));
+    });
+    if(fuzzy)return{type:'fuzzy',company:fuzzy};
+  }
+  return{type:'new',company:null};
+}
+
+/* ── IMPORT ENGINE ──
+   Everything lands in importStaging first — nothing writes to state.companies until
+   an item is explicitly approved. Preserves the raw source on every staged item. */
+function splitCSVLine(line){
+  const out=[];let cur='';let inQ=false;
+  for(let i=0;i<line.length;i++){
+    const ch=line[i];
+    if(ch==='"'){inQ=!inQ;continue;}
+    if(ch===','&&!inQ){out.push(cur);cur='';continue;}
+    cur+=ch;
+  }
+  out.push(cur);return out;
+}
+function parseCSV(text){
+  const lines=text.split(/\r?\n/).filter(l=>l.trim().length);
+  if(!lines.length)return[];
+  const headers=splitCSVLine(lines[0]).map(h=>h.trim());
+  return lines.slice(1).map(line=>{
+    const cells=splitCSVLine(line);
+    const row={};headers.forEach((h,i)=>row[h]=(cells[i]||'').trim());
+    return row;
+  });
+}
+const IMPORT_FIELD_MAP={
+  phone:'phone',website:'website',city:'city',state:'state',
+  bbb_rating:'bbbRating',bbbRating:'bbbRating',bbb_accredited:'bbbAccredited',
+  years_in_business:'yearsInBusiness',entity_type:'entityType',employees:'employees',
+  owner:'owner',ceo:'ceo',manager:'manager',industry:'industry',category:'industry',
+  annual_revenue:'annualRevenue',linkedin_url:'linkedin',facebook_url:'facebook'
+};
+function stageFromRow(row,rawText,sourceType){
+  const name=row.company_name||row.name||row.companyName||'';
+  if(!name)return;
+  const match=findCompanyMatch(name,state.companies);
+  const dossier={};
+  Object.keys(IMPORT_FIELD_MAP).forEach(k=>{if(row[k])dossier[IMPORT_FIELD_MAP[k]]={value:String(row[k]),confidence:'high',source:'Bulk import'};});
+  const contacts=[];
+  if(row.owner)contacts.push({name:row.owner,title:'Owner'});
+  if(row.ceo)contacts.push({name:row.ceo,title:'CEO'});
+  if(row.manager)contacts.push({name:row.manager,title:'Manager'});
+  state.importStaging.push({id:cid(),sourceType,rawText:rawText||JSON.stringify(row,null,2),detectedName:name,
+    dossier,reputation:{},contacts,matchType:match.type,matchedCompanyId:match.company?match.company.id:null,createdAt:todayISO()});
+}
+function stageFromText(){
+  const text=document.getElementById('impPasteArea').value.trim();
+  if(!text){alert('Paste something first.');return;}
+  const facts=extractCompanyFacts(text);
+  const rep=extractReputation(text);
+  const name=facts.name&&facts.name.value?facts.name.value:'';
+  if(!name){alert("Couldn't detect a company name in this text — add it manually by naming the first line, or use JSON/CSV import instead.");return;}
+  const match=findCompanyMatch(name,state.companies);
+  const contacts=[];
+  if(facts.owner.value)contacts.push({name:facts.owner.value,title:'Owner'});
+  if(facts.ceo.value)contacts.push({name:facts.ceo.value,title:'CEO'});
+  if(facts.manager.value)contacts.push({name:facts.manager.value,title:'Manager'});
+  state.importStaging.push({id:cid(),sourceType:'paste',rawText:text,detectedName:name,dossier:facts,reputation:rep,
+    contacts,matchType:match.type,matchedCompanyId:match.company?match.company.id:null,createdAt:todayISO()});
+  saveState();document.getElementById('impPasteArea').value='';renderStagingQueue();
+}
+document.getElementById('impJsonFile').addEventListener('change',e=>{
+  const f=e.target.files[0];if(!f)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      let arr=JSON.parse(ev.target.result);
+      if(!Array.isArray(arr))arr=[arr];
+      arr.forEach(row=>stageFromRow(row,null,'json'));
+      saveState();renderStagingQueue();
+    }catch(err){alert('Could not parse that JSON file.');}
+  };
+  reader.readAsText(f);e.target.value='';
+});
+document.getElementById('impCsvFile').addEventListener('change',e=>{
+  const f=e.target.files[0];if(!f)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const rows=parseCSV(ev.target.result);
+    rows.forEach(row=>stageFromRow(row,null,'csv'));
+    saveState();renderStagingQueue();
+  };
+  reader.readAsText(f);e.target.value='';
+});
+function diffAgainstExisting(existingDossier,newDossier){
+  const rows=[];
+  Object.keys(newDossier).forEach(k=>{
+    const nv=newDossier[k]&&newDossier[k].value;
+    if(!nv)return;
+    const ov=existingDossier&&existingDossier[k]&&existingDossier[k].value;
+    if(ov!==nv)rows.push({field:k,oldVal:ov||'(empty)',newVal:nv});
+  });
+  return rows;
+}
+function renderStagingQueue(){
+  const box=document.getElementById('stagingQueue');
+  if(!box)return;
+  if(!state.importStaging.length){box.innerHTML='';return;}
+  box.innerHTML=`<div class="section-title" style="margin:20px 0 10px">Review Queue <span class="cc">(${state.importStaging.length})</span></div>` +
+    state.importStaging.map(item=>{
+      const existing=item.matchedCompanyId?state.companies.find(c=>c.id===item.matchedCompanyId):null;
+      const diffRows=existing?diffAgainstExisting(existing.dossier,item.dossier):Object.keys(item.dossier).filter(k=>item.dossier[k]&&item.dossier[k].value).map(k=>({field:k,newVal:item.dossier[k].value}));
+      return `<div class="stage-card">
+        <div class="stage-card-head">
+          <div class="stage-name">${esc(item.detectedName)}</div>
+          <span class="match-tag match-${item.matchType}">${item.matchType==='new'?'New company':item.matchType==='exact'?'Matches existing: '+esc(existing.name):'Possible duplicate of: '+esc(existing.name)}</span>
+        </div>
+        ${item.contacts.length?`<div style="margin-bottom:8px">${item.contacts.map(c=>`<span class="contact-chip">${esc(c.title)}: ${esc(c.name)}</span>`).join('')}</div>`:''}
+        <div class="field-label">${existing?'Changes found':'Fields to create'}</div>
+        ${diffRows.length?diffRows.map(r=>`<div class="diff-row"><span class="diff-field">${esc(r.field)}</span>${r.oldVal!==undefined?`<span class="diff-old">${esc(r.oldVal)}</span><span class="diff-arrow">→</span>`:''}<span class="diff-new">${esc(r.newVal)}</span></div>`).join(''):'<div class="empty-note">No new fields found.</div>'}
+        <div class="stage-btns" style="margin-top:14px">
+          ${item.matchType==='new'?`<button class="stage-btn primary" onclick="approveStaging('${item.id}','create')">🟢 Create Company</button>`:
+            item.matchType==='exact'?`<button class="stage-btn primary" onclick="approveStaging('${item.id}','merge')">🟢 Merge into ${esc(existing.name)}</button><button class="stage-btn secondary" onclick="approveStaging('${item.id}','replace')">Replace fields</button>`:
+            `<button class="stage-btn primary" onclick="approveStaging('${item.id}','merge')">Yes — merge into ${esc(existing.name)}</button><button class="stage-btn secondary" onclick="approveStaging('${item.id}','create')">No — treat as new company</button>`}
+          <button class="stage-btn danger" onclick="discardStaging('${item.id}')">🗑 Discard</button>
+        </div>
+      </div>`;
+    }).join('');
+}
+function logChanges(companyId,rows,source){
+  rows.forEach(r=>state.changeLog.push({id:cid(),companyId,field:r.field,oldValue:r.oldVal!==undefined?r.oldVal:'',newValue:r.newVal,source,date:todayISO(),approved:true}));
+}
+function approveStaging(itemId,mode){
+  const item=state.importStaging.find(x=>x.id===itemId);if(!item)return;
+  const sourceLabel=item.sourceType==='paste'?'Pasted text':item.sourceType==='json'?'JSON import':'CSV import';
+  if(mode==='create'){
+    const blankRep={bbb:{rating:'',reviews:'',status:'',updated:''},google:{rating:'',reviews:'',status:'',updated:''},glassdoor:{rating:'',reviews:'',status:'',updated:''},indeed:{rating:'',reviews:'',status:'',updated:''},facebook:{rating:'',reviews:'',status:'',updated:''},trustpilot:{rating:'',reviews:'',status:'',updated:''},consumerAffairs:{rating:'',reviews:'',status:'',updated:''}};
+    const blankDossier={name:nf(),phone:nf(),website:nf(),street:nf(),city:nf(),state:nf(),zip:nf(),bbbRating:nf(),bbbAccredited:nf(),yearsInBusiness:nf(),bbbOpened:nf(),businessStarted:nf(),businessStartedLocally:nf(),businessIncorporated:nf(),entityType:nf(),owner:nf(),ceo:nf(),manager:nf(),employees:nf(),industry:nf(),bbbProfileUrl:nf(),localBBB:nf(),linkedin:nf(),facebook:nf(),googleMaps:nf(),parentCompany:nf(),headquarters:nf(),annualRevenue:nf(),tagline:nf()};
+    const dossier=Object.assign({},blankDossier,item.dossier);
+    const website=(dossier.website&&dossier.website.value)||'';
+    const newCo={id:cid(),name:item.detectedName,role:'',industry:(dossier.industry&&dossier.industry.value)||'',logo:'',stage:'Researching',dream:false,
+      recruiter:{name:'',email:'',phone:''},comp:{base:'',bonus:''},link:website,
+      timeline:[{date:todayISO(),text:'Created via Import Center ('+sourceLabel+')'}],notes:[],documents:[],
+      interviews:[],tasks:[],resumeHistory:[],coverHistory:[],jd:item.rawText||'',
+      activeResumeId:null,activeCoverId:null,finalResumeId:null,finalCoverId:null,
+      intel:{size:'',funding:'',culture:'',news:'',reviews:''},isNetworking:false,networkingReason:'',
+      opportunityScore:null,intelReport:null,dossier,reputation:Object.assign({},blankRep,item.reputation),
+      contacts:item.contacts.map(c=>({id:cid(),name:c.name,title:c.title,department:'',email:'',phone:'',linkedin:'',status:'Active',notes:''}))};
+    state.companies.push(newCo);
+    logChanges(newCo.id,Object.keys(dossier).filter(k=>dossier[k].value).map(k=>({field:k,newVal:dossier[k].value})),sourceLabel);
+  }else{
+    const existing=state.companies.find(c=>c.id===item.matchedCompanyId);
+    const rows=diffAgainstExisting(existing.dossier,item.dossier);
+    if(mode==='merge'){
+      rows.forEach(r=>{existing.dossier[r.field]=item.dossier[r.field];});
+    }else{
+      Object.keys(item.dossier).forEach(k=>{if(item.dossier[k]&&item.dossier[k].value)existing.dossier[k]=item.dossier[k];});
+    }
+    item.contacts.forEach(c=>{
+      if(!existing.contacts.some(ec=>ec.name.toLowerCase()===c.name.toLowerCase()))
+        existing.contacts.push({id:cid(),name:c.name,title:c.title,department:'',email:'',phone:'',linkedin:'',status:'Active',notes:''});
+    });
+    existing.timeline.unshift({date:todayISO(),text:(mode==='merge'?'Merged':'Updated')+' via Import Center ('+sourceLabel+')'});
+    logChanges(existing.id,rows,sourceLabel);
+  }
+  state.importStaging=state.importStaging.filter(x=>x.id!==itemId);
+  saveState();renderStagingQueue();renderDashboard();
+}
+function discardStaging(id){
+  state.importStaging=state.importStaging.filter(x=>x.id!==id);
+  saveState();renderStagingQueue();
+}
+function renderImport(){renderStagingQueue();}
+
 function detectImportLabel(text,facts){
   if(/bbb\.org/i.test(text)||(facts.bbbProfileUrl&&facts.bbbProfileUrl.value)||(facts.bbbRating&&facts.bbbRating.value))return 'Imported BBB Profile';
   if(/linkedin\.com\/company/i.test(text))return 'Imported LinkedIn Profile';
@@ -1970,6 +2204,7 @@ function showView(id){
   if(id==='analyzer')renderAnalyzer();
   if(id==='networking')renderNetworking();
   if(id==='profiles')renderProfiles();
+  if(id==='import')renderImport();
 }
 
 /* ── GREETING + DASHBOARD (unchanged logic from v2) ── */
@@ -2312,10 +2547,10 @@ function renderDetail(){
     </div>`:`<div class="verdict-banner verdict-none" style="margin-bottom:16px">Not yet analyzed. <button class="mini-btn" onclick="reanalyzeCompany('${c.id}')">Analyze now</button></div>`}
 
     <div class="detail-grid">
-      <div class="dcard"><div class="dcard-title">Recruiter</div>
-        <div class="field-row"><span class="fk">Name</span><span class="fv">${esc(c.recruiter?.name)||'—'}</span></div>
-        <div class="field-row"><span class="fk">Email</span><span class="fv">${esc(c.recruiter?.email)||'—'}</span></div>
-        <div class="field-row"><span class="fk">Phone</span><span class="fv">${esc(c.recruiter?.phone)||'—'}</span></div></div>
+      <div class="dcard"><div class="dcard-title">Contacts</div>
+        ${(c.contacts||[]).length?c.contacts.map(ct=>`<div class="field-row"><span class="fk">${esc(ct.title||'Contact')}</span><span class="fv">${esc(ct.name)}${ct.email?' · '+esc(ct.email):''}${ct.phone?' · '+esc(ct.phone):''}</span></div>`).join(''):'<div class="empty-note">No contacts yet.</div>'}
+        <div class="mini-add"><input type="text" id="ctName" placeholder="Name"><input type="text" id="ctTitle" placeholder="Title (Owner/Recruiter/etc.)"><button class="mini-btn" onclick="addContact()">Add</button></div>
+      </div>
       <div class="dcard"><div class="dcard-title">Compensation</div>
         <div class="field-row"><span class="fk">Base</span><span class="fv">${esc(c.comp?.base)||'—'}</span></div>
         <div class="field-row"><span class="fk">Bonus / Equity</span><span class="fv">${esc(c.comp?.bonus)||'—'}</span></div></div>
@@ -2409,7 +2644,8 @@ function addInterview(){const d=document.getElementById('ivDate').value||todayIS
 function addTask(){const d=document.getElementById('taskDate').value||todayISO();const t=document.getElementById('taskText');if(!t.value.trim())return;const c=getCurrent();c.tasks.push({date:d,text:t.value.trim(),done:false});saveState();renderDetail();}
 function toggleTask(i){const c=getCurrent();c.tasks[i].done=!c.tasks[i].done;saveState();renderDetail();}
 function addNote(){const inp=document.getElementById('noteInput');if(!inp.value.trim())return;const c=getCurrent();c.notes.unshift({date:todayISO(),text:inp.value.trim()});saveState();renderDetail();}
-function addDoc(){const n=document.getElementById('docName'),u=document.getElementById('docUrl'),cat=document.getElementById('docCatSel').value;if(!n.value.trim()||!u.value.trim())return;const c=getCurrent();c.documents.push({name:n.value.trim(),url:u.value.trim(),category:cat});saveState();renderDetail();}
+function addDoc(){const n=document.getElementById('docName'),u=document.getElementById('docUrl'),cat=document.getElementById('docCatSel').value;if(!n.value.trim()||!u.value.trim())return;const c=getCurrent();c.documents.push({id:cid(),name:n.value.trim(),url:u.value.trim(),category:cat,type:cat,date:todayISO(),notes:''});saveState();renderDetail();}
+function addContact(){const n=document.getElementById('ctName'),t=document.getElementById('ctTitle');if(!n.value.trim())return;const c=getCurrent();c.contacts=c.contacts||[];c.contacts.push({id:cid(),name:n.value.trim(),title:t.value.trim()||'Contact',department:'',email:'',phone:'',linkedin:'',status:'Active',notes:''});saveState();renderDetail();}
 
 /* ── PREPARE APPLICATION ── */
 function openPrep(){
