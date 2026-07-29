@@ -534,8 +534,11 @@ input,textarea,select{font-family:inherit}
     <div class="cc" style="margin-bottom:12px">Your data lives only in this browser's storage — nothing is ever sent anywhere else. Export a full backup before any bulk import or schema change, and run a validation check anytime to confirm your records are internally consistent (no orphaned rows, no duplicate IDs).</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="stage-btn primary" onclick="exportFullBackup()">📦 Export Full Backup</button>
+      <button class="stage-btn secondary" onclick="document.getElementById('restoreFile').click()">📂 Restore from Backup</button>
+      <input type="file" id="restoreFile" accept="application/json" style="display:none">
       <button class="stage-btn secondary" onclick="runValidationReport()">🔍 Run Validation Report</button>
     </div>
+    <div id="restorePreviewBox" style="margin-top:14px"></div>
     <div id="validationReportBox" style="margin-top:14px"></div>
   </div>
 
@@ -2027,6 +2030,52 @@ function exportFullBackup(){
   const a=document.createElement('a');
   a.href=url;a.download='career-crm-full-backup-'+todayISO()+'.json';a.click();
   URL.revokeObjectURL(url);
+}
+let pendingRestore=null;
+document.getElementById('restoreFile').addEventListener('change',e=>{
+  const f=e.target.files[0];if(!f)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    let incoming;
+    try{incoming=JSON.parse(ev.target.result);}catch(err){alert('That file is not valid JSON.');return;}
+    if(!incoming||!Array.isArray(incoming.companies)){alert('That file doesn\'t look like a Career CRM backup (no companies array found).');return;}
+    pendingRestore=incoming;
+    const cur={companies:(state.companies||[]).length,reviews:(state.reviews||[]).length,sources:(state.sources||[]).length,
+      documents:state.companies.reduce((n,c)=>n+(c.documents||[]).length,0),profiles:(state.profiles||[]).length};
+    const inc={companies:(incoming.companies||[]).length,reviews:(incoming.reviews||[]).length,sources:(incoming.sources||[]).length,
+      documents:(incoming.companies||[]).reduce((n,c)=>n+(c.documents||[]).length,0),profiles:(incoming.profiles||[]).length};
+    const box=document.getElementById('restorePreviewBox');
+    box.innerHTML=`<div class="risk-card">
+      <div class="risk-card-title">⚠ Preview: Restoring will REPLACE all current data</div>
+      <div class="rep-row"><span class="rk">Companies</span><span class="rv">${cur.companies} now → ${inc.companies} after restore</span></div>
+      <div class="rep-row"><span class="rk">Reviews</span><span class="rv">${cur.reviews} now → ${inc.reviews} after restore</span></div>
+      <div class="rep-row"><span class="rk">Sources</span><span class="rv">${cur.sources} now → ${inc.sources} after restore</span></div>
+      <div class="rep-row"><span class="rk">Documents</span><span class="rv">${cur.documents} now → ${inc.documents} after restore</span></div>
+      <div class="rep-row"><span class="rk">Profiles</span><span class="rv">${cur.profiles} now → ${inc.profiles} after restore</span></div>
+      <div class="cc" style="margin:10px 0">Anything in your current data that isn't in this backup file will be lost once you confirm. If you haven't exported your current data yet, do that first.</div>
+      <div style="display:flex;gap:8px">
+        <button class="stage-btn secondary" onclick="exportFullBackup()">Export current data first</button>
+        <button class="stage-btn danger" onclick="confirmRestore()">Confirm — Replace All Data</button>
+        <button class="stage-btn secondary" onclick="cancelRestore()">Cancel</button>
+      </div>
+    </div>`;
+  };
+  reader.readAsText(f);e.target.value='';
+});
+function confirmRestore(){
+  if(!pendingRestore)return;
+  if(!confirm('This will permanently replace all current CRM data with the backup file. This cannot be undone unless you exported your current data first. Continue?'))return;
+  state=pendingRestore;
+  if(!state.reviews)state.reviews=[];if(!state.sources)state.sources=[];if(!state.importStaging)state.importStaging=[];
+  if(!state.changeLog)state.changeLog=[];if(!state.drafts)state.drafts=[];
+  saveState();
+  pendingRestore=null;
+  document.getElementById('restorePreviewBox').innerHTML='<div class="empty-note">Restore complete. Reloading dashboard...</div>';
+  setTimeout(()=>location.reload(),800);
+}
+function cancelRestore(){
+  pendingRestore=null;
+  document.getElementById('restorePreviewBox').innerHTML='';
 }
 function runValidationReport(){
   const errors=[];const warnings=[];
