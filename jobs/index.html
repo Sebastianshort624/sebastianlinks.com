@@ -784,6 +784,8 @@ if(!state.profiles)state.profiles=seedProfiles();
 if(!state.drafts)state.drafts=[];
 if(!state.changeLog)state.changeLog=[];
 if(!state.importStaging)state.importStaging=[];
+if(!state.sources)state.sources=[];
+if(!state.reviews)state.reviews=[];
 state.profiles.forEach(p=>{if(p.checklist===undefined)p.checklist=[];if(p.postingsAnalyzed===undefined)p.postingsAnalyzed=0;if(p.keywordStats===undefined)p.keywordStats={};});
 state.companies.forEach(c=>{
   if(c.industry===undefined)c.industry='';
@@ -815,6 +817,37 @@ state.companies.forEach(c=>{
 });
 saveState();
 function saveState(){StorageService.persist(SK,state);}
+
+/* ── PHASE 1 MIGRATION ── additive only: creates Reviews + Sources rows from
+   legacy company.reputation data. Never clears or modifies company.reputation —
+   that stays in place as the rollback-safe fallback (see Phase 1 spec §4). */
+function reviewsForCompany(companyId){return state.reviews.filter(r=>r.companyId===companyId);}
+function logSource(type,name,url,confidence){
+  const existing=state.sources.find(s=>s.type===type&&s.name===name&&s.url===url);
+  if(existing)return existing.id;
+  const id=cid();
+  state.sources.push({id,type,name,url:url||'',date:todayISO(),confidence:confidence||'medium'});
+  return id;
+}
+function migrateReputationToReviews(){
+  let migratedAny=false;
+  const SOURCE_KEYS={bbb:'BBB',google:'Google',glassdoor:'Glassdoor',indeed:'Indeed',facebook:'Facebook',trustpilot:'Trustpilot',consumerAffairs:'Consumer Affairs'};
+  state.companies.forEach(c=>{
+    if(c._reviewsMigrated)return;
+    const rp=c.reputation||{};
+    const legacySourceId=logSource('Legacy Migration','Pre-Phase-1 data','','medium');
+    Object.keys(SOURCE_KEYS).forEach(k=>{
+      const s=rp[k];
+      if(s&&(s.rating||s.reviews)){
+        state.reviews.push({id:cid(),companyId:c.id,source:SOURCE_KEYS[k],rating:s.rating||'',reviewCount:s.reviews||'',url:'',lastChecked:s.updated||'',summary:s.status||'',sourceId:legacySourceId});
+        migratedAny=true;
+      }
+    });
+    c._reviewsMigrated=true;
+  });
+  if(migratedAny)saveState();
+}
+migrateReputationToReviews();
 
 function seedData(){
   const today=new Date();
@@ -1655,7 +1688,16 @@ function dossierHTML(rep,withDivider,condensed){
 
   <div class="section-divider">Reputation</div>
   ${(()=>{
-    const sources=[['⭐','BBB',rp.bbb],['🔍','Google',rp.google],['🚪','Glassdoor',rp.glassdoor],['💼','Indeed',rp.indeed],['📘','Facebook',rp.facebook],['✅','Trustpilot',rp.trustpilot],['🛡️','Consumer Affairs',rp.consumerAffairs]];
+    const ICON_MAP={'BBB':'⭐','Google':'🔍','Glassdoor':'🚪','Indeed':'💼','Facebook':'📘','Trustpilot':'✅','Consumer Affairs':'🛡️'};
+    const ORDER=['BBB','Google','Glassdoor','Indeed','Facebook','Trustpilot','Consumer Affairs'];
+    let sources;
+    const companyReviews=rep.companyId?reviewsForCompany(rep.companyId):[];
+    if(companyReviews.length){
+      const bySource={};companyReviews.forEach(r=>{bySource[r.source]=r;});
+      sources=ORDER.map(label=>[ICON_MAP[label],label,bySource[label]?{rating:bySource[label].rating,reviews:bySource[label].reviewCount,status:bySource[label].summary}:null]);
+    }else{
+      sources=[['⭐','BBB',rp.bbb],['🔍','Google',rp.google],['🚪','Glassdoor',rp.glassdoor],['💼','Indeed',rp.indeed],['📘','Facebook',rp.facebook],['✅','Trustpilot',rp.trustpilot],['🛡️','Consumer Affairs',rp.consumerAffairs]];
+    }
     const withData=sources.filter(([,,s])=>s&&(s.rating||s.reviews));
     if(condensed&&!withData.length)return `<div class="empty-note">No reputation data yet — see Research below, or paste review-site content in the Analyze tab.</div>`;
     const list=condensed?withData:sources;
@@ -1909,6 +1951,17 @@ function renderStagingQueue(){
 function logChanges(companyId,rows,source){
   rows.forEach(r=>state.changeLog.push({id:cid(),companyId,field:r.field,oldValue:r.oldVal!==undefined?r.oldVal:'',newValue:r.newVal,source,date:todayISO(),approved:true}));
 }
+function writeReviewsFromImport(companyId,repObj,sourceLabel,sourceUrl){
+  if(!repObj)return;
+  const SOURCE_KEYS={bbb:'BBB',google:'Google',glassdoor:'Glassdoor',indeed:'Indeed',facebook:'Facebook',trustpilot:'Trustpilot',consumerAffairs:'Consumer Affairs'};
+  const sourceId=logSource('Import',sourceLabel,sourceUrl||'','medium');
+  Object.keys(SOURCE_KEYS).forEach(k=>{
+    const s=repObj[k];
+    if(s&&(s.rating||s.reviews)){
+      state.reviews.push({id:cid(),companyId,source:SOURCE_KEYS[k],rating:s.rating||'',reviewCount:s.reviews||'',url:'',lastChecked:todayISO(),summary:s.status||'',sourceId});
+    }
+  });
+}
 function approveStaging(itemId,mode){
   const item=state.importStaging.find(x=>x.id===itemId);if(!item)return;
   const sourceLabel=item.sourceType==='paste'?'Pasted text':item.sourceType==='json'?'JSON import':'CSV import';
@@ -1926,6 +1979,7 @@ function approveStaging(itemId,mode){
       opportunityScore:null,intelReport:null,dossier,reputation:Object.assign({},blankRep,item.reputation),
       contacts:item.contacts.map(c=>({id:cid(),name:c.name,title:c.title,department:'',email:'',phone:'',linkedin:'',status:'Active',notes:''}))};
     state.companies.push(newCo);
+    writeReviewsFromImport(newCo.id,item.reputation,sourceLabel,'');
     logChanges(newCo.id,Object.keys(dossier).filter(k=>dossier[k].value).map(k=>({field:k,newVal:dossier[k].value})),sourceLabel);
   }else{
     const existing=state.companies.find(c=>c.id===item.matchedCompanyId);
@@ -1940,6 +1994,7 @@ function approveStaging(itemId,mode){
         existing.contacts.push({id:cid(),name:c.name,title:c.title,department:'',email:'',phone:'',linkedin:'',status:'Active',notes:''});
     });
     existing.timeline.unshift({date:todayISO(),text:(mode==='merge'?'Merged':'Updated')+' via Import Center ('+sourceLabel+')'});
+    writeReviewsFromImport(existing.id,item.reputation,sourceLabel,'');
     logChanges(existing.id,rows,sourceLabel);
   }
   state.importStaging=state.importStaging.filter(x=>x.id!==itemId);
@@ -1968,7 +2023,9 @@ function createNewCompanyFrom(nm,website){
     intel:{size:'',funding:'',culture:'',news:'',reviews:''},isNetworking:false,networkingReason:'',
     opportunityScore:anzReport.overall!==null?{overall:anzReport.overall,verdict:anzReport.tier,verdictText:anzReport.verdictText,profileName:anzReport.profileName,computedAt:todayISO()}:null,
     intelReport:JSON.parse(JSON.stringify(anzReport)),dossier:anzReport.dossier,reputation:anzReport.reputation};
-  state.companies.push(newCo);saveState();
+  state.companies.push(newCo);
+  writeReviewsFromImport(newCo.id,anzReport.reputation,'Analyzed',website);
+  saveState();
   openDetail(newCo.id);
 }
 let pendingDupId=null;
@@ -2001,6 +2058,7 @@ function resolveDuplicate(mode){
   existing.opportunityScore=anzReport.overall!==null?{overall:anzReport.overall,verdict:anzReport.tier,verdictText:anzReport.verdictText,profileName:anzReport.profileName,computedAt:todayISO()}:existing.opportunityScore;
   existing.intelReport=JSON.parse(JSON.stringify(anzReport));
   existing.timeline.unshift({date:todayISO(),text:(mode==='update'?'Updated — ':'Merged — ')+detectImportLabel(anzText,anzReport.dossier)+(anzReport.overall!==null?` — ${anzReport.overall}/100`:'')});
+  writeReviewsFromImport(existing.id,anzReport.reputation,'Analyzed',website);
   saveState();
   document.getElementById('dupOverlay').classList.remove('active');
   openDetail(existing.id);
