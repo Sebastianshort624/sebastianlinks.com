@@ -530,6 +530,16 @@ input,textarea,select{font-family:inherit}
   <div class="greeting-sub" style="margin-bottom:16px">Paste anything about a company, or upload JSON/CSV for bulk import. Nothing writes to your CRM until you review and approve it below — this is a staging area, not a save button.</div>
 
   <div class="dcard">
+    <div class="dcard-title">🛡 Data Safety</div>
+    <div class="cc" style="margin-bottom:12px">Your data lives only in this browser's storage — nothing is ever sent anywhere else. Export a full backup before any bulk import or schema change, and run a validation check anytime to confirm your records are internally consistent (no orphaned rows, no duplicate IDs).</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="stage-btn primary" onclick="exportFullBackup()">📦 Export Full Backup</button>
+      <button class="stage-btn secondary" onclick="runValidationReport()">🔍 Run Validation Report</button>
+    </div>
+    <div id="validationReportBox" style="margin-top:14px"></div>
+  </div>
+
+  <div class="dcard">
     <div class="dcard-title">Paste text (one company)</div>
     <textarea id="impPasteArea" rows="6" placeholder="Paste a website, BBB page, LinkedIn company page, job posting, or raw notes about one company..."></textarea>
     <button class="btn-primary" style="margin-top:10px" onclick="stageFromText()">Stage for Review</button>
@@ -2005,6 +2015,53 @@ function discardStaging(id){
   saveState();renderStagingQueue();
 }
 function renderImport(){renderStagingQueue();}
+
+/* ── DATA SAFETY ──
+   exportFullBackup: the actual, honest equivalent of "back up the database" for an
+   app whose only real data store is the user's own browser. runValidationReport:
+   runs against real live data, not synthetic test data — the thing that couldn't be
+   done remotely during Phase 1 itself. */
+function exportFullBackup(){
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='career-crm-full-backup-'+todayISO()+'.json';a.click();
+  URL.revokeObjectURL(url);
+}
+function runValidationReport(){
+  const errors=[];const warnings=[];
+  const counts={companies:state.companies.length,reviews:state.reviews.length,sources:state.sources.length,
+    documents:state.companies.reduce((n,c)=>n+(c.documents||[]).length,0),
+    contacts:state.companies.reduce((n,c)=>n+(c.contacts||[]).length,0),profiles:state.profiles.length};
+
+  const seenIds={};
+  state.companies.forEach(c=>{
+    if(seenIds[c.id])errors.push(`Duplicate company_id: ${c.id} (${c.name})`);
+    seenIds[c.id]=true;
+  });
+
+  const companyIds=new Set(state.companies.map(c=>c.id));
+  state.reviews.forEach(r=>{if(!companyIds.has(r.companyId))errors.push(`Orphaned review: ${r.source} row references missing company_id ${r.companyId}`);});
+
+  const sourceIds=new Set(state.sources.map(s=>s.id));
+  state.reviews.forEach(r=>{if(r.sourceId&&!sourceIds.has(r.sourceId))warnings.push(`Review (${r.source}, company ${r.companyId}) references a source_id not found in Sources table`);});
+
+  state.companies.forEach(c=>{
+    if(!c.name||!c.name.trim())warnings.push(`Company ${c.id} has no name`);
+    if(!c._reviewsMigrated)warnings.push(`Company ${c.name||c.id} was not marked as reviews-migrated — Phase 1 migration may not have run for this record`);
+  });
+
+  const box=document.getElementById('validationReportBox');
+  box.innerHTML=`<div class="dcard" style="background:var(--bg)">
+    <div class="dcard-title">Validation Report — ${todayISO()}</div>
+    <div class="field-label">Record counts</div>
+    ${Object.keys(counts).map(k=>`<div class="rep-row"><span class="rk">${k}</span><span class="rv">${counts[k]}</span></div>`).join('')}
+    <div class="field-label" style="margin-top:10px">Errors <span class="cc">(${errors.length})</span></div>
+    ${errors.length?errors.map(e=>`<div class="risk-item">⚠ ${esc(e)}</div>`).join(''):'<div class="empty-note">None found.</div>'}
+    <div class="field-label" style="margin-top:10px">Warnings <span class="cc">(${warnings.length})</span></div>
+    ${warnings.length?warnings.map(w=>`<div class="q-item">${esc(w)}</div>`).join(''):'<div class="empty-note">None found.</div>'}
+  </div>`;
+}
 
 function detectImportLabel(text,facts){
   if(/bbb\.org/i.test(text)||(facts.bbbProfileUrl&&facts.bbbProfileUrl.value)||(facts.bbbRating&&facts.bbbRating.value))return 'Imported BBB Profile';
