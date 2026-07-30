@@ -785,13 +785,13 @@ input,textarea,select{font-family:inherit}
 <!-- BBB ENRICHMENT OVERLAY -->
 <div class="overlay" id="bbbOverlay">
   <div class="modal wide">
-    <div class="modal-title">🔍 BBB Enrichment</div>
+    <div class="modal-title">🔍 Company Enrichment</div>
 
     <!-- FILE PICK STATE -->
     <div id="bbbPickState">
       <p style="font-size:13px;color:var(--text-sec);margin-bottom:16px;line-height:1.6">
-        Run <code style="background:var(--teal-tint);padding:2px 6px;border-radius:4px;font-size:11px">bbb_enricher.py</code>
-        to generate <code style="background:var(--teal-tint);padding:2px 6px;border-radius:4px;font-size:11px">bbb_enriched.json</code>,
+        Run your enrichment script (e.g. <code style="background:var(--teal-tint);padding:2px 6px;border-radius:4px;font-size:11px">bbb_enricher.py</code>)
+        to generate a <code style="background:var(--teal-tint);padding:2px 6px;border-radius:4px;font-size:11px">*_enriched.json</code> file,
         then select it below.
       </p>
       <div class="form-field" style="margin-bottom:16px">
@@ -3024,9 +3024,9 @@ renderDashboard();
 (function BBB_ENGINE() {
 
   /* ── constants ── */
-  const BBB_SCHEMA_VERSION = 'bbb_enrichment_v1';
-  const BBB_SOURCE_LABEL   = () => 'BBB Scraper ' + todayISO();
-  const BBB_BULK_KEY       = 'bbb_bulk_progress';
+  const ENRICHMENT_SCHEMA_VERSION = 'crm_enrichment_v1';
+  const sourceLabel = () => (_importData?.provider_label || _importData?.provider || 'Enrichment') + ' ' + todayISO();
+  const ENRICHMENT_BULK_KEY       = 'bbb_bulk_progress';
 
   /* ── state ── */
   let _targetId    = null;   // company id for single-enrich, null = bulk
@@ -3042,7 +3042,7 @@ renderDashboard();
   /* ── field definitions ─────────────────────────────────────────
      Order matches spec: Company, Phone, Years, BBB URL, Owner,
      City, State, BBB Rating, Industry, Accredited, Notes         */
-  const BBB_FIELDS = [
+  const ENRICHMENT_FIELDS = [
     { key:'name',            label:'Company Name'      },
     { key:'phone',           label:'Phone'             },
     { key:'yearsInBusiness', label:'Years in Business' },
@@ -3106,12 +3106,12 @@ renderDashboard();
 
       /* schema version check */
       if (!parsed.schema_version) {
-        return _fileStatus('error', '✗ Missing schema_version. Re-run bbb_enricher.py to regenerate.');
+        return _fileStatus('error', '✗ Missing schema_version. Re-run your enrichment script to regenerate.');
       }
-      if (parsed.schema_version !== BBB_SCHEMA_VERSION) {
+      if (parsed.schema_version !== ENRICHMENT_SCHEMA_VERSION) {
         return _fileStatus('error',
           '✗ Schema mismatch: file is "' + parsed.schema_version +
-          '", expected "' + BBB_SCHEMA_VERSION + '".');
+          '", expected "' + ENRICHMENT_SCHEMA_VERSION + '".');
       }
       if (!parsed.records || typeof parsed.records !== 'object') {
         return _fileStatus('error', '✗ File has no "records" object.');
@@ -3120,9 +3120,10 @@ renderDashboard();
       _importData = parsed;
       const total    = Object.keys(parsed.records).length;
       const enriched = Object.values(parsed.records).filter(r => r.status === 'enriched').length;
+      const providerLabel = parsed.provider_label || parsed.provider || 'Unknown provider';
       _fileStatus('ok',
-        '✓ ' + file.name + ' — ' + total + ' records, ' +
-        enriched + ' enriched, generated ' + (parsed.generated_at||'').split('T')[0]);
+        '✓ ' + file.name + ' — ' + providerLabel + ' · ' + total + ' records, ' +
+        enriched + ' enriched · generated ' + (parsed.generated_at||'').split('T')[0]);
 
       if (_targetId) {
         /* single-company mode */
@@ -3160,7 +3161,7 @@ renderDashboard();
   function _buildDiff(co, incoming) {
     const d     = co.dossier || {};
     const force = document.getElementById('bbbForce')?.checked;
-    return BBB_FIELDS.map(f => {
+    return ENRICHMENT_FIELDS.map(f => {
       const newVal   = incoming[f.key];
       if (newVal === undefined || newVal === null || String(newVal).trim() === '') return null;
       const existing = d[f.key];
@@ -3240,7 +3241,7 @@ renderDashboard();
     if (!toApply.length) { bbbClose(); return; }
 
     if (!co.dossier) co.dossier = {};
-    const src = BBB_SOURCE_LABEL();
+    const src = sourceLabel();
     toApply.forEach(item => {
       co.dossier[item.key] = fld(item.newVal, 'high', src);
     });
@@ -3279,9 +3280,10 @@ renderDashboard();
     const list    = document.getElementById('bbbBulkList');
     if (!summary || !list) return;
 
+    const prov = (_importData?.provider_label || _importData?.provider || 'Enrichment');
     summary.innerHTML =
       '<div style="font-size:13px;color:var(--text-sec)">' +
-      '<b>' + matched.length + '</b> companies matched · ' +
+      prov + ' · <b>' + matched.length + '</b> companies matched · ' +
       '<b>' + unmatched.length + '</b> unmatched</div>';
 
     list.innerHTML = matched.length
@@ -3307,14 +3309,14 @@ renderDashboard();
   window.bbbApplyAll = function() {
     const matched = window._bbbBulkMatched || [];
     const force   = document.getElementById('bbbForce')?.checked;
-    const src     = BBB_SOURCE_LABEL();
+    const src     = sourceLabel();
     let updated   = 0;
 
     matched.forEach(({co, rec}) => {
       if (!co.dossier) co.dossier = {};
       const fields = rec.fields || {};
       let changed = 0;
-      BBB_FIELDS.forEach(f => {
+      ENRICHMENT_FIELDS.forEach(f => {
         const newVal = fields[f.key];
         if (!newVal && newVal !== 0) return;
         const existing = co.dossier[f.key];
