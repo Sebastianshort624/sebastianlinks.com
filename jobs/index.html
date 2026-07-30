@@ -3025,7 +3025,7 @@ renderDashboard();
 
   /* ── constants ── */
   const ENRICHMENT_SCHEMA_VERSION = 'crm_enrichment_v1';
-  const sourceLabel = () => (_importData?.provider_label || _importData?.provider || 'Enrichment') + ' ' + todayISO();
+  const sourceLabel = () => (_importData?.provider?.label || _importData?.provider?.id || _importData?.provider || 'Enrichment') + ' ' + todayISO();
   const ENRICHMENT_BULK_KEY       = 'bbb_bulk_progress';
 
   /* ── state ── */
@@ -3120,7 +3120,7 @@ renderDashboard();
       _importData = parsed;
       const total    = Object.keys(parsed.records).length;
       const enriched = Object.values(parsed.records).filter(r => r.status === 'enriched').length;
-      const providerLabel = parsed.provider_label || parsed.provider || 'Unknown provider';
+      const providerLabel = parsed.provider?.label || parsed.provider?.id || parsed.provider || 'Unknown provider';
       _fileStatus('ok',
         '✓ ' + file.name + ' — ' + providerLabel + ' · ' + total + ' records, ' +
         enriched + ' enriched · generated ' + (parsed.generated_at||'').split('T')[0]);
@@ -3280,7 +3280,7 @@ renderDashboard();
     const list    = document.getElementById('bbbBulkList');
     if (!summary || !list) return;
 
-    const prov = (_importData?.provider_label || _importData?.provider || 'Enrichment');
+    const prov = (_importData?.provider?.label || _importData?.provider?.id || _importData?.provider || 'Enrichment');
     summary.innerHTML =
       '<div style="font-size:13px;color:var(--text-sec)">' +
       prov + ' · <b>' + matched.length + '</b> companies matched · ' +
