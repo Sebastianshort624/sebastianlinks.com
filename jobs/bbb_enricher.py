@@ -31,7 +31,7 @@ except ImportError:
     sys.exit("Install dependencies first:\n  pip install playwright\n  playwright install chromium")
 
 # ── CONSTANTS ─────────────────────────────────────────────────────────
-SCHEMA_VERSION = "bbb_enrichment_v1"
+SCHEMA_VERSION = "crm_enrichment_v1"
 BBB_BASE       = "https://www.bbb.org"
 BBB_SEARCH     = "https://www.bbb.org/search?find_text={query}&find_loc="
 PROGRESS_FILE  = Path("bbb_progress.json")
@@ -285,7 +285,7 @@ def apply(company: dict, enriched: dict, force: bool) -> list[str]:
     if not company.get("dossier"):
         company["dossier"] = {}
     d   = company["dossier"]
-    src = f"BBB Scraper {date.today().isoformat()}"
+    src = f"BBB {date.today().isoformat()}"
     changed = []
     fields  = enriched.get("fields", {})
 
@@ -383,6 +383,8 @@ def main():
         return {
             "schema_version": SCHEMA_VERSION,
             "generated_at":   datetime.now().isoformat(),
+            "provider":       "bbb",
+            "provider_label": "BBB (Playwright)",
             "source":         "bbb_enricher.py",
             "total":          len(companies),
             "enriched":       sum(1 for r in records.values() if r.get("status") == "enriched"),
@@ -480,7 +482,7 @@ def main():
         retry.write_text(json.dumps(prog["failed"], indent=2))
         print(f"  Retry list: {retry} ({len(prog['failed'])} companies)")
 
-    print(f"\nNext: In Career CRM → 🚀 Enrich All → select {out_path.name}")
+    print(f"\nNext: In Career CRM → 🚀 Import Enrichment → select {out_path.name}")
     PROGRESS_FILE.unlink(missing_ok=True)
 
 if __name__ == "__main__":
