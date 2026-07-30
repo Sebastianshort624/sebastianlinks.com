@@ -451,6 +451,31 @@ input,textarea,select{font-family:inherit}
   </div>
 
   <div class="section-title">Companies <span class="cnt" id="companyCnt">0</span></div>
+  <!-- BBB bulk toolbar -->
+  <div id="bbbBulkBar" style="display:none;background:var(--gold-tint);border:1px solid var(--gold);border-radius:var(--radius);padding:12px 16px;margin-bottom:12px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <div style="flex:1;min-width:200px">
+        <div id="bbbBulkMsg" style="font-size:13px;font-weight:700;color:#5a3e00;margin-bottom:6px">Enriching companies...</div>
+        <div style="height:6px;background:rgba(0,0,0,.08);border-radius:3px;overflow:hidden">
+          <div id="bbbBulkFill" style="height:100%;background:var(--gold);border-radius:3px;width:0%;transition:width .3s"></div>
+        </div>
+        <div style="display:flex;gap:14px;margin-top:5px;font-size:11px;color:var(--text-muted)">
+          <span>✓ <b id="bbbStatOk">0</b></span>
+          <span>✗ <b id="bbbStatFail">0</b></span>
+          <span>↷ <b id="bbbStatSkip">0</b></span>
+          <span>Remaining: <b id="bbbStatRem">—</b></span>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0">
+        <button class="mini-btn" id="bbbPauseBtn" onclick="bbbBulkPause()"
+                style="background:var(--gold);color:#fff;border:none;padding:6px 12px;border-radius:6px;font-weight:700;cursor:pointer">⏸</button>
+        <button class="mini-btn" id="bbbResumeBtn" onclick="bbbBulkResume()"
+                style="display:none;background:var(--teal);color:#fff;border:none;padding:6px 12px;border-radius:6px;font-weight:700;cursor:pointer">▶</button>
+        <button class="mini-btn" onclick="bbbBulkStop()"
+                style="background:var(--coral);color:#fff;border:none;padding:6px 12px;border-radius:6px;font-weight:700;cursor:pointer">■</button>
+      </div>
+    </div>
+  </div>
   <div class="card-grid" id="companyGrid"></div>
 </div>
 
@@ -756,6 +781,57 @@ input,textarea,select{font-family:inherit}
   </div>
 </div>
 
+
+<!-- BBB ENRICHMENT OVERLAY -->
+<div class="overlay" id="bbbOverlay">
+  <div class="modal wide">
+    <div class="modal-title">🔍 BBB Enrichment</div>
+
+    <!-- FILE PICK STATE -->
+    <div id="bbbPickState">
+      <p style="font-size:13px;color:var(--text-sec);margin-bottom:16px;line-height:1.6">
+        Run <code style="background:var(--teal-tint);padding:2px 6px;border-radius:4px;font-size:11px">bbb_enricher.py</code>
+        to generate <code style="background:var(--teal-tint);padding:2px 6px;border-radius:4px;font-size:11px">bbb_enriched.json</code>,
+        then select it below.
+      </p>
+      <div class="form-field" style="margin-bottom:16px">
+        <label>Select enrichment file</label>
+        <input type="file" id="bbbFilePicker" accept=".json"
+               style="border:2px dashed var(--border);border-radius:var(--radius);padding:20px;width:100%;cursor:pointer;font-size:13px;color:var(--text-sec)"
+               onchange="bbbHandleFile(this)">
+      </div>
+      <div id="bbbFileStatus" style="display:none;font-size:12px;padding:10px 14px;border-radius:8px;margin-bottom:12px"></div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <input type="checkbox" id="bbbForce" style="accent-color:var(--teal)">
+        <label for="bbbForce" style="font-size:13px;color:var(--text-sec);cursor:pointer">
+          Force update — overwrite fields that already have values
+        </label>
+      </div>
+    </div>
+
+    <!-- REVIEW STATE -->
+    <div id="bbbReviewState" style="display:none">
+      <div id="bbbReviewHeader" style="margin-bottom:12px"></div>
+      <div id="bbbReviewTable" style="max-height:380px;overflow-y:auto;border:1px solid var(--border);border-radius:10px"></div>
+      <div style="display:flex;gap:8px;margin-top:16px">
+        <button class="btn-primary" id="bbbApplyBtn" onclick="bbbApplyReview()" style="flex:1">Apply Selected Updates</button>
+        <button class="btn-secondary" onclick="bbbBackToPick()">← Back</button>
+      </div>
+    </div>
+
+    <!-- BULK SUMMARY STATE -->
+    <div id="bbbBulkState" style="display:none">
+      <div id="bbbBulkSummary" style="margin-bottom:14px"></div>
+      <div id="bbbBulkList" style="max-height:300px;overflow-y:auto;border:1px solid var(--border);border-radius:10px;margin-bottom:14px"></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn-primary" onclick="bbbApplyAll()" style="flex:1">Apply All Matched</button>
+        <button class="btn-secondary" onclick="bbbBackToPick()">← Back</button>
+      </div>
+    </div>
+
+    <button class="btn-secondary" onclick="bbbClose()" style="width:100%;margin-top:10px">Close</button>
+  </div>
+</div>
 <script>
 /* ── ICONS ── */
 const ICONS={
@@ -2700,7 +2776,7 @@ function renderDetail(){
       <div class="detail-avatar">${avatarHTML(c)}</div>
       <div><div class="detail-title">${esc(c.name)} ${c.dream?'⭐':''}</div>
       <div class="detail-sub">${esc(c.role||'—')}${c.industry?' · '+esc(c.industry):''} · <span class="stage-badge" style="background:${sc.bg};color:${sc.fg}">${c.stage}</span></div></div>
-      <div class="detail-actions"><button class="icon-btn" onclick="openEdit('${c.id}')" title="Edit">✎</button></div>
+      <div class="detail-actions"><button class="icon-btn" onclick="openEdit('${c.id}')" title="Edit">✎</button><button class="icon-btn" onclick="bbbOpen(\'${c.id}\')" title="BBB Enrich" style="color:var(--gold)">🔍</button></div>
     </div>
 
     ${c.intelReport?`<div class="verdict-banner verdict-${c.intelReport.tier}" style="margin-bottom:16px">
@@ -2938,6 +3014,400 @@ document.getElementById('deleteBtn').onclick=()=>{
 };
 
 renderDashboard();
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   BBB ENRICHMENT ENGINE
+   Data flow: bbb_enricher.py → bbb_enriched.json → file picker
+              → schema validation → field-by-field review → apply
+   ═══════════════════════════════════════════════════════════════════ */
+(function BBB_ENGINE() {
+
+  /* ── constants ── */
+  const BBB_SCHEMA_VERSION = 'bbb_enrichment_v1';
+  const BBB_SOURCE_LABEL   = () => 'BBB Scraper ' + todayISO();
+  const BBB_BULK_KEY       = 'bbb_bulk_progress';
+
+  /* ── state ── */
+  let _targetId    = null;   // company id for single-enrich, null = bulk
+  let _importData  = null;   // parsed + validated import file
+  let _reviewItems = [];     // [{field, label, newVal, oldVal, willUpdate, checked}]
+  let _bulkPaused  = false;
+  let _bulkStopped = false;
+  let _bulkQueue   = [];
+  let _bulkIdx     = 0;
+  let _bulkStart   = 0;
+  let _bulkStats   = {ok:0, fail:0, skip:0};
+
+  /* ── field definitions ─────────────────────────────────────────
+     Order matches spec: Company, Phone, Years, BBB URL, Owner,
+     City, State, BBB Rating, Industry, Accredited, Notes         */
+  const BBB_FIELDS = [
+    { key:'name',            label:'Company Name'      },
+    { key:'phone',           label:'Phone'             },
+    { key:'yearsInBusiness', label:'Years in Business' },
+    { key:'bbbProfileUrl',   label:'BBB URL'           },
+    { key:'owner',           label:'Owner'             },
+    { key:'city',            label:'City'              },
+    { key:'state',           label:'State'             },
+    { key:'bbbRating',       label:'BBB Rating'        },
+    { key:'industry',        label:'Industry'          },
+    { key:'yearsAccredited', label:'Accredited (yrs)'  },
+    { key:'bbbAccredited',   label:'BBB Accredited'    },
+    { key:'bbbOpened',       label:'BBB File Opened'   },
+    { key:'businessStarted', label:'Business Started'  },
+    { key:'entityType',      label:'Entity Type'       },
+    { key:'localBBB',        label:'Local BBB'         },
+    { key:'website',         label:'Website'           },
+    { key:'street',          label:'Street'            },
+    { key:'zip',             label:'ZIP'               },
+    { key:'facebook',        label:'Facebook'          },
+    { key:'linkedin',        label:'LinkedIn'          },
+  ];
+
+  /* ── open / close ─────────────────────────────────────────── */
+  window.bbbOpen = function(id) {
+    _targetId = id || null;
+    _importData = null;
+    _reviewItems = [];
+    _toPickState();
+    document.getElementById('bbbOverlay').classList.add('active');
+  };
+  window.bbbClose = function() {
+    document.getElementById('bbbOverlay').classList.remove('active');
+    _reset();
+  };
+  window.bbbBackToPick = _toPickState;
+
+  function _reset() {
+    _targetId = null; _importData = null; _reviewItems = [];
+    const fp = document.getElementById('bbbFilePicker');
+    if (fp) fp.value = '';
+    _fileStatus('', '');
+  }
+
+  function _toPickState() {
+    _show('bbbPickState'); _hide('bbbReviewState'); _hide('bbbBulkState');
+    const fp = document.getElementById('bbbFilePicker');
+    if (fp) fp.value = '';
+    _fileStatus('', '');
+  }
+
+  /* ── file picker handler ──────────────────────────────────── */
+  window.bbbHandleFile = function(input) {
+    const file = input.files[0];
+    if (!file) return;
+    _fileStatus('info', '⏳ Reading ' + file.name + '…');
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      let parsed;
+      try { parsed = JSON.parse(e.target.result); }
+      catch(err) { return _fileStatus('error', '✗ Invalid JSON — ' + err.message); }
+
+      /* schema version check */
+      if (!parsed.schema_version) {
+        return _fileStatus('error', '✗ Missing schema_version. Re-run bbb_enricher.py to regenerate.');
+      }
+      if (parsed.schema_version !== BBB_SCHEMA_VERSION) {
+        return _fileStatus('error',
+          '✗ Schema mismatch: file is "' + parsed.schema_version +
+          '", expected "' + BBB_SCHEMA_VERSION + '".');
+      }
+      if (!parsed.records || typeof parsed.records !== 'object') {
+        return _fileStatus('error', '✗ File has no "records" object.');
+      }
+
+      _importData = parsed;
+      const total    = Object.keys(parsed.records).length;
+      const enriched = Object.values(parsed.records).filter(r => r.status === 'enriched').length;
+      _fileStatus('ok',
+        '✓ ' + file.name + ' — ' + total + ' records, ' +
+        enriched + ' enriched, generated ' + (parsed.generated_at||'').split('T')[0]);
+
+      if (_targetId) {
+        /* single-company mode */
+        _buildSingleReview(_targetId, parsed.records);
+      } else {
+        /* bulk mode */
+        _buildBulkSummary(parsed.records);
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  /* ── single-company review ────────────────────────────────── */
+  function _buildSingleReview(id, records) {
+    const co = state.companies.find(x => x.id === id);
+    if (!co) return _fileStatus('error', '✗ Company not found in CRM.');
+
+    /* find matching record by id or name */
+    let rec = records[id];
+    if (!rec) {
+      const nameLower = (co.name||'').toLowerCase().trim();
+      rec = Object.values(records).find(r =>
+        (r.name||'').toLowerCase().trim() === nameLower);
+    }
+    if (!rec) return _fileStatus('error',
+      '✗ No record for "' + co.name + '" found in this file.');
+    if (rec.status !== 'enriched')
+      return _fileStatus('error', '↷ Status for this company: ' + rec.status + ' — no data to import.');
+
+    _reviewItems = _buildDiff(co, rec.fields || {});
+    _renderReviewTable(co.name, _reviewItems);
+    _show('bbbReviewState'); _hide('bbbPickState');
+  }
+
+  function _buildDiff(co, incoming) {
+    const d     = co.dossier || {};
+    const force = document.getElementById('bbbForce')?.checked;
+    return BBB_FIELDS.map(f => {
+      const newVal   = incoming[f.key];
+      if (newVal === undefined || newVal === null || String(newVal).trim() === '') return null;
+      const existing = d[f.key];
+      const oldVal   = typeof existing === 'object' ? (existing?.value || '') : (existing || '');
+      const hasOld   = !!oldVal.toString().trim();
+      const willUpdate = !hasOld || !!force;
+      return { key:f.key, label:f.label, newVal:String(newVal), oldVal:String(oldVal), willUpdate, checked:willUpdate };
+    }).filter(Boolean);
+  }
+
+  function _renderReviewTable(coName, items) {
+    const header = document.getElementById('bbbReviewHeader');
+    const table  = document.getElementById('bbbReviewTable');
+    if (!header || !table) return;
+
+    const updatable = items.filter(i => i.willUpdate).length;
+    const skipped   = items.filter(i => !i.willUpdate).length;
+
+    header.innerHTML =
+      '<div style="font-size:13px;color:var(--text-sec);margin-bottom:4px">' +
+      '<b>' + esc(coName) + '</b> — ' + items.length + ' fields found · ' +
+      '<span style="color:var(--success)">' + updatable + ' will update</span>' +
+      (skipped ? ' · <span style="color:var(--text-muted)">' + skipped + ' already populated</span>' : '') +
+      '</div>';
+
+    if (!items.length) {
+      table.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted);font-size:13px">No new data in this file for this company.</div>';
+      document.getElementById('bbbApplyBtn').disabled = true;
+      return;
+    }
+
+    table.innerHTML =
+      '<table style="width:100%;border-collapse:collapse;font-size:12px">' +
+      '<thead><tr style="background:var(--bg)">' +
+      '<th style="padding:8px 12px;text-align:left;font-weight:700;color:var(--text-muted);width:32px"></th>' +
+      '<th style="padding:8px 12px;text-align:left;font-weight:700;color:var(--text-muted)">Field</th>' +
+      '<th style="padding:8px 12px;text-align:left;font-weight:700;color:var(--text-muted)">Current</th>' +
+      '<th style="padding:8px 12px;text-align:left;font-weight:700;color:var(--text-muted)">From BBB</th>' +
+      '<th style="padding:8px 12px;text-align:left;font-weight:700;color:var(--text-muted)">Action</th>' +
+      '</tr></thead><tbody>' +
+      items.map((item, i) => {
+        const rowBg = item.willUpdate
+          ? (item.oldVal ? '#fffbf0' : '#f0fdf8')   /* update vs new */
+          : 'transparent';
+        const action = !item.willUpdate
+          ? '<span style="color:var(--text-muted)">keep existing</span>'
+          : item.oldVal
+            ? '<span style="color:var(--gold);font-weight:700">↻ update</span>'
+            : '<span style="color:var(--success);font-weight:700">✦ new</span>';
+        const chkd = item.checked ? 'checked' : '';
+        const disabled = !item.willUpdate ? 'disabled' : '';
+        return '<tr style="background:' + rowBg + ';border-bottom:1px solid var(--border)">' +
+          '<td style="padding:8px 12px"><input type="checkbox" data-ridx="' + i + '" ' + chkd + ' ' + disabled +
+          ' onchange="bbbToggleRow(this)" style="accent-color:var(--teal)"></td>' +
+          '<td style="padding:8px 12px;font-weight:600;white-space:nowrap">' + esc(item.label) + '</td>' +
+          '<td style="padding:8px 12px;color:var(--text-sec);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(item.oldVal||'—') + '</td>' +
+          '<td style="padding:8px 12px;font-weight:600;color:var(--text);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(item.newVal) + '</td>' +
+          '<td style="padding:8px 12px">' + action + '</td>' +
+          '</tr>';
+      }).join('') +
+      '</tbody></table>';
+
+    document.getElementById('bbbApplyBtn').disabled = !updatable;
+  }
+
+  window.bbbToggleRow = function(cb) {
+    const i = parseInt(cb.dataset.ridx);
+    if (_reviewItems[i]) _reviewItems[i].checked = cb.checked;
+  };
+
+  /* ── apply single review ──────────────────────────────────── */
+  window.bbbApplyReview = function() {
+    if (!_targetId) return;
+    const co = state.companies.find(x => x.id === _targetId);
+    if (!co) return;
+    const toApply = _reviewItems.filter(i => i.checked && i.willUpdate);
+    if (!toApply.length) { bbbClose(); return; }
+
+    if (!co.dossier) co.dossier = {};
+    const src = BBB_SOURCE_LABEL();
+    toApply.forEach(item => {
+      co.dossier[item.key] = fld(item.newVal, 'high', src);
+    });
+
+    /* notes field — generate if company name is available */
+    const rec = _importData?.records?.[_targetId] ||
+      Object.values(_importData?.records||{}).find(r => (r.name||'').toLowerCase() === (co.name||'').toLowerCase());
+    if (rec) {
+      const notes = _buildNotes(rec.fields || {});
+      if (notes && (!co.dossier.notes?.value)) {
+        co.dossier.notes = fld(notes, 'high', src + ' (auto-generated)');
+      }
+    }
+
+    co.timeline = co.timeline || [];
+    co.timeline.unshift({ date: todayISO(),
+      text: 'BBB Enriched — ' + toApply.length + ' field' + (toApply.length !== 1 ? 's' : '') + ' updated' });
+
+    saveState();
+    bbbClose();
+    renderDetail();
+  };
+
+  /* ── bulk mode ────────────────────────────────────────────── */
+  function _buildBulkSummary(records) {
+    const matched = [];
+    const unmatched = [];
+    state.companies.forEach(co => {
+      const rec = records[co.id] ||
+        Object.values(records).find(r => (r.name||'').toLowerCase().trim() === (co.name||'').toLowerCase().trim());
+      if (rec && rec.status === 'enriched') matched.push({co, rec});
+      else unmatched.push(co);
+    });
+
+    const summary = document.getElementById('bbbBulkSummary');
+    const list    = document.getElementById('bbbBulkList');
+    if (!summary || !list) return;
+
+    summary.innerHTML =
+      '<div style="font-size:13px;color:var(--text-sec)">' +
+      '<b>' + matched.length + '</b> companies matched · ' +
+      '<b>' + unmatched.length + '</b> unmatched</div>';
+
+    list.innerHTML = matched.length
+      ? '<table style="width:100%;border-collapse:collapse;font-size:12px">' +
+        '<thead><tr style="background:var(--bg)">' +
+        '<th style="padding:8px 12px;text-align:left">Company</th>' +
+        '<th style="padding:8px 12px;text-align:left">BBB Rating</th>' +
+        '<th style="padding:8px 12px;text-align:left">Fields</th></tr></thead><tbody>' +
+        matched.map(({co, rec}) => {
+          const fieldCount = Object.keys(rec.fields||{}).filter(k => rec.fields[k]).length;
+          return '<tr style="border-bottom:1px solid var(--border)">' +
+            '<td style="padding:8px 12px;font-weight:600">' + esc(co.name) + '</td>' +
+            '<td style="padding:8px 12px">' + esc(rec.fields?.bbbRating||'—') + '</td>' +
+            '<td style="padding:8px 12px;color:var(--text-muted)">' + fieldCount + ' available</td></tr>';
+        }).join('') + '</tbody></table>'
+      : '<div style="padding:20px;text-align:center;color:var(--text-muted);font-size:13px">No companies matched.</div>';
+
+    /* stash matched for apply */
+    window._bbbBulkMatched = matched;
+    _show('bbbBulkState'); _hide('bbbPickState');
+  }
+
+  window.bbbApplyAll = function() {
+    const matched = window._bbbBulkMatched || [];
+    const force   = document.getElementById('bbbForce')?.checked;
+    const src     = BBB_SOURCE_LABEL();
+    let updated   = 0;
+
+    matched.forEach(({co, rec}) => {
+      if (!co.dossier) co.dossier = {};
+      const fields = rec.fields || {};
+      let changed = 0;
+      BBB_FIELDS.forEach(f => {
+        const newVal = fields[f.key];
+        if (!newVal && newVal !== 0) return;
+        const existing = co.dossier[f.key];
+        const oldVal   = typeof existing === 'object' ? existing?.value : (existing||'');
+        if (!oldVal.toString().trim() || force) {
+          co.dossier[f.key] = fld(String(newVal), 'high', src);
+          changed++;
+        }
+      });
+      if (changed) {
+        const notes = _buildNotes(fields);
+        if (notes && !co.dossier.notes?.value)
+          co.dossier.notes = fld(notes, 'high', src + ' (auto-generated)');
+        co.timeline = co.timeline || [];
+        co.timeline.unshift({ date: todayISO(),
+          text: 'BBB Enriched — ' + changed + ' field' + (changed!==1?'s':'') + ' updated' });
+        updated++;
+      }
+    });
+
+    saveState();
+    bbbClose();
+    alert('BBB Bulk Import complete\n✓ Updated: ' + updated + ' of ' + matched.length + ' matched companies');
+    renderDashboard();
+  };
+
+  /* ── bulk scrape mode (🚀 Enrich All button) ────────────────
+     Opens modal in bulk mode so user imports script results.  */
+  window.bbbEnrichAll = function() {
+    bbbOpen(null);
+  };
+
+  /* ── bulk real-time progress (for future use) ───────────────── */
+  window.bbbBulkPause  = function() { _bulkPaused=true;  _el('bbbPauseBtn').style.display='none';  _el('bbbResumeBtn').style.display='inline-block'; };
+  window.bbbBulkResume = function() { _bulkPaused=false; _el('bbbPauseBtn').style.display='inline-block'; _el('bbbResumeBtn').style.display='none'; };
+  window.bbbBulkStop   = function() { _bulkStopped=true; _el('bbbBulkBar').style.display='none'; };
+
+  /* ── notes builder ────────────────────────────────────────── */
+  function _buildNotes(f) {
+    const lines = [];
+    if (f.businessStarted) lines.push('Business Started: ' + f.businessStarted + '.');
+    if (f.bbbAccredited === 'Yes') lines.push('BBB Accredited.');
+    if (f.entityType)       lines.push(f.entityType + '.');
+    if (f.owner)            lines.push('Owner: ' + f.owner + '.');
+    if (f.yearsAccredited != null && f.bbbAccredited === 'Yes')
+      lines.push('BBB Accredited ' + f.yearsAccredited + ' year' + (f.yearsAccredited!==1?'s':'') + '.');
+    if (f.products && f.products.length) {
+      lines.push('Categories:');
+      f.products.slice(0,6).forEach(p => lines.push('• ' + p));
+    }
+    return lines.join('\n');
+  }
+
+  /* ── helpers ──────────────────────────────────────────────── */
+  function _show(id) { const e=_el(id); if(e) e.style.display='block'; }
+  function _hide(id) { const e=_el(id); if(e) e.style.display='none';  }
+  function _el(id)   { return document.getElementById(id); }
+
+  function _fileStatus(type, msg) {
+    const el = _el('bbbFileStatus');
+    if (!el) return;
+    if (!msg) { el.style.display='none'; return; }
+    const bg = { ok:'var(--teal-tint)', error:'var(--coral-tint)', info:'#f4f5f7' }[type] || '#f4f5f7';
+    const co = { ok:'var(--teal-dark)', error:'var(--coral)',      info:'var(--text-muted)' }[type] || 'inherit';
+    el.style.cssText = 'background:'+bg+';color:'+co+';padding:10px 14px;border-radius:8px;font-size:12px;display:block;line-height:1.5';
+    el.textContent = msg;
+  }
+
+  /* ── add 🚀 and 📥 buttons to companies toolbar on load ───── */
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+      /* find the "Companies N" section title div */
+      const sectionTitles = document.querySelectorAll('.section-title');
+      let companiesTitle = null;
+      sectionTitles.forEach(el => { if(el.textContent.includes('Companies')) companiesTitle=el; });
+      if (!companiesTitle) return;
+
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex;gap:6px;margin-bottom:10px';
+
+      const enrichAllBtn = document.createElement('button');
+      enrichAllBtn.className = 'mini-btn';
+      enrichAllBtn.innerHTML = '🚀 Enrich All';
+      enrichAllBtn.title = 'Bulk-import BBB enrichment from bbb_enricher.py output';
+      enrichAllBtn.style.cssText = 'background:var(--gold-tint);color:#5a3e00;border:1px solid var(--gold);padding:6px 12px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer';
+      enrichAllBtn.onclick = bbbEnrichAll;
+
+      row.appendChild(enrichAllBtn);
+      companiesTitle.insertAdjacentElement('afterend', row);
+    }, 400);
+  });
+
+})();
 </script>
 </body>
 </html>
