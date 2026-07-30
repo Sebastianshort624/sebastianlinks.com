@@ -383,8 +383,11 @@ def main():
         return {
             "schema_version": SCHEMA_VERSION,
             "generated_at":   datetime.now().isoformat(),
-            "provider":       "bbb",
-            "provider_label": "BBB (Playwright)",
+            "provider": {
+                "id":      "bbb",
+                "label":   "BBB (Playwright)",
+                "version": "1.0.0"
+            },
             "source":         "bbb_enricher.py",
             "total":          len(companies),
             "enriched":       sum(1 for r in records.values() if r.get("status") == "enriched"),
