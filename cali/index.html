@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cali Museum Adventure — SebastianLinks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  :root{
+    --cream:#F6F1E7;
+    --cream-soft:#FBF8F1;
+    --navy:#1B2A4A;
+    --navy-soft:#3A4A6B;
+    --teal:#2F6F6E;
+    --fuchsia:#C2368C;
+    --fuchsia-soft:#E2A6CB;
+    --gold:#C29120;
+    --gold-soft:#F5E9C8;
+    --line:rgba(27,42,74,0.14);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--navy);
+    font-family:'Barlow Condensed',sans-serif;
+    line-height:1.5;
+  }
+  .wrap{max-width:940px;margin:0 auto;padding:0 24px 80px;}
+
+  /* ── HERO ── */
+  .hero{position:relative;padding:0;border-bottom:4px solid var(--fuchsia);overflow:hidden;}
+  .hero-photo{width:100%;height:300px;object-fit:cover;display:block;filter:saturate(0.85)brightness(0.9);}
+  .hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(27,42,74,.2) 0%,rgba(27,42,74,.82) 100%);}
+  .hero-text{position:absolute;bottom:0;left:0;right:0;padding:28px 24px 26px;text-align:center;}
+  .eyebrow{font-family:'Barlow Condensed',sans-serif;letter-spacing:.32em;text-transform:uppercase;font-size:12.5px;color:var(--fuchsia-soft);font-weight:700;margin-bottom:10px;}
+  h1{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(36px,6vw,58px);margin:0 0 8px;color:#FBF8F1;letter-spacing:.01em;}
+  .hero-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;color:#E7E2D4;margin:0 auto 16px;max-width:560px;}
+  .date-badge{display:inline-block;padding:7px 20px;border:1px solid var(--fuchsia-soft);border-radius:30px;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--cream-soft);}
+
+  /* ── CONFIG NOTE ── */
+  .config-bar{background:var(--gold-soft);border:1px solid var(--gold);border-radius:6px;padding:10px 16px;margin:22px 0;font-size:13px;display:flex;align-items:center;gap:10px;}
+  .config-bar code{background:rgba(27,42,74,.1);padding:2px 6px;border-radius:3px;font-size:12px;font-family:monospace;}
+
+  /* ── SECTION HEADERS ── */
+  .section-label{font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.28em;font-size:12px;color:var(--fuchsia);font-weight:700;margin:50px 0 6px;}
+  .section-title{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;color:var(--navy);margin:0 0 24px;}
+
+  /* ── MAP ── */
+  #map{height:380px;border-radius:8px;border:1.5px solid var(--line);margin-bottom:32px;box-shadow:0 2px 12px rgba(27,42,74,.08);}
+  .map-legend{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:28px;font-size:12px;}
+  .legend-dot{display:inline-flex;align-items:center;gap:5px;}
+  .dot{width:11px;height:11px;border-radius:50%;display:inline-block;}
+  .dot-morning{background:#2F6F6E;}
+  .dot-afternoon{background:#C2368C;}
+  .dot-home{background:#C29120;}
+
+  /* ── ROUTE LABELS ── */
+  .block-label{
+    display:inline-block;padding:4px 14px;border-radius:20px;
+    font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;
+    letter-spacing:.18em;text-transform:uppercase;margin-bottom:16px;
+  }
+  .block-morning{background:rgba(47,111,110,.12);color:var(--teal);}
+  .block-afternoon{background:rgba(194,54,140,.10);color:var(--fuchsia);}
+
+  /* ── TIMELINE ── */
+  .line{position:relative;margin-left:18px;border-left:2px dashed rgba(47,111,110,.4);padding-left:34px;}
+  .line.afternoon{border-left-color:rgba(194,54,140,.4);}
+  .stop{position:relative;padding:0 0 20px;}
+  .stop::before{content:"";position:absolute;left:-43px;top:5px;width:14px;height:14px;border-radius:50%;background:var(--cream);border:2px solid var(--teal);}
+  .afternoon .stop::before{border-color:var(--fuchsia);}
+  .stop-time{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:.06em;color:var(--teal);}
+  .afternoon .stop-time{color:var(--fuchsia);}
+  .stop-title{font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:600;color:var(--navy);margin:2px 0 3px;}
+  .stop-addr{font-size:13px;color:var(--navy-soft);}
+  .stop-dur{display:inline-block;margin-top:5px;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--teal);font-weight:600;}
+  .afternoon .stop-dur{color:var(--fuchsia);}
+  .taxi-note{margin-top:8px;font-size:12.5px;color:var(--navy-soft);background:var(--cream-soft);border:1px solid var(--line);border-radius:5px;padding:7px 10px;display:inline-block;}
+  .taxi-note b{color:var(--navy);}
+
+  /* ── VENUE CARDS ── */
+  .cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:32px;}
+  @media(max-width:640px){.cards-grid{grid-template-columns:1fr;}}
+  .card{background:var(--cream-soft);border:1px solid var(--line);border-radius:8px;overflow:hidden;box-shadow:0 1px 4px rgba(27,42,74,.06);}
+  .card img.photo{width:100%;height:180px;object-fit:cover;display:block;}
+  .card-accent{height:3px;}
+  .teal-accent{background:var(--teal);}
+  .fuchsia-accent{background:var(--fuchsia);}
+  .gold-accent{background:var(--gold);}
+  .card-body{padding:18px 20px 20px;}
+  .card h3{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;margin:0 0 10px;color:var(--navy);}
+  .info-row{display:flex;gap:6px;font-size:12.5px;color:var(--navy-soft);margin-bottom:5px;align-items:flex-start;}
+  .info-row b{color:var(--fuchsia);font-size:11px;text-transform:uppercase;letter-spacing:.04em;flex-shrink:0;width:58px;}
+  .card p.desc{font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;color:var(--navy-soft);margin:10px 0 0;line-height:1.55;}
+  .card-links{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+  .card-link{font-size:11.5px;font-weight:700;color:var(--teal);text-decoration:none;padding:4px 10px;border:1px solid rgba(47,111,110,.3);border-radius:4px;letter-spacing:.04em;}
+  .card-link:hover{background:rgba(47,111,110,.08);}
+  .free-badge{background:rgba(47,111,110,.1);color:var(--teal);font-weight:700;font-size:11px;padding:2px 8px;border-radius:10px;border:1px solid rgba(47,111,110,.25);display:inline-block;margin-left:4px;}
+  .price-badge{background:rgba(194,54,140,.08);color:var(--fuchsia);font-weight:700;font-size:11px;padding:2px 8px;border-radius:10px;border:1px solid rgba(194,54,140,.2);display:inline-block;margin-left:4px;}
+
+  /* ── TOTALS ── */
+  .totals{margin-top:56px;border:1px solid var(--line);border-radius:8px;padding:28px 30px;background:var(--cream-soft);}
+  .totals h2{font-family:'Cormorant Garamond',serif;font-size:25px;margin:0 0 18px;color:var(--teal);}
+  .totals-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 28px;}
+  @media(max-width:500px){.totals-grid{grid-template-columns:1fr;}}
+  .total-row{display:flex;justify-content:space-between;font-size:15px;padding:8px 0;border-bottom:1px solid var(--line);}
+  .total-row b{color:var(--navy);font-weight:600;}
+  .callout{margin-top:20px;padding:14px 18px;border-left:3px solid var(--fuchsia);background:rgba(194,54,140,.05);font-family:'Cormorant Garamond',serif;font-size:15.5px;font-style:italic;color:var(--navy);}
+
+  footer{text-align:center;margin-top:54px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--navy-soft);}
+
+  @media(max-width:768px){
+    .hero-photo{height:220px;}
+    h1{font-size:28px!important;}
+    .wrap{padding:0 16px 60px;}
+    .totals{padding:18px 16px;}
+  }
+</style>
+</head>
+<body>
+
+<script>
+/* ─────────────────────────────────────────────────────────────────────
+   EDITABLE CONFIGURATION
+   Update airbnbLat and airbnbLng with your actual Airbnb coordinates.
+   All taxi routes and the map marker update automatically.
+───────────────────────────────────────────────────────────────────── */
+const CONFIG = {
+  airbnbName: "Airbnb / Dentist",
+  airbnbLat: 3.4516,   // ← replace with actual latitude
+  airbnbLng: -76.5320  // ← replace with actual longitude
+};
+</script>
+
+<!-- HERO -->
+<div class="hero">
+  <img class="hero-photo"
+    src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Cali_Colombia_panorama.jpg/1280px-Cali_Colombia_panorama.jpg"
+    alt="Cali, Colombia panorama">
+  <div class="hero-overlay"></div>
+  <div class="hero-text">
+    <div class="eyebrow">Cali · Valle del Cauca · Colombia</div>
+    <h1>Museum Adventure</h1>
+    <p class="hero-sub">Gold. Cosmos. Nature. Stone. A full day through Cali's finest cultural institutions.</p>
+    <div class="date-badge">Morning + Afternoon</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="config-bar">
+    📍 <span>Update <code>CONFIG.airbnbLat</code> and <code>CONFIG.airbnbLng</code> at the top of this file to set your Airbnb location. All routes update automatically.</span>
+  </div>
+
+  <!-- MAP -->
+  <div class="section-label">Overview</div>
+  <div class="section-title">Day Map</div>
+  <div id="map"></div>
+  <div class="map-legend">
+    <span class="legend-dot"><span class="dot dot-morning"></span> Morning route</span>
+    <span class="legend-dot"><span class="dot dot-afternoon"></span> Afternoon route</span>
+    <span class="legend-dot"><span class="dot dot-home"></span> Airbnb / Dentist</span>
+  </div>
+
+  <!-- MORNING TIMELINE -->
+  <div class="section-label">Morning Route</div>
+  <div class="section-title">INCIVA Natural History Museum</div>
+  <span class="block-label block-morning">Morning</span>
+
+  <div class="line">
+    <div class="stop">
+      <div class="stop-time">Morning</div>
+      <div class="stop-title">🏠 Airbnb / Dentist</div>
+      <div class="stop-addr" id="morning-start-addr">Cali, Colombia</div>
+      <div class="taxi-note">🚕 Taxi to INCIVA · <b>~15–20 min</b> · ~$6,000–10,000 COP</div>
+    </div>
+    <div class="stop">
+      <div class="stop-time">9:00 AM – 11:00 AM</div>
+      <div class="stop-title">🦎 INCIVA Natural History Museum</div>
+      <div class="stop-addr">Av. Roosevelt (Calle 6 #24-80), Cali</div>
+      <div class="stop-dur">~2 hours</div>
+      <div class="taxi-note">🚕 Taxi back to Airbnb · <b>~15–20 min</b></div>
+    </div>
+    <div class="stop">
+      <div class="stop-time">~11:30 AM</div>
+      <div class="stop-title">🏠 Return to Airbnb / Dentist</div>
+      <div class="stop-addr" id="morning-end-addr">Rest · Lunch · Regroup</div>
+    </div>
+  </div>
+
+  <!-- AFTERNOON TIMELINE -->
+  <div class="section-label" style="margin-top:40px">Afternoon Route</div>
+  <div class="section-title">Planetario · Gold Museum · La Merced</div>
+  <span class="block-label block-afternoon">Afternoon</span>
+
+  <div class="line afternoon">
+    <div class="stop">
+      <div class="stop-time">~1:30 PM</div>
+      <div class="stop-title">🏠 Airbnb / Dentist</div>
+      <div class="stop-addr" id="afternoon-start-addr">Cali, Colombia</div>
+      <div class="taxi-note">🚕 Taxi to YAWA Planetario · <b>~15 min</b> · ~$8,000–12,000 COP</div>
+    </div>
+    <div class="stop">
+      <div class="stop-time">2:00 PM – 3:00 PM</div>
+      <div class="stop-title">🔭 Planetario de Cali — YAWA</div>
+      <div class="stop-addr">Cra. 37a #5-27, San Fernando, Cali</div>
+      <div class="stop-dur">~1 hour · Book in advance at TuBoleta.com</div>
+      <div class="taxi-note">🚕 Taxi to lunch spot · <b>~10 min</b></div>
+    </div>
+    <div class="stop">
+      <div class="stop-time">3:15 PM – 4:00 PM</div>
+      <div class="stop-title">🍽️ Lunch — Centro Histórico</div>
+      <div class="stop-addr">El centro, near Museo del Oro</div>
+      <div class="stop-dur">45 min</div>
+      <div class="taxi-note">🚶 Walk 2 min to Museo del Oro Calima</div>
+    </div>
+    <div class="stop">
+      <div class="stop-time">4:00 PM – 5:00 PM</div>
+      <div class="stop-title">✨ Museo del Oro Calima</div>
+      <div class="stop-addr">Calle 7 #4-69, Centro Histórico, Cali</div>
+      <div class="stop-dur">~1 hour · Free admission</div>
+      <div class="taxi-note">🚶 Walk 4 min southeast to La Merced</div>
+    </div>
+    <div class="stop">
+      <div class="stop-time">5:10 PM – 6:00 PM</div>
+      <div class="stop-title">⛪ Museo Arqueológico La Merced</div>
+      <div class="stop-addr">Cra. 4 #6-59, San Pedro, Cali</div>
+      <div class="stop-dur">~50 min · ~$4,000 COP admission</div>
+      <div class="taxi-note">🚕 Taxi back to Airbnb · <b>~15–20 min</b></div>
+    </div>
+    <div class="stop">
+      <div class="stop-time">~6:30 PM</div>
+      <div class="stop-title">🏠 Return to Airbnb / Dentist</div>
+      <div class="stop-addr" id="afternoon-end-addr">End of day</div>
+    </div>
+  </div>
+
+  <!-- VENUE CARDS -->
+  <div class="section-label" style="margin-top:50px">The Stops</div>
+  <div class="section-title">Venue Details</div>
+
+  <!-- INCIVA -->
+  <div class="cards-grid">
+    <div class="card">
+      <img class="photo"
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Oxyrhopus_petolarius_01.jpg/800px-Oxyrhopus_petolarius_01.jpg"
+        alt="Natural history specimen — Oxyrhopus snake, Colombia">
+      <div class="card-accent teal-accent"></div>
+      <div class="card-body">
+        <h3>INCIVA Natural History Museum</h3>
+        <div style="font-size:11px;font-weight:700;color:var(--teal);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px">Museo Departamental de Ciencias Naturales Federico Carlos Lehmann</div>
+        <div class="info-row"><b>Hours</b> Mon–Fri 8am–4pm · Sat 10am–3pm · Sun 10am–2pm · Guided tours hourly</div>
+        <div class="info-row"><b>Admission</b> Adults $10,000 COP · Students $7,500 COP · Seniors/disability $5,000 · Foreign visitors 10 USD</div>
+        <div class="info-row"><b>Address</b> Av. Roosevelt (Calle 6 #24-80), Piso 4, Cali</div>
+        <div class="info-row"><b>Phone</b> +(57) 2 514 68 48</div>
+        <p class="desc">Founded in 1963 by biologist-ornithologist Federico Carlos Lehmann Valencia, this departmental museum celebrates the stunning biodiversity of Valle del Cauca — from cloud-forest orchids to Andean condors. Guided tours depart every hour.</p>
+        <div class="card-links">
+          <a class="card-link" href="https://www.inciva.gov.co" target="_blank">inciva.gov.co</a>
+          <a class="card-link" href="https://maps.google.com/?q=Calle+6+24-80+Cali+Colombia" target="_blank">Google Maps</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- YAWA Planetario -->
+    <div class="card">
+      <img class="photo"
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Planetarium_Zeiss_Frankfurt.jpg/800px-Planetarium_Zeiss_Frankfurt.jpg"
+        alt="Planetarium dome interior">
+      <div class="card-accent fuchsia-accent"></div>
+      <div class="card-body">
+        <h3>Planetario de Cali — YAWA</h3>
+        <div style="font-size:11px;font-weight:700;color:var(--fuchsia);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px">Centro de Ciencia, Arte y Tecnología</div>
+        <div class="info-row"><b>Hours</b> 9:00am – 6:00pm daily · Shows at 9am, 11am, 1pm, 3pm, 5pm</div>
+        <div class="info-row"><b>Admission</b> ~$17,000–20,000 COP · Ages 4+ · Buy at TuBoleta.com <span class="price-badge">Reserve ahead</span></div>
+        <div class="info-row"><b>Address</b> Cra. 37a #5-27, San Fernando (frente al Hospital Universitario del Valle), Cali</div>
+        <p class="desc">Opened December 2024 — Cali's first planetarium and the second largest in Colombia. A fulldome theater with immersive shows on astronomy and biodiversity. Part of YAWA, a 23,000 m² center for science, art, and technology.</p>
+        <div class="card-links">
+          <a class="card-link" href="https://yawacali.com" target="_blank">yawacali.com</a>
+          <a class="card-link" href="https://www.tubleta.com" target="_blank">Book tickets</a>
+          <a class="card-link" href="https://maps.google.com/?q=Cra+37a+5-27+San+Fernando+Cali" target="_blank">Maps</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cards-grid">
+    <!-- Museo del Oro Calima -->
+    <div class="card">
+      <img class="photo"
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Calima_Ilama_culture_Museum_of_Gold.jpg/800px-Calima_Ilama_culture_Museum_of_Gold.jpg"
+        alt="Calima gold artifacts, Museo del Oro">
+      <div class="card-accent gold-accent"></div>
+      <div class="card-body">
+        <h3>Museo del Oro Calima</h3>
+        <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px">Banco de la República · Centro Histórico</div>
+        <div class="info-row"><b>Hours</b> Tue–Fri 9am–4pm · Sat 10am–4pm · Sun/Mon closed</div>
+        <div class="info-row"><b>Admission</b> FREE — no ticket required <span class="free-badge">Entrada libre</span></div>
+        <div class="info-row"><b>Address</b> Calle 7 #4-69, Centro Histórico, Cali</div>
+        <div class="info-row"><b>Coords</b> 3.4500°N, 76.5357°W</div>
+        <p class="desc">615 pre-Columbian masterworks in gold, ceramics, stone, and bone — from the Ilama, Yotoco, and Sonso peoples who shaped this valley for millennia. One of six Banco de la República gold museums in Colombia. Free admission, no exceptions.</p>
+        <div class="card-links">
+          <a class="card-link" href="https://www.banrepcultural.org/cali/museo-del-oro-calima" target="_blank">banrepcultural.org</a>
+          <a class="card-link" href="https://maps.google.com/?q=Calle+7+4-69+Cali+Colombia" target="_blank">Maps</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Museo La Merced -->
+    <div class="card">
+      <img class="photo"
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Iglesia_de_la_Merced_Cali.jpg/800px-Iglesia_de_la_Merced.jpg"
+        onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Colonialarchitecture.jpg/800px-Colonialarchitecture.jpg'"
+        alt="Iglesia de La Merced, Cali">
+      <div class="card-accent teal-accent"></div>
+      <div class="card-body">
+        <h3>Museo Arqueológico La Merced</h3>
+        <div style="font-size:11px;font-weight:700;color:var(--teal);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px">Est. 1979 · Colonial Convent · Oldest Complex in Cali</div>
+        <div class="info-row"><b>Hours</b> Mon–Sat · Call ahead to confirm: (602) 885-5309</div>
+        <div class="info-row"><b>Admission</b> ~$4,000 COP · Cash only · No cards accepted</div>
+        <div class="info-row"><b>Address</b> Cra. 4 #6-59, San Pedro, Cali</div>
+        <div class="info-row"><b>Email</b> museolamerced@une.net.co</div>
+        <p class="desc">Six permanent rooms of pre-Columbian ceramics, funerary urns, and artifacts from the Calima, Tumaco, Nariño, Quimbaya, and Tierradentro cultures — housed inside a 17th-century convent attached to La Merced Church, the oldest standing structure in Cali. The interior courtyard alone is worth the visit.</p>
+        <div class="card-links">
+          <a class="card-link" href="https://maps.google.com/?q=Cra+4+6-59+San+Pedro+Cali" target="_blank">Maps</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOTALS -->
+  <div class="totals">
+    <h2>Day Overview</h2>
+    <div class="totals-grid">
+      <div class="total-row"><span>🦎 INCIVA Natural History</span><b>~2 hrs</b></div>
+      <div class="total-row"><span>🔭 Planetario YAWA</span><b>~1 hr</b></div>
+      <div class="total-row"><span>✨ Museo del Oro Calima</span><b>~1 hr</b></div>
+      <div class="total-row"><span>⛪ Museo La Merced</span><b>~50 min</b></div>
+      <div class="total-row"><span>🍽️ Lunch break</span><b>~45 min</b></div>
+      <div class="total-row"><span>🚕 Taxi travel (est.)</span><b>~1.5 hrs total</b></div>
+    </div>
+    <div class="callout">
+      Book the <b>Planetario de Cali</b> in advance at <b>TuBoleta.com</b> — shows fill up.
+      The Museo del Oro Calima and La Merced are within easy walking distance of each other in the historic center.
+      INCIVA offers guided tours every hour — plan to arrive at the top of the hour.
+    </div>
+  </div>
+
+  <footer>Cali Museum Adventure · SebastianLinks</footer>
+</div>
+
+<!-- LEAFLET MAP -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// Verified coordinates (public sources)
+const VENUES = [
+  {
+    name: "INCIVA Natural History Museum",
+    lat:  3.4472, lng: -76.5458,
+    color: "#2F6F6E",
+    label: "🦎 INCIVA",
+    route: "morning"
+  },
+  {
+    name: "Planetario de Cali — YAWA",
+    lat:  3.4355, lng: -76.5443,
+    color: "#C2368C",
+    label: "🔭 Planetario",
+    route: "afternoon"
+  },
+  {
+    name: "Museo del Oro Calima",
+    lat:  3.4500, lng: -76.5357,
+    color: "#C29120",
+    label: "✨ Museo del Oro",
+    route: "afternoon"
+  },
+  {
+    name: "Museo Arqueológico La Merced",
+    lat:  3.4492, lng: -76.5338,
+    color: "#2F6F6E",
+    label: "⛪ La Merced",
+    route: "afternoon"
+  }
+];
+
+function makeIcon(emoji, color) {
+  return L.divIcon({
+    html: `<div style="
+      background:${color};color:#fff;border-radius:50%;
+      width:34px;height:34px;display:flex;align-items:center;
+      justify-content:center;font-size:16px;
+      box-shadow:0 2px 8px rgba(0,0,0,.3);border:2px solid #fff">
+      ${emoji}</div>`,
+    iconSize:[34,34], iconAnchor:[17,17], popupAnchor:[0,-18],
+    className:''
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const airbnbLat = CONFIG.airbnbLat;
+  const airbnbLng = CONFIG.airbnbLng;
+
+  const map = L.map('map').setView([3.445, -76.535], 13);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    maxZoom: 19
+  }).addTo(map);
+
+  // Airbnb marker
+  L.marker([airbnbLat, airbnbLng], {
+    icon: makeIcon('🏠', '#C29120')
+  }).addTo(map)
+    .bindPopup(`<b>${CONFIG.airbnbName}</b><br>Update CONFIG to set exact location`);
+
+  // Venue markers
+  VENUES.forEach(v => {
+    const emoji = v.label.split(' ')[0];
+    L.marker([v.lat, v.lng], { icon: makeIcon(emoji, v.color) })
+      .addTo(map)
+      .bindPopup(`<b>${v.name}</b>`);
+  });
+
+  // Morning route line: Airbnb → INCIVA → Airbnb
+  const morningCoords = [
+    [airbnbLat, airbnbLng],
+    [VENUES[0].lat, VENUES[0].lng],
+    [airbnbLat, airbnbLng]
+  ];
+  L.polyline(morningCoords, {
+    color:'#2F6F6E', weight:2.5, dashArray:'6 4', opacity:.7
+  }).addTo(map);
+
+  // Afternoon route: Airbnb → Planetario → Oro Calima → La Merced → Airbnb
+  const afternoonCoords = [
+    [airbnbLat, airbnbLng],
+    [VENUES[1].lat, VENUES[1].lng],
+    [VENUES[2].lat, VENUES[2].lng],
+    [VENUES[3].lat, VENUES[3].lng],
+    [airbnbLat, airbnbLng]
+  ];
+  L.polyline(afternoonCoords, {
+    color:'#C2368C', weight:2.5, dashArray:'6 4', opacity:.7
+  }).addTo(map);
+
+  // Update address displays
+  const addrEls = ['morning-start-addr','morning-end-addr','afternoon-start-addr','afternoon-end-addr'];
+  addrEls.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && (airbnbLat === 0 || el.textContent === 'Cali, Colombia')) {
+      if (airbnbLat === 0) {
+        el.textContent = 'Update CONFIG with your coordinates';
+      }
+    }
+  });
+});
+</script>
+
+</body>
+</html>
