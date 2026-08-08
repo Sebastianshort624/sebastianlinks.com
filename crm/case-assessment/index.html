@@ -679,55 +679,171 @@ clearBtn.addEventListener('click', () => {
    ============================================================ */
 
 analyzeBtn.addEventListener('click', async () => {
-
-  if (!selectedFiles.length) return;
+  if (!selectedFiles.length) {
+    alert('Please select at least one CSV file.');
+    return;
+  }
 
   analyzeBtn.disabled = true;
-
-  uploadNotice.className = 'notice info';
-  uploadNotice.textContent =
-    'Reading and analyzing CSV files...';
+  analyzeBtn.textContent = '⏳ Sending to CRM...';
 
   try {
+    const formData = new FormData();
 
-    allRows = [];
+    selectedFiles.forEach((file, index) => {
+      formData.append(`file${index + 1}`, file, file.name);
+    });
 
-    for (const file of selectedFiles) {
+    const response = await fetch(
+      'https://sebastianlinks-crm-api.sebastianshort624.workers.dev/api/import/preview',
+      {
+        method: 'POST',
+        body: formData
+      }
+    );
 
-      const text = await file.text();
+    const result = await response.json();
 
-      const rows = parseCSV(text);
-
-      rows.forEach((row, index) => {
-
-        allRows.push({
-          file: file.name,
-          rowNumber: index + 2,
-          data: row
-        });
-
-      });
-
+    if (!response.ok || !result.ok) {
+      throw new Error(
+        result.error || `CRM API returned HTTP ${response.status}`
+      );
     }
 
-    analyzeDuplicates();
+    console.log('CRM preview result:', result);
 
-    analysisSection.classList.remove('hidden');
-    duplicateSection.classList.remove('hidden');
+    /*
+     * Store the server-side preview result so the page can
+     * display the duplicate review information.
+     */
+    window.crmImportPreview = result;
 
-    uploadNotice.className = 'notice success';
-    uploadNotice.textContent =
-      'Analysis complete. No records were imported.';
+    /*
+     * Show the server result in the existing results area.
+     */
+    if (results) {
+      results.hidden = false;
+
+      results.innerHTML = `
+        <div class="result-card">
+          <h3>✅ CRM Preview Complete</h3>
+
+          <div class="result-grid">
+            <div>
+              <strong>Files</strong>
+              <span>${result.files_received}</span>
+            </div>
+
+            <div>
+              <strong>Rows</strong>
+              <span>${result.rows_received}</span>
+            </div>
+
+            <div>
+              <strong>Processed</strong>
+              <span>${result.rows_processed}</span>
+            </div>
+
+            <div>
+              <strong>Duplicates</strong>
+              <span>${result.duplicates_found}</span>
+            </div>
+
+            <div>
+              <strong>Rejected</strong>
+              <span>${result.rejected}</span>
+            </div>
+
+            <div>
+              <strong>New Records</strong>
+              <span>${result.new_records}</span>
+            </div>
+          </div>
+
+          <div class="import-safety">
+            <strong>🛡️ SAFE PREVIEW</strong>
+            <p>
+              No client records were created or modified.
+              No records were committed to the CRM.
+              No autodials were created.
+            </p>
+          </div>
+
+          ${
+            result.duplicate_matches &&
+            result.duplicate_matches.length
+              ? `
+                <div class="duplicate-review">
+                  <h3>⚠️ Duplicate Review Required</h3>
+
+                  <p>
+                    ${result.duplicate_matches.length}
+                    potential duplicate record(s) found.
+                  </p>
+
+                  <div class="duplicate-list">
+                    ${result.duplicate_matches.map(match => `
+                      <div class="duplicate-row">
+                        <div>
+                          <strong>
+                            ${escapeHtml(
+                              match.source_data?.name ||
+                              match.source_data?.full_name ||
+                              match.email ||
+                              'Unnamed record'
+                            )}
+                          </strong>
+                        </div>
+
+                        <div>
+                          Match:
+                          <strong>
+                            ${escapeHtml(match.match_type)}
+                          </strong>
+                        </div>
+
+                        <div>
+                          Existing Client:
+                          <strong>
+                            ${escapeHtml(
+                              String(match.matched_client_id)
+                            )}
+                          </strong>
+                        </div>
+
+                        <div>
+                          Source:
+                          ${escapeHtml(match.file_name)}
+                          — Row ${match.row_number}
+                        </div>
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+              `
+              : `
+                <div class="no-duplicates">
+                  ✅ No exact duplicate matches were found.
+                </div>
+              `
+          }
+        </div>
+      `;
+    }
 
   } catch (error) {
+    console.error('CRM import preview failed:', error);
 
-    console.error(error);
-
-    uploadNotice.className = 'notice error';
-    uploadNotice.textContent =
-      'Unable to analyze the selected CSV files.';
+    alert(
+      'CRM preview failed: ' +
+      (error.message || 'Unknown error')
+    );
 
   } finally {
+    analyzeBtn.disabled = false;
+    analyzeBtn.textContent = '🔍 Analyze Files';
+  }
+});
 
     analyzeBtn.disabled = false;
 
