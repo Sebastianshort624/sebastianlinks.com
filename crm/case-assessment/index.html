@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRM Case Assessment — Sebastianlinks</title>
+
+<style>
+:root {
+  --bg: #f5f7fa;
+  --card: #ffffff;
+  --text: #17202a;
+  --muted: #687385;
+  --border: #dfe4ea;
+  --primary: #1f6feb;
+  --primary-dark: #1557b0;
+  --success: #16803c;
+  --warning: #a15c00;
+  --danger: #b42318;
+  --soft-blue: #eef5ff;
+  --soft-green: #edf9f1;
+  --soft-yellow: #fff8e6;
+  --soft-red: #fff0ef;
+  --radius: 14px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+header {
+  background: #ffffff;
+  border-bottom: 1px solid var(--border);
+  padding: 18px 28px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.header-inner {
+  max-width: 1400px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.brand {
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.brand span {
+  color: var(--primary);
+}
+
+.header-subtitle {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+main {
+  max-width: 1400px;
+  margin: 30px auto;
+  padding: 0 24px 60px;
+}
+
+.page-title {
+  margin-bottom: 24px;
+}
+
+.page-title h1 {
+  margin: 0;
+  font-size: 30px;
+}
+
+.page-title p {
+  margin: 8px 0 0;
+  color: var(--muted);
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 22px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+}
+
+.card h2 {
+  margin: 0 0 6px;
+  font-size: 20px;
+}
+
+.card-description {
+  margin: 0 0 20px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.upload-zone {
+  border: 2px dashed #b9c5d3;
+  border-radius: 14px;
+  padding: 42px 24px;
+  text-align: center;
+  background: #fafcff;
+  cursor: pointer;
+  transition: .15s ease;
+}
+
+.upload-zone:hover {
+  border-color: var(--primary);
+  background: var(--soft-blue);
+}
+
+.upload-icon {
+  font-size: 42px;
+  margin-bottom: 10px;
+}
+
+.upload-zone strong {
+  display: block;
+  font-size: 18px;
+  margin-bottom: 6px;
+}
+
+.upload-zone span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.file-list {
+  margin-top: 18px;
+  display: grid;
+  gap: 10px;
+}
+
+.file-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 15px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.file-info {
+  min-width: 0;
+}
+
+.file-name {
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.file-meta {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+button {
+  border: 0;
+  border-radius: 9px;
+  padding: 11px 16px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: .45;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--primary-dark);
+}
+
+.btn-secondary {
+  background: #eef1f5;
+  color: #263241;
+}
+
+.btn-danger {
+  background: #fff0ef;
+  color: var(--danger);
+}
+
+.btn-success {
+  background: var(--success);
+  color: white;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.notice {
+  padding: 14px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  margin-top: 16px;
+}
+
+.notice.info {
+  background: var(--soft-blue);
+  color: #174a8b;
+}
+
+.notice.warning {
+  background: var(--soft-yellow);
+  color: var(--warning);
+}
+
+.notice.success {
+  background: var(--soft-green);
+  color: var(--success);
+}
+
+.notice.error {
+  background: var(--soft-red);
+  color: var(--danger);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+}
+
+.stat {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  background: #fff;
+}
+
+.stat-label {
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-size: 25px;
+  font-weight: 700;
+}
+
+.duplicate-table-wrap {
+  overflow-x: auto;
+  margin-top: 18px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 11px 10px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  vertical-align: top;
+}
+
+th {
+  background: #f7f9fb;
+  font-weight: 700;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.badge-danger {
+  background: var(--soft-red);
+  color: var(--danger);
+}
+
+.badge-warning {
+  background: var(--soft-yellow);
+  color: var(--warning);
+}
+
+.badge-success {
+  background: var(--soft-green);
+  color: var(--success);
+}
+
+.empty-state {
+  padding: 30px;
+  text-align: center;
+  color: var(--muted);
+}
+
+.hidden {
+  display: none !important;
+}
+
+footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  padding: 25px;
+}
+
+@media (max-width: 1000px) {
+  .stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 650px) {
+  .header-inner {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  main {
+    padding: 0 14px 40px;
+  }
+
+  .card {
+    padding: 18px;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .file-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-inner">
+    <div>
+      <div class="brand">⚡ Sebastianlinks <span>CRM</span></div>
+      <div class="header-subtitle">Case Assessment · Import & Duplicate Review</div>
+    </div>
+
+    <button
+      class="btn-secondary"
+      onclick="window.location.href='/hub/'">
+      ← Hub
+    </button>
+  </div>
+</header>
+
+<main>
+
+  <div class="page-title">
+    <h1>CRM Case Assessment</h1>
+    <p>Upload, analyze, deduplicate, and prepare client records before they enter the CRM.</p>
+  </div>
+
+  <!-- =========================================================
+       CSV IMPORT
+       ========================================================= -->
+
+  <section class="card">
+
+    <h2>📥 CRM Import</h2>
+
+    <p class="card-description">
+      Upload up to 5 CSV files. Files are analyzed together before anything
+      is imported into the CRM.
+    </p>
+
+    <label class="upload-zone" for="csvFiles">
+      <div class="upload-icon">📂</div>
+      <strong>Upload CSV files</strong>
+      <span>Choose up to 5 CSV files · Nothing is imported yet</span>
+    </label>
+
+    <input
+      id="csvFiles"
+      type="file"
+      accept=".csv,text/csv"
+      multiple
+    >
+
+    <div id="fileList" class="file-list"></div>
+
+    <div id="uploadNotice" class="notice info">
+      No files selected.
+    </div>
+
+    <div class="actions">
+      <button
+        id="analyzeBtn"
+        class="btn-primary"
+        disabled>
+        🔍 Analyze Files
+      </button>
+
+      <button
+        id="clearBtn"
+        class="btn-secondary"
+        disabled>
+        Clear Files
+      </button>
+    </div>
+
+  </section>
+
+
+  <!-- =========================================================
+       ANALYSIS SUMMARY
+       ========================================================= -->
+
+  <section id="analysisSection" class="card hidden">
+
+    <h2>🔍 Duplicate Analysis</h2>
+
+    <p class="card-description">
+      All uploaded files are analyzed together. Duplicate detection is
+      performed across files, not just within individual files.
+    </p>
+
+    <div class="stats">
+
+      <div class="stat">
+        <div class="stat-label">TOTAL ROWS</div>
+        <div id="totalRows" class="stat-value">0</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-label">UNIQUE</div>
+        <div id="uniqueRows" class="stat-value">0</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-label">EXACT DUPLICATES</div>
+        <div id="exactDuplicates" class="stat-value">0</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-label">PHONE DUPLICATES</div>
+        <div id="phoneDuplicates" class="stat-value">0</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-label">EMAIL DUPLICATES</div>
+        <div id="emailDuplicates" class="stat-value">0</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-label">POSSIBLE MATCHES</div>
+        <div id="possibleDuplicates" class="stat-value">0</div>
+      </div>
+
+    </div>
+
+    <div class="notice warning">
+      ⚠️ No records have been imported into the CRM. This is analysis only.
+    </div>
+
+  </section>
+
+
+  <!-- =========================================================
+       DUPLICATE REVIEW
+       ========================================================= -->
+
+  <section id="duplicateSection" class="card hidden">
+
+    <h2>👥 Duplicate Review</h2>
+
+    <p class="card-description">
+      Review records identified as duplicates or possible duplicates.
+      Nothing is automatically deleted.
+    </p>
+
+    <div id="duplicateTable" class="duplicate-table-wrap"></div>
+
+    <div class="actions">
+
+      <button
+        id="approveUniqueBtn"
+        class="btn-success"
+        disabled>
+        ✅ Import Approved Records
+      </button>
+
+      <button
+        id="resetAnalysisBtn"
+        class="btn-secondary">
+        ↻ Reset Analysis
+      </button>
+
+    </div>
+
+    <div class="notice info">
+      The Import button is intentionally disabled until the backend
+      import workflow is connected. This page currently performs
+      local file analysis only.
+    </div>
+
+  </section>
+
+</main>
+
+<footer>
+  Sebastianlinks CRM · CSV Import & Duplicate Review
+</footer>
+
+
+<script>
+
+const fileInput = document.getElementById('csvFiles');
+const fileList = document.getElementById('fileList');
+const uploadNotice = document.getElementById('uploadNotice');
+const analyzeBtn = document.getElementById('analyzeBtn');
+const clearBtn = document.getElementById('clearBtn');
+
+const analysisSection = document.getElementById('analysisSection');
+const duplicateSection = document.getElementById('duplicateSection');
+const duplicateTable = document.getElementById('duplicateTable');
+
+let selectedFiles = [];
+let allRows = [];
+let duplicateRecords = [];
+
+
+/* ============================================================
+   FILE SELECTION
+   ============================================================ */
+
+fileInput.addEventListener('change', () => {
+
+  const incoming = Array.from(fileInput.files);
+
+  if (incoming.length > 5) {
+    uploadNotice.className = 'notice error';
+    uploadNotice.textContent =
+      'You can upload a maximum of 5 CSV files.';
+    fileInput.value = '';
+    return;
+  }
+
+  selectedFiles = incoming;
+
+  renderFileList();
+
+});
+
+
+/* ============================================================
+   RENDER FILE LIST
+   ============================================================ */
+
+function renderFileList() {
+
+  fileList.innerHTML = '';
+
+  if (!selectedFiles.length) {
+
+    uploadNotice.className = 'notice info';
+    uploadNotice.textContent = 'No files selected.';
+
+    analyzeBtn.disabled = true;
+    clearBtn.disabled = true;
+
+    return;
+  }
+
+  selectedFiles.forEach((file, index) => {
+
+    const row = document.createElement('div');
+    row.className = 'file-row';
+
+    row.innerHTML = `
+      <div class="file-info">
+        <div class="file-name">
+          ${index + 1}. ${escapeHtml(file.name)}
+        </div>
+
+        <div class="file-meta">
+          ${formatBytes(file.size)}
+        </div>
+      </div>
+
+      <button
+        class="btn-danger"
+        onclick="removeFile(${index})">
+        Remove
+      </button>
+    `;
+
+    fileList.appendChild(row);
+
+  });
+
+  uploadNotice.className = 'notice info';
+
+  uploadNotice.textContent =
+    `${selectedFiles.length} CSV file${selectedFiles.length === 1 ? '' : 's'} selected.`;
+
+  analyzeBtn.disabled = false;
+  clearBtn.disabled = false;
+}
+
+
+/* ============================================================
+   REMOVE FILE
+   ============================================================ */
+
+function removeFile(index) {
+
+  selectedFiles.splice(index, 1);
+
+  fileInput.value = '';
+
+  renderFileList();
+}
+
+
+/* ============================================================
+   CLEAR
+   ============================================================ */
+
+clearBtn.addEventListener('click', () => {
+
+  selectedFiles = [];
+  allRows = [];
+  duplicateRecords = [];
+
+  fileInput.value = '';
+
+  analysisSection.classList.add('hidden');
+  duplicateSection.classList.add('hidden');
+
+  renderFileList();
+
+});
+
+
+/* ============================================================
+   ANALYZE
+   ============================================================ */
+
+analyzeBtn.addEventListener('click', async () => {
+
+  if (!selectedFiles.length) return;
+
+  analyzeBtn.disabled = true;
+
+  uploadNotice.className = 'notice info';
+  uploadNotice.textContent =
+    'Reading and analyzing CSV files...';
+
+  try {
+
+    allRows = [];
+
+    for (const file of selectedFiles) {
+
+      const text = await file.text();
+
+      const rows = parseCSV(text);
+
+      rows.forEach((row, index) => {
+
+        allRows.push({
+          file: file.name,
+          rowNumber: index + 2,
+          data: row
+        });
+
+      });
+
+    }
+
+    analyzeDuplicates();
+
+    analysisSection.classList.remove('hidden');
+    duplicateSection.classList.remove('hidden');
+
+    uploadNotice.className = 'notice success';
+    uploadNotice.textContent =
+      'Analysis complete. No records were imported.';
+
+  } catch (error) {
+
+    console.error(error);
+
+    uploadNotice.className = 'notice error';
+    uploadNotice.textContent =
+      'Unable to analyze the selected CSV files.';
+
+  } finally {
+
+    analyzeBtn.disabled = false;
+
+  }
+
+});
+
+
+/* ============================================================
+   CSV PARSER
+   ============================================================ */
+
+function parseCSV(text) {
+
+  const rows = [];
+
+  let row = [];
+  let cell = '';
+  let insideQuotes = false;
+
+  for (let i = 0; i < text.length; i++) {
+
+    const char = text[i];
+    const next = text[i + 1];
+
+    if (char === '"' && insideQuotes && next === '"') {
+
+      cell += '"';
+      i++;
+      continue;
+
+    }
+
+    if (char === '"') {
+
+      insideQuotes = !insideQuotes;
+      continue;
+
+    }
+
+    if (char === ',' && !insideQuotes) {
+
+      row.push(cell);
+      cell = '';
+      continue;
+
+    }
+
+    if ((char === '\n' || char === '\r') && !insideQuotes) {
+
+      if (char === '\r' && next === '\n') {
+        i++;
+      }
+
+      row.push(cell);
+      cell = '';
+
+      if (row.some(value => value.trim() !== '')) {
+        rows.push(row);
+      }
+
+      row = [];
+
+      continue;
+    }
+
+    cell += char;
+  }
+
+  if (cell !== '' || row.length) {
+
+    row.push(cell);
+
+    if (row.some(value => value.trim() !== '')) {
+      rows.push(row);
+    }
+
+  }
+
+  if (!rows.length) return [];
+
+  const headers = rows[0].map(h =>
+    normalizeHeader(h)
+  );
+
+  return rows.slice(1).map(values => {
+
+    const object = {};
+
+    headers.forEach((header, index) => {
+
+      object[header] =
+        values[index] !== undefined
+          ? values[index].trim()
+          : '';
+
+    });
+
+    return object;
+
+  });
+
+}
+
+
+/* ============================================================
+   HEADER NORMALIZATION
+   ============================================================ */
+
+function normalizeHeader(value) {
+
+  return String(value || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '');
+
+}
+
+
+/* ============================================================
+   DUPLICATE ANALYSIS
+   ============================================================ */
+
+function analyzeDuplicates() {
+
+  duplicateRecords = [];
+
+  const exactMap = new Map();
+  const phoneMap = new Map();
+  const emailMap = new Map();
+  const nameMap = new Map();
+
+  allRows.forEach((record, index) => {
+
+    const data = record.data;
+
+    const exactKey =
+      JSON.stringify(
+        Object.keys(data)
+          .sort()
+          .reduce((obj, key) => {
+            obj[key] = normalizeValue(data[key]);
+            return obj;
+          }, {})
+      );
+
+    const phone = findPhone(data);
+    const email = findEmail(data);
+
+    const firstName =
+      findValue(data, [
+        'first_name',
+        'firstname',
+        'first'
+      ]);
+
+    const lastName =
+      findValue(data, [
+        'last_name',
+        'lastname',
+        'last'
+      ]);
+
+    const nameKey =
+      normalizeValue(`${firstName} ${lastName}`);
+
+    if (exactMap.has(exactKey)) {
+
+      duplicateRecords.push({
+        record,
+        reason: 'Exact duplicate',
+        match: exactMap.get(exactKey)
+      });
+
+    } else {
+
+      exactMap.set(exactKey, record);
+
+    }
+
+    if (phone) {
+
+      if (phoneMap.has(phone)) {
+
+        duplicateRecords.push({
+          record,
+          reason: 'Phone duplicate',
+          match: phoneMap.get(phone)
+        });
+
+      } else {
+
+        phoneMap.set(phone, record);
+
+      }
+
+    }
+
+    if (email) {
+
+      if (emailMap.has(email)) {
+
+        duplicateRecords.push({
+          record,
+          reason: 'Email duplicate',
+          match: emailMap.get(email)
+        });
+
+      } else {
+
+        emailMap.set(email, record);
+
+      }
+
+    }
+
+    if (nameKey && nameKey.length > 4) {
+
+      if (nameMap.has(nameKey)) {
+
+        duplicateRecords.push({
+          record,
+          reason: 'Possible name match',
+          match: nameMap.get(nameKey)
+        });
+
+      } else {
+
+        nameMap.set(nameKey, record);
+
+      }
+
+    }
+
+  });
+
+
+  updateStatistics();
+
+  renderDuplicateTable();
+
+}
+
+
+/* ============================================================
+   STATISTICS
+   ============================================================ */
+
+function updateStatistics() {
+
+  const exact =
+    duplicateRecords.filter(
+      d => d.reason === 'Exact duplicate'
+    ).length;
+
+  const phone =
+    duplicateRecords.filter(
+      d => d.reason === 'Phone duplicate'
+    ).length;
+
+  const email =
+    duplicateRecords.filter(
+      d => d.reason === 'Email duplicate'
+    ).length;
+
+  const possible =
+    duplicateRecords.filter(
+      d => d.reason === 'Possible name match'
+    ).length;
+
+  const unique =
+    Math.max(
+      0,
+      allRows.length - duplicateRecords.length
+    );
+
+  document.getElementById('totalRows').textContent =
+    allRows.length;
+
+  document.getElementById('uniqueRows').textContent =
+    unique;
+
+  document.getElementById('exactDuplicates').textContent =
+    exact;
+
+  document.getElementById('phoneDuplicates').textContent =
+    phone;
+
+  document.getElementById('emailDuplicates').textContent =
+    email;
+
+  document.getElementById('possibleDuplicates').textContent =
+    possible;
+
+}
+
+
+/* ============================================================
+   DUPLICATE TABLE
+   ============================================================ */
+
+function renderDuplicateTable() {
+
+  if (!duplicateRecords.length) {
+
+    duplicateTable.innerHTML = `
+      <div class="empty-state">
+        <div style="font-size:36px;">✅</div>
+        <strong>No duplicates detected.</strong>
+        <div>All analyzed rows appear unique based on the current checks.</div>
+      </div>
+    `;
+
+    return;
+  }
+
+  let html = `
+    <table>
+      <thead>
+        <tr>
+          <th>Source</th>
+          <th>Row</th>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Email</th>
+          <th>Reason</th>
+          <th>Matching Record</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  duplicateRecords.forEach(item => {
+
+    const data = item.record.data;
+    const match = item.match.data || {};
+
+    const name =
+      `${findValue(data, ['first_name','firstname','first'])} ${findValue(data, ['last_name','lastname','last'])}`.trim();
+
+    const phone =
+      findPhone(data);
+
+    const email =
+      findEmail(data);
+
+    const matchName =
+      `${findValue(match, ['first_name','firstname','first'])} ${findValue(match, ['last_name','lastname','last'])}`.trim();
+
+    const badgeClass =
+      item.reason === 'Possible name match'
+        ? 'badge-warning'
+        : 'badge-danger';
+
+    html += `
+      <tr>
+        <td>${escapeHtml(item.record.file)}</td>
+        <td>${item.record.rowNumber}</td>
+        <td>${escapeHtml(name || '—')}</td>
+        <td>${escapeHtml(phone || '—')}</td>
+        <td>${escapeHtml(email || '—')}</td>
+        <td>
+          <span class="badge ${badgeClass}">
+            ${escapeHtml(item.reason)}
+          </span>
+        </td>
+        <td>
+          ${escapeHtml(matchName || item.match.file + ' row ' + item.match.rowNumber)}
+        </td>
+      </tr>
+    `;
+
+  });
+
+  html += `
+      </tbody>
+    </table>
+  `;
+
+  duplicateTable.innerHTML = html;
+
+}
+
+
+/* ============================================================
+   VALUE HELPERS
+   ============================================================ */
+
+function findValue(data, keys) {
+
+  for (const key of keys) {
+
+    if (
+      data[key] !== undefined &&
+      String(data[key]).trim() !== ''
+    ) {
+
+      return String(data[key]).trim();
+
+    }
+
+  }
+
+  return '';
+
+}
+
+
+function findPhone(data) {
+
+  const value = findValue(data, [
+    'phone',
+    'phone_number',
+    'mobile',
+    'mobile_phone',
+    'telephone',
+    'cell',
+    'cell_phone'
+  ]);
+
+  return value
+    ? value.replace(/\D/g, '')
+    : '';
+
+}
+
+
+function findEmail(data) {
+
+  const value = findValue(data, [
+    'email',
+    'email_address',
+    'primary_email'
+  ]);
+
+  return value
+    ? value.toLowerCase().trim()
+    : '';
+
+}
+
+
+function normalizeValue(value) {
+
+  return String(value || '')
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, ' ');
+
+}
+
+
+function formatBytes(bytes) {
+
+  if (!bytes) return '0 B';
+
+  const units = [
+    'B',
+    'KB',
+    'MB',
+    'GB'
+  ];
+
+  const index =
+    Math.floor(
+      Math.log(bytes) / Math.log(1024)
+    );
+
+  return (
+    bytes / Math.pow(1024, index)
+  ).toFixed(1)
+  + ' '
+  + units[index];
+
+}
+
+
+function escapeHtml(value) {
+
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+
+}
+
+
+/* ============================================================
+   RESET
+   ============================================================ */
+
+document.getElementById('resetAnalysisBtn')
+  .addEventListener('click', () => {
+
+    analysisSection.classList.add('hidden');
+    duplicateSection.classList.add('hidden');
+
+    allRows = [];
+    duplicateRecords = [];
+
+  });
+
+</script>
+
+</body>
+</html>
