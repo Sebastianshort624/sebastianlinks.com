@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Case Assessment — Client Protection Group</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="https://alphafiles.net/vitals/assets/case-engine.js"></script>
+<style>
+:root{
+  --cpg-blue:#01A9F4; --cpg-blue-dark:#0089E0; --cpg-blue-pale:#EAF6FE;
+  --slate-900:#1E2430; --slate-700:#4B5263; --slate-500:#6B7280; --slate-300:#D6DAE1;
+  --bg:#F5F7FA; --card:#FFFFFF; --border:#E4E8EF;
+  --shadow:0 1px 2px rgba(30,36,48,.04), 0 4px 16px rgba(30,36,48,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Inter",sans-serif;font-size:14px;background:var(--bg);color:var(--slate-900);line-height:1.5}
+.wrap{max-width:880px;margin:0 auto;padding:0 16px}
+
+/* ── HEADER ── */
+.hdr{background:var(--card);border-bottom:1px solid var(--border);padding:22px 0}
+.hdr-inner{max-width:880px;margin:0 auto;padding:0 16px;display:flex;align-items:center;gap:16px}
+.hdr-logo{height:44px;width:auto;display:block}
+.hdr-text{display:flex;flex-direction:column;gap:2px}
+.hdr-title{font-size:15px;font-weight:800;letter-spacing:.4px;color:var(--slate-900)}
+.hdr-sub{font-size:12px;font-weight:700;letter-spacing:1.2px;color:var(--cpg-blue-dark);text-transform:uppercase}
+.hdr-tag{font-size:12px;color:var(--slate-500);margin-left:auto;display:none}
+@media(min-width:640px){.hdr-tag{display:block}}
+
+/* ── PROGRESS RIBBON ── */
+.ribbon{background:linear-gradient(135deg,var(--cpg-blue),var(--cpg-blue-dark));color:#fff;padding:14px 0}
+.ribbon-inner{max-width:880px;margin:0 auto;padding:0 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.ribbon-stat{font-size:12px;font-weight:600;opacity:.95}
+.ribbon-stat b{font-size:15px;font-weight:800}
+
+/* ── LAYOUT ── */
+.main{padding:24px 0 60px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:22px;margin-bottom:16px}
+.card-num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:6px;background:var(--cpg-blue-pale);color:var(--cpg-blue-dark);font-size:11px;font-weight:800;margin-right:8px}
+.card-hdr{font-size:13px;font-weight:800;color:var(--slate-900);letter-spacing:.2px;margin-bottom:4px;display:flex;align-items:center}
+.card-desc{font-size:12px;color:var(--slate-500);margin-bottom:16px;padding-left:30px}
+
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.frow3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+@media(max-width:560px){.frow,.frow3{grid-template-columns:1fr}}
+.ff{margin-bottom:10px}
+.ff label{display:block;font-size:11px;font-weight:700;color:var(--slate-500);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
+.ff input,.ff select,.ff textarea{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:9px 11px;font-size:14px;font-family:"Inter",sans-serif;color:var(--slate-900);background:#fff}
+.ff input:focus,.ff select:focus,.ff textarea:focus{outline:none;border-color:var(--cpg-blue)}
+.ff textarea{resize:vertical;min-height:60px}
+
+.crm-box{width:100%;min-height:110px;padding:12px;border:1.5px dashed var(--cpg-blue);border-radius:10px;font-family:"Inter",sans-serif;font-size:12px;resize:vertical;background:var(--cpg-blue-pale)}
+.btn{padding:10px 20px;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:"Inter",sans-serif}
+.btn-primary{background:var(--cpg-blue);color:#fff}
+.btn-primary:hover{background:var(--cpg-blue-dark)}
+.btn-generate{width:100%;padding:16px;background:var(--slate-900);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:"Inter",sans-serif;letter-spacing:.3px}
+.btn-generate:hover{background:#111722}
+.status{margin-top:10px;font-size:12px;color:var(--slate-700);display:none;line-height:1.6}
+.pop-status{margin-left:12px;font-size:12px;font-weight:700;color:#16A34A;display:none}
+
+.resort-block{border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px;background:#FBFCFE}
+.resort-block-hdr{font-size:12px;font-weight:800;color:var(--cpg-blue-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
+
+.sec{font-size:11px;font-weight:800;color:var(--slate-500);text-transform:uppercase;letter-spacing:.5px;margin:14px 0 8px}
+.notice{font-size:11px;color:var(--slate-500);background:var(--bg);border-radius:8px;padding:10px 12px;margin:10px 0}
+
+.review-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+@media(max-width:560px){.review-grid{grid-template-columns:1fr}}
+.review-tile{text-align:center;padding:16px 8px;border-radius:10px;border:1px solid var(--border)}
+.review-tile.good{background:#F0FDF4;border-color:#BBF7D0}
+.review-tile.warn{background:#FFFBEB;border-color:#FDE68A}
+.review-num{font-size:26px;font-weight:800}
+.review-tile.good .review-num{color:#16A34A}
+.review-tile.warn .review-num{color:#D97706}
+.review-lbl{font-size:11px;color:var(--slate-500);text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+.blank-list{font-size:11px;color:var(--slate-500);line-height:1.8}
+
+.checkrow{display:flex;gap:16px;flex-wrap:wrap}
+.checkrow label{display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;color:var(--slate-700)}
+
+footer{text-align:center;padding:20px 0 40px;font-size:11px;color:var(--slate-500)}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-inner">
+    <img class="hdr-logo" src="/case-assessment/assets/cpg-logo.png" alt="Client Protection Group">
+    <div class="hdr-text">
+      <div class="hdr-title">CLIENT PROTECTION GROUP</div>
+      <div class="hdr-sub">Case Assessment</div>
+    </div>
+    <div class="hdr-tag">Timeshare Ownership &amp; Cancellation Assessment</div>
+  </div>
+</div>
+
+<div class="ribbon">
+  <div class="ribbon-inner">
+    <div class="ribbon-stat"><b id="rb-filled">0</b> / <span id="rb-total">0</span> fields populated</div>
+    <div class="ribbon-stat" id="rb-name">New Case</div>
+  </div>
+</div>
+
+<div class="wrap main">
+
+  <!-- 1. CLIENT INFORMATION -->
+  <div class="card">
+    <div class="card-hdr"><span class="card-num">1</span>Client Information</div>
+    <div class="card-desc">Owner and contact information</div>
+    <div class="frow">
+      <div class="ff"><label>First Name</label><input id="v-first" oninput="onFieldChange()"></div>
+      <div class="ff"><label>Last Name</label><input id="v-last" oninput="onFieldChange()"></div>
+    </div>
+    <div class="frow">
+      <div class="ff"><label>Co-Owner First</label><input id="v-co" oninput="onFieldChange()"></div>
+      <div class="ff"><label>Co-Owner Last</label><input id="v-col" oninput="onFieldChange()"></div>
+    </div>
+    <div class="ff"><label>Mailing Address</label><input id="v-mail-addr" oninput="onFieldChange()"></div>
+    <div class="frow3">
+      <div class="ff"><label>City</label><input id="v-owner-city" oninput="onFieldChange()"></div>
+      <div class="ff"><label>State</label><input id="v-owner-state" oninput="onFieldChange()"></div>
+      <div class="ff"><label>ZIP</label><input id="v-owner-zip" oninput="onFieldChange()"></div>
+    </div>
+    <div class="frow">
+      <div class="ff"><label>Primary Phone</label><input id="v-phone" type="tel" oninput="onFieldChange()"></div>
+      <div class="ff"><label>Secondary Phone</label><input id="v-phone2" type="tel" oninput="onFieldChange()"></div>
+    </div>
+    <div class="frow">
+      <div class="ff"><label>Email 1</label><input id="v-email" type="email" oninput="onFieldChange()"></div>
+      <div class="ff"><label>Email 2</label><input id="v-email2" type="email" oninput="onFieldChange()"></div>
+    </div>
+    <div class="ff" style="max-width:220px"><label>Agreement Date</label><input id="v-agr-date" type="date" oninput="onFieldChange()"></div>
+  </div>
+
+  <!-- 2. CRM IMPORT -->
+  <div class="card" style="border-color:var(--cpg-blue)">
+    <div class="card-hdr"><span class="card-num">2</span>CRM Import</div>
+    <div class="card-desc">Paste client info from the CRM — names, resort, phone, email, fees, mortgage, reason for wanting out, etc.</div>
+    <textarea id="crm-paste-box" class="crm-box" placeholder="Paste CRM data here, then click Populate."></textarea>
+    <div style="margin-top:10px">
+      <button class="btn btn-primary" onclick="populateFromCRM()">⚡ Populate</button>
+      <span id="pop-status" class="pop-status">✓ Fields populated — review below</span>
+    </div>
+  </div>
+
+  <!-- 3. RESORT & OWNERSHIP (Resort 1) -->
+  <div class="card">
+    <div class="card-hdr"><span class="card-num">3</span>Resort &amp; Ownership</div>
+    <div class="card-desc">Resort #1</div>
+    <div class="frow">
+      <div class="ff"><label>Resort Name</label><input id="v-resort" oninput="onFieldChange()"></div>
+      <div class="ff"><label>Location</label><input id="v-loc" placeholder="City, State" oninput="onFieldChange()"></div>
+    </div>
+    <input type="hidden" id="v-rescity">
+    <div class="frow3">
+      <div class="ff"><label>Paid Off?</label><select id="v-r1-paidoff" onchange="onFieldChange()"><option value="">Select...</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+      <div class="ff"><label>Balance</label><input id="v-balance" type="number" oninput="onFieldChange()"></div>
+      <div class="ff"><label>Current?</label><select id="v-r1-current" onchange="onFieldChange()"><option value="">Select...</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+    </div>
+    <div class="ff" style="max-width:260px"><label>Payment Amount</label><input id="v-mtg" type="number" oninput="onFieldChange()"></div>
+    <div class="frow">
+      <div class="ff"><label>Ownership Type</label><select id="v-r1-owntype" onchange="onFieldChange()"><option value="">Select...</option><option value="week">Week</option><option value="points">Points</option></select></div>
+      <div class="ff"><label>Usage Rights</label><select id="v-r1-usage" onchange="onFieldChange()"><option value="">Select...</option><option value="annual">Annual</option><option value="even">Even</option><option value="odd">Odd</option><option value="triennial">Triennial</option></select></div>
+    </div>
+    <div class="frow3">
+      <div class="ff"><label>Maintenance Fee</label><input id="v-mtf" type="number" oninput="onFieldChange()"></div>
+      <div class="ff"><label>MTF Paid</label><select id="v-r1-mtffreq2" onchange="onFieldChange()"><option value="">Select...</option><option value="annually">Annually</option><option value="biennially">Biennially</option><option value="triennially">Triennially</option></select></div>
+      <div class="ff"><label>MTF Current?</label><select id="v-r1-mtfcurrent" onchange="onFieldChange()"><option value="">Select...</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+    </div>
+    <div class="ff"><label>Notes</label><textarea id="v-r1-notes" oninput="onFieldChange()"></textarea></div>
+  </div>
+
+  <!-- 4. ADDITIONAL RESORTS 2-4 -->
+  <div class="card">
+    <div class="card-hdr"><span class="card-num">4</span>Additional Resorts</div>
+    <div class="card-desc">Resorts #2–4 (leave blank if not applicable)</div>
+    <div id="resorts-234-mount"></div>
+  </div>
+
+  <!-- 5. CASE ASSESSMENT -->
+  <div class="card">
+    <div class="card-hdr"><span class="card-num">5</span>Case Assessment</div>
+    <div class="card-desc">Reason for wanting out, other ownerships, notes</div>
+    <div class="ff"><label>Reason for Wanting Out</label><textarea id="v-why" oninput="onFieldChange()"></textarea></div>
+    <div class="ff" style="max-width:260px"><label>Own Any Other Timeshares?</label><select id="v-own-other" onchange="onFieldChange()"><option value="">Select...</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+    <div class="ff"><label>Final Notes</label><textarea id="v-final-notes" oninput="onFieldChange()"></textarea></div>
+  </div>
+
+  <!-- 6. PAYMENT INFORMATION -->
+  <div class="card">
+    <div class="card-hdr"><span class="card-num">6</span>Payment Information</div>
+    <div class="card-desc">Non-sensitive payment details only</div>
+    <div class="frow">
+      <div class="ff"><label>Timeshare Cancellation Fee</label><input id="v-fee" type="number" oninput="onFieldChange()"></div>
+      <div class="ff"><label>Paid in Full?</label><select id="v-pay-paidinfull" onchange="onFieldChange()"><option value="">Select...</option><option value="yes">Yes</option></select></div>
+    </div>
+    <div class="frow">
+      <div class="ff"><label>Down Payment Amount</label><input id="v-pay-down" type="number" oninput="onFieldChange()"></div>
+      <div class="ff"><label>Amount Being Financed</label><input id="v-pay-financed" type="number" oninput="onFieldChange()"></div>
+    </div>
+    <div class="frow">
+      <div class="ff"><label>2.5% Processing Charge</label><input id="v-pay-processing" type="number" oninput="onFieldChange()"></div>
+      <div class="ff"><label>Total Charged Today</label><input id="v-pay-total-today" type="number" oninput="onFieldChange()"></div>
+    </div>
+    <div class="ff"><label>Payment Terms</label><input id="v-pay-terms" oninput="onFieldChange()"></div>
+    <div class="notice">Card numbers, CVV, routing numbers, and account numbers are intentionally not collected here for security reasons.</div>
+
+    <div class="sec">Payment Method 1</div>
+    <div class="frow">
+      <div class="ff"><label>Amount</label><input id="v-pm1-amount" type="number" oninput="onFieldChange()"></div>
+      <div class="ff"><label>Method</label><select id="v-pm1-type" onchange="onFieldChange()"><option value="">Select...</option><option value="visa">Visa</option><option value="mastercard">Mastercard</option><option value="discover">Discover</option><option value="check">Check</option></select></div>
+    </div>
+    <div class="frow">
+      <div class="ff"><label>Accountholder Name</label><input id="v-pm1-acct" oninput="onFieldChange()"></div>
+      <div class="ff"><label>Billing ZIP</label><input id="v-pm1-zip" oninput="onFieldChange()"></div>
+    </div>
+    <div class="ff"><label>Notes</label><input id="v-pm1-notes" oninput="onFieldChange()"></div>
+
+    <div class="pt" onclick="toggleMorePM()" style="cursor:pointer;color:var(--cpg-blue-dark);font-size:12px;font-weight:700;margin-top:4px">+ Add Payment Method 2–4 / Financing</div>
+    <div id="pm-234-mount" style="display:none;margin-top:10px"></div>
+
+    <div class="pt" onclick="toggleOfficial()" style="cursor:pointer;color:var(--cpg-blue-dark);font-size:12px;font-weight:700;margin-top:14px">+ Official Use</div>
+    <div id="official-mount" style="display:none;margin-top:10px"></div>
+  </div>
+
+  <!-- 7. AGREEMENT REVIEW -->
+  <div class="card">
+    <div class="card-hdr"><span class="card-num">7</span>Agreement Review</div>
+    <div class="card-desc">Fields populated vs. still missing, before generating</div>
+    <div class="review-grid">
+      <div class="review-tile good"><div class="review-num" id="rev-filled">0</div><div class="review-lbl">Fields Populated</div></div>
+      <div class="review-tile warn"><div class="review-num" id="rev-blank">0</div><div class="review-lbl">Fields Missing</div></div>
+    </div>
+    <div class="sec" id="rev-blank-hdr" style="display:none">Fields still missing</div>
+    <div class="blank-list" id="rev-blank-list"></div>
+  </div>
+
+  <!-- 8. GENERATE AGREEMENT -->
+  <div class="card">
+    <div class="card-hdr"><span class="card-num">8</span>Generate Agreement</div>
+    <div class="card-desc">Creates the completed Cancellation Agreement PDF from the information above</div>
+    <button class="btn-generate" onclick="generateCancellationPDF()">📄 GENERATE CANCELLATION AGREEMENT</button>
+    <div id="pdf-gen-status" class="status"></div>
+  </div>
+
+</div>
+
+<footer>Client Protection Group — Case Assessment Tool</footer>
+
+<script>
+(function(){
+  function resortExtraHTML(n){
+    return ''
+    +'<div class="resort-block"><div class="resort-block-hdr">Resort #'+n+'</div>'
+    +'<div class="frow">'
+    +'<div class="ff"><label>Resort Name</label><input id="v-r'+n+'-name" oninput="onFieldChange()"></div>'
+    +'<div class="ff"><label>Location</label><input id="v-r'+n+'-loc" placeholder="City, State" oninput="onFieldChange()"></div>'
+    +'</div>'
+    +'<div class="frow3">'
+    +'<div class="ff"><label>Paid Off?</label><select id="v-r'+n+'-paidoff" onchange="onFieldChange()"><option value="">Select...</option><option value="yes">Yes</option><option value="no">No</option></select></div>'
+    +'<div class="ff"><label>Balance</label><input id="v-r'+n+'-balance" type="number" oninput="onFieldChange()"></div>'
+    +'<div class="ff"><label>Current?</label><select id="v-r'+n+'-current" onchange="onFieldChange()"><option value="">Select...</option><option value="yes">Yes</option><option value="no">No</option></select></div>'
+    +'</div>'
+    +'<div class="ff" style="max-width:260px"><label>Payment Amount</label><input id="v-r'+n+'-payment" type="number" oninput="onFieldChange()"></div>'
+    +'<div class="frow">'
+    +'<div class="ff"><label>Ownership Type</label><select id="v-r'+n+'-owntype" onchange="onFieldChange()"><option value="">Select...</option><option value="week">Week</option><option value="points">Points</option></select></div>'
+    +'<div class="ff"><label>Usage Rights</label><select id="v-r'+n+'-usage" onchange="onFieldChange()"><option value="">Select...</option><option value="annual">Annual</option><option value="even">Even</option><option value="odd">Odd</option><option value="triennial">Triennial</option></select></div>'
+    +'</div>'
+    +'<div class="frow3">'
+    +'<div class="ff"><label>Maintenance Fee</label><input id="v-r'+n+'-mtf" type="number" oninput="onFieldChange()"></div>'
+    +'<div class="ff"><label>MTF Paid</label><select id="v-r'+n+'-mtffreq" onchange="onFieldChange()"><option value="">Select...</option><option value="annually">Annually</option><option value="biennially">Biennially</option><option value="triennially">Triennially</option></select></div>'
+    +'<div class="ff"><label>MTF Current?</label><select id="v-r'+n+'-mtfcurrent" onchange="onFieldChange()"><option value="">Select...</option><option value="yes">Yes</option><option value="no">No</option></select></div>'
+    +'</div>'
+    +'<div class="ff"><label>Notes</label><textarea id="v-r'+n+'-notes" oninput="onFieldChange()"></textarea></div>'
+    +'</div>';
+  }
+  var mount=document.getElementById('resorts-234-mount');
+  if(mount) mount.innerHTML = resortExtraHTML(2)+resortExtraHTML(3)+resortExtraHTML(4);
+
+  function pmHTML(n){
+    if(n===4){
+      return ''
+      +'<div class="sec">Payment Method 4 — Financing</div>'
+      +'<div class="frow">'
+      +'<div class="ff"><label>Amount</label><input id="v-pm4-amount" type="number" oninput="onFieldChange()"></div>'
+      +'<div class="ff"><label>Financing Co.</label><input id="v-pm4-financing" oninput="onFieldChange()"></div>'
+      +'</div>'
+      +'<div class="frow">'
+      +'<div class="ff"><label>Accountholder Name</label><input id="v-pm4-acct" oninput="onFieldChange()"></div>'
+      +'<div class="ff"><label>Billing ZIP</label><input id="v-pm4-zip" oninput="onFieldChange()"></div>'
+      +'</div>'
+      +'<div class="frow">'
+      +'<div class="ff"><label>Amount Paid to Lender</label><input id="v-pm4-lenderpaid" type="number" oninput="onFieldChange()"></div>'
+      +'<div class="ff"><label>Monthly Payment</label><input id="v-pm4-monthly" type="number" oninput="onFieldChange()"></div>'
+      +'</div>'
+      +'<div class="frow">'
+      +'<div class="ff"><label># of Payments</label><input id="v-pm4-numpayments" type="number" oninput="onFieldChange()"></div>'
+      +'<div class="ff"><label>Starting Date</label><input id="v-pm4-starting" type="date" oninput="onFieldChange()"></div>'
+      +'</div>';
+    }
+    return ''
+    +'<div class="sec">Payment Method '+n+'</div>'
+    +'<div class="frow">'
+    +'<div class="ff"><label>Amount</label><input id="v-pm'+n+'-amount" type="number" oninput="onFieldChange()"></div>'
+    +'<div class="ff"><label>Method</label><select id="v-pm'+n+'-type" onchange="onFieldChange()"><option value="">Select...</option><option value="visa">Visa</option><option value="mastercard">Mastercard</option><option value="discover">Discover</option><option value="check">Check</option></select></div>'
+    +'</div>'
+    +'<div class="frow">'
+    +'<div class="ff"><label>Accountholder Name</label><input id="v-pm'+n+'-acct" oninput="onFieldChange()"></div>'
+    +'<div class="ff"><label>Billing ZIP</label><input id="v-pm'+n+'-zip" oninput="onFieldChange()"></div>'
+    +'</div>'
+    +'<div class="ff"><label>Notes</label><input id="v-pm'+n+'-notes" oninput="onFieldChange()"></div>';
+  }
+  var pmMount=document.getElementById('pm-234-mount');
+  if(pmMount) pmMount.innerHTML = pmHTML(2)+pmHTML(3)+pmHTML(4);
+
+  var offMount=document.getElementById('official-mount');
+  if(offMount) offMount.innerHTML = '<div class="checkrow">'
+    +'<label><input type="checkbox" id="v-off-military" onchange="onFieldChange()"> Active Military</label>'
+    +'<label><input type="checkbox" id="v-off-65plus" onchange="onFieldChange()"> 65+</label>'
+    +'<label><input type="checkbox" id="v-off-paidfull" onchange="onFieldChange()"> Paid in Full</label>'
+    +'<label><input type="checkbox" id="v-off-mortgage" onchange="onFieldChange()"> Mortgage</label>'
+    +'<label><input type="checkbox" id="v-off-3rdparty" onchange="onFieldChange()"> 3rd Party Financing</label>'
+    +'</div>';
+})();
+
+window.toggleMorePM=function(){ var el=document.getElementById('pm-234-mount'); el.style.display = el.style.display==='none'?'block':'none'; };
+window.toggleOfficial=function(){ var el=document.getElementById('official-mount'); el.style.display = el.style.display==='none'?'block':'none'; };
+
+// Same-origin copy of the agreement PDF (see build notes on CORS).
+window.CASE_PDF_URL='/case-assessment/assets/cancellation-agreement.pdf';
+
+function populateFromCRM(){
+  var raw=document.getElementById('crm-paste-box').value;
+  if(!raw.trim()){alert('Paste CRM data first.');return;}
+  window.CaseEngine.runPopulateFromCRM(raw);
+  // This page shows Resort 1's city/state as one "Location" field, but the
+  // shared parser (matching Vitals) sets them separately — merge for display.
+  var cityEl=document.getElementById('v-rescity'), locEl=document.getElementById('v-loc');
+  if(cityEl && locEl && cityEl.value){
+    locEl.value=[cityEl.value, locEl.value].filter(Boolean).join(', ');
+    cityEl.value='';
+  }
+  var st=document.getElementById('pop-status');
+  if(st){st.style.display='inline';setTimeout(function(){st.style.display='none';},3000);}
+  onFieldChange();
+}
+window.populateFromCRM=populateFromCRM;
+
+function generateCancellationPDF(){
+  return window.CaseEngine.generateCancellationPDF({
+    pdfUrl: window.CASE_PDF_URL,
+    filenamePrefix:'CPG_Cancellation_Agreement',
+    statusElId:'pdf-gen-status'
+  });
+}
+window.generateCancellationPDF=generateCancellationPDF;
+
+function onFieldChange(){
+  if(typeof window.CaseEngine==='undefined') return;
+  var sum=window.CaseEngine.getFieldSummary();
+  document.getElementById('rb-filled').textContent=sum.filled;
+  document.getElementById('rb-total').textContent=sum.total;
+  document.getElementById('rev-filled').textContent=sum.filled;
+  document.getElementById('rev-blank').textContent=sum.blank;
+  var first=(document.getElementById('v-first')||{}).value||'';
+  var last=(document.getElementById('v-last')||{}).value||'';
+  document.getElementById('rb-name').textContent=(first||last)?(first+' '+last).trim():'New Case';
+  var listEl=document.getElementById('rev-blank-list');
+  var hdrEl=document.getElementById('rev-blank-hdr');
+  if(sum.blankList.length){
+    hdrEl.style.display='block';
+    listEl.textContent=sum.blankList.join(', ');
+  } else {
+    hdrEl.style.display='none';
+    listEl.textContent='';
+  }
+}
+document.addEventListener('DOMContentLoaded', onFieldChange);
+</script>
+</body>
+</html>
