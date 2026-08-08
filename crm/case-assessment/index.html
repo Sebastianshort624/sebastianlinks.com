@@ -747,7 +747,9 @@ analyzeBtn.addEventListener('click', async () => {
     /*
      * Show the server result in the existing results area.
      */
-    if (results) {
+   const results = document.getElementById('results');
+
+if (results) {
       results.hidden = false;
 
       results.innerHTML = `
