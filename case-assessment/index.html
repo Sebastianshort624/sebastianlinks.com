@@ -136,12 +136,13 @@ footer{text-align:center;padding:20px 0 40px;font-size:11px;color:var(--slate-50
   <!-- 2. CRM IMPORT -->
   <div class="card" style="border-color:var(--cpg-blue)">
     <div class="card-hdr"><span class="card-num">2</span>CRM Import</div>
-    <div class="card-desc">Paste client info from the CRM — names, resort, phone, email, fees, mortgage, reason for wanting out, etc.</div>
+    <div class="card-desc">Paste client info from the CRM — full Zoho export (header row + record) or plain field/value text. Names, resort, phone, email, fees, mortgage, reason for wanting out, etc.</div>
     <textarea id="crm-paste-box" class="crm-box" placeholder="Paste CRM data here, then click Populate."></textarea>
     <div style="margin-top:10px">
       <button class="btn btn-primary" onclick="populateFromCRM()">⚡ Populate</button>
       <span id="pop-status" class="pop-status">✓ Fields populated — review below</span>
     </div>
+    <div id="import-debug" style="display:none;margin-top:12px;padding:12px 14px;background:var(--bg);border-radius:8px;font-size:11px;color:var(--slate-700);line-height:1.7"></div>
   </div>
 
   <!-- 3. RESORT & OWNERSHIP (Resort 1) -->
@@ -333,7 +334,7 @@ window.CASE_PDF_URL='/case-assessment/assets/cancellation-agreement.pdf';
 function populateFromCRM(){
   var raw=document.getElementById('crm-paste-box').value;
   if(!raw.trim()){alert('Paste CRM data first.');return;}
-  window.CaseEngine.runPopulateFromCRM(raw);
+  var dbg=window.CaseEngine.runPopulateFromCRM(raw);
   // This page shows Resort 1's city/state as one "Location" field, but the
   // shared parser (matching Vitals) sets them separately — merge for display.
   var cityEl=document.getElementById('v-rescity'), locEl=document.getElementById('v-loc');
@@ -343,7 +344,31 @@ function populateFromCRM(){
   }
   var st=document.getElementById('pop-status');
   if(st){st.style.display='inline';setTimeout(function(){st.style.display='none';},3000);}
+  renderImportDebug(dbg);
   onFieldChange();
+}
+
+function renderImportDebug(dbg){
+  var el=document.getElementById('import-debug');
+  if(!el||!dbg) return;
+  var modeLabel = dbg.mode==='zoho-table' ? 'Structured export (header row + record) — YES' : 'Structured export (header row + record) — NO, used plain-text format';
+  var mappedCount=Object.keys(dbg.mapped).length;
+  var html = '<div style="font-weight:800;color:var(--slate-900);margin-bottom:4px">INPUT DETECTED</div>'
+    + '<div>' + modeLabel + '</div>';
+  if(dbg.mode==='zoho-table'){
+    html += '<div>Header columns detected: ' + dbg.headersDetected + ' &nbsp; Data rows detected: ' + dbg.rowsDetected + '</div>';
+  }
+  html += '<div style="font-weight:800;color:var(--slate-900);margin:10px 0 4px">MAPPED (' + mappedCount + ')</div>';
+  html += mappedCount ? Object.keys(dbg.mapped).map(function(k){return k+' → '+dbg.mapped[k];}).join('<br>') : '<span style="color:#9ca3af">none</span>';
+  if(dbg.mode==='zoho-table'){
+    html += '<div style="font-weight:800;color:var(--slate-900);margin:10px 0 4px">UNMAPPED (no destination field found)</div>';
+    html += dbg.unmapped.length ? dbg.unmapped.join(', ') : '<span style="color:#9ca3af">none</span>';
+  }
+  if(dbg.errors && dbg.errors.length){
+    html += '<div style="font-weight:800;color:#DC2626;margin:10px 0 4px">ERRORS</div>' + dbg.errors.join('<br>');
+  }
+  el.innerHTML=html;
+  el.style.display='block';
 }
 window.populateFromCRM=populateFromCRM;
 
