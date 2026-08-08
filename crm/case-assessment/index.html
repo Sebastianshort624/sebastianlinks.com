@@ -565,19 +565,45 @@ let duplicateRecords = [];
    FILE SELECTION
    ============================================================ */
 
-fileInput.addEventListener('change', () => {
+fileInput.addEventListener('change', function () {
 
-  const incoming = Array.from(fileInput.files);
+  const files = this.files ? Array.from(this.files) : [];
 
-  if (incoming.length > 5) {
-    uploadNotice.className = 'notice error';
-    uploadNotice.textContent =
-      'You can upload a maximum of 5 CSV files.';
-    fileInput.value = '';
+  console.log('CSV file selection:', files);
+
+  if (!files.length) {
+    selectedFiles = [];
+    renderFileList();
     return;
   }
 
-  selectedFiles = incoming;
+  if (files.length > 5) {
+    uploadNotice.className = 'notice error';
+    uploadNotice.textContent =
+      'You can upload a maximum of 5 CSV files.';
+
+    this.value = '';
+    selectedFiles = [];
+    renderFileList();
+    return;
+  }
+
+  const invalidFiles = files.filter(file => {
+    return !file.name.toLowerCase().endsWith('.csv');
+  });
+
+  if (invalidFiles.length) {
+    uploadNotice.className = 'notice error';
+    uploadNotice.textContent =
+      'Only CSV files are allowed.';
+
+    this.value = '';
+    selectedFiles = [];
+    renderFileList();
+    return;
+  }
+
+  selectedFiles = files;
 
   renderFileList();
 
