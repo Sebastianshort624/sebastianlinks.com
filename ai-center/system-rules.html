@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Rules — AI Command Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F7F8FA; --card: #FFFFFF; --text: #1C1E21; --muted: #8A8F98;
+  --border: #ECEDF0; --radius: 20px; --accent: #5B8DEF; --accent-soft: #EAF1FE;
+  --shadow: 0 1px 2px rgba(0,0,0,.03), 0 8px 24px rgba(0,0,0,.05);
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 780px; margin: 0 auto; padding: 32px 24px 80px; }
+.back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 600; margin-bottom: 20px; }
+.back-link:hover { color: var(--text); }
+h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.4px; margin: 0 0 6px; }
+.subtitle { color: var(--muted); font-size: 14px; margin: 0 0 28px; }
+.rule-card { background: var(--card); border-radius: var(--radius); padding: 26px 28px; box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 18px; }
+.rule-name { font-size: 18px; font-weight: 800; margin: 0 0 4px; }
+.rule-trigger { display: inline-block; font-family: monospace; font-size: 13px; background: var(--accent-soft); color: var(--accent); padding: 4px 10px; border-radius: 8px; margin-bottom: 12px; }
+.rule-desc { font-size: 14px; color: #444; line-height: 1.6; margin-bottom: 16px; }
+.rule-section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); margin: 16px 0 8px; }
+.rule-list { margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.9; color: #333; }
+.purpose { font-size: 13px; color: var(--muted); font-style: italic; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back-link" href="index.html">← AI Center</a>
+  <h1>⚙️ System Rules</h1>
+  <p class="subtitle">Permanent operating rules for the AI Center — apply across every project.</p>
+  <div id="rules-list"></div>
+</div>
+
+<script>
+fetch('system-rules.json')
+  .then(function(r) { return r.json(); })
+  .then(function(rules) {
+    var el = document.getElementById('rules-list');
+    if (!rules.length) {
+      el.innerHTML = '<p style="color:var(--muted)">No system rules yet.</p>';
+      return;
+    }
+    el.innerHTML = rules.map(function(rule) {
+      var rulesHtml = (rule.rules || []).map(function(r) { return '<li>' + r + '</li>'; }).join('');
+      return '<div class="rule-card">' +
+        '<div class="rule-name">' + rule.name + '</div>' +
+        (rule.trigger ? '<div class="rule-trigger">' + rule.trigger + '</div>' : '') +
+        '<div class="rule-desc">' + (rule.description || '') + '</div>' +
+        '<div class="rule-section-label">Rules</div><ul class="rule-list">' + rulesHtml + '</ul>' +
+        (rule.purpose ? '<div class="purpose">Purpose: ' + rule.purpose + '</div>' : '') +
+        '</div>';
+    }).join('');
+  })
+  .catch(function(e) {
+    document.getElementById('rules-list').innerHTML = '<p style="color:#c0392b">Could not load system-rules.json: ' + e.message + '</p>';
+  });
+</script>
+</body>
+</html>
