@@ -1,854 +1,346 @@
-export default {
-  async fetch(request, env) {
-    const url = new URL(request.url);
-
-    /*
-    ================================================================
-    CPG CRM API
-    DATABASE: cpg-crm-dev
-
-    SAFE MODE:
-    - CSV preview remains available
-    - Maximum 5 CSV files
-    - Existing clients are never modified by queue
-    - No import commit route
-    - No Auto Call
-    - import_commit_enabled = false
-    - autodialer_enabled = false
-
-    QUEUE:
-    - GET /api/import/uploads
-    - GET /api/import/queue
-    - Read-only
-    - Protected by QUEUE_PASSPHRASE
-    - No fixed 80/100/1200 lead assumption
-    ================================================================
-    */
-
-    const corsHeaders = {
-      "Access-Control-Allow-Origin": "https://sebastianlinks.com",
-      "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
-      "Access-Control-Allow-Headers":
-        "Content-Type, X-Queue-Passphrase"
-    };
-
-    if (request.method === "OPTIONS") {
-      return new Response(null, {
-        status: 204,
-        headers: corsHeaders
-      });
-    }
-
-    function json(data, status = 200) {
-      return new Response(
-        JSON.stringify(data, null, 2),
-        {
-          status,
-          headers: {
-            ...corsHeaders,
-            "Content-Type": "application/json"
-          }
-        }
-      );
-    }
-
-    /*
-    ================================================================
-    HEALTH CHECK
-    ================================================================
-    */
-
-    if (
-      request.method === "GET" &&
-      url.pathname === "/"
-    ) {
-      return json({
-        ok: true,
-        service: "sebastianlinks-crm-api",
-        database: "cpg-crm-dev",
-        database_id:
-          "e571a5a7-16dd-40ee-8f96-db9a6b9cc16b",
-        mode: "csv-preview",
-        import_commit_enabled: false,
-        autodialer_enabled: false,
-        tables_found: 244
-      });
-    }
-
-    /*
-    ================================================================
-    QUEUE AUTHENTICATION
-    ================================================================
-    */
-
-    function checkQueueAuth(request, env) {
-      const provided =
-        request.headers.get("X-Queue-Passphrase") || "";
-
-      return (
-        !!env.QUEUE_PASSPHRASE &&
-        provided === env.QUEUE_PASSPHRASE
-      );
-    }
-
-    /*
-    ================================================================
-    IMPORT BATCH LIST
-    ================================================================
-
-    IMPORTANT:
-    There is NO hard-coded 80.
-    There is NO hard-coded 100.
-    There is NO hard-coded 1200.
-
-    The API returns actual import batches that contain new records.
-    The queue can then choose the exact batch.
-    ================================================================
-    */
-
-    if (
-      request.method === "GET" &&
-      url.pathname === "/api/import/uploads"
-    ) {
-      if (!checkQueueAuth(request, env)) {
-        return json(
-          {
-            ok: false,
-            error: "Unauthorized"
-          },
-          401
-        );
-      }
-
-      const result = await env.DB.prepare(`
-        SELECT
-          id,
-          file_name,
-          import_type,
-          row_count,
-          new_count,
-          duplicate_count,
-          conflict_count,
-          error_count,
-          status,
-          imported_at
-        FROM import_batches
-        WHERE new_count > 0
-        ORDER BY imported_at DESC
-        LIMIT 25
-      `).all();
-
-      return json({
-        ok: true,
-        uploads: result.results || []
-      });
-    }
-
-    /*
-    ================================================================
-    LEAD QUEUE
-    ================================================================
-
-    Reads ONLY the selected batch.
-
-    NO INSERT
-    NO UPDATE
-    NO DELETE
-    NO CLIENT WRITES
-    ================================================================
-    */
-
-    if (
-      request.method === "GET" &&
-      url.pathname === "/api/import/queue"
-    ) {
-      if (!checkQueueAuth(request, env)) {
-        return json(
-          {
-            ok: false,
-            error: "Unauthorized"
-          },
-          401
-        );
-      }
-
-      const uploadId =
-        url.searchParams.get("upload_id");
-
-      if (!uploadId) {
-        return json(
-          {
-            ok: false,
-            error: "upload_id is required"
-          },
-          400
-        );
-      }
-
-      const result = await env.DB.prepare(`
-        SELECT *
-        FROM raw_import_rows
-        WHERE import_batch_id = ?
-          AND import_action = 'new'
-        ORDER BY source_row_number ASC
-      `)
-        .bind(uploadId)
-        .all();
-
-      return json({
-        ok: true,
-        upload_id: uploadId,
-        count:
-          result.results
-            ? result.results.length
-            : 0,
-        records:
-          result.results || []
-      });
-    }
-
-    /*
-    ================================================================
-    EXISTING CSV PREVIEW ROUTE
-    ================================================================
-    */
-
-    if (
-      request.method === "POST" &&
-      url.pathname === "/api/import/preview"
-    ) {
-      const import_commit_enabled = false;
-      const autodialer_enabled = false;
-
-      const MAX_FILES = 5;
-
-      const formData =
-        await request.formData();
-
-      const files = [];
-
-      for (
-        const entry of formData.values()
-      ) {
-        if (
-          entry &&
-          typeof entry === "object" &&
-          typeof entry.arrayBuffer === "function"
-        ) {
-          files.push(entry);
-        }
-      }
-
-      if (!files.length) {
-        return json(
-          {
-            ok: false,
-            error: "No CSV files supplied"
-          },
-          400
-        );
-      }
-
-      if (files.length > MAX_FILES) {
-        return json(
-          {
-            ok: false,
-            error:
-              `Maximum ${MAX_FILES} files allowed`
-          },
-          400
-        );
-      }
-
-      /*
-      ==============================================================
-      CSV PARSER
-      ==============================================================
-      */
-
-      function parseCSV(text) {
-        const rows = [];
-
-        let row = [];
-        let value = "";
-        let quoted = false;
-
-        for (
-          let i = 0;
-          i < text.length;
-          i++
-        ) {
-          const char = text[i];
-          const next = text[i + 1];
-
-          if (char === '"') {
-            if (
-              quoted &&
-              next === '"'
-            ) {
-              value += '"';
-              i++;
-              continue;
-            }
-
-            quoted = !quoted;
-            continue;
-          }
-
-          if (
-            char === "," &&
-            !quoted
-          ) {
-            row.push(value);
-            value = "";
-            continue;
-          }
-
-          if (
-            (char === "\n" ||
-              char === "\r") &&
-            !quoted
-          ) {
-            if (
-              char === "\r" &&
-              next === "\n"
-            ) {
-              i++;
-            }
-
-            row.push(value);
-            value = "";
-
-            if (
-              row.some(
-                cell =>
-                  String(cell).trim() !== ""
-              )
-            ) {
-              rows.push(row);
-            }
-
-            row = [];
-            continue;
-          }
-
-          value += char;
-        }
-
-        if (
-          value !== "" ||
-          row.length
-        ) {
-          row.push(value);
-
-          if (
-            row.some(
-              cell =>
-                String(cell).trim() !== ""
-            )
-          ) {
-            rows.push(row);
-          }
-        }
-
-        return rows;
-      }
-
-      /*
-      ==============================================================
-      PHONE NORMALIZATION
-      ==============================================================
-      */
-
-      function normalizePhone(value) {
-        return String(value || "")
-          .replace(/\D/g, "")
-          .replace(
-            /^1(?=\d{10}$)/,
-            ""
-          );
-      }
-
-      /*
-      ==============================================================
-      EMAIL NORMALIZATION
-      ==============================================================
-      */
-
-      function normalizeEmail(value) {
-        return String(value || "")
-          .trim()
-          .toLowerCase();
-      }
-
-      /*
-      ==============================================================
-      PHONE DETECTION
-      ==============================================================
-      */
-
-      function findPhone(row) {
-        const keys =
-          Object.keys(row);
-
-        for (
-          const key of keys
-        ) {
-          const normalized =
-            key
-              .toLowerCase()
-              .replace(
-                /[\s\-]+/g,
-                "_"
-              );
-
-          if (
-            normalized.includes("phone") ||
-            normalized.includes("telephone") ||
-            normalized === "tel" ||
-            normalized.includes("mobile")
-          ) {
-            const value =
-              normalizePhone(
-                row[key]
-              );
-
-            if (value) {
-              return value;
-            }
-          }
-        }
-
-        return "";
-      }
-
-      /*
-      ==============================================================
-      EMAIL DETECTION
-      ==============================================================
-      */
-
-      function findEmail(row) {
-        const keys =
-          Object.keys(row);
-
-        for (
-          const key of keys
-        ) {
-          const normalized =
-            key
-              .toLowerCase()
-              .replace(
-                /[\s\-]+/g,
-                "_"
-              );
-
-          if (
-            normalized.includes("email") ||
-            normalized.includes("e_mail")
-          ) {
-            const value =
-              normalizeEmail(
-                row[key]
-              );
-
-            if (value) {
-              return value;
-            }
-          }
-        }
-
-        return "";
-      }
-
-      /*
-      ==============================================================
-      MAP CSV ROW
-      ==============================================================
-      */
-
-      function mapCSVRow(
-        headers,
-        row
-      ) {
-        const result = {};
-
-        for (
-          let i = 0;
-          i < headers.length;
-          i++
-        ) {
-          const header =
-            String(
-              headers[i] || ""
-            )
-              .trim()
-              .toLowerCase()
-              .replace(
-                /[\s\-]+/g,
-                "_"
-              );
-
-          result[header] =
-            row[i] ?? "";
-        }
-
-        return result;
-      }
-
-      /*
-      ==============================================================
-      CREATE IMPORT BATCH
-      ==============================================================
-      */
-
-      const importBatchId =
-        `batch-${Date.now()}-${crypto.randomUUID()}`;
-
-      const allRows = [];
-
-      let totalProcessed = 0;
-      let totalNew = 0;
-      let totalDuplicates = 0;
-      let totalRejected = 0;
-
-      await env.DB.prepare(`
-        INSERT INTO import_batches (
-          id,
-          file_name,
-          import_type,
-          row_count,
-          new_count,
-          duplicate_count,
-          conflict_count,
-          error_count,
-          status,
-          imported_at
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `)
-        .bind(
-          importBatchId,
-
-          files.length === 1
-            ? files[0].name
-            : `${files.length} files`,
-
-          "csv",
-
-          0,
-          0,
-          0,
-          0,
-          0,
-
-          "preview",
-
-          new Date().toISOString()
-        )
-        .run();
-
-      /*
-      ==============================================================
-      READ EXISTING CLIENT IDENTIFIERS
-      ==============================================================
-      */
-
-      const existingClients =
-        await env.DB.prepare(`
-          SELECT
-            id,
-            phone,
-            email
-          FROM clients
-        `).all();
-
-      const phoneSet =
-        new Set();
-
-      const emailSet =
-        new Set();
-
-      for (
-        const client of
-        existingClients.results || []
-      ) {
-        const phone =
-          normalizePhone(
-            client.phone
-          );
-
-        const email =
-          normalizeEmail(
-            client.email
-          );
-
-        if (phone) {
-          phoneSet.add(phone);
-        }
-
-        if (email) {
-          emailSet.add(email);
-        }
-      }
-
-      /*
-      ==============================================================
-      PROCESS FILES
-      ==============================================================
-      */
-
-      for (
-        const file of files
-      ) {
-        const text =
-          await file.text();
-
-        const parsed =
-          parseCSV(text);
-
-        if (!parsed.length) {
-          continue;
-        }
-
-        const headers =
-          parsed[0];
-
-        for (
-          let index = 1;
-          index < parsed.length;
-          index++
-        ) {
-          const rawRow =
-            parsed[index];
-
-          const sourceRowNumber =
-            index + 1;
-
-          const mapped =
-            mapCSVRow(
-              headers,
-              rawRow
-            );
-
-          const phone =
-            findPhone(mapped);
-
-          const email =
-            findEmail(mapped);
-
-          let importAction =
-            "new";
-
-          if (
-            !phone &&
-            !email
-          ) {
-            importAction =
-              "rejected_missing_identifier";
-
-            totalRejected++;
-
-          } else if (
-            (phone &&
-              phoneSet.has(phone)) ||
-            (email &&
-              emailSet.has(email))
-          ) {
-            importAction =
-              "duplicate_existing";
-
-            totalDuplicates++;
-
-          } else {
-            totalNew++;
-          }
-
-          totalProcessed++;
-
-          const record = {
-            import_batch_id:
-              importBatchId,
-
-            source_file_name:
-              file.name,
-
-            source_row_number:
-              sourceRowNumber,
-
-            import_action:
-              importAction,
-
-            source_data:
-              JSON.stringify(mapped),
-
-            normalized_phone:
-              phone,
-
-            normalized_email:
-              email
-          };
-
-          allRows.push(record);
-        }
-      }
-
-      /*
-      ==============================================================
-const BATCH_SIZE = 40;
-
-for (
-  let start = 0;
-  start < allRows.length;
-  start += BATCH_SIZE
-) {
-  const chunk =
-    allRows.slice(
-      start,
-      start + BATCH_SIZE
-    );
-
-  const statements = chunk.map(
-    record =>
-      env.DB.prepare(`
-        INSERT INTO raw_import_rows (
-          import_batch_id,
-          source_file_name,
-          source_row_number,
-          import_action,
-          source_data,
-          normalized_phone,
-          normalized_email
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-      `).bind(
-        record.import_batch_id,
-        record.source_file_name,
-        record.source_row_number,
-        record.import_action,
-        record.source_data,
-        record.normalized_phone,
-        record.normalized_email
-      )
-  );
-
-  await env.DB.batch(statements);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calling Queue — Sebastianlinks</title>
+<style>
+:root {
+  --bg: #f5f7fa;
+  --card: #ffffff;
+  --text: #17202a;
+  --muted: #687385;
+  --border: #dfe4ea;
+  --primary: #1f6feb;
+  --primary-dark: #1557b0;
+  --success: #16803c;
+  --warning: #a15c00;
+  --danger: #b42318;
+  --soft-blue: #eef5ff;
+  --soft-green: #edf9f1;
+  --soft-yellow: #fff8e6;
+  --soft-red: #fff0ef;
+  --radius: 14px;
 }
-      }
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+.wrap { max-width: 720px; margin: 0 auto; padding: 32px 20px 60px; }
+h1 { font-size: 22px; margin: 0 0 4px; }
+.subtitle { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 22px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+}
+.notice { padding: 14px 16px; border-radius: 10px; font-size: 14px; margin-bottom: 16px; }
+.notice.info { background: var(--soft-blue); color: #174a8b; }
+.notice.warning { background: var(--soft-yellow); color: var(--warning); }
+.notice.error { background: var(--soft-red); color: var(--danger); }
+.notice.success { background: var(--soft-green); color: var(--success); }
+label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+input[type=number], input[type=text] {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--border);
+  border-radius: 8px; font-size: 14px; margin-bottom: 12px;
+}
+.count-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+button {
+  font-size: 14px; font-weight: 600; padding: 11px 18px; border-radius: 8px;
+  border: none; cursor: pointer;
+}
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-dark); }
+.btn-secondary { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+.btn-secondary:disabled { opacity: .4; cursor: not-allowed; }
+.upload-choice {
+  border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px;
+  margin-bottom: 10px; cursor: pointer;
+}
+.upload-choice:hover { border-color: var(--primary); }
+.upload-choice .stats { font-size: 13px; color: var(--muted); margin-top: 4px; }
+.progress { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+.lead-name { font-size: 20px; font-weight: 700; margin-bottom: 14px; }
+.field-row {
+  display: flex; justify-content: space-between; padding: 8px 0;
+  border-bottom: 1px solid var(--border); font-size: 14px;
+}
+.field-row:last-child { border-bottom: none; }
+.field-label { color: var(--muted); }
+.field-value { font-weight: 600; text-align: right; }
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 10px; }
+textarea {
+  width: 100%; min-height: 70px; padding: 10px 12px; border: 1px solid var(--border);
+  border-radius: 8px; font-size: 14px; font-family: inherit; resize: vertical;
+}
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>📞 Calling Queue</h1>
+  <div class="subtitle">Work through clean, non-duplicate leads one at a time.</div>
 
-      /*
-      ==============================================================
-      UPDATE BATCH COUNTS
-      ==============================================================
-      */
+  <!-- STEP 0: passphrase gate. The value entered here is held only in
+       sessionStorage for this tab — never written into this file, never
+       sent anywhere except as the X-Queue-Passphrase header on the two
+       protected API calls. Cleared automatically when the tab/browser closes. -->
+  <div class="card" id="passphrase-card">
+    <label>Access Passphrase</label>
+    <input type="text" id="passphrase-input" placeholder="Enter the queue passphrase" autocomplete="off">
+    <button class="btn-primary" onclick="submitPassphrase()">Unlock Queue</button>
+    <div id="passphrase-status" class="notice error hidden" style="margin-top:12px"></div>
+  </div>
 
-      await env.DB.prepare(`
-        UPDATE import_batches
-        SET
-          row_count = ?,
-          new_count = ?,
-          duplicate_count = ?,
-          error_count = ?,
-          status = ?
-        WHERE id = ?
-      `)
-        .bind(
-          totalProcessed,
-          totalNew,
-          totalDuplicates,
-          totalRejected,
-          "preview",
-          importBatchId
-        )
-        .run();
+  <!-- STEP 1: find the upload (shown only if no upload_id in the URL) -->
+  <div class="card hidden" id="find-upload-card">
+    <div id="find-upload-status" class="notice info">Looking for a recent upload matching the current preview…</div>
+    <div id="find-upload-form" class="hidden">
+      <p style="font-size:13px;color:var(--muted);margin-top:0">
+        Enter the counts shown on the Case Assessment preview screen to find that exact upload.
+      </p>
+      <div class="count-grid">
+        <div><label>Processed</label><input type="number" id="f-row-count" value="100"></div>
+        <div><label>New</label><input type="number" id="f-new-count" value="100"></div>
+        <div><label>Duplicates</label><input type="number" id="f-dup-count" value="0"></div>
+        <div><label>Errors</label><input type="number" id="f-err-count" value="0"></div>
+      </div>
+      <button class="btn-primary" onclick="findUpload()">Find Upload</button>
+    </div>
+    <div id="upload-choices"></div>
+  </div>
 
-      /*
-      ==============================================================
-      PREVIEW RESPONSE
-      ==============================================================
-      */
+  <!-- STEP 2: the queue itself -->
+  <div class="card hidden" id="queue-card">
+    <div id="queue-empty" class="notice warning hidden">This upload has no clean (non-duplicate, non-rejected) leads to call.</div>
+    <div id="queue-body" class="hidden">
+      <div class="progress" id="progress-text">Lead 1 of 100</div>
+      <div class="lead-name" id="lead-name">—</div>
+      <div id="lead-fields"></div>
+      <label style="margin-top:16px">Disposition / Notes (not saved yet — recording comes in a later phase)</label>
+      <textarea id="disposition" placeholder="e.g. Left voicemail, call back Thursday"></textarea>
+      <div class="nav-row">
+        <button class="btn-secondary" id="prev-btn" onclick="prevLead()">← Previous</button>
+        <button class="btn-secondary" disabled title="Not built yet">📞 Auto Call</button>
+        <button class="btn-primary" id="next-btn" onclick="nextLead()">Next →</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-      return json({
-        ok: true,
+<script>
+var API_BASE = 'https://sebastianlinks-crm-api.sebastianshort624.workers.dev';
+var leads = [];
+var currentIndex = 0;
+var PASSPHRASE_KEY = 'queuePassphrase'; // sessionStorage key — cleared when the tab/browser closes
 
-        import_batch_id:
-          importBatchId,
+function qs(id) { return document.getElementById(id); }
 
-        processed:
-          totalProcessed,
+function getUrlParam(name) {
+  return new URLSearchParams(window.location.search).get(name);
+}
 
-        duplicates:
-          totalDuplicates,
+function getPassphrase() {
+  return sessionStorage.getItem(PASSPHRASE_KEY) || '';
+}
 
-        rejected:
-          totalRejected,
+function authHeaders() {
+  return { 'X-Queue-Passphrase': getPassphrase() };
+}
 
-        new_records:
-          totalNew,
+function submitPassphrase() {
+  var value = qs('passphrase-input').value.trim();
+  if (!value) return;
+  sessionStorage.setItem(PASSPHRASE_KEY, value);
+  qs('passphrase-status').classList.add('hidden');
+  proceedPastPassphrase();
+}
 
-        import_commit_enabled,
+function rejectPassphrase() {
+  // Called when the Worker returns 401 for either protected route —
+  // clear whatever was stored and re-prompt, don't assume it was right.
+  sessionStorage.removeItem(PASSPHRASE_KEY);
+  qs('passphrase-card').classList.remove('hidden');
+  qs('find-upload-card').classList.add('hidden');
+  qs('queue-card').classList.add('hidden');
+  var statusEl = qs('passphrase-status');
+  statusEl.textContent = 'Incorrect passphrase, or none set on the Worker yet. Try again.';
+  statusEl.classList.remove('hidden');
+}
 
-        autodialer_enabled,
+function proceedPastPassphrase() {
+  qs('passphrase-card').classList.add('hidden');
+  qs('find-upload-card').classList.remove('hidden');
+  init();
+}
 
-        records:
-          allRows
-      });
+async function init() {
+  var uploadIdFromUrl = getUrlParam('upload_id');
+  if (uploadIdFromUrl) {
+    qs('find-upload-card').classList.add('hidden');
+    await loadQueue(uploadIdFromUrl);
+    return;
+  }
+  await findUpload();
+}
+
+async function findUpload() {
+  var statusEl = qs('find-upload-status');
+  var formEl = qs('find-upload-form');
+  var choicesEl = qs('upload-choices');
+  choicesEl.innerHTML = '';
+
+  var rowCount = qs('f-row-count').value || 100;
+  var newCount = qs('f-new-count').value || 100;
+  var dupCount = qs('f-dup-count').value || 0;
+  var errCount = qs('f-err-count').value || 0;
+
+  statusEl.textContent = 'Searching for a matching upload…';
+  statusEl.className = 'notice info';
+  formEl.classList.add('hidden');
+
+  try {
+    var url = API_BASE + '/api/import/uploads?row_count=' + rowCount +
+      '&new_count=' + newCount + '&duplicate_count=' + dupCount + '&error_count=' + errCount;
+    var resp = await fetch(url, { headers: authHeaders() });
+
+    if (resp.status === 401) { rejectPassphrase(); return; }
+
+    var data = await resp.json();
+
+    if (!data.ok) {
+      statusEl.textContent = 'Error looking up uploads: ' + (data.error || 'unknown error');
+      statusEl.className = 'notice error';
+      formEl.classList.remove('hidden');
+      return;
     }
 
-    /*
-    ================================================================
-    ROUTE NOT FOUND
-    ================================================================
-    */
+    if (data.uploads.length === 0) {
+      statusEl.textContent = 'No upload matches those exact counts. Adjust the numbers below to match what the preview screen showed, or double-check the upload actually completed.';
+      statusEl.className = 'notice warning';
+      formEl.classList.remove('hidden');
+      return;
+    }
 
-    return json(
-      {
-        ok: false,
-        error: "Route not found",
-        path: url.pathname,
-        available_routes: [
-          "GET /",
-          "POST /api/import/preview",
-          "GET /api/import/uploads",
-          "GET /api/import/queue"
-        ]
-      },
-      404
-    );
+    if (data.uploads.length === 1) {
+      var u = data.uploads[0];
+      statusEl.textContent = 'Found 1 matching upload (' + u.row_count + ' processed, ' +
+        u.new_count + ' new, ' + u.duplicate_count + ' duplicates) — loading queue…';
+      statusEl.className = 'notice success';
+      await loadQueue(u.id);
+      return;
+    }
+
+    // Multiple matches — let the user choose, never guess.
+    statusEl.textContent = data.uploads.length + ' uploads match those counts. Choose the correct one:';
+    statusEl.className = 'notice warning';
+    data.uploads.forEach(function(u) {
+      var div = document.createElement('div');
+      div.className = 'upload-choice';
+      div.innerHTML = '<strong>' + (u.file_name || 'Unnamed upload') + '</strong>' +
+        '<div class="stats">' + u.row_count + ' processed · ' + u.new_count + ' new · ' +
+        u.duplicate_count + ' duplicates · imported ' + u.imported_at + '</div>';
+      div.onclick = function() { loadQueue(u.id); };
+      choicesEl.appendChild(div);
+    });
+
+  } catch (e) {
+    statusEl.textContent = 'Could not reach the CRM API: ' + e.message;
+    statusEl.className = 'notice error';
+    formEl.classList.remove('hidden');
   }
-};
-
-/*
-================================================================
-ENDPOINT-SIDE CSV FIELD NORMALIZATION
-================================================================
-*/
-
-function mapCSVRow(
-  headers,
-  row
-) {
-  const result = {};
-
-  for (
-    let i = 0;
-    i < headers.length;
-    i++
-  ) {
-    const cleanHeader =
-      String(
-        headers[i] || ""
-      )
-        .trim()
-        .toLowerCase()
-        .replace(
-          /[\s\-]+/g,
-          "_"
-        );
-
-    result[cleanHeader] =
-      row[i] ?? "";
-  }
-
-  return result;
 }
+
+async function loadQueue(uploadId) {
+  qs('find-upload-card').classList.add('hidden');
+  qs('queue-card').classList.remove('hidden');
+
+  try {
+    var resp = await fetch(API_BASE + '/api/import/queue?upload_id=' + encodeURIComponent(uploadId), { headers: authHeaders() });
+
+    if (resp.status === 401) { rejectPassphrase(); return; }
+
+    var data = await resp.json();
+
+    if (!data.ok) {
+      qs('queue-empty').textContent = 'Error loading queue: ' + (data.error || 'unknown error');
+      qs('queue-empty').classList.remove('hidden');
+      return;
+    }
+
+    leads = data.leads;
+
+    if (leads.length === 0) {
+      qs('queue-empty').classList.remove('hidden');
+      return;
+    }
+
+    currentIndex = 0;
+    qs('queue-body').classList.remove('hidden');
+    renderLead();
+
+  } catch (e) {
+    qs('queue-empty').textContent = 'Could not reach the CRM API: ' + e.message;
+    qs('queue-empty').classList.remove('hidden');
+  }
+}
+
+function renderLead() {
+  var lead = leads[currentIndex];
+  qs('progress-text').textContent = 'Lead ' + (currentIndex + 1) + ' of ' + leads.length;
+
+  var first = lead.fields.first_name || lead.fields.firstname || '';
+  var last = lead.fields.last_name || lead.fields.lastname || '';
+  var name = (first + ' ' + last).trim() || lead.email || lead.phone || ('Row ' + lead.row_number);
+  qs('lead-name').textContent = name;
+
+  var fieldsEl = qs('lead-fields');
+  fieldsEl.innerHTML = '';
+  var displayFields = [
+    ['Phone', lead.phone], ['Email', lead.email],
+    ['City', lead.fields.city], ['State', lead.fields.state],
+    ['Lead Source', lead.fields.lead_source], ['Lead Status', lead.fields.lead_status]
+  ];
+  displayFields.forEach(function(pair) {
+    if (!pair[1]) return;
+    var row = document.createElement('div');
+    row.className = 'field-row';
+    row.innerHTML = '<span class="field-label">' + pair[0] + '</span><span class="field-value"></span>';
+    row.querySelector('.field-value').textContent = pair[1];
+    fieldsEl.appendChild(row);
+  });
+
+  qs('disposition').value = '';
+  qs('prev-btn').disabled = (currentIndex === 0);
+  qs('next-btn').textContent = (currentIndex === leads.length - 1) ? 'Finish' : 'Next →';
+}
+
+function nextLead() {
+  if (currentIndex < leads.length - 1) {
+    currentIndex++;
+    renderLead();
+  }
+}
+
+function prevLead() {
+  if (currentIndex > 0) {
+    currentIndex--;
+    renderLead();
+  }
+}
+
+// If a passphrase is already cached for this tab (e.g. user navigated
+// away and back), skip the prompt and go straight in — a 401 later
+// will still clear it and re-prompt via rejectPassphrase().
+if (getPassphrase()) {
+  proceedPastPassphrase();
+}
+</script>
+</body>
+</html>
