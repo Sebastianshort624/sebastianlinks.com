@@ -1,0 +1,28 @@
+[
+  {
+    "id": "post-ai",
+    "name": "POST AI — Preserve Original AI Conversations",
+    "trigger": "POST AI:",
+    "description": "When the user writes \"POST AI:\", the content immediately following it is an AI Conversation record that must be stored exactly as provided.",
+    "rules": [
+      "Preserve the content VERBATIM.",
+      "Do NOT summarize.",
+      "Do NOT rewrite.",
+      "Do NOT shorten.",
+      "Do NOT convert it into notes.",
+      "Do NOT extract only key points.",
+      "Do NOT replace the original conversation with a description.",
+      "The original pasted content is the actual record."
+    ],
+    "storesAs": {
+      "title": "Derived from the conversation, or provided by the user",
+      "dateAdded": "Date the record was posted",
+      "category": "Selected based on where the user specifies it",
+      "relatedProject": "Selected based on context",
+      "tags": "Optional tags",
+      "content": "EXACT copy of the pasted conversation — metadata may be added alongside it, but must never modify or replace the original content"
+    },
+    "purpose": "The AI Conversation Library exists so important architecture discussions, decisions, and build conversations are permanently preserved and can be referenced later without searching ChatGPT or Claude history.",
+    "created": "2026-08-09"
+  }
+]
