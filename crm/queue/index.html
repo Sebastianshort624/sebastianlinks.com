@@ -5,29 +5,23 @@ export default {
     /*
     ================================================================
     CPG CRM API
-    CSV PREVIEW / DUPLICATE ANALYSIS
     DATABASE: cpg-crm-dev
 
     SAFE MODE:
+    - CSV preview remains available
+    - Maximum 5 CSV files
+    - Existing clients are never modified by queue
+    - No import commit route
+    - No Auto Call
+    - import_commit_enabled = false
+    - autodialer_enabled = false
 
-    - CSV files may be uploaded
-    - Maximum 5 files per request
-    - Rows are staged into raw_import_rows
-    - Duplicate candidates are identified
-    - Existing clients are NEVER modified
-    - No import is committed
-    - No call automation
-    - import_commit_enabled remains false
-    - autodialer_enabled remains false
-
-    QUEUE ADDITION:
-
+    QUEUE:
     - GET /api/import/uploads
     - GET /api/import/queue
-    - Both are read-only
-    - Both require QUEUE_PASSPHRASE
-    - Queue reads existing raw_import_rows
-    - Queue never writes to clients
+    - Read-only
+    - Protected by QUEUE_PASSPHRASE
+    - No fixed 80/100/1200 lead assumption
     ================================================================
     */
 
@@ -45,20 +39,17 @@ export default {
       });
     }
 
-    /*
-    ================================================================
-    JSON RESPONSE HELPER
-    ================================================================
-    */
-
     function json(data, status = 200) {
-      return new Response(JSON.stringify(data, null, 2), {
-        status,
-        headers: {
-          ...corsHeaders,
-          "Content-Type": "application/json"
+      return new Response(
+        JSON.stringify(data, null, 2),
+        {
+          status,
+          headers: {
+            ...corsHeaders,
+            "Content-Type": "application/json"
+          }
         }
-      });
+      );
     }
 
     /*
@@ -102,24 +93,16 @@ export default {
 
     /*
     ================================================================
-    FIND THE EXISTING UPLOAD
-    READ ONLY
+    IMPORT BATCH LIST
+    ================================================================
 
-    The frontend supplies the exact statistics currently shown:
+    IMPORTANT:
+    There is NO hard-coded 80.
+    There is NO hard-coded 100.
+    There is NO hard-coded 1200.
 
-      row_count
-      new_count
-      duplicate_count
-      error_count
-
-    One exact match:
-      automatically selected
-
-    Multiple exact matches:
-      all returned so the user can choose
-
-    Zero matches:
-      nothing guessed
+    The API returns actual import batches that contain new records.
+    The queue can then choose the exact batch.
     ================================================================
     */
 
@@ -127,7 +110,6 @@ export default {
       request.method === "GET" &&
       url.pathname === "/api/import/uploads"
     ) {
-
       if (!checkQueueAuth(request, env)) {
         return json(
           {
@@ -137,28 +119,6 @@ export default {
           401
         );
       }
-
-      const rowCount =
-        Number(url.searchParams.get("row_count") || 100);
-
-      const newCount =
-        Number(url.searchParams.get("new_count") || 100);
-
-      const duplicateCount =
-        Number(
-          url.searchParams.get("duplicate_count") || 0
-        );
-
-      const errorCount =
-        Number(
-          url.searchParams.get("error_count") || 0
-        );
-
-      /*
-      --------------------------------------------------------------
-      READ ONLY
-      --------------------------------------------------------------
-      */
 
       const result = await env.DB.prepare(`
         SELECT
@@ -173,29 +133,13 @@ export default {
           status,
           imported_at
         FROM import_batches
-        WHERE row_count = ?
-          AND new_count = ?
-          AND duplicate_count = ?
-          AND error_count = ?
+        WHERE new_count > 0
         ORDER BY imported_at DESC
-        LIMIT 10
-      `)
-        .bind(
-          rowCount,
-          newCount,
-          duplicateCount,
-          errorCount
-        )
-        .all();
+        LIMIT 25
+      `).all();
 
       return json({
         ok: true,
-        requested: {
-          row_count: rowCount,
-          new_count: newCount,
-          duplicate_count: duplicateCount,
-          error_count: errorCount
-        },
         uploads: result.results || []
       });
     }
@@ -203,9 +147,9 @@ export default {
     /*
     ================================================================
     LEAD QUEUE
-    READ ONLY
+    ================================================================
 
-    Reads the existing 100 staged rows.
+    Reads ONLY the selected batch.
 
     NO INSERT
     NO UPDATE
@@ -218,7 +162,6 @@ export default {
       request.method === "GET" &&
       url.pathname === "/api/import/queue"
     ) {
-
       if (!checkQueueAuth(request, env)) {
         return json(
           {
@@ -242,15 +185,8 @@ export default {
         );
       }
 
-      /*
-      --------------------------------------------------------------
-      READ ONLY SELECT
-      --------------------------------------------------------------
-      */
-
       const result = await env.DB.prepare(`
-        SELECT
-          *
+        SELECT *
         FROM raw_import_rows
         WHERE import_batch_id = ?
           AND import_action = 'new'
@@ -262,10 +198,12 @@ export default {
       return json({
         ok: true,
         upload_id: uploadId,
-        count: result.results
-          ? result.results.length
-          : 0,
-        records: result.results || []
+        count:
+          result.results
+            ? result.results.length
+            : 0,
+        records:
+          result.results || []
       });
     }
 
@@ -279,36 +217,19 @@ export default {
       request.method === "POST" &&
       url.pathname === "/api/import/preview"
     ) {
-
-      /*
-      --------------------------------------------------------------
-      SAFE-MODE FLAGS
-      --------------------------------------------------------------
-      */
-
       const import_commit_enabled = false;
       const autodialer_enabled = false;
 
-      /*
-      --------------------------------------------------------------
-      REQUEST SIZE LIMIT
-      --------------------------------------------------------------
-      */
-
       const MAX_FILES = 5;
 
-      /*
-      --------------------------------------------------------------
-      PARSE MULTIPART FORM
-      --------------------------------------------------------------
-      */
-
-      const formData = await request.formData();
+      const formData =
+        await request.formData();
 
       const files = [];
 
-      for (const entry of formData.values()) {
-
+      for (
+        const entry of formData.values()
+      ) {
         if (
           entry &&
           typeof entry === "object" &&
@@ -316,7 +237,6 @@ export default {
         ) {
           files.push(entry);
         }
-
       }
 
       if (!files.length) {
@@ -341,27 +261,31 @@ export default {
       }
 
       /*
-      --------------------------------------------------------------
+      ==============================================================
       CSV PARSER
-      --------------------------------------------------------------
+      ==============================================================
       */
 
       function parseCSV(text) {
-
         const rows = [];
 
         let row = [];
         let value = "";
         let quoted = false;
 
-        for (let i = 0; i < text.length; i++) {
-
+        for (
+          let i = 0;
+          i < text.length;
+          i++
+        ) {
           const char = text[i];
           const next = text[i + 1];
 
           if (char === '"') {
-
-            if (quoted && next === '"') {
+            if (
+              quoted &&
+              next === '"'
+            ) {
               value += '"';
               i++;
               continue;
@@ -371,17 +295,20 @@ export default {
             continue;
           }
 
-          if (char === "," && !quoted) {
+          if (
+            char === "," &&
+            !quoted
+          ) {
             row.push(value);
             value = "";
             continue;
           }
 
           if (
-            (char === "\n" || char === "\r") &&
+            (char === "\n" ||
+              char === "\r") &&
             !quoted
           ) {
-
             if (
               char === "\r" &&
               next === "\n"
@@ -394,7 +321,8 @@ export default {
 
             if (
               row.some(
-                cell => String(cell).trim() !== ""
+                cell =>
+                  String(cell).trim() !== ""
               )
             ) {
               rows.push(row);
@@ -411,12 +339,12 @@ export default {
           value !== "" ||
           row.length
         ) {
-
           row.push(value);
 
           if (
             row.some(
-              cell => String(cell).trim() !== ""
+              cell =>
+                String(cell).trim() !== ""
             )
           ) {
             rows.push(row);
@@ -427,47 +355,52 @@ export default {
       }
 
       /*
-      --------------------------------------------------------------
-      NORMALIZE PHONE
-      --------------------------------------------------------------
+      ==============================================================
+      PHONE NORMALIZATION
+      ==============================================================
       */
 
       function normalizePhone(value) {
-
         return String(value || "")
           .replace(/\D/g, "")
-          .replace(/^1(?=\d{10}$)/, "");
+          .replace(
+            /^1(?=\d{10}$)/,
+            ""
+          );
       }
 
       /*
-      --------------------------------------------------------------
-      NORMALIZE EMAIL
-      --------------------------------------------------------------
+      ==============================================================
+      EMAIL NORMALIZATION
+      ==============================================================
       */
 
       function normalizeEmail(value) {
-
         return String(value || "")
           .trim()
           .toLowerCase();
       }
 
       /*
-      --------------------------------------------------------------
-      FIND LIKELY IDENTIFIER
-      --------------------------------------------------------------
+      ==============================================================
+      PHONE DETECTION
+      ==============================================================
       */
 
       function findPhone(row) {
+        const keys =
+          Object.keys(row);
 
-        const keys = Object.keys(row);
-
-        for (const key of keys) {
-
+        for (
+          const key of keys
+        ) {
           const normalized =
             key
               .toLowerCase()
-              .replace(/[\s\-]+/g, "_");
+              .replace(
+                /[\s\-]+/g,
+                "_"
+              );
 
           if (
             normalized.includes("phone") ||
@@ -476,35 +409,9 @@ export default {
             normalized.includes("mobile")
           ) {
             const value =
-              normalizePhone(row[key]);
-
-            if (value) {
-              return value;
-            }
-          }
-        }
-
-        return "";
-      }
-
-      function findEmail(row) {
-
-        const keys = Object.keys(row);
-
-        for (const key of keys) {
-
-          const normalized =
-            key
-              .toLowerCase()
-              .replace(/[\s\-]+/g, "_");
-
-          if (
-            normalized.includes("email") ||
-            normalized.includes("e_mail")
-          ) {
-
-            const value =
-              normalizeEmail(row[key]);
+              normalizePhone(
+                row[key]
+              );
 
             if (value) {
               return value;
@@ -516,22 +423,71 @@ export default {
       }
 
       /*
-      --------------------------------------------------------------
-      NORMALIZE CSV ROW
-      --------------------------------------------------------------
+      ==============================================================
+      EMAIL DETECTION
+      ==============================================================
       */
 
-      function mapCSVRow(headers, row) {
+      function findEmail(row) {
+        const keys =
+          Object.keys(row);
 
+        for (
+          const key of keys
+        ) {
+          const normalized =
+            key
+              .toLowerCase()
+              .replace(
+                /[\s\-]+/g,
+                "_"
+              );
+
+          if (
+            normalized.includes("email") ||
+            normalized.includes("e_mail")
+          ) {
+            const value =
+              normalizeEmail(
+                row[key]
+              );
+
+            if (value) {
+              return value;
+            }
+          }
+        }
+
+        return "";
+      }
+
+      /*
+      ==============================================================
+      MAP CSV ROW
+      ==============================================================
+      */
+
+      function mapCSVRow(
+        headers,
+        row
+      ) {
         const result = {};
 
-        for (let i = 0; i < headers.length; i++) {
-
+        for (
+          let i = 0;
+          i < headers.length;
+          i++
+        ) {
           const header =
-            String(headers[i] || "")
+            String(
+              headers[i] || ""
+            )
               .trim()
               .toLowerCase()
-              .replace(/[\s\-]+/g, "_");
+              .replace(
+                /[\s\-]+/g,
+                "_"
+              );
 
           result[header] =
             row[i] ?? "";
@@ -541,9 +497,9 @@ export default {
       }
 
       /*
-      --------------------------------------------------------------
-      PROCESS FILES
-      --------------------------------------------------------------
+      ==============================================================
+      CREATE IMPORT BATCH
+      ==============================================================
       */
 
       const importBatchId =
@@ -555,12 +511,6 @@ export default {
       let totalNew = 0;
       let totalDuplicates = 0;
       let totalRejected = 0;
-
-      /*
-      --------------------------------------------------------------
-      CREATE BATCH
-      --------------------------------------------------------------
-      */
 
       await env.DB.prepare(`
         INSERT INTO import_batches (
@@ -579,24 +529,29 @@ export default {
       `)
         .bind(
           importBatchId,
+
           files.length === 1
             ? files[0].name
             : `${files.length} files`,
+
           "csv",
+
           0,
           0,
           0,
           0,
           0,
+
           "preview",
+
           new Date().toISOString()
         )
         .run();
 
       /*
-      --------------------------------------------------------------
+      ==============================================================
       READ EXISTING CLIENT IDENTIFIERS
-      --------------------------------------------------------------
+      ==============================================================
       */
 
       const existingClients =
@@ -606,22 +561,27 @@ export default {
             phone,
             email
           FROM clients
-        `)
-          .all();
+        `).all();
 
-      const phoneSet = new Set();
-      const emailSet = new Set();
+      const phoneSet =
+        new Set();
+
+      const emailSet =
+        new Set();
 
       for (
         const client of
         existingClients.results || []
       ) {
-
         const phone =
-          normalizePhone(client.phone);
+          normalizePhone(
+            client.phone
+          );
 
         const email =
-          normalizeEmail(client.email);
+          normalizeEmail(
+            client.email
+          );
 
         if (phone) {
           phoneSet.add(phone);
@@ -633,15 +593,14 @@ export default {
       }
 
       /*
-      --------------------------------------------------------------
-      PROCESS EACH CSV
-      --------------------------------------------------------------
+      ==============================================================
+      PROCESS FILES
+      ==============================================================
       */
 
       for (
         const file of files
       ) {
-
         const text =
           await file.text();
 
@@ -660,7 +619,6 @@ export default {
           index < parsed.length;
           index++
         ) {
-
           const rawRow =
             parsed[index];
 
@@ -682,25 +640,27 @@ export default {
           let importAction =
             "new";
 
-          if (!phone && !email) {
-
+          if (
+            !phone &&
+            !email
+          ) {
             importAction =
               "rejected_missing_identifier";
 
             totalRejected++;
 
           } else if (
-            (phone && phoneSet.has(phone)) ||
-            (email && emailSet.has(email))
+            (phone &&
+              phoneSet.has(phone)) ||
+            (email &&
+              emailSet.has(email))
           ) {
-
             importAction =
               "duplicate_existing";
 
             totalDuplicates++;
 
           } else {
-
             totalNew++;
           }
 
@@ -734,15 +694,14 @@ export default {
       }
 
       /*
-      --------------------------------------------------------------
+      ==============================================================
       STAGE RAW IMPORT ROWS
-      --------------------------------------------------------------
+      ==============================================================
       */
 
       for (
         const record of allRows
       ) {
-
         await env.DB.prepare(`
           INSERT INTO raw_import_rows (
             import_batch_id,
@@ -768,9 +727,9 @@ export default {
       }
 
       /*
-      --------------------------------------------------------------
+      ==============================================================
       UPDATE BATCH COUNTS
-      --------------------------------------------------------------
+      ==============================================================
       */
 
       await env.DB.prepare(`
@@ -794,9 +753,9 @@ export default {
         .run();
 
       /*
-      --------------------------------------------------------------
+      ==============================================================
       PREVIEW RESPONSE
-      --------------------------------------------------------------
+      ==============================================================
       */
 
       return json({
@@ -855,17 +814,27 @@ ENDPOINT-SIDE CSV FIELD NORMALIZATION
 ================================================================
 */
 
-function mapCSVRow(headers, row) {
-
+function mapCSVRow(
+  headers,
+  row
+) {
   const result = {};
 
-  for (let i = 0; i < headers.length; i++) {
-
+  for (
+    let i = 0;
+    i < headers.length;
+    i++
+  ) {
     const cleanHeader =
-      String(headers[i] || "")
+      String(
+        headers[i] || ""
+      )
         .trim()
         .toLowerCase()
-        .replace(/[\s\-]+/g, "_");
+        .replace(
+          /[\s\-]+/g,
+          "_"
+        );
 
     result[cleanHeader] =
       row[i] ?? "";
