@@ -112,6 +112,7 @@ textarea {
         <div><label>Errors</label><input type="number" id="f-err-count" value="0"></div>
       </div>
       <button class="btn-primary" onclick="findUpload()">Find Upload</button>
+      <button class="btn-secondary" onclick="browseRecent()" style="margin-left:8px">Show Recent Uploads Instead</button>
     </div>
     <div id="upload-choices"></div>
   </div>
@@ -188,6 +189,41 @@ async function init() {
     return;
   }
   await findUpload();
+}
+
+async function browseRecent() {
+  var statusEl = qs('find-upload-status');
+  var choicesEl = qs('upload-choices');
+  choicesEl.innerHTML = '';
+  statusEl.textContent = 'Loading recent uploads…';
+  statusEl.className = 'notice info';
+
+  try {
+    var resp = await fetch(API_BASE + '/api/import/uploads', { headers: authHeaders() });
+    if (resp.status === 401) { rejectPassphrase(); return; }
+    var data = await resp.json();
+
+    if (!data.ok || !data.uploads.length) {
+      statusEl.textContent = 'No uploads found at all in the database.';
+      statusEl.className = 'notice warning';
+      return;
+    }
+
+    statusEl.textContent = 'Most recent uploads — click the correct one:';
+    statusEl.className = 'notice info';
+    data.uploads.forEach(function(u) {
+      var div = document.createElement('div');
+      div.className = 'upload-choice';
+      div.innerHTML = '<strong>' + (u.file_name || 'Unnamed upload') + '</strong>' +
+        '<div class="stats">Processed: ' + u.row_count + ' · New: ' + u.new_count + ' · Duplicates: ' +
+        u.duplicate_count + ' · Errors: ' + u.error_count + ' · Status: ' + u.status + ' · ' + u.imported_at + '</div>';
+      div.onclick = function() { loadQueue(u.id); };
+      choicesEl.appendChild(div);
+    });
+  } catch (e) {
+    statusEl.textContent = 'Could not reach the CRM API: ' + e.message;
+    statusEl.className = 'notice error';
+  }
 }
 
 async function findUpload() {
