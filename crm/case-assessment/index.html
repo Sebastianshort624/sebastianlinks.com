@@ -259,6 +259,94 @@ button:disabled {
   padding: 16px;
   background: #fff;
 }
+  /* ── CRM Preview results (#results) ── */
+
+.result-card h3 {
+  margin: 0 0 14px;
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.result-grid > div {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  background: #fff;
+}
+
+.result-grid strong {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.result-grid span {
+  font-size: 25px;
+  font-weight: 700;
+}
+
+.import-safety {
+  background: var(--soft-green);
+  color: var(--success);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}
+
+.import-safety p {
+  margin: 6px 0 0;
+  font-weight: 400;
+}
+
+.no-duplicates {
+  background: var(--soft-green);
+  color: var(--success);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.duplicate-review {
+  background: var(--soft-yellow);
+  color: var(--warning);
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.duplicate-review h3 {
+  margin: 0 0 8px;
+}
+
+.duplicate-list {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.duplicate-row {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: var(--text);
+  display: grid;
+  gap: 4px;
+  font-size: 14px;
+}
+
+@media (max-width: 720px) {
+  .result-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+  
 
 .stat-label {
   color: var(--muted);
@@ -399,6 +487,7 @@ footer {
   <section class="card">
 
     <h2>📥 CRM Import</h2>
+    <div id="results" class="card" hidden></div>
 
     <p class="card-description">
       Upload up to 5 CSV files. Files are analyzed together before anything
