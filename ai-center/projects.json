@@ -1,0 +1,136 @@
+[
+  {
+    "id": "crm",
+    "name": "CRM Platform",
+    "emoji": "\ud83d\udfe6",
+    "color": "#5B8DEF",
+    "colorSoft": "#EAF1FE",
+    "status": "Active",
+    "description": "Lead management system, CSV imports, queue, database, API.",
+    "tasks": [],
+    "files": [],
+    "decisions": [],
+    "instructions": [],
+    "memory": {
+      "rules": [
+        "Do not modify database without approval",
+        "Verify live deployment before debugging"
+      ],
+      "current_state": [
+        "Queue page separated from Worker",
+        "CSV import issue remains separate"
+      ],
+      "important_decisions": [
+        "AI Center created as the master project dashboard"
+      ]
+    }
+  },
+  {
+    "id": "los",
+    "name": "Life Operating System (LOS)",
+    "emoji": "\ud83d\udfe9",
+    "color": "#4CAF7D",
+    "colorSoft": "#E8F7EF",
+    "status": "Building",
+    "description": "Household, life areas, energy vectors, goals, weekly council.",
+    "tasks": [],
+    "files": [],
+    "decisions": [],
+    "instructions": [],
+    "memory": {
+      "rules": [],
+      "current_state": [],
+      "important_decisions": []
+    }
+  },
+  {
+    "id": "recovery",
+    "name": "Recovery Platform",
+    "emoji": "\ud83d\udfe7",
+    "color": "#E8944A",
+    "colorSoft": "#FDF1E6",
+    "status": "Active",
+    "description": "Bootlog, meetings, recovery resources.",
+    "tasks": [],
+    "files": [],
+    "decisions": [],
+    "instructions": [],
+    "memory": {
+      "rules": [],
+      "current_state": [],
+      "important_decisions": []
+    }
+  },
+  {
+    "id": "sales",
+    "name": "Sales System",
+    "emoji": "\ud83d\udfe5",
+    "color": "#E15B5B",
+    "colorSoft": "#FCEAEA",
+    "status": "Active",
+    "description": "Scripts, objections, training, sales tools.",
+    "tasks": [],
+    "files": [],
+    "decisions": [],
+    "instructions": [],
+    "memory": {
+      "rules": [],
+      "current_state": [],
+      "important_decisions": []
+    }
+  },
+  {
+    "id": "resort-intel",
+    "name": "Resort Intelligence Database",
+    "emoji": "\ud83d\udfea",
+    "color": "#9B72CF",
+    "colorSoft": "#F2ECFB",
+    "status": "Research",
+    "description": "",
+    "tasks": [],
+    "files": [],
+    "decisions": [],
+    "instructions": [],
+    "memory": {
+      "rules": [],
+      "current_state": [],
+      "important_decisions": []
+    }
+  },
+  {
+    "id": "12-steps",
+    "name": "12 Easy Steps Website",
+    "emoji": "\ud83d\udfe8",
+    "color": "#D9B23C",
+    "colorSoft": "#FBF6E3",
+    "status": "Active",
+    "description": "",
+    "tasks": [],
+    "files": [],
+    "decisions": [],
+    "instructions": [],
+    "memory": {
+      "rules": [],
+      "current_state": [],
+      "important_decisions": []
+    }
+  },
+  {
+    "id": "future",
+    "name": "Future Projects",
+    "emoji": "\ud83d\udfeb",
+    "color": "#9C8677",
+    "colorSoft": "#F2EDEA",
+    "status": "",
+    "description": "",
+    "tasks": [],
+    "files": [],
+    "decisions": [],
+    "instructions": [],
+    "memory": {
+      "rules": [],
+      "current_state": [],
+      "important_decisions": []
+    }
+  }
+]
