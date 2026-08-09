@@ -695,35 +695,45 @@ export default {
 
       /*
       ==============================================================
-      STAGE RAW IMPORT ROWS
-      ==============================================================
-      */
+const BATCH_SIZE = 50;
 
-      for (
-        const record of allRows
-      ) {
-        await env.DB.prepare(`
-          INSERT INTO raw_import_rows (
-            import_batch_id,
-            source_file_name,
-            source_row_number,
-            import_action,
-            source_data,
-            normalized_phone,
-            normalized_email
-          )
-          VALUES (?, ?, ?, ?, ?, ?, ?)
-        `)
-          .bind(
-            record.import_batch_id,
-            record.source_file_name,
-            record.source_row_number,
-            record.import_action,
-            record.source_data,
-            record.normalized_phone,
-            record.normalized_email
-          )
-          .run();
+for (
+  let start = 0;
+  start < allRows.length;
+  start += BATCH_SIZE
+) {
+  const chunk =
+    allRows.slice(
+      start,
+      start + BATCH_SIZE
+    );
+
+  const statements = chunk.map(
+    record =>
+      env.DB.prepare(`
+        INSERT INTO raw_import_rows (
+          import_batch_id,
+          source_file_name,
+          source_row_number,
+          import_action,
+          source_data,
+          normalized_phone,
+          normalized_email
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      `).bind(
+        record.import_batch_id,
+        record.source_file_name,
+        record.source_row_number,
+        record.import_action,
+        record.source_data,
+        record.normalized_phone,
+        record.normalized_email
+      )
+  );
+
+  await env.DB.batch(statements);
+}
       }
 
       /*
