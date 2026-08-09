@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRM Calling Queue</title>
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    background: #f5f7fa;
+    color: #1f2937;
+  }
+
+  .page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 30px 20px 60px;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+
+  .header h1 {
+    margin: 0;
+    font-size: 28px;
+  }
+
+  .header p {
+    margin: 6px 0 0;
+    color: #6b7280;
+  }
+
+  .card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.04);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  .auth-card {
+    max-width: 520px;
+    margin: 80px auto;
+  }
+
+  label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  input,
+  textarea,
+  select {
+    width: 100%;
+    border: 1px solid #d1d5db;
+    border-radius: 9px;
+    padding: 12px;
+    font-size: 15px;
+    background: white;
+  }
+
+  input:focus,
+  textarea:focus,
+  select:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+  }
+
+  button {
+    border: 0;
+    border-radius: 9px;
+    padding: 11px 17px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .primary {
+    background: #2563eb;
+    color: white;
+  }
+
+  .secondary {
+    background: #eef2f7;
+    color: #374151;
+  }
+
+  .danger {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+
+  button:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+  }
+
+  .error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+    padding: 14px;
+    border-radius: 9px;
+    margin-top: 15px;
+  }
+
+  .success {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #065f46;
+    padding: 14px;
+    border-radius: 9px;
+    margin-top: 15px;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .stat {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 15px;
+  }
+
+  .stat-label {
+    color: #6b7280;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+  }
+
+  .stat-value {
+    font-size: 23px;
+    font-weight: 700;
+    margin-top: 4px;
+  }
+
+  .lead-position {
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 10px;
+  }
+
+  .lead-name {
+    font-size: 30px;
+    font-weight: 700;
+    margin: 0 0 18px;
+  }
+
+  .lead-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  .field {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 13px;
+    background: #fafafa;
+  }
+
+  .field-label {
+    font-size: 12px;
+    color: #6b7280;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+
+  .field-value {
+    font-size: 16px;
+    word-break: break-word;
+  }
+
+  .controls {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 24px;
+  }
+
+  .controls-left,
+  .controls-right {
+    display: flex;
+    gap: 10px;
+  }
+
+  .upload-picker {
+    display: grid;
+    gap: 12px;
+  }
+
+  .upload-option {
+    border: 1px solid #dbe1e8;
+    border-radius: 10px;
+    padding: 15px;
+    cursor: pointer;
+  }
+
+  .upload-option:hover {
+    border-color: #2563eb;
+    background: #f8fbff;
+  }
+
+  .upload-option strong {
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .upload-meta {
+    color: #6b7280;
+    font-size: 13px;
+  }
+
+  .loading {
+    text-align: center;
+    padding: 40px;
+    color: #6b7280;
+  }
+
+  .raw-data {
+    margin-top: 20px;
+  }
+
+  .raw-data summary {
+    cursor: pointer;
+    color: #4b5563;
+    font-weight: 600;
+  }
+
+  pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    background: #111827;
+    color: #e5e7eb;
+    padding: 15px;
+    border-radius: 9px;
+    overflow: auto;
+    font-size: 12px;
+  }
+
+  .disabled-note {
+    color: #6b7280;
+    font-size: 13px;
+    margin-top: 8px;
+  }
+
+  @media (max-width: 700px) {
+    .stats {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .lead-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .header {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .controls {
+      flex-direction: column;
+    }
+
+    .controls-left,
+    .controls-right {
+      width: 100%;
+    }
+
+    .controls button {
+      flex: 1;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+  <!-- AUTH -->
+  <section id="authScreen" class="card auth-card">
+    <h1>🔐 CRM Calling Queue</h1>
+    <p>Enter your queue access passphrase to continue.</p>
+
+    <label for="passphrase">Access Passphrase</label>
+    <input
+      id="passphrase"
+      type="password"
+      autocomplete="off"
+      placeholder="Enter passphrase"
+    >
+
+    <button
+      id="unlockButton"
+      class="primary"
+      style="margin-top:15px;width:100%;"
+    >
+      Unlock Queue
+    </button>
+
+    <div id="authError" class="error hidden"></div>
+  </section>
+
+  <!-- MAIN -->
+  <main id="mainScreen" class="hidden">
+
+    <div class="header">
+      <div>
+        <h1>📞 CRM Calling Queue</h1>
+        <p>Work through your imported leads one at a time.</p>
+      </div>
+
+      <button id="lockButton" class="secondary">
+        🔒 Lock
+      </button>
+    </div>
+
+    <!-- UPLOAD SELECTION -->
+    <section id="uploadSection" class="card">
+      <h2>📥 Select Import</h2>
+      <p>
+        The system will identify the upload matching your current
+        preview: <strong>100 processed · 100 new · 0 duplicates · 0 rejected</strong>.
+      </p>
+
+      <div id="uploadLoading" class="loading">
+        Finding your latest matching upload...
+      </div>
+
+      <div id="uploadPicker" class="upload-picker hidden"></div>
+
+      <div id="uploadError" class="error hidden"></div>
+    </section>
+
+    <!-- QUEUE -->
+    <section id="queueSection" class="hidden">
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label">Total Leads</div>
+          <div id="totalLeads" class="stat-value">0</div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-label">Current</div>
+          <div id="currentLead" class="stat-value">0</div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-label">Remaining</div>
+          <div id="remainingLeads" class="stat-value">0</div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-label">Status</div>
+          <div class="stat-value">READY</div>
+        </div>
+      </div>
+
+      <div class="card">
+
+        <div id="leadPosition" class="lead-position">
+          Lead 0 of 0
+        </div>
+
+        <h2 id="leadName" class="lead-name">
+          Lead
+        </h2>
+
+        <div id="leadFields" class="lead-grid"></div>
+
+        <details class="raw-data">
+          <summary>View original imported data</summary>
+          <pre id="rawData"></pre>
+        </details>
+
+        <div style="margin-top:25px;">
+          <label for="disposition">Call / Lead Disposition</label>
+
+          <select id="disposition">
+            <option value="">Select disposition...</option>
+            <option value="not_called">Not Called</option>
+            <option value="no_answer">No Answer</option>
+            <option value="left_voicemail">Left Voicemail</option>
+            <option value="contacted">Contacted</option>
+            <option value="interested">Interested</option>
+            <option value="follow_up">Follow Up</option>
+            <option value="not_interested">Not Interested</option>
+            <option value="wrong_number">Wrong Number</option>
+            <option value="do_not_call">Do Not Call</option>
+            <option value="qualified">Qualified</option>
+          </select>
+        </div>
+
+        <div style="margin-top:15px;">
+          <label for="notes">Notes</label>
+          <textarea
+            id="notes"
+            rows="4"
+            placeholder="Private working notes..."
+          ></textarea>
+        </div>
+
+        <div class="controls">
+
+          <div class="controls-left">
+            <button
+              id="previousButton"
+              class="secondary"
+            >
+              ← Previous
+            </button>
+
+            <button
+              id="nextButton"
+              class="primary"
+            >
+              Next →
+            </button>
+          </div>
+
+          <div class="controls-right">
+            <button
+              id="autoCallButton"
+              class="secondary"
+              disabled
+              title="Auto Call is not enabled"
+            >
+              📞 Auto Call
+            </button>
+          </div>
+
+        </div>
+
+        <div class="disabled-note">
+          Auto Call is intentionally disabled. No autodialer is connected.
+        </div>
+
+      </div>
+
+      <div id="queueMessage" class="success hidden"></div>
+
+    </section>
+
+  </main>
+
+</div>
+
+<script>
+
+const API_BASE =
+  "https://sebastianlinks-crm-api.sebastianshort624.workers.dev";
+
+const PASS_KEY =
+  "cpg_crm_queue_passphrase";
+
+let leads = [];
+let currentIndex = 0;
+let selectedUpload = null;
+
+const $ = id =>
+  document.getElementById(id);
+
+
+/* ================================================================
+   AUTH
+================================================================ */
+
+function getPassphrase() {
+  return sessionStorage.getItem(PASS_KEY) || "";
+}
+
+function setPassphrase(value) {
+  sessionStorage.setItem(PASS_KEY, value);
+}
+
+function clearPassphrase() {
+  sessionStorage.removeItem(PASS_KEY);
+}
+
+function authHeaders() {
+  return {
+    "X-Queue-Passphrase": getPassphrase()
+  };
+}
+
+function showAuth() {
+  $("authScreen").classList.remove("hidden");
+  $("mainScreen").classList.add("hidden");
+}
+
+function showMain() {
+  $("authScreen").classList.add("hidden");
+  $("mainScreen").classList.remove("hidden");
+}
+
+function rejectAuth(message) {
+  clearPassphrase();
+
+  $("authError").textContent =
+    message ||
+    "Access denied. Check your passphrase.";
+
+  $("authError").classList.remove("hidden");
+
+  showAuth();
+
+  $("passphrase").value = "";
+  $("passphrase").focus();
+}
+
+
+/* ================================================================
+   UNLOCK
+================================================================ */
+
+$("unlockButton").addEventListener(
+  "click",
+  async () => {
+
+    const value =
+      $("passphrase").value.trim();
+
+    if (!value) {
+      $("authError").textContent =
+        "Enter your access passphrase.";
+
+      $("authError").classList.remove("hidden");
+      return;
+    }
+
+    setPassphrase(value);
+
+    $("unlockButton").disabled = true;
+    $("unlockButton").textContent =
+      "Checking...";
+
+    try {
+
+      await loadUploads();
+
+      showMain();
+
+    } catch (error) {
+
+      rejectAuth(
+        error.message ||
+        "Unable to authenticate."
+      );
+
+    } finally {
+
+      $("unlockButton").disabled = false;
+      $("unlockButton").textContent =
+        "Unlock Queue";
+    }
+  }
+);
+
+
+/* ================================================================
+   LOCK
+================================================================ */
+
+$("lockButton").addEventListener(
+  "click",
+  () => {
+
+    clearPassphrase();
+
+    leads = [];
+    selectedUpload = null;
+    currentIndex = 0;
+
+    $("queueSection")
+      .classList.add("hidden");
+
+    showAuth();
+  }
+);
+
+
+/* ================================================================
+   API REQUEST
+================================================================ */
+
+async function apiFetch(path) {
+
+  const response =
+    await fetch(
+      API_BASE + path,
+      {
+        method: "GET",
+        headers: authHeaders(),
+        cache: "no-store"
+      }
+    );
+
+  if (response.status === 401) {
+
+    rejectAuth(
+      "Access denied. The queue passphrase was rejected."
+    );
+
+    throw new Error(
+      "Unauthorized"
+    );
+  }
+
+  let data;
+
+  try {
+    data = await response.json();
+  } catch (error) {
+    throw new Error(
+      "The server returned an invalid response."
+    );
+  }
+
+  if (!response.ok || !data.ok) {
+    throw new Error(
+      data.error ||
+      "Request failed."
+    );
+  }
+
+  return data;
+}
+
+
+/* ================================================================
+   FIND UPLOAD
+================================================================ */
+
+async function loadUploads() {
+
+  $("uploadLoading")
+    .classList.remove("hidden");
+
+  $("uploadPicker")
+    .classList.add("hidden");
+
+  $("uploadError")
+    .classList.add("hidden");
+
+  const data =
+    await apiFetch(
+      "/api/import/uploads" +
+      "?row_count=100" +
+      "&new_count=100" +
+      "&duplicate_count=0" +
+      "&error_count=0"
+    );
+
+  const uploads =
+    Array.isArray(data.uploads)
+      ? data.uploads
+      : [];
+
+  $("uploadLoading")
+    .classList.add("hidden");
+
+  if (uploads.length === 0) {
+
+    throw new Error(
+      "No upload was found matching 100 processed, 100 new, 0 duplicates, and 0 rejected."
+    );
+  }
+
+  if (uploads.length === 1) {
+
+    await selectUpload(
+      uploads[0]
+    );
+
+    return;
+  }
+
+  /*
+   Multiple exact matches:
+   NEVER guess.
+  */
+
+  $("uploadPicker")
+    .classList.remove("hidden");
+
+  $("uploadPicker").innerHTML =
+    uploads.map(
+      (upload, index) => `
+
+        <div
+          class="upload-option"
+          data-index="${index}"
+        >
+
+          <strong>
+            ${escapeHtml(
+              upload.file_name ||
+              "CSV Upload"
+            )}
+          </strong>
+
+          <div class="upload-meta">
+            ${escapeHtml(
+              String(
+                upload.imported_at ||
+                "Unknown date"
+              )
+            )}
+          </div>
+
+          <div class="upload-meta">
+            ${upload.row_count} processed ·
+            ${upload.new_count} new ·
+            ${upload.duplicate_count} duplicates ·
+            ${upload.error_count} rejected
+          </div>
+
+        </div>
+
+      `
+    ).join("");
+
+  document
+    .querySelectorAll(
+      ".upload-option"
+    )
+    .forEach(
+      element => {
+
+        element.addEventListener(
+          "click",
+          async () => {
+
+            const index =
+              Number(
+                element.dataset.index
+              );
+
+            await selectUpload(
+              uploads[index]
+            );
+          }
+        );
+
+      }
+    );
+}
+
+
+/* ================================================================
+   SELECT UPLOAD
+================================================================ */
+
+async function selectUpload(upload) {
+
+  selectedUpload = upload;
+
+  $("uploadSection")
+    .classList.add("hidden");
+
+  $("queueSection")
+    .classList.remove("hidden");
+
+  $("queueMessage")
+    .classList.add("hidden");
+
+  try {
+
+    const data =
+      await apiFetch(
+        "/api/import/queue?upload_id=" +
+        encodeURIComponent(
+          upload.id
+        )
+      );
+
+    leads =
+      Array.isArray(data.leads)
+        ? data.leads
+        : [];
+
+    currentIndex = 0;
+
+    if (leads.length === 0) {
+
+      $("queueSection")
+        .classList.add("hidden");
+
+      $("uploadSection")
+        .classList.remove("hidden");
+
+      $("uploadError").textContent =
+        "The selected upload contains no queue-eligible leads.";
+
+      $("uploadError")
+        .classList.remove("hidden");
+
+      return;
+    }
+
+    renderLead();
+
+  } catch (error) {
+
+    $("queueSection")
+      .classList.add("hidden");
+
+    $("uploadSection")
+      .classList.remove("hidden");
+
+    $("uploadError").textContent =
+      error.message;
+
+    $("uploadError")
+      .classList.remove("hidden");
+  }
+}
+
+
+/* ================================================================
+   RENDER LEAD
+================================================================ */
+
+function renderLead() {
+
+  if (!leads.length) {
+    return;
+  }
+
+  const lead =
+    leads[currentIndex];
+
+  $("totalLeads").textContent =
+    leads.length;
+
+  $("currentLead").textContent =
+    currentIndex + 1;
+
+  $("remainingLeads").textContent =
+    Math.max(
+      0,
+      leads.length -
+      currentIndex -
+      1
+    );
+
+  $("leadPosition").textContent =
+    `Lead ${currentIndex + 1} of ${leads.length}`;
+
+  const fields =
+    lead.fields || {};
+
+  const name =
+    firstValue(
+      fields,
+      [
+        "name",
+        "full_name",
+        "client_name",
+        "contact_name",
+        "first_name"
+      ]
+    ) ||
+    "Unnamed Lead";
+
+  $("leadName").textContent =
+    name;
+
+  const fieldEntries =
+    Object.entries(fields)
+      .filter(
+        ([key, value]) =>
+          String(value ?? "").trim() !== ""
+      );
+
+  $("leadFields").innerHTML =
+    fieldEntries
+      .map(
+        ([key, value]) => `
+
+          <div class="field">
+
+            <div class="field-label">
+              ${escapeHtml(
+                humanize(key)
+              )}
+            </div>
+
+            <div class="field-value">
+              ${escapeHtml(
+                String(value)
+              )}
+            </div>
+
+          </div>
+
+        `
+      )
+      .join("");
+
+  $("rawData").textContent =
+    JSON.stringify(
+      fields,
+      null,
+      2
+    );
+
+  $("previousButton").disabled =
+    currentIndex === 0;
+
+  $("nextButton").disabled =
+    currentIndex >=
+    leads.length - 1;
+
+  $("disposition").value = "";
+  $("notes").value = "";
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+
+
+/* ================================================================
+   NEXT / PREVIOUS
+================================================================ */
+
+$("previousButton").addEventListener(
+  "click",
+  () => {
+
+    if (currentIndex > 0) {
+
+      currentIndex--;
+
+      renderLead();
+    }
+  }
+);
+
+$("nextButton").addEventListener(
+  "click",
+  () => {
+
+    if (
+      currentIndex <
+      leads.length - 1
+    ) {
+
+      currentIndex++;
+
+      renderLead();
+
+    } else {
+
+      $("queueMessage").textContent =
+        "You have reached the end of the current calling queue.";
+
+      $("queueMessage")
+        .classList.remove("hidden");
+    }
+  }
+);
+
+
+/* ================================================================
+   HELPERS
+================================================================ */
+
+function firstValue(
+  object,
+  keys
+) {
+
+  for (
+    const key of keys
+  ) {
+
+    if (
+      object[key] !== undefined &&
+      object[key] !== null &&
+      String(object[key]).trim() !== ""
+    ) {
+      return String(
+        object[key]
+      ).trim();
+    }
+  }
+
+  return "";
+}
+
+function humanize(value) {
+
+  return String(value)
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, char =>
+      char.toUpperCase()
+    );
+}
+
+function escapeHtml(value) {
+
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+
+/* ================================================================
+   EXISTING SESSION
+================================================================ */
+
+if (getPassphrase()) {
+
+  /*
+   Don't trust sessionStorage by itself.
+   The first API request re-validates it.
+  */
+
+  $("authScreen")
+    .classList.add("hidden");
+
+  $("mainScreen")
+    .classList.remove("hidden");
+
+  loadUploads()
+    .catch(error => {
+
+      if (
+        error.message !==
+        "Unauthorized"
+      ) {
+
+        $("uploadLoading")
+          .classList.add("hidden");
+
+        $("uploadError").textContent =
+          error.message;
+
+        $("uploadError")
+          .classList.remove("hidden");
+      }
+    });
+
+} else {
+
+  showAuth();
+
+  $("passphrase").focus();
+}
+
+</script>
+
+</body>
+</html>
