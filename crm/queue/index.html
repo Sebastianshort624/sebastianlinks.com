@@ -502,10 +502,17 @@ function money(n) { return '$' + Math.round(n || 0).toLocaleString(); }
 // ── LEAD NAME — exact priority order per spec. Never falls back to email. ──
 function getLeadName(lead) {
   var f = lead.fields || {};
-  var v = f.lead_name || f.name;
+  // Master-queue leads use the exact 158-schema key names ("Lead Name",
+  // Title Case with a space); older raw-row leads use lowercase/underscore
+  // keys ("lead_name"). Normalize before matching so both shapes work.
+  var normalized = {};
+  Object.keys(f).forEach(function(key) {
+    normalized[key.toLowerCase().replace(/[^a-z0-9]/g, '')] = f[key];
+  });
+  var v = normalized['leadname'] || normalized['name'];
   if (v) return v;
-  var first = f.first_name || f.firstname;
-  var last = f.last_name || f.lastname;
+  var first = normalized['firstname'];
+  var last = normalized['lastname'];
   if (first || last) return ((first || '') + ' ' + (last || '')).trim();
   return 'Unknown Lead Name';
 }
