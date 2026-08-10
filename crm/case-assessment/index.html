@@ -857,24 +857,18 @@ if (results) {
             </div>
 
             <div>
-              <strong>Processed</strong>
-              <span>${result.rows_processed}</span>
+              <strong>Columns Needing Review</strong>
+              <span>${result.columns_needing_review}</span>
             </div>
 
             <div>
-              <strong>Duplicates</strong>
-              <span>${result.duplicates_found}</span>
+              <strong>Approval Status</strong>
+              <span>${result.approval_blocked ? 'Blocked — review required' : 'Ready to approve'}</span>
             </div>
+          </div>
 
-            <div>
-              <strong>Rejected</strong>
-              <span>${result.rejected}</span>
-            </div>
-
-            <div>
-              <strong>New Records</strong>
-              <span>${result.new_records}</span>
-            </div>
+          <div style="margin-top:16px">
+            <a class="btn-primary" href="/crm/import-review/?upload_id=${encodeURIComponent(result.import_batch_id)}" style="display:inline-block;text-decoration:none;padding:10px 18px;border-radius:8px">Review Mapping &rarr;</a>
           </div>
 
           <div class="import-safety">
