@@ -85,6 +85,10 @@ textarea {
 .modal-box { background: var(--card); border-radius: var(--radius); max-width: 900px; width: 100%; margin: 20px auto; box-shadow: 0 8px 40px rgba(0,0,0,.3); }
 .modal-header { position: sticky; top: 0; background: var(--card); border-bottom: 1px solid var(--border); padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; border-radius: var(--radius) var(--radius) 0 0; z-index: 2; }
 .modal-header h2 { font-size: 18px; margin: 0; }
+.modal-footer { position: sticky; bottom: 0; background: var(--card); border-top: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; gap: 12px; border-radius: 0 0 var(--radius) var(--radius); }
+.detail-edit-input { width: 100%; padding: 5px 8px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; font-family: inherit; text-align: right; }
+.detail-edit-textarea { text-align: left; resize: vertical; min-height: 50px; }
+.locked-value { color: var(--muted); font-style: italic; }
 .modal-close { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; width: 36px; height: 36px; font-size: 18px; cursor: pointer; }
 .modal-body { padding: 20px 24px 28px; }
 .detail-section { margin-bottom: 22px; }
@@ -161,6 +165,10 @@ textarea {
       <button class="modal-close" onclick="closeDetailModal()">✕</button>
     </div>
     <div class="modal-body" id="detail-modal-body"></div>
+    <div class="modal-footer">
+      <div id="save-status" class="notice hidden" style="flex:1"></div>
+      <button class="btn-primary" onclick="saveMasterLeadEdits()">💾 Save Changes</button>
+    </div>
   </div>
 </div>
 
@@ -490,18 +498,10 @@ function money(n) { return '$' + Math.round(n || 0).toLocaleString(); }
 // ── LEAD NAME — exact priority order per spec. Never falls back to email. ──
 function getLeadName(lead) {
   var f = lead.fields || {};
-  // Master-queue leads use the exact 158-schema key names ("Lead Name",
-  // Title Case with spaces); old raw-row leads use lowercase/underscore
-  // keys ("lead_name"). Normalize before matching so both shapes work,
-  // the same way categorizeFields() already does for the detail modal.
-  var normalized = {};
-  Object.keys(f).forEach(function(key) {
-    normalized[key.toLowerCase().replace(/[^a-z0-9]/g, '')] = f[key];
-  });
-  var v = normalized['leadname'] || normalized['name'];
+  var v = f.lead_name || f.name;
   if (v) return v;
-  var first = normalized['firstname'];
-  var last = normalized['lastname'];
+  var first = f.first_name || f.firstname;
+  var last = f.last_name || f.lastname;
   if (first || last) return ((first || '') + ' ' + (last || '')).trim();
   return 'Unknown Lead Name';
 }
@@ -532,6 +532,14 @@ function humanizeKey(key) {
   return key.replace(/^r[1-6][_-]?/i, '').replace(/_/g, ' ').replace(/\b\w/g, function(c) { return c.toUpperCase(); });
 }
 
+var LOCKED_MASTER_FIELDS = ['Record Id', 'UUID', 'Lead-Created-Time'];
+var LONG_TEXT_FIELD_HINTS = ['whydotheywantout', 'additionalnotes', 'mainobjection', 'biggestmotivator', 'biggestpainpoint', 'conversations'];
+
+function isLongTextField(originalKey) {
+  var norm = originalKey.toLowerCase().replace(/[^a-z0-9]/g, '');
+  return LONG_TEXT_FIELD_HINTS.some(function(h) { return norm.indexOf(h) !== -1; });
+}
+
 function categorizeFields(fields) {
   var sections = {
     'CONTACT & LEAD': {}, 'APPOINTMENT & ASSIGNMENT': {},
@@ -545,15 +553,17 @@ function categorizeFields(fields) {
   var marketingKeys = ['utmmedium','utmsource','leadcreatedtime','modifiedtime','howdidclienthearaboutus','compliancechecklist'];
   var notesKeys = ['additionalnotes','statusofcall','notes'];
 
+  // Each section entry is now {v: value, k: exact original schema key} —
+  // the key is needed to send edits back to the right field; the label
+  // (map key) is just for display and may be humanized/relabeled.
   Object.keys(fields).forEach(function(key) {
     var val = fields[key];
+    var entry = { v: val, k: key };
     var norm = key.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-    // R{n}-Amount Charging is explicitly a FINANCIAL/QUOTE field, not a
-    // resort-detail field, even though it has an r-prefix — per spec.
     var amountChargingResort = norm.match(/^r([1-6])amountcharging$/);
     if (amountChargingResort) {
-      sections['FINANCIAL / QUOTE']['R' + amountChargingResort[1] + '-Amount Charging'] = val;
+      sections['FINANCIAL / QUOTE']['R' + amountChargingResort[1] + '-Amount Charging'] = entry;
       return;
     }
 
@@ -561,30 +571,98 @@ function categorizeFields(fields) {
     if (resortNum) {
       var labelKey = norm.replace(/^r[1-5][_]?/, '');
       var label = RESORT_FIELD_LABELS[labelKey] || humanizeKey(key);
-      sections['RESORT ' + resortNum][label] = val;
+      sections['RESORT ' + resortNum][label] = entry;
       return;
     }
 
-    if (contactKeys.indexOf(norm) !== -1) { sections['CONTACT & LEAD'][humanizeKey(key)] = val; return; }
-    if (apptKeys.indexOf(norm) !== -1) { sections['APPOINTMENT & ASSIGNMENT'][humanizeKey(key)] = val; return; }
-    if (financialNonResortKeys.indexOf(norm) !== -1) { sections['FINANCIAL / QUOTE'][humanizeKey(key)] = val; return; }
-    if (marketingKeys.indexOf(norm) !== -1) { sections['MARKETING / TRACKING'][humanizeKey(key)] = val; return; }
-    if (notesKeys.indexOf(norm) !== -1) { sections['NOTES'][humanizeKey(key)] = val; return; }
+    if (contactKeys.indexOf(norm) !== -1) { sections['CONTACT & LEAD'][humanizeKey(key)] = entry; return; }
+    if (apptKeys.indexOf(norm) !== -1) { sections['APPOINTMENT & ASSIGNMENT'][humanizeKey(key)] = entry; return; }
+    if (financialNonResortKeys.indexOf(norm) !== -1) { sections['FINANCIAL / QUOTE'][humanizeKey(key)] = entry; return; }
+    if (marketingKeys.indexOf(norm) !== -1) { sections['MARKETING / TRACKING'][humanizeKey(key)] = entry; return; }
+    if (notesKeys.indexOf(norm) !== -1) { sections['NOTES'][humanizeKey(key)] = entry; return; }
 
-    // Catch-all — never silently discard an unrecognized field.
-    sections['NOTES'][humanizeKey(key) + ' (unrecognized field: ' + key + ')'] = val;
+    sections['NOTES'][humanizeKey(key) + ' (unrecognized field: ' + key + ')'] = entry;
   });
 
   return sections;
 }
 
-function renderDetailValue(v) {
-  if (v === undefined || v === null || String(v).trim() === '') {
-    return '<span class="detail-value empty">—</span>';
+function renderDetailValue(entry) {
+  var v = entry.v, k = entry.k;
+  var isLocked = LOCKED_MASTER_FIELDS.indexOf(k) !== -1;
+  var safeVal = document.createElement('div');
+  safeVal.textContent = v || '';
+  var escapedVal = safeVal.innerHTML;
+  var escapedAttrVal = escapedVal.replace(/"/g, '&quot;');
+
+  if (isLocked) {
+    if (v === undefined || v === null || String(v).trim() === '') {
+      return '<span class="detail-value empty">—</span>';
+    }
+    return '<span class="detail-value locked-value" title="Locked — cannot be edited">' + escapedVal + ' \uD83D\uDD12</span>';
   }
-  var div = document.createElement('div');
-  div.textContent = v;
-  return '<span class="detail-value">' + div.innerHTML + '</span>';
+
+  var fieldAttr = k.replace(/"/g, '&quot;');
+  if (isLongTextField(k)) {
+    return '<textarea class="detail-edit-input detail-edit-textarea" data-field="' + fieldAttr + '" rows="3">' + escapedVal + '</textarea>';
+  }
+  return '<input type="text" class="detail-edit-input" data-field="' + fieldAttr + '" value="' + escapedAttrVal + '">';
+}
+
+function collectEditedFields() {
+  var updates = {};
+  document.querySelectorAll('.detail-edit-input').forEach(function(el) {
+    updates[el.getAttribute('data-field')] = el.value;
+  });
+  return updates;
+}
+
+async function saveMasterLeadEdits() {
+  var lead = leads[currentIndex];
+  var masterLeadId = lead.master_lead_id;
+  var statusEl = qs('save-status');
+
+  if (!masterLeadId) {
+    statusEl.textContent = 'This lead has no master_lead_id (older-format lead) — editing is only available for Master Leads queue records.';
+    statusEl.className = 'notice error';
+    statusEl.classList.remove('hidden');
+    return;
+  }
+
+  var updates = collectEditedFields();
+
+  statusEl.textContent = 'Saving…';
+  statusEl.className = 'notice info';
+  statusEl.classList.remove('hidden');
+
+  try {
+    var resp = await fetch(API_BASE + '/api/import/master-lead/update', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ master_lead_id: masterLeadId, updates: updates })
+    });
+    var data = await resp.json();
+
+    if (!data.ok) {
+      statusEl.textContent = 'Save failed: ' + (data.error || 'unknown error') +
+        (data.locked_fields_attempted && data.locked_fields_attempted.length ? ' (locked: ' + data.locked_fields_attempted.join(', ') + ')' : '') +
+        (data.invalid_fields && data.invalid_fields.length ? ' (invalid: ' + data.invalid_fields.join(', ') + ')' : '');
+      statusEl.className = 'notice error';
+      return;
+    }
+
+    // Update in-memory lead so the queue card reflects the edit immediately
+    Object.keys(updates).forEach(function(field) { lead.fields[field] = updates[field]; });
+    if (updates['Phone']) lead.phone = updates['Phone'];
+    if (updates['Email']) lead.email = updates['Email'];
+
+    statusEl.textContent = '✅ Saved — ' + data.updated_fields.length + ' field(s) updated.';
+    statusEl.className = 'notice success';
+    renderLead();
+  } catch (e) {
+    statusEl.textContent = 'Could not reach the CRM API: ' + e.message;
+    statusEl.className = 'notice error';
+  }
 }
 
 function openDetailModal() {
