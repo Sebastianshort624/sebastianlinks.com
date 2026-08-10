@@ -221,11 +221,15 @@ function proceedPastPassphrase() {
 async function init() {
   var uploadIdFromUrl = getUrlParam('upload_id');
   if (uploadIdFromUrl) {
+    // Historical/audit access to a specific batch — unchanged.
     qs('find-upload-card').classList.add('hidden');
     await loadQueue(uploadIdFromUrl);
     return;
   }
-  await findUpload();
+  // Default entry point is now the Master Leads queue, not the old
+  // upload-specific import_action='new' path (which no batch under
+  // the current architecture ever populates).
+  await loadMasterQueue();
 }
 
 async function loadMasterQueue() {
