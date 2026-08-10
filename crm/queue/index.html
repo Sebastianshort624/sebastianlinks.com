@@ -80,6 +80,21 @@ textarea {
   border-radius: 8px; font-size: 14px; font-family: inherit; resize: vertical;
 }
 .hidden { display: none !important; }
+.detail-btn { background: var(--soft-blue); color: #174a8b; margin-top: 14px; width: 100%; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 1000; display: flex; align-items: flex-start; justify-content: center; overflow-y: auto; padding: 20px; }
+.modal-box { background: var(--card); border-radius: var(--radius); max-width: 900px; width: 100%; margin: 20px auto; box-shadow: 0 8px 40px rgba(0,0,0,.3); }
+.modal-header { position: sticky; top: 0; background: var(--card); border-bottom: 1px solid var(--border); padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; border-radius: var(--radius) var(--radius) 0 0; z-index: 2; }
+.modal-header h2 { font-size: 18px; margin: 0; }
+.modal-close { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; width: 36px; height: 36px; font-size: 18px; cursor: pointer; }
+.modal-body { padding: 20px 24px 28px; }
+.detail-section { margin-bottom: 22px; }
+.detail-section-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); border-bottom: 2px solid var(--border); padding-bottom: 6px; margin-bottom: 10px; }
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 20px; }
+.detail-row { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-bottom: 1px solid #f0f2f5; font-size: 13px; }
+.detail-label { color: var(--muted); flex-shrink: 0; }
+.detail-value { font-weight: 600; text-align: right; word-break: break-word; }
+.detail-value.empty { color: #c3c9d1; font-weight: 400; }
+@media (max-width: 640px) { .detail-grid { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -113,6 +128,7 @@ textarea {
       </div>
       <button class="btn-primary" onclick="findUpload()">Find Upload</button>
       <button class="btn-secondary" onclick="browseRecent()" style="margin-left:8px">Show Recent Uploads Instead</button>
+      <button class="btn-primary" onclick="loadMasterQueue()" style="margin-left:8px">📋 Load Master Leads Queue</button>
     </div>
     <div id="upload-choices"></div>
   </div>
@@ -124,6 +140,7 @@ textarea {
       <div class="progress" id="progress-text">Lead 1 of 100</div>
       <div class="lead-name" id="lead-name">—</div>
       <div id="lead-fields"></div>
+      <button class="btn-secondary detail-btn" onclick="openDetailModal()">📋 View Full Lead →</button>
       <label style="margin-top:16px">Disposition / Notes (not saved yet — recording comes in a later phase)</label>
       <textarea id="disposition" placeholder="e.g. Left voicemail, call back Thursday"></textarea>
       <div class="nav-row">
@@ -132,6 +149,18 @@ textarea {
         <button class="btn-primary" id="next-btn" onclick="nextLead()">Next →</button>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- Full lead detail modal — closing it returns to the exact same lead
+     in the queue; currentIndex is never touched by opening/closing this. -->
+<div class="modal-overlay hidden" id="detail-modal" onclick="if(event.target===this) closeDetailModal()">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2 id="detail-modal-title">Full Lead Detail</h2>
+      <button class="modal-close" onclick="closeDetailModal()">✕</button>
+    </div>
+    <div class="modal-body" id="detail-modal-body"></div>
   </div>
 </div>
 
@@ -189,6 +218,43 @@ async function init() {
     return;
   }
   await findUpload();
+}
+
+async function loadMasterQueue() {
+  var statusEl = qs('find-upload-status');
+  statusEl.textContent = 'Loading master leads (not contacted, valid phone)…';
+  statusEl.className = 'notice info';
+
+  try {
+    var resp = await fetch(API_BASE + '/api/import/queue?source=master', { headers: authHeaders() });
+    if (resp.status === 401) { rejectPassphrase(); return; }
+    var data = await resp.json();
+
+    if (!data.ok) {
+      statusEl.textContent = 'Error loading master queue: ' + (data.error || 'unknown error');
+      statusEl.className = 'notice error';
+      return;
+    }
+
+    // Reuses the exact same rendering pipeline as upload-based queues —
+    // the API returns leads in a compatible shape (email/phone/fields),
+    // so no separate "master queue" UI is needed.
+    qs('find-upload-card').classList.add('hidden');
+    qs('queue-card').classList.remove('hidden');
+
+    leads = data.leads;
+    if (leads.length === 0) {
+      qs('queue-empty').textContent = 'No master leads match Not Contacted + Valid Phone right now.';
+      qs('queue-empty').classList.remove('hidden');
+      return;
+    }
+    currentIndex = 0;
+    qs('queue-body').classList.remove('hidden');
+    renderLead();
+  } catch (e) {
+    statusEl.textContent = 'Could not reach the CRM API: ' + e.message;
+    statusEl.className = 'notice error';
+  }
 }
 
 async function browseRecent() {
@@ -327,21 +393,261 @@ async function loadQueue(uploadId) {
   }
 }
 
+// ── FINANCIAL CALCULATIONS ──────────────────────────────────────
+// Standardizes R1-R4 to answer the same questions regardless of
+// exact header spacing/capitalization (real CRM exports vary).
+// Assumptions, per explicit instruction:
+//   - Mait/Tax fees field is ANNUAL (matches the existing /savings/
+//     page convention: mtfYr, divided by 12 for monthly).
+//   - Mortgage assumed to be a 10-year loan from Date Purchased.
+//     Years remaining = 10 - (current year - purchase year), floored at 0.
+//     If no purchase date is found for that resort: assume 8 years remaining.
+//   - MTF compounds 8%/year going forward; mortgage payment does not
+//     compound (it simply stops once years-remaining is reached).
+var CURRENT_YEAR = new Date().getFullYear();
+
+function findResortField(fields, n, keywords) {
+  var prefix = 'r' + n;
+  var keys = Object.keys(fields);
+  for (var i = 0; i < keys.length; i++) {
+    var rawKey = keys[i].toLowerCase();
+    if (rawKey.indexOf(prefix) !== 0) continue;
+    var normKey = rawKey.replace(/[^a-z0-9]/g, '');
+    for (var j = 0; j < keywords.length; j++) {
+      var normKeyword = keywords[j].replace(/[^a-z0-9]/g, '');
+      if (normKey.indexOf(normKeyword) !== -1) return fields[keys[i]];
+    }
+  }
+  return '';
+}
+
+function parseMoney(v) {
+  if (!v) return 0;
+  var n = parseFloat(String(v).replace(/[^0-9.\-]/g, ''));
+  return isNaN(n) ? 0 : n;
+}
+
+function parseYear(v) {
+  if (!v) return null;
+  var m = String(v).match(/(19|20)\d{2}/);
+  return m ? parseInt(m[0], 10) : null;
+}
+
+function getResortData(fields, n) {
+  var resortName = findResortField(fields, n, ['resort name', 'resort']);
+  var mtgMonthly = parseMoney(findResortField(fields, n, ['mortgage payment', 'monthly mortgage']));
+  var mtfAnnual = parseMoney(findResortField(fields, n, ['mait', 'maintenance', 'tax fee']));
+  var purchaseYear = parseYear(findResortField(fields, n, ['date purchased', 'purchase date', 'year purchased']));
+  var yearsRemaining;
+  if (purchaseYear) {
+    var yearsIn = CURRENT_YEAR - purchaseYear;
+    yearsRemaining = Math.max(0, 10 - yearsIn);
+  } else {
+    yearsRemaining = 8; // fallback, per instruction, when no purchase date is found
+  }
+  return { n: n, resortName: resortName, mtgMonthly: mtgMonthly, mtfAnnual: mtfAnnual, purchaseYear: purchaseYear, yearsRemaining: yearsRemaining, hasData: !!(resortName || mtgMonthly || mtfAnnual) };
+}
+
+function computeFinancials(lead) {
+  var resorts = [];
+  for (var n = 1; n <= 4; n++) {
+    var r = getResortData(lead.fields, n);
+    if (r.hasData) resorts.push(r);
+  }
+
+  var totalMonthlyMtg = 0, totalMonthlyMtf = 0;
+  resorts.forEach(function(r) {
+    totalMonthlyMtg += r.mtgMonthly;
+    totalMonthlyMtf += r.mtfAnnual / 12;
+  });
+  var totalYearlyMtg = totalMonthlyMtg * 12;
+  var totalYearlyMtf = totalMonthlyMtf * 12;
+  var grandMonthly = totalMonthlyMtg + totalMonthlyMtf;
+  var grandYearly = totalYearlyMtg + totalYearlyMtf;
+
+  var fee = parseMoney(lead.fields.total_amount_charging || lead.fields.total_amount_charged || lead.fields.alpha_fee || lead.fields.fee);
+
+  var years = [1, 2, 3, 4, 5, 7, 10, 20, 30, 50];
+  var projection = years.map(function(y) {
+    var cumulative = 0;
+    resorts.forEach(function(r) {
+      // Mortgage: flat payment, stops once years-remaining is reached
+      var mtgYears = Math.min(y, r.yearsRemaining);
+      cumulative += r.mtgMonthly * 12 * mtgYears;
+      // MTF: compounds 8% annually, continues for all y years (assumed ongoing)
+      for (var i = 1; i <= y; i++) {
+        cumulative += r.mtfAnnual * Math.pow(1.08, i - 1);
+      }
+    });
+    return { year: y, cumulativeCost: cumulative, fee: fee, savings: cumulative - fee };
+  });
+
+  return { resorts: resorts, totalMonthlyMtg: totalMonthlyMtg, totalYearlyMtg: totalYearlyMtg, totalMonthlyMtf: totalMonthlyMtf, totalYearlyMtf: totalYearlyMtf, grandMonthly: grandMonthly, grandYearly: grandYearly, fee: fee, projection: projection };
+}
+
+function money(n) { return '$' + Math.round(n || 0).toLocaleString(); }
+
+// ── LEAD NAME — exact priority order per spec. Never falls back to email. ──
+function getLeadName(lead) {
+  var f = lead.fields || {};
+  var v = f.lead_name || f.name;
+  if (v) return v;
+  var first = f.first_name || f.firstname;
+  var last = f.last_name || f.lastname;
+  if (first || last) return ((first || '') + ' ' + (last || '')).trim();
+  return 'Unknown Lead Name';
+}
+
+// ── FIELD CATEGORIZATION for the full-detail modal ──────────────
+// lead.fields keys are already normalized (lowercase, spaces/hyphens
+// -> underscore) by the importer, and are already unique JS object
+// keys — if the source CSV had duplicate header names, the importer
+// already collapsed them before this code ever sees the data.
+var RESORT_FIELD_LABELS = {
+  resortname: 'Resort Name', resortcity: 'Resort City', resortstate: 'Resort State',
+  purchaseprice: 'Purchase Price', datepurchased: 'Date Purchased',
+  monthlymortgagepayment: 'Monthly Mortgage Payment', maittaxfees: 'Maintenance / Tax Fees',
+  howfarbehindonmortgage: 'How Far Behind on Mortgage', howfarbehindonmaintenance: 'How Far Behind on Maintenance',
+  howmanypoints: 'How Many Points', howmanyweeks: 'How Many Weeks', pointsorweeks: 'Points or Weeks',
+  usage: 'Usage', currentonmortgage: 'Current on Mortgage', currentonmaintenancefees: 'Current on Maintenance Fees',
+  makepaymentsto: 'Make Payments To', methodofpayment: 'Method of Payment', mortgagestatus: 'Mortgage Status',
+  balanceamount: 'Balance Amount', whydotheywantout: 'Why Do They Want Out?', amountcharging: 'Amount Charging',
+  status: 'Status'
+};
+
+function getResortNumber(normKey) {
+  var m = normKey.match(/^r([1-5])/);
+  return m ? parseInt(m[1], 10) : null;
+}
+
+function humanizeKey(key) {
+  return key.replace(/^r[1-6][_-]?/i, '').replace(/_/g, ' ').replace(/\b\w/g, function(c) { return c.toUpperCase(); });
+}
+
+function categorizeFields(fields) {
+  var sections = {
+    'CONTACT & LEAD': {}, 'APPOINTMENT & ASSIGNMENT': {},
+    'RESORT 1': {}, 'RESORT 2': {}, 'RESORT 3': {}, 'RESORT 4': {}, 'RESORT 5': {},
+    'FINANCIAL / QUOTE': {}, 'MARKETING / TRACKING': {}, 'NOTES': {}
+  };
+
+  var contactKeys = ['leadname','name','firstname','lastname','phone','secondaryphone','email','street','city','state','zip','leadstatus','leadsource','leadsources','preferredlanguage','recordid','tag','todaysdate','timezone','2ndownerfirstname','2ndownerlastname','totalresorts','someoneelseondeed'];
+  var apptKeys = ['intakespecialist','fronter','verifiedby','assignedto','casemanager','appointment'];
+  var financialNonResortKeys = ['totalamountcharging','recommendedpricing','paymentmethod','monthyinstallments','monthlyinstallments','loanterm','downpayment','discountsappliedforcard','totalservicecost','totalloanamount','merchantcharged','quotesent','dealclosed'];
+  var marketingKeys = ['utmmedium','utmsource','leadcreatedtime','modifiedtime','howdidclienthearaboutus','compliancechecklist'];
+  var notesKeys = ['additionalnotes','statusofcall','notes'];
+
+  Object.keys(fields).forEach(function(key) {
+    var val = fields[key];
+    var norm = key.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+    // R{n}-Amount Charging is explicitly a FINANCIAL/QUOTE field, not a
+    // resort-detail field, even though it has an r-prefix — per spec.
+    var amountChargingResort = norm.match(/^r([1-6])amountcharging$/);
+    if (amountChargingResort) {
+      sections['FINANCIAL / QUOTE']['R' + amountChargingResort[1] + '-Amount Charging'] = val;
+      return;
+    }
+
+    var resortNum = getResortNumber(norm);
+    if (resortNum) {
+      var labelKey = norm.replace(/^r[1-5][_]?/, '');
+      var label = RESORT_FIELD_LABELS[labelKey] || humanizeKey(key);
+      sections['RESORT ' + resortNum][label] = val;
+      return;
+    }
+
+    if (contactKeys.indexOf(norm) !== -1) { sections['CONTACT & LEAD'][humanizeKey(key)] = val; return; }
+    if (apptKeys.indexOf(norm) !== -1) { sections['APPOINTMENT & ASSIGNMENT'][humanizeKey(key)] = val; return; }
+    if (financialNonResortKeys.indexOf(norm) !== -1) { sections['FINANCIAL / QUOTE'][humanizeKey(key)] = val; return; }
+    if (marketingKeys.indexOf(norm) !== -1) { sections['MARKETING / TRACKING'][humanizeKey(key)] = val; return; }
+    if (notesKeys.indexOf(norm) !== -1) { sections['NOTES'][humanizeKey(key)] = val; return; }
+
+    // Catch-all — never silently discard an unrecognized field.
+    sections['NOTES'][humanizeKey(key) + ' (unrecognized field: ' + key + ')'] = val;
+  });
+
+  return sections;
+}
+
+function renderDetailValue(v) {
+  if (v === undefined || v === null || String(v).trim() === '') {
+    return '<span class="detail-value empty">—</span>';
+  }
+  var div = document.createElement('div');
+  div.textContent = v;
+  return '<span class="detail-value">' + div.innerHTML + '</span>';
+}
+
+function openDetailModal() {
+  var lead = leads[currentIndex];
+  qs('detail-modal-title').textContent = getLeadName(lead) + ' — Full Lead Detail';
+  var sections = categorizeFields(lead.fields || {});
+  var html = '';
+  var sectionOrder = ['CONTACT & LEAD', 'APPOINTMENT & ASSIGNMENT', 'RESORT 1', 'RESORT 2', 'RESORT 3', 'RESORT 4', 'RESORT 5', 'FINANCIAL / QUOTE', 'MARKETING / TRACKING', 'NOTES'];
+  sectionOrder.forEach(function(sectionName) {
+    var entries = Object.keys(sections[sectionName]);
+    if (entries.length === 0 && sectionName !== 'FINANCIAL / QUOTE') return;
+
+    html += '<div class="detail-section"><div class="detail-section-title">' + sectionName + '</div>';
+    if (entries.length > 0) {
+      html += '<div class="detail-grid">';
+      entries.forEach(function(label) {
+        var div = document.createElement('div'); div.textContent = label;
+        html += '<div class="detail-row"><span class="detail-label">' + div.innerHTML + '</span>' + renderDetailValue(sections[sectionName][label]) + '</div>';
+      });
+      html += '</div>';
+    }
+
+    // Calculated cost/savings breakdown, appended to Financial/Quote —
+    // supplements (never replaces) the raw imported fields above it.
+    if (sectionName === 'FINANCIAL / QUOTE') {
+      var fin = computeFinancials(lead);
+      if (fin.resorts.length > 0) {
+        var resortRows = fin.resorts.map(function(r) {
+          return '<div class="detail-row"><span class="detail-label">Resort ' + r.n + (r.resortName ? ' — ' + r.resortName : '') + '</span><span class="detail-value">' +
+            money(r.mtgMonthly) + '/mo mtg + ' + money(r.mtfAnnual) + '/yr mtf' +
+            (r.purchaseYear ? ' (purchased ' + r.purchaseYear + ', ~' + r.yearsRemaining + ' yrs left)' : ' (~' + r.yearsRemaining + ' yrs left, assumed)') + '</span></div>';
+        }).join('');
+        var projRows = fin.projection.map(function(p) {
+          var saveStyle = p.savings > 0 ? 'style="color:var(--success);font-weight:700"' : '';
+          return '<tr><td>' + p.year + (p.year === 1 ? ' yr' : ' yrs') + '</td><td style="text-align:right">' + money(p.cumulativeCost) +
+            '</td><td style="text-align:right">' + money(p.fee) + '</td><td style="text-align:right" ' + saveStyle + '>' + money(p.savings) + '</td></tr>';
+        }).join('');
+        html += '<div style="margin-top:14px;padding-top:10px;border-top:1px dashed var(--border)"><div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px">CALCULATED — COST OF OWNERSHIP</div>' + resortRows +
+          '<div class="detail-row"><span class="detail-label">Total Mortgage</span><span class="detail-value">' + money(fin.totalMonthlyMtg) + '/mo · ' + money(fin.totalYearlyMtg) + '/yr</span></div>' +
+          '<div class="detail-row"><span class="detail-label">Total Maintenance/Tax</span><span class="detail-value">' + money(fin.totalMonthlyMtf) + '/mo · ' + money(fin.totalYearlyMtf) + '/yr</span></div>' +
+          '<div class="detail-row"><span class="detail-label">Grand Total</span><span class="detail-value" style="font-weight:800">' + money(fin.grandMonthly) + '/mo · ' + money(fin.grandYearly) + '/yr</span></div>' +
+          '<div style="font-size:11px;font-weight:700;color:var(--muted);margin:10px 0 6px">SAVINGS OVER TIME (MTF compounds 8%/yr; mortgage stops when paid off)</div>' +
+          '<table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr style="border-bottom:2px solid var(--border)"><th style="text-align:left;padding:4px 0">Years</th><th style="text-align:right">Cost of Staying</th><th style="text-align:right">Fee</th><th style="text-align:right">You Save</th></tr></thead><tbody>' + projRows + '</tbody></table></div>';
+      }
+    }
+
+    html += '</div>';
+  });
+  qs('detail-modal-body').innerHTML = html || '<p style="color:var(--muted)">No fields available for this lead.</p>';
+  qs('detail-modal').classList.remove('hidden');
+}
+
+function closeDetailModal() {
+  // Only hides the modal — currentIndex and the queue underneath are
+  // completely untouched, so the same lead is still showing after close.
+  qs('detail-modal').classList.add('hidden');
+}
+
 function renderLead() {
   var lead = leads[currentIndex];
   qs('progress-text').textContent = 'Lead ' + (currentIndex + 1) + ' of ' + leads.length;
-
-  var first = lead.fields.first_name || lead.fields.firstname || '';
-  var last = lead.fields.last_name || lead.fields.lastname || '';
-  var name = (first + ' ' + last).trim() || lead.email || lead.phone || ('Row ' + lead.row_number);
-  qs('lead-name').textContent = name;
+  qs('lead-name').textContent = getLeadName(lead);
 
   var fieldsEl = qs('lead-fields');
   fieldsEl.innerHTML = '';
+  var resort1Name = findResortField(lead.fields, 1, ['resort name', 'resort']);
+  var costOfOwnership = parseMoney(lead.fields.total_amount_charging);
   var displayFields = [
     ['Phone', lead.phone], ['Email', lead.email],
-    ['City', lead.fields.city], ['State', lead.fields.state],
-    ['Lead Source', lead.fields.lead_source], ['Lead Status', lead.fields.lead_status]
+    ['State', lead.fields.state], ['Lead Status', lead.fields.lead_status],
+    ['Resort', resort1Name], ['Cost of Ownership', costOfOwnership ? money(costOfOwnership) : '']
   ];
   displayFields.forEach(function(pair) {
     if (!pair[1]) return;
