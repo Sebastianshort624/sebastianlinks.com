@@ -89,6 +89,10 @@ textarea {
 .detail-edit-input { width: 100%; padding: 5px 8px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; font-family: inherit; text-align: right; }
 .detail-edit-textarea { text-align: left; resize: vertical; min-height: 50px; }
 .locked-value { color: var(--muted); font-style: italic; }
+.lead-value-selector { display: inline-flex; gap: 4px; }
+.lead-value-btn { width: 30px; height: 30px; border-radius: 6px; border: 1.5px solid var(--border); background: #fff; font-weight: 700; font-size: 13px; cursor: pointer; color: var(--muted); }
+.lead-value-btn:hover { border-color: #999; }
+.lead-value-btn.active { border-color: transparent; }
 .modal-close { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; width: 36px; height: 36px; font-size: 18px; cursor: pointer; }
 .modal-body { padding: 20px 24px 28px; }
 .detail-section { margin-bottom: 22px; }
@@ -692,16 +696,45 @@ function renderDetailValue(entry) {
   }
 
   var fieldAttr = k.replace(/"/g, '&quot;');
+
+  // Lead Value (A-F) uses the existing "Priority" field, but as an
+  // obvious button selector instead of free text -- values are
+  // validated server-side too (this is a UX aid, not the only guard).
+  if (k === 'Priority') {
+    var LEAD_VALUE_COLORS = { A: '#16803c', B: '#4f8a2f', C: '#a15c00', D: '#c2410c', F: '#b42318' };
+    var current = (v || '').trim().toUpperCase();
+    var buttons = ['A', 'B', 'C', 'D', 'F'].map(function(letter) {
+      var isActive = current === letter;
+      return '<button type="button" class="lead-value-btn' + (isActive ? ' active' : '') + '" ' +
+        'style="' + (isActive ? 'background:' + LEAD_VALUE_COLORS[letter] + ';color:#fff;' : '') + '" ' +
+        'onclick="setLeadValueButton(this, \'' + letter + '\')">' + letter + '</button>';
+    }).join('');
+    var clearBtn = '<button type="button" class="lead-value-btn' + (current === '' ? ' active' : '') + '" onclick="setLeadValueButton(this, \'\')">—</button>';
+    return '<span class="lead-value-selector" data-field="' + fieldAttr + '" data-lead-value="' + current + '">' + buttons + clearBtn + '</span>';
+  }
+
   if (isLongTextField(k)) {
     return '<textarea class="detail-edit-input detail-edit-textarea" data-field="' + fieldAttr + '" rows="3">' + escapedVal + '</textarea>';
   }
   return '<input type="text" class="detail-edit-input" data-field="' + fieldAttr + '" value="' + escapedAttrVal + '">';
 }
 
+function setLeadValueButton(btn, letter) {
+  var selector = btn.closest('.lead-value-selector');
+  selector.setAttribute('data-lead-value', letter);
+  selector.querySelectorAll('.lead-value-btn').forEach(function(b) { b.classList.remove('active'); b.style.background = ''; b.style.color = ''; });
+  var LEAD_VALUE_COLORS = { A: '#16803c', B: '#4f8a2f', C: '#a15c00', D: '#c2410c', F: '#b42318' };
+  btn.classList.add('active');
+  if (letter) { btn.style.background = LEAD_VALUE_COLORS[letter]; btn.style.color = '#fff'; }
+}
+
 function collectEditedFields() {
   var updates = {};
   document.querySelectorAll('.detail-edit-input').forEach(function(el) {
     updates[el.getAttribute('data-field')] = el.value;
+  });
+  document.querySelectorAll('.lead-value-selector').forEach(function(el) {
+    updates[el.getAttribute('data-field')] = el.getAttribute('data-lead-value') || '';
   });
   return updates;
 }
