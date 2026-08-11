@@ -153,7 +153,7 @@ textarea {
       <textarea id="disposition" placeholder="e.g. Left voicemail, call back Thursday"></textarea>
       <div class="nav-row">
         <button class="btn-secondary" id="prev-btn" onclick="prevLead()">← Previous</button>
-        <button class="btn-secondary" disabled title="Not built yet">📞 Auto Call</button>
+        <button class="btn-primary" onclick="startAutoCall()">📞 Auto Call</button>
         <button class="btn-primary" id="next-btn" onclick="nextLead()">Next →</button>
       </div>
     </div>
@@ -172,6 +172,63 @@ textarea {
     <div class="modal-footer">
       <div id="save-status" class="notice hidden" style="flex:1"></div>
       <button class="btn-primary" onclick="saveMasterLeadEdits()">💾 Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- Dialer panel: appears when Auto Call is clicked. Never faked --
+     shows an honest "Twilio not configured" state until real
+     credentials exist, but the disposition workflow underneath it
+     is fully real regardless. -->
+<div class="modal-overlay hidden" id="dialer-modal">
+  <div class="modal-box" style="max-width:480px">
+    <div class="modal-header">
+      <h2>📞 Auto Call</h2>
+      <button class="modal-close" onclick="closeDialerModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="dialer-lead-info" style="text-align:center;padding:12px 0">
+        <div id="dialer-lead-name" style="font-size:20px;font-weight:800"></div>
+        <div id="dialer-lead-phone" style="font-size:16px;color:var(--muted);margin-top:4px"></div>
+      </div>
+      <div id="dialer-status" class="notice info"></div>
+
+      <div id="dialer-disposition-section" class="hidden" style="margin-top:16px">
+        <div class="detail-section-title" style="margin-bottom:10px">Disposition</div>
+        <div id="dialer-disposition-buttons" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
+
+        <div id="dialer-voicemail-picker" class="hidden" style="margin-top:12px">
+          <label style="font-size:13px;font-weight:600">Voicemail Message</label>
+          <select id="dialer-voicemail-select" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;margin-top:4px"></select>
+        </div>
+
+        <div id="dialer-followup-picker" class="hidden" style="margin-top:12px">
+          <label style="font-size:13px;font-weight:600">Follow-Up Date</label>
+          <input type="date" id="dialer-followup-date" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;margin-top:4px">
+        </div>
+
+        <div id="dialer-appointment-picker" class="hidden" style="margin-top:12px">
+          <label style="font-size:13px;font-weight:600">Appointment Date &amp; Time</label>
+          <input type="datetime-local" id="dialer-appointment-datetime" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;margin-top:4px">
+        </div>
+
+        <div id="dialer-conversation-confirm" class="hidden" style="margin-top:12px;padding:10px;background:var(--soft-yellow);border-radius:8px">
+          <div style="font-size:13px;font-weight:700;margin-bottom:6px">Did an actual two-way conversation occur?</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px">"Not Interested" can happen either after a real conversation, or from a gatekeeper/snap hangup with no real contact — this determines Contact YES/NO, it isn't assumed.</div>
+          <div style="display:flex;gap:8px">
+            <button type="button" class="btn-secondary" id="conv-confirm-yes" onclick="setConversationConfirmation(true)">Yes — we spoke</button>
+            <button type="button" class="btn-secondary" id="conv-confirm-no" onclick="setConversationConfirmation(false)">No — never really connected</button>
+          </div>
+        </div>
+
+        <label style="font-size:13px;font-weight:600;margin-top:12px;display:block">Notes</label>
+        <textarea id="dialer-notes" rows="3" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;margin-top:4px"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div id="dialer-save-status" class="notice hidden" style="flex:1"></div>
+      <button class="btn-secondary" onclick="closeDialerModal()">Close</button>
+      <button class="btn-primary hidden" id="dialer-save-next-btn" onclick="saveDispositionAndAdvance()">Save &amp; Next Lead →</button>
     </div>
   </div>
 </div>
@@ -900,6 +957,197 @@ function nextLead() {
     renderLead();
   }
 }
+
+
+// ── AUTO CALL / DISPOSITION WORKFLOW ────────────────────────────
+var DISPOSITIONS = ['Connected', 'Voicemail', 'No Answer', 'Busy', 'Wrong Number', 'Call Back', 'Not Interested', 'Follow-Up', 'Appointment', 'Sale'];
+var dialerCurrentLead = null;
+var dialerSelectedDisposition = null;
+var dialerHadConversation = null; // null = unanswered, only meaningful for "Not Interested"
+
+async function startAutoCall() {
+  if (!leads || leads.length === 0) {
+    alert('No leads loaded in the queue.');
+    return;
+  }
+  dialerCurrentLead = leads[currentIndex];
+  dialerSelectedDisposition = null;
+
+  qs('dialer-lead-name').textContent = getLeadName(dialerCurrentLead);
+  qs('dialer-lead-phone').textContent = dialerCurrentLead.phone || '(no phone on file)';
+  qs('dialer-disposition-section').classList.add('hidden');
+  qs('dialer-save-next-btn').classList.add('hidden');
+  qs('dialer-notes').value = '';
+  qs('dialer-status').textContent = 'Starting call…';
+  qs('dialer-status').className = 'notice info';
+  qs('dialer-modal').classList.remove('hidden');
+
+  try {
+    var resp = await fetch(API_BASE + '/api/dialer/start-call', {
+      method: 'POST', headers: authHeaders(),
+      body: JSON.stringify({ master_lead_id: dialerCurrentLead.master_lead_id })
+    });
+    var data = await resp.json();
+
+    if (!data.ok) {
+      qs('dialer-status').textContent = 'Error: ' + (data.error || 'unknown error');
+      qs('dialer-status').className = 'notice error';
+      return;
+    }
+
+    if (!data.twilio_configured) {
+      qs('dialer-status').textContent = '⚠️ ' + data.message;
+      qs('dialer-status').className = 'notice warning';
+    } else {
+      qs('dialer-status').textContent = 'Call placed via Twilio (SID: ' + data.call_sid + ').';
+      qs('dialer-status').className = 'notice success';
+    }
+
+    // Either way (Twilio configured or not), the disposition workflow
+    // is available immediately — a manually-dialed call is just as
+    // loggable as a Twilio-placed one.
+    renderDispositionButtons();
+    qs('dialer-disposition-section').classList.remove('hidden');
+    loadVoicemailMessages();
+
+  } catch (e) {
+    qs('dialer-status').textContent = 'Could not reach the CRM API: ' + e.message;
+    qs('dialer-status').className = 'notice error';
+  }
+}
+
+function renderDispositionButtons() {
+  var container = qs('dialer-disposition-buttons');
+  container.innerHTML = '';
+  DISPOSITIONS.forEach(function(d) {
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'btn-secondary';
+    btn.textContent = d;
+    btn.onclick = function() { selectDisposition(d, btn); };
+    container.appendChild(btn);
+  });
+}
+
+function selectDisposition(disposition, btnEl) {
+  dialerSelectedDisposition = disposition;
+  dialerHadConversation = null; // reset on every new disposition pick — never carries over
+  document.querySelectorAll('#dialer-disposition-buttons button').forEach(function(b) {
+    b.classList.remove('btn-primary'); b.classList.add('btn-secondary');
+  });
+  btnEl.classList.remove('btn-secondary'); btnEl.classList.add('btn-primary');
+
+  qs('dialer-voicemail-picker').classList.toggle('hidden', disposition !== 'Voicemail');
+  qs('dialer-followup-picker').classList.toggle('hidden', disposition !== 'Call Back' && disposition !== 'Follow-Up');
+  qs('dialer-appointment-picker').classList.toggle('hidden', disposition !== 'Appointment');
+
+  var needsConfirmation = disposition === 'Not Interested';
+  qs('dialer-conversation-confirm').classList.toggle('hidden', !needsConfirmation);
+  qs('conv-confirm-yes').classList.remove('btn-primary'); qs('conv-confirm-yes').classList.add('btn-secondary');
+  qs('conv-confirm-no').classList.remove('btn-primary'); qs('conv-confirm-no').classList.add('btn-secondary');
+
+  // "Not Interested" specifically requires the conversation question
+  // answered before Save is available — never defaults either way.
+  qs('dialer-save-next-btn').classList.toggle('hidden', needsConfirmation);
+}
+
+function setConversationConfirmation(hadConversation) {
+  dialerHadConversation = hadConversation;
+  qs('conv-confirm-yes').classList.toggle('btn-primary', hadConversation === true);
+  qs('conv-confirm-yes').classList.toggle('btn-secondary', hadConversation !== true);
+  qs('conv-confirm-no').classList.toggle('btn-primary', hadConversation === false);
+  qs('conv-confirm-no').classList.toggle('btn-secondary', hadConversation !== false);
+  qs('dialer-save-next-btn').classList.remove('hidden');
+}
+
+async function loadVoicemailMessages() {
+  try {
+    var resp = await fetch(API_BASE + '/api/dialer/voicemail-messages', { headers: authHeaders() });
+    var data = await resp.json();
+    var select = qs('dialer-voicemail-select');
+    select.innerHTML = '';
+    if (!data.messages || data.messages.length === 0) {
+      var opt = document.createElement('option');
+      opt.textContent = 'No voicemail messages configured yet';
+      opt.disabled = true;
+      select.appendChild(opt);
+    } else {
+      data.messages.forEach(function(m) {
+        var opt = document.createElement('option');
+        opt.value = m.id; opt.textContent = m.name;
+        select.appendChild(opt);
+      });
+    }
+  } catch (e) { /* non-critical -- voicemail list failing to load shouldn't block disposition entry */ }
+}
+
+async function saveDispositionAndAdvance() {
+  if (!dialerSelectedDisposition) {
+    alert('Select a disposition first.');
+    return;
+  }
+
+  var payload = {
+    master_lead_id: dialerCurrentLead.master_lead_id,
+    disposition: dialerSelectedDisposition,
+    notes: qs('dialer-notes').value
+  };
+  if (dialerSelectedDisposition === 'Call Back' || dialerSelectedDisposition === 'Follow-Up') {
+    payload.follow_up_date = qs('dialer-followup-date').value;
+  }
+  if (dialerSelectedDisposition === 'Appointment') {
+    payload.appointment_datetime = qs('dialer-appointment-datetime').value;
+  }
+  if (dialerSelectedDisposition === 'Not Interested') {
+    if (dialerHadConversation === null) {
+      alert('Please answer whether an actual conversation occurred before saving.');
+      return;
+    }
+    payload.had_conversation = dialerHadConversation;
+  }
+
+  var statusEl = qs('dialer-save-status');
+  statusEl.textContent = 'Saving…';
+  statusEl.className = 'notice info';
+  statusEl.classList.remove('hidden');
+
+  try {
+    var resp = await fetch(API_BASE + '/api/dialer/save-disposition', {
+      method: 'POST', headers: authHeaders(), body: JSON.stringify(payload)
+    });
+    var data = await resp.json();
+
+    if (!data.ok) {
+      statusEl.textContent = 'Save failed: ' + (data.error || 'unknown error');
+      statusEl.className = 'notice error';
+      return;
+    }
+
+    statusEl.textContent = '✅ Saved.';
+    statusEl.className = 'notice success';
+
+    // Update in-memory lead so the queue card reflects it without a full reload
+    dialerCurrentLead.fields['Attempts'] = data.attempts;
+    dialerCurrentLead.fields['Last Attempt'] = data.last_attempt;
+    dialerCurrentLead.fields['Contact YES/NO'] = data.contact_status;
+
+    setTimeout(function() {
+      closeDialerModal();
+      nextLead();
+    }, 700);
+
+  } catch (e) {
+    statusEl.textContent = 'Could not reach the CRM API: ' + e.message;
+    statusEl.className = 'notice error';
+  }
+}
+
+function closeDialerModal() {
+  qs('dialer-modal').classList.add('hidden');
+  dialerCurrentLead = null;
+  dialerSelectedDisposition = null;
+}
+
 
 function prevLead() {
   if (currentIndex > 0) {
