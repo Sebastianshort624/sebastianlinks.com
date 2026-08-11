@@ -460,9 +460,35 @@ function getResortData(fields, n) {
   return { n: n, resortName: resortName, mtgMonthly: mtgMonthly, mtfAnnual: mtfAnnual, purchaseYear: purchaseYear, yearsRemaining: yearsRemaining, hasData: !!(resortName || mtgMonthly || mtfAnnual) };
 }
 
+function getFinancingData(fields) {
+  // Financing fields are stored under the R1- prefix in the existing
+  // schema, but represent OUR resolution-fee financing terms — not
+  // resort-specific client data. R1's values are the canonical
+  // financing record since that's where they're actually populated.
+  var termRaw = (fields['R1-FIN TERM'] || '').toString().replace(/[^0-9]/g, '');
+  var termMonths = parseInt(termRaw, 10) || 0;
+  var VALID_TERMS = [3, 6, 12, 24, 36, 48, 60];
+  return {
+    method: fields['R1-Method of Payment'] || '',
+    termMonths: termMonths,
+    termRecognized: VALID_TERMS.indexOf(termMonths) !== -1,
+    rate: parseMoney(fields['R1-% INTEREST']),
+    storedMonthly: parseMoney(fields['R1-MONTHLY PAYMENTS']),
+    downPayment: parseMoney(fields['R1-DOWN PAYMENT'])
+  };
+}
+
+function computeMonthlyPayment(principal, termMonths, annualRatePct) {
+  if (termMonths <= 0 || principal <= 0) return 0;
+  if (!annualRatePct) return principal / termMonths;
+  var r = (annualRatePct / 100) / 12;
+  if (r === 0) return principal / termMonths;
+  return principal * r / (1 - Math.pow(1 + r, -termMonths));
+}
+
 function computeFinancials(lead) {
   var resorts = [];
-  for (var n = 1; n <= 4; n++) {
+  for (var n = 1; n <= 5; n++) {
     var r = getResortData(lead.fields, n);
     if (r.hasData) resorts.push(r);
   }
@@ -477,24 +503,55 @@ function computeFinancials(lead) {
   var grandMonthly = totalMonthlyMtg + totalMonthlyMtf;
   var grandYearly = totalYearlyMtg + totalYearlyMtf;
 
-  var fee = parseMoney(lead.fields.total_amount_charging || lead.fields.total_amount_charged || lead.fields.alpha_fee || lead.fields.fee);
+  var fee = parseMoney(lead.fields['Total Amount Charging'] || lead.fields.total_amount_charging || lead.fields.alpha_fee || lead.fields.fee);
 
+  var financing = getFinancingData(lead.fields);
+  var principal = Math.max(0, fee - financing.downPayment);
+  var monthlyPayment = financing.storedMonthly > 0
+    ? financing.storedMonthly
+    : (financing.termMonths > 0 ? computeMonthlyPayment(principal, financing.termMonths, financing.rate) : 0);
+
+  // How much of OUR fee has actually been paid by a given year — never
+  // assumes the full fee is paid up front unless there's genuinely no
+  // financing term on record. This is what prevents double-counting:
+  // savings at year 1 only subtracts what's actually been paid by
+  // year 1, not the entire fee.
+  function feePaidByYear(y) {
+    if (financing.termMonths <= 0 || monthlyPayment <= 0) {
+      return fee; // no financing data on record -- treated as paid in full up front
+    }
+    var monthsElapsed = Math.min(y * 12, financing.termMonths);
+    return financing.downPayment + (monthlyPayment * monthsElapsed);
+  }
+
+  // "Cost of keeping the timeshare" is a hypothetical baseline — what
+  // the client would have kept paying had they NOT hired us. Mortgage
+  // runs only for that specific loan's own remaining term (a property
+  // of the loan itself, unrelated to when the client hires us).
+  // Maintenance/tax compounds 8%/yr and continues indefinitely in this
+  // hypothetical, since in the "kept it" scenario there's no reason
+  // for it to ever stop.
   var years = [1, 2, 3, 4, 5, 7, 10, 20, 30, 50];
   var projection = years.map(function(y) {
-    var cumulative = 0;
+    var costOfKeeping = 0;
     resorts.forEach(function(r) {
-      // Mortgage: flat payment, stops once years-remaining is reached
       var mtgYears = Math.min(y, r.yearsRemaining);
-      cumulative += r.mtgMonthly * 12 * mtgYears;
-      // MTF: compounds 8% annually, continues for all y years (assumed ongoing)
+      costOfKeeping += r.mtgMonthly * 12 * mtgYears;
       for (var i = 1; i <= y; i++) {
-        cumulative += r.mtfAnnual * Math.pow(1.08, i - 1);
+        costOfKeeping += r.mtfAnnual * Math.pow(1.08, i - 1);
       }
     });
-    return { year: y, cumulativeCost: cumulative, fee: fee, savings: cumulative - fee };
+    var feePaid = feePaidByYear(y);
+    return { year: y, costOfKeeping: costOfKeeping, feePaidToDate: feePaid, savings: costOfKeeping - feePaid };
   });
 
-  return { resorts: resorts, totalMonthlyMtg: totalMonthlyMtg, totalYearlyMtg: totalYearlyMtg, totalMonthlyMtf: totalMonthlyMtf, totalYearlyMtf: totalYearlyMtf, grandMonthly: grandMonthly, grandYearly: grandYearly, fee: fee, projection: projection };
+  return {
+    resorts: resorts, totalMonthlyMtg: totalMonthlyMtg, totalYearlyMtg: totalYearlyMtg,
+    totalMonthlyMtf: totalMonthlyMtf, totalYearlyMtf: totalYearlyMtf,
+    grandMonthly: grandMonthly, grandYearly: grandYearly,
+    fee: fee, financing: financing, monthlyPayment: monthlyPayment, principal: principal,
+    projection: projection
+  };
 }
 
 function money(n) { return '$' + Math.round(n || 0).toLocaleString(); }
@@ -544,6 +601,17 @@ function humanizeKey(key) {
 }
 
 var LOCKED_MASTER_FIELDS = ['Record Id', 'UUID', 'Lead-Created-Time'];
+
+// Resort 2-5 collapse state — pure UI preference, persists for the
+// working session (module-level, not sessionStorage/data), Resort 1
+// is never collapsible. Never touches full_record, raw_import_rows,
+// or master_lead_sources — toggling only changes what re-renders.
+var collapsedResortSections = {};
+
+function toggleResortSection(sectionName) {
+  collapsedResortSections[sectionName] = !collapsedResortSections[sectionName];
+  openDetailModal();
+}
 var LONG_TEXT_FIELD_HINTS = ['whydotheywantout', 'additionalnotes', 'mainobjection', 'biggestmotivator', 'biggestpainpoint', 'conversations'];
 
 function isLongTextField(originalKey) {
@@ -560,7 +628,7 @@ function categorizeFields(fields) {
 
   var contactKeys = ['leadname','name','firstname','lastname','phone','secondaryphone','email','street','city','state','zip','leadstatus','leadsource','leadsources','preferredlanguage','recordid','tag','todaysdate','timezone','2ndownerfirstname','2ndownerlastname','totalresorts','someoneelseondeed'];
   var apptKeys = ['intakespecialist','fronter','verifiedby','assignedto','casemanager','appointment'];
-  var financialNonResortKeys = ['totalamountcharging','recommendedpricing','paymentmethod','monthyinstallments','monthlyinstallments','loanterm','downpayment','discountsappliedforcard','totalservicecost','totalloanamount','merchantcharged','quotesent','dealclosed'];
+  var financialNonResortKeys = ['totalamountcharging','recommendedpricing','paymentmethod','monthyinstallments','monthlyinstallments','loanterm','downpayment','discountsappliedforcard','totalservicecost','totalloanamount','merchantcharged','quotesent','dealclosed','savings'];
   var marketingKeys = ['utmmedium','utmsource','leadcreatedtime','modifiedtime','howdidclienthearaboutus','compliancechecklist'];
   var notesKeys = ['additionalnotes','statusofcall','notes'];
 
@@ -572,9 +640,19 @@ function categorizeFields(fields) {
     var entry = { v: val, k: key };
     var norm = key.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-    var amountChargingResort = norm.match(/^r([1-6])amountcharging$/);
-    if (amountChargingResort) {
-      sections['FINANCIAL / QUOTE']['R' + amountChargingResort[1] + '-Amount Charging'] = entry;
+    // These resort-numbered concepts are OUR financing/deal terms, not
+    // the client's timeshare ownership data — they belong in
+    // FINANCIAL / QUOTE regardless of resort number, per explicit
+    // business rule (Resort sections are client-ownership-only).
+    var financialResortConcepts = /^r([1-6])(amountcharging|methodofpayment|total|finterm|interest|monthlypayments|downpayment|truecostofownership)$/;
+    var financialMatch = norm.match(financialResortConcepts);
+    if (financialMatch) {
+      var conceptLabels = {
+        amountcharging: 'Amount Charging', methodofpayment: 'Method of Payment', total: 'TOTAL',
+        finterm: 'FIN TERM', interest: '% INTEREST', monthlypayments: 'MONTHLY PAYMENTS', downpayment: 'DOWN PAYMENT',
+        truecostofownership: 'True Cost of Ownership'
+      };
+      sections['FINANCIAL / QUOTE']['R' + financialMatch[1] + '-' + conceptLabels[financialMatch[2]]] = entry;
       return;
     }
 
@@ -686,7 +764,19 @@ function openDetailModal() {
     var entries = Object.keys(sections[sectionName]);
     if (entries.length === 0 && sectionName !== 'FINANCIAL / QUOTE') return;
 
-    html += '<div class="detail-section"><div class="detail-section-title">' + sectionName + '</div>';
+    // Collapsible headers for Resort 2-5 (display-only toggle — never
+    // touches data). Resort 1 always renders fully expanded.
+    var isCollapsibleResort = /^RESORT [2-5]$/.test(sectionName);
+    var isCollapsed = isCollapsibleResort && collapsedResortSections[sectionName];
+    var headerHtml = '<div class="detail-section-title"' +
+      (isCollapsibleResort ? ' style="cursor:pointer;display:flex;justify-content:space-between;align-items:center" onclick="toggleResortSection(\'' + sectionName + '\')"' : '') +
+      '>' + sectionName + (isCollapsibleResort ? '<span style="font-size:11px">' + (isCollapsed ? '▸ Show' : '▾ Hide') + '</span>' : '') + '</div>';
+
+    html += '<div class="detail-section"><div id="section-' + sectionName.replace(/\s/g, '') + '">' + headerHtml;
+    if (isCollapsed) {
+      html += '</div></div>';
+      return;
+    }
     if (entries.length > 0) {
       html += '<div class="detail-grid">';
       entries.forEach(function(label) {
@@ -706,17 +796,28 @@ function openDetailModal() {
             money(r.mtgMonthly) + '/mo mtg + ' + money(r.mtfAnnual) + '/yr mtf' +
             (r.purchaseYear ? ' (purchased ' + r.purchaseYear + ', ~' + r.yearsRemaining + ' yrs left)' : ' (~' + r.yearsRemaining + ' yrs left, assumed)') + '</span></div>';
         }).join('');
+
+        var financingHtml = '';
+        if (fin.financing.termMonths > 0) {
+          financingHtml = '<div class="detail-row"><span class="detail-label">Our Fee Financing</span><span class="detail-value">' +
+            fin.financing.termMonths + ' mo term' + (fin.financing.termRecognized ? '' : ' (non-standard term)') +
+            (fin.financing.rate ? ' @ ' + fin.financing.rate + '%' : '') + ' · ' + money(fin.monthlyPayment) + '/mo · ' + money(fin.financing.downPayment) + ' down</span></div>';
+        } else if (fin.fee) {
+          financingHtml = '<div class="detail-row"><span class="detail-label">Our Fee</span><span class="detail-value">' + money(fin.fee) + ' (no financing term on record — treated as paid in full)</span></div>';
+        }
+
         var projRows = fin.projection.map(function(p) {
           var saveStyle = p.savings > 0 ? 'style="color:var(--success);font-weight:700"' : '';
-          return '<tr><td>' + p.year + (p.year === 1 ? ' yr' : ' yrs') + '</td><td style="text-align:right">' + money(p.cumulativeCost) +
-            '</td><td style="text-align:right">' + money(p.fee) + '</td><td style="text-align:right" ' + saveStyle + '>' + money(p.savings) + '</td></tr>';
+          return '<tr><td>' + p.year + (p.year === 1 ? ' yr' : ' yrs') + '</td><td style="text-align:right">' + money(p.costOfKeeping) +
+            '</td><td style="text-align:right">' + money(p.feePaidToDate) + '</td><td style="text-align:right" ' + saveStyle + '>' + money(p.savings) + '</td></tr>';
         }).join('');
         html += '<div style="margin-top:14px;padding-top:10px;border-top:1px dashed var(--border)"><div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px">CALCULATED — COST OF OWNERSHIP</div>' + resortRows +
           '<div class="detail-row"><span class="detail-label">Total Mortgage</span><span class="detail-value">' + money(fin.totalMonthlyMtg) + '/mo · ' + money(fin.totalYearlyMtg) + '/yr</span></div>' +
           '<div class="detail-row"><span class="detail-label">Total Maintenance/Tax</span><span class="detail-value">' + money(fin.totalMonthlyMtf) + '/mo · ' + money(fin.totalYearlyMtf) + '/yr</span></div>' +
           '<div class="detail-row"><span class="detail-label">Grand Total</span><span class="detail-value" style="font-weight:800">' + money(fin.grandMonthly) + '/mo · ' + money(fin.grandYearly) + '/yr</span></div>' +
-          '<div style="font-size:11px;font-weight:700;color:var(--muted);margin:10px 0 6px">SAVINGS OVER TIME (MTF compounds 8%/yr; mortgage stops when paid off)</div>' +
-          '<table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr style="border-bottom:2px solid var(--border)"><th style="text-align:left;padding:4px 0">Years</th><th style="text-align:right">Cost of Staying</th><th style="text-align:right">Fee</th><th style="text-align:right">You Save</th></tr></thead><tbody>' + projRows + '</tbody></table></div>';
+          financingHtml +
+          '<div style="font-size:11px;font-weight:700;color:var(--muted);margin:10px 0 6px">NET SAVINGS OVER TIME — cost of keeping the timeshare vs. our fee actually paid to date (never assumes the full fee is paid up front if it\'s financed)</div>' +
+          '<table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr style="border-bottom:2px solid var(--border)"><th style="text-align:left;padding:4px 0">Years</th><th style="text-align:right">Cost of Keeping</th><th style="text-align:right">Our Fee Paid to Date</th><th style="text-align:right">Net Savings</th></tr></thead><tbody>' + projRows + '</tbody></table></div>';
       }
     }
 
