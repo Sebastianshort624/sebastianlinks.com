@@ -871,8 +871,8 @@ function categorizeFields(fields) {
   // Primary Owner custom block below) -- routed to the unused HEADER
   // bucket specifically so they're excluded from generic body
   // rendering and never fall through to the NOTES catch-all.
-  var headerKeys = ['leadname','name','phone','email','2ndowner','leadstatus','timezone','preferredlanguage','tag'];
-  var ownerKeys = ['priority'];
+  var headerKeys = ['leadname','name','phone','email','2ndowner','leadstatus','timezone','preferredlanguage','tag','priority'];
+  var ownerKeys = [];
   var secondOwnerKeys = ['2ndowner'];
   var mainLeadDetailKeys = ['street','city','state','zip','totalresorts','someoneelseondeed','todaysdate'];
   var officialUseKeys = ['recordid','uuid','leadsources','leadsource'];
@@ -1095,6 +1095,42 @@ function renderStickyHeader(fields) {
   html += '<div class="detail-header-item' + ((f['Email'] || '').trim() ? '' : ' hidden') + '" id="hdr-email-wrap"><label style="font-size:11px;color:var(--muted)">Email</label>' + textInput('hdr-email', 'Email', f['Email'], '200px') + '</div>';
   html += '</div>';
 
+  // "At a glance" row: Lang, Time Zone, Priority + Attempts together --
+  // previously Lang/Time Zone lived in the body (Primary Owner section,
+  // required scrolling) and Attempts only lived in the Contact Activity
+  // sidebar, disconnected from Priority. All four now sit together in
+  // the always-visible header, exactly where they're actually needed
+  // at a glance during a call.
+  var rawLang = (f['Preferred Language'] || '').trim().toLowerCase();
+  var langValue = rawLang.indexOf('span') !== -1 || rawLang === 'esp' ? 'Span' : (rawLang.indexOf('eng') !== -1 ? 'Eng' : '');
+  var langOptsHtml = [['', 'Lang'], ['Eng', 'Eng'], ['Span', 'Span']].map(function(o) {
+    return '<option value="' + o[0] + '"' + (o[0] === langValue ? ' selected' : '') + '>' + o[1] + '</option>';
+  }).join('');
+
+  var rawTz = (f['Time Zone'] || '').trim();
+  var tzValue = TIMEZONE_OPTIONS.indexOf(rawTz) !== -1 ? rawTz : '';
+  var tzOptsHtml = TIMEZONE_OPTIONS.map(function(o) {
+    return '<option value="' + o + '"' + (o === tzValue ? ' selected' : '') + '>' + (o || 'Time Zone') + '</option>';
+  }).join('');
+
+  var currentPriority = (f['Priority'] || '').trim().toUpperCase();
+  var LEAD_VALUE_COLORS_HEADER = { A: '#16803c', B: '#4f8a2f', C: '#a15c00', D: '#c2410c', F: '#b42318' };
+  var priorityBtnsHtml = ['A', 'B', 'C', 'D', 'F'].map(function(letter) {
+    var isActive = currentPriority === letter;
+    return '<button type="button" class="lead-value-btn' + (isActive ? ' active' : '') + '" ' +
+      'style="' + (isActive ? 'background:' + LEAD_VALUE_COLORS_HEADER[letter] + ';color:#fff;' : '') + '" ' +
+      'onclick="setLeadValueButton(this, \'' + letter + '\')">' + letter + '</button>';
+  }).join('') + '<button type="button" class="lead-value-btn' + (currentPriority === '' ? ' active' : '') + '" onclick="setLeadValueButton(this, \'\')">—</button>';
+
+  var attemptsCount = (f['Attempts'] || '').trim() || '0';
+
+  html += '<div style="display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;padding-top:10px;border-top:1px dashed var(--border)">';
+  html += '<div class="detail-header-item"><label style="font-size:11px;color:var(--muted)">Lang</label><select id="hdr-lang" class="detail-edit-input header-input" data-field="Preferred Language" style="width:80px">' + langOptsHtml + '</select></div>';
+  html += '<div class="detail-header-item"><label style="font-size:11px;color:var(--muted)">Time Zone</label><select id="hdr-timezone" class="detail-edit-input header-input" data-field="Time Zone" style="width:110px">' + tzOptsHtml + '</select></div>';
+  html += '<div class="detail-header-item"><label style="font-size:11px;color:var(--muted)">Priority</label><span class="lead-value-selector" data-field="Priority" data-lead-value="' + currentPriority + '">' + priorityBtnsHtml + '</span></div>';
+  html += '<div class="detail-header-item"><label style="font-size:11px;color:var(--muted)">Attempts</label><span style="font-weight:800;font-size:15px;padding:5px 10px;background:var(--soft-yellow);border-radius:8px" id="hdr-attempts-display">' + attemptsCount + '</span></div>';
+  html += '</div>';
+
   html += '<div style="font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;padding-top:6px">PRIMARY OWNER</div>';
   html += '</div>';
   return html;
@@ -1132,33 +1168,12 @@ var TIMEZONE_OPTIONS = ['', 'US/Eastern', 'US/Central', 'US/Pacific'];
 
 function renderPrimaryOwnerExtras(fields) {
   var f = fields;
-
-  // Lang: Lang(default)/Eng/Span, capitalized both in the option list
-  // and as the stored value. Existing "Spanish"/"English" values are
-  // recognized and pre-selected -- never silently overwritten with
-  // the default just because the exact casing/word differs.
-  var rawLang = (f['Preferred Language'] || '').trim().toLowerCase();
-  var langValue = rawLang.indexOf('span') !== -1 || rawLang === 'esp' ? 'Span' : (rawLang.indexOf('eng') !== -1 ? 'Eng' : '');
-  var langOptsHtml = [['', 'Lang'], ['Eng', 'Eng'], ['Span', 'Span']].map(function(o) {
-    return '<option value="' + o[0] + '"' + (o[0] === langValue ? ' selected' : '') + '>' + o[1] + '</option>';
-  }).join('');
-
-  // Time Zone: the 3 real US zone values already used by this CRM
-  // ("US/Eastern" confirmed from live data; Central/Pacific extend the
-  // same naming convention). Known values are recognized as-is;
-  // unknown/blank defaults to the placeholder, never overwritten.
-  var rawTz = (f['Time Zone'] || '').trim();
-  var tzValue = TIMEZONE_OPTIONS.indexOf(rawTz) !== -1 ? rawTz : '';
-  var tzOptsHtml = TIMEZONE_OPTIONS.map(function(o) {
-    return '<option value="' + o + '"' + (o === tzValue ? ' selected' : '') + '>' + (o || 'Time Zone') + '</option>';
-  }).join('');
-
+  // Lang, Time Zone, and Priority now live in the always-visible header
+  // (with Attempts) -- only Tag and Lead Status remain here.
   var tagDiv = document.createElement('div'); tagDiv.textContent = f['Tag'] || '';
   var statusDiv = document.createElement('div'); statusDiv.textContent = f['Lead Status'] || '';
 
   var html = '';
-  html += '<div class="detail-row"><span class="detail-label">Lang</span><select id="extra-lang" class="detail-edit-input" data-field="Preferred Language">' + langOptsHtml + '</select></div>';
-  html += '<div class="detail-row"><span class="detail-label">Time Zone</span><select id="extra-timezone" class="detail-edit-input" data-field="Time Zone">' + tzOptsHtml + '</select></div>';
   html += '<div class="detail-row"><span class="detail-label">Tag</span><input type="text" class="detail-edit-input" data-field="Tag" value="' + tagDiv.innerHTML.replace(/"/g, '&quot;') + '"></div>';
   html += '<div class="detail-row"><span class="detail-label">Lead Status</span><input type="text" class="detail-edit-input" data-field="Lead Status" value="' + statusDiv.innerHTML.replace(/"/g, '&quot;') + '"></div>';
   return html;
@@ -1190,7 +1205,7 @@ function openDetailModal() {
       // technically exists (blank).
       var hasData = sectionHasRealData(sectionName, sections);
       if (!hasData && !manuallyAddedResorts[sectionName]) return;
-    } else if (entries.length === 0 && sectionName !== 'FINANCIAL / QUOTE') {
+    } else if (entries.length === 0 && sectionName !== 'FINANCIAL / QUOTE' && sectionName !== 'PRIMARY OWNER') {
       return;
     }
 
