@@ -99,7 +99,7 @@ textarea {
 .detail-section-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); border-bottom: 2px solid var(--border); padding-bottom: 6px; margin-bottom: 10px; }
 .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 20px; }
 .detail-row { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-bottom: 1px solid #f0f2f5; font-size: 13px; }
-.detail-label { color: var(--muted); flex-shrink: 0; }
+.detail-label { color: var(--muted); flex-shrink: 1; min-width: 0; word-break: break-word; }
 .detail-value { font-weight: 600; text-align: right; word-break: break-word; }
 .detail-value.empty { color: #c3c9d1; font-weight: 400; }
 @media (max-width: 640px) { .detail-grid { grid-template-columns: 1fr; } }
@@ -748,16 +748,17 @@ function isLongTextField(originalKey) {
 
 function categorizeFields(fields) {
   var sections = {
-    'CONTACT & LEAD': {}, 'APPOINTMENT & ASSIGNMENT': {},
+    'CONTACT & LEAD': {}, 'APPOINTMENT & ASSIGNMENT': {}, 'CONTACT ACTIVITY': {},
     'RESORT 1': {}, 'RESORT 2': {}, 'RESORT 3': {}, 'RESORT 4': {}, 'RESORT 5': {},
     'FINANCIAL / QUOTE': {}, 'MARKETING / TRACKING': {}, 'NOTES': {}
   };
 
-  var contactKeys = ['leadname','name','firstname','lastname','phone','secondaryphone','email','street','city','state','zip','leadstatus','leadsource','leadsources','preferredlanguage','recordid','tag','todaysdate','timezone','2ndownerfirstname','2ndownerlastname','totalresorts','someoneelseondeed'];
-  var apptKeys = ['intakespecialist','fronter','verifiedby','assignedto','casemanager','appointment'];
-  var financialNonResortKeys = ['totalamountcharging','recommendedpricing','paymentmethod','monthyinstallments','monthlyinstallments','loanterm','downpayment','discountsappliedforcard','totalservicecost','totalloanamount','merchantcharged','quotesent','dealclosed','savings','combinedmonthlytotal','combinedyearlytotal','combinedtruecostofownership'];
+  var contactKeys = ['leadname','name','firstname','lastname','phone','secondaryphone','email','street','city','state','zip','leadstatus','leadsource','leadsources','preferredlanguage','recordid','tag','todaysdate','timezone','2ndownerfirstname','2ndownerlastname','totalresorts','someoneelseondeed','priority','uuid'];
+  var apptKeys = ['intakespecialist','fronter','verifiedby','assignedto','casemanager','appointment','followupdate','appointmentdatetime'];
+  var financialNonResortKeys = ['totalamountcharging','recommendedpricing','paymentmethod','monthyinstallments','monthlyinstallments','loanterm','downpayment','discountsappliedforcard','totalservicecost','totalloanamount','merchantcharged','quotesent','dealclosed','savings','combinedmonthlytotal','combinedyearlytotal','combinedtruecostofownership','resolutionrecovery'];
   var marketingKeys = ['utmmedium','utmsource','leadcreatedtime','modifiedtime','howdidclienthearaboutus','compliancechecklist'];
-  var notesKeys = ['additionalnotes','statusofcall','notes'];
+  var contactActivityKeys = ['contactyesno','attempts','lastattempt','conversations','conversationdates','emails','emaildates','texts','textdates'];
+  var notesKeys = ['additionalnotes','statusofcall','notes','mainobjection','biggestmotivator','biggestpainpoint','rebuttallink'];
 
   // Each section entry is now {v: value, k: exact original schema key} —
   // the key is needed to send edits back to the right field; the label
@@ -795,9 +796,10 @@ function categorizeFields(fields) {
     if (apptKeys.indexOf(norm) !== -1) { sections['APPOINTMENT & ASSIGNMENT'][humanizeKey(key)] = entry; return; }
     if (financialNonResortKeys.indexOf(norm) !== -1) { sections['FINANCIAL / QUOTE'][humanizeKey(key)] = entry; return; }
     if (marketingKeys.indexOf(norm) !== -1) { sections['MARKETING / TRACKING'][humanizeKey(key)] = entry; return; }
+    if (contactActivityKeys.indexOf(norm) !== -1) { sections['CONTACT ACTIVITY'][humanizeKey(key)] = entry; return; }
     if (notesKeys.indexOf(norm) !== -1) { sections['NOTES'][humanizeKey(key)] = entry; return; }
 
-    sections['NOTES'][humanizeKey(key) + ' (unrecognized field: ' + key + ')'] = entry;
+    sections['NOTES'][key] = entry;
   });
 
   return sections;
@@ -915,7 +917,7 @@ function openDetailModal() {
   qs('detail-modal-title').textContent = getLeadName(lead) + ' — Full Lead Detail';
   var sections = categorizeFields(lead.fields || {});
   var html = '';
-  var sectionOrder = ['CONTACT & LEAD', 'APPOINTMENT & ASSIGNMENT', 'RESORT 1', 'RESORT 2', 'RESORT 3', 'RESORT 4', 'RESORT 5', 'FINANCIAL / QUOTE', 'MARKETING / TRACKING', 'NOTES'];
+  var sectionOrder = ['CONTACT & LEAD', 'APPOINTMENT & ASSIGNMENT', 'CONTACT ACTIVITY', 'RESORT 1', 'RESORT 2', 'RESORT 3', 'RESORT 4', 'RESORT 5', 'FINANCIAL / QUOTE', 'MARKETING / TRACKING', 'NOTES'];
   sectionOrder.forEach(function(sectionName) {
     var entries = Object.keys(sections[sectionName]);
     var isResort2to5 = /^RESORT [2-5]$/.test(sectionName);
