@@ -728,6 +728,7 @@ var manuallyAddedResorts = {};
 
 function sectionHasRealData(sectionName, sections) {
   var entries = sections[sectionName];
+  if (!entries) return false; // e.g. "RESORT 6" -- section doesn't exist (only 1-5 are tracked), never treat as having data
   return Object.keys(entries).some(function(label) {
     var v = entries[label].v;
     return v !== undefined && v !== null && String(v).trim() !== '';
@@ -942,6 +943,20 @@ function openDetailModal() {
       return;
     }
     if (entries.length > 0) {
+      // FINANCIAL / QUOTE holds R1-R6 financial sub-fields as individual
+      // entries (e.g. "R2-Method of Payment") -- these need the SAME
+      // visibility gate as the RESORT N sections themselves, or a
+      // single-resort lead still shows a wall of blank R2/R3/R4 financial
+      // fields even though "RESORT 2" itself is correctly hidden.
+      if (sectionName === 'FINANCIAL / QUOTE') {
+        entries = entries.filter(function(label) {
+          var entry = sections[sectionName][label];
+          var m = entry.k.match(/^R([2-6])-/);
+          if (!m) return true; // non-resort-numbered financial fields (Savings, Deal Closed) always show
+          var resortSectionName = 'RESORT ' + m[1];
+          return sectionHasRealData(resortSectionName, sections) || manuallyAddedResorts[resortSectionName];
+        });
+      }
       html += '<div class="detail-grid">';
       entries.forEach(function(label) {
         var div = document.createElement('div'); div.textContent = label;
