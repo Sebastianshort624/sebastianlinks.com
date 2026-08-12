@@ -184,7 +184,43 @@ textarea {
     <div class="modal-body" id="detail-modal-body"></div>
     <div class="modal-footer">
       <div id="save-status" class="notice hidden" style="flex:1"></div>
+      <button class="btn-secondary" onclick="openQualificationModal()">⚖️ Consumer Rights Qualification</button>
       <button class="btn-primary" onclick="saveMasterLeadEdits()">💾 Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- Consumer Rights Qualification -- separate modal, separate table
+     (lead_qualification), 33 questions across 4 categories + 15
+     Mutual Release items + 3 supporting fields. The ONLY hard-stop
+     in this entire build: leaving with unsaved changes here prompts
+     Save / Leave Without Saving / Cancel. -->
+<div class="modal-overlay hidden" id="qualification-modal" style="z-index:1200">
+  <div class="modal-box" style="max-width:820px">
+    <div class="modal-header">
+      <h2>⚖️ Consumer Rights Qualification</h2>
+      <button class="modal-close" onclick="attemptCloseQualificationModal()">✕</button>
+    </div>
+    <div class="modal-body" id="qualification-modal-body"></div>
+    <div class="modal-footer">
+      <div id="qualification-save-status" class="notice hidden" style="flex:1"></div>
+      <button class="btn-secondary" onclick="attemptCloseQualificationModal()">Close</button>
+      <button class="btn-primary" onclick="saveQualification()">💾 Save Qualification</button>
+    </div>
+  </div>
+</div>
+
+<!-- Unsaved-changes hard-stop -- the only hard stop in this build -->
+<div class="modal-overlay hidden" id="qualification-unsaved-modal" style="z-index:1300">
+  <div class="modal-box" style="max-width:420px">
+    <div class="modal-header"><h2>Unsaved Changes</h2></div>
+    <div class="modal-body">
+      <p>You have unsaved changes in the Consumer Rights Qualification. What would you like to do?</p>
+    </div>
+    <div class="modal-footer" style="justify-content:flex-end;gap:8px">
+      <button class="btn-secondary" onclick="qualificationUnsavedCancel()">Cancel</button>
+      <button class="btn-secondary" onclick="qualificationUnsavedLeave()">Leave Without Saving</button>
+      <button class="btn-primary" onclick="qualificationUnsavedSave()">Save</button>
     </div>
   </div>
 </div>
@@ -712,6 +748,324 @@ function humanizeKey(key) {
 }
 
 var LOCKED_MASTER_FIELDS = ['Record Id', 'UUID', 'Lead-Created-Time'];
+
+var QUALIFICATION_DATA = {
+  safety: {
+    title: "I \u2014 The Right to Safety",
+    intro: "Protection from products and agreements hazardous to your financial security or wellbeing.",
+    qs: [
+      { q: "Was the presentation longer than 90 minutes?", why: "This question captures the duration of the sales presentation and whether its length contributed to fatigue or pressure.", terms: ["Presentation Duration", "Client Statement"] },
+      { q: "Were you required to meet with multiple salespeople?", why: "This question captures whether multiple representatives participated in the presentation and whether the client experienced repeated sales pressure.", terms: ["Multiple Salespeople", "Pressure Tactics"] },
+      { q: "How did you feel mentally and physically after leaving?", why: "This captures the client's own description of fatigue, confusion, stress, or pressure after the presentation.", terms: ["Client Statement", "Client Quote"] },
+      { q: "Were you given adequate time to read the entire contract before signing?", why: "This addresses the opportunity provided to review and understand the written agreement before signing.", terms: ["Contract Review", "Contract Disclosure"] },
+    ]
+  },
+  choose: {
+    title: "II \u2014 The Right to Choose",
+    intro: "Access to a variety of products at competitive prices without coercion or manipulation.",
+    qs: [
+      { q: "Did you say \u201cNo\u201d during the presentation?", why: "This captures whether the client expressed a refusal to purchase.", terms: ["Repeated Refusal", "Client Statement"] },
+      { q: "How many times did you say \u201cNo\u201d or otherwise indicate that you did not want to purchase?", why: "This documents the client's account of repeated refusal.", terms: ["Repeated Refusal", "Client Quote"] },
+      { q: "Did you express a desire to leave the presentation?", why: "This captures whether the client communicated a desire to leave.", terms: ["Desire to Leave", "Client Statement"] },
+      { q: "If you wanted to leave, were you allowed to leave without continued sales pressure?", why: "This addresses the client's experience after expressing a desire to leave.", terms: ["Desire to Leave", "Pressure Tactics"] },
+      { q: "Were you told that the price or offer was only available that day?", why: "This captures a representation concerning urgency or availability of the offer.", terms: ["False Sense of Urgency", "Material Representation"] },
+      { q: "Were you offered gifts, gift cards, meals, entertainment, casino credits, or other incentives to purchase?", why: "This documents incentives connected to the purchase decision.", terms: ["Sales Incentive", "Material Representation"] },
+      { q: "Did the salesperson focus primarily on one of you in an effort to influence the other person?", why: "This captures the client's account of \u201csplitting the pack\u201d or similar sales conduct.", terms: ["Splitting the Pack", "Pressure Tactics"] },
+    ]
+  },
+  heard: {
+    title: "III \u2014 The Right to Be Heard",
+    intro: "Your complaints and concerns must be acknowledged and addressed by those who sold to you.",
+    qs: [
+      { q: "Did you express concerns about purchasing the timeshare?", why: "This captures concerns the client raised during the transaction.", terms: ["Client Statement", "Client Concern"] },
+      { q: "Did the salesperson adequately address your concerns before asking you to purchase?", why: "This documents whether the client's concerns were addressed during the presentation.", terms: ["Client Concern", "Sales Conduct"] },
+      { q: "Did you feel that your objections were actually heard and addressed?", why: "This captures the client's own assessment of how their objections were handled.", terms: ["Client Statement", "Client Quote"] },
+      { q: "Did you raise concerns about maintenance fees, financing, resale, rental, or long-term ownership?", why: "This identifies the specific subjects about which the client raised concerns.", terms: ["Financial Disclosure", "Client Concern"] },
+      { q: "Did you tell the salesperson that you did not want to purchase, and what happened afterward?", why: "This captures the client's own account of what followed an objection or refusal.", terms: ["Repeated Refusal", "Client Statement"] },
+    ]
+  },
+  informed: {
+    title: "IV \u2014 The Right to Be Informed",
+    intro: "You must receive the information necessary to make a fully informed financial decision.",
+    qs: [
+      { q: "Were you given information about the timeshare that you later discovered was inaccurate or misleading?", why: "This addresses representations about the timeshare that the client says were inaccurate or misleading.", terms: ["Material Representation", "Potential Misrepresentation"] },
+      { q: "Were there important facts about the timeshare that were not disclosed to you before you purchased?", why: "This captures information the client believes was omitted before the purchase decision.", terms: ["Material Omission", "Financial Disclosure"] },
+      { q: "Were you given complete information about the total cost of ownership before you signed the contract?", why: "This addresses disclosure of the client's overall financial obligations.", terms: ["Cost Disclosure", "Financial Disclosure"] },
+      { q: "Were you told that the timeshare was a \u201cgreat investment\u201d?", why: "This captures representations made about the investment nature or value of the timeshare.", terms: ["Investment Representation", "Material Representation"] },
+      { q: "Were you told that the timeshare would increase in value or build equity?", why: "This captures representations concerning appreciation or equity.", terms: ["Investment Representation", "Material Representation"] },
+      { q: "Were you told that you could resell the timeshare in the future?", why: "This captures representations concerning resale.", terms: ["Resale Representation", "Material Representation"] },
+      { q: "Were you told that you could rent the timeshare to offset your maintenance fees?", why: "This captures representations concerning rental income and maintenance costs.", terms: ["Rental Representation", "Material Representation"] },
+      { q: "Were you given a complete explanation of the maintenance fees and how they could increase over time?", why: "This addresses disclosure concerning recurring maintenance obligations and increases.", terms: ["Maintenance Fee Disclosure", "Cost Disclosure"] },
+      { q: "Were you informed about special assessment fees or other additional charges?", why: "This captures disclosure concerning additional ownership charges.", terms: ["Financial Disclosure", "Material Omission"] },
+      { q: "Were you shown the projected long-term cost of owning the timeshare?", why: "This addresses whether long-term ownership costs were presented before purchase.", terms: ["Cost Disclosure", "Financial Disclosure"] },
+      { q: "Were you shown the true cost of ownership over 30 years or longer?", why: "This captures whether a long-term cost projection was presented.", terms: ["Cost Disclosure", "Financial Disclosure"] },
+      { q: "Were you given a complete explanation of the interest rate and financing terms before signing?", why: "This addresses disclosure of financing terms in the actual transaction.", terms: ["Interest Rate Disclosure", "Financial Disclosure"] },
+      { q: "Were all of the financial terms presented to you clearly before you signed?", why: "This captures the client's account of how financial terms were presented.", terms: ["Financial Disclosure", "Material Representation"] },
+      { q: "Were the verbal representations made during the presentation consistent with the written contract?", why: "This captures whether the client believes verbal representations matched the written agreement.", terms: ["Written Representation", "Contract Disclosure"] },
+      { q: "Were you given adequate time to read and understand the entire contract before signing?", why: "This documents the opportunity the client had to review the written agreement.", terms: ["Contract Review", "Written Terms"] },
+      { q: "Were you told that your ownership obligation could continue indefinitely or pass to your heirs?", why: "This captures disclosure concerning the duration and inheritance of the ownership obligation.", terms: ["Contract Disclosure", "Written Terms"] },
+      { q: "Were the consequences of the perpetuity clause explained to you before you signed?", why: "This documents whether the duration and effect of the clause were explained before purchase.", terms: ["Contract Disclosure", "Material Omission"] },
+    ]
+  },
+};
+
+var RELEASE_ITEMS = [
+  ['release_transfer_of_ownership_interest', 'Transfer of Ownership Interest'],
+  ['release_transfer_of_title', 'Transfer of Title'],
+  ['release_conveyance', 'Conveyance'],
+  ['release_conveyance_of_ownership_interest', 'Conveyance of Ownership Interest'],
+  ['release_relinquishment_of_ownership_interest', 'Relinquishment of Ownership Interest'],
+  ['release_release_of_ownership_interest', 'Release of Ownership Interest'],
+  ['release_quitclaim', 'Quitclaim'],
+  ['release_quitclaim_deed', 'Quitclaim Deed'],
+  ['release_removal_from_title', 'Removal From Title'],
+  ['release_removal_from_deed', 'Removal From Deed'],
+  ['release_change_in_vesting', 'Change in Vesting'],
+  ['release_surrender_of_ownership_interest', 'Surrender of Ownership Interest'],
+  ['release_divestment_of_title', 'Divestment of Title'],
+  ['release_rescission', 'Rescission'],
+  ['release_deed_in_lieu_of_foreclosure', 'Deed-in-Lieu of Foreclosure']
+];
+
+var qualificationCurrentLeadId = null;
+var qualificationLoadedSnapshot = null; // last-saved (or last-loaded) state, for dirty comparison
+var qualificationExpandedQuestions = {}; // session UI state only, not saved
+// Accumulates EVERY answer-button click across the whole editing
+// session (persists across re-renders, unlike DOM state which gets
+// wiped each time). Without this, answering question A then question
+// B would silently discard A's answer on re-render -- a real bug,
+// caught before it ever reached testing.
+var qualificationPendingAnswers = {};
+
+async function openQualificationModal() {
+  var lead = leads[currentIndex];
+  qualificationCurrentLeadId = lead.master_lead_id;
+  qualificationExpandedQuestions = {};
+  qualificationPendingAnswers = {};
+  qualificationDirty = false;
+
+  qs('qualification-modal-body').innerHTML = '<p style="color:var(--muted)">Loading…</p>';
+  qs('qualification-modal').classList.remove('hidden');
+
+  try {
+    var res = await fetch(API_BASE + '/api/qualification?master_lead_id=' + encodeURIComponent(qualificationCurrentLeadId), { headers: authHeaders() });
+    var data = await res.json();
+    if (!data.ok) {
+      qs('qualification-modal-body').innerHTML = '<p style="color:var(--danger)">Could not load: ' + (data.error || 'unknown error') + '</p>';
+      return;
+    }
+    qualificationLoadedSnapshot = JSON.parse(JSON.stringify(data.qualification));
+    renderQualificationModal(mergedQualificationView());
+  } catch (e) {
+    qs('qualification-modal-body').innerHTML = '<p style="color:var(--danger)">Could not reach the CRM API: ' + e.message + '</p>';
+  }
+}
+
+// Snapshot + any pending (unsaved) answer clicks + current DOM field
+// values -- the single source of truth for what should render and
+// what should save.
+function mergedQualificationView() {
+  var merged = JSON.parse(JSON.stringify(qualificationLoadedSnapshot || {}));
+  Object.keys(qualificationPendingAnswers).forEach(function(k) { merged[k] = qualificationPendingAnswers[k]; });
+  document.querySelectorAll('#qualification-modal-body .qual-field').forEach(function(el) {
+    merged[el.getAttribute('data-field')] = el.value;
+  });
+  document.querySelectorAll('#qualification-modal-body .qual-release-checkbox').forEach(function(el) {
+    merged[el.getAttribute('data-field')] = el.checked ? 'Yes' : 'No';
+  });
+  return merged;
+}
+
+function renderQualificationModal(q) {
+  var html = '';
+
+  Object.keys(QUALIFICATION_DATA).forEach(function(cat) {
+    var catData = QUALIFICATION_DATA[cat];
+    html += '<div class="detail-section"><div class="detail-section-title">' + catData.title + '</div>';
+    html += '<p style="font-size:12px;color:var(--muted);margin:-4px 0 10px">' + catData.intro + '</p>';
+
+    catData.qs.forEach(function(item, idx) {
+      var qNum = idx + 1;
+      var answerField = cat + '_' + qNum + '_answer';
+      var notesField = cat + '_' + qNum + '_notes';
+      var countField = (cat === 'choose' && qNum === 2) ? 'choose_2_count' : null;
+      var qKey = cat + '_' + qNum;
+      var isExpanded = !!qualificationExpandedQuestions[qKey];
+      var currentAnswer = q[answerField] || 'Unanswered';
+
+      var div = document.createElement('div'); div.textContent = item.q;
+      html += '<div style="border:1px solid var(--border);border-radius:10px;margin-bottom:8px;overflow:hidden">';
+      html += '<div style="padding:10px 12px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:' + (currentAnswer !== 'Unanswered' ? 'var(--soft-blue)' : 'transparent') + '" onclick="toggleQualificationQuestion(\'' + qKey + '\')">';
+      html += '<span style="font-size:13px;font-weight:600">' + div.innerHTML + '</span>';
+      html += '<span style="font-size:11px;font-weight:700;color:var(--muted);white-space:nowrap;margin-left:10px">' + currentAnswer + ' ' + (isExpanded ? '▾' : '▸') + '</span>';
+      html += '</div>';
+
+      if (isExpanded) {
+        var whyDiv = document.createElement('div'); whyDiv.textContent = item.why;
+        html += '<div style="padding:12px;border-top:1px solid var(--border)">';
+        html += '<div style="font-size:12px;color:var(--muted);margin-bottom:8px"><em>' + whyDiv.innerHTML + '</em>';
+        if (item.terms && item.terms.length) {
+          html += ' <span style="font-size:11px">(' + item.terms.map(function(t) { var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }).join(' · ') + ')</span>';
+        }
+        html += '</div>';
+
+        html += '<div style="display:flex;gap:8px;margin-bottom:8px">';
+        ['Yes', 'No', 'Unanswered'].forEach(function(state) {
+          var active = currentAnswer === state;
+          html += '<button type="button" class="btn-secondary qual-answer-btn" data-field="' + answerField + '" data-value="' + state + '" style="' + (active ? 'background:var(--primary);color:#fff' : '') + '" onclick="setQualificationAnswer(this, \'' + answerField + '\', \'' + state + '\')">' + state + '</button>';
+        });
+        html += '</div>';
+
+        if (countField) {
+          var countVal = q[countField] || '';
+          html += '<label style="font-size:12px;font-weight:600">Number of times</label>';
+          html += '<input type="text" class="detail-edit-input qual-field" data-field="' + countField + '" value="' + countVal.replace(/"/g, '&quot;') + '" style="margin-bottom:8px">';
+        }
+
+        var notesVal = q[notesField] || '';
+        var notesDiv = document.createElement('div'); notesDiv.textContent = notesVal;
+        html += '<label style="font-size:12px;font-weight:600">Client\'s Exact Words</label>';
+        html += '<textarea class="detail-edit-input qual-field" data-field="' + notesField + '" rows="2">' + notesDiv.innerHTML + '</textarea>';
+        html += '</div>';
+      }
+      html += '</div>';
+    });
+    html += '</div>';
+  });
+
+  // Mutual Release checklist
+  html += '<div class="detail-section"><div class="detail-section-title">Mutual Release Terminology</div>';
+  html += '<p style="font-size:12px;color:var(--muted);margin:-4px 0 10px">Select every term that applies to this case.</p>';
+  html += '<div class="detail-grid">';
+  RELEASE_ITEMS.forEach(function(item) {
+    var key = item[0], label = item[1];
+    var checked = q[key] === 'Yes';
+    html += '<div class="detail-row"><span class="detail-label">' + label + '</span>';
+    html += '<input type="checkbox" class="qual-release-checkbox" data-field="' + key + '"' + (checked ? ' checked' : '') + ' onchange="markQualificationDirty()" style="width:20px;height:20px">';
+    html += '</div>';
+  });
+  html += '</div></div>';
+
+  // Supporting fields
+  html += '<div class="detail-section"><div class="detail-section-title">Additional Details</div>';
+  html += '<div class="detail-grid">';
+  var purchaseVal = q['qualification_state_of_purchase'] || '';
+  var residenceVal = q['qualification_state_of_residence'] || '';
+  html += '<div class="detail-row"><span class="detail-label">State of Purchase</span><input type="text" class="detail-edit-input qual-field" data-field="qualification_state_of_purchase" value="' + purchaseVal.replace(/"/g, '&quot;') + '"></div>';
+  html += '<div class="detail-row"><span class="detail-label">State of Residence</span><input type="text" class="detail-edit-input qual-field" data-field="qualification_state_of_residence" value="' + residenceVal.replace(/"/g, '&quot;') + '"></div>';
+  html += '</div>';
+  var settlementVal = q['qualification_settlement_request'] || '';
+  var settlementDiv = document.createElement('div'); settlementDiv.textContent = settlementVal;
+  html += '<label style="font-size:12px;font-weight:600;display:block;margin-top:10px">Client\'s Exact Settlement Request</label>';
+  html += '<textarea class="detail-edit-input qual-field" data-field="qualification_settlement_request" rows="3">' + settlementDiv.innerHTML + '</textarea>';
+  html += '</div>';
+
+  qs('qualification-modal-body').innerHTML = html;
+
+  // Wire up plain input/textarea change tracking (buttons/checkboxes call markQualificationDirty directly)
+  document.querySelectorAll('#qualification-modal-body .qual-field').forEach(function(el) {
+    el.addEventListener('input', markQualificationDirty);
+  });
+}
+
+function toggleQualificationQuestion(qKey) {
+  qualificationExpandedQuestions[qKey] = !qualificationExpandedQuestions[qKey];
+  renderQualificationModal(mergedQualificationView());
+}
+
+function setQualificationAnswer(btnEl, field, value) {
+  qualificationPendingAnswers[field] = value;
+  markQualificationDirty();
+  renderQualificationModal(mergedQualificationView());
+}
+
+var qualificationDirty = false;
+function markQualificationDirty() {
+  qualificationDirty = true;
+}
+
+function collectQualificationFields() {
+  return mergedQualificationView();
+}
+
+function isQualificationDirty() {
+  return qualificationDirty;
+}
+
+async function saveQualification() {
+  var current = collectQualificationFields();
+  var updates = {};
+  Object.keys(current).forEach(function(k) {
+    if (JSON.stringify(current[k]) !== JSON.stringify((qualificationLoadedSnapshot || {})[k])) {
+      updates[k] = current[k];
+    }
+  });
+
+  var statusEl = qs('qualification-save-status');
+  if (Object.keys(updates).length === 0) {
+    statusEl.textContent = 'Nothing to save.';
+    statusEl.className = 'notice info';
+    statusEl.classList.remove('hidden');
+    return true;
+  }
+
+  statusEl.textContent = 'Saving…';
+  statusEl.className = 'notice info';
+  statusEl.classList.remove('hidden');
+
+  try {
+    var res = await fetch(API_BASE + '/api/qualification/save', {
+      method: 'POST', headers: authHeaders(),
+      body: JSON.stringify({ master_lead_id: qualificationCurrentLeadId, updates: updates })
+    });
+    var data = await res.json();
+    if (!data.ok) {
+      statusEl.textContent = 'Save failed: ' + (data.error || 'unknown error');
+      statusEl.className = 'notice error';
+      return false;
+    }
+    qualificationLoadedSnapshot = current;
+    qualificationPendingAnswers = {};
+    qualificationDirty = false;
+    statusEl.textContent = '✅ Saved.';
+    statusEl.className = 'notice success';
+    return true;
+  } catch (e) {
+    statusEl.textContent = 'Could not reach the CRM API: ' + e.message;
+    statusEl.className = 'notice error';
+    return false;
+  }
+}
+
+// ── The one hard-stop in this build ──
+function attemptCloseQualificationModal() {
+  if (isQualificationDirty()) {
+    qs('qualification-unsaved-modal').classList.remove('hidden');
+    return;
+  }
+  qs('qualification-modal').classList.add('hidden');
+}
+
+function qualificationUnsavedCancel() {
+  qs('qualification-unsaved-modal').classList.add('hidden');
+  // returns to the qualification modal, no data lost, nothing closed
+}
+
+function qualificationUnsavedLeave() {
+  qualificationDirty = false;
+  qs('qualification-unsaved-modal').classList.add('hidden');
+  qs('qualification-modal').classList.add('hidden');
+}
+
+async function qualificationUnsavedSave() {
+  var ok = await saveQualification();
+  if (ok) {
+    qs('qualification-unsaved-modal').classList.add('hidden');
+    qs('qualification-modal').classList.add('hidden');
+  }
+}
+
+
 
 // Resort 2-5 collapse state — pure UI preference, persists for the
 // working session (module-level, not sessionStorage/data), Resort 1
