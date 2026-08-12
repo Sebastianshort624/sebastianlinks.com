@@ -176,7 +176,7 @@ textarea {
 <!-- Full lead detail modal — closing it returns to the exact same lead
      in the queue; currentIndex is never touched by opening/closing this. -->
 <div class="modal-overlay hidden" id="detail-modal" style="z-index:1100" onclick="if(event.target===this) closeDetailModal()">
-  <div class="modal-box">
+  <div class="modal-box" style="max-width:1150px">
     <div class="modal-header">
       <h2 id="detail-modal-title">Full Lead Detail</h2>
       <button class="modal-close" onclick="closeDetailModal()">✕</button>
@@ -1111,6 +1111,23 @@ function toggleNameEdit() {
   qs('hdr-name-input').classList.toggle('hidden');
 }
 
+// CONTACT ACTIVITY — a true fixed sidebar (position: sticky within the
+// modal's scroll container), not a section in the normal linear flow.
+// Stays visible while the rest of the lead detail scrolls underneath it.
+function renderContactActivitySidebar(sections, fields) {
+  var entries = sections['CONTACT ACTIVITY'] || {};
+  var labels = Object.keys(entries);
+  var rows = labels.map(function(label) {
+    var div = document.createElement('div'); div.textContent = label;
+    return '<div class="detail-row"><span class="detail-label">' + div.innerHTML + '</span>' + renderDetailValue(entries[label]) + '</div>';
+  }).join('');
+
+  return '<div style="background:var(--soft-blue);border:1.5px solid var(--primary);border-radius:var(--radius);padding:14px">' +
+    '<div style="font-size:12px;font-weight:800;color:var(--primary-dark);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">📊 Contact Activity</div>' +
+    rows +
+    '</div>';
+}
+
 var TIMEZONE_OPTIONS = ['', 'US/Eastern', 'US/Central', 'US/Pacific'];
 
 function renderPrimaryOwnerExtras(fields) {
@@ -1161,8 +1178,9 @@ function openDetailModal() {
   var lead = leads[currentIndex];
   qs('detail-modal-title').textContent = getLeadName(lead);
   var sections = categorizeFields(lead.fields || {});
-  var html = renderStickyHeader(lead.fields || {});
-  var sectionOrder = ['PRIMARY OWNER', 'MAIN LEAD DETAILS', 'APPOINTMENT & ASSIGNMENT', 'CONTACT ACTIVITY', 'RESORT 1', 'RESORT 2', 'RESORT 3', 'RESORT 4', 'RESORT 5', 'FINANCIAL / QUOTE', 'MARKETING / TRACKING', 'NOTES', 'OFFICIAL USE', 'ONBOARDING INFO'];
+  var stickyHeaderHtml = renderStickyHeader(lead.fields || {});
+  var html = '';
+  var sectionOrder = ['PRIMARY OWNER', 'APPOINTMENT & ASSIGNMENT', 'RESORT 1', 'RESORT 2', 'RESORT 3', 'RESORT 4', 'RESORT 5', 'FINANCIAL / QUOTE', 'MARKETING / TRACKING', 'MAIN LEAD DETAILS', 'NOTES', 'OFFICIAL USE', 'ONBOARDING INFO'];
   sectionOrder.forEach(function(sectionName) {
     var entries = Object.keys(sections[sectionName]);
     var isResort2to5 = /^RESORT [2-5]$/.test(sectionName);
@@ -1280,7 +1298,12 @@ function openDetailModal() {
     }
   }
 
-  qs('detail-modal-body').innerHTML = html || '<p style="color:var(--muted)">No fields available for this lead.</p>';
+  qs('detail-modal-body').innerHTML =
+    stickyHeaderHtml +
+    '<div style="display:flex;gap:20px;align-items:flex-start">' +
+      '<div style="flex:1;min-width:0">' + (html || '<p style="color:var(--muted)">No fields available for this lead.</p>') + '</div>' +
+      '<div style="width:230px;flex-shrink:0;position:sticky;top:150px">' + renderContactActivitySidebar(sections, lead.fields || {}) + '</div>' +
+    '</div>';
   qs('detail-modal').classList.remove('hidden');
 }
 
