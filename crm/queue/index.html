@@ -84,6 +84,9 @@ textarea {
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 1000; display: flex; align-items: flex-start; justify-content: center; overflow-y: auto; padding: 20px; }
 .modal-box { background: var(--card); border-radius: var(--radius); max-width: 900px; width: 100%; margin: 20px 0; box-shadow: 0 8px 40px rgba(0,0,0,.3); box-sizing: border-box; }
 .modal-header { position: sticky; top: 0; background: var(--card); border-bottom: 1px solid var(--border); padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; border-radius: var(--radius) var(--radius) 0 0; z-index: 2; }
+.detail-header-bar { position: sticky; top: 0; z-index: 3; background: var(--card); border-bottom: 2px solid var(--primary); padding: 10px 0 14px; margin-bottom: 14px; display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end; }
+.detail-header-item { display: flex; flex-direction: column; gap: 3px; }
+.header-input { font-size: 13px !important; padding: 6px 8px !important; }
 .modal-header h2 { font-size: 18px; margin: 0; }
 .modal-footer { position: sticky; bottom: 0; background: var(--card); border-top: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; gap: 12px; border-radius: 0 0 var(--radius) var(--radius); }
 .detail-edit-input { width: 100%; padding: 5px 8px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; font-family: inherit; text-align: right; }
@@ -856,12 +859,19 @@ function isLongTextField(originalKey) {
 
 function categorizeFields(fields) {
   var sections = {
-    'CONTACT & LEAD': {}, 'APPOINTMENT & ASSIGNMENT': {}, 'CONTACT ACTIVITY': {},
+    'HEADER': {}, 'PRIMARY OWNER': {}, '2ND OWNER': {}, 'MAIN LEAD DETAILS': {}, 'APPOINTMENT & ASSIGNMENT': {}, 'CONTACT ACTIVITY': {},
     'RESORT 1': {}, 'RESORT 2': {}, 'RESORT 3': {}, 'RESORT 4': {}, 'RESORT 5': {},
-    'FINANCIAL / QUOTE': {}, 'MARKETING / TRACKING': {}, 'NOTES': {}, 'OFFICIAL USE': {}
+    'FINANCIAL / QUOTE': {}, 'MARKETING / TRACKING': {}, 'NOTES': {}, 'OFFICIAL USE': {}, 'ONBOARDING INFO': {}
   };
 
-  var contactKeys = ['leadname','name','firstname','lastname','phone','secondaryphone','email','street','city','state','zip','leadstatus','leadsource','leadsources','preferredlanguage','tag','todaysdate','timezone','2ndownerfirstname','2ndownerlastname','totalresorts','someoneelseondeed','priority','uuid'];
+  // HEADER fields render in the constant sticky header, never in the
+  // normal body flow.
+  var headerKeys = ['leadname','name','leadstatus','timezone','preferredlanguage','tag'];
+  var ownerKeys = ['phone','email','priority'];
+  var secondOwnerKeys = ['2ndownerfirstname','2ndownerlastname'];
+  var mainLeadDetailKeys = ['street','city','state','zip','totalresorts','someoneelseondeed','todaysdate'];
+  var officialUseKeys = ['recordid','uuid','leadsources','leadsource'];
+  var onboardingKeys = ['secondaryphone','billingmailingaddress'];
   var apptKeys = ['intakespecialist','fronter','verifiedby','assignedto','casemanager','appointment','followupdate','appointmentdatetime'];
   var financialNonResortKeys = ['totalamountcharging','recommendedpricing','paymentmethod','monthyinstallments','monthlyinstallments','loanterm','downpayment','discountsappliedforcard','totalservicecost','totalloanamount','merchantcharged','quotesent','dealclosed','savings','combinedmonthlytotal','combinedyearlytotal','combinedtruecostofownership','resolutionrecovery'];
   var marketingKeys = ['utmmedium','utmsource','leadcreatedtime','modifiedtime','howdidclienthearaboutus','compliancechecklist'];
@@ -900,12 +910,23 @@ function categorizeFields(fields) {
       return;
     }
 
-    if (contactKeys.indexOf(norm) !== -1) { sections['CONTACT & LEAD'][humanizeKey(key)] = entry; return; }
+    if (headerKeys.indexOf(norm) !== -1) { sections['HEADER'][humanizeKey(key)] = entry; return; }
+    if (ownerKeys.indexOf(norm) !== -1) { sections['PRIMARY OWNER'][humanizeKey(key)] = entry; return; }
+    if (secondOwnerKeys.indexOf(norm) !== -1) { sections['2ND OWNER'][humanizeKey(key)] = entry; return; }
+    if (mainLeadDetailKeys.indexOf(norm) !== -1) { sections['MAIN LEAD DETAILS'][humanizeKey(key)] = entry; return; }
+    if (officialUseKeys.indexOf(norm) !== -1) { sections['OFFICIAL USE'][humanizeKey(key)] = entry; return; }
+    if (onboardingKeys.indexOf(norm) !== -1) {
+      // "Secondary Phone" is relabeled "Backup Phone" here -- same
+      // exact underlying field, just a different display label for
+      // this section's context. Never a separate field.
+      var onboardingLabel = norm === 'secondaryphone' ? 'Backup Phone' : humanizeKey(key);
+      sections['ONBOARDING INFO'][onboardingLabel] = entry;
+      return;
+    }
     if (apptKeys.indexOf(norm) !== -1) { sections['APPOINTMENT & ASSIGNMENT'][humanizeKey(key)] = entry; return; }
     if (financialNonResortKeys.indexOf(norm) !== -1) { sections['FINANCIAL / QUOTE'][humanizeKey(key)] = entry; return; }
     if (marketingKeys.indexOf(norm) !== -1) { sections['MARKETING / TRACKING'][humanizeKey(key)] = entry; return; }
     if (contactActivityKeys.indexOf(norm) !== -1) { sections['CONTACT ACTIVITY'][humanizeKey(key)] = entry; return; }
-    if (norm === 'recordid') { sections['OFFICIAL USE'][humanizeKey(key)] = entry; return; }
     if (notesKeys.indexOf(norm) !== -1) { sections['NOTES'][humanizeKey(key)] = entry; return; }
 
     sections['NOTES'][key] = entry;
@@ -1028,12 +1049,52 @@ async function saveMasterLeadEdits() {
   }
 }
 
+function renderStickyHeader(fields) {
+  var f = fields;
+  var textInput = function(id, dataField, value, width) {
+    var div = document.createElement('div'); div.textContent = value || '';
+    return '<input type="text" id="' + id + '" class="detail-edit-input header-input" data-field="' + dataField.replace(/"/g, '&quot;') + '" value="' + div.innerHTML.replace(/"/g, '&quot;') + '" style="width:' + width + '">';
+  };
+
+  // Lang: exactly 3 options per spec. Existing real values ("Spanish",
+  // "English") are recognized and pre-selected without needing the
+  // person to re-pick; SAVING always writes the abbreviated form.
+  var rawLang = (f['Preferred Language'] || '').trim().toLowerCase();
+  var langValue = rawLang.indexOf('span') !== -1 || rawLang === 'esp' ? 'span' : (rawLang.indexOf('eng') !== -1 ? 'eng' : '');
+  var langOptsHtml = [['', 'Lang'], ['span', 'span'], ['eng', 'eng']].map(function(o) {
+    return '<option value="' + o[0] + '"' + (o[0] === langValue ? ' selected' : '') + '>' + o[1] + '</option>';
+  }).join('');
+
+  var html = '<div class="detail-header-bar">';
+  html += '<div class="detail-header-item">' + textInput('hdr-name', 'Lead Name', f['Lead Name'], '160px') + '</div>';
+  html += '<div class="detail-header-item">' + textInput('hdr-status', 'Lead Status', f['Lead Status'], '150px') + '</div>';
+  html += '<div class="detail-header-item">' + textInput('hdr-timezone', 'Time Zone', f['Time Zone'], '90px') + '</div>';
+  html += '<div class="detail-header-item"><select id="hdr-lang" class="detail-edit-input header-input" data-field="Preferred Language" style="width:80px">' + langOptsHtml + '</select></div>';
+  html += '<div class="detail-header-item">' + textInput('hdr-tag', 'Tag', f['Tag'], '140px') + '</div>';
+  html += '</div>';
+  return html;
+}
+
+function renderSecondOwnerToggle(fields) {
+  var hasData = (fields['2nd owner first name'] || '').trim() !== '' || (fields['2nd owner last Name'] || '').trim() !== '';
+  if (!hasData && !manuallyAdded2ndOwner) {
+    return '<button type="button" class="btn-secondary" onclick="add2ndOwner()" style="margin-bottom:10px">+ Add 2nd Owner</button>';
+  }
+  return null; // null signals "render normally, don't show the add button"
+}
+
+var manuallyAdded2ndOwner = false;
+function add2ndOwner() {
+  manuallyAdded2ndOwner = true;
+  openDetailModal();
+}
+
 function openDetailModal() {
   var lead = leads[currentIndex];
-  qs('detail-modal-title').textContent = getLeadName(lead) + ' — Full Lead Detail';
+  qs('detail-modal-title').textContent = getLeadName(lead);
   var sections = categorizeFields(lead.fields || {});
-  var html = '';
-  var sectionOrder = ['CONTACT & LEAD', 'APPOINTMENT & ASSIGNMENT', 'CONTACT ACTIVITY', 'RESORT 1', 'RESORT 2', 'RESORT 3', 'RESORT 4', 'RESORT 5', 'FINANCIAL / QUOTE', 'MARKETING / TRACKING', 'NOTES', 'OFFICIAL USE'];
+  var html = renderStickyHeader(lead.fields || {});
+  var sectionOrder = ['PRIMARY OWNER', '2ND OWNER', 'MAIN LEAD DETAILS', 'APPOINTMENT & ASSIGNMENT', 'CONTACT ACTIVITY', 'RESORT 1', 'RESORT 2', 'RESORT 3', 'RESORT 4', 'RESORT 5', 'FINANCIAL / QUOTE', 'MARKETING / TRACKING', 'NOTES', 'OFFICIAL USE', 'ONBOARDING INFO'];
   sectionOrder.forEach(function(sectionName) {
     var entries = Object.keys(sections[sectionName]);
     var isResort2to5 = /^RESORT [2-5]$/.test(sectionName);
@@ -1043,6 +1104,11 @@ function openDetailModal() {
       // technically exists (blank).
       var hasData = sectionHasRealData(sectionName, sections);
       if (!hasData && !manuallyAddedResorts[sectionName]) return;
+    } else if (sectionName === '2ND OWNER') {
+      // Same rule as Resort 2-5: only show if genuinely imported with
+      // data, or the person explicitly clicked "+ Add 2nd Owner".
+      var has2ndOwnerData = sectionHasRealData('2ND OWNER', sections);
+      if (!has2ndOwnerData && !manuallyAdded2ndOwner) return;
     } else if (entries.length === 0 && sectionName !== 'FINANCIAL / QUOTE') {
       return;
     }
@@ -1123,6 +1189,11 @@ function openDetailModal() {
     }
 
     html += '</div>';
+
+    if (sectionName === 'PRIMARY OWNER') {
+      var secondOwnerToggle = renderSecondOwnerToggle(lead.fields || {});
+      if (secondOwnerToggle) html += secondOwnerToggle;
+    }
   });
 
   // "+ Add Resort" -- only offered for the next resort slot that
