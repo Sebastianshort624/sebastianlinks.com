@@ -867,9 +867,13 @@ function categorizeFields(fields) {
 
   // HEADER fields render in the constant sticky header, never in the
   // normal body flow.
-  var headerKeys = ['leadname','name','leadstatus','timezone','preferredlanguage','tag'];
-  var ownerKeys = ['phone','email','priority'];
-  var secondOwnerKeys = ['2ndownerfirstname','2ndownerlastname'];
+  // Fields fully handled by custom rendering (sticky header or the
+  // Primary Owner custom block below) -- routed to the unused HEADER
+  // bucket specifically so they're excluded from generic body
+  // rendering and never fall through to the NOTES catch-all.
+  var headerKeys = ['leadname','name','phone','email','2ndowner','leadstatus','timezone','preferredlanguage','tag'];
+  var ownerKeys = ['priority'];
+  var secondOwnerKeys = ['2ndowner'];
   var mainLeadDetailKeys = ['street','city','state','zip','totalresorts','someoneelseondeed','todaysdate'];
   var officialUseKeys = ['recordid','uuid','leadsources','leadsource'];
   var onboardingKeys = ['secondaryphone','billingmailingaddress'];
@@ -1057,31 +1061,43 @@ function renderStickyHeader(fields) {
     return '<input type="text" id="' + id + '" class="detail-edit-input header-input" data-field="' + dataField.replace(/"/g, '&quot;') + '" value="' + div.innerHTML.replace(/"/g, '&quot;') + '" style="width:' + width + '">';
   };
 
-  // Lang: exactly 3 options per spec. Existing real values ("Spanish",
-  // "English") are recognized and pre-selected without needing the
-  // person to re-pick; SAVING always writes the abbreviated form.
-  var rawLang = (f['Preferred Language'] || '').trim().toLowerCase();
-  var langValue = rawLang.indexOf('span') !== -1 || rawLang === 'esp' ? 'span' : (rawLang.indexOf('eng') !== -1 ? 'eng' : '');
-  var langOptsHtml = [['', 'Lang'], ['span', 'span'], ['eng', 'eng']].map(function(o) {
-    return '<option value="' + o[0] + '"' + (o[0] === langValue ? ' selected' : '') + '>' + o[1] + '</option>';
-  }).join('');
+  // Lead Name: bold display by default, toggled into an editable input
+  // via the pencil control next to it -- not always-editable like the
+  // rest of the header.
+  var nameDiv = document.createElement('div'); nameDiv.textContent = f['Lead Name'] || '';
+  var nameEscaped = nameDiv.innerHTML;
+  var nameHtml =
+    '<span id="hdr-name-display" style="font-size:20px;font-weight:800">' + nameEscaped + '</span>' +
+    '<button type="button" onclick="toggleNameEdit()" style="background:none;border:none;cursor:pointer;font-size:16px;margin-left:6px" title="Edit name">✎</button>' +
+    '<input type="text" id="hdr-name-input" class="detail-edit-input header-input hidden" data-field="Lead Name" value="' + nameEscaped.replace(/"/g, '&quot;') + '" style="width:200px;font-size:16px;font-weight:700">';
 
-  var html = '<div class="detail-header-bar">';
-  html += '<div class="detail-header-item">' + textInput('hdr-name', 'Lead Name', f['Lead Name'], '160px') + '</div>';
-  html += '<div class="detail-header-item">' + textInput('hdr-status', 'Lead Status', f['Lead Status'], '150px') + '</div>';
-  html += '<div class="detail-header-item">' + textInput('hdr-timezone', 'Time Zone', f['Time Zone'], '90px') + '</div>';
-  html += '<div class="detail-header-item"><select id="hdr-lang" class="detail-edit-input header-input" data-field="Preferred Language" style="width:80px">' + langOptsHtml + '</select></div>';
-  html += '<div class="detail-header-item">' + textInput('hdr-tag', 'Tag', f['Tag'], '140px') + '</div>';
+  // 2nd Owner: single combined field, hidden unless it has real data or
+  // was explicitly added.
+  var secondOwnerVal = (f['2nd Owner'] || '').trim();
+  var secondOwnerHtml;
+  if (secondOwnerVal || manuallyAdded2ndOwner) {
+    secondOwnerHtml = '<div class="detail-header-item"><label style="font-size:11px;color:var(--muted)">2nd Owner</label>' + textInput('hdr-2nd-owner', '2nd Owner', secondOwnerVal, '180px') + '</div>';
+  } else {
+    secondOwnerHtml = '<button type="button" class="btn-secondary" onclick="add2ndOwner()">+ Add 2nd Owner</button>';
+  }
+
+  var html = '<div class="detail-header-bar" style="flex-direction:column;align-items:stretch;gap:10px">';
+  html += '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">';
+  html += '<div>' + nameHtml + '</div>';
+  html += '<div>' + secondOwnerHtml + '</div>';
+  html += '</div>';
+
+  html += '<div style="display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap">';
+  html += '<div class="detail-header-item"><label style="font-size:11px;color:var(--muted)">Phone</label>' + textInput('hdr-phone', 'Phone', f['Phone'], '150px') + '</div>';
+  html += '<button type="button" class="btn-secondary" onclick="revealSecondaryPhone()" id="hdr-add-phone-btn" style="' + ((f['Secondary Phone'] || '').trim() ? 'display:none' : '') + '">+ Add Phone</button>';
+  html += '<div class="detail-header-item hidden" id="hdr-secondary-phone-wrap"><label style="font-size:11px;color:var(--muted)">2nd Phone</label>' + textInput('hdr-secondary-phone', 'Secondary Phone', f['Secondary Phone'], '150px') + '</div>';
+  html += '<button type="button" class="btn-secondary" onclick="revealEmail()" id="hdr-add-email-btn" style="' + ((f['Email'] || '').trim() ? 'display:none' : '') + '">+ Add Email</button>';
+  html += '<div class="detail-header-item' + ((f['Email'] || '').trim() ? '' : ' hidden') + '" id="hdr-email-wrap"><label style="font-size:11px;color:var(--muted)">Email</label>' + textInput('hdr-email', 'Email', f['Email'], '200px') + '</div>';
+  html += '</div>';
+
+  html += '<div style="font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;padding-top:6px">PRIMARY OWNER</div>';
   html += '</div>';
   return html;
-}
-
-function renderSecondOwnerToggle(fields) {
-  var hasData = (fields['2nd owner first name'] || '').trim() !== '' || (fields['2nd owner last Name'] || '').trim() !== '';
-  if (!hasData && !manuallyAdded2ndOwner) {
-    return '<button type="button" class="btn-secondary" onclick="add2ndOwner()" style="margin-bottom:10px">+ Add 2nd Owner</button>';
-  }
-  return null; // null signals "render normally, don't show the add button"
 }
 
 var manuallyAdded2ndOwner = false;
@@ -1090,12 +1106,63 @@ function add2ndOwner() {
   openDetailModal();
 }
 
+function toggleNameEdit() {
+  qs('hdr-name-display').classList.toggle('hidden');
+  qs('hdr-name-input').classList.toggle('hidden');
+}
+
+var TIMEZONE_OPTIONS = ['', 'US/Eastern', 'US/Central', 'US/Pacific'];
+
+function renderPrimaryOwnerExtras(fields) {
+  var f = fields;
+
+  // Lang: Lang(default)/Eng/Span, capitalized both in the option list
+  // and as the stored value. Existing "Spanish"/"English" values are
+  // recognized and pre-selected -- never silently overwritten with
+  // the default just because the exact casing/word differs.
+  var rawLang = (f['Preferred Language'] || '').trim().toLowerCase();
+  var langValue = rawLang.indexOf('span') !== -1 || rawLang === 'esp' ? 'Span' : (rawLang.indexOf('eng') !== -1 ? 'Eng' : '');
+  var langOptsHtml = [['', 'Lang'], ['Eng', 'Eng'], ['Span', 'Span']].map(function(o) {
+    return '<option value="' + o[0] + '"' + (o[0] === langValue ? ' selected' : '') + '>' + o[1] + '</option>';
+  }).join('');
+
+  // Time Zone: the 3 real US zone values already used by this CRM
+  // ("US/Eastern" confirmed from live data; Central/Pacific extend the
+  // same naming convention). Known values are recognized as-is;
+  // unknown/blank defaults to the placeholder, never overwritten.
+  var rawTz = (f['Time Zone'] || '').trim();
+  var tzValue = TIMEZONE_OPTIONS.indexOf(rawTz) !== -1 ? rawTz : '';
+  var tzOptsHtml = TIMEZONE_OPTIONS.map(function(o) {
+    return '<option value="' + o + '"' + (o === tzValue ? ' selected' : '') + '>' + (o || 'Time Zone') + '</option>';
+  }).join('');
+
+  var tagDiv = document.createElement('div'); tagDiv.textContent = f['Tag'] || '';
+  var statusDiv = document.createElement('div'); statusDiv.textContent = f['Lead Status'] || '';
+
+  var html = '';
+  html += '<div class="detail-row"><span class="detail-label">Lang</span><select id="extra-lang" class="detail-edit-input" data-field="Preferred Language">' + langOptsHtml + '</select></div>';
+  html += '<div class="detail-row"><span class="detail-label">Time Zone</span><select id="extra-timezone" class="detail-edit-input" data-field="Time Zone">' + tzOptsHtml + '</select></div>';
+  html += '<div class="detail-row"><span class="detail-label">Tag</span><input type="text" class="detail-edit-input" data-field="Tag" value="' + tagDiv.innerHTML.replace(/"/g, '&quot;') + '"></div>';
+  html += '<div class="detail-row"><span class="detail-label">Lead Status</span><input type="text" class="detail-edit-input" data-field="Lead Status" value="' + statusDiv.innerHTML.replace(/"/g, '&quot;') + '"></div>';
+  return html;
+}
+
+function revealSecondaryPhone() {
+  qs('hdr-secondary-phone-wrap').classList.remove('hidden');
+  qs('hdr-add-phone-btn').style.display = 'none';
+}
+
+function revealEmail() {
+  qs('hdr-email-wrap').classList.remove('hidden');
+  qs('hdr-add-email-btn').style.display = 'none';
+}
+
 function openDetailModal() {
   var lead = leads[currentIndex];
   qs('detail-modal-title').textContent = getLeadName(lead);
   var sections = categorizeFields(lead.fields || {});
   var html = renderStickyHeader(lead.fields || {});
-  var sectionOrder = ['PRIMARY OWNER', '2ND OWNER', 'MAIN LEAD DETAILS', 'APPOINTMENT & ASSIGNMENT', 'CONTACT ACTIVITY', 'RESORT 1', 'RESORT 2', 'RESORT 3', 'RESORT 4', 'RESORT 5', 'FINANCIAL / QUOTE', 'MARKETING / TRACKING', 'NOTES', 'OFFICIAL USE', 'ONBOARDING INFO'];
+  var sectionOrder = ['PRIMARY OWNER', 'MAIN LEAD DETAILS', 'APPOINTMENT & ASSIGNMENT', 'CONTACT ACTIVITY', 'RESORT 1', 'RESORT 2', 'RESORT 3', 'RESORT 4', 'RESORT 5', 'FINANCIAL / QUOTE', 'MARKETING / TRACKING', 'NOTES', 'OFFICIAL USE', 'ONBOARDING INFO'];
   sectionOrder.forEach(function(sectionName) {
     var entries = Object.keys(sections[sectionName]);
     var isResort2to5 = /^RESORT [2-5]$/.test(sectionName);
@@ -1105,11 +1172,6 @@ function openDetailModal() {
       // technically exists (blank).
       var hasData = sectionHasRealData(sectionName, sections);
       if (!hasData && !manuallyAddedResorts[sectionName]) return;
-    } else if (sectionName === '2ND OWNER') {
-      // Same rule as Resort 2-5: only show if genuinely imported with
-      // data, or the person explicitly clicked "+ Add 2nd Owner".
-      var has2ndOwnerData = sectionHasRealData('2ND OWNER', sections);
-      if (!has2ndOwnerData && !manuallyAdded2ndOwner) return;
     } else if (entries.length === 0 && sectionName !== 'FINANCIAL / QUOTE') {
       return;
     }
@@ -1145,6 +1207,12 @@ function openDetailModal() {
       html += '<div class="detail-grid">';
       if (sectionName === 'RESORT 1') {
         html += renderResort1Grid(lead.fields);
+      } else if (sectionName === 'PRIMARY OWNER') {
+        entries.forEach(function(label) {
+          var div = document.createElement('div'); div.textContent = label;
+          html += '<div class="detail-row"><span class="detail-label">' + div.innerHTML + '</span>' + renderDetailValue(sections[sectionName][label]) + '</div>';
+        });
+        html += renderPrimaryOwnerExtras(lead.fields);
       } else {
         entries.forEach(function(label) {
           var div = document.createElement('div'); div.textContent = label;
@@ -1152,6 +1220,11 @@ function openDetailModal() {
         });
       }
       html += '</div>';
+    } else if (sectionName === 'PRIMARY OWNER') {
+      // Even if Priority is somehow the only owner-key entry and it's
+      // blank, Lang/Time Zone/Tag/Lead Status still need to render --
+      // they're not gated by the generic entries.length check.
+      html += '<div class="detail-grid">' + renderPrimaryOwnerExtras(lead.fields) + '</div>';
     }
 
     // Calculated cost/savings breakdown, appended to Financial/Quote —
@@ -1190,11 +1263,6 @@ function openDetailModal() {
     }
 
     html += '</div>';
-
-    if (sectionName === 'PRIMARY OWNER') {
-      var secondOwnerToggle = renderSecondOwnerToggle(lead.fields || {});
-      if (secondOwnerToggle) html += secondOwnerToggle;
-    }
   });
 
   // "+ Add Resort" -- only offered for the next resort slot that
