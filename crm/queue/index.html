@@ -82,7 +82,7 @@ textarea {
 .hidden { display: none !important; }
 .detail-btn { background: var(--soft-blue); color: #174a8b; margin-top: 14px; width: 100%; }
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 1000; display: flex; align-items: flex-start; justify-content: center; overflow-y: auto; padding: 20px; }
-.modal-box { background: var(--card); border-radius: var(--radius); max-width: 900px; width: 100%; margin: 20px auto; box-shadow: 0 8px 40px rgba(0,0,0,.3); }
+.modal-box { background: var(--card); border-radius: var(--radius); max-width: 900px; width: 100%; margin: 20px 0; box-shadow: 0 8px 40px rgba(0,0,0,.3); box-sizing: border-box; }
 .modal-header { position: sticky; top: 0; background: var(--card); border-bottom: 1px solid var(--border); padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; border-radius: var(--radius) var(--radius) 0 0; z-index: 2; }
 .modal-header h2 { font-size: 18px; margin: 0; }
 .modal-footer { position: sticky; bottom: 0; background: var(--card); border-top: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; gap: 12px; border-radius: 0 0 var(--radius) var(--radius); }
@@ -755,7 +755,7 @@ function categorizeFields(fields) {
 
   var contactKeys = ['leadname','name','firstname','lastname','phone','secondaryphone','email','street','city','state','zip','leadstatus','leadsource','leadsources','preferredlanguage','recordid','tag','todaysdate','timezone','2ndownerfirstname','2ndownerlastname','totalresorts','someoneelseondeed'];
   var apptKeys = ['intakespecialist','fronter','verifiedby','assignedto','casemanager','appointment'];
-  var financialNonResortKeys = ['totalamountcharging','recommendedpricing','paymentmethod','monthyinstallments','monthlyinstallments','loanterm','downpayment','discountsappliedforcard','totalservicecost','totalloanamount','merchantcharged','quotesent','dealclosed','savings'];
+  var financialNonResortKeys = ['totalamountcharging','recommendedpricing','paymentmethod','monthyinstallments','monthlyinstallments','loanterm','downpayment','discountsappliedforcard','totalservicecost','totalloanamount','merchantcharged','quotesent','dealclosed','savings','combinedmonthlytotal','combinedyearlytotal','combinedtruecostofownership'];
   var marketingKeys = ['utmmedium','utmsource','leadcreatedtime','modifiedtime','howdidclienthearaboutus','compliancechecklist'];
   var notesKeys = ['additionalnotes','statusofcall','notes'];
 
