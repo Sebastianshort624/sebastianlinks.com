@@ -695,7 +695,7 @@ var RESORT_FIELD_LABELS = {
   usage: 'Usage', currentonmortgage: 'Current on Mortgage', currentonmaintenancefees: 'Current on Maintenance Fees',
   makepaymentsto: 'Make Payments To', methodofpayment: 'Method of Payment', mortgagestatus: 'Mortgage Status',
   balanceamount: 'Balance Amount', whydotheywantout: 'Why Do They Want Out?', amountcharging: 'Amount Charging',
-  status: 'Status'
+  status: 'Status', lastused: 'Last Used', mtfpaymentfrequency: 'MTF Payment Frequency'
 };
 
 function getResortNumber(normKey) {
@@ -739,6 +739,114 @@ function addResortSection(n) {
   manuallyAddedResorts['RESORT ' + n] = true;
   openDetailModal();
 }
+
+/*
+================================================================
+RESORT 1 CUSTOM GRID — replaces the generic field-by-field loop
+for this one section only. Handles:
+- Mortgage status / Current on mortgage / MTF Payment Frequency
+  as dropdowns instead of free text
+- Deletes Unit Size, Points or Weeks, Current on Mait fees from
+  display (still preserved in the underlying record if present --
+  this only changes what renders, never touches full_record)
+- Live-calculated Monthly<->Yearly conversions for mortgage and
+  maintenance/tax fees, and calculated arrears amounts (which DO
+  map to real existing schema fields and DO get saved)
+- New fields: Last Used, MTF Payment Frequency
+Resort 2-5 are completely unaffected -- they still use the
+generic renderer.
+================================================================
+*/
+
+var MORTGAGE_STATUS_OPTIONS = ['', 'Current', 'Behind', 'In Foreclosure', 'Paid Off', 'Still owes'];
+var YES_NO_OPTIONS = ['', 'Yes', 'No'];
+var MTF_FREQUENCY_OPTIONS = ['', 'Annual', 'Biannual'];
+
+function buildSelect(id, dataField, options, currentValue) {
+  var normalizedCurrent = (currentValue || '').trim();
+  var optsHtml = options.map(function(opt) {
+    var selected = opt === normalizedCurrent ? ' selected' : '';
+    var label = opt === '' ? '—' : opt;
+    return '<option value="' + opt.replace(/"/g, '&quot;') + '"' + selected + '>' + label + '</option>';
+  }).join('');
+  return '<select id="' + id + '" class="detail-edit-input" data-field="' + dataField.replace(/"/g, '&quot;') + '">' + optsHtml + '</select>';
+}
+
+function recalcR1Mortgage() {
+  var monthly = parseMoney(qs('r1-mtg-monthly') ? qs('r1-mtg-monthly').value : 0);
+  var monthsBehind = parseMoney(qs('r1-mtg-months-behind') ? qs('r1-mtg-months-behind').value : 0);
+  if (qs('r1-mtg-yearly')) qs('r1-mtg-yearly').textContent = money(monthly * 12);
+  var arrears = monthly * monthsBehind;
+  var arrearsEl = qs('r1-mtg-arrears');
+  if (arrearsEl) { arrearsEl.textContent = money(arrears); arrearsEl.setAttribute('data-calc-value', arrears); }
+}
+
+function recalcR1MTF() {
+  var yearly = parseMoney(qs('r1-mtf-yearly') ? qs('r1-mtf-yearly').value : 0);
+  var monthly = yearly / 12;
+  var monthsBehind = parseMoney(qs('r1-mtf-months-behind') ? qs('r1-mtf-months-behind').value : 0);
+  if (qs('r1-mtf-monthly')) qs('r1-mtf-monthly').textContent = money(monthly);
+  var arrears = monthly * monthsBehind;
+  var arrearsEl = qs('r1-mtf-arrears');
+  if (arrearsEl) { arrearsEl.textContent = money(arrears); arrearsEl.setAttribute('data-calc-value', arrears); }
+}
+
+function renderResort1Grid(fields) {
+  var f = fields;
+  var row = function(label, innerHtml) {
+    return '<div class="detail-row"><span class="detail-label">' + label + '</span>' + innerHtml + '</div>';
+  };
+  var textInput = function(id, dataField, value) {
+    var div = document.createElement('div'); div.textContent = value || '';
+    return '<input type="text" id="' + id + '" class="detail-edit-input" data-field="' + dataField.replace(/"/g, '&quot;') + '" value="' + div.innerHTML.replace(/"/g, '&quot;') + '">';
+  };
+  var readonlyCalc = function(id, dataField, displayText) {
+    return '<span class="detail-value calc-readonly-value" id="' + id + '"' + (dataField ? ' data-field="' + dataField.replace(/"/g, '&quot;') + '" data-calc-value="0"' : '') + '>' + displayText + '</span>';
+  };
+
+  var html = '';
+
+  // Standard passthrough fields -- unchanged behavior
+  html += row('Resort Name', textInput('r1-resort-name', 'R1-Resort Name', f['R1-Resort Name']));
+  html += row('Resort City', textInput('r1-resort-city', 'R1-Resort City', f['R1-Resort City']));
+  html += row('Resort State', textInput('r1-resort-state', 'R1-Resort State', f['R1-Resort State']));
+  html += row('Mortgage Status', buildSelect('r1-mortgage-status', 'R1-Mortgage status', MORTGAGE_STATUS_OPTIONS, f['R1-Mortgage status']));
+  html += row('Current on Mortgage', buildSelect('r1-current-on-mortgage', 'R1-Current on mortgage', YES_NO_OPTIONS, f['R1-Current on mortgage']));
+
+  // Years owned -- calculated display only from Date Purchased, never saved as its own field
+  var purchaseYear = parseYear(f['R1-Date Purchased (Roughly)']);
+  var yearsOwnedText = purchaseYear ? (CURRENT_YEAR - purchaseYear) + ' yrs' : '—';
+  html += row('Years Owned (calculated)', readonlyCalc('r1-years-owned', null, yearsOwnedText));
+
+  html += row('Date Purchased (Roughly)', textInput('r1-date-purchased', 'R1-Date Purchased (Roughly)', f['R1-Date Purchased (Roughly)']));
+  html += row('Purchase Price', textInput('r1-purchase-price', 'R1-Purchase Price', f['R1-Purchase Price']));
+  html += row('How Many Points', textInput('r1-points', 'R1-How many Points', f['R1-How many Points']));
+  html += row('How Many Weeks', textInput('r1-weeks', 'R1-How many Weeks', f['R1-How many Weeks']));
+  html += row('Last Used', textInput('r1-last-used', 'R1-Last Used', f['R1-Last Used']));
+
+  // Mortgage calculated block
+  html += row('Monthly Mortgage Payment', '<input type="text" id="r1-mtg-monthly" class="detail-edit-input" data-field="R1-Monthly Mortgage payment" value="' + (f['R1-Monthly Mortgage payment'] || '') + '" oninput="recalcR1Mortgage()">');
+  html += row('Yearly (calculated)', readonlyCalc('r1-mtg-yearly', null, money(parseMoney(f['R1-Monthly Mortgage payment']) * 12)));
+  html += row('Months Behind on Mortgage', '<input type="text" id="r1-mtg-months-behind" class="detail-edit-input" data-field="R1-How far behind on mortgage (Months)" value="' + (f['R1-How far behind on mortgage (Months)'] || '') + '" oninput="recalcR1Mortgage()">');
+  html += row('Mortgage Arrears Amount (calculated)', readonlyCalc('r1-mtg-arrears', 'R1-Mortgage Arrears Amount', money(parseMoney(f['R1-Monthly Mortgage payment']) * parseMoney(f['R1-How far behind on mortgage (Months)']))));
+
+  // Maintenance/Tax fees calculated block -- monthly (calculated) shown FIRST
+  // to align with the mortgage row above it, per explicit request.
+  html += row('Monthly (calculated)', readonlyCalc('r1-mtf-monthly', null, money(parseMoney(f['R1-Mait / Tax fees']) / 12)));
+  html += row('Yearly Maintenance/Tax Fees', '<input type="text" id="r1-mtf-yearly" class="detail-edit-input" data-field="R1-Mait / Tax fees" value="' + (f['R1-Mait / Tax fees'] || '') + '" oninput="recalcR1MTF()">');
+  html += row('MTF Payment Frequency', buildSelect('r1-mtf-frequency', 'R1-MTF Payment Frequency', MTF_FREQUENCY_OPTIONS, f['R1-MTF Payment Frequency']));
+  html += row('Months Behind on MTF', '<input type="text" id="r1-mtf-months-behind" class="detail-edit-input" data-field="R1-How far behind on mait fees (Months)" value="' + (f['R1-How far behind on mait fees (Months)'] || '') + '" oninput="recalcR1MTF()">');
+  html += row('Maintenance Arrears Amount (calculated)', readonlyCalc('r1-mtf-arrears', 'R1-Maintenance Arrears Amount', money(parseMoney(f['R1-Mait / Tax fees']) / 12 * parseMoney(f['R1-How far behind on mait fees (Months)']))));
+
+  html += row('Why Do They Want Out?', '<textarea class="detail-edit-input detail-edit-textarea" data-field="R1-Why do they want out?" rows="3">' + (function() { var d = document.createElement('div'); d.textContent = f['R1-Why do they want out?'] || ''; return d.innerHTML; })() + '</textarea>');
+
+  // Unit Size, Points or Weeks, Current on Mait fees deliberately NOT
+  // rendered here -- display-only removal, still present in
+  // full_record/raw_import_rows untouched if the source ever had them.
+
+  return html;
+}
+
 var LONG_TEXT_FIELD_HINTS = ['whydotheywantout', 'additionalnotes', 'mainobjection', 'biggestmotivator', 'biggestpainpoint', 'conversations'];
 
 function isLongTextField(originalKey) {
@@ -750,10 +858,10 @@ function categorizeFields(fields) {
   var sections = {
     'CONTACT & LEAD': {}, 'APPOINTMENT & ASSIGNMENT': {}, 'CONTACT ACTIVITY': {},
     'RESORT 1': {}, 'RESORT 2': {}, 'RESORT 3': {}, 'RESORT 4': {}, 'RESORT 5': {},
-    'FINANCIAL / QUOTE': {}, 'MARKETING / TRACKING': {}, 'NOTES': {}
+    'FINANCIAL / QUOTE': {}, 'MARKETING / TRACKING': {}, 'NOTES': {}, 'OFFICIAL USE': {}
   };
 
-  var contactKeys = ['leadname','name','firstname','lastname','phone','secondaryphone','email','street','city','state','zip','leadstatus','leadsource','leadsources','preferredlanguage','recordid','tag','todaysdate','timezone','2ndownerfirstname','2ndownerlastname','totalresorts','someoneelseondeed','priority','uuid'];
+  var contactKeys = ['leadname','name','firstname','lastname','phone','secondaryphone','email','street','city','state','zip','leadstatus','leadsource','leadsources','preferredlanguage','tag','todaysdate','timezone','2ndownerfirstname','2ndownerlastname','totalresorts','someoneelseondeed','priority','uuid'];
   var apptKeys = ['intakespecialist','fronter','verifiedby','assignedto','casemanager','appointment','followupdate','appointmentdatetime'];
   var financialNonResortKeys = ['totalamountcharging','recommendedpricing','paymentmethod','monthyinstallments','monthlyinstallments','loanterm','downpayment','discountsappliedforcard','totalservicecost','totalloanamount','merchantcharged','quotesent','dealclosed','savings','combinedmonthlytotal','combinedyearlytotal','combinedtruecostofownership','resolutionrecovery'];
   var marketingKeys = ['utmmedium','utmsource','leadcreatedtime','modifiedtime','howdidclienthearaboutus','compliancechecklist'];
@@ -797,6 +905,7 @@ function categorizeFields(fields) {
     if (financialNonResortKeys.indexOf(norm) !== -1) { sections['FINANCIAL / QUOTE'][humanizeKey(key)] = entry; return; }
     if (marketingKeys.indexOf(norm) !== -1) { sections['MARKETING / TRACKING'][humanizeKey(key)] = entry; return; }
     if (contactActivityKeys.indexOf(norm) !== -1) { sections['CONTACT ACTIVITY'][humanizeKey(key)] = entry; return; }
+    if (norm === 'recordid') { sections['OFFICIAL USE'][humanizeKey(key)] = entry; return; }
     if (notesKeys.indexOf(norm) !== -1) { sections['NOTES'][humanizeKey(key)] = entry; return; }
 
     sections['NOTES'][key] = entry;
@@ -861,6 +970,13 @@ function collectEditedFields() {
   document.querySelectorAll('.lead-value-selector').forEach(function(el) {
     updates[el.getAttribute('data-field')] = el.getAttribute('data-lead-value') || '';
   });
+  // Calculated read-only values (e.g. R1 Mortgage/Maintenance Arrears
+  // Amount) that map to a real schema field get saved too -- their
+  // number is always derived live from the actual input values above,
+  // never typed directly.
+  document.querySelectorAll('.calc-readonly-value[data-field]').forEach(function(el) {
+    updates[el.getAttribute('data-field')] = el.getAttribute('data-calc-value') || '0';
+  });
   return updates;
 }
 
@@ -917,7 +1033,7 @@ function openDetailModal() {
   qs('detail-modal-title').textContent = getLeadName(lead) + ' — Full Lead Detail';
   var sections = categorizeFields(lead.fields || {});
   var html = '';
-  var sectionOrder = ['CONTACT & LEAD', 'APPOINTMENT & ASSIGNMENT', 'CONTACT ACTIVITY', 'RESORT 1', 'RESORT 2', 'RESORT 3', 'RESORT 4', 'RESORT 5', 'FINANCIAL / QUOTE', 'MARKETING / TRACKING', 'NOTES'];
+  var sectionOrder = ['CONTACT & LEAD', 'APPOINTMENT & ASSIGNMENT', 'CONTACT ACTIVITY', 'RESORT 1', 'RESORT 2', 'RESORT 3', 'RESORT 4', 'RESORT 5', 'FINANCIAL / QUOTE', 'MARKETING / TRACKING', 'NOTES', 'OFFICIAL USE'];
   sectionOrder.forEach(function(sectionName) {
     var entries = Object.keys(sections[sectionName]);
     var isResort2to5 = /^RESORT [2-5]$/.test(sectionName);
@@ -960,10 +1076,14 @@ function openDetailModal() {
         });
       }
       html += '<div class="detail-grid">';
-      entries.forEach(function(label) {
-        var div = document.createElement('div'); div.textContent = label;
-        html += '<div class="detail-row"><span class="detail-label">' + div.innerHTML + '</span>' + renderDetailValue(sections[sectionName][label]) + '</div>';
-      });
+      if (sectionName === 'RESORT 1') {
+        html += renderResort1Grid(lead.fields);
+      } else {
+        entries.forEach(function(label) {
+          var div = document.createElement('div'); div.textContent = label;
+          html += '<div class="detail-row"><span class="detail-label">' + div.innerHTML + '</span>' + renderDetailValue(sections[sectionName][label]) + '</div>';
+        });
+      }
       html += '</div>';
     }
 
