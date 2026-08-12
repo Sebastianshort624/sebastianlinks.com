@@ -1283,7 +1283,11 @@ function openDetailModal() {
       }
     }
 
-    html += '</div>';
+    // Closes BOTH the inner id="section-X" div AND the outer
+    // .detail-section wrapper div opened at the top of this iteration
+    // -- previously only closed one, which silently worked in normal
+    // linear flow but broke exact-sibling layouts like the sidebar.
+    html += '</div></div>';
   });
 
   // "+ Add Resort" -- only offered for the next resort slot that
