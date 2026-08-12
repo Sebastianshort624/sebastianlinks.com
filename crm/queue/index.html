@@ -143,6 +143,16 @@ textarea {
 
   <!-- STEP 2: the queue itself -->
   <div class="card hidden" id="queue-card">
+    <div class="hidden" id="priority-filter-row" style="margin-bottom:14px;display:flex;align-items:center;gap:10px">
+      <label style="font-size:13px;font-weight:700">Priority Filter:</label>
+      <select id="priority-filter-select" onchange="applyPriorityFilter()" style="padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px">
+        <option value="ALL">All</option>
+        <option value="A">A</option>
+        <option value="B">B</option>
+        <option value="C">C</option>
+        <option value="BLANK">Blank / Unassigned</option>
+      </select>
+    </div>
     <div id="queue-empty" class="notice warning hidden">This upload has no clean (non-duplicate, non-rejected) leads to call.</div>
     <div id="queue-body" class="hidden">
       <div class="progress" id="progress-text">Lead 1 of 100</div>
@@ -236,6 +246,7 @@ textarea {
 <script>
 var API_BASE = 'https://sebastianlinks-crm-api.sebastianshort624.workers.dev';
 var leads = [];
+var allMasterLeads = []; // unfiltered fetch result -- source of truth for the priority filter
 var currentIndex = 0;
 var PASSPHRASE_KEY = 'queuePassphrase'; // sessionStorage key — cleared when the tab/browser closes
 
@@ -315,19 +326,54 @@ async function loadMasterQueue() {
     qs('find-upload-card').classList.add('hidden');
     qs('queue-card').classList.remove('hidden');
 
-    leads = data.leads;
-    if (leads.length === 0) {
-      qs('queue-empty').textContent = 'No master leads match Not Contacted + Valid Phone right now.';
-      qs('queue-empty').classList.remove('hidden');
-      return;
-    }
-    currentIndex = 0;
-    qs('queue-body').classList.remove('hidden');
-    renderLead();
+    allMasterLeads = data.leads;
+    qs('priority-filter-row').classList.remove('hidden');
+    applyPriorityFilter();
   } catch (e) {
     statusEl.textContent = 'Could not reach the CRM API: ' + e.message;
     statusEl.className = 'notice error';
   }
+}
+
+// Priority order for the master queue: A -> B -> C -> D -> F -> blank/unrecognized.
+// Within the same priority, the ORIGINAL relative order from the API
+// (already: has-any-value first, then oldest-first) is preserved —
+// Array.prototype.sort is stable in all current browsers (ES2019+),
+// so a rank-only comparator never reorders equal-rank leads.
+var PRIORITY_SORT_RANK = { A: 0, B: 1, C: 2, D: 3, F: 4 };
+function priorityRank(fields) {
+  var v = (fields['Priority'] || '').trim().toUpperCase();
+  return PRIORITY_SORT_RANK.hasOwnProperty(v) ? PRIORITY_SORT_RANK[v] : 5; // blank/unrecognized sorts last
+}
+
+function applyPriorityFilter() {
+  var filterVal = qs('priority-filter-select').value;
+
+  var filtered = allMasterLeads.filter(function(l) {
+    if (filterVal === 'ALL') return true;
+    var v = (l.fields['Priority'] || '').trim().toUpperCase();
+    if (filterVal === 'BLANK') return !PRIORITY_SORT_RANK.hasOwnProperty(v);
+    return v === filterVal;
+  });
+
+  // Stable sort by priority rank — this is what makes the DISPLAYED
+  // queue order A -> B -> C -> D -> F -> blank, not just a cosmetic label.
+  filtered.sort(function(a, b) { return priorityRank(a.fields) - priorityRank(b.fields); });
+
+  leads = filtered;
+  currentIndex = 0;
+
+  if (leads.length === 0) {
+    qs('queue-body').classList.add('hidden');
+    qs('queue-empty').textContent = filterVal === 'ALL'
+      ? 'No master leads match Not Contacted + Valid Phone right now.'
+      : 'No leads match this Priority filter.';
+    qs('queue-empty').classList.remove('hidden');
+    return;
+  }
+  qs('queue-empty').classList.add('hidden');
+  qs('queue-body').classList.remove('hidden');
+  renderLead();
 }
 
 async function browseRecent() {
