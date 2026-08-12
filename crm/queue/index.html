@@ -572,6 +572,13 @@ function findResortField(fields, n, keywords) {
     var rawKey = keys[i].toLowerCase();
     if (rawKey.indexOf(prefix) !== 0) continue;
     var normKey = rawKey.replace(/[^a-z0-9]/g, '');
+    // Identifier fields (e.g. "R1-Resort Name.id") must never satisfy
+    // a lookup for a display value like "resort name" -- ".id" always
+    // means internal reference, never the human-readable value. This
+    // is a real bug fix: normalized "r1resortnameid" contains
+    // "resortname" as a substring, which previously matched before
+    // the actual "R1-Resort Name" field was ever reached.
+    if (/id$/.test(normKey) && keywords.indexOf('id') === -1) continue;
     for (var j = 0; j < keywords.length; j++) {
       var normKeyword = keywords[j].replace(/[^a-z0-9]/g, '');
       if (normKey.indexOf(normKeyword) !== -1) return fields[keys[i]];
