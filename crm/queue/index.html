@@ -101,8 +101,8 @@ textarea {
 .detail-section { margin-bottom: 22px; }
 .detail-section-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); border-bottom: 2px solid var(--border); padding-bottom: 6px; margin-bottom: 10px; }
 .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 20px; }
-.detail-row { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-bottom: 1px solid #f0f2f5; font-size: 13px; }
-.detail-label { color: var(--muted); flex-shrink: 1; min-width: 0; word-break: break-word; }
+.detail-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; padding: 6px 0; border-bottom: 1px solid #f0f2f5; font-size: 13px; }
+.detail-label { color: var(--muted); flex-shrink: 0; max-width: 100%; word-break: break-word; }
 .detail-value { font-weight: 600; text-align: right; word-break: break-word; }
 .detail-value.empty { color: #c3c9d1; font-weight: 400; }
 @media (max-width: 640px) { .detail-grid { grid-template-columns: 1fr; } }
