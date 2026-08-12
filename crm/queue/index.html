@@ -1180,9 +1180,12 @@ function openDetailModal() {
     // touches data). Resort 1 always renders fully expanded.
     var isCollapsibleResort = /^RESORT [2-5]$/.test(sectionName);
     var isCollapsed = isCollapsibleResort && collapsedResortSections[sectionName];
-    var headerHtml = '<div class="detail-section-title"' +
+    // PRIMARY OWNER's title is already shown once, in the sticky header
+    // (right above the blue divider) -- suppress the generic section
+    // title here so it doesn't print a second, redundant "PRIMARY OWNER".
+    var headerHtml = sectionName === 'PRIMARY OWNER' ? '' : ('<div class="detail-section-title"' +
       (isCollapsibleResort ? ' style="cursor:pointer;display:flex;justify-content:space-between;align-items:center" onclick="toggleResortSection(\'' + sectionName + '\')"' : '') +
-      '>' + sectionName + (isCollapsibleResort ? '<span style="font-size:11px">' + (isCollapsed ? '▸ Show' : '▾ Hide') + '</span>' : '') + '</div>';
+      '>' + sectionName + (isCollapsibleResort ? '<span style="font-size:11px">' + (isCollapsed ? '▸ Show' : '▾ Hide') + '</span>' : '') + '</div>');
 
     html += '<div class="detail-section"><div id="section-' + sectionName.replace(/\s/g, '') + '">' + headerHtml;
     if (isCollapsed) {
