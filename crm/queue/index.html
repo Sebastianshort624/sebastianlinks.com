@@ -719,6 +719,25 @@ function toggleResortSection(sectionName) {
   collapsedResortSections[sectionName] = !collapsedResortSections[sectionName];
   openDetailModal();
 }
+
+// Resort 2-5 sections only render by default if they actually have
+// data from the original import, OR the user explicitly added them
+// via "+ Add Resort" -- pure UI state, never touches full_record
+// until the user actually edits and saves a field within it.
+var manuallyAddedResorts = {};
+
+function sectionHasRealData(sectionName, sections) {
+  var entries = sections[sectionName];
+  return Object.keys(entries).some(function(label) {
+    var v = entries[label].v;
+    return v !== undefined && v !== null && String(v).trim() !== '';
+  });
+}
+
+function addResortSection(n) {
+  manuallyAddedResorts['RESORT ' + n] = true;
+  openDetailModal();
+}
 var LONG_TEXT_FIELD_HINTS = ['whydotheywantout', 'additionalnotes', 'mainobjection', 'biggestmotivator', 'biggestpainpoint', 'conversations'];
 
 function isLongTextField(originalKey) {
@@ -898,7 +917,16 @@ function openDetailModal() {
   var sectionOrder = ['CONTACT & LEAD', 'APPOINTMENT & ASSIGNMENT', 'RESORT 1', 'RESORT 2', 'RESORT 3', 'RESORT 4', 'RESORT 5', 'FINANCIAL / QUOTE', 'MARKETING / TRACKING', 'NOTES'];
   sectionOrder.forEach(function(sectionName) {
     var entries = Object.keys(sections[sectionName]);
-    if (entries.length === 0 && sectionName !== 'FINANCIAL / QUOTE') return;
+    var isResort2to5 = /^RESORT [2-5]$/.test(sectionName);
+    if (isResort2to5) {
+      // Only render if it genuinely has data from the import, or the
+      // user explicitly added it -- not just because every field key
+      // technically exists (blank).
+      var hasData = sectionHasRealData(sectionName, sections);
+      if (!hasData && !manuallyAddedResorts[sectionName]) return;
+    } else if (entries.length === 0 && sectionName !== 'FINANCIAL / QUOTE') {
+      return;
+    }
 
     // Collapsible headers for Resort 2-5 (display-only toggle — never
     // touches data). Resort 1 always renders fully expanded.
@@ -959,6 +987,19 @@ function openDetailModal() {
 
     html += '</div>';
   });
+
+  // "+ Add Resort" -- only offered for the next resort slot that
+  // isn't already showing (either has real data, or was manually
+  // added). Never auto-adds a section; purely user-triggered.
+  for (var rn = 2; rn <= 5; rn++) {
+    var rsName = 'RESORT ' + rn;
+    var alreadyShowing = sectionHasRealData(rsName, sections) || manuallyAddedResorts[rsName];
+    if (!alreadyShowing) {
+      html += '<button type="button" class="btn-secondary" onclick="addResortSection(' + rn + ')" style="margin-bottom:10px">+ Add Resort ' + rn + '</button>';
+      break; // only offer the NEXT one -- keeps it incremental, not all 4 buttons at once
+    }
+  }
+
   qs('detail-modal-body').innerHTML = html || '<p style="color:var(--muted)">No fields available for this lead.</p>';
   qs('detail-modal').classList.remove('hidden');
 }
