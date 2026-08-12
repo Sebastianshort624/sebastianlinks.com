@@ -175,7 +175,7 @@ textarea {
 
 <!-- Full lead detail modal — closing it returns to the exact same lead
      in the queue; currentIndex is never touched by opening/closing this. -->
-<div class="modal-overlay hidden" id="detail-modal" onclick="if(event.target===this) closeDetailModal()">
+<div class="modal-overlay hidden" id="detail-modal" style="z-index:1100" onclick="if(event.target===this) closeDetailModal()">
   <div class="modal-box">
     <div class="modal-header">
       <h2 id="detail-modal-title">Full Lead Detail</h2>
@@ -203,6 +203,7 @@ textarea {
       <div id="dialer-lead-info" style="text-align:center;padding:12px 0">
         <div id="dialer-lead-name" style="font-size:20px;font-weight:800"></div>
         <div id="dialer-lead-phone" style="font-size:16px;color:var(--muted);margin-top:4px"></div>
+        <button class="btn-secondary" onclick="openDetailModal()" style="margin-top:10px">📋 View Full Lead →</button>
       </div>
       <div id="dialer-status" class="notice info"></div>
 
