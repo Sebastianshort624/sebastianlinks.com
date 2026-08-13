@@ -164,6 +164,7 @@ textarea {
       <button class="btn-primary" onclick="findUpload()">Find Upload</button>
       <button class="btn-secondary" onclick="browseRecent()" style="margin-left:8px">Show Recent Uploads Instead</button>
       <button class="btn-primary" onclick="loadMasterQueue()" style="margin-left:8px">📋 Load Master Leads Queue</button>
+      <button class="btn-secondary" onclick="openNewLeadModal()" style="margin-left:8px">+ New Lead</button>
     </div>
     <div id="upload-choices"></div>
   </div>
@@ -226,6 +227,43 @@ textarea {
       <button class="btn-secondary" onclick="qualificationUnsavedCancel()">Cancel</button>
       <button class="btn-secondary" onclick="qualificationUnsavedLeave()">Leave Without Saving</button>
       <button class="btn-primary" onclick="qualificationUnsavedSave()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- + New Lead -->
+<div class="modal-overlay hidden" id="new-lead-modal" style="z-index:1300">
+  <div class="modal-box" style="max-width:420px">
+    <div class="modal-header">
+      <h2>+ New Lead</h2>
+      <button class="modal-close" onclick="closeNewLeadModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="new-lead-notice"></div>
+      <div class="form-row"><label>Lead Name *</label><input type="text" id="new-lead-name" style="width:100%;padding:9px;border:1px solid var(--border);border-radius:8px"></div>
+      <div class="form-row" style="margin-top:10px"><label>Phone *</label><input type="text" id="new-lead-phone" style="width:100%;padding:9px;border:1px solid var(--border);border-radius:8px"></div>
+      <div class="form-row" style="margin-top:10px"><label>Email</label><input type="text" id="new-lead-email" style="width:100%;padding:9px;border:1px solid var(--border);border-radius:8px"></div>
+      <div class="form-row" style="margin-top:10px"><label>State</label><input type="text" id="new-lead-state" style="width:100%;padding:9px;border:1px solid var(--border);border-radius:8px"></div>
+      <p style="font-size:12px;color:var(--muted);margin-top:10px">A manually-created lead behaves exactly like an imported one — same editing, dialer, and disposition system, immediately.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeNewLeadModal()">Cancel</button>
+      <button class="btn-primary" onclick="submitNewLead()">Create Lead</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Lead — genuine two-step confirmation, never a single click -->
+<div class="modal-overlay hidden" id="delete-lead-modal" style="z-index:1300">
+  <div class="modal-box" style="max-width:420px">
+    <div class="modal-header"><h2>⚠️ Delete Lead</h2></div>
+    <div class="modal-body">
+      <p>Delete <strong id="delete-lead-name-display"></strong>? This removes it from the queue and dialer completely.</p>
+      <p style="font-size:12px;color:var(--muted)">This cannot be undone from the interface.</p>
+    </div>
+    <div class="modal-footer" style="justify-content:flex-end;gap:8px">
+      <button class="btn-secondary" onclick="closeDeleteLeadModal()">Cancel</button>
+      <button class="btn-primary" style="background:var(--danger)" onclick="confirmDeleteLead()">Yes, Delete This Lead</button>
     </div>
   </div>
 </div>
@@ -996,14 +1034,20 @@ function buildOtherSectionWorkspaceHtml(lead, sectionName, title) {
   var html = '<div class="detail-section-title">' + title + '</div>';
   if (labels.length === 0) {
     html += '<p style="color:var(--muted);font-size:13px">No data in this section.</p>';
-    return html;
+  } else {
+    html += '<div class="detail-grid">';
+    labels.forEach(function(label) {
+      var div = document.createElement('div'); div.textContent = label;
+      html += '<div class="detail-row"><span class="detail-label">' + div.innerHTML + '</span>' + renderDetailValue(entries[label]) + '</div>';
+    });
+    html += '</div>';
   }
-  html += '<div class="detail-grid">';
-  labels.forEach(function(label) {
-    var div = document.createElement('div'); div.textContent = label;
-    html += '<div class="detail-row"><span class="detail-label">' + div.innerHTML + '</span>' + renderDetailValue(entries[label]) + '</div>';
-  });
-  html += '</div>';
+
+  if (sectionName === 'OFFICIAL USE') {
+    html += '<div style="margin-top:24px;padding-top:16px;border-top:1px solid var(--border)">';
+    html += '<button type="button" class="btn-secondary" style="border-color:var(--danger);color:var(--danger)" onclick="openDeleteLeadModal()">🗑️ Delete This Lead</button>';
+    html += '</div>';
+  }
   return html;
 }
 
@@ -1826,6 +1870,82 @@ function attemptLeaveLead(afterLeaveCallback) {
     return;
   }
   afterLeaveCallback();
+}
+
+// ── + New Lead ──
+function openNewLeadModal() {
+  qs('new-lead-notice').innerHTML = '';
+  ['new-lead-name', 'new-lead-phone', 'new-lead-email', 'new-lead-state'].forEach(function(id) { qs(id).value = ''; });
+  qs('new-lead-modal').classList.remove('hidden');
+}
+
+function closeNewLeadModal() {
+  qs('new-lead-modal').classList.add('hidden');
+}
+
+async function submitNewLead() {
+  var name = qs('new-lead-name').value.trim();
+  var phone = qs('new-lead-phone').value.trim();
+  if (!name || !phone) {
+    qs('new-lead-notice').innerHTML = '<div class="notice error">Lead Name and Phone are both required.</div>';
+    return;
+  }
+
+  var payload = { 'Lead Name': name, 'Phone': phone };
+  var email = qs('new-lead-email').value.trim();
+  var state = qs('new-lead-state').value.trim();
+  if (email) payload['Email'] = email;
+  if (state) payload['State'] = state;
+
+  try {
+    var res = await fetch(API_BASE + '/api/import/master-lead/create', { method: 'POST', headers: authHeaders(), body: JSON.stringify(payload) });
+    var data = await res.json();
+    if (!data.ok) {
+      qs('new-lead-notice').innerHTML = '<div class="notice error">' + (data.error || 'Create failed') + '</div>';
+      return;
+    }
+    closeNewLeadModal();
+    // Reload the queue so the new lead is included, using the exact
+    // same load path as everything else -- new leads behave exactly
+    // like imported ones from this point on.
+    await loadMasterQueue();
+  } catch (e) {
+    qs('new-lead-notice').innerHTML = '<div class="notice error">Could not reach the CRM API: ' + e.message + '</div>';
+  }
+}
+
+// ── Delete Lead — two-step confirmation, never a single click ──
+function openDeleteLeadModal() {
+  var lead = leads[currentIndex];
+  qs('delete-lead-name-display').textContent = getLeadName(lead);
+  qs('delete-lead-modal').classList.remove('hidden');
+}
+
+function closeDeleteLeadModal() {
+  qs('delete-lead-modal').classList.add('hidden');
+}
+
+async function confirmDeleteLead() {
+  var lead = leads[currentIndex];
+  try {
+    var res = await fetch(API_BASE + '/api/import/master-lead/delete', {
+      method: 'POST', headers: authHeaders(), body: JSON.stringify({ master_lead_id: lead.master_lead_id })
+    });
+    var data = await res.json();
+    if (!data.ok) {
+      closeDeleteLeadModal();
+      alert('Delete failed: ' + (data.error || 'unknown error'));
+      return;
+    }
+    closeDeleteLeadModal();
+    qs('detail-modal').classList.add('hidden');
+    // Reload the queue -- the deleted lead is genuinely excluded
+    // server-side, so it will not reappear here.
+    await loadMasterQueue();
+  } catch (e) {
+    closeDeleteLeadModal();
+    alert('Could not reach the CRM API: ' + e.message);
+  }
 }
 
 
