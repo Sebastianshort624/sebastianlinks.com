@@ -85,6 +85,30 @@ textarea {
 .modal-box { background: var(--card); border-radius: var(--radius); max-width: 900px; width: 100%; margin: 20px 0; box-shadow: 0 8px 40px rgba(0,0,0,.3); box-sizing: border-box; }
 .modal-header { position: sticky; top: 0; background: var(--card); border-bottom: 1px solid var(--border); padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; border-radius: var(--radius) var(--radius) 0 0; z-index: 2; }
 .detail-header-bar { position: sticky; top: 0; z-index: 3; background: var(--card); border-bottom: 2px solid var(--primary); padding: 10px 0 14px; margin-bottom: 14px; display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end; }
+.glance-bar { position: sticky; top: 0; z-index: 5; background: var(--card); border-bottom: 2px solid var(--primary); display: flex; flex-wrap: wrap; align-items: center; gap: 0; padding: 10px 16px; }
+.glance-item { padding: 0 14px; border-left: 1px solid var(--border); white-space: nowrap; }
+.glance-item:first-child { border-left: none; padding-left: 0; }
+.glance-label { font-size: 9px; color: var(--muted); font-weight: 800; text-transform: uppercase; letter-spacing: .6px; }
+.glance-value { font-weight: 700; margin-top: 3px; font-size: 13px; }
+.glance-value input, .glance-value select { border: 1px solid transparent; background: transparent; font-weight: 700; font-size: 13px; padding: 2px 4px; border-radius: 6px; width: 100px; }
+.glance-value input:hover, .glance-value select:hover, .glance-value input:focus, .glance-value select:focus { border-color: var(--border); background: #fff; }
+.workspace-app { display: grid; grid-template-columns: 190px minmax(360px,1fr) 205px; min-height: 500px; }
+.workspace-aside { padding: 12px 8px; background: #fff; overflow-y: auto; max-height: 78vh; }
+.workspace-aside.wleft { border-right: 1px solid var(--border); }
+.workspace-aside.wright { border-left: 1px solid var(--border); }
+.workspace-nav-title { font-size: 10px; color: var(--muted); font-weight: 800; letter-spacing: 1px; padding: 12px 8px 6px; text-transform: uppercase; }
+.workspace-nav-btn { display: block; width: 100%; text-align: left; border: 0; background: transparent; color: #3c4043; padding: 9px 10px; border-radius: 8px; margin: 1px 0; cursor: pointer; font-size: 12.5px; font-weight: 600; }
+.workspace-nav-btn:hover { background: var(--soft-blue); }
+.workspace-nav-btn.active { background: var(--soft-blue); color: var(--primary-dark); font-weight: 800; border-left: 3px solid var(--primary); }
+.workspace-center { padding: 16px 20px; overflow-y: auto; max-height: 78vh; }
+.workspace-metric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0; }
+.workspace-metric { border: 1px solid var(--border); border-radius: 11px; padding: 15px; background: #fff; }
+.workspace-metric .wm-label { font-size: 10px; color: var(--muted); font-weight: 800; text-transform: uppercase; }
+.workspace-metric .wm-money { font-size: 22px; font-weight: 800; margin-top: 5px; }
+.workspace-right-box { border: 1px solid var(--border); border-radius: 9px; padding: 10px; margin: 6px 0; background: #fff; }
+.workspace-right-box b { font-size: 12px; display: block; }
+.workspace-right-box small { color: var(--muted); font-size: 11px; }
+@media(max-width: 950px) { .workspace-app { grid-template-columns: 170px 1fr; } .workspace-aside.wright { display: none; } }
 .detail-header-item { display: flex; flex-direction: column; gap: 3px; }
 .header-input { font-size: 13px !important; padding: 6px 8px !important; }
 .modal-header h2 { font-size: 18px; margin: 0; }
@@ -184,28 +208,9 @@ textarea {
     <div class="modal-body" id="detail-modal-body"></div>
     <div class="modal-footer">
       <div id="save-status" class="notice hidden" style="flex:1"></div>
-      <button class="btn-secondary" onclick="openQualificationModal()">⚖️ Consumer Rights Qualification</button>
+      <div id="qualification-save-status" class="notice hidden"></div>
+      <button class="btn-secondary" onclick="saveQualification()">💾 Save Qualification</button>
       <button class="btn-primary" onclick="saveMasterLeadEdits()">💾 Save Changes</button>
-    </div>
-  </div>
-</div>
-
-<!-- Consumer Rights Qualification -- separate modal, separate table
-     (lead_qualification), 33 questions across 4 categories + 15
-     Mutual Release items + 3 supporting fields. The ONLY hard-stop
-     in this entire build: leaving with unsaved changes here prompts
-     Save / Leave Without Saving / Cancel. -->
-<div class="modal-overlay hidden" id="qualification-modal" style="z-index:1200">
-  <div class="modal-box" style="max-width:820px">
-    <div class="modal-header">
-      <h2>⚖️ Consumer Rights Qualification</h2>
-      <button class="modal-close" onclick="attemptCloseQualificationModal()">✕</button>
-    </div>
-    <div class="modal-body" id="qualification-modal-body"></div>
-    <div class="modal-footer">
-      <div id="qualification-save-status" class="notice hidden" style="flex:1"></div>
-      <button class="btn-secondary" onclick="attemptCloseQualificationModal()">Close</button>
-      <button class="btn-primary" onclick="saveQualification()">💾 Save Qualification</button>
     </div>
   </div>
 </div>
@@ -844,29 +849,6 @@ var qualificationExpandedQuestions = {}; // session UI state only, not saved
 // caught before it ever reached testing.
 var qualificationPendingAnswers = {};
 
-async function openQualificationModal() {
-  var lead = leads[currentIndex];
-  qualificationCurrentLeadId = lead.master_lead_id;
-  qualificationExpandedQuestions = {};
-  qualificationPendingAnswers = {};
-  qualificationDirty = false;
-
-  qs('qualification-modal-body').innerHTML = '<p style="color:var(--muted)">Loading…</p>';
-  qs('qualification-modal').classList.remove('hidden');
-
-  try {
-    var res = await fetch(API_BASE + '/api/qualification?master_lead_id=' + encodeURIComponent(qualificationCurrentLeadId), { headers: authHeaders() });
-    var data = await res.json();
-    if (!data.ok) {
-      qs('qualification-modal-body').innerHTML = '<p style="color:var(--danger)">Could not load: ' + (data.error || 'unknown error') + '</p>';
-      return;
-    }
-    qualificationLoadedSnapshot = JSON.parse(JSON.stringify(data.qualification));
-    renderQualificationModal(mergedQualificationView());
-  } catch (e) {
-    qs('qualification-modal-body').innerHTML = '<p style="color:var(--danger)">Could not reach the CRM API: ' + e.message + '</p>';
-  }
-}
 
 // Snapshot + any pending (unsaved) answer clicks + current DOM field
 // values -- the single source of truth for what should render and
@@ -874,17 +856,18 @@ async function openQualificationModal() {
 function mergedQualificationView() {
   var merged = JSON.parse(JSON.stringify(qualificationLoadedSnapshot || {}));
   Object.keys(qualificationPendingAnswers).forEach(function(k) { merged[k] = qualificationPendingAnswers[k]; });
-  document.querySelectorAll('#qualification-modal-body .qual-field').forEach(function(el) {
+  document.querySelectorAll('#workspace-center .qual-field').forEach(function(el) {
     merged[el.getAttribute('data-field')] = el.value;
   });
-  document.querySelectorAll('#qualification-modal-body .qual-release-checkbox').forEach(function(el) {
+  document.querySelectorAll('#workspace-center .qual-release-checkbox').forEach(function(el) {
     merged[el.getAttribute('data-field')] = el.checked ? 'Yes' : 'No';
   });
   return merged;
 }
 
-function renderQualificationModal(q) {
+function buildQualificationHtml(q) {
   var html = '';
+
 
   Object.keys(QUALIFICATION_DATA).forEach(function(cat) {
     var catData = QUALIFICATION_DATA[cat];
@@ -940,6 +923,93 @@ function renderQualificationModal(q) {
     html += '</div>';
   });
 
+
+  return html;
+}
+
+
+// ── WORKSPACE VIEW BUILDERS — each returns an HTML string, none
+// touch the DOM directly. All reuse the EXISTING calc/render
+// functions (computeFinancials, getResortData, renderResort1Grid,
+// categorizeFields) rather than reimplementing anything. ──
+
+function buildTrueCostWorkspaceHtml(lead) {
+  var fin = computeFinancials(lead);
+  var html = '<div class="detail-section-title">💰 True Cost of Ownership</div>';
+  html += '<div class="workspace-metric-grid">';
+  html += '<div class="workspace-metric"><div class="wm-label">Mortgage / Month</div><div class="wm-money">' + money(fin.totalMonthlyMtg) + '</div></div>';
+  html += '<div class="workspace-metric"><div class="wm-label">Maintenance / Tax / Month</div><div class="wm-money">' + money(fin.totalMonthlyMtf) + '</div></div>';
+  html += '<div class="workspace-metric"><div class="wm-label">Total Current Monthly</div><div class="wm-money">' + money(fin.grandMonthly) + '</div></div>';
+  html += '<div class="workspace-metric"><div class="wm-label">Total Current Yearly</div><div class="wm-money">' + money(fin.grandYearly) + '</div></div>';
+  html += '</div>';
+
+  html += '<div class="detail-section-title" style="margin-top:18px">Future Cost Projection</div>';
+  html += '<table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr style="border-bottom:2px solid var(--border)">' +
+    '<th style="text-align:left;padding:6px 4px">Years</th><th style="text-align:right">Cost of Keeping</th><th style="text-align:right">Our Fee Paid</th><th style="text-align:right">Net Savings</th></tr></thead><tbody>';
+  fin.projection.forEach(function(p) {
+    html += '<tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 4px">' + p.year + '</td><td style="text-align:right">' + money(p.costOfKeeping) + '</td><td style="text-align:right">' + money(p.feePaidToDate) + '</td><td style="text-align:right;color:var(--success);font-weight:700">' + money(p.savings) + '</td></tr>';
+  });
+  html += '</tbody></table>';
+  return html;
+}
+
+function buildSavingsWorkspaceHtml(lead) {
+  var fin = computeFinancials(lead);
+  var yr1 = fin.projection[0];
+  var html = '<div class="detail-section-title">📈 Savings</div>';
+  html += '<div class="workspace-metric-grid">';
+  html += '<div class="workspace-metric"><div class="wm-label">Current Monthly Cost</div><div class="wm-money">' + money(fin.grandMonthly) + '</div></div>';
+  html += '<div class="workspace-metric"><div class="wm-label">Current Yearly Cost</div><div class="wm-money">' + money(fin.grandYearly) + '</div></div>';
+  html += '<div class="workspace-metric"><div class="wm-label">Our Fee</div><div class="wm-money">' + money(fin.fee) + '</div></div>';
+  html += '<div class="workspace-metric" style="background:var(--soft-green);border-color:#cfe8d4"><div class="wm-label">Yr 1 Net Savings</div><div class="wm-money" style="color:var(--success)">' + (yr1 ? money(yr1.savings) : '—') + '</div></div>';
+  html += '<div class="workspace-metric" style="background:var(--soft-green);border-color:#cfe8d4;grid-column:1/-1"><div class="wm-label">Projected Net Savings (30 yr)</div><div class="wm-money" style="font-size:30px;color:var(--success)">' +
+    (function() { var p30 = fin.projection.find(function(p) { return p.year === 30; }); return p30 ? money(p30.savings) : '—'; })() + '</div></div>';
+  html += '</div>';
+  return html;
+}
+
+function buildResortWorkspaceHtml(lead, n) {
+  if (n === 1) {
+    return '<div class="detail-section-title">🏝️ Resort 1</div><div class="detail-grid">' + renderResort1Grid(lead.fields) + '</div>';
+  }
+  var sections = categorizeFields(lead.fields || {});
+  var sectionName = 'RESORT ' + n;
+  var entries = sections[sectionName] || {};
+  var labels = Object.keys(entries);
+  if (labels.length === 0) {
+    return '<div class="detail-section-title">Resort ' + n + '</div><p style="color:var(--muted);font-size:13px">No data for Resort ' + n + ' yet.</p>' +
+      '<button type="button" class="btn-secondary" onclick="addResortSection(' + n + '); openDetailModal();">+ Add Resort ' + n + '</button>';
+  }
+  var html = '<div class="detail-section-title">Resort ' + n + '</div><div class="detail-grid">';
+  labels.forEach(function(label) {
+    var div = document.createElement('div'); div.textContent = label;
+    html += '<div class="detail-row"><span class="detail-label">' + div.innerHTML + '</span>' + renderDetailValue(entries[label]) + '</div>';
+  });
+  html += '</div>';
+  return html;
+}
+
+function buildOtherSectionWorkspaceHtml(lead, sectionName, title) {
+  var sections = categorizeFields(lead.fields || {});
+  var entries = sections[sectionName] || {};
+  var labels = Object.keys(entries);
+  var html = '<div class="detail-section-title">' + title + '</div>';
+  if (labels.length === 0) {
+    html += '<p style="color:var(--muted);font-size:13px">No data in this section.</p>';
+    return html;
+  }
+  html += '<div class="detail-grid">';
+  labels.forEach(function(label) {
+    var div = document.createElement('div'); div.textContent = label;
+    html += '<div class="detail-row"><span class="detail-label">' + div.innerHTML + '</span>' + renderDetailValue(entries[label]) + '</div>';
+  });
+  html += '</div>';
+  return html;
+}
+
+
+function buildMutualReleaseHtml(q) {
+  var html = '';
   // Mutual Release checklist
   html += '<div class="detail-section"><div class="detail-section-title">Mutual Release Terminology</div>';
   html += '<p style="font-size:12px;color:var(--muted);margin:-4px 0 10px">Select every term that applies to this case.</p>';
@@ -967,23 +1037,20 @@ function renderQualificationModal(q) {
   html += '<textarea class="detail-edit-input qual-field" data-field="qualification_settlement_request" rows="3">' + settlementDiv.innerHTML + '</textarea>';
   html += '</div>';
 
-  qs('qualification-modal-body').innerHTML = html;
 
-  // Wire up plain input/textarea change tracking (buttons/checkboxes call markQualificationDirty directly)
-  document.querySelectorAll('#qualification-modal-body .qual-field').forEach(function(el) {
-    el.addEventListener('input', markQualificationDirty);
-  });
+  return html;
 }
+
 
 function toggleQualificationQuestion(qKey) {
   qualificationExpandedQuestions[qKey] = !qualificationExpandedQuestions[qKey];
-  renderQualificationModal(mergedQualificationView());
+  renderWorkspaceCenter();
 }
 
 function setQualificationAnswer(btnEl, field, value) {
   qualificationPendingAnswers[field] = value;
   markQualificationDirty();
-  renderQualificationModal(mergedQualificationView());
+  renderWorkspaceCenter();
 }
 
 var qualificationDirty = false;
@@ -1044,31 +1111,27 @@ async function saveQualification() {
   }
 }
 
-// ── The one hard-stop in this build ──
-function attemptCloseQualificationModal() {
-  if (isQualificationDirty()) {
-    qs('qualification-unsaved-modal').classList.remove('hidden');
-    return;
-  }
-  qs('qualification-modal').classList.add('hidden');
-}
-
 function qualificationUnsavedCancel() {
   qs('qualification-unsaved-modal').classList.add('hidden');
-  // returns to the qualification modal, no data lost, nothing closed
+  qualificationPendingLeaveAction = null;
+  // No data lost, nothing closed -- stays exactly where the person was.
 }
 
 function qualificationUnsavedLeave() {
   qualificationDirty = false;
   qs('qualification-unsaved-modal').classList.add('hidden');
-  qs('qualification-modal').classList.add('hidden');
+  var action = qualificationPendingLeaveAction;
+  qualificationPendingLeaveAction = null;
+  if (action) action();
 }
 
 async function qualificationUnsavedSave() {
   var ok = await saveQualification();
   if (ok) {
     qs('qualification-unsaved-modal').classList.add('hidden');
-    qs('qualification-modal').classList.add('hidden');
+    var action = qualificationPendingLeaveAction;
+    qualificationPendingLeaveAction = null;
+    if (action) action();
   }
 }
 
@@ -1529,14 +1592,14 @@ var TIMEZONE_OPTIONS = ['', 'US/Eastern', 'US/Central', 'US/Pacific'];
 
 function renderPrimaryOwnerExtras(fields) {
   var f = fields;
-  // Lang, Time Zone, and Priority now live in the always-visible header
-  // (with Attempts) -- only Tag and Lead Status remain here.
+  // Lang, Time Zone, Priority, and Lead Status all live in the
+  // always-visible glance bar now -- Tag is the one field from the
+  // old "Primary Owner extras" that has no other home, so it gets
+  // its own small nav entry (see WORKSPACE_NAV_OTHER) instead of
+  // being duplicated here.
   var tagDiv = document.createElement('div'); tagDiv.textContent = f['Tag'] || '';
-  var statusDiv = document.createElement('div'); statusDiv.textContent = f['Lead Status'] || '';
-
-  var html = '';
+  var html = '<div class="detail-section-title">🏷️ Tag</div>';
   html += '<div class="detail-row"><span class="detail-label">Tag</span><input type="text" class="detail-edit-input" data-field="Tag" value="' + tagDiv.innerHTML.replace(/"/g, '&quot;') + '"></div>';
-  html += '<div class="detail-row"><span class="detail-label">Lead Status</span><input type="text" class="detail-edit-input" data-field="Lead Status" value="' + statusDiv.innerHTML.replace(/"/g, '&quot;') + '"></div>';
   return html;
 }
 
@@ -1550,147 +1613,226 @@ function revealEmail() {
   qs('hdr-add-email-btn').style.display = 'none';
 }
 
-function openDetailModal() {
+var currentWorkspaceView = 'qualifier';
+
+var WORKSPACE_NAV_MAIN = [
+  ['qualifier', '⚖️', 'Consumer Rights'],
+  ['truecost', '💰', 'True Cost'],
+  ['release', '📄', 'Mutual Release'],
+  ['savings', '📈', 'Savings']
+];
+var WORKSPACE_NAV_OTHER = [
+  ['tag', '🏷️', 'Tag'],
+  ['appt', '📅', 'Appointment', 'APPOINTMENT & ASSIGNMENT'],
+  ['marketing', '📣', 'Marketing / Tracking', 'MARKETING / TRACKING'],
+  ['leaddetails', '🏠', 'Main Lead Details', 'MAIN LEAD DETAILS'],
+  ['notes', '📝', 'Notes', 'NOTES'],
+  ['official', '🔒', 'Official Use', 'OFFICIAL USE'],
+  ['onboarding', '📋', 'Onboarding Info', 'ONBOARDING INFO']
+];
+
+async function openDetailModal() {
   var lead = leads[currentIndex];
   qs('detail-modal-title').textContent = getLeadName(lead);
-  var sections = categorizeFields(lead.fields || {});
-  var stickyHeaderHtml = renderStickyHeader(lead.fields || {});
-  var html = '';
-  var sectionOrder = ['PRIMARY OWNER', 'APPOINTMENT & ASSIGNMENT', 'RESORT 1', 'RESORT 2', 'RESORT 3', 'RESORT 4', 'RESORT 5', 'FINANCIAL / QUOTE', 'MARKETING / TRACKING', 'MAIN LEAD DETAILS', 'NOTES', 'OFFICIAL USE', 'ONBOARDING INFO'];
-  sectionOrder.forEach(function(sectionName) {
-    var entries = Object.keys(sections[sectionName]);
-    var isResort2to5 = /^RESORT [2-5]$/.test(sectionName);
-    if (isResort2to5) {
-      // Only render if it genuinely has data from the import, or the
-      // user explicitly added it -- not just because every field key
-      // technically exists (blank).
-      var hasData = sectionHasRealData(sectionName, sections);
-      if (!hasData && !manuallyAddedResorts[sectionName]) return;
-    } else if (entries.length === 0 && sectionName !== 'FINANCIAL / QUOTE' && sectionName !== 'PRIMARY OWNER') {
-      return;
-    }
+  qs('detail-modal').classList.remove('hidden');
+  qs('detail-modal-body').innerHTML = '<p style="padding:20px;color:var(--muted)">Loading…</p>';
 
-    // Collapsible headers for Resort 2-5 (display-only toggle — never
-    // touches data). Resort 1 always renders fully expanded.
-    var isCollapsibleResort = /^RESORT [2-5]$/.test(sectionName);
-    var isCollapsed = isCollapsibleResort && collapsedResortSections[sectionName];
-    // PRIMARY OWNER's title is already shown once, in the sticky header
-    // (right above the blue divider) -- suppress the generic section
-    // title here so it doesn't print a second, redundant "PRIMARY OWNER".
-    var headerHtml = sectionName === 'PRIMARY OWNER' ? '' : ('<div class="detail-section-title"' +
-      (isCollapsibleResort ? ' style="cursor:pointer;display:flex;justify-content:space-between;align-items:center" onclick="toggleResortSection(\'' + sectionName + '\')"' : '') +
-      '>' + sectionName + (isCollapsibleResort ? '<span style="font-size:11px">' + (isCollapsed ? '▸ Show' : '▾ Hide') + '</span>' : '') + '</div>');
+  // Qualification data now loads as PART of opening the lead (it's the
+  // default workspace view), not via a separate button/modal.
+  qualificationCurrentLeadId = lead.master_lead_id;
+  qualificationExpandedQuestions = {};
+  qualificationPendingAnswers = {};
+  qualificationDirty = false;
+  currentWorkspaceView = 'qualifier';
 
-    html += '<div class="detail-section"><div id="section-' + sectionName.replace(/\s/g, '') + '">' + headerHtml;
-    if (isCollapsed) {
-      html += '</div></div>';
-      return;
-    }
-    if (entries.length > 0) {
-      // FINANCIAL / QUOTE holds R1-R6 financial sub-fields as individual
-      // entries (e.g. "R2-Method of Payment") -- these need the SAME
-      // visibility gate as the RESORT N sections themselves, or a
-      // single-resort lead still shows a wall of blank R2/R3/R4 financial
-      // fields even though "RESORT 2" itself is correctly hidden.
-      if (sectionName === 'FINANCIAL / QUOTE') {
-        entries = entries.filter(function(label) {
-          var entry = sections[sectionName][label];
-          var m = entry.k.match(/^R([2-6])-/);
-          if (!m) return true; // non-resort-numbered financial fields (Savings, Deal Closed) always show
-          var resortSectionName = 'RESORT ' + m[1];
-          return sectionHasRealData(resortSectionName, sections) || manuallyAddedResorts[resortSectionName];
-        });
-      }
-      html += '<div class="detail-grid">';
-      if (sectionName === 'RESORT 1') {
-        html += renderResort1Grid(lead.fields);
-      } else if (sectionName === 'PRIMARY OWNER') {
-        entries.forEach(function(label) {
-          var div = document.createElement('div'); div.textContent = label;
-          html += '<div class="detail-row"><span class="detail-label">' + div.innerHTML + '</span>' + renderDetailValue(sections[sectionName][label]) + '</div>';
-        });
-        html += renderPrimaryOwnerExtras(lead.fields);
-      } else {
-        entries.forEach(function(label) {
-          var div = document.createElement('div'); div.textContent = label;
-          html += '<div class="detail-row"><span class="detail-label">' + div.innerHTML + '</span>' + renderDetailValue(sections[sectionName][label]) + '</div>';
-        });
-      }
-      html += '</div>';
-    } else if (sectionName === 'PRIMARY OWNER') {
-      // Even if Priority is somehow the only owner-key entry and it's
-      // blank, Lang/Time Zone/Tag/Lead Status still need to render --
-      // they're not gated by the generic entries.length check.
-      html += '<div class="detail-grid">' + renderPrimaryOwnerExtras(lead.fields) + '</div>';
-    }
-
-    // Calculated cost/savings breakdown, appended to Financial/Quote —
-    // supplements (never replaces) the raw imported fields above it.
-    if (sectionName === 'FINANCIAL / QUOTE') {
-      var fin = computeFinancials(lead);
-      if (fin.resorts.length > 0) {
-        var resortRows = fin.resorts.map(function(r) {
-          return '<div class="detail-row"><span class="detail-label">Resort ' + r.n + (r.resortName ? ' — ' + r.resortName : '') + '</span><span class="detail-value">' +
-            money(r.mtgMonthly) + '/mo mtg + ' + money(r.mtfAnnual) + '/yr mtf' +
-            (r.purchaseYear ? ' (purchased ' + r.purchaseYear + ', ~' + r.yearsRemaining + ' yrs left)' : ' (~' + r.yearsRemaining + ' yrs left, assumed)') + '</span></div>';
-        }).join('');
-
-        var financingHtml = '';
-        if (fin.financing.termMonths > 0) {
-          financingHtml = '<div class="detail-row"><span class="detail-label">Our Fee Financing</span><span class="detail-value">' +
-            fin.financing.termMonths + ' mo term' + (fin.financing.termRecognized ? '' : ' (non-standard term)') +
-            (fin.financing.rate ? ' @ ' + fin.financing.rate + '%' : '') + ' · ' + money(fin.monthlyPayment) + '/mo · ' + money(fin.financing.downPayment) + ' down</span></div>';
-        } else if (fin.fee) {
-          financingHtml = '<div class="detail-row"><span class="detail-label">Our Fee</span><span class="detail-value">' + money(fin.fee) + ' (no financing term on record — treated as paid in full)</span></div>';
-        }
-
-        var projRows = fin.projection.map(function(p) {
-          var saveStyle = p.savings > 0 ? 'style="color:var(--success);font-weight:700"' : '';
-          return '<tr><td>' + p.year + (p.year === 1 ? ' yr' : ' yrs') + '</td><td style="text-align:right">' + money(p.costOfKeeping) +
-            '</td><td style="text-align:right">' + money(p.feePaidToDate) + '</td><td style="text-align:right" ' + saveStyle + '>' + money(p.savings) + '</td></tr>';
-        }).join('');
-        html += '<div style="margin-top:14px;padding-top:10px;border-top:1px dashed var(--border)"><div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px">CALCULATED — COST OF OWNERSHIP</div>' + resortRows +
-          '<div class="detail-row"><span class="detail-label">Total Mortgage</span><span class="detail-value">' + money(fin.totalMonthlyMtg) + '/mo · ' + money(fin.totalYearlyMtg) + '/yr</span></div>' +
-          '<div class="detail-row"><span class="detail-label">Total Maintenance/Tax</span><span class="detail-value">' + money(fin.totalMonthlyMtf) + '/mo · ' + money(fin.totalYearlyMtf) + '/yr</span></div>' +
-          '<div class="detail-row"><span class="detail-label">Grand Total</span><span class="detail-value" style="font-weight:800">' + money(fin.grandMonthly) + '/mo · ' + money(fin.grandYearly) + '/yr</span></div>' +
-          financingHtml +
-          '<div style="font-size:11px;font-weight:700;color:var(--muted);margin:10px 0 6px">NET SAVINGS OVER TIME — cost of keeping the timeshare vs. our fee actually paid to date (never assumes the full fee is paid up front if it\'s financed)</div>' +
-          '<table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr style="border-bottom:2px solid var(--border)"><th style="text-align:left;padding:4px 0">Years</th><th style="text-align:right">Cost of Keeping</th><th style="text-align:right">Our Fee Paid to Date</th><th style="text-align:right">Net Savings</th></tr></thead><tbody>' + projRows + '</tbody></table></div>';
-      }
-    }
-
-    // Closes BOTH the inner id="section-X" div AND the outer
-    // .detail-section wrapper div opened at the top of this iteration
-    // -- previously only closed one, which silently worked in normal
-    // linear flow but broke exact-sibling layouts like the sidebar.
-    html += '</div></div>';
-  });
-
-  // "+ Add Resort" -- only offered for the next resort slot that
-  // isn't already showing (either has real data, or was manually
-  // added). Never auto-adds a section; purely user-triggered.
-  for (var rn = 2; rn <= 5; rn++) {
-    var rsName = 'RESORT ' + rn;
-    var alreadyShowing = sectionHasRealData(rsName, sections) || manuallyAddedResorts[rsName];
-    if (!alreadyShowing) {
-      html += '<button type="button" class="btn-secondary" onclick="addResortSection(' + rn + ')" style="margin-bottom:10px">+ Add Resort ' + rn + '</button>';
-      break; // only offer the NEXT one -- keeps it incremental, not all 4 buttons at once
-    }
+  try {
+    var res = await fetch(API_BASE + '/api/qualification?master_lead_id=' + encodeURIComponent(qualificationCurrentLeadId), { headers: authHeaders() });
+    var data = await res.json();
+    qualificationLoadedSnapshot = data.ok ? JSON.parse(JSON.stringify(data.qualification)) : {};
+  } catch (e) {
+    qualificationLoadedSnapshot = {};
   }
 
-  qs('detail-modal-body').innerHTML =
-    stickyHeaderHtml +
-    '<div style="display:flex;gap:20px;align-items:flex-start">' +
-      '<div style="flex:1;min-width:0">' + (html || '<p style="color:var(--muted)">No fields available for this lead.</p>') + '</div>' +
-      '<div style="width:230px;flex-shrink:0;position:sticky;top:150px">' + renderContactActivitySidebar(sections, lead.fields || {}) + '</div>' +
-    '</div>';
-  qs('detail-modal').classList.remove('hidden');
+  renderWorkspaceShell();
 }
 
+function renderWorkspaceShell() {
+  var lead = leads[currentIndex];
+  var glanceBarHtml = renderGlanceBar(lead.fields || {});
+  var leftNavHtml = renderWorkspaceLeftNav();
+  var rightPanelHtml = renderWorkspaceRightPanel(lead);
+
+  qs('detail-modal-body').innerHTML =
+    glanceBarHtml +
+    '<div class="workspace-app">' +
+      '<aside class="workspace-aside wleft">' + leftNavHtml + '</aside>' +
+      '<div class="workspace-center" id="workspace-center"></div>' +
+      '<aside class="workspace-aside wright">' + rightPanelHtml + '</aside>' +
+    '</div>';
+
+  renderWorkspaceCenter();
+
+  // Wire glance-bar / center input change tracking for qualification-relevant fields
+  document.querySelectorAll('.qual-field').forEach(function(el) {
+    el.addEventListener('input', markQualificationDirty);
+  });
+}
+
+function renderWorkspaceLeftNav() {
+  var html = '<div class="workspace-nav-title">Main Workspace</div>';
+  WORKSPACE_NAV_MAIN.forEach(function(item) {
+    var active = currentWorkspaceView === item[0];
+    html += '<button type="button" class="workspace-nav-btn' + (active ? ' active' : '') + '" onclick="switchWorkspaceView(\'' + item[0] + '\')">' + item[1] + ' ' + item[2] + '</button>';
+  });
+
+  html += '<div class="workspace-nav-title">Ownership</div>';
+  for (var n = 1; n <= 5; n++) {
+    var active = currentWorkspaceView === 'resort' + n;
+    var icon = n === 1 ? '🏝️' : '＋';
+    html += '<button type="button" class="workspace-nav-btn' + (active ? ' active' : '') + '" onclick="switchWorkspaceView(\'resort' + n + '\')">' + icon + ' Resort ' + n + '</button>';
+  }
+
+  html += '<div class="workspace-nav-title">Other Details</div>';
+  WORKSPACE_NAV_OTHER.forEach(function(item) {
+    var active = currentWorkspaceView === item[0];
+    html += '<button type="button" class="workspace-nav-btn' + (active ? ' active' : '') + '" onclick="switchWorkspaceView(\'' + item[0] + '\')">' + item[1] + ' ' + item[2] + '</button>';
+  });
+  return html;
+}
+
+function renderWorkspaceRightPanel(lead) {
+  var sections = categorizeFields(lead.fields || {});
+  var html = '<div class="workspace-nav-title">Financial Questions</div>';
+  html += '<button type="button" class="workspace-nav-btn" onclick="switchWorkspaceView(\'resort1\')">💵 Mortgage &amp; Arrears</button>';
+  html += '<button type="button" class="workspace-nav-btn" onclick="switchWorkspaceView(\'resort1\')">🧾 MTF &amp; Arrears</button>';
+  html += '<button type="button" class="workspace-nav-btn" onclick="switchWorkspaceView(\'resort1\')">🏷️ Purchase Details</button>';
+  html += '<button type="button" class="workspace-nav-btn" onclick="switchWorkspaceView(\'truecost\')">📊 Cost Inputs</button>';
+
+  html += '<div class="workspace-nav-title">Our Fee &amp; Payment Terms</div>';
+  html += '<button type="button" class="workspace-nav-btn" onclick="switchWorkspaceView(\'resort1\')">💳 Our Fee</button>';
+  html += '<button type="button" class="workspace-nav-btn" onclick="switchWorkspaceView(\'resort1\')">📅 Payment Terms</button>';
+
+  html += '<div class="workspace-nav-title">Call &amp; Activity</div>';
+  html += '<div class="workspace-right-box" style="cursor:pointer" onclick="startAutoCall()"><b>📞 Auto Call</b><small>Dial current lead</small></div>';
+  html += renderContactActivitySidebar(sections, lead.fields || {});
+  return html;
+}
+
+function syncQualificationDomToPending() {
+  document.querySelectorAll('#workspace-center .qual-field').forEach(function(el) {
+    qualificationPendingAnswers[el.getAttribute('data-field')] = el.value;
+  });
+  document.querySelectorAll('#workspace-center .qual-release-checkbox').forEach(function(el) {
+    qualificationPendingAnswers[el.getAttribute('data-field')] = el.checked ? 'Yes' : 'No';
+  });
+}
+
+function switchWorkspaceView(view) {
+  syncQualificationDomToPending();
+  currentWorkspaceView = view;
+  document.querySelectorAll('.workspace-nav-btn').forEach(function(btn) { btn.classList.remove('active'); });
+  renderWorkspaceShellNavOnly();
+  renderWorkspaceCenter();
+}
+
+function renderWorkspaceShellNavOnly() {
+  // Re-renders just the nav highlighting without losing center-panel
+  // input focus/scroll unnecessarily -- cheap enough to just rebuild.
+  var leftAside = document.querySelector('.workspace-aside.wleft');
+  if (leftAside) leftAside.innerHTML = renderWorkspaceLeftNav();
+}
+
+function renderWorkspaceCenter() {
+  var lead = leads[currentIndex];
+  var center = qs('workspace-center');
+  var view = currentWorkspaceView;
+  var html = '';
+
+  if (view === 'qualifier') {
+    html = buildQualificationHtml(mergedQualificationView());
+  } else if (view === 'release') {
+    html = buildMutualReleaseHtml(mergedQualificationView());
+  } else if (view === 'truecost') {
+    html = buildTrueCostWorkspaceHtml(lead);
+  } else if (view === 'savings') {
+    html = buildSavingsWorkspaceHtml(lead);
+  } else if (view === 'tag') {
+    html = renderPrimaryOwnerExtras(lead.fields || {});
+  } else if (/^resort[1-5]$/.test(view)) {
+    html = buildResortWorkspaceHtml(lead, parseInt(view.replace('resort', ''), 10));
+  } else {
+    var otherItem = WORKSPACE_NAV_OTHER.find(function(i) { return i[0] === view; });
+    if (otherItem) html = buildOtherSectionWorkspaceHtml(lead, otherItem[3], otherItem[1] + ' ' + otherItem[2]);
+  }
+
+  center.innerHTML = html;
+  document.querySelectorAll('#workspace-center .qual-field').forEach(function(el) {
+    el.addEventListener('input', markQualificationDirty);
+  });
+  document.querySelectorAll('#workspace-center .qual-release-checkbox').forEach(function(el) {
+    el.addEventListener('change', markQualificationDirty);
+  });
+}
+
+function renderGlanceBar(f) {
+  var rawLang = (f['Preferred Language'] || '').trim().toLowerCase();
+  var langValue = rawLang.indexOf('span') !== -1 ? 'Span' : (rawLang.indexOf('eng') !== -1 ? 'Eng' : '');
+  var langOpts = [['', 'Lang'], ['Eng', 'Eng'], ['Span', 'Span']].map(function(o) {
+    return '<option value="' + o[0] + '"' + (o[0] === langValue ? ' selected' : '') + '>' + o[1] + '</option>';
+  }).join('');
+
+  var rawTz = (f['Time Zone'] || '').trim();
+  var tzValue = TIMEZONE_OPTIONS.indexOf(rawTz) !== -1 ? rawTz : '';
+  var tzOpts = TIMEZONE_OPTIONS.map(function(o) {
+    return '<option value="' + o + '"' + (o === tzValue ? ' selected' : '') + '>' + (o || 'TZ') + '</option>';
+  }).join('');
+
+  var currentPriority = (f['Priority'] || '').trim().toUpperCase();
+  var LEAD_VALUE_COLORS_GLANCE = { A: '#16803c', B: '#4f8a2f', C: '#a15c00', D: '#c2410c', F: '#b42318' };
+  var priorityBtns = ['A', 'B', 'C', 'D', 'F'].map(function(letter) {
+    var isActive = currentPriority === letter;
+    return '<button type="button" class="lead-value-btn' + (isActive ? ' active' : '') + '" style="' + (isActive ? 'background:' + LEAD_VALUE_COLORS_GLANCE[letter] + ';color:#fff' : '') + '" onclick="setLeadValueButton(this, \'' + letter + '\')">' + letter + '</button>';
+  }).join('');
+
+  function textField(id, dataField, value, width) {
+    var div = document.createElement('div'); div.textContent = value || '';
+    return '<input type="text" id="' + id + '" class="detail-edit-input" data-field="' + dataField.replace(/"/g, '&quot;') + '" value="' + div.innerHTML.replace(/"/g, '&quot;') + '" style="width:' + width + '">';
+  }
+
+  var secondOwnerVal = (f['2nd Owner'] || '').trim();
+
+  var html = '<div class="glance-bar">';
+  html += '<div class="glance-item"><div class="glance-label">Lead</div><div class="glance-value">' + textField('glance-name', 'Lead Name', f['Lead Name'], '130px') + '</div></div>';
+  html += '<div class="glance-item"><div class="glance-label">2nd Owner</div><div class="glance-value">' + (secondOwnerVal || manuallyAdded2ndOwner ? textField('glance-2nd-owner', '2nd Owner', secondOwnerVal, '110px') : '<button type="button" class="btn-secondary" style="padding:3px 8px;font-size:11px" onclick="add2ndOwner(); renderWorkspaceShell();">+ Add</button>') + '</div></div>';
+  html += '<div class="glance-item"><div class="glance-label">Phone</div><div class="glance-value">' + textField('glance-phone', 'Phone', f['Phone'], '110px') + '</div></div>';
+  html += '<div class="glance-item"><div class="glance-label">Language</div><div class="glance-value"><select id="glance-lang" class="detail-edit-input" data-field="Preferred Language">' + langOpts + '</select></div></div>';
+  html += '<div class="glance-item"><div class="glance-label">Time Zone</div><div class="glance-value"><select id="glance-timezone" class="detail-edit-input" data-field="Time Zone">' + tzOpts + '</select></div></div>';
+  html += '<div class="glance-item"><div class="glance-label">Priority</div><div class="glance-value"><span class="lead-value-selector" data-field="Priority" data-lead-value="' + currentPriority + '">' + priorityBtns + '</span></div></div>';
+  html += '<div class="glance-item"><div class="glance-label">Attempts</div><div class="glance-value" style="padding:4px 8px;background:var(--soft-yellow);border-radius:6px;display:inline-block">' + ((f['Attempts'] || '').trim() || '0') + '</div></div>';
+  html += '<div class="glance-item"><div class="glance-label">Status</div><div class="glance-value">' + textField('glance-status', 'Lead Status', f['Lead Status'], '140px') + '</div></div>';
+  html += '</div>';
+  return html;
+}
+
+// ── The ONE hard-stop: leaving the lead (close, Next, Previous) with
+// unsaved qualification changes. Everything else in this build is
+// hard-stop-free, exactly as before. ──
+var qualificationPendingLeaveAction = null;
+
+function attemptLeaveLead(afterLeaveCallback) {
+  if (isQualificationDirty()) {
+    qualificationPendingLeaveAction = afterLeaveCallback;
+    qs('qualification-unsaved-modal').classList.remove('hidden');
+    return;
+  }
+  afterLeaveCallback();
+}
+
+
 function closeDetailModal() {
-  // Only hides the modal — currentIndex and the queue underneath are
-  // completely untouched, so the same lead is still showing after close.
-  qs('detail-modal').classList.add('hidden');
+  attemptLeaveLead(function() {
+    qs('detail-modal').classList.add('hidden');
+  });
 }
 
 function renderLead() {
@@ -1722,10 +1864,12 @@ function renderLead() {
 }
 
 function nextLead() {
-  if (currentIndex < leads.length - 1) {
-    currentIndex++;
-    renderLead();
-  }
+  attemptLeaveLead(function() {
+    if (currentIndex < leads.length - 1) {
+      currentIndex++;
+      renderLead();
+    }
+  });
 }
 
 
@@ -1920,10 +2064,12 @@ function closeDialerModal() {
 
 
 function prevLead() {
-  if (currentIndex > 0) {
-    currentIndex--;
-    renderLead();
-  }
+  attemptLeaveLead(function() {
+    if (currentIndex > 0) {
+      currentIndex--;
+      renderLead();
+    }
+  });
 }
 
 // If a passphrase is already cached for this tab (e.g. user navigated
