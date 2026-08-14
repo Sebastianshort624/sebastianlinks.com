@@ -606,7 +606,7 @@ var TABLE_VIEW_COLUMNS = [
   ['Priority', 'Priority'],
   ['Lead Name', 'Lead Name'],
   ['2nd Owner', '2nd Owner'],
-  ['Phone', null], // special-cased below (falls back to lead.phone)
+  ['Phone', 'Phone'],
   ['Lead Status', 'Lead Status'],
   ['Resort', 'R1-Resort Name'],
   ['Attempts', 'Attempts'],
@@ -617,8 +617,9 @@ var TABLE_VIEW_COLUMNS = [
 ];
 
 function renderTableView() {
-  var html = '<table style="width:100%;border-collapse:collapse;font-size:13px;background:#fff">';
+  var html = '<table style="width:100%;border-collapse:collapse;font-size:14px;background:#fff">';
   html += '<thead><tr style="border-bottom:2px solid var(--border)">';
+  html += '<th style="text-align:left;padding:8px 10px;white-space:nowrap;position:sticky;top:0;background:#fff"></th>';
   TABLE_VIEW_COLUMNS.forEach(function(col) {
     html += '<th style="text-align:left;padding:8px 10px;white-space:nowrap;position:sticky;top:0;background:#fff">' + col[0] + '</th>';
   });
@@ -628,27 +629,90 @@ function renderTableView() {
     var f = lead.fields || {};
     var priority = (f['Priority'] || '').trim().toUpperCase();
     var priorityColor = { A: '#16803c', B: '#4f8a2f', C: '#a15c00', D: '#c2410c', F: '#b42318' }[priority] || 'var(--muted)';
-    html += '<tr style="border-bottom:1px solid var(--border);cursor:pointer" onclick="openLeadFromTable(' + idx + ')" onmouseover="this.style.background=\'var(--soft-blue)\'" onmouseout="this.style.background=\'\'">';
+
+    html += '<tr style="border-bottom:1px solid var(--border)">';
+    html += '<td style="padding:6px 8px"><button type="button" class="btn-secondary" onclick="openLeadFromTable(' + idx + ')" style="padding:4px 8px;font-size:12px;white-space:nowrap">Open →</button></td>';
+
     TABLE_VIEW_COLUMNS.forEach(function(col) {
-      var div = document.createElement('div');
-      var value;
-      if (col[0] === 'Phone') {
-        value = lead.phone || f['Phone'] || '';
-      } else if (col[0] === 'Priority') {
-        div.textContent = priority || '—';
-        html += '<td style="padding:8px 10px;white-space:nowrap;font-weight:800;color:' + priorityColor + '">' + div.innerHTML + '</td>';
-        return;
+      var fieldName = col[1];
+      var rawValue = fieldName === 'Phone' ? (lead.phone || f['Phone'] || '') : (f[fieldName] || '');
+      var div = document.createElement('div'); div.textContent = rawValue;
+      var escaped = div.innerHTML.replace(/"/g, '&quot;');
+
+      if (fieldName === 'Priority') {
+        var opts = ['', 'A', 'B', 'C', 'D', 'F'].map(function(p) {
+          return '<option value="' + p + '"' + (p === priority ? ' selected' : '') + '>' + (p || '—') + '</option>';
+        }).join('');
+        html += '<td style="padding:4px 6px"><select onchange="saveTableCellEdit(' + idx + ', \'Priority\', this)" style="width:100%;padding:5px 4px;border:1px solid transparent;border-radius:6px;font-size:14px;font-weight:800;color:' + priorityColor + '" onmouseover="this.style.borderColor=\'var(--border)\'" onmouseout="this.style.borderColor=\'transparent\'">' + opts + '</select></td>';
       } else {
-        value = f[col[1]] || '';
+        html += '<td style="padding:4px 6px"><input type="text" value="' + escaped + '" onblur="saveTableCellEdit(' + idx + ', \'' + fieldName.replace(/'/g, "\\'") + '\', this)" style="width:100%;min-width:110px;padding:5px 6px;border:1px solid transparent;border-radius:6px;font-size:14px" onmouseover="this.style.borderColor=\'var(--border)\'" onmouseout="if(document.activeElement!==this) this.style.borderColor=\'transparent\'" onfocus="this.style.borderColor=\'var(--primary)\'"></td>';
       }
-      div.textContent = value;
-      html += '<td style="padding:8px 10px;white-space:nowrap;max-width:220px;overflow:hidden;text-overflow:ellipsis">' + div.innerHTML + '</td>';
     });
     html += '</tr>';
   });
 
   html += '</tbody></table>';
   qs('queue-table-view').innerHTML = html;
+}
+
+// Saves a single cell edit via the SAME endpoint and same-object-
+// mutation pattern as saveMasterLeadEdits() in Full Detail -- since
+// `leads` and `allMasterLeads` share object references (Array.filter
+// never clones), mutating lead.fields here is what makes Single view,
+// Full Detail, and Table view all reflect the same edit without a
+// reload. This is genuinely bidirectional: a Full Detail save already
+// mutates the same shared object, so it shows up here automatically
+// too, and this function does the same thing in reverse.
+async function saveTableCellEdit(idx, fieldName, inputEl) {
+  var lead = leads[idx];
+  var masterLeadId = lead.master_lead_id;
+  var previousValue = fieldName === 'Phone' ? (lead.phone || lead.fields['Phone'] || '') : (lead.fields[fieldName] || '');
+  var newValue = inputEl.value;
+
+  if (newValue === previousValue) return; // no real change -- don't hit the API
+
+  if (!masterLeadId) {
+    inputEl.value = previousValue;
+    alert('This lead has no master_lead_id — editing is only available for Master Leads queue records.');
+    return;
+  }
+
+  if (fieldName === 'Priority' && newValue && ['A', 'B', 'C', 'D', 'F'].indexOf(newValue.toUpperCase()) === -1) {
+    inputEl.value = previousValue;
+    alert('Priority must be A, B, C, D, F, or blank.');
+    return;
+  }
+
+  var updates = {};
+  updates[fieldName] = newValue;
+
+  try {
+    var resp = await fetch(API_BASE + '/api/import/master-lead/update', {
+      method: 'POST', headers: authHeaders(),
+      body: JSON.stringify({ master_lead_id: masterLeadId, updates: updates })
+    });
+    var data = await resp.json();
+    if (!data.ok) {
+      inputEl.value = previousValue;
+      alert('Save failed: ' + (data.error || 'unknown error') +
+        (data.locked_fields_attempted && data.locked_fields_attempted.length ? ' (locked: ' + data.locked_fields_attempted.join(', ') + ')' : ''));
+      return;
+    }
+
+    lead.fields[fieldName] = newValue;
+    if (fieldName === 'Phone') lead.phone = newValue;
+
+    // Priority affects both sort order and the row's color -- the
+    // whole table needs a fresh render to reflect that; every other
+    // field only affects its own cell, already showing the new value.
+    if (fieldName === 'Priority') {
+      leads.sort(function(a, b) { return priorityRank(a.fields) - priorityRank(b.fields); });
+      renderTableView();
+    }
+  } catch (e) {
+    inputEl.value = previousValue;
+    alert('Could not reach the CRM API: ' + e.message);
+  }
 }
 
 function openLeadFromTable(idx) {
