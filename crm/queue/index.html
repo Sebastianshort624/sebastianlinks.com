@@ -329,15 +329,7 @@ textarea {
           <label style="font-size:15px;font-weight:600">Follow-Up Date</label>
           <input type="date" id="dialer-followup-date" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;margin-top:4px">
           <label style="font-size:15px;font-weight:600;margin-top:8px;display:block">Time</label>
-          <select id="dialer-followup-timeofday" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;margin-top:4px">
-            <option value="">(no specific time)</option>
-            <option value="Early Morning">Early Morning</option>
-            <option value="Late Morning">Late Morning</option>
-            <option value="Noon">Noon</option>
-            <option value="Afternoon">Afternoon</option>
-            <option value="Evening">Evening</option>
-            <option value="Night">Night</option>
-          </select>
+          <select id="dialer-followup-timeofday" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;margin-top:4px"></select>
         </div>
 
         <div id="dialer-appointment-picker" class="hidden" style="margin-top:12px">
@@ -647,11 +639,45 @@ var TABLE_VIEW_COLUMNS = [
 // label is silently ignored by anything that doesn't know about it. ──
 var TIME_OF_DAY_OPTIONS = ['', 'Early Morning', 'Late Morning', 'Noon', 'Afternoon', 'Evening', 'Night'];
 
+// Exact time slots, 30-minute increments, 6:00 AM - 9:30 PM -- covers
+// normal calling hours. Generated once so the list can't drift out of
+// sync between the table dropdown and the dialer dropdown.
+var EXACT_TIME_OPTIONS = (function() {
+  var times = [];
+  for (var h = 6; h <= 21; h++) {
+    [0, 30].forEach(function(m) {
+      var hour12 = h % 12 === 0 ? 12 : h % 12;
+      var ampm = h < 12 ? 'AM' : 'PM';
+      times.push(hour12 + ':' + (m === 0 ? '00' : '30') + ' ' + ampm);
+    });
+  }
+  return times;
+})();
+
+var ALL_TIME_OPTIONS = TIME_OF_DAY_OPTIONS.concat(EXACT_TIME_OPTIONS);
+
+// Builds the shared <option>/<optgroup> markup used by BOTH the table
+// dropdown and the dialer dropdown, so they can never show a
+// different set of choices from each other.
+function buildTimeOptionsHtml(selectedValue) {
+  var html = '<option value=""' + (selectedValue === '' ? ' selected' : '') + '>(no specific time)</option>';
+  html += '<optgroup label="General">';
+  TIME_OF_DAY_OPTIONS.slice(1).forEach(function(t) {
+    html += '<option value="' + t + '"' + (t === selectedValue ? ' selected' : '') + '>' + t + '</option>';
+  });
+  html += '</optgroup><optgroup label="Exact Time">';
+  EXACT_TIME_OPTIONS.forEach(function(t) {
+    html += '<option value="' + t + '"' + (t === selectedValue ? ' selected' : '') + '>' + t + '</option>';
+  });
+  html += '</optgroup>';
+  return html;
+}
+
 function parseFollowUp(raw) {
   var s = (raw || '').trim();
   var m = s.match(/^(\d{4}-\d{2}-\d{2})\s*,?\s*(.*)$/);
   if (!m) return { date: '', timeOfDay: '' };
-  var timeOfDay = TIME_OF_DAY_OPTIONS.indexOf(m[2].trim()) !== -1 ? m[2].trim() : '';
+  var timeOfDay = ALL_TIME_OPTIONS.indexOf(m[2].trim()) !== -1 ? m[2].trim() : '';
   return { date: m[1], timeOfDay: timeOfDay };
 }
 
@@ -704,12 +730,9 @@ function renderTableView() {
         html += '<td style="padding:4px 6px"><select onchange="saveTableCellEdit(' + idx + ', \'Priority\', this)" style="width:100%;padding:5px 4px;border:1px solid transparent;border-radius:6px;font-size:15px;font-weight:800;color:' + priorityColor + '" onmouseover="this.style.borderColor=\'var(--border)\'" onmouseout="this.style.borderColor=\'transparent\'">' + opts + '</select></td>';
       } else if (fieldName === 'Follow-Up Date') {
         var parsed = parseFollowUp(rawValue);
-        var timeOpts = TIME_OF_DAY_OPTIONS.map(function(t) {
-          return '<option value="' + t + '"' + (t === parsed.timeOfDay ? ' selected' : '') + '>' + (t || '(no time)') + '</option>';
-        }).join('');
         html += '<td style="padding:4px 6px"><div style="display:flex;flex-direction:column;gap:3px;min-width:150px">';
         html += '<input type="date" id="followup-date-' + idx + '" value="' + parsed.date + '" onchange="saveFollowUpFromTable(' + idx + ')" style="padding:4px;border:1px solid var(--border);border-radius:6px;font-size:13px">';
-        html += '<select id="followup-time-' + idx + '" onchange="saveFollowUpFromTable(' + idx + ')" style="padding:4px;border:1px solid var(--border);border-radius:6px;font-size:13px">' + timeOpts + '</select>';
+        html += '<select id="followup-time-' + idx + '" onchange="saveFollowUpFromTable(' + idx + ')" style="padding:4px;border:1px solid var(--border);border-radius:6px;font-size:13px">' + buildTimeOptionsHtml(parsed.timeOfDay) + '</select>';
         html += '</div></td>';
       } else {
         html += '<td style="padding:4px 6px"><input type="text" value="' + escaped + '" onblur="saveTableCellEdit(' + idx + ', \'' + fieldName.replace(/'/g, "\\'") + '\', this)" style="width:100%;min-width:110px;padding:5px 6px;border:1px solid transparent;border-radius:6px;font-size:15px" onmouseover="this.style.borderColor=\'var(--border)\'" onmouseout="if(document.activeElement!==this) this.style.borderColor=\'transparent\'" onfocus="this.style.borderColor=\'var(--primary)\'"></td>';
@@ -2597,6 +2620,11 @@ function prevLead() {
 if (getPassphrase()) {
   proceedPastPassphrase();
 }
+
+// Populate the dialer's follow-up time dropdown once at load -- the
+// option list itself is static, only the SELECTED value would ever
+// change, and this dropdown always starts blank for a new disposition.
+qs('dialer-followup-timeofday').innerHTML = buildTimeOptionsHtml('');
 </script>
 </body>
 </html>
