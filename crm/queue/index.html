@@ -171,9 +171,11 @@ textarea {
 
   <!-- STEP 2: the queue itself -->
   <div class="card hidden" id="queue-card">
-    <div class="hidden" id="priority-filter-row" style="margin-bottom:14px;display:flex;align-items:center;gap:10px">
+    <div class="hidden" id="priority-filter-row" style="margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <label style="font-size:13px;font-weight:700">Search:</label>
+      <input type="text" id="lead-search-input" oninput="applyFilters()" placeholder="Name, phone, email, tag, resort…" style="padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px;min-width:240px">
       <label style="font-size:13px;font-weight:700">Priority Filter:</label>
-      <select id="priority-filter-select" onchange="applyPriorityFilter()" style="padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px">
+      <select id="priority-filter-select" onchange="applyFilters()" style="padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px">
         <option value="ALL">All</option>
         <option value="A">A</option>
         <option value="B">B</option>
@@ -411,7 +413,7 @@ async function loadMasterQueue() {
 
     allMasterLeads = data.leads;
     qs('priority-filter-row').classList.remove('hidden');
-    applyPriorityFilter();
+    applyFilters();
   } catch (e) {
     statusEl.textContent = 'Could not reach the CRM API: ' + e.message;
     statusEl.className = 'notice error';
@@ -429,14 +431,44 @@ function priorityRank(fields) {
   return PRIORITY_SORT_RANK.hasOwnProperty(v) ? PRIORITY_SORT_RANK[v] : 5; // blank/unrecognized sorts last
 }
 
-function applyPriorityFilter() {
-  var filterVal = qs('priority-filter-select').value;
+// Searches across the fields a person would actually search a lead
+// by. Case-insensitive substring match; phone matching strips
+// formatting on both sides so "860-416-5577" and "8604165577" both
+// match typing either way.
+function leadMatchesSearch(lead, query) {
+  if (!query) return true;
+  var q = query.trim().toLowerCase();
+  if (!q) return true;
+  var f = lead.fields || {};
+
+  var textFields = [f['Lead Name'], f['Email'], f['Tag'], f['R1-Resort Name'], f['State'], f['Lead Status'], f['Main Objection']];
+  for (var i = 0; i < textFields.length; i++) {
+    if (textFields[i] && String(textFields[i]).toLowerCase().indexOf(q) !== -1) return true;
+  }
+
+  var qDigits = q.replace(/\D/g, '');
+  if (qDigits) {
+    var phoneCandidates = [lead.phone, f['Phone'], f['Secondary Phone']];
+    for (var j = 0; j < phoneCandidates.length; j++) {
+      var digits = (phoneCandidates[j] || '').replace(/\D/g, '');
+      if (digits && digits.indexOf(qDigits) !== -1) return true;
+    }
+  }
+
+  return false;
+}
+
+function applyFilters() {
+  var priorityVal = qs('priority-filter-select').value;
+  var searchVal = qs('lead-search-input').value;
 
   var filtered = allMasterLeads.filter(function(l) {
-    if (filterVal === 'ALL') return true;
-    var v = (l.fields['Priority'] || '').trim().toUpperCase();
-    if (filterVal === 'BLANK') return !PRIORITY_SORT_RANK.hasOwnProperty(v);
-    return v === filterVal;
+    if (priorityVal !== 'ALL') {
+      var v = (l.fields['Priority'] || '').trim().toUpperCase();
+      var priorityMatch = priorityVal === 'BLANK' ? !PRIORITY_SORT_RANK.hasOwnProperty(v) : v === priorityVal;
+      if (!priorityMatch) return false;
+    }
+    return leadMatchesSearch(l, searchVal);
   });
 
   // Stable sort by priority rank — this is what makes the DISPLAYED
@@ -448,9 +480,12 @@ function applyPriorityFilter() {
 
   if (leads.length === 0) {
     qs('queue-body').classList.add('hidden');
-    qs('queue-empty').textContent = filterVal === 'ALL'
-      ? 'No master leads match Not Contacted + Valid Phone right now.'
-      : 'No leads match this Priority filter.';
+    var searchVal2 = qs('lead-search-input').value.trim();
+    qs('queue-empty').textContent = searchVal2
+      ? 'No leads match "' + searchVal2 + '"' + (priorityVal !== 'ALL' ? ' with this Priority filter.' : '.')
+      : (priorityVal === 'ALL'
+        ? 'No master leads match Not Contacted + Valid Phone right now.'
+        : 'No leads match this Priority filter.');
     qs('queue-empty').classList.remove('hidden');
     return;
   }
