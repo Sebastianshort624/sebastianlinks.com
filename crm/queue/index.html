@@ -649,29 +649,28 @@ var PHONE_ICON_SVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="whit
    ================================================================ */
 
 function buildActionButtonsHtml(masterLeadId, fields, idPrefix, size, skipSave) {
-  var isCanceled = (fields['Pipeline Stage'] || '').trim() === 'Canceled';
-  var isDone = (fields['Pipeline Stage'] || '').trim() === 'Done Deal';
+  var pipelineStage = (fields['Pipeline Stage'] || '').trim() || 'Active';
   var isQuoted = (fields['Quote Sent'] || '').trim() === 'Yes';
   var apptRaw = (fields['Appointment Date & Time'] || '').trim();
 
   var btnStyle = size === 'small'
     ? 'padding:5px 10px;font-size:12px;font-weight:700;border-radius:8px'
     : 'padding:10px 18px;font-size:15px;font-weight:800;border-radius:10px';
+  var selStyle = size === 'small'
+    ? 'padding:5px 8px;font-size:12px;font-weight:700;border-radius:8px;border:1px solid var(--border)'
+    : 'padding:9px 14px;font-size:15px;font-weight:800;border-radius:10px;border:1px solid var(--border)';
 
   var html = '<div class="action-btn-row" id="action-row-' + idPrefix + '" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">';
 
-  // Cancel -- moves the lead to the Canceled Deals department. No
-  // persistent "Canceled" label on the button itself: the lead
-  // disappears from the current (Active) view entirely once clicked,
-  // per the explicit spec ("moves it, don't just relabel it").
-  html += '<button type="button" class="btn-secondary" style="' + btnStyle + ';border:2px solid var(--danger);color:var(--danger)" onclick="cancelLeadAction(\'' + masterLeadId + '\', \'' + idPrefix + '\')"' + (isCanceled ? ' disabled' : '') + '>' + (isCanceled ? 'Canceled' : 'Cancel') + '</button>';
-
-  // Book -> Deal
-  if (isDone) {
-    html += '<button type="button" class="btn-primary" style="' + btnStyle + ';background:#1a56db" disabled>Deal</button>';
-  } else {
-    html += '<button type="button" class="btn-primary" style="' + btnStyle + ';background:var(--success)" onclick="bookLeadAction(\'' + masterLeadId + '\', \'' + idPrefix + '\')">Book</button>';
-  }
+  // Pipeline Stage dropdown (replaces separate Cancel/Book buttons --
+  // they're mutually exclusive states of the same field anyway, so a
+  // single dropdown also prevents an invalid "both" state). Selecting
+  // Active from Canceled/Done Deal reverts the lead back.
+  html += '<select style="' + selStyle + '" onchange="pipelineStageChanged(this, \'' + masterLeadId + '\', \'' + idPrefix + '\')">';
+  html += '<option value="Active"' + (pipelineStage === 'Active' ? ' selected' : '') + '>Active</option>';
+  html += '<option value="Canceled"' + (pipelineStage === 'Canceled' ? ' selected' : '') + '>Cancel</option>';
+  html += '<option value="Done Deal"' + (pipelineStage === 'Done Deal' ? ' selected' : '') + '>Book</option>';
+  html += '</select>';
 
   // Save -- skipped where a dedicated Save button already exists
   // (Table rows have their own tested per-row Save already)
@@ -679,19 +678,20 @@ function buildActionButtonsHtml(masterLeadId, fields, idPrefix, size, skipSave) 
     html += '<button type="button" class="btn-primary" style="' + btnStyle + '" onclick="saveLeadAction(\'' + masterLeadId + '\', \'' + idPrefix + '\')">Save</button>';
   }
 
-  // Quote -> Quoted
-  if (isQuoted) {
-    html += '<button type="button" class="btn-secondary" style="' + btnStyle + '" disabled>Quoted</button>';
-  } else {
-    html += '<button type="button" class="btn-secondary" style="' + btnStyle + '" onclick="quoteLeadAction(\'' + masterLeadId + '\', \'' + idPrefix + '\')">Quote</button>';
-  }
+  // Quote dropdown (replaces the separate Quote/Quoted button)
+  html += '<select style="' + selStyle + '" onchange="quoteStatusChanged(this, \'' + masterLeadId + '\', \'' + idPrefix + '\')">';
+  html += '<option value="No"' + (!isQuoted ? ' selected' : '') + '>Not Quoted</option>';
+  html += '<option value="Yes"' + (isQuoted ? ' selected' : '') + '>Quoted</option>';
+  html += '</select>';
 
-  // Calendar -> Appointment Set (shows the next appointment)
+  // Calendar -> Appt Set: blue while unset, turns red with the date
+  // once an appointment exists -- matching the row-color scheme
+  // (red = has an upcoming appointment).
   if (apptRaw) {
     var apptDiv = document.createElement('div'); apptDiv.textContent = apptRaw;
-    html += '<button type="button" class="btn-secondary" style="' + btnStyle + '" onclick="toggleAppointmentPicker(\'' + idPrefix + '\')" title="Click to change">Appointment Set: ' + apptDiv.innerHTML + '</button>';
+    html += '<button type="button" class="btn-primary" style="' + btnStyle + ';background:#EA4335" onclick="toggleAppointmentPicker(\'' + idPrefix + '\')" title="Click to change">Appt Set: ' + apptDiv.innerHTML + '</button>';
   } else {
-    html += '<button type="button" class="btn-secondary" style="' + btnStyle + '" onclick="toggleAppointmentPicker(\'' + idPrefix + '\')">Calendar</button>';
+    html += '<button type="button" class="btn-primary" style="' + btnStyle + ';background:#4285F4" onclick="toggleAppointmentPicker(\'' + idPrefix + '\')">Calendar</button>';
   }
 
   html += '</div>';
@@ -744,49 +744,50 @@ function removeLeadFromCurrentView(masterLeadId) {
   if (allIdx !== -1) allMasterLeads.splice(allIdx, 1);
 }
 
-async function cancelLeadAction(masterLeadId, idPrefix) {
-  var data = await applyPipelineFieldUpdate(masterLeadId, { 'Pipeline Stage': 'Canceled' });
-  if (!data.ok) { alert('Could not cancel: ' + (data.error || 'unknown error')); return; }
-
-  // Only remove from view if the CURRENT department is one where a
-  // canceled lead shouldn't appear (Active) -- if already viewing
-  // Canceled/Done/All, the lead correctly stays visible.
-  var dept = qs('department-select') ? qs('department-select').value : 'active';
-  if (dept === 'active') {
-    removeLeadFromCurrentView(masterLeadId);
-    if (leads.length === 0) { applyFilters(); return; }
-    renderQueueView();
-  } else {
-    var lead = findLeadById(masterLeadId);
-    if (lead) lead.fields['Pipeline Stage'] = 'Canceled';
-    renderQueueView();
-  }
-  if (!qs('detail-modal').classList.contains('hidden')) closeDetailModal();
+// Maps a department filter value to which Pipeline Stage(s) belong
+// in that view -- used to decide whether a lead should disappear
+// from the CURRENT view after its stage changes (works correctly no
+// matter which department you're currently looking at, not just the
+// original Active-only case).
+function stageBelongsInDepartment(stage, dept) {
+  if (dept === 'all') return true;
+  if (dept === 'active') return stage === 'Active';
+  if (dept === 'canceled') return stage === 'Canceled';
+  if (dept === 'done') return stage === 'Done Deal';
+  return true;
 }
 
-async function bookLeadAction(masterLeadId, idPrefix) {
-  var data = await applyPipelineFieldUpdate(masterLeadId, { 'Pipeline Stage': 'Done Deal' });
-  if (!data.ok) { alert('Could not mark as a deal: ' + (data.error || 'unknown error')); return; }
+async function applyPipelineStageChange(masterLeadId, idPrefix, newStage) {
+  var data = await applyPipelineFieldUpdate(masterLeadId, { 'Pipeline Stage': newStage === 'Active' ? '' : newStage });
+  if (!data.ok) { alert('Could not update: ' + (data.error || 'unknown error')); return; }
 
   var dept = qs('department-select') ? qs('department-select').value : 'active';
-  if (dept === 'active') {
+  if (!stageBelongsInDepartment(newStage, dept)) {
     removeLeadFromCurrentView(masterLeadId);
     if (leads.length === 0) { applyFilters(); return; }
-    renderQueueView();
   } else {
     var lead = findLeadById(masterLeadId);
-    if (lead) lead.fields['Pipeline Stage'] = 'Done Deal';
-    renderQueueView();
+    if (lead) lead.fields['Pipeline Stage'] = newStage === 'Active' ? '' : newStage;
   }
-  if (!qs('detail-modal').classList.contains('hidden')) closeDetailModal();
-}
-
-async function quoteLeadAction(masterLeadId, idPrefix) {
-  var data = await applyPipelineFieldUpdate(masterLeadId, { 'Quote Sent': 'Yes' });
-  if (!data.ok) { alert('Could not mark as quoted: ' + (data.error || 'unknown error')); return; }
-  var lead = findLeadById(masterLeadId);
-  if (lead) lead.fields['Quote Sent'] = 'Yes';
   renderQueueView();
+  if (!qs('detail-modal').classList.contains('hidden')) closeDetailModal();
+}
+
+// Dropdown handler -- reads the newly-selected value directly.
+function pipelineStageChanged(selectEl, masterLeadId, idPrefix) {
+  return applyPipelineStageChange(masterLeadId, idPrefix, selectEl.value);
+}
+
+async function applyQuoteStatusChange(masterLeadId, idPrefix, newValue) {
+  var data = await applyPipelineFieldUpdate(masterLeadId, { 'Quote Sent': newValue === 'Yes' ? 'Yes' : '' });
+  if (!data.ok) { alert('Could not update: ' + (data.error || 'unknown error')); return; }
+  var lead = findLeadById(masterLeadId);
+  if (lead) lead.fields['Quote Sent'] = newValue === 'Yes' ? 'Yes' : '';
+  renderQueueView();
+}
+
+function quoteStatusChanged(selectEl, masterLeadId, idPrefix) {
+  return applyQuoteStatusChange(masterLeadId, idPrefix, selectEl.value);
 }
 
 async function saveAppointmentAction(masterLeadId, idPrefix) {
