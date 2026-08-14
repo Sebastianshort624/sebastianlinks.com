@@ -172,8 +172,19 @@ textarea {
   <!-- STEP 2: the queue itself -->
   <div class="card hidden" id="queue-card">
     <div class="hidden" id="priority-filter-row" style="margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-      <label style="font-size:13px;font-weight:700">Search:</label>
-      <input type="text" id="lead-search-input" oninput="applyFilters()" placeholder="Name, phone, email, tag, resort…" style="padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px;min-width:240px">
+      <label style="font-size:13px;font-weight:700">Search by:</label>
+      <select id="search-field-select" onchange="applyFilters()" style="padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px">
+        <option value="name">Name</option>
+        <option value="phone">Phone</option>
+        <option value="email">Email</option>
+        <option value="tag">Tag</option>
+        <option value="resort">Resort</option>
+        <option value="language">Language</option>
+        <option value="state">State</option>
+        <option value="lead_status">Lead Status</option>
+        <option value="main_objection">Main Objection</option>
+      </select>
+      <input type="text" id="lead-search-input" oninput="applyFilters()" placeholder="Search…" style="padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px;min-width:220px">
       <label style="font-size:13px;font-weight:700">Priority Filter:</label>
       <select id="priority-filter-select" onchange="applyFilters()" style="padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px">
         <option value="ALL">All</option>
@@ -431,36 +442,54 @@ function priorityRank(fields) {
   return PRIORITY_SORT_RANK.hasOwnProperty(v) ? PRIORITY_SORT_RANK[v] : 5; // blank/unrecognized sorts last
 }
 
-// Searches across the fields a person would actually search a lead
-// by. Case-insensitive substring match; phone matching strips
-// formatting on both sides so "860-416-5577" and "8604165577" both
-// match typing either way.
-function leadMatchesSearch(lead, query) {
+// Searches exactly one selected field — not a blended "search
+// everything" match. "resort" checks all 4 resort slots (R1-R4),
+// since a lead's resort could be in any of them; "phone" checks
+// both Phone and Secondary Phone, matching regardless of formatting.
+function leadMatchesSearch(lead, query, fieldKey) {
   if (!query) return true;
   var q = query.trim().toLowerCase();
   if (!q) return true;
   var f = lead.fields || {};
 
-  var textFields = [f['Lead Name'], f['Email'], f['Tag'], f['R1-Resort Name'], f['State'], f['Lead Status'], f['Main Objection']];
-  for (var i = 0; i < textFields.length; i++) {
-    if (textFields[i] && String(textFields[i]).toLowerCase().indexOf(q) !== -1) return true;
+  function textMatch(val) {
+    return !!val && String(val).toLowerCase().indexOf(q) !== -1;
+  }
+  function phoneMatch(val) {
+    var qDigits = q.replace(/\D/g, '');
+    if (!qDigits) return false;
+    var digits = (val || '').replace(/\D/g, '');
+    return !!digits && digits.indexOf(qDigits) !== -1;
   }
 
-  var qDigits = q.replace(/\D/g, '');
-  if (qDigits) {
-    var phoneCandidates = [lead.phone, f['Phone'], f['Secondary Phone']];
-    for (var j = 0; j < phoneCandidates.length; j++) {
-      var digits = (phoneCandidates[j] || '').replace(/\D/g, '');
-      if (digits && digits.indexOf(qDigits) !== -1) return true;
-    }
+  switch (fieldKey) {
+    case 'name':
+      return textMatch(f['Lead Name']);
+    case 'phone':
+      return phoneMatch(lead.phone) || phoneMatch(f['Phone']) || phoneMatch(f['Secondary Phone']);
+    case 'email':
+      return textMatch(f['Email']);
+    case 'tag':
+      return textMatch(f['Tag']);
+    case 'resort':
+      return textMatch(f['R1-Resort Name']) || textMatch(f['R2-Resort Name']) || textMatch(f['R3-Resort Name']) || textMatch(f['R4-Resort Name']);
+    case 'language':
+      return textMatch(f['Preferred Language']);
+    case 'state':
+      return textMatch(f['State']);
+    case 'lead_status':
+      return textMatch(f['Lead Status']);
+    case 'main_objection':
+      return textMatch(f['Main Objection']);
+    default:
+      return textMatch(f['Lead Name']);
   }
-
-  return false;
 }
 
 function applyFilters() {
   var priorityVal = qs('priority-filter-select').value;
   var searchVal = qs('lead-search-input').value;
+  var searchField = qs('search-field-select').value;
 
   var filtered = allMasterLeads.filter(function(l) {
     if (priorityVal !== 'ALL') {
@@ -468,7 +497,7 @@ function applyFilters() {
       var priorityMatch = priorityVal === 'BLANK' ? !PRIORITY_SORT_RANK.hasOwnProperty(v) : v === priorityVal;
       if (!priorityMatch) return false;
     }
-    return leadMatchesSearch(l, searchVal);
+    return leadMatchesSearch(l, searchVal, searchField);
   });
 
   // Stable sort by priority rank — this is what makes the DISPLAYED
