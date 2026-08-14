@@ -28,6 +28,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background: var(--bg);
   color: var(--text);
+  font-size: 17px;
 }
 .wrap { max-width: 720px; margin: 0 auto; padding: 32px 20px 60px; }
 .wrap.wide-view { max-width: 96vw; }
@@ -41,19 +42,19 @@ h1 { font-size: 22px; margin: 0 0 4px; }
   margin-bottom: 22px;
   box-shadow: 0 2px 8px rgba(0,0,0,.04);
 }
-.notice { padding: 14px 16px; border-radius: 10px; font-size: 14px; margin-bottom: 16px; }
+.notice { padding: 14px 16px; border-radius: 10px; font-size: 16px; margin-bottom: 16px; }
 .notice.info { background: var(--soft-blue); color: #174a8b; }
 .notice.warning { background: var(--soft-yellow); color: var(--warning); }
 .notice.error { background: var(--soft-red); color: var(--danger); }
 .notice.success { background: var(--soft-green); color: var(--success); }
-label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+label { display: block; font-size: 16px; color: var(--muted); margin-bottom: 4px; }
 input[type=number], input[type=text] {
   width: 100%; padding: 10px 12px; border: 1px solid var(--border);
-  border-radius: 8px; font-size: 14px; margin-bottom: 12px;
+  border-radius: 8px; font-size: 16px; margin-bottom: 12px;
 }
 .count-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
 button {
-  font-size: 14px; font-weight: 600; padding: 11px 18px; border-radius: 8px;
+  font-size: 16px; font-weight: 600; padding: 11px 18px; border-radius: 8px;
   border: none; cursor: pointer;
 }
 .btn-primary { background: var(--primary); color: #fff; }
@@ -125,7 +126,7 @@ textarea {
 .modal-close { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; width: 36px; height: 36px; font-size: 18px; cursor: pointer; }
 .modal-body { padding: 20px 24px 28px; }
 .detail-section { margin-bottom: 22px; }
-.detail-section-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); border-bottom: 2px solid var(--border); padding-bottom: 6px; margin-bottom: 10px; }
+.detail-section-title { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); border-bottom: 2px solid var(--border); padding-bottom: 6px; margin-bottom: 10px; }
 .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 20px; }
 .detail-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; padding: 6px 0; border-bottom: 1px solid #f0f2f5; font-size: 13px; }
 .detail-label { color: var(--muted); flex-shrink: 0; max-width: 100%; word-break: break-word; }
@@ -311,7 +312,7 @@ textarea {
     <div class="modal-body">
       <div id="dialer-lead-info" style="text-align:center;padding:12px 0">
         <div id="dialer-lead-name" style="font-size:20px;font-weight:800"></div>
-        <div id="dialer-lead-phone" style="font-size:16px;color:var(--muted);margin-top:4px"></div>
+        <div id="dialer-lead-phone" style="font-size:19px;color:var(--muted);margin-top:4px"></div>
         <button class="btn-secondary" onclick="openDetailModal()" style="margin-top:10px">📋 View Full Lead →</button>
       </div>
       <div id="dialer-status" class="notice info"></div>
@@ -321,32 +322,32 @@ textarea {
         <div id="dialer-disposition-buttons" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
 
         <div id="dialer-voicemail-picker" class="hidden" style="margin-top:12px">
-          <label style="font-size:15px;font-weight:600">Voicemail Message</label>
+          <label style="font-size:18px;font-weight:600">Voicemail Message</label>
           <select id="dialer-voicemail-select" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;margin-top:4px"></select>
         </div>
 
         <div id="dialer-followup-picker" class="hidden" style="margin-top:12px">
-          <label style="font-size:15px;font-weight:600">Follow-Up Date</label>
+          <label style="font-size:18px;font-weight:600">Follow-Up Date</label>
           <input type="date" id="dialer-followup-date" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;margin-top:4px">
-          <label style="font-size:15px;font-weight:600;margin-top:8px;display:block">Time</label>
+          <label style="font-size:18px;font-weight:600;margin-top:8px;display:block">Time</label>
           <select id="dialer-followup-timeofday" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;margin-top:4px"></select>
         </div>
 
         <div id="dialer-appointment-picker" class="hidden" style="margin-top:12px">
-          <label style="font-size:15px;font-weight:600">Appointment Date &amp; Time</label>
+          <label style="font-size:18px;font-weight:600">Appointment Date &amp; Time</label>
           <input type="datetime-local" id="dialer-appointment-datetime" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;margin-top:4px">
         </div>
 
         <div id="dialer-conversation-confirm" class="hidden" style="margin-top:12px;padding:10px;background:var(--soft-yellow);border-radius:8px">
-          <div style="font-size:15px;font-weight:700;margin-bottom:6px">Did an actual two-way conversation occur?</div>
-          <div style="font-size:14px;color:var(--muted);margin-bottom:8px">"Not Interested" can happen either after a real conversation, or from a gatekeeper/snap hangup with no real contact — this determines Contact YES/NO, it isn't assumed.</div>
+          <div style="font-size:18px;font-weight:700;margin-bottom:6px">Did an actual two-way conversation occur?</div>
+          <div style="font-size:17px;color:var(--muted);margin-bottom:8px">"Not Interested" can happen either after a real conversation, or from a gatekeeper/snap hangup with no real contact — this determines Contact YES/NO, it isn't assumed.</div>
           <div style="display:flex;gap:8px">
             <button type="button" class="btn-secondary" id="conv-confirm-yes" onclick="setConversationConfirmation(true)">Yes — we spoke</button>
             <button type="button" class="btn-secondary" id="conv-confirm-no" onclick="setConversationConfirmation(false)">No — never really connected</button>
           </div>
         </div>
 
-        <label style="font-size:15px;font-weight:600;margin-top:12px;display:block">Notes</label>
+        <label style="font-size:18px;font-weight:600;margin-top:12px;display:block">Notes</label>
         <textarea id="dialer-notes" rows="3" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;margin-top:4px"></textarea>
       </div>
     </div>
@@ -698,7 +699,7 @@ async function saveFollowUpFromTable(idx) {
 }
 
 function renderTableView() {
-  var html = '<table style="width:100%;border-collapse:collapse;font-size:15px;background:#fff">';
+  var html = '<table style="width:100%;border-collapse:collapse;font-size:17px;background:#fff">';
   html += '<thead><tr style="border-bottom:2px solid var(--border)">';
   html += '<th style="text-align:left;padding:8px 10px;white-space:nowrap;position:sticky;top:0;background:#fff"></th>';
   TABLE_VIEW_COLUMNS.forEach(function(col) {
@@ -727,7 +728,7 @@ function renderTableView() {
         var opts = ['', 'A', 'B', 'C', 'D', 'F'].map(function(p) {
           return '<option value="' + p + '"' + (p === priority ? ' selected' : '') + '>' + (p || '—') + '</option>';
         }).join('');
-        html += '<td style="padding:4px 6px"><select onchange="saveTableCellEdit(' + idx + ', \'Priority\', this)" style="width:100%;padding:5px 4px;border:1px solid transparent;border-radius:6px;font-size:15px;font-weight:800;color:' + priorityColor + '" onmouseover="this.style.borderColor=\'var(--border)\'" onmouseout="this.style.borderColor=\'transparent\'">' + opts + '</select></td>';
+        html += '<td style="padding:4px 6px"><select onchange="saveTableCellEdit(' + idx + ', \'Priority\', this)" style="width:100%;padding:5px 4px;border:1px solid transparent;border-radius:6px;font-size:17px;font-weight:800;color:' + priorityColor + '" onmouseover="this.style.borderColor=\'var(--border)\'" onmouseout="this.style.borderColor=\'transparent\'">' + opts + '</select></td>';
       } else if (fieldName === 'Follow-Up Date') {
         var parsed = parseFollowUp(rawValue);
         html += '<td style="padding:4px 6px"><div style="display:flex;flex-direction:column;gap:3px;min-width:150px">';
@@ -735,7 +736,7 @@ function renderTableView() {
         html += '<select id="followup-time-' + idx + '" onchange="saveFollowUpFromTable(' + idx + ')" style="padding:4px;border:1px solid var(--border);border-radius:6px;font-size:13px">' + buildTimeOptionsHtml(parsed.timeOfDay) + '</select>';
         html += '</div></td>';
       } else {
-        html += '<td style="padding:4px 6px"><input type="text" value="' + escaped + '" onblur="saveTableCellEdit(' + idx + ', \'' + fieldName.replace(/'/g, "\\'") + '\', this)" style="width:100%;min-width:110px;padding:5px 6px;border:1px solid transparent;border-radius:6px;font-size:15px" onmouseover="this.style.borderColor=\'var(--border)\'" onmouseout="if(document.activeElement!==this) this.style.borderColor=\'transparent\'" onfocus="this.style.borderColor=\'var(--primary)\'"></td>';
+        html += '<td style="padding:4px 6px"><input type="text" value="' + escaped + '" onblur="saveTableCellEdit(' + idx + ', \'' + fieldName.replace(/'/g, "\\'") + '\', this)" style="width:100%;min-width:110px;padding:5px 6px;border:1px solid transparent;border-radius:6px;font-size:17px" onmouseover="this.style.borderColor=\'var(--border)\'" onmouseout="if(document.activeElement!==this) this.style.borderColor=\'transparent\'" onfocus="this.style.borderColor=\'var(--primary)\'"></td>';
       }
     });
     html += '</tr>';
@@ -756,9 +757,9 @@ function renderTableView() {
     html += '<button type="button" class="btn-secondary" onclick="closeTableAddRow()" style="padding:4px 8px;font-size:13px">✕</button>';
     html += '</td>';
     html += '<td></td>'; // Priority -- left blank at creation, editable after
-    html += '<td style="padding:4px 6px"><input type="text" id="table-add-name" placeholder="Lead Name *" style="width:100%;min-width:110px;padding:5px 6px;border:1px solid var(--border);border-radius:6px;font-size:15px"></td>';
+    html += '<td style="padding:4px 6px"><input type="text" id="table-add-name" placeholder="Lead Name *" style="width:100%;min-width:110px;padding:5px 6px;border:1px solid var(--border);border-radius:6px;font-size:17px"></td>';
     html += '<td></td>'; // 2nd Owner
-    html += '<td style="padding:4px 6px"><input type="text" id="table-add-phone" placeholder="Phone *" style="width:100%;min-width:110px;padding:5px 6px;border:1px solid var(--border);border-radius:6px;font-size:15px"></td>';
+    html += '<td style="padding:4px 6px"><input type="text" id="table-add-phone" placeholder="Phone *" style="width:100%;min-width:110px;padding:5px 6px;border:1px solid var(--border);border-radius:6px;font-size:17px"></td>';
     for (var i = 0; i < TABLE_VIEW_COLUMNS.length - 4; i++) html += '<td></td>'; // remaining columns blank at creation, editable right after
     html += '</tr>';
   }
