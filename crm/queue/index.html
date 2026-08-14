@@ -451,6 +451,19 @@ async function loadMasterQueue() {
 
     allMasterLeads = data.leads;
     qs('priority-filter-row').classList.remove('hidden');
+
+    // Reset every filter to its default on a fresh load -- without
+    // this, a filter value left over from earlier (or silently
+    // restored by the browser's own form-state-on-reload behavior)
+    // would stay applied and hide leads that no longer match it,
+    // with no visible indication why. A reload should always show
+    // everything unless the person deliberately re-applies a filter.
+    qs('priority-filter-select').value = 'ALL';
+    qs('lead-search-input').value = '';
+    qs('date-field-select').value = 'none';
+    qs('date-range-from').value = '';
+    qs('date-range-to').value = '';
+
     applyFilters();
   } catch (e) {
     statusEl.textContent = 'Could not reach the CRM API: ' + e.message;
