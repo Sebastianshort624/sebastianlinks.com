@@ -328,6 +328,16 @@ textarea {
         <div id="dialer-followup-picker" class="hidden" style="margin-top:12px">
           <label style="font-size:15px;font-weight:600">Follow-Up Date</label>
           <input type="date" id="dialer-followup-date" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;margin-top:4px">
+          <label style="font-size:15px;font-weight:600;margin-top:8px;display:block">Time</label>
+          <select id="dialer-followup-timeofday" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;margin-top:4px">
+            <option value="">(no specific time)</option>
+            <option value="Early Morning">Early Morning</option>
+            <option value="Late Morning">Late Morning</option>
+            <option value="Noon">Noon</option>
+            <option value="Afternoon">Afternoon</option>
+            <option value="Evening">Evening</option>
+            <option value="Night">Night</option>
+          </select>
         </div>
 
         <div id="dialer-appointment-picker" class="hidden" style="margin-top:12px">
@@ -616,6 +626,38 @@ var TABLE_VIEW_COLUMNS = [
   ['State', 'State']
 ];
 
+// ── Follow-Up Date + time-of-day. Stored as a single string in the
+// existing "Follow-Up Date" field ("2026-08-20" or "2026-08-20,
+// Afternoon") -- no schema change, and every existing date parser
+// (call-priority due-today check, the date-range filter) already
+// matches only the YYYY-MM-DD prefix, so a trailing time-of-day
+// label is silently ignored by anything that doesn't know about it. ──
+var TIME_OF_DAY_OPTIONS = ['', 'Early Morning', 'Late Morning', 'Noon', 'Afternoon', 'Evening', 'Night'];
+
+function parseFollowUp(raw) {
+  var s = (raw || '').trim();
+  var m = s.match(/^(\d{4}-\d{2}-\d{2})\s*,?\s*(.*)$/);
+  if (!m) return { date: '', timeOfDay: '' };
+  var timeOfDay = TIME_OF_DAY_OPTIONS.indexOf(m[2].trim()) !== -1 ? m[2].trim() : '';
+  return { date: m[1], timeOfDay: timeOfDay };
+}
+
+function combineFollowUp(date, timeOfDay) {
+  if (!date) return '';
+  return timeOfDay ? (date + ', ' + timeOfDay) : date;
+}
+
+async function saveFollowUpFromTable(idx) {
+  var dateInput = document.getElementById('followup-date-' + idx);
+  var timeSelect = document.getElementById('followup-time-' + idx);
+  var combined = combineFollowUp(dateInput.value, timeSelect.value);
+  // Reuse the existing single-cell save path -- a fake input-like
+  // object with just the .value the save function actually reads.
+  // Properly awaited/returned so callers see the save actually
+  // complete, not just the synchronous part of it.
+  return saveTableCellEdit(idx, 'Follow-Up Date', { value: combined });
+}
+
 function renderTableView() {
   var html = '<table style="width:100%;border-collapse:collapse;font-size:15px;background:#fff">';
   html += '<thead><tr style="border-bottom:2px solid var(--border)">';
@@ -647,6 +689,15 @@ function renderTableView() {
           return '<option value="' + p + '"' + (p === priority ? ' selected' : '') + '>' + (p || '—') + '</option>';
         }).join('');
         html += '<td style="padding:4px 6px"><select onchange="saveTableCellEdit(' + idx + ', \'Priority\', this)" style="width:100%;padding:5px 4px;border:1px solid transparent;border-radius:6px;font-size:15px;font-weight:800;color:' + priorityColor + '" onmouseover="this.style.borderColor=\'var(--border)\'" onmouseout="this.style.borderColor=\'transparent\'">' + opts + '</select></td>';
+      } else if (fieldName === 'Follow-Up Date') {
+        var parsed = parseFollowUp(rawValue);
+        var timeOpts = TIME_OF_DAY_OPTIONS.map(function(t) {
+          return '<option value="' + t + '"' + (t === parsed.timeOfDay ? ' selected' : '') + '>' + (t || '(no time)') + '</option>';
+        }).join('');
+        html += '<td style="padding:4px 6px"><div style="display:flex;flex-direction:column;gap:3px;min-width:150px">';
+        html += '<input type="date" id="followup-date-' + idx + '" value="' + parsed.date + '" onchange="saveFollowUpFromTable(' + idx + ')" style="padding:4px;border:1px solid var(--border);border-radius:6px;font-size:13px">';
+        html += '<select id="followup-time-' + idx + '" onchange="saveFollowUpFromTable(' + idx + ')" style="padding:4px;border:1px solid var(--border);border-radius:6px;font-size:13px">' + timeOpts + '</select>';
+        html += '</div></td>';
       } else {
         html += '<td style="padding:4px 6px"><input type="text" value="' + escaped + '" onblur="saveTableCellEdit(' + idx + ', \'' + fieldName.replace(/'/g, "\\'") + '\', this)" style="width:100%;min-width:110px;padding:5px 6px;border:1px solid transparent;border-radius:6px;font-size:15px" onmouseover="this.style.borderColor=\'var(--border)\'" onmouseout="if(document.activeElement!==this) this.style.borderColor=\'transparent\'" onfocus="this.style.borderColor=\'var(--primary)\'"></td>';
       }
@@ -2462,7 +2513,7 @@ async function saveDispositionAndAdvance() {
     notes: qs('dialer-notes').value
   };
   if (dialerSelectedDisposition === 'Call Back' || dialerSelectedDisposition === 'Follow-Up') {
-    payload.follow_up_date = qs('dialer-followup-date').value;
+    payload.follow_up_date = combineFollowUp(qs('dialer-followup-date').value, qs('dialer-followup-timeofday').value);
   }
   if (dialerSelectedDisposition === 'Appointment') {
     payload.appointment_datetime = qs('dialer-appointment-datetime').value;
