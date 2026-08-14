@@ -207,14 +207,26 @@ textarea {
       <input type="date" id="date-range-from" onchange="applyFilters()" style="padding:6px 8px;border:1px solid var(--border);border-radius:8px;font-size:13px">
       <span style="font-size:13px;color:var(--muted)">to</span>
       <input type="date" id="date-range-to" onchange="applyFilters()" style="padding:6px 8px;border:1px solid var(--border);border-radius:8px;font-size:13px">
+      <label style="font-size:13px;font-weight:700">Department:</label>
+      <select id="department-select" onchange="loadMasterQueue()" style="padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px">
+        <option value="active">Active</option>
+        <option value="canceled">Canceled Deals</option>
+        <option value="done">Done Deals</option>
+        <option value="all">All</option>
+      </select>
       <label style="font-size:13px;font-weight:700;margin-left:auto">View:</label>
       <button type="button" class="btn-secondary active-view" id="view-toggle-single" onclick="setQueueView('single')" style="padding:6px 12px">📋 Single</button>
       <button type="button" class="btn-secondary" id="view-toggle-table" onclick="setQueueView('table')" style="padding:6px 12px">📊 Table</button>
     </div>
     <div id="queue-empty" class="notice warning hidden">This upload has no clean (non-duplicate, non-rejected) leads to call.</div>
     <div id="queue-body" class="hidden">
-      <div class="progress" id="progress-text">Lead 1 of 100</div>
-      <div class="lead-name" id="lead-name">—</div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap">
+        <div>
+          <div class="progress" id="progress-text">Lead 1 of 100</div>
+          <div class="lead-name" id="lead-name">—</div>
+        </div>
+        <div id="single-view-actions"></div>
+      </div>
       <div id="lead-fields"></div>
       <button class="btn-secondary detail-btn" onclick="openDetailModal()">📋 View Full Lead →</button>
       <label style="margin-top:16px">Disposition / Notes (not saved yet — recording comes in a later phase)</label>
@@ -422,11 +434,12 @@ async function init() {
 
 async function loadMasterQueue() {
   var statusEl = qs('find-upload-status');
-  statusEl.textContent = 'Loading master leads (not contacted, valid phone)…';
+  var department = qs('department-select') ? qs('department-select').value : 'active';
+  statusEl.textContent = 'Loading master leads (' + department + ')…';
   statusEl.className = 'notice info';
 
   try {
-    var resp = await fetch(API_BASE + '/api/import/queue?source=master', { headers: authHeaders() });
+    var resp = await fetch(API_BASE + '/api/import/queue?source=master&department=' + encodeURIComponent(department), { headers: authHeaders() });
     if (resp.status === 401) { rejectPassphrase(); return; }
     var data = await resp.json();
 
@@ -445,12 +458,14 @@ async function loadMasterQueue() {
     allMasterLeads = data.leads;
     qs('priority-filter-row').classList.remove('hidden');
 
-    // Reset every filter to its default on a fresh load -- without
+    // Reset search/priority/date filters on a fresh load -- without
     // this, a filter value left over from earlier (or silently
     // restored by the browser's own form-state-on-reload behavior)
     // would stay applied and hide leads that no longer match it,
-    // with no visible indication why. A reload should always show
-    // everything unless the person deliberately re-applies a filter.
+    // with no visible indication why. Department is deliberately NOT
+    // reset here -- this function is what actually LOADS a specific
+    // department (called on dropdown change), so resetting it would
+    // immediately undo the person's own selection.
     qs('priority-filter-select').value = 'ALL';
     qs('lead-search-input').value = '';
     qs('date-field-select').value = 'none';
@@ -625,6 +640,184 @@ function renderQueueView() {
 // blue button, consistently, everywhere.
 var PHONE_ICON_SVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="white" style="vertical-align:middle"><path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.02-.24 11.36 11.36 0 003.57.57 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11.36 11.36 0 00.57 3.57 1 1 0 01-.25 1.02l-2.2 2.2z"/></svg>';
 
+/* ================================================================
+   PIPELINE ACTION BUTTONS -- Cancel / Book->Deal / Save /
+   Quote->Quoted / Calendar->Appointment Set. One shared builder used
+   in Single view, Full Lead Detail, and per-row in Table view.
+   idPrefix keeps element IDs unique across the 3 contexts (e.g.
+   "single", "detail", "row-3") since all can render at once.
+   ================================================================ */
+
+function buildActionButtonsHtml(masterLeadId, fields, idPrefix, size, skipSave) {
+  var isCanceled = (fields['Pipeline Stage'] || '').trim() === 'Canceled';
+  var isDone = (fields['Pipeline Stage'] || '').trim() === 'Done Deal';
+  var isQuoted = (fields['Quote Sent'] || '').trim() === 'Yes';
+  var apptRaw = (fields['Appointment Date & Time'] || '').trim();
+
+  var btnStyle = size === 'small'
+    ? 'padding:5px 10px;font-size:12px;font-weight:700;border-radius:8px'
+    : 'padding:10px 18px;font-size:15px;font-weight:800;border-radius:10px';
+
+  var html = '<div class="action-btn-row" id="action-row-' + idPrefix + '" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">';
+
+  // Cancel -- moves the lead to the Canceled Deals department. No
+  // persistent "Canceled" label on the button itself: the lead
+  // disappears from the current (Active) view entirely once clicked,
+  // per the explicit spec ("moves it, don't just relabel it").
+  html += '<button type="button" class="btn-secondary" style="' + btnStyle + ';border:2px solid var(--danger);color:var(--danger)" onclick="cancelLeadAction(\'' + masterLeadId + '\', \'' + idPrefix + '\')"' + (isCanceled ? ' disabled' : '') + '>' + (isCanceled ? 'Canceled' : 'Cancel') + '</button>';
+
+  // Book -> Deal
+  if (isDone) {
+    html += '<button type="button" class="btn-primary" style="' + btnStyle + ';background:#1a56db" disabled>Deal</button>';
+  } else {
+    html += '<button type="button" class="btn-primary" style="' + btnStyle + ';background:var(--success)" onclick="bookLeadAction(\'' + masterLeadId + '\', \'' + idPrefix + '\')">Book</button>';
+  }
+
+  // Save -- skipped where a dedicated Save button already exists
+  // (Table rows have their own tested per-row Save already)
+  if (!skipSave) {
+    html += '<button type="button" class="btn-primary" style="' + btnStyle + '" onclick="saveLeadAction(\'' + masterLeadId + '\', \'' + idPrefix + '\')">Save</button>';
+  }
+
+  // Quote -> Quoted
+  if (isQuoted) {
+    html += '<button type="button" class="btn-secondary" style="' + btnStyle + '" disabled>Quoted</button>';
+  } else {
+    html += '<button type="button" class="btn-secondary" style="' + btnStyle + '" onclick="quoteLeadAction(\'' + masterLeadId + '\', \'' + idPrefix + '\')">Quote</button>';
+  }
+
+  // Calendar -> Appointment Set (shows the next appointment)
+  if (apptRaw) {
+    var apptDiv = document.createElement('div'); apptDiv.textContent = apptRaw;
+    html += '<button type="button" class="btn-secondary" style="' + btnStyle + '" onclick="toggleAppointmentPicker(\'' + idPrefix + '\')" title="Click to change">Appointment Set: ' + apptDiv.innerHTML + '</button>';
+  } else {
+    html += '<button type="button" class="btn-secondary" style="' + btnStyle + '" onclick="toggleAppointmentPicker(\'' + idPrefix + '\')">Calendar</button>';
+  }
+
+  html += '</div>';
+
+  // Inline appointment picker -- hidden until Calendar is clicked,
+  // matching the same date + time-of-day pattern as Follow-Up Date.
+  var apptParsed = parseFollowUp(apptRaw);
+  html += '<div class="hidden" id="appt-picker-' + idPrefix + '" style="margin-top:8px;padding:10px;background:var(--soft-blue);border-radius:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">';
+  html += '<input type="date" id="appt-date-' + idPrefix + '" value="' + apptParsed.date + '" style="padding:6px;border:1px solid var(--border);border-radius:6px">';
+  html += '<select id="appt-time-' + idPrefix + '" style="padding:6px;border:1px solid var(--border);border-radius:6px">' + buildTimeOptionsHtml(apptParsed.timeOfDay) + '</select>';
+  html += '<button type="button" class="btn-primary" onclick="saveAppointmentAction(\'' + masterLeadId + '\', \'' + idPrefix + '\')" style="padding:6px 12px;font-size:13px">Set</button>';
+  html += '</div>';
+
+  return html;
+}
+
+function toggleAppointmentPicker(idPrefix) {
+  qs('appt-picker-' + idPrefix).classList.toggle('hidden');
+}
+
+// Finds a lead by master_lead_id across whichever array currently
+// holds it -- Cancel/Book/Quote/Appointment actions can be triggered
+// from contexts (table row, single view, detail) where the lead might
+// only be in `leads`, or might also be in `allMasterLeads`.
+function findLeadById(masterLeadId) {
+  return leads.find(function(l) { return l.master_lead_id === masterLeadId; })
+    || allMasterLeads.find(function(l) { return l.master_lead_id === masterLeadId; });
+}
+
+async function applyPipelineFieldUpdate(masterLeadId, fieldUpdates) {
+  var resp = await fetch(API_BASE + '/api/import/master-lead/update', {
+    method: 'POST', headers: authHeaders(),
+    body: JSON.stringify({ master_lead_id: masterLeadId, updates: fieldUpdates })
+  });
+  return resp.json();
+}
+
+// Removes a lead from the CURRENT working arrays after it moves to a
+// different department (Canceled/Done) -- it no longer belongs in an
+// Active-department view. Never deletes anything server-side; the
+// lead remains fully reachable via the Department filter or a search
+// that includes department=all.
+function removeLeadFromCurrentView(masterLeadId) {
+  var leadIdx = leads.findIndex(function(l) { return l.master_lead_id === masterLeadId; });
+  if (leadIdx !== -1) {
+    leads.splice(leadIdx, 1);
+    if (currentIndex >= leads.length) currentIndex = Math.max(0, leads.length - 1);
+  }
+  var allIdx = allMasterLeads.findIndex(function(l) { return l.master_lead_id === masterLeadId; });
+  if (allIdx !== -1) allMasterLeads.splice(allIdx, 1);
+}
+
+async function cancelLeadAction(masterLeadId, idPrefix) {
+  var data = await applyPipelineFieldUpdate(masterLeadId, { 'Pipeline Stage': 'Canceled' });
+  if (!data.ok) { alert('Could not cancel: ' + (data.error || 'unknown error')); return; }
+
+  // Only remove from view if the CURRENT department is one where a
+  // canceled lead shouldn't appear (Active) -- if already viewing
+  // Canceled/Done/All, the lead correctly stays visible.
+  var dept = qs('department-select') ? qs('department-select').value : 'active';
+  if (dept === 'active') {
+    removeLeadFromCurrentView(masterLeadId);
+    if (leads.length === 0) { applyFilters(); return; }
+    renderQueueView();
+  } else {
+    var lead = findLeadById(masterLeadId);
+    if (lead) lead.fields['Pipeline Stage'] = 'Canceled';
+    renderQueueView();
+  }
+  if (!qs('detail-modal').classList.contains('hidden')) closeDetailModal();
+}
+
+async function bookLeadAction(masterLeadId, idPrefix) {
+  var data = await applyPipelineFieldUpdate(masterLeadId, { 'Pipeline Stage': 'Done Deal' });
+  if (!data.ok) { alert('Could not mark as a deal: ' + (data.error || 'unknown error')); return; }
+
+  var dept = qs('department-select') ? qs('department-select').value : 'active';
+  if (dept === 'active') {
+    removeLeadFromCurrentView(masterLeadId);
+    if (leads.length === 0) { applyFilters(); return; }
+    renderQueueView();
+  } else {
+    var lead = findLeadById(masterLeadId);
+    if (lead) lead.fields['Pipeline Stage'] = 'Done Deal';
+    renderQueueView();
+  }
+  if (!qs('detail-modal').classList.contains('hidden')) closeDetailModal();
+}
+
+async function quoteLeadAction(masterLeadId, idPrefix) {
+  var data = await applyPipelineFieldUpdate(masterLeadId, { 'Quote Sent': 'Yes' });
+  if (!data.ok) { alert('Could not mark as quoted: ' + (data.error || 'unknown error')); return; }
+  var lead = findLeadById(masterLeadId);
+  if (lead) lead.fields['Quote Sent'] = 'Yes';
+  renderQueueView();
+}
+
+async function saveAppointmentAction(masterLeadId, idPrefix) {
+  var dateVal = qs('appt-date-' + idPrefix).value;
+  var timeVal = qs('appt-time-' + idPrefix).value;
+  if (!dateVal) { alert('Pick a date first.'); return; }
+  var combined = combineFollowUp(dateVal, timeVal);
+  var data = await applyPipelineFieldUpdate(masterLeadId, { 'Appointment Date & Time': combined });
+  if (!data.ok) { alert('Could not set the appointment: ' + (data.error || 'unknown error')); return; }
+  var lead = findLeadById(masterLeadId);
+  if (lead) lead.fields['Appointment Date & Time'] = combined;
+  renderQueueView();
+}
+
+// Save's exact behavior depends on WHERE it was clicked from -- each
+// context already has its own tested save mechanism; this is a
+// context-aware dispatcher, not a new save path.
+async function saveLeadAction(masterLeadId, idPrefix) {
+  if (idPrefix === 'detail') {
+    await saveMasterLeadEdits();
+  } else if (idPrefix.indexOf('row-') === 0) {
+    var rowIdx = parseInt(idPrefix.replace('row-', ''), 10);
+    await saveTableRow(rowIdx);
+  } else {
+    // Single view has no other inline-editable fields today -- Cancel/
+    // Book/Quote/Appointment already save themselves immediately on
+    // click, so there is genuinely nothing else pending here.
+    alert('Nothing else to save here — Cancel, Book, Quote, and Appointment save immediately when clicked.');
+  }
+}
+
 var TABLE_VIEW_COLUMNS = [
   ['Priority', 'Priority'],
   ['Lead Name', 'Lead Name'],
@@ -720,10 +913,13 @@ function renderTableView() {
     var priorityColor = { A: '#16803c', B: '#4f8a2f', C: '#a15c00', D: '#c2410c', F: '#b42318' }[priority] || 'var(--muted)';
 
     html += '<tr style="border-bottom:1px solid var(--border)" data-row-idx="' + idx + '">';
-    html += '<td style="padding:6px 8px;white-space:nowrap">';
+    html += '<td style="padding:6px 8px;min-width:280px">';
+    html += '<div style="white-space:nowrap;margin-bottom:4px">';
     html += '<button type="button" class="btn-secondary" onclick="openLeadFromTable(' + idx + ')" style="padding:4px 8px;font-size:13px;margin-right:4px">Open →</button>';
     html += '<button type="button" class="btn-primary" onclick="dialLeadFromTable(' + idx + ')" style="padding:4px 8px;margin-right:4px" title="Call this lead">' + PHONE_ICON_SVG + '</button>';
     html += '<button type="button" class="btn-primary" onclick="saveTableRow(' + idx + ')" style="padding:4px 8px;font-size:13px" title="Save this row">💾 Save</button>';
+    html += '</div>';
+    html += buildActionButtonsHtml(lead.master_lead_id, f, 'row-' + idx, 'small', true);
     html += '</td>';
 
     TABLE_VIEW_COLUMNS.forEach(function(col) {
@@ -2154,7 +2350,7 @@ async function openDetailModal() {
 
 function renderWorkspaceShell() {
   var lead = leads[currentIndex];
-  var glanceBarHtml = renderGlanceBar(lead.fields || {});
+  var glanceBarHtml = renderGlanceBar(lead.fields || {}, lead.master_lead_id);
   var leftNavHtml = renderWorkspaceLeftNav();
   var rightPanelHtml = renderWorkspaceRightPanel(lead);
 
@@ -2270,7 +2466,7 @@ function renderWorkspaceCenter() {
   });
 }
 
-function renderGlanceBar(f) {
+function renderGlanceBar(f, masterLeadId) {
   var rawLang = (f['Preferred Language'] || '').trim().toLowerCase();
   var langValue = rawLang.indexOf('span') !== -1 ? 'Span' : (rawLang.indexOf('eng') !== -1 ? 'Eng' : '');
   var langOpts = [['', 'Lang'], ['Eng', 'Eng'], ['Span', 'Span']].map(function(o) {
@@ -2306,6 +2502,7 @@ function renderGlanceBar(f) {
   html += '<div class="glance-item"><div class="glance-label">Priority</div><div class="glance-value"><span class="lead-value-selector" data-field="Priority" data-lead-value="' + currentPriority + '">' + priorityBtns + '</span></div></div>';
   html += '<div class="glance-item"><div class="glance-label">Attempts</div><div class="glance-value" style="padding:4px 8px;background:var(--soft-yellow);border-radius:6px;display:inline-block">' + ((f['Attempts'] || '').trim() || '0') + '</div></div>';
   html += '<div class="glance-item"><div class="glance-label">Status</div><div class="glance-value">' + textField('glance-status', 'Lead Status', f['Lead Status'], '140px') + '</div></div>';
+  html += '<div class="glance-item" style="margin-left:auto">' + buildActionButtonsHtml(masterLeadId, f, 'detail') + '</div>';
   html += '</div>';
   return html;
 }
@@ -2411,6 +2608,7 @@ function renderLead() {
   var lead = leads[currentIndex];
   qs('progress-text').textContent = 'Lead ' + (currentIndex + 1) + ' of ' + leads.length;
   qs('lead-name').textContent = getLeadName(lead);
+  qs('single-view-actions').innerHTML = buildActionButtonsHtml(lead.master_lead_id, lead.fields || {}, 'single');
 
   var fieldsEl = qs('lead-fields');
   fieldsEl.innerHTML = '';
