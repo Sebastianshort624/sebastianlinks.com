@@ -194,7 +194,17 @@ textarea {
         <option value="C">C</option>
         <option value="BLANK">Blank / Unassigned</option>
       </select>
-    </div>
+      <label style="font-size:13px;font-weight:700">Date:</label>
+      <select id="date-field-select" onchange="applyFilters()" style="padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px">
+        <option value="none">Any date</option>
+        <option value="Follow-Up Date">Follow-Up Date</option>
+        <option value="Last Attempt">Last Attempt</option>
+        <option value="Appointment Date & Time">Appointment</option>
+        <option value="Lead-Created-Time">Lead Created</option>
+      </select>
+      <input type="date" id="date-range-from" onchange="applyFilters()" style="padding:6px 8px;border:1px solid var(--border);border-radius:8px;font-size:13px">
+      <span style="font-size:13px;color:var(--muted)">to</span>
+      <input type="date" id="date-range-to" onchange="applyFilters()" style="padding:6px 8px;border:1px solid var(--border);border-radius:8px;font-size:13px">
       <label style="font-size:13px;font-weight:700;margin-left:auto">View:</label>
       <button type="button" class="btn-secondary active-view" id="view-toggle-single" onclick="setQueueView('single')" style="padding:6px 12px">📋 Single</button>
       <button type="button" class="btn-secondary" id="view-toggle-table" onclick="setQueueView('table')" style="padding:6px 12px">📊 Table</button>
@@ -492,10 +502,44 @@ function leadMatchesSearch(lead, query, fieldKey) {
   }
 }
 
+// Parses "YYYY-MM-DD" or a full ISO timestamp ("YYYY-MM-DDTHH:mm:ss...Z")
+// into a comparable calendar-day value (ms at UTC midnight). Only the
+// date portion matters for range filtering -- an appointment time of
+// 2pm still falls "on" that day. Unparseable/blank returns null, and
+// a lead with no value for the selected date field is never treated
+// as falling inside any range (never guessed).
+function parseDateForFilter(raw) {
+  var s = (raw || '').trim();
+  if (!s) return null;
+  var m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!m) return null;
+  return Date.UTC(parseInt(m[1], 10), parseInt(m[2], 10) - 1, parseInt(m[3], 10));
+}
+
+function leadMatchesDateRange(lead, dateField, fromStr, toStr) {
+  if (dateField === 'none' || (!fromStr && !toStr)) return true;
+  var raw = (lead.fields || {})[dateField];
+  var leadDate = parseDateForFilter(raw);
+  if (leadDate === null) return false; // no date on this lead -- can't be "in range"
+
+  if (fromStr) {
+    var from = parseDateForFilter(fromStr);
+    if (from !== null && leadDate < from) return false;
+  }
+  if (toStr) {
+    var to = parseDateForFilter(toStr);
+    if (to !== null && leadDate > to) return false;
+  }
+  return true;
+}
+
 function applyFilters() {
   var priorityVal = qs('priority-filter-select').value;
   var searchVal = qs('lead-search-input').value;
   var searchField = qs('search-field-select').value;
+  var dateField = qs('date-field-select').value;
+  var dateFrom = qs('date-range-from').value;
+  var dateTo = qs('date-range-to').value;
 
   var filtered = allMasterLeads.filter(function(l) {
     if (priorityVal !== 'ALL') {
@@ -503,6 +547,7 @@ function applyFilters() {
       var priorityMatch = priorityVal === 'BLANK' ? !PRIORITY_SORT_RANK.hasOwnProperty(v) : v === priorityVal;
       if (!priorityMatch) return false;
     }
+    if (!leadMatchesDateRange(l, dateField, dateFrom, dateTo)) return false;
     return leadMatchesSearch(l, searchVal, searchField);
   });
 
