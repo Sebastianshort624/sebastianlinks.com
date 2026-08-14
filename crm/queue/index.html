@@ -58,6 +58,7 @@ button {
 .btn-primary { background: var(--primary); color: #fff; }
 .btn-primary:hover { background: var(--primary-dark); }
 .btn-secondary { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+.active-view { background: var(--primary) !important; color: #fff !important; border-color: var(--primary) !important; }
 .btn-secondary:disabled { opacity: .4; cursor: not-allowed; }
 .upload-choice {
   border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px;
@@ -194,6 +195,10 @@ textarea {
         <option value="BLANK">Blank / Unassigned</option>
       </select>
     </div>
+      <label style="font-size:13px;font-weight:700;margin-left:auto">View:</label>
+      <button type="button" class="btn-secondary active-view" id="view-toggle-single" onclick="setQueueView('single')" style="padding:6px 12px">📋 Single</button>
+      <button type="button" class="btn-secondary" id="view-toggle-table" onclick="setQueueView('table')" style="padding:6px 12px">📊 Table</button>
+    </div>
     <div id="queue-empty" class="notice warning hidden">This upload has no clean (non-duplicate, non-rejected) leads to call.</div>
     <div id="queue-body" class="hidden">
       <div class="progress" id="progress-text">Lead 1 of 100</div>
@@ -208,6 +213,7 @@ textarea {
         <button class="btn-primary" id="next-btn" onclick="nextLead()">Next →</button>
       </div>
     </div>
+    <div id="queue-table-view" class="hidden" style="overflow-x:auto"></div>
   </div>
 </div>
 
@@ -509,6 +515,7 @@ function applyFilters() {
 
   if (leads.length === 0) {
     qs('queue-body').classList.add('hidden');
+    qs('queue-table-view').classList.add('hidden');
     var searchVal2 = qs('lead-search-input').value.trim();
     qs('queue-empty').textContent = searchVal2
       ? 'No leads match "' + searchVal2 + '"' + (priorityVal !== 'ALL' ? ' with this Priority filter.' : '.')
@@ -519,8 +526,87 @@ function applyFilters() {
     return;
   }
   qs('queue-empty').classList.add('hidden');
-  qs('queue-body').classList.remove('hidden');
-  renderLead();
+  renderQueueView();
+}
+
+// ── View toggle: single-lead focus vs. multi-lead table. Both read
+// from the SAME filtered `leads` array, so search/priority filters
+// apply identically in either view -- switching views never changes
+// which leads are shown, only how. ──
+var currentQueueView = 'single';
+
+function setQueueView(view) {
+  currentQueueView = view;
+  qs('view-toggle-single').classList.toggle('active-view', view === 'single');
+  qs('view-toggle-table').classList.toggle('active-view', view === 'table');
+  renderQueueView();
+}
+
+function renderQueueView() {
+  if (leads.length === 0) return; // empty state already shown by applyFilters
+  if (currentQueueView === 'table') {
+    qs('queue-body').classList.add('hidden');
+    qs('queue-table-view').classList.remove('hidden');
+    renderTableView();
+  } else {
+    qs('queue-table-view').classList.add('hidden');
+    qs('queue-body').classList.remove('hidden');
+    renderLead();
+  }
+}
+
+var TABLE_VIEW_COLUMNS = [
+  ['Priority', 'Priority'],
+  ['Lead Name', 'Lead Name'],
+  ['2nd Owner', '2nd Owner'],
+  ['Phone', null], // special-cased below (falls back to lead.phone)
+  ['Lead Status', 'Lead Status'],
+  ['Resort', 'R1-Resort Name'],
+  ['Attempts', 'Attempts'],
+  ['Last Attempt', 'Last Attempt'],
+  ['Follow-Up', 'Follow-Up Date'],
+  ['Tag', 'Tag'],
+  ['State', 'State']
+];
+
+function renderTableView() {
+  var html = '<table style="width:100%;border-collapse:collapse;font-size:13px;background:#fff">';
+  html += '<thead><tr style="border-bottom:2px solid var(--border)">';
+  TABLE_VIEW_COLUMNS.forEach(function(col) {
+    html += '<th style="text-align:left;padding:8px 10px;white-space:nowrap;position:sticky;top:0;background:#fff">' + col[0] + '</th>';
+  });
+  html += '</tr></thead><tbody>';
+
+  leads.forEach(function(lead, idx) {
+    var f = lead.fields || {};
+    var priority = (f['Priority'] || '').trim().toUpperCase();
+    var priorityColor = { A: '#16803c', B: '#4f8a2f', C: '#a15c00', D: '#c2410c', F: '#b42318' }[priority] || 'var(--muted)';
+    html += '<tr style="border-bottom:1px solid var(--border);cursor:pointer" onclick="openLeadFromTable(' + idx + ')" onmouseover="this.style.background=\'var(--soft-blue)\'" onmouseout="this.style.background=\'\'">';
+    TABLE_VIEW_COLUMNS.forEach(function(col) {
+      var div = document.createElement('div');
+      var value;
+      if (col[0] === 'Phone') {
+        value = lead.phone || f['Phone'] || '';
+      } else if (col[0] === 'Priority') {
+        div.textContent = priority || '—';
+        html += '<td style="padding:8px 10px;white-space:nowrap;font-weight:800;color:' + priorityColor + '">' + div.innerHTML + '</td>';
+        return;
+      } else {
+        value = f[col[1]] || '';
+      }
+      div.textContent = value;
+      html += '<td style="padding:8px 10px;white-space:nowrap;max-width:220px;overflow:hidden;text-overflow:ellipsis">' + div.innerHTML + '</td>';
+    });
+    html += '</tr>';
+  });
+
+  html += '</tbody></table>';
+  qs('queue-table-view').innerHTML = html;
+}
+
+function openLeadFromTable(idx) {
+  currentIndex = idx;
+  openDetailModal();
 }
 
 async function browseRecent() {
