@@ -618,6 +618,13 @@ function renderQueueView() {
   }
 }
 
+// Clean white phone icon (SVG, not an emoji) -- the phone emoji
+// renders with its own baked-in colors depending on the OS/browser's
+// emoji font (often showing red/orange accents), which can't be
+// controlled with CSS. This guarantees a plain white icon on the
+// blue button, consistently, everywhere.
+var PHONE_ICON_SVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="white" style="vertical-align:middle"><path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.02-.24 11.36 11.36 0 003.57.57 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11.36 11.36 0 00.57 3.57 1 1 0 01-.25 1.02l-2.2 2.2z"/></svg>';
+
 var TABLE_VIEW_COLUMNS = [
   ['Priority', 'Priority'],
   ['Lead Name', 'Lead Name'],
@@ -712,10 +719,11 @@ function renderTableView() {
     var priority = (f['Priority'] || '').trim().toUpperCase();
     var priorityColor = { A: '#16803c', B: '#4f8a2f', C: '#a15c00', D: '#c2410c', F: '#b42318' }[priority] || 'var(--muted)';
 
-    html += '<tr style="border-bottom:1px solid var(--border)">';
+    html += '<tr style="border-bottom:1px solid var(--border)" data-row-idx="' + idx + '">';
     html += '<td style="padding:6px 8px;white-space:nowrap">';
     html += '<button type="button" class="btn-secondary" onclick="openLeadFromTable(' + idx + ')" style="padding:4px 8px;font-size:13px;margin-right:4px">Open →</button>';
-    html += '<button type="button" class="btn-primary" onclick="dialLeadFromTable(' + idx + ')" style="padding:4px 8px;font-size:13px" title="Call this lead">📞</button>';
+    html += '<button type="button" class="btn-primary" onclick="dialLeadFromTable(' + idx + ')" style="padding:4px 8px;margin-right:4px" title="Call this lead">' + PHONE_ICON_SVG + '</button>';
+    html += '<button type="button" class="btn-primary" onclick="saveTableRow(' + idx + ')" style="padding:4px 8px;font-size:13px" title="Save this row">💾 Save</button>';
     html += '</td>';
 
     TABLE_VIEW_COLUMNS.forEach(function(col) {
@@ -728,7 +736,7 @@ function renderTableView() {
         var opts = ['', 'A', 'B', 'C', 'D', 'F'].map(function(p) {
           return '<option value="' + p + '"' + (p === priority ? ' selected' : '') + '>' + (p || '—') + '</option>';
         }).join('');
-        html += '<td style="padding:4px 6px"><select onchange="saveTableCellEdit(' + idx + ', \'Priority\', this)" style="width:100%;padding:5px 4px;border:1px solid transparent;border-radius:6px;font-size:17px;font-weight:800;color:' + priorityColor + '" onmouseover="this.style.borderColor=\'var(--border)\'" onmouseout="this.style.borderColor=\'transparent\'">' + opts + '</select></td>';
+        html += '<td style="padding:4px 6px"><select data-field="Priority" onchange="saveTableCellEdit(' + idx + ', \'Priority\', this)" style="width:100%;padding:5px 4px;border:1px solid transparent;border-radius:6px;font-size:17px;font-weight:800;color:' + priorityColor + '" onmouseover="this.style.borderColor=\'var(--border)\'" onmouseout="this.style.borderColor=\'transparent\'">' + opts + '</select></td>';
       } else if (fieldName === 'Follow-Up Date') {
         var parsed = parseFollowUp(rawValue);
         html += '<td style="padding:4px 6px"><div style="display:flex;flex-direction:column;gap:3px;min-width:150px">';
@@ -736,7 +744,7 @@ function renderTableView() {
         html += '<select id="followup-time-' + idx + '" onchange="saveFollowUpFromTable(' + idx + ')" style="padding:4px;border:1px solid var(--border);border-radius:6px;font-size:13px">' + buildTimeOptionsHtml(parsed.timeOfDay) + '</select>';
         html += '</div></td>';
       } else {
-        html += '<td style="padding:4px 6px"><input type="text" value="' + escaped + '" onblur="saveTableCellEdit(' + idx + ', \'' + fieldName.replace(/'/g, "\\'") + '\', this)" style="width:100%;min-width:110px;padding:5px 6px;border:1px solid transparent;border-radius:6px;font-size:17px" onmouseover="this.style.borderColor=\'var(--border)\'" onmouseout="if(document.activeElement!==this) this.style.borderColor=\'transparent\'" onfocus="this.style.borderColor=\'var(--primary)\'"></td>';
+        html += '<td style="padding:4px 6px"><input type="text" data-field="' + fieldName.replace(/"/g, '&quot;') + '" value="' + escaped + '" onblur="saveTableCellEdit(' + idx + ', \'' + fieldName.replace(/'/g, "\\'") + '\', this)" style="width:100%;min-width:110px;padding:5px 6px;border:1px solid transparent;border-radius:6px;font-size:17px" onmouseover="this.style.borderColor=\'var(--border)\'" onmouseout="if(document.activeElement!==this) this.style.borderColor=\'transparent\'" onfocus="this.style.borderColor=\'var(--primary)\'"></td>';
       }
     });
     html += '</tr>';
@@ -815,6 +823,27 @@ async function submitTableAddRow() {
 function dialLeadFromTable(idx) {
   currentIndex = idx;
   startAutoCall();
+}
+
+// Explicit "Save" for a whole row -- saves every field currently in
+// that row's inputs at once, including anything still focused/being
+// typed (auto-save-on-blur only fires once you click away from a
+// field; this saves everything immediately regardless of focus).
+// Reuses the exact same saveTableCellEdit/saveFollowUpFromTable paths
+// as auto-save, so the sync-across-views behavior is identical --
+// this is a trigger, not a different save mechanism.
+async function saveTableRow(idx) {
+  var row = document.querySelector('tr[data-row-idx="' + idx + '"]');
+  if (!row) return;
+
+  var promises = [];
+  row.querySelectorAll('input[data-field], select[data-field]').forEach(function(el) {
+    promises.push(saveTableCellEdit(idx, el.getAttribute('data-field'), el));
+  });
+  if (document.getElementById('followup-date-' + idx)) {
+    promises.push(saveFollowUpFromTable(idx));
+  }
+  await Promise.all(promises);
 }
 
 // Saves a single cell edit via the SAME endpoint and same-object-
