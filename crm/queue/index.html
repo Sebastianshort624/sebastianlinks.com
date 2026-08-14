@@ -321,30 +321,30 @@ textarea {
         <div id="dialer-disposition-buttons" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
 
         <div id="dialer-voicemail-picker" class="hidden" style="margin-top:12px">
-          <label style="font-size:13px;font-weight:600">Voicemail Message</label>
+          <label style="font-size:15px;font-weight:600">Voicemail Message</label>
           <select id="dialer-voicemail-select" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;margin-top:4px"></select>
         </div>
 
         <div id="dialer-followup-picker" class="hidden" style="margin-top:12px">
-          <label style="font-size:13px;font-weight:600">Follow-Up Date</label>
+          <label style="font-size:15px;font-weight:600">Follow-Up Date</label>
           <input type="date" id="dialer-followup-date" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;margin-top:4px">
         </div>
 
         <div id="dialer-appointment-picker" class="hidden" style="margin-top:12px">
-          <label style="font-size:13px;font-weight:600">Appointment Date &amp; Time</label>
+          <label style="font-size:15px;font-weight:600">Appointment Date &amp; Time</label>
           <input type="datetime-local" id="dialer-appointment-datetime" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;margin-top:4px">
         </div>
 
         <div id="dialer-conversation-confirm" class="hidden" style="margin-top:12px;padding:10px;background:var(--soft-yellow);border-radius:8px">
-          <div style="font-size:13px;font-weight:700;margin-bottom:6px">Did an actual two-way conversation occur?</div>
-          <div style="font-size:12px;color:var(--muted);margin-bottom:8px">"Not Interested" can happen either after a real conversation, or from a gatekeeper/snap hangup with no real contact — this determines Contact YES/NO, it isn't assumed.</div>
+          <div style="font-size:15px;font-weight:700;margin-bottom:6px">Did an actual two-way conversation occur?</div>
+          <div style="font-size:14px;color:var(--muted);margin-bottom:8px">"Not Interested" can happen either after a real conversation, or from a gatekeeper/snap hangup with no real contact — this determines Contact YES/NO, it isn't assumed.</div>
           <div style="display:flex;gap:8px">
             <button type="button" class="btn-secondary" id="conv-confirm-yes" onclick="setConversationConfirmation(true)">Yes — we spoke</button>
             <button type="button" class="btn-secondary" id="conv-confirm-no" onclick="setConversationConfirmation(false)">No — never really connected</button>
           </div>
         </div>
 
-        <label style="font-size:13px;font-weight:600;margin-top:12px;display:block">Notes</label>
+        <label style="font-size:15px;font-weight:600;margin-top:12px;display:block">Notes</label>
         <textarea id="dialer-notes" rows="3" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;margin-top:4px"></textarea>
       </div>
     </div>
@@ -617,7 +617,7 @@ var TABLE_VIEW_COLUMNS = [
 ];
 
 function renderTableView() {
-  var html = '<table style="width:100%;border-collapse:collapse;font-size:14px;background:#fff">';
+  var html = '<table style="width:100%;border-collapse:collapse;font-size:15px;background:#fff">';
   html += '<thead><tr style="border-bottom:2px solid var(--border)">';
   html += '<th style="text-align:left;padding:8px 10px;white-space:nowrap;position:sticky;top:0;background:#fff"></th>';
   TABLE_VIEW_COLUMNS.forEach(function(col) {
@@ -631,7 +631,10 @@ function renderTableView() {
     var priorityColor = { A: '#16803c', B: '#4f8a2f', C: '#a15c00', D: '#c2410c', F: '#b42318' }[priority] || 'var(--muted)';
 
     html += '<tr style="border-bottom:1px solid var(--border)">';
-    html += '<td style="padding:6px 8px"><button type="button" class="btn-secondary" onclick="openLeadFromTable(' + idx + ')" style="padding:4px 8px;font-size:12px;white-space:nowrap">Open →</button></td>';
+    html += '<td style="padding:6px 8px;white-space:nowrap">';
+    html += '<button type="button" class="btn-secondary" onclick="openLeadFromTable(' + idx + ')" style="padding:4px 8px;font-size:13px;margin-right:4px">Open →</button>';
+    html += '<button type="button" class="btn-primary" onclick="dialLeadFromTable(' + idx + ')" style="padding:4px 8px;font-size:13px" title="Call this lead">📞</button>';
+    html += '</td>';
 
     TABLE_VIEW_COLUMNS.forEach(function(col) {
       var fieldName = col[1];
@@ -643,16 +646,87 @@ function renderTableView() {
         var opts = ['', 'A', 'B', 'C', 'D', 'F'].map(function(p) {
           return '<option value="' + p + '"' + (p === priority ? ' selected' : '') + '>' + (p || '—') + '</option>';
         }).join('');
-        html += '<td style="padding:4px 6px"><select onchange="saveTableCellEdit(' + idx + ', \'Priority\', this)" style="width:100%;padding:5px 4px;border:1px solid transparent;border-radius:6px;font-size:14px;font-weight:800;color:' + priorityColor + '" onmouseover="this.style.borderColor=\'var(--border)\'" onmouseout="this.style.borderColor=\'transparent\'">' + opts + '</select></td>';
+        html += '<td style="padding:4px 6px"><select onchange="saveTableCellEdit(' + idx + ', \'Priority\', this)" style="width:100%;padding:5px 4px;border:1px solid transparent;border-radius:6px;font-size:15px;font-weight:800;color:' + priorityColor + '" onmouseover="this.style.borderColor=\'var(--border)\'" onmouseout="this.style.borderColor=\'transparent\'">' + opts + '</select></td>';
       } else {
-        html += '<td style="padding:4px 6px"><input type="text" value="' + escaped + '" onblur="saveTableCellEdit(' + idx + ', \'' + fieldName.replace(/'/g, "\\'") + '\', this)" style="width:100%;min-width:110px;padding:5px 6px;border:1px solid transparent;border-radius:6px;font-size:14px" onmouseover="this.style.borderColor=\'var(--border)\'" onmouseout="if(document.activeElement!==this) this.style.borderColor=\'transparent\'" onfocus="this.style.borderColor=\'var(--primary)\'"></td>';
+        html += '<td style="padding:4px 6px"><input type="text" value="' + escaped + '" onblur="saveTableCellEdit(' + idx + ', \'' + fieldName.replace(/'/g, "\\'") + '\', this)" style="width:100%;min-width:110px;padding:5px 6px;border:1px solid transparent;border-radius:6px;font-size:15px" onmouseover="this.style.borderColor=\'var(--border)\'" onmouseout="if(document.activeElement!==this) this.style.borderColor=\'transparent\'" onfocus="this.style.borderColor=\'var(--primary)\'"></td>';
       }
     });
     html += '</tr>';
   });
 
+  // ── Inline "+ Add Lead" row -- create a lead without leaving the
+  // table. Collapsed to a single "+ Add Lead" trigger row by default;
+  // clicking it swaps in real inputs for the two required fields
+  // (Name, Phone) right in place. ──
+  if (!tableAddRowOpen) {
+    html += '<tr><td colspan="' + (TABLE_VIEW_COLUMNS.length + 1) + '" style="padding:8px">';
+    html += '<button type="button" class="btn-secondary" onclick="openTableAddRow()">+ Add Lead</button>';
+    html += '</td></tr>';
+  } else {
+    html += '<tr style="background:var(--soft-blue)">';
+    html += '<td style="padding:6px 8px;white-space:nowrap">';
+    html += '<button type="button" class="btn-primary" onclick="submitTableAddRow()" style="padding:4px 10px;font-size:13px;margin-right:4px">Save</button>';
+    html += '<button type="button" class="btn-secondary" onclick="closeTableAddRow()" style="padding:4px 8px;font-size:13px">✕</button>';
+    html += '</td>';
+    html += '<td></td>'; // Priority -- left blank at creation, editable after
+    html += '<td style="padding:4px 6px"><input type="text" id="table-add-name" placeholder="Lead Name *" style="width:100%;min-width:110px;padding:5px 6px;border:1px solid var(--border);border-radius:6px;font-size:15px"></td>';
+    html += '<td></td>'; // 2nd Owner
+    html += '<td style="padding:4px 6px"><input type="text" id="table-add-phone" placeholder="Phone *" style="width:100%;min-width:110px;padding:5px 6px;border:1px solid var(--border);border-radius:6px;font-size:15px"></td>';
+    for (var i = 0; i < TABLE_VIEW_COLUMNS.length - 4; i++) html += '<td></td>'; // remaining columns blank at creation, editable right after
+    html += '</tr>';
+  }
+
   html += '</tbody></table>';
   qs('queue-table-view').innerHTML = html;
+  if (tableAddRowOpen) {
+    var nameInput = qs('table-add-name');
+    if (nameInput) nameInput.focus();
+  }
+}
+
+var tableAddRowOpen = false;
+function openTableAddRow() {
+  tableAddRowOpen = true;
+  renderTableView();
+}
+function closeTableAddRow() {
+  tableAddRowOpen = false;
+  renderTableView();
+}
+
+async function submitTableAddRow() {
+  var name = qs('table-add-name').value.trim();
+  var phone = qs('table-add-phone').value.trim();
+  if (!name || !phone) {
+    alert('Lead Name and Phone are both required.');
+    return;
+  }
+  try {
+    var res = await fetch(API_BASE + '/api/import/master-lead/create', {
+      method: 'POST', headers: authHeaders(), body: JSON.stringify({ 'Lead Name': name, 'Phone': phone })
+    });
+    var data = await res.json();
+    if (!data.ok) {
+      alert('Create failed: ' + (data.error || 'unknown error'));
+      return;
+    }
+    tableAddRowOpen = false;
+    // Reload the queue through the normal path -- the new lead then
+    // appears in the table exactly like every other lead, same as
+    // the existing "+ New Lead" modal already does.
+    await loadMasterQueue();
+    setQueueView('table');
+  } catch (e) {
+    alert('Could not reach the CRM API: ' + e.message);
+  }
+}
+
+// One-click dial directly from the table -- sets currentIndex (which
+// startAutoCall() reads) then opens the dialer, without requiring a
+// detour through Full Lead Detail first.
+function dialLeadFromTable(idx) {
+  currentIndex = idx;
+  startAutoCall();
 }
 
 // Saves a single cell edit via the SAME endpoint and same-object-
