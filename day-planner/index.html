@@ -596,19 +596,68 @@
   .add-form button { background: var(--white); color: var(--dark); border: none; border-radius: 4px; font-size: 0.72rem; font-weight: bold; cursor: pointer; }
 
   @media (max-width: 720px) {
-    .month-rail { padding-top: 30px; }
-    .month-tab { font-size: 0.6rem; padding: 6px 3px; }
-    .book { min-height: 500px; }
+    /* The old approach just shrank fonts inside the same side-by-side
+       two-page layout, which never actually fits a phone's width —
+       that's exactly why it forced landscape. Real fix: stack
+       everything vertically instead of side-by-side on narrow screens. */
+    .book-frame { flex-direction: column; }
+    .month-rail {
+      flex-direction: row;
+      overflow-x: auto;
+      padding-top: 0;
+      padding-bottom: 6px;
+      gap: 3px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .month-tab {
+      writing-mode: horizontal-tb;
+      text-orientation: initial;
+      border-radius: 6px;
+      padding: 7px 10px;
+      margin-bottom: 0;
+      flex-shrink: 0;
+      font-size: 0.68rem;
+    }
+    .month-tab.active { padding: 7px 10px; }
+
+    .book { flex-direction: column; min-height: 0; }
+    .holes {
+      width: 100%;
+      height: 16px;
+      flex-direction: row;
+      order: 2;
+    }
+    #pageLeft { order: 1; }
+    #pageRight { order: 3; }
+    .page.right-page { border-top: 1px solid var(--light); }
+    .side-icons {
+      order: 4;
+      flex-direction: row;
+      width: 100%;
+      height: auto;
+      padding: 10px 0;
+      gap: 20px;
+      justify-content: center;
+      border-left: none;
+      border-top: 2px solid var(--dark);
+    }
+
     .overview-grid { grid-template-columns: 1fr; }
     .overview-grid.cols-3 { grid-template-columns: 1fr; }
     .page { padding: 12px; }
-    .side-icons { width: 38px; }
     .taskbar-row, .add-form-fields { grid-template-columns: 1fr 90px 60px 40px; }
     .nav-step-row { flex-direction: column; }
     .nav-step-btn { max-width: none; padding: 10px 12px; font-size: 0.85rem; }
-    table.month-cal td.week-num-cell { width: 22px; font-size: 0.52rem; }
-    table.month-cal th.week-num-head { width: 22px; }
-    table.month-cal td { height: 60px; font-size: 0.62rem; }
+
+    /* Month grid and Week's hourly grid are the two widest sub-layouts.
+       Rather than fight table/flex internals with display hacks, just
+       let the page itself scroll horizontally when content overflows —
+       far more reliable across browsers than reflowing table markup. */
+    .page { overflow: auto; }
+    table.month-cal { min-width: 480px; }
+    .week-body-row { min-width: 420px; }
+    .week-hour-axis, .week-day-col { min-width: 64px; }
+
     .day-tasklist-col { width: 110px; }
     .day-body-row { flex-wrap: wrap; }
   }
