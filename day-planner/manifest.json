@@ -1,0 +1,25 @@
+{
+  "name": "Day Planner",
+  "short_name": "Planner",
+  "description": "Franklin Planner–style day planner",
+  "start_url": "/day-planner/",
+  "scope": "/day-planner/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#E8F1F0",
+  "theme_color": "#0D666A",
+  "icons": [
+    {
+      "src": "/day-planner/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/day-planner/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
