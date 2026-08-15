@@ -685,13 +685,12 @@ function buildActionButtonsHtml(masterLeadId, fields, idPrefix, size, skipSave) 
   html += '</select>';
 
   // Calendar -> Appt Set: blue while unset, turns red with the date
-  // once an appointment exists -- matching the row-color scheme
-  // (red = has an upcoming appointment).
+  // Calendar -> Appt Set (shows the next appointment)
   if (apptRaw) {
     var apptDiv = document.createElement('div'); apptDiv.textContent = apptRaw;
-    html += '<button type="button" class="btn-primary" style="' + btnStyle + ';background:#EA4335" onclick="toggleAppointmentPicker(\'' + idPrefix + '\')" title="Click to change">Appt Set: ' + apptDiv.innerHTML + '</button>';
+    html += '<button type="button" class="btn-secondary" style="' + btnStyle + '" onclick="toggleAppointmentPicker(\'' + idPrefix + '\')" title="Click to change">Appt Set: ' + apptDiv.innerHTML + '</button>';
   } else {
-    html += '<button type="button" class="btn-primary" style="' + btnStyle + ';background:#4285F4" onclick="toggleAppointmentPicker(\'' + idPrefix + '\')">Calendar</button>';
+    html += '<button type="button" class="btn-secondary" style="' + btnStyle + '" onclick="toggleAppointmentPicker(\'' + idPrefix + '\')">Calendar</button>';
   }
 
   html += '</div>';
@@ -899,23 +898,6 @@ async function saveFollowUpFromTable(idx) {
   return saveTableCellEdit(idx, 'Follow-Up Date', { value: combined });
 }
 
-// Row background tint, Google's own brand hues (light tone so text
-// stays readable, not the fully saturated logo colors as a fill):
-// Canceled = grey, Done Deal = green, No Show = blue, Appointment
-// Set (upcoming) = red. Checked in this priority order -- a
-// canceled deal stays grey even if it once had an appointment set.
-function getRowColorForLead(f) {
-  var stage = (f['Pipeline Stage'] || '').trim();
-  var statusOfCall = (f['Status of call'] || '').trim();
-  var apptDateTime = (f['Appointment Date & Time'] || '').trim();
-
-  if (stage === 'Canceled') return '#f1f3f4';
-  if (stage === 'Done Deal') return '#e6f4ea';
-  if (statusOfCall === 'No Show') return '#e8f0fe';
-  if (apptDateTime) return '#fce8e6';
-  return '';
-}
-
 function renderTableView() {
   var html = '<table style="width:100%;border-collapse:collapse;font-size:17px;background:#fff">';
   html += '<thead><tr style="border-bottom:2px solid var(--border)">';
@@ -929,9 +911,8 @@ function renderTableView() {
     var f = lead.fields || {};
     var priority = (f['Priority'] || '').trim().toUpperCase();
     var priorityColor = { A: '#16803c', B: '#4f8a2f', C: '#a15c00', D: '#c2410c', F: '#b42318' }[priority] || 'var(--muted)';
-    var rowBg = getRowColorForLead(f);
 
-    html += '<tr style="border-bottom:1px solid var(--border)' + (rowBg ? ';background:' + rowBg : '') + '" data-row-idx="' + idx + '">';
+    html += '<tr style="border-bottom:1px solid var(--border)" data-row-idx="' + idx + '">';
     html += '<td style="padding:6px 8px;min-width:280px">';
     html += '<div style="white-space:nowrap;margin-bottom:4px">';
     html += '<button type="button" class="btn-secondary" onclick="openLeadFromTable(' + idx + ')" style="padding:4px 8px;font-size:13px;margin-right:4px">Open →</button>';
