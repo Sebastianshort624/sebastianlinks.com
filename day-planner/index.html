@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Day Planner</title>
+<link rel="manifest" href="/day-planner/manifest.json">
+<meta name="theme-color" content="#0D666A">
+<link rel="apple-touch-icon" href="/day-planner/icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Planner">
 <style>
   :root {
     --light: #E8F1F0;
@@ -475,6 +481,36 @@
     border: 1px solid var(--dark); border-radius: 3px; padding: 2px 4px; background: var(--white);
   }
 
+  /* ===== RICH TEXT: toolbar + editable box (titles & notes) ===== */
+  .rt-edit-wrap { width: 100%; }
+  .rt-toolbar { display: flex; gap: 3px; margin-bottom: 3px; }
+  .rt-btn {
+    background: var(--white); border: 1px solid var(--dark); color: var(--dark);
+    width: 22px; height: 20px; border-radius: 3px; font-size: 0.7rem;
+    cursor: pointer; padding: 0; line-height: 1;
+  }
+  .rt-btn:hover { background: var(--light); }
+  .rt-editable {
+    width: 100%; min-height: 1.4em; font-size: inherit; font-family: inherit; color: var(--ink);
+    border: 1px solid var(--dark); border-radius: 3px; padding: 2px 5px; background: var(--white);
+    outline: none;
+  }
+  .rt-editable a { color: var(--dark); text-decoration: underline; }
+  /* rendered (non-editing) titles: links stay visibly link-like everywhere they appear */
+  .ev a, .week-cell-line a, .wdt-item a, .day-task-item a, .day-hour-line a,
+  .taskbar-row a, .mini-day a {
+    color: inherit; text-decoration: underline;
+  }
+
+  .rt-editable-inline {
+    min-height: 1.4em; font-size: 0.85rem; font-family: inherit; color: var(--ink);
+    border: 1px solid var(--dark); border-radius: 4px; padding: 4px 6px; background: var(--white);
+    outline: none;
+  }
+  .rt-editable-inline:empty::before {
+    content: attr(data-placeholder); color: var(--dark); opacity: 0.45;
+  }
+
   .notes-page {
     background-image: repeating-linear-gradient(var(--white) 0px, var(--white) 22px, var(--light) 23px);
     flex: 1;
@@ -546,11 +582,14 @@
 
   .add-form {
     display: none;
-    grid-template-columns: 1fr 130px 90px 70px;
-    gap: 8px;
+    flex-direction: column;
+    gap: 6px;
     margin-bottom: 6px;
   }
-  .add-form.open { display: grid; }
+  .add-form.open { display: flex; }
+  .add-form-title-row { display: flex; flex-direction: column; }
+  .add-form-title-row .rt-toolbar .rt-btn { background: var(--light); }
+  .add-form-fields { display: grid; grid-template-columns: 1fr 130px 90px 70px; gap: 8px; }
   .add-form input {
     padding: 4px 6px; border-radius: 4px; border: none; font-size: 0.75rem;
   }
@@ -564,7 +603,7 @@
     .overview-grid.cols-3 { grid-template-columns: 1fr; }
     .page { padding: 12px; }
     .side-icons { width: 38px; }
-    .taskbar-row, .add-form { grid-template-columns: 1fr 90px 60px 40px; }
+    .taskbar-row, .add-form-fields { grid-template-columns: 1fr 90px 60px 40px; }
     .nav-step-row { flex-direction: column; }
     .nav-step-btn { max-width: none; padding: 10px 12px; font-size: 0.85rem; }
     table.month-cal td.week-num-cell { width: 22px; font-size: 0.52rem; }
@@ -603,10 +642,15 @@
     <button class="taskbar-add-btn" id="addToggleBtn">+ Add</button>
   </div>
   <div class="add-form" id="addForm">
-    <input type="text" id="addTitle" placeholder="Title">
-    <input type="date" id="addDate">
-    <input type="time" id="addTime">
-    <button id="addSubmit">Add</button>
+    <div class="add-form-title-row">
+      <div id="addTitleToolbarHost"></div>
+      <div id="addTitle" class="rt-editable-inline" contenteditable="true" data-placeholder="Title"></div>
+    </div>
+    <div class="add-form-fields">
+      <input type="date" id="addDate">
+      <input type="time" id="addTime">
+      <button id="addSubmit">Add</button>
+    </div>
   </div>
   <div class="taskbar-row header-row">
     <span>Title</span><span>Date</span><span>Time</span><span></span>
@@ -1024,7 +1068,7 @@ function renderMonth(left, right) {
     const dim = cell.inMonth ? "" : "out-of-month";
     return `<td class="${dim}" data-iso="${iso}" data-cell-month="${cell.month}" data-cell-year="${cell.year}" data-cell-day="${cell.day}">
       <div class="daynum">${cell.day}</div>
-      ${evs.slice(0,3).map(e=>`<div class="ev">${escapeHtml(e.title)}</div>`).join("")}
+      ${evs.slice(0,3).map(e=>`<div class="ev">${displayTitle(e)}</div>`).join("")}
     </td>`;
   }
 
@@ -1138,7 +1182,7 @@ function renderWeek(left, right) {
       let cellsHtml = "";
       for (let h = WEEK_HOURS_START; h <= WEEK_HOURS_END; h++) {
         const hourEvs = evs.filter(e => e.time && parseInt(e.time.split(":")[0],10) === h);
-        const linesHtml = hourEvs.map(ev => `<div class="week-cell-line" data-event-id="${ev.id}">${escapeHtml(ev.title)}</div>`).join("");
+        const linesHtml = hourEvs.map(ev => `<div class="week-cell-line" data-event-id="${ev.id}">${displayTitle(ev)}</div>`).join("");
         cellsHtml += `<div class="week-cell-wrap ${hourEvs.length?'has-event':''}" data-iso="${iso}" data-hour="${h}">
           <div class="week-cell-lines">${linesHtml}</div>
           <button type="button" class="week-cell-add" data-iso="${iso}" data-hour="${h}" title="Add another">+</button>
@@ -1146,7 +1190,7 @@ function renderWeek(left, right) {
       }
       const untimed = evs.filter(e => !e.time);
       const tasksHtml = untimed.length
-        ? untimed.map(e=>`<div class="wdt-item" data-event-id="${e.id}">${escapeHtml(e.title)}</div>`).join("")
+        ? untimed.map(e=>`<div class="wdt-item" data-event-id="${e.id}">${displayTitle(e)}</div>`).join("")
         : `<div class="wdt-empty">—</div>`;
 
       colsHtml += `<div class="week-day-col" data-iso="${iso}">
@@ -1211,7 +1255,7 @@ function renderWeek(left, right) {
   if (sunday !== null) {
     const isoSun = dateStr(y, m, sunday);
     const evsSun = eventsFor(isoSun);
-    const summary = evsSun.length ? evsSun.slice(0,3).map(e=>escapeHtml(e.title)).join(", ") : "No entries";
+    const summary = evsSun.length ? evsSun.slice(0,3).map(e=>displayTitle(e)).join(", ") : "No entries";
     sundayHtml = `<div class="week-sunday-strip" data-iso="${isoSun}">
       <span><strong>Sunday ${sunday}</strong></span><span>${summary}</span>
     </div>`;
@@ -1275,7 +1319,7 @@ function renderDay(left, right) {
       const item = document.createElement("div");
       item.className = "day-task-item";
       item.dataset.eventId = e.id;
-      item.textContent = e.title;
+      item.innerHTML = displayTitle(e);
       item.addEventListener("dblclick", () => startInlineEdit(item, e.id));
       taskLines.appendChild(item);
     });
@@ -1312,7 +1356,7 @@ function renderDay(left, right) {
       const line = document.createElement("div");
       line.className = "day-hour-line";
       line.dataset.eventId = ev.id;
-      line.textContent = ev.title;
+      line.innerHTML = displayTitle(ev);
       line.addEventListener("dblclick", (e) => { e.stopPropagation(); startInlineEdit(line, ev.id); });
       linesWrap.appendChild(line);
     });
@@ -1402,7 +1446,7 @@ function renderTaskbar() {
   if (!evs.length) { list.innerHTML = `<div class="taskbar-empty">No tasks in this view yet.</div>`; return; }
   list.innerHTML = evs.map(e => `
     <div class="taskbar-row">
-      <span>${escapeHtml(e.title)}</span>
+      <span>${displayTitle(e)}</span>
       <span>${e.date}</span>
       <span>${e.time || "—"}</span>
       <button class="del-btn" onclick="deleteEvent('${e.id}')">Delete</button>
@@ -1424,34 +1468,28 @@ function startInlineEdit(el, eventId) {
   const evs = getEvents();
   const ev = evs.find(e => e.id === eventId);
   if (!ev) return;
-  const input = document.createElement("input");
-  input.type = "text";
-  input.className = "inline-edit-input";
-  input.value = ev.title;
-  el.innerHTML = "";
-  el.appendChild(input);
-  input.focus();
-  input.select();
-
-  let settled = false;
-  function commit() {
-    if (settled) return;
-    settled = true;
-    const newTitle = input.value.trim();
-    const list = getEvents();
-    const idx = list.findIndex(e2 => e2.id === eventId);
-    if (idx >= 0) {
-      if (newTitle === "") list.splice(idx, 1);
-      else list[idx].title = newTitle;
-      setEvents(list);
-    }
-    render();
-  }
-  input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") { e.preventDefault(); commit(); }
-    if (e.key === "Escape") { settled = true; render(); }
+  // initialize the editor from titleHtml if this record has one
+  // (a link was previously added), otherwise from the plain title —
+  // either way, editing never destroys data that isn't touched
+  const initial = ev.titleHtml || escapeHtml(ev.title || "");
+  makeRichEditable(el, initial, {
+    onCommit: (plainText, html) => {
+      const list = getEvents();
+      const idx = list.findIndex(e2 => e2.id === eventId);
+      if (idx >= 0) {
+        if (plainText === "") {
+          list.splice(idx, 1);
+        } else {
+          list[idx].title = plainText;
+          if (html) list[idx].titleHtml = html;
+          else delete list[idx].titleHtml;
+        }
+        setEvents(list);
+      }
+      render();
+    },
+    onCancel: () => render()
   });
-  input.addEventListener("blur", commit);
 }
 
 /* ---- creates a brand-new event inline, for a specific day and
@@ -1459,36 +1497,27 @@ function startInlineEdit(el, eventId) {
    Used when double-clicking an empty hour, or any "+" add button —
    appends rather than replaces. */
 function createEventInline(linesContainer, iso, hour) {
-  const input = document.createElement("input");
-  input.type = "text";
-  input.className = "inline-edit-input";
-  input.placeholder = "New task…";
-  linesContainer.appendChild(input);
-  input.focus();
-
-  let settled = false;
-  function commit() {
-    if (settled) return;
-    settled = true;
-    const title = input.value.trim();
-    if (title !== "") {
-      const list = getEvents();
-      list.push({
-        id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-        title,
-        date: iso,
-        time: hour === null ? "" : (pad(hour) + ":00"),
-        createdAt: Date.now()
-      });
-      setEvents(list);
-    }
-    render();
-  }
-  input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") { e.preventDefault(); commit(); }
-    if (e.key === "Escape") { settled = true; render(); }
+  const host = document.createElement("div");
+  linesContainer.appendChild(host);
+  makeRichEditable(host, "", {
+    onCommit: (plainText, html) => {
+      if (plainText !== "") {
+        const newEvent = {
+          id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+          title: plainText,
+          date: iso,
+          time: hour === null ? "" : (pad(hour) + ":00"),
+          createdAt: Date.now()
+        };
+        if (html) newEvent.titleHtml = html;
+        const list = getEvents();
+        list.push(newEvent);
+        setEvents(list);
+      }
+      render();
+    },
+    onCancel: () => render()
   });
-  input.addEventListener("blur", commit);
 }
 
 /* ---- add form ---- */
@@ -1499,17 +1528,26 @@ document.getElementById("addToggleBtn").addEventListener("click", () => {
     const dateInput = document.getElementById("addDate");
     if (state.level === "day" && state.day) dateInput.value = state.day;
     else dateInput.value = todayStr();
+    const titleEl = document.getElementById("addTitle");
+    const toolbarHost = document.getElementById("addTitleToolbarHost");
+    toolbarHost.innerHTML = "";
+    toolbarHost.appendChild(buildRichToolbar(titleEl));
   }
 });
 document.getElementById("addSubmit").addEventListener("click", () => {
-  const title = document.getElementById("addTitle").value.trim();
+  const titleEl = document.getElementById("addTitle");
+  const plainText = titleEl.textContent.trim();
   const date = document.getElementById("addDate").value;
   const time = document.getElementById("addTime").value;
-  if (!title || !date) return;
+  if (!plainText || !date) return;
+  const sanitized = sanitizeRichText(titleEl.innerHTML);
+  const hasLink = /<a[\s>]/i.test(sanitized);
+  const newEvent = { id: Date.now().toString(36)+Math.random().toString(36).slice(2,6), title: plainText, date, time, createdAt: Date.now() };
+  if (hasLink) newEvent.titleHtml = sanitized;
   const evs = getEvents();
-  evs.push({ id: Date.now().toString(36)+Math.random().toString(36).slice(2,6), title, date, time, createdAt: Date.now() });
+  evs.push(newEvent);
   setEvents(evs);
-  document.getElementById("addTitle").value = "";
+  titleEl.innerHTML = "";
   document.getElementById("addTime").value = "";
   document.getElementById("addForm").classList.remove("open");
   render();
@@ -1519,6 +1557,131 @@ function escapeHtml(str) {
   const d = document.createElement("div");
   d.textContent = str;
   return d.innerHTML;
+}
+
+/* ============================================================
+   RICH TEXT — bold/italic/links for event & task titles.
+   Storage moves from a plain string to a sanitized HTML string.
+   sanitizeRichText is the ONLY thing allowed to decide what's
+   safe — every render path and every save path both go through it.
+   Scope for now: hyperlinks only (no bold/italic yet).
+   ============================================================ */
+const RICH_TEXT_ALLOWED_TAGS = new Set(["A", "BR"]);
+
+function sanitizeRichText(html) {
+  const container = document.createElement("div");
+  container.innerHTML = html || "";
+  (function clean(node) {
+    [...node.childNodes].forEach(child => {
+      if (child.nodeType === 1) { // element
+        if (!RICH_TEXT_ALLOWED_TAGS.has(child.tagName)) {
+          // unwrap disallowed elements (e.g. <script>, <b>, <img>) —
+          // keep their text/inline content, drop the wrapping tag
+          while (child.firstChild) node.insertBefore(child.firstChild, child);
+          node.removeChild(child);
+          return;
+        }
+        [...child.attributes].forEach(attr => {
+          if (child.tagName === "A" && attr.name === "href") {
+            const val = attr.value.trim();
+            if (!/^(https?:|mailto:)/i.test(val)) child.removeAttribute("href");
+          } else {
+            child.removeAttribute(attr.name);
+          }
+        });
+        if (child.tagName === "A") {
+          child.setAttribute("target", "_blank");
+          child.setAttribute("rel", "noopener noreferrer");
+        }
+        clean(child);
+      } else if (child.nodeType !== 3) {
+        node.removeChild(child); // strip comments etc.
+      }
+    });
+  })(container);
+  return container.innerHTML;
+}
+
+/* ---- dual-field display: an event's titleHtml (if it has one,
+   meaning a link was deliberately added) takes priority; otherwise
+   fall back to the plain escaped title exactly as it always rendered.
+   Old records with no titleHtml are completely unaffected. ---- */
+function displayTitle(ev) {
+  if (ev.titleHtml) return sanitizeRichText(ev.titleHtml); // defensive re-sanitize on read too
+  return escapeHtml(ev.title || "");
+}
+
+function buildRichToolbar(editableEl) {
+  const bar = document.createElement("div");
+  bar.className = "rt-toolbar";
+  function cmd(command, value) {
+    editableEl.focus();
+    document.execCommand(command, false, value || null);
+  }
+  const linkBtn = document.createElement("button");
+  linkBtn.type = "button"; linkBtn.className = "rt-btn"; linkBtn.textContent = "🔗";
+  linkBtn.addEventListener("mousedown", (e) => {
+    e.preventDefault();
+    const url = window.prompt("Link URL:", "https://");
+    if (url) cmd("createLink", url);
+  });
+  bar.appendChild(linkBtn);
+  return bar;
+}
+
+/* hostEl: element to render the editor into (its content is replaced).
+   initialHtml: starting content (sanitized HTML, or plain escaped text).
+   opts.onCommit(plainText, html): called on save.
+     - plainText: the canonical text (what goes in event.title)
+     - html: sanitized HTML if the content contains a link, else null
+       (meaning "no titleHtml needed, plain title is enough")
+     Empty plainText means "delete" — caller decides what that means.
+   opts.onCancel(): called on Escape. */
+function makeRichEditable(hostEl, initialHtml, opts) {
+  const wrap = document.createElement("div");
+  wrap.className = "rt-edit-wrap";
+  const editable = document.createElement("div");
+  editable.className = "rt-editable";
+  editable.contentEditable = "true";
+  editable.innerHTML = initialHtml || "";
+  const toolbar = buildRichToolbar(editable);
+  wrap.appendChild(toolbar);
+  wrap.appendChild(editable);
+  hostEl.innerHTML = "";
+  hostEl.appendChild(wrap);
+  editable.focus();
+  const range = document.createRange();
+  range.selectNodeContents(editable);
+  range.collapse(false);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+
+  let settled = false;
+  function commit() {
+    if (settled) return;
+    settled = true;
+    const plainText = editable.textContent.trim();
+    if (plainText === "") { opts.onCommit("", null); return; }
+    const sanitized = sanitizeRichText(editable.innerHTML);
+    const hasLink = /<a[\s>]/i.test(sanitized);
+    opts.onCommit(plainText, hasLink ? sanitized : null);
+  }
+  function cancel() {
+    if (settled) return;
+    settled = true;
+    if (opts.onCancel) opts.onCancel();
+  }
+  editable.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); commit(); }
+    if (e.key === "Escape") { e.preventDefault(); cancel(); }
+  });
+  editable.addEventListener("blur", () => {
+    // slight delay: a toolbar button's mousedown already preventDefault()s
+    // so it never blurs the editable in the first place, but this guards
+    // against any other stray blur before a click fully lands
+    setTimeout(() => { if (!settled) commit(); }, 120);
+  });
 }
 
 /* ---- export / backup ----
@@ -1557,6 +1720,16 @@ document.getElementById("exportBtn").addEventListener("click", exportPlannerData
 
 /* ---- boot ---- */
 render();
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/day-planner/sw.js").catch(() => {
+      /* offline support is a nice-to-have — a failed registration
+         (e.g. running from a local file) shouldn't block the app */
+    });
+  });
+}
+
 </script>
 </body>
 </html>
