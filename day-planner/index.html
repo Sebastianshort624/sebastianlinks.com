@@ -670,8 +670,20 @@
 
   <div class="zoom-row" id="zoomRow"></div>
   <div class="nav-step-row" id="navStepRow"></div>
-  <div style="width:100%;max-width:1180px;display:flex;justify-content:flex-end;padding:0 4px 8px;">
+  <div style="width:100%;max-width:1180px;display:flex;justify-content:flex-end;align-items:center;gap:10px;padding:0 4px 8px;flex-wrap:wrap;">
+    <span id="syncStatus" style="font-size:0.72rem;color:var(--dark);opacity:0.85;">○ Not connected</span>
+    <button id="syncToggleBtn" style="background:var(--white);border:1px solid var(--dark);color:var(--dark);padding:6px 14px;border-radius:999px;font-size:0.75rem;cursor:pointer;">🔗 Sync devices</button>
     <button id="exportBtn" style="background:var(--white);border:1px solid var(--dark);color:var(--dark);padding:6px 14px;border-radius:999px;font-size:0.75rem;cursor:pointer;">⬇ Export Planner Data (backup)</button>
+  </div>
+
+  <div id="syncModal" style="display:none;position:fixed;inset:0;background:rgba(13,102,106,0.35);align-items:center;justify-content:center;z-index:1000;padding:16px;">
+    <div style="background:var(--white);border-radius:10px;max-width:420px;width:100%;padding:18px 20px;box-shadow:0 10px 40px rgba(0,0,0,0.25);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <h3 style="margin:0;color:var(--dark);font-size:1rem;">Sync across devices</h3>
+        <button type="button" id="syncCloseBtn" style="background:none;border:none;color:var(--dark);font-size:1.1rem;cursor:pointer;line-height:1;">✕</button>
+      </div>
+      <div id="syncPanelBody"></div>
+    </div>
   </div>
 
   <div class="book-frame">
@@ -723,6 +735,13 @@ const DOW_FULL = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","S
 const EVENTS_KEY = "plannerEvents";
 const DAYMETA_PREFIX = "plannerDayMeta_";
 const NOTES_ACTIVE_KEY = "webnotes_active"; // shared with /web-notes
+const TOMBSTONES_KEY = "plannerTombstones";
+const SCRATCH_TS_KEY = "plannerScratchTimestamps";
+const SYNC_TOKEN_KEY = "plannerSyncToken";
+const SYNC_GIST_KEY = "plannerSyncGistId";
+const SYNC_FILENAME = "day-planner-data.json";
+const SYNC_POLL_MS = 25000;
+const SYNC_DEBOUNCE_MS = 2000;
 
 function pad(n) { return n < 10 ? "0" + n : "" + n; }
 function dateStr(y, m, d) { return `${y}-${pad(m+1)}-${pad(d)}`; }
@@ -746,6 +765,24 @@ function getNotes() {
   try { return JSON.parse(localStorage.getItem(NOTES_ACTIVE_KEY)) || []; } catch(e) { return []; }
 }
 function setNotes(list) { localStorage.setItem(NOTES_ACTIVE_KEY, JSON.stringify(list)); }
+
+/* ---- sync bookkeeping: tombstones (so a delete on one device isn't
+   resurrected by a stale copy still cached on another) and per-key
+   timestamps for the freeform scratch-note text, which otherwise has
+   no natural "updatedAt" to merge on ---- */
+function getTombstones() {
+  try { return JSON.parse(localStorage.getItem(TOMBSTONES_KEY)) || []; } catch(e) { return []; }
+}
+function setTombstonesRaw(list) { localStorage.setItem(TOMBSTONES_KEY, JSON.stringify(list)); }
+function recordTombstone(id) {
+  const list = getTombstones().filter(t => t.id !== id);
+  list.push({ id, deletedAt: Date.now() });
+  setTombstonesRaw(list);
+}
+function getScratchTimestamps() {
+  try { return JSON.parse(localStorage.getItem(SCRATCH_TS_KEY)) || {}; } catch(e) { return {}; }
+}
+function setScratchTimestampsRaw(obj) { localStorage.setItem(SCRATCH_TS_KEY, JSON.stringify(obj)); }
 
 /* ---- calendar math ---- */
 function daysInMonth(y, m) { return new Date(y, m+1, 0).getDate(); }
@@ -1006,8 +1043,10 @@ function renderSideIcons() {
 function toggleDayMeta(key) {
   const meta = getDayMeta(state.day);
   meta[key] = !meta[key];
+  meta._updatedAt = Date.now();
   setDayMeta(state.day, meta);
   renderSideIcons();
+  scheduleSync();
 }
 
 /* ---- YEAR ---- */
@@ -1451,7 +1490,13 @@ function wireScratchNote(textarea) {
   if (!textarea) return;
   const key = "plannerScratch_" + textarea.dataset.notekey;
   textarea.value = localStorage.getItem(key) || "";
-  textarea.addEventListener("input", () => localStorage.setItem(key, textarea.value));
+  textarea.addEventListener("input", () => {
+    localStorage.setItem(key, textarea.value);
+    const ts = getScratchTimestamps();
+    ts[key] = Date.now();
+    setScratchTimestampsRaw(ts);
+    scheduleSync();
+  });
 }
 
 /* ---- TASK BAR ---- */
@@ -1505,7 +1550,9 @@ function renderTaskbar() {
 
 function deleteEvent(id) {
   setEvents(getEvents().filter(e => e.id !== id));
+  recordTombstone(id);
   render();
+  scheduleSync();
 }
 
 /* ---- shared inline-edit: used by Weekly hour cells/task items and
@@ -1528,14 +1575,17 @@ function startInlineEdit(el, eventId) {
       if (idx >= 0) {
         if (plainText === "") {
           list.splice(idx, 1);
+          recordTombstone(eventId);
         } else {
           list[idx].title = plainText;
+          list[idx].updatedAt = Date.now();
           if (html) list[idx].titleHtml = html;
           else delete list[idx].titleHtml;
         }
         setEvents(list);
       }
       render();
+      scheduleSync();
     },
     onCancel: () => render()
   });
@@ -1556,7 +1606,8 @@ function createEventInline(linesContainer, iso, hour) {
           title: plainText,
           date: iso,
           time: hour === null ? "" : (pad(hour) + ":00"),
-          createdAt: Date.now()
+          createdAt: Date.now(),
+          updatedAt: Date.now()
         };
         if (html) newEvent.titleHtml = html;
         const list = getEvents();
@@ -1564,6 +1615,7 @@ function createEventInline(linesContainer, iso, hour) {
         setEvents(list);
       }
       render();
+      scheduleSync();
     },
     onCancel: () => render()
   });
@@ -1591,7 +1643,7 @@ document.getElementById("addSubmit").addEventListener("click", () => {
   if (!plainText || !date) return;
   const sanitized = sanitizeRichText(titleEl.innerHTML);
   const hasLink = /<a[\s>]/i.test(sanitized);
-  const newEvent = { id: Date.now().toString(36)+Math.random().toString(36).slice(2,6), title: plainText, date, time, createdAt: Date.now() };
+  const newEvent = { id: Date.now().toString(36)+Math.random().toString(36).slice(2,6), title: plainText, date, time, createdAt: Date.now(), updatedAt: Date.now() };
   if (hasLink) newEvent.titleHtml = sanitized;
   const evs = getEvents();
   evs.push(newEvent);
@@ -1600,6 +1652,7 @@ document.getElementById("addSubmit").addEventListener("click", () => {
   document.getElementById("addTime").value = "";
   document.getElementById("addForm").classList.remove("open");
   render();
+  scheduleSync();
 });
 
 function escapeHtml(str) {
@@ -1767,8 +1820,357 @@ function exportPlannerData() {
 }
 document.getElementById("exportBtn").addEventListener("click", exportPlannerData);
 
+/* ============================================================
+   CLOUD SYNC — reuses the GitHub account that already hosts this
+   site as the data store (a private Gist), instead of standing up
+   a new backend/database/service. A narrowly-scoped Personal
+   Access Token (Gists: read/write only — no repository access)
+   is entered once per device via the Sync panel and kept only in
+   that device's localStorage; it is never written into this file
+   or the repository.
+
+   Sync covers exactly what "Export Planner Data" already backs up
+   — plannerEvents, plannerDayMeta_*, plannerScratch_* — nothing
+   else (webnotes_active is intentionally left alone, same as
+   export). Merge strategy is per-record last-write-wins by
+   updatedAt, with tombstones so a delete on one device can't be
+   resurrected by a stale copy still sitting on another.
+   ============================================================ */
+
+function getSyncToken() { return localStorage.getItem(SYNC_TOKEN_KEY) || ""; }
+function getSyncGistId() { return localStorage.getItem(SYNC_GIST_KEY) || ""; }
+function isSyncConfigured() { return !!(getSyncToken() && getSyncGistId()); }
+
+function buildSyncPayload() {
+  const dayMeta = {};
+  const scratch = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key.startsWith(DAYMETA_PREFIX)) {
+      try { dayMeta[key] = JSON.parse(localStorage.getItem(key)); } catch(e) {}
+    } else if (key.startsWith("plannerScratch_")) {
+      scratch[key] = localStorage.getItem(key);
+    }
+  }
+  return {
+    schemaVersion: 1,
+    events: getEvents(),
+    tombstones: getTombstones(),
+    dayMeta,
+    scratch,
+    scratchTimestamps: getScratchTimestamps()
+  };
+}
+
+function applySyncPayload(payload) {
+  if (!payload) return;
+  if (Array.isArray(payload.events)) setEvents(payload.events);
+  if (Array.isArray(payload.tombstones)) setTombstonesRaw(payload.tombstones);
+  if (payload.dayMeta) {
+    Object.keys(payload.dayMeta).forEach(key => {
+      localStorage.setItem(key, JSON.stringify(payload.dayMeta[key]));
+    });
+  }
+  if (payload.scratch) {
+    Object.keys(payload.scratch).forEach(key => {
+      localStorage.setItem(key, payload.scratch[key]);
+    });
+  }
+  if (payload.scratchTimestamps) setScratchTimestampsRaw(payload.scratchTimestamps);
+}
+
+/* per-id last-write-wins across events + tombstones from both sides */
+function mergeEvents(localEvents, localTombs, remoteEvents, remoteTombs) {
+  const ts = (e) => e.updatedAt || e.createdAt || 0;
+  const byId = new Map();
+  function consider(ev) {
+    if (!ev || !ev.id) return;
+    const existing = byId.get(ev.id);
+    if (!existing || ts(ev) > ts(existing)) byId.set(ev.id, ev);
+  }
+  (localEvents||[]).forEach(consider);
+  (remoteEvents||[]).forEach(consider);
+
+  const tombById = new Map();
+  function considerTomb(t) {
+    if (!t || !t.id) return;
+    const existing = tombById.get(t.id);
+    if (!existing || t.deletedAt > existing.deletedAt) tombById.set(t.id, t);
+  }
+  (localTombs||[]).forEach(considerTomb);
+  (remoteTombs||[]).forEach(considerTomb);
+
+  const mergedEvents = [];
+  byId.forEach((ev, id) => {
+    const tomb = tombById.get(id);
+    if (tomb && tomb.deletedAt >= ts(ev)) return; // delete wins if same age or newer
+    mergedEvents.push(ev);
+  });
+  // Tombstones are kept indefinitely (no age-based pruning) — a delete
+  // must never become resurrectable just because a very-long-offline
+  // device still holds a pre-delete copy. For a personal planner the
+  // tombstone list stays small (one small record per deleted event),
+  // so there's no real cost to retaining it forever.
+  const mergedTombs = Array.from(tombById.values());
+  return { events: mergedEvents, tombstones: mergedTombs };
+}
+
+/* per-date objects that carry their own _updatedAt (day-meta toggles) */
+function mergeDayMeta(localObj, remoteObj) {
+  const keys = new Set([...Object.keys(localObj||{}), ...Object.keys(remoteObj||{})]);
+  const merged = {};
+  keys.forEach(k => {
+    const l = (localObj||{})[k], r = (remoteObj||{})[k];
+    const lt = (l && l._updatedAt) || 0;
+    const rt = (r && r._updatedAt) || 0;
+    merged[k] = rt > lt ? r : (l || r);
+  });
+  return merged;
+}
+
+/* freeform scratch text, merged via a companion timestamp map */
+function mergeScratch(localScratch, localTs, remoteScratch, remoteTs) {
+  const keys = new Set([...Object.keys(localScratch||{}), ...Object.keys(remoteScratch||{})]);
+  const mergedScratch = {}, mergedTs = {};
+  keys.forEach(k => {
+    const lt = (localTs||{})[k] || 0;
+    const rt = (remoteTs||{})[k] || 0;
+    if (rt > lt) { mergedScratch[k] = remoteScratch[k]; mergedTs[k] = rt; }
+    else { mergedScratch[k] = (localScratch||{})[k] !== undefined ? localScratch[k] : remoteScratch[k]; mergedTs[k] = lt || rt; }
+  });
+  return { scratch: mergedScratch, scratchTimestamps: mergedTs };
+}
+
+function mergePayloads(local, remote) {
+  if (!remote) return local;
+  const { events, tombstones } = mergeEvents(local.events, local.tombstones, remote.events, remote.tombstones);
+  const dayMeta = mergeDayMeta(local.dayMeta, remote.dayMeta);
+  const { scratch, scratchTimestamps } = mergeScratch(local.scratch, local.scratchTimestamps, remote.scratch, remote.scratchTimestamps);
+  return { schemaVersion: 1, events, tombstones, dayMeta, scratch, scratchTimestamps };
+}
+
+async function gistRequest(method, id, body) {
+  const token = getSyncToken();
+  const url = "https://api.github.com/gists" + (id ? "/" + id : "");
+  const res = await fetch(url, {
+    method,
+    headers: {
+      "Authorization": "Bearer " + token,
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    body: body ? JSON.stringify(body) : undefined,
+    cache: "no-store"
+  });
+  if (!res.ok) {
+    const detail = await res.text().catch(() => "");
+    throw new Error("GitHub API " + res.status + " " + detail.slice(0,200));
+  }
+  return res.json();
+}
+
+async function createSyncGist() {
+  const payload = buildSyncPayload();
+  const data = await gistRequest("POST", null, {
+    description: "Day Planner sync data — do not share this link",
+    public: false,
+    files: { [SYNC_FILENAME]: { content: JSON.stringify(payload) } }
+  });
+  localStorage.setItem(SYNC_GIST_KEY, data.id);
+  return data.id;
+}
+
+async function fetchGist() {
+  const id = getSyncGistId();
+  if (!id) return null;
+  return gistRequest("GET", id);
+}
+function parseGistPayload(data) {
+  const file = data && data.files && data.files[SYNC_FILENAME];
+  if (!file || !file.content) return null;
+  try { return JSON.parse(file.content); } catch(e) { return null; }
+}
+
+async function pushLocalPayload(payload) {
+  const id = getSyncGistId();
+  if (!id) return;
+  await gistRequest("PATCH", id, { files: { [SYNC_FILENAME]: { content: JSON.stringify(payload) } } });
+}
+
+let syncInFlight = false;
+let syncDebounceTimer = null;
+let syncPollTimer = null;
+
+function scheduleSync() {
+  if (!isSyncConfigured()) return;
+  clearTimeout(syncDebounceTimer);
+  syncDebounceTimer = setTimeout(() => { runSyncCycle(); }, SYNC_DEBOUNCE_MS);
+}
+
+/* Pull, merge, push. GitHub's Gist API has no compare-and-swap for
+   writes (unlike, say, the repo Contents API, which takes the current
+   blob's "sha" and rejects a stale write) — so two devices pushing in
+   the very same instant can't be prevented at the API layer without
+   moving to heavier infrastructure (a private repo + the Contents
+   API, or a real backend with locking), which is disproportionate for
+   a personal planner and would also widen the sync token's scope
+   beyond "Gists only." What's cheap to do instead: use the gist's own
+   revision history as a signal that a collision happened, and if so,
+   immediately re-merge and re-push rather than waiting up to
+   SYNC_POLL_MS for the next scheduled cycle. This doesn't eliminate
+   the theoretical race, but it shrinks the window where another
+   device could see momentarily-stale data from ~25s down to
+   near-instant — and no data is ever actually lost either way, since
+   the "losing" push's device still holds everything in its own
+   localStorage and re-contributes it on its very next cycle
+   regardless. Bounded to a few attempts so a persistent conflict
+   can't spin forever. */
+async function syncOnce(attempt) {
+  const before = await fetchGist();
+  const remote = parseGistPayload(before);
+  const local = buildSyncPayload();
+  const merged = mergePayloads(local, remote);
+  applySyncPayload(merged);
+  await pushLocalPayload(merged);
+
+  if (attempt < 3) {
+    const after = await fetchGist();
+    const beforeLen = before && Array.isArray(before.history) ? before.history.length : null;
+    const afterLen = after && Array.isArray(after.history) ? after.history.length : null;
+    // Our own push always adds exactly one revision. More than one
+    // new revision landing means another device wrote in the same
+    // window — re-merge immediately instead of waiting for the next
+    // scheduled poll.
+    if (beforeLen !== null && afterLen !== null && afterLen > beforeLen + 1) {
+      return syncOnce(attempt + 1);
+    }
+  }
+}
+
+async function runSyncCycle() {
+  if (!isSyncConfigured() || syncInFlight) return;
+  syncInFlight = true;
+  setSyncStatus("syncing");
+  try {
+    await syncOnce(1);
+    render();
+    setSyncStatus("ok");
+  } catch (e) {
+    setSyncStatus("error");
+  } finally {
+    syncInFlight = false;
+  }
+}
+
+function setSyncStatus(kind) {
+  const el = document.getElementById("syncStatus");
+  if (!el) return;
+  if (!isSyncConfigured()) { el.textContent = "○ Not connected"; return; }
+  const time = new Date().toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
+  if (kind === "syncing") el.textContent = "● Syncing…";
+  else if (kind === "ok") el.textContent = "● Synced " + time;
+  else if (kind === "error") el.textContent = "● Sync error — will retry";
+  else el.textContent = "● Connecting…";
+}
+
+function startSyncLoop() {
+  if (!isSyncConfigured()) { setSyncStatus(); return; }
+  runSyncCycle();
+  clearInterval(syncPollTimer);
+  syncPollTimer = setInterval(runSyncCycle, SYNC_POLL_MS);
+}
+
+let lastVisSync = 0;
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible" && isSyncConfigured() && Date.now() - lastVisSync > 5000) {
+    lastVisSync = Date.now();
+    runSyncCycle();
+  }
+});
+
+/* ---- Sync panel UI ---- */
+function renderSyncPanel() {
+  const box = document.getElementById("syncPanelBody");
+  if (!box) return;
+  if (isSyncConfigured()) {
+    box.innerHTML = `
+      <p style="margin:0 0 8px;font-size:0.8rem;">Connected. To add another device, open the Sync panel there and choose <b>Connect to existing</b> with the Gist ID below and the same (or a new) token.</p>
+      <p style="margin:0 0 8px;font-size:0.8rem;"><b>Gist ID:</b> <code id="syncGistIdShow">${getSyncGistId()}</code></p>
+      <p style="margin:0 0 10px;font-size:0.72rem;opacity:0.8;">Keep this ID private — anyone with it can read your planner data.</p>
+      <button type="button" id="syncDisconnectBtn" style="background:var(--white);border:1px solid var(--dark);color:var(--dark);padding:6px 12px;border-radius:6px;font-size:0.75rem;cursor:pointer;">Disconnect this device</button>
+    `;
+    document.getElementById("syncDisconnectBtn").onclick = () => {
+      localStorage.removeItem(SYNC_TOKEN_KEY);
+      localStorage.removeItem(SYNC_GIST_KEY);
+      clearInterval(syncPollTimer);
+      setSyncStatus();
+      renderSyncPanel();
+    };
+  } else {
+    box.innerHTML = `
+      <p style="margin:0 0 8px;font-size:0.78rem;">Sync uses your GitHub account as the private cloud store — no new sign-up. Create a token at
+        <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a>
+        &rarr; Fine-grained token &rarr; Repository access: <b>No access needed</b> &rarr; Account permissions &rarr; <b>Gists: Read and write</b>.</p>
+      <label style="font-size:0.75rem;display:block;margin-bottom:3px;">Personal Access Token</label>
+      <input type="password" id="syncTokenInput" style="width:100%;padding:5px 7px;border:1px solid var(--dark);border-radius:4px;font-size:0.78rem;margin-bottom:8px;" placeholder="github_pat_...">
+      <label style="font-size:0.75rem;display:block;margin-bottom:3px;">Gist ID (leave blank on your first device)</label>
+      <input type="text" id="syncGistInput" style="width:100%;padding:5px 7px;border:1px solid var(--dark);border-radius:4px;font-size:0.78rem;margin-bottom:10px;" placeholder="e.g. 8f2a1c...">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button type="button" id="syncCreateBtn" style="background:var(--dark);color:var(--white);border:none;padding:7px 12px;border-radius:6px;font-size:0.75rem;cursor:pointer;">Create new synced planner</button>
+        <button type="button" id="syncConnectBtn" style="background:var(--white);border:1px solid var(--dark);color:var(--dark);padding:7px 12px;border-radius:6px;font-size:0.75rem;cursor:pointer;">Connect to existing</button>
+      </div>
+      <p id="syncPanelError" style="color:#a33;font-size:0.72rem;margin-top:8px;"></p>
+    `;
+    const err = document.getElementById("syncPanelError");
+    document.getElementById("syncCreateBtn").onclick = async () => {
+      const token = document.getElementById("syncTokenInput").value.trim();
+      if (!token) { err.textContent = "Enter a token first."; return; }
+      localStorage.setItem(SYNC_TOKEN_KEY, token);
+      err.textContent = "Creating…";
+      try {
+        await createSyncGist();
+        renderSyncPanel();
+        startSyncLoop();
+      } catch (e) {
+        localStorage.removeItem(SYNC_TOKEN_KEY);
+        err.textContent = "Could not create sync store — check the token's permissions and try again.";
+      }
+    };
+    document.getElementById("syncConnectBtn").onclick = async () => {
+      const token = document.getElementById("syncTokenInput").value.trim();
+      const id = document.getElementById("syncGistInput").value.trim();
+      if (!token || !id) { err.textContent = "Enter both the token and the Gist ID from your other device."; return; }
+      localStorage.setItem(SYNC_TOKEN_KEY, token);
+      localStorage.setItem(SYNC_GIST_KEY, id);
+      err.textContent = "Connecting…";
+      try {
+        await runSyncCycle();
+        renderSyncPanel();
+        startSyncLoop();
+      } catch (e) {
+        localStorage.removeItem(SYNC_TOKEN_KEY);
+        localStorage.removeItem(SYNC_GIST_KEY);
+        err.textContent = "Could not connect — check the token and Gist ID and try again.";
+      }
+    };
+  }
+}
+document.getElementById("syncToggleBtn").addEventListener("click", () => {
+  const modal = document.getElementById("syncModal");
+  renderSyncPanel();
+  modal.style.display = "flex";
+});
+document.getElementById("syncCloseBtn").addEventListener("click", () => {
+  document.getElementById("syncModal").style.display = "none";
+});
+document.getElementById("syncModal").addEventListener("click", (e) => {
+  if (e.target.id === "syncModal") document.getElementById("syncModal").style.display = "none";
+});
+
 /* ---- boot ---- */
 render();
+setSyncStatus();
+startSyncLoop();
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
