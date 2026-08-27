@@ -144,6 +144,9 @@
   table.fin-table td:last-child { text-align: right; font-weight: 700; color: var(--navy); }
   table.fin-table tr.total td { font-size: 17px; padding-top: 16px; }
   table.fin-table tr.total td:last-child { color: var(--green); }
+  table.fin-table-sub { font-size: 13px; }
+  table.fin-table-sub td:first-child { color: var(--gray-500); }
+  table.fin-table-sub td:last-child { color: var(--gray-500); font-weight: 600; }
 
   /* ── Big stat cards ── */
   .stat-card {
@@ -451,35 +454,36 @@
     <section id="quote">
       <h2 class="section-title">Service Quotation</h2>
       <p class="section-intro">Client Protection Group LLC</p>
-      <div class="grid-2" style="margin-bottom:16px">
+      <div class="grid-3" style="margin-bottom:16px">
         <div class="stat-card emphasis">
           <div class="stat-value">$7,632.00</div>
           <div class="stat-label">Total Contract Amount</div>
         </div>
         <div class="stat-card emphasis">
-          <div class="stat-value">$0.00</div>
-          <div class="stat-label">Down Payment</div>
+          <div class="stat-value">$283.63/mo</div>
+          <div class="stat-label">Monthly Payment</div>
+        </div>
+        <div class="stat-card emphasis">
+          <div class="stat-value">36 mo.</div>
+          <div class="stat-label">Term</div>
         </div>
       </div>
       <div class="card">
-        <div style="font-size:12px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:var(--gray-500);margin-bottom:12px">Fee Breakdown</div>
-        <table class="fin-table" style="font-size:17px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:var(--gray-500);margin-bottom:10px">Fee Breakdown</div>
+        <table class="fin-table fin-table-sub">
           <tr><td>Service Fee</td><td>$7,200.00</td></tr>
           <tr><td>Florida Sales Tax — 6%</td><td>$432.00</td></tr>
-          <tr class="total"><td>Total Contract Amount</td><td>$7,632.00</td></tr>
+          <tr><td>Down Payment</td><td>$0.00</td></tr>
         </table>
       </div>
     </section>
 
     <section id="financing">
-      <h2 class="section-title">Financing</h2>
+      <h2 class="section-title" style="font-size:16px;color:var(--gray-500)">Financing Terms <span style="font-weight:400">(if applicable)</span></h2>
       <div class="card">
-        <table class="fin-table">
-          <tr><td>Down Payment</td><td>$0.00</td></tr>
+        <table class="fin-table fin-table-sub">
           <tr><td>Amount Financed</td><td>$7,632.00</td></tr>
           <tr><td>Financing Rate</td><td>20% APR</td></tr>
-          <tr><td>Term</td><td>36 months</td></tr>
-          <tr class="total"><td>Monthly Payment</td><td>$283.63</td></tr>
         </table>
       </div>
     </section>
