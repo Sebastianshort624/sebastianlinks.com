@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Client File Editor — CPG CRM</title>
+<style>
+  :root {
+    --navy: #1a2332; --navy-2: #2a3648; --gray-700: #4a5568; --gray-500: #718096;
+    --gray-300: #cbd5e0; --gray-100: #f7f8fa; --border: #e2e5ea; --white: #ffffff;
+    --green: #1e7a44; --green-bg: #edf9f1; --green-border: #b7e4c7;
+    --blue: #1a56db; --radius: 10px; --shadow: 0 1px 3px rgba(20,24,33,.06);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: var(--gray-100); color: var(--navy); line-height: 1.5; font-size: 15px; }
+  .wrap { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+  h1, h2, h3 { color: var(--navy); font-weight: 700; margin: 0; }
+  p { color: var(--gray-700); margin: 0 0 10px; }
+
+  header.site-header { background: #fff; border-bottom: 1px solid var(--border); padding: 16px 0; }
+  header.site-header .header-row { display: flex; align-items: center; gap: 14px; }
+  header.site-header .logo-img { height: 40px; width: auto; }
+  header.site-header .brand-sub { font-size: 12.5px; color: var(--gray-500); letter-spacing: 1.2px; text-transform: uppercase; margin-top: 2px; }
+
+  main { padding: 32px 0 60px; }
+  .card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 26px; margin-bottom: 20px; box-shadow: var(--shadow); }
+  .section-title { font-size: 19px; margin-bottom: 6px; }
+  .section-intro { font-size: 13.5px; color: var(--gray-500); margin-bottom: 16px; }
+
+  textarea#raw-paste { width: 100%; min-height: 160px; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12.5px; resize: vertical; }
+  button { font-size: 14px; font-weight: 700; padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; }
+  .btn-primary { background: var(--blue); color: #fff; }
+  .btn-primary:hover { background: #1543ad; }
+  .btn-secondary { background: var(--white); color: var(--navy); border: 1px solid var(--border); }
+  .btn-secondary:hover { border-color: var(--navy); }
+  .btn-green { background: var(--green); color: #fff; }
+  .btn-green:hover { background: #165c34; }
+
+  .parse-status { margin-top: 10px; font-size: 13px; padding: 10px 12px; border-radius: 8px; display: none; }
+  .parse-status.ok { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); display: block; }
+  .parse-status.warn { background: #fff8e6; color: #92620a; border: 1px solid #f0d896; display: block; }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .field label { display: block; font-size: 11.5px; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: .4px; margin-bottom: 4px; }
+  .field input, .field textarea, .field select {
+    width: 100%; padding: 9px 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; font-family: inherit; color: var(--navy);
+  }
+  .field textarea { min-height: 70px; resize: vertical; }
+  .field.full { grid-column: 1 / -1; }
+  .field .unmapped-flag { color: #b45309; font-size: 11px; font-weight: 600; }
+
+  .publish-bar { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  .modal-overlay { position: fixed; inset: 0; background: rgba(20,24,33,.5); display: flex; align-items: center; justify-content: center; z-index: 100; }
+  .modal-overlay.hidden { display: none; }
+  .modal-box { background: #fff; border-radius: var(--radius); padding: 28px; max-width: 440px; width: 90%; }
+  .naming-option { display: block; width: 100%; text-align: left; padding: 14px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; background: #fff; cursor: pointer; }
+  .naming-option:hover { border-color: var(--blue); background: #f5f8ff; }
+  .naming-option .opt-title { font-weight: 700; color: var(--navy); font-size: 14px; }
+  .naming-option .opt-example { font-size: 12px; color: var(--gray-500); margin-top: 2px; }
+
+  @media (max-width: 720px) { .form-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-row">
+    <img src="/cpg/hugo-mariana/assets/cpg-logo.png" alt="Client Protection Group LLC" class="logo-img">
+    <div class="brand-sub">Client File Editor — CRM</div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <div class="card">
+      <div class="section-title">1. Paste Raw Client Data</div>
+      <div class="section-intro">Paste the raw tab-separated row (header row + data row) copied directly from your CRM export.</div>
+      <textarea id="raw-paste" placeholder="Paste your raw CRM export here (header row, then the client's data row)…"></textarea>
+      <div style="margin-top:12px">
+        <button class="btn-primary" onclick="parseRawData()">Parse &amp; Auto-Fill</button>
+      </div>
+      <div id="parse-status" class="parse-status"></div>
+    </div>
+
+    <div class="card hidden" id="editor-card">
+      <div class="section-title">2. Review &amp; Edit Client File</div>
+      <div class="section-intro">Auto-filled from your pasted data — review and correct anything before publishing.</div>
+      <div class="form-grid" id="editor-fields"></div>
+      <div class="publish-bar">
+        <button class="btn-secondary" onclick="resetEditor()">Start Over</button>
+        <button class="btn-green" onclick="openPublishModal()">Publish</button>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="modal-overlay hidden" id="publish-modal">
+  <div class="modal-box">
+    <h2 style="margin-bottom:6px">Name This Page</h2>
+    <p style="font-size:13.5px;margin-bottom:16px">How should this client's URL be named?</p>
+    <button class="naming-option" onclick="publishWithNaming('first-last')">
+      <div class="opt-title">First Name – Last Name</div>
+      <div class="opt-example" id="example-first-last">e.g. /cpg/hugo-rocha/</div>
+    </button>
+    <button class="naming-option" onclick="publishWithNaming('first-2ndfirst')">
+      <div class="opt-title">First Name – 2nd Owner First Name</div>
+      <div class="opt-example" id="example-first-2nd">e.g. /cpg/hugo-mariana/</div>
+    </button>
+    <div style="text-align:right;margin-top:10px">
+      <button class="btn-secondary" onclick="closePublishModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var API_BASE_PLACEHOLDER = ''; // reserved for the future auto-publish Worker
+
+// Fields the editor collects, in display order. Each maps to one or
+// more possible RAW CRM header names (case-insensitive, whitespace-
+// tolerant) to match against -- "first non-blank match wins" when a
+// raw export has duplicate-named columns, same approach used in the
+// CPG CRM's own import pipeline.
+var FIELD_DEFS = [
+  { key: 'clientFirst', label: "Client First Name", headers: ['1st first name'] },
+  { key: 'clientLast', label: "Client Last Name", headers: ['last name'] },
+  { key: 'secondOwnerFirst', label: "2nd Owner First Name", headers: ['2nd owner'] },
+  { key: 'secondOwnerLast', label: "2nd Owner Last Name", headers: ['2nd owner last name'] },
+  { key: 'phone', label: "Phone", headers: ['phone'] },
+  { key: 'phone2', label: "2nd Phone", headers: ['2nd phone'] },
+  { key: 'email', label: "Email", headers: ['email'] },
+  { key: 'resort', label: "Resort Name", headers: ['resort name'] },
+  { key: 'resortState', label: "Resort State", headers: ['res st', 'r1-resort state'] },
+  { key: 'timeZone', label: "Time Zone", headers: ['time zone'] },
+  { key: 'language', label: "Eng/Esp", headers: ['eng/esp'] },
+  { key: 'appointment', label: "Appointment Date & Time", headers: ['appointment date'] },
+  { key: 'mtgMonthly', label: "MTG / Mo", headers: ['mtg /mo'] },
+  { key: 'mtgAnnual', label: "MTG / Yr", headers: ['mtg /yr'] },
+  { key: 'mtfAnnual', label: "MTF / Yr", headers: ['mtf / yr'] },
+  { key: 'mtfMonthly', label: "MTF / Mo", headers: ['mtf/mo'] },
+  { key: 'totalMonthly', label: "Total / Mo", headers: ['total / mo'] },
+  { key: 'mtgMonthsBehind', label: "MTG Months Behind", headers: ['mtg # months behind'] },
+  { key: 'mtgAmountBehind', label: "MTG $$ Behind", headers: ['mtg $$ behind'] },
+  { key: 'mtfMonthsBehind', label: "MTF Behind (Months)", headers: ['mtf behind'] },
+  { key: 'mtfAmountBehind', label: "MTF $$ Behind", headers: ['mtf $$ behind'] },
+  { key: 'notes', label: "Notes / Findings (raw)", headers: ['notes'] },
+  { key: 'whyWantOut', label: "Why They Want Out", headers: ['r1-why do they want out?'] },
+  { key: 'leadStatus', label: "Lead Status", headers: ['lead status'] },
+  // Quote/service fields are NOT part of a raw CRM lead export -- left
+  // blank for manual entry, same as CPG's page required a separately-
+  // negotiated quote.
+  { key: 'serviceFee', label: "Service Fee ($)", headers: [] },
+  { key: 'salesTaxPct', label: "Sales Tax %", headers: [] },
+  { key: 'downPayment', label: "Down Payment ($)", headers: [] },
+  { key: 'financingApr', label: "Financing APR", headers: [] },
+  { key: 'financingTermMonths', label: "Financing Term (months)", headers: [] },
+];
+
+var parsedFields = {};
+
+// Splits the pasted block into header row + first data row, tolerant
+// of the messy real-world export shape: duplicate header names,
+// stray control-character separator glyphs some sheets export
+// (e.g. the 𝄃𝄃𝄂𝄂𝄀𝄁𝄃𝄂𝄂𝄃 divider seen in real pasted CRM rows), and
+// blank/short trailing cells.
+function parseRawData() {
+  var raw = document.getElementById('raw-paste').value;
+  var lines = raw.split(/\r?\n/).filter(function(l) { return l.trim() !== ''; });
+  if (lines.length < 2) {
+    showParseStatus('warn', 'Paste both the header row and at least one data row (tab-separated).');
+    return;
+  }
+
+  var headers = lines[0].split('\t').map(function(h) { return h.trim(); });
+  var data = lines[1].split('\t');
+
+  // Build normalized-header -> first-non-blank-value map. Iterating in
+  // column order and never overwriting an already-set key means the
+  // FIRST occurrence of a duplicate header name wins, matching the
+  // same "first non-blank wins" rule as the CPG CRM's own import path.
+  var normalizedMap = {};
+  for (var i = 0; i < headers.length; i++) {
+    var norm = headers[i].toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+    var val = (data[i] || '').trim();
+    if (!val) continue;
+    if (normalizedMap.hasOwnProperty(norm)) continue; // first match wins
+    normalizedMap[norm] = val;
+  }
+
+  parsedFields = {};
+  var matchedCount = 0;
+  FIELD_DEFS.forEach(function(def) {
+    var found = '';
+    for (var h = 0; h < def.headers.length; h++) {
+      // Normalize the needle the SAME way the map keys were built --
+      // otherwise a needle containing punctuation (e.g. "mtf / yr")
+      // never matches its normalized key ("mtf yr").
+      var needle = def.headers[h].toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+      if (normalizedMap.hasOwnProperty(needle)) { found = normalizedMap[needle]; break; }
+      var key = Object.keys(normalizedMap).find(function(k) { return k.indexOf(needle) !== -1; });
+      if (key) { found = normalizedMap[key]; break; }
+    }
+    parsedFields[def.key] = found;
+    if (found) matchedCount++;
+  });
+
+  renderEditorForm();
+  document.getElementById('editor-card').classList.remove('hidden');
+  showParseStatus('ok', 'Matched ' + matchedCount + ' of ' + FIELD_DEFS.length + ' fields automatically. Review below — quote/financing fields are never in a raw CRM export and are left blank for manual entry.');
+  document.getElementById('editor-card').scrollIntoView({ behavior: 'smooth' });
+}
+
+function showParseStatus(kind, msg) {
+  var el = document.getElementById('parse-status');
+  el.className = 'parse-status ' + kind;
+  el.textContent = msg;
+}
+
+function renderEditorForm() {
+  var container = document.getElementById('editor-fields');
+  var html = '';
+  FIELD_DEFS.forEach(function(def) {
+    var val = parsedFields[def.key] || '';
+    var div = document.createElement('div'); div.textContent = val;
+    var escaped = div.innerHTML.replace(/"/g, '&quot;');
+    var isLong = def.key === 'notes' || def.key === 'whyWantOut';
+    html += '<div class="field' + (isLong ? ' full' : '') + '">';
+    html += '<label>' + def.label + '</label>';
+    if (isLong) {
+      html += '<textarea id="field-' + def.key + '">' + escaped + '</textarea>';
+    } else {
+      html += '<input type="text" id="field-' + def.key + '" value="' + escaped + '">';
+    }
+    html += '</div>';
+  });
+  container.innerHTML = html;
+}
+
+function collectEditorFields() {
+  var out = {};
+  FIELD_DEFS.forEach(function(def) {
+    var el = document.getElementById('field-' + def.key);
+    out[def.key] = el ? el.value.trim() : '';
+  });
+  return out;
+}
+
+function resetEditor() {
+  document.getElementById('raw-paste').value = '';
+  document.getElementById('editor-card').classList.add('hidden');
+  document.getElementById('parse-status').className = 'parse-status';
+  parsedFields = {};
+}
+
+function slugify(s) {
+  return (s || '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+}
+
+function openPublishModal() {
+  var f = collectEditorFields();
+  document.getElementById('example-first-last').textContent =
+    '/cpg/' + (slugify(f.clientFirst) || 'first') + '-' + (slugify(f.clientLast) || 'last') + '/';
+  document.getElementById('example-first-2nd').textContent =
+    '/cpg/' + (slugify(f.clientFirst) || 'first') + '-' + (slugify(f.secondOwnerFirst) || '2ndowner') + '/';
+  document.getElementById('publish-modal').classList.remove('hidden');
+}
+function closePublishModal() {
+  document.getElementById('publish-modal').classList.add('hidden');
+}
+
+function publishWithNaming(mode) {
+  var f = collectEditorFields();
+  var slug = mode === 'first-last'
+    ? slugify(f.clientFirst) + '-' + slugify(f.clientLast)
+    : slugify(f.clientFirst) + '-' + slugify(f.secondOwnerFirst);
+  if (!slug || slug === '-') {
+    alert('Not enough name info to generate a URL slug — fill in the client name fields first.');
+    return;
+  }
+  closePublishModal();
+  var html = generateCasePageHtml(f, slug);
+  downloadFile(slug + '-index.html', html);
+  alert('Generated ' + slug + '-index.html.\n\nUpload it to your repo as:\ncpg/' + slug + '/index.html\n\n(Auto-publish direct-to-GitHub is a follow-on feature — this download is today\'s path.)');
+}
+
+// Builds the finished client case page from whatever fields were
+// parsed/edited. Deliberately does NOT invent content this tool has
+// no real basis for (guarantee terms, legal-rights framing, specific
+// findings categories) -- those were CPG-specific content given in a
+// detailed spec, not generic CRM fields. Sections only appear when
+// the underlying data is actually present.
+function esc(s) {
+  var d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML;
+}
+function money(s) {
+  var n = parseFloat(String(s || '').replace(/[^0-9.\-]/g, ''));
+  return isNaN(n) ? '' : '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function generateCasePageHtml(f, slug) {
+  var clientName = [f.clientFirst, f.clientLast].filter(Boolean).join(' ');
+  var secondOwnerName = [f.secondOwnerFirst, f.secondOwnerLast].filter(Boolean).join(' ');
+  var fullClientLine = secondOwnerName ? clientName + ' & ' + secondOwnerName : clientName;
+
+  var hasFinancials = f.mtgMonthly || f.mtfAnnual || f.totalMonthly;
+  var hasArrears = f.mtgAmountBehind || f.mtfAmountBehind;
+  var hasQuote = f.serviceFee;
+
+  var quoteTotal = '', quoteTax = '';
+  if (hasQuote) {
+    var feeNum = parseFloat(String(f.serviceFee).replace(/[^0-9.]/g, '')) || 0;
+    var taxPct = parseFloat(String(f.salesTaxPct).replace(/[^0-9.]/g, '')) || 0;
+    var taxAmt = feeNum * (taxPct / 100);
+    quoteTax = money(taxAmt);
+    quoteTotal = money(feeNum + taxAmt);
+  }
+
+  var html = '<!doctype html><html lang="en"><head><meta charset="utf-8">';
+  html += '<meta name="viewport" content="width=device-width, initial-scale=1">';
+  html += '<title>Case File — ' + esc(fullClientLine) + ' | Client Protection Group LLC</title>';
+  html += '<style>';
+  html += ':root{--navy:#1a2332;--gray-700:#4a5568;--gray-500:#718096;--border:#e2e5ea;--blue:#1e5a8c;--blue-bg:#eaf3fb;--blue-border:#b9d9ee;--radius:10px;--shadow:0 1px 3px rgba(20,24,33,.06)}';
+  html += '*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background:#fff;color:var(--navy);line-height:1.55;font-size:16px}';
+  html += '.wrap{max-width:1100px;margin:0 auto;padding:0 24px}h1,h2,h3{color:var(--navy);font-weight:700;margin:0}p{color:var(--gray-700);margin:0 0 12px}';
+  html += 'header.site-header{background:#fff;border-bottom:1px solid var(--border);padding:20px 0}header .logo-img{height:44px}';
+  html += 'main{padding:36px 0 60px}.card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:26px;margin-bottom:20px;box-shadow:var(--shadow)}';
+  html += 'section{margin-bottom:36px}.section-title{font-size:21px;margin-bottom:14px}';
+  html += 'table.fin-table{width:100%;border-collapse:collapse;font-size:15px}table.fin-table td{padding:10px 4px;border-bottom:1px solid var(--border)}table.fin-table td:first-child{color:var(--gray-700)}table.fin-table td:last-child{text-align:right;font-weight:700}';
+  html += '.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}.stat-card{background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:var(--radius);padding:20px;text-align:center}';
+  html += '.stat-card .stat-value{font-size:26px;font-weight:800;color:var(--blue)}.stat-card .stat-label{font-size:12px;font-weight:700;text-transform:uppercase;color:var(--gray-500);margin-top:6px}';
+  html += 'footer{background:#f7f8fa;border-top:1px solid var(--border);padding:28px 0;text-align:center;font-size:13px;color:var(--gray-500)}';
+  html += '@media(max-width:700px){.grid-2{grid-template-columns:1fr}}';
+  html += '</style></head><body>';
+
+  html += '<header class="site-header"><div class="wrap"><img src="/cpg/hugo-mariana/assets/cpg-logo.png" alt="Client Protection Group LLC" class="logo-img"></div></header>';
+  html += '<main><div class="wrap">';
+
+  html += '<div style="margin-bottom:30px"><div style="font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gray-500);margin-bottom:8px">Case File</div>';
+  html += '<h1 style="font-size:30px">' + esc(fullClientLine) + '</h1>';
+  if (f.resort) html += '<div style="font-size:16px;color:var(--gray-700);margin-top:6px">' + esc(f.resort) + (f.resortState ? ', ' + esc(f.resortState) : '') + '</div>';
+  html += '</div>';
+
+  // Contact
+  if (f.phone || f.email) {
+    html += '<section><div class="card"><div class="section-title" style="font-size:16px">Contact Information</div><table class="fin-table">';
+    if (f.phone) html += '<tr><td>Phone</td><td>' + esc(f.phone) + '</td></tr>';
+    if (f.phone2) html += '<tr><td>2nd Phone</td><td>' + esc(f.phone2) + '</td></tr>';
+    if (f.email) html += '<tr><td>Email</td><td>' + esc(f.email) + '</td></tr>';
+    html += '</table></div></section>';
+  }
+
+  // Findings (only what was actually reported -- framed as reported, not asserted)
+  if (f.whyWantOut || f.notes) {
+    html += '<section><h2 class="section-title">Client-Reported Findings</h2><div class="card">';
+    if (f.whyWantOut) html += '<p>' + esc(f.whyWantOut) + '</p>';
+    if (f.notes) html += '<p style="margin-bottom:0">' + esc(f.notes) + '</p>';
+    html += '</div></section>';
+  }
+
+  // Financial summary
+  if (hasFinancials) {
+    html += '<section><h2 class="section-title">Current Ownership Financial Summary</h2>';
+    html += '<div class="grid-2" style="margin-bottom:16px">';
+    if (f.totalMonthly) html += '<div class="stat-card"><div class="stat-value">' + money(f.totalMonthly) + '</div><div class="stat-label">Current Monthly Expense</div></div>';
+    if (hasArrears) {
+      var arrTotal = (parseFloat(String(f.mtgAmountBehind).replace(/[^0-9.]/g, '')) || 0) + (parseFloat(String(f.mtfAmountBehind).replace(/[^0-9.]/g, '')) || 0);
+      html += '<div class="stat-card"><div class="stat-value">' + money(arrTotal) + '</div><div class="stat-label">Total Arrears</div></div>';
+    }
+    html += '</div><div class="card"><table class="fin-table">';
+    if (f.mtgMonthly) html += '<tr><td>Mortgage Payment</td><td>' + money(f.mtgMonthly) + ' / month</td></tr>';
+    if (f.mtfAnnual) html += '<tr><td>Maintenance Fee</td><td>' + money(f.mtfAnnual) + ' / year</td></tr>';
+    if (f.totalMonthly) html += '<tr><td>Total Monthly Expense</td><td>' + money(f.totalMonthly) + '</td></tr>';
+    if (f.mtgMonthsBehind || f.mtgAmountBehind) html += '<tr><td>Mortgage Arrears</td><td>' + esc(f.mtgMonthsBehind) + ' months — ' + money(f.mtgAmountBehind) + '</td></tr>';
+    if (f.mtfMonthsBehind || f.mtfAmountBehind) html += '<tr><td>Maintenance Fee Arrears</td><td>' + esc(f.mtfMonthsBehind) + ' months — ' + money(f.mtfAmountBehind) + '</td></tr>';
+    html += '</table></div></section>';
+  }
+
+  // Quote (only if manually filled in -- never in raw CRM data)
+  if (hasQuote) {
+    html += '<section><h2 class="section-title">Service Quotation</h2><div class="card"><table class="fin-table">';
+    html += '<tr><td>Service Fee</td><td>' + money(f.serviceFee) + '</td></tr>';
+    if (f.salesTaxPct) html += '<tr><td>Sales Tax — ' + esc(f.salesTaxPct) + '%</td><td>' + quoteTax + '</td></tr>';
+    html += '<tr><td>Total Contract Amount</td><td>' + quoteTotal + '</td></tr>';
+    if (f.downPayment) html += '<tr><td>Down Payment</td><td>' + money(f.downPayment) + '</td></tr>';
+    if (f.financingApr) html += '<tr><td>Financing</td><td>' + esc(f.financingApr) + '% APR' + (f.financingTermMonths ? ', ' + esc(f.financingTermMonths) + ' months' : '') + '</td></tr>';
+    html += '</table></div></section>';
+  }
+
+  html += '</div></main>';
+  html += '<footer><div class="wrap">Client Protection Group LLC</div></footer>';
+  html += '</body></html>';
+  return html;
+}
+
+function downloadFile(filename, content) {
+  var blob = new Blob([content], { type: 'text/html' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+</script>
