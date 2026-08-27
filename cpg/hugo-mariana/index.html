@@ -111,6 +111,13 @@
   .hero h1 { font-size: 32px; line-height: 1.25; margin-bottom: 10px; }
   .hero .sub { font-size: 17px; color: var(--gray-700); }
 
+  /* ── Client Vitals ── */
+  .vitals-card { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px 24px; }
+  .vitals-item .vitals-label { font-size: 11px; font-weight: 700; letter-spacing: 0.4px; text-transform: uppercase; color: var(--gray-500); margin-bottom: 3px; }
+  .vitals-item .vitals-value { font-size: 15px; font-weight: 700; color: var(--navy); }
+  .vitals-item .vitals-value.missing { font-weight: 400; font-style: italic; color: var(--gray-300); }
+  @media (max-width: 820px) { .vitals-card { grid-template-columns: repeat(2, 1fr); } }
+
   /* ── Card system ── */
   .card {
     background: var(--white);
@@ -310,6 +317,46 @@
       <h1>Hugo Rocha &amp; Mariana Rosales</h1>
       <div class="sub">Holiday Inn Club Vacations &nbsp;·&nbsp; Year Purchased: 2020</div>
     </div>
+
+    <!-- ===================== CLIENT VITALS ===================== -->
+    <section id="vitals">
+      <div class="card">
+        <div class="vitals-card">
+          <div class="vitals-item">
+            <div class="vitals-label">Resort</div>
+            <div class="vitals-value">Holiday Inn Club Vacations</div>
+          </div>
+          <div class="vitals-item">
+            <div class="vitals-label">Email</div>
+            <div class="vitals-value">hugorocha1008@gmail.com</div>
+          </div>
+          <div class="vitals-item">
+            <div class="vitals-label">Phone</div>
+            <div class="vitals-value">786-738-1729</div>
+          </div>
+          <div class="vitals-item">
+            <div class="vitals-label">2nd Phone</div>
+            <div class="vitals-value">786-217-5126</div>
+          </div>
+          <div class="vitals-item">
+            <div class="vitals-label">Mailing Address</div>
+            <div class="vitals-value missing">Not on file</div>
+          </div>
+          <div class="vitals-item">
+            <div class="vitals-label">Mortgage Behind</div>
+            <div class="vitals-value">6 months — $7,470</div>
+          </div>
+          <div class="vitals-item">
+            <div class="vitals-label">Maintenance Behind</div>
+            <div class="vitals-value">12 months — $4,400</div>
+          </div>
+          <div class="vitals-item">
+            <div class="vitals-label">Total Arrears</div>
+            <div class="vitals-value">$11,870</div>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- ===================== CASE ACCEPTED ===================== -->
     <section id="case-accepted">
