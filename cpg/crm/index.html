@@ -116,7 +116,12 @@
 </div>
 
 <script>
-var API_BASE_PLACEHOLDER = ''; // reserved for the future auto-publish Worker
+// Auto-publish Worker (sebastianlinks-publish-api) -- fill in PUBLISH_API_URL
+// with the Worker's URL once deployed (e.g. "https://sebastianlinks-publish-api.<subdomain>.workers.dev").
+// Left blank, Publish falls back to today's download-the-file flow, so this
+// tool never breaks even if the Worker isn't set up yet.
+var PUBLISH_API_URL = '';
+var PUBLISH_PASSPHRASE = 'Wht2QeYcbzGEpWr9r2rXNgva7czSAIi7';
 
 // Fields the editor collects, in display order. Each maps to one or
 // more possible RAW CRM header names (case-insensitive, whitespace-
@@ -281,8 +286,37 @@ function publishWithNaming(mode) {
   }
   closePublishModal();
   var html = generateCasePageHtml(f, slug);
-  downloadFile(slug + '-index.html', html);
-  alert('Generated ' + slug + '-index.html.\n\nUpload it to your repo as:\ncpg/' + slug + '/index.html\n\n(Auto-publish direct-to-GitHub is a follow-on feature — this download is today\'s path.)');
+
+  if (!PUBLISH_API_URL) {
+    downloadFile(slug + '-index.html', html);
+    alert('Generated ' + slug + '-index.html.\n\nUpload it to your repo as:\ncpg/' + slug + '/index.html\n\n(Auto-publish isn\'t configured yet on this page — this download is the fallback path.)');
+    return;
+  }
+
+  fetch(PUBLISH_API_URL.replace(/\/$/, '') + '/publish', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Publish-Passphrase': PUBLISH_PASSPHRASE
+    },
+    body: JSON.stringify({ slug: slug, html: html })
+  })
+    .then(function(resp) {
+      return resp.json().then(function(data) { return { status: resp.status, data: data }; });
+    })
+    .then(function(result) {
+      if (result.data && result.data.ok) {
+        alert((result.data.updated ? 'Updated' : 'Published') + '!\n\n' + result.data.url);
+      } else {
+        var reason = (result.data && result.data.error) || ('HTTP ' + result.status);
+        downloadFile(slug + '-index.html', html);
+        alert('Auto-publish failed (' + reason + ') — downloaded ' + slug + '-index.html instead.\n\nUpload it to your repo as:\ncpg/' + slug + '/index.html');
+      }
+    })
+    .catch(function(err) {
+      downloadFile(slug + '-index.html', html);
+      alert('Could not reach the publish service (' + err.message + ') — downloaded ' + slug + '-index.html instead.\n\nUpload it to your repo as:\ncpg/' + slug + '/index.html');
+    });
 }
 
 // Builds the finished client case page from whatever fields were
