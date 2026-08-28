@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Timeshare Cost & Cancellation Calculator</title>
+<style>
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 24px;
+    background: #e8f1f0;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #196869;
+  }
+
+  .sheet {
+    max-width: 1200px;
+    margin: auto;
+    background: #ffffff;
+    padding: 24px;
+    border: 1px solid #6fa1a1;
+    border-radius: 10px;
+    box-shadow: 0 3px 14px rgba(25, 104, 105, .12);
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 23px;
+    margin: 0 0 24px;
+    padding: 15px;
+    background: #196869;
+    color: #ffffff;
+    border-radius: 8px;
+    letter-spacing: .3px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1.4fr .8fr 1.4fr .8fr;
+    gap: 0;
+    border-top: 1px solid #6fa1a1;
+    border-left: 1px solid #6fa1a1;
+  }
+
+  .cell {
+    min-height: 44px;
+    padding: 8px 10px;
+    border-right: 1px solid #6fa1a1;
+    border-bottom: 1px solid #6fa1a1;
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+  }
+
+  .label {
+    font-weight: 700;
+    color: #196869;
+  }
+
+  .value {
+    background: #ffffff;
+    color: #196869;
+  }
+
+  input {
+    width: 100%;
+    border: 1px solid #6fa1a1;
+    border-radius: 5px;
+    padding: 8px 9px;
+    font-size: 15px;
+    color: #196869;
+    background: #fff2cc;
+  }
+
+  input:focus {
+    outline: 2px solid #6fa1a1;
+    border-color: #196869;
+    background: #fff2cc;
+  }
+
+  .input-suffix {
+    position: relative;
+    width: 100%;
+  }
+
+  .input-suffix input {
+    padding-right: 26px;
+  }
+
+  .input-suffix .suffix {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #196869;
+    font-weight: 700;
+    font-size: 13px;
+    pointer-events: none;
+  }
+
+  .section {
+    grid-column: 1 / -1;
+    background: #196869;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 16px;
+    justify-content: center;
+    letter-spacing: .2px;
+  }
+
+  .divider-break {
+    grid-column: 1 / -1;
+    background: #ffffff;
+    color: #196869;
+    font-weight: 800;
+    font-size: 13px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: .6px;
+    padding: 16px 10px;
+    border-top: 4px solid #196869;
+    border-bottom: 4px solid #196869;
+  }
+
+  .total {
+    font-weight: 700;
+    background: #e8f1f0;
+    color: #196869;
+  }
+
+  .savings {
+    font-weight: 700;
+    background: #e8f1f0;
+    color: #196869;
+  }
+
+  button {
+    margin-top: 18px;
+    padding: 11px 18px;
+    border: 0;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 14px;
+    background: #196869;
+    color: #ffffff;
+  }
+
+  button:hover {
+    background: #6fa1a1;
+  }
+
+  .note {
+    margin-top: 18px;
+    font-size: 12px;
+    color: #196869;
+    background: #e8f1f0;
+    border-left: 4px solid #6fa1a1;
+    padding: 9px 11px;
+    border-radius: 4px;
+  }
+
+  .client-sub {
+    text-align: center;
+    margin: -14px 0 20px;
+    font-size: 13px;
+    color: #196869;
+    font-weight: 600;
+  }
+
+  .paste-box {
+    margin-top: 26px;
+    padding: 16px;
+    background: #e8f1f0;
+    border: 1px solid #6fa1a1;
+    border-radius: 8px;
+  }
+
+  .paste-title {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+
+  .paste-desc {
+    font-size: 12px;
+    color: #196869;
+    margin-bottom: 10px;
+  }
+
+  #rawPaste {
+    width: 100%;
+    min-height: 110px;
+    resize: vertical;
+    border: 1px solid #6fa1a1;
+    border-radius: 5px;
+    padding: 9px 10px;
+    font-family: "Courier New", monospace;
+    font-size: 12.5px;
+    color: #196869;
+    background: #fff2cc;
+  }
+
+  #rawPaste:focus {
+    outline: 2px solid #6fa1a1;
+    border-color: #196869;
+  }
+
+  .paste-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .paste-actions button {
+    margin-top: 0;
+  }
+
+  button.secondary {
+    background: #ffffff;
+    color: #196869;
+    border: 1px solid #6fa1a1;
+  }
+
+  button.secondary:hover {
+    background: #e8f1f0;
+  }
+
+  .paste-result {
+    margin-top: 12px;
+    font-size: 12.5px;
+    color: #196869;
+    background: #ffffff;
+    border-left: 4px solid #6fa1a1;
+    padding: 9px 11px;
+    border-radius: 4px;
+    display: none;
+    line-height: 1.5;
+  }
+
+  .paste-result.visible {
+    display: block;
+  }
+
+  @media (max-width: 800px) {
+    body { padding: 10px; }
+    .sheet { padding: 12px; }
+    .grid { grid-template-columns: 1fr 1fr; }
+    .section { grid-column: 1 / -1; }
+  }
+
+  @media print {
+    body {
+      background: #ffffff;
+      padding: 0;
+    }
+
+    .sheet {
+      box-shadow: none;
+      border: 0;
+    }
+
+    input {
+      border: 0;
+      background: transparent;
+    }
+
+    button {
+      display: none;
+    }
+
+    .note,
+    .paste-box {
+      display: none !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+  <h1>TIMESHARE COST &amp; CANCELLATION CALCULATOR</h1>
+  <div class="client-sub">Hugo Rocha &amp; Mariana Rosales &nbsp;·&nbsp; Holiday Inn Club Vacations &nbsp;·&nbsp; Client Protection Group LLC</div>
+
+  <div class="grid">
+
+    <div class="cell label">Year Purchased:</div>
+    <div class="cell value"><input id="yearPurchased" type="number" value="2020"></div>
+    <div class="cell label">Mortgage Payment:</div>
+    <div class="cell value"><input id="mortgagePayment" type="number" step="0.01" value="1245"></div>
+
+    <div class="cell label">Mortgage Months Remaining:</div>
+    <div class="cell value"><input id="mortgageMonths" type="number" value="72"></div>
+    <div class="cell label">Maintenance Fee:</div>
+    <div class="cell value"><input id="maintenanceFee" type="number" step="0.01" value="4400"></div>
+
+    <div class="cell label">Mortgage Years Remaining:</div>
+    <div class="cell value" id="mortgageYears">$8.00 years</div>
+    <div class="cell label">Total Monthly Expense:</div>
+    <div class="cell value" id="monthlyExpense">$383.33</div>
+
+    <div class="cell label">Years of Maintenance Fees:</div>
+    <div class="cell value" id="maintenanceYears">8.00</div>
+    <div class="cell label">MTF Annual Increase:</div>
+    <div class="cell value"><div class="input-suffix"><input id="mtfIncrease" type="number" step="0.01" value="6"><span class="suffix">%</span></div></div>
+
+    <div class="cell label total">Total Expenses:</div>
+    <div class="cell total" id="totalExpenses">$36,800.00</div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+
+    <div class="cell section">ARREARS</div>
+
+    <div class="cell label">Arrears: Months of Mortgage:</div>
+    <div class="cell value"><input id="mortgageArrearsMonths" type="number" value="6"></div>
+    <div class="cell label">Mortgage Arrears:</div>
+    <div class="cell value" id="mortgageArrears">$0.00</div>
+
+    <div class="cell label">Arrears: Months of MTF:</div>
+    <div class="cell value"><input id="mtfArrearsMonths" type="number" value="12"></div>
+    <div class="cell label">MTF Arrears:</div>
+    <div class="cell value" id="mtfArrears">$0.00</div>
+
+    <div class="cell label total">Total Arrears:</div>
+    <div class="cell total" id="totalArrears">$0.00</div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+
+    <div class="cell section">FUTURE RESORT COST</div>
+
+    <div class="cell label">Period</div>
+    <div class="cell label">Years</div>
+    <div class="cell label">Future Resort Cost</div>
+    <div class="cell label">Monthly Payment</div>
+
+    <div class="cell label">Keep It 3 More Years and Pay:</div>
+    <div class="cell">3</div>
+    <div class="cell total" id="cost3">$14,046.40</div>
+    <div class="cell" id="monthly3">$390.00</div>
+
+    <div class="cell label">Keep It 5 More Years and Pay:</div>
+    <div class="cell">5</div>
+    <div class="cell total" id="cost5">$23,866.60</div>
+    <div class="cell" id="monthly5">$398.00</div>
+
+    <div class="cell label">Keep It 10 More Years and Pay:</div>
+    <div class="cell">10</div>
+    <div class="cell total" id="cost10">$42,854.56</div>
+    <div class="cell" id="monthly10">$421.00</div>
+
+    <div class="cell label">Keep It 20 More Years and Pay:</div>
+    <div class="cell">20</div>
+    <div class="cell total" id="cost20">$74,129.96</div>
+    <div class="cell" id="monthly20">$421.00</div>
+
+    <div class="cell label">Keep It 30 More Years and Pay:</div>
+    <div class="cell">30</div>
+    <div class="cell total" id="cost30">$149,283.21</div>
+    <div class="cell" id="monthly30">$421.00</div>
+
+    <div class="divider-break">— End of Resort Costs — Your New Life of Freedom Starts Below —</div>
+
+    <div class="cell section">CANCELLATION / LEGAL COST</div>
+
+    <!-- Legal fee, tax, and financing figures reflect the executed Service Quotation
+         at sebastianlinks.com/cpg/hugo-mariana#quote: $7,200 fee + 6% FL sales tax
+         = $7,632.00 cash price; 36-month term at $283.63/mo. -->
+    <div class="cell label">Total Legal Fees:</div>
+    <div class="cell value"><input id="legalFees" type="number" step="0.01" value="7200"></div>
+    <div class="cell label">Tax:</div>
+    <div class="cell value"><div class="input-suffix"><input id="taxRate" type="number" step="0.01" value="6"><span class="suffix">%</span></div></div>
+
+    <div class="cell label">Cash Price:</div>
+    <div class="cell total" id="cashPrice">$7,632.00</div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+
+    <div class="cell label">Down Payment:</div>
+    <div class="cell value"><input id="downPayment" type="number" step="0.01" value="0"></div>
+    <div class="cell label">For Months:</div>
+    <div class="cell value"><input id="financeMonths" type="number" value="36"></div>
+
+    <div class="cell label">Monthly Cancellation Payment:</div>
+    <div class="cell value" id="cancelMonthly">$283.63</div>
+    <div class="cell label">Total Financed Cost:</div>
+    <div class="cell total" id="financedCost">$10,224.00</div>
+
+    <div class="cell label"></div>
+    <div class="cell" style="font-size:11px;color:#6fa1a1;font-weight:600">Calculated automatically: standard 20% APR amortized over the months entered above</div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+
+    <div class="cell section">36-MONTH PAYMENT COMPARISON</div>
+
+    <div class="cell label">Paid To Resort Over 36 Months:</div>
+    <div class="cell total" id="resort36">$14,046.40</div>
+    <div class="cell label">Cancellation Payment:</div>
+    <div class="cell total" id="cancelPayment">$284.00</div>
+
+    <div class="cell label">Monthly Resort Payment:</div>
+    <div class="cell" id="resortMonthly">$383.33</div>
+    <div class="cell label">Monthly Savings:</div>
+    <div class="cell savings" id="monthlySavings">$99.33</div>
+
+    <div class="cell section">SAVINGS</div>
+
+    <div class="cell label">Years</div>
+    <div class="cell label">Resort Cost</div>
+    <div class="cell label">Cancellation Cost</div>
+    <div class="cell label">Savings</div>
+
+    <div class="cell">3</div>
+    <div class="cell" id="resortSave3">$14,046.40</div>
+    <div class="cell" id="cancelSave3">$7,632.00</div>
+    <div class="cell savings" id="save3">$6,414.40</div>
+
+    <div class="cell">5</div>
+    <div class="cell" id="resortSave5">$23,866.60</div>
+    <div class="cell" id="cancelSave5">$7,632.00</div>
+    <div class="cell savings" id="save5">$16,234.60</div>
+
+    <div class="cell">10</div>
+    <div class="cell" id="resortSave10">$42,854.56</div>
+    <div class="cell" id="cancelSave10">$7,632.00</div>
+    <div class="cell savings" id="save10">$35,222.56</div>
+
+    <div class="cell">30</div>
+    <div class="cell" id="resortSave30">$149,283.21</div>
+    <div class="cell" id="cancelSave30">$7,632.00</div>
+    <div class="cell savings" id="save30">$141,651.21</div>
+
+    <div class="cell section">AVOIDED MONTHLY RESORT PAYMENTS</div>
+
+    <div class="cell label">You Avoided Monthly Payments Of:</div>
+    <div class="cell total" id="avoided3">$390.00</div>
+    <div class="cell label">By Year:</div>
+    <div class="cell">3</div>
+
+    <div class="cell label">You Avoided Monthly Payments Of:</div>
+    <div class="cell total" id="avoided5">$398.00</div>
+    <div class="cell label">By Year:</div>
+    <div class="cell">5</div>
+
+    <div class="cell label">You Avoided Monthly Payments Of:</div>
+    <div class="cell total" id="avoided10">$421.00</div>
+    <div class="cell label">By Year:</div>
+    <div class="cell">10</div>
+
+  </div>
+
+  <button onclick="window.print()">Print / Save as PDF</button>
+
+  <div class="note">
+    Yellow fields are editable. Calculations update automatically as you type. Mortgage Months Remaining is
+    the documented figure from the account (72 months); editing Year Purchased re-estimates it from a standard
+    10-year (120-month) loan term. Maintenance fees are modeled with the annual increase entered above, for as
+    long as the mortgage runs. Monthly Cancellation Payment is calculated automatically at a standard 20% APR,
+    amortized over the financing months entered above.
+  </div>
+
+  <div class="paste-box">
+    <div class="paste-title">Paste Raw Client Data</div>
+    <div class="paste-desc">
+      Paste a raw tab-separated row (header row + data row) copied straight from a CRM export, or plain
+      "Label: Value" lines — either format works, and headers only need to be similar, not exact.
+    </div>
+    <textarea id="rawPaste" placeholder="Example (tab-separated, copied straight from a spreadsheet):
+Client First Name&#9;Client Last Name&#9;MTG / Mo&#9;MTG Months Behind&#9;MTF / Yr&#9;MTF Behind (Months)&#9;Service Fee ($)&#9;Sales Tax %&#9;Down Payment ($)&#9;Financing Term (months)
+Hugo&#9;Rocha&#9;1245&#9;6&#9;4400&#9;12&#9;7200&#9;6&#9;0&#9;36
+
+Or plain lines:
+Year Purchased: 2020
+Mortgage Payment: 1245
+Maintenance Fee: 4400"></textarea>
+    <div class="paste-actions">
+      <button type="button" id="parseBtn">Parse &amp; Auto-Fill</button>
+      <button type="button" id="clearPasteBtn" class="secondary">Clear</button>
+    </div>
+    <div class="paste-result" id="parseResult"></div>
+  </div>
+</div>
+
+<script>
+function num(id) {
+  const v = parseFloat(document.getElementById(id).value);
+  return Number.isFinite(v) ? v : 0;
+}
+
+function money(v) {
+  return v.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}
+
+function set(id, value) {
+  document.getElementById(id).textContent = money(value);
+}
+
+// Standard timeshare mortgage/loan term used to estimate months remaining
+// from Year Purchased, when the exact figure isn't on the account statement.
+// (Hugo & Mariana's 72 months remaining is the real, documented figure from
+// their account, so this only applies if Year Purchased is edited by hand.)
+const STANDARD_MORTGAGE_TERM_MONTHS = 120; // 10 years
+
+// Standard APR used to amortize the cancellation/legal fee balance into a
+// monthly payment over the financing term entered below. Reproduces the
+// executed $283.63/mo quote exactly for this case.
+const CANCELLATION_APR = 0.20;
+
+function autoEstimateMortgageMonths() {
+  const yearPurchased = num("yearPurchased");
+  if (!yearPurchased) return;
+
+  const currentYear = new Date().getFullYear();
+  const elapsedMonths = Math.max(0, (currentYear - yearPurchased) * 12);
+  const remainingMonths = Math.max(STANDARD_MORTGAGE_TERM_MONTHS - elapsedMonths, 0);
+
+  document.getElementById("mortgageMonths").value = remainingMonths;
+}
+
+function amortizedMonthlyPayment(principal, months) {
+  if (principal <= 0) return 0;
+  if (months <= 0) return principal;
+
+  const monthlyRate = CANCELLATION_APR / 12;
+  return (principal * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -months));
+}
+
+function resortCost(years) {
+  const mortgagePayment = num("mortgagePayment");
+  const mortgageMonths = num("mortgageMonths");
+  const maintenance = num("maintenanceFee");
+  const increase = num("mtfIncrease") / 100;
+
+  // Mortgage payments stop once the remaining mortgage months are exhausted.
+  const mortgageCost = Math.min(years * 12, mortgageMonths) * mortgagePayment;
+
+  // Maintenance fees increase annually.
+  let maintenanceCost = 0;
+  for (let y = 0; y < years; y++) {
+    maintenanceCost += maintenance * Math.pow(1 + increase, y);
+  }
+
+  return mortgageCost + maintenanceCost;
+}
+
+function monthlyAtYear(year) {
+  const mortgagePayment = num("mortgagePayment");
+  const mortgageMonths = num("mortgageMonths");
+  const maintenance = num("maintenanceFee");
+  const increase = num("mtfIncrease") / 100;
+
+  const mortgageStillDue = year * 12 < mortgageMonths;
+  const mortgagePart = mortgageStillDue ? mortgagePayment : 0;
+  const maintenancePart = maintenance * Math.pow(1 + increase, year - 1) / 12;
+
+  return mortgagePart + maintenancePart;
+}
+
+function calculate() {
+  const mortgagePayment = num("mortgagePayment");
+  const mortgageMonths = num("mortgageMonths");
+  const maintenance = num("maintenanceFee");
+
+  document.getElementById("mortgageYears").textContent =
+    (mortgageMonths / 12).toFixed(2) + " years";
+
+  document.getElementById("maintenanceYears").textContent =
+    (mortgageMonths / 12).toFixed(2);
+
+  set("monthlyExpense", mortgagePayment + maintenance / 12);
+
+  const totalExpenses =
+    mortgageMonths * mortgagePayment +
+    (mortgageMonths / 12) * maintenance;
+
+  set("totalExpenses", totalExpenses);
+
+  const mortgageArrears = num("mortgageArrearsMonths") * mortgagePayment;
+  const mtfArrears = num("mtfArrearsMonths") * (maintenance / 12);
+
+  set("mortgageArrears", mortgageArrears);
+  set("mtfArrears", mtfArrears);
+  set("totalArrears", mortgageArrears + mtfArrears);
+
+  [3,5,10,20,30].forEach(years => {
+    set("cost" + years, resortCost(years));
+    set("monthly" + years, monthlyAtYear(years));
+  });
+
+  const legalFees = num("legalFees");
+  const tax = num("taxRate") / 100;
+  const cashPrice = legalFees * (1 + tax);
+
+  set("cashPrice", cashPrice);
+
+  const downPayment = num("downPayment");
+  const financeMonths = num("financeMonths");
+  const principal = Math.max(cashPrice - downPayment, 0);
+  const cancelMonthly = amortizedMonthlyPayment(principal, financeMonths);
+
+  set("cancelMonthly", cancelMonthly);
+
+  const financedCost = downPayment + financeMonths * cancelMonthly;
+
+  set("financedCost", financedCost);
+
+  const resort36 = resortCost(3);
+
+  set("resort36", resort36);
+  set("cancelPayment", cancelMonthly);
+
+  const resortMonthly = mortgagePayment + maintenance / 12;
+  set("resortMonthly", resortMonthly);
+  set("monthlySavings", resortMonthly - cancelMonthly);
+
+  [3,5,10,30].forEach(years => {
+    const resort = resortCost(years);
+
+    set("resortSave" + years, resort);
+    set("cancelSave" + years, cashPrice);
+    set("save" + years, resort - cashPrice);
+  });
+
+  set("avoided3", monthlyAtYear(3));
+  set("avoided5", monthlyAtYear(5));
+  set("avoided10", monthlyAtYear(10));
+}
+
+document.querySelectorAll("input").forEach(input => {
+  input.addEventListener("input", calculate);
+});
+
+document.getElementById("yearPurchased").addEventListener("input", () => {
+  autoEstimateMortgageMonths();
+  calculate();
+});
+
+calculate();
+
+// ---- Paste Raw Client Data → Auto-Fill ----
+
+const FIELD_DISPLAY_NAMES = {
+  yearPurchased: "Year Purchased",
+  mortgagePayment: "Mortgage Payment",
+  mortgageMonths: "Mortgage Months Remaining",
+  maintenanceFee: "Maintenance Fee",
+  mtfIncrease: "MTF Annual Increase",
+  mortgageArrearsMonths: "Arrears: Months of Mortgage",
+  mtfArrearsMonths: "Arrears: Months of MTF",
+  legalFees: "Total Legal Fees",
+  taxRate: "Tax",
+  downPayment: "Down Payment",
+  financeMonths: "For Months"
+};
+
+// Headers are matched after normalization, so wording only needs to be
+// "similar" — punctuation, $, %, and case differences are all ignored.
+const FIELD_ALIASES = {
+  yearPurchased: ["year purchased", "purchase year", "purchased year", "year of purchase"],
+  mortgagePayment: ["mtg mo", "mortgage payment", "monthly mortgage payment", "mortgage pmt", "monthly mortgage"],
+  mortgageMonths: ["mortgage months remaining", "months remaining", "mortgage months", "months left on mortgage", "mortgage term remaining"],
+  maintenanceFee: ["mtf yr", "maintenance fee", "annual maintenance fee", "maintenance fees", "yearly maintenance fee"],
+  mtfIncrease: ["mtf annual increase", "maintenance fee annual increase", "annual increase", "mtf increase"],
+  mortgageArrearsMonths: ["mtg months behind", "arrears months of mortgage", "mortgage arrears months", "months behind on mortgage"],
+  mtfArrearsMonths: ["mtf behind months", "arrears months of mtf", "mtf arrears months", "months behind on maintenance", "mtf behind"],
+  legalFees: ["service fee", "total legal fees", "legal fees", "legal fee"],
+  taxRate: ["sales tax", "tax rate", "tax", "fl sales tax"],
+  downPayment: ["down payment", "downpayment"],
+  financeMonths: ["financing term months", "financing term", "for months", "finance months", "months financed", "term months"]
+};
+
+function normalizeHeader(str) {
+  return str.toLowerCase().replace(/[^a-z0-9]+/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function parseNumericValue(str) {
+  if (str === undefined || str === null) return null;
+  const cleaned = String(str).replace(/[^0-9.\-]/g, "");
+  if (cleaned === "" || cleaned === "-" || cleaned === ".") return null;
+  const v = parseFloat(cleaned);
+  return Number.isFinite(v) ? v : null;
+}
+
+function matchField(normalizedHeader, alreadyFilled) {
+  // Exact alias match first.
+  for (const id of Object.keys(FIELD_ALIASES)) {
+    if (alreadyFilled.has(id)) continue;
+    if (FIELD_ALIASES[id].includes(normalizedHeader)) return id;
+  }
+  // Fall back to a "similar header" containment match — word-boundary safe,
+  // so a short alias like "st" can't match inside an unrelated word like "first".
+  const paddedHeader = " " + normalizedHeader + " ";
+  for (const id of Object.keys(FIELD_ALIASES)) {
+    if (alreadyFilled.has(id)) continue;
+    for (const alias of FIELD_ALIASES[id]) {
+      const paddedAlias = " " + alias + " ";
+      if (paddedHeader.includes(paddedAlias) || paddedAlias.includes(paddedHeader)) return id;
+    }
+  }
+  return null;
+}
+
+// A proper tab-separated tokenizer, quote-aware like real CSV/TSV: a field
+// wrapped in "double quotes" can contain tabs and even literal line breaks
+// (e.g. a multi-line note or question) without those being mistaken for a
+// column or row break. A doubled "" inside a quoted field is an escaped
+// literal quote. Without this, one multi-line cell in a wide CRM export
+// (very common -- a "notes" or "why do they want out" question) silently
+// splits a single header/data row into extra bogus "rows".
+function parseTsvRows(text) {
+  const rows = [];
+  let row = [];
+  let field = "";
+  let inQuotes = false;
+  let i = 0;
+
+  while (i < text.length) {
+    const c = text[i];
+    if (inQuotes) {
+      if (c === "\"") {
+        if (text[i + 1] === "\"") { field += "\""; i += 2; continue; }
+        inQuotes = false; i++; continue;
+      }
+      field += c; i++; continue;
+    }
+    if (c === "\"" && field === "") { inQuotes = true; i++; continue; }
+    if (c === "\t") { row.push(field); field = ""; i++; continue; }
+    if (c === "\r") { i++; continue; }
+    if (c === "\n") { row.push(field); rows.push(row); row = []; field = ""; i++; continue; }
+    field += c; i++; continue;
+  }
+  row.push(field);
+  rows.push(row);
+
+  return rows.filter(r => !(r.length === 1 && r[0].trim() === ""));
+}
+
+function extractPairs(text) {
+  if (text.trim() === "") return { pairs: [], columnMismatch: false, headerCount: 0, valueCount: 0 };
+
+  if (text.includes("\t")) {
+    const rows = parseTsvRows(text).map(r => r.map(f => f.trim()));
+    const headers = rows[0] || [];
+    const values = rows[1] || [];
+    const pairs = headers.map((h, i) => [h, values[i] !== undefined ? values[i] : ""]).filter(([h]) => h !== "");
+
+    // A blank cell dropped instead of preserved as an empty tab-separated slot
+    // (common when copying from a rendered table rather than a raw export) shifts
+    // every value after it into the wrong column. Flag it instead of silently
+    // mis-filling fields.
+    return { pairs, columnMismatch: headers.length !== values.length, headerCount: headers.length, valueCount: values.length };
+  }
+
+  const lines = text.split(/\r?\n/).filter(l => l.trim() !== "");
+  const pairs = [];
+  lines.forEach(line => {
+    const m = line.match(/^(.+?)[:=]\s*([^:=]*)$/);
+    if (m) pairs.push([m[1], m[2]]);
+  });
+  return { pairs, columnMismatch: false, headerCount: pairs.length, valueCount: pairs.length };
+}
+
+function parseRawData(text) {
+  const { pairs, columnMismatch, headerCount, valueCount } = extractPairs(text);
+  const matched = [];
+  const alreadyFilled = new Set();
+
+  pairs.forEach(([label, value]) => {
+    const normalized = normalizeHeader(label);
+    if (!normalized) return;
+
+    const fieldId = matchField(normalized, alreadyFilled);
+    if (!fieldId) return;
+
+    const num = parseNumericValue(value);
+    if (num === null) return;
+
+    matched.push({ id: fieldId, value: num });
+    alreadyFilled.add(fieldId);
+  });
+
+  return { matched, totalColumns: pairs.length, columnMismatch, headerCount, valueCount };
+}
+
+document.getElementById("parseBtn").addEventListener("click", () => {
+  const text = document.getElementById("rawPaste").value;
+  const resultEl = document.getElementById("parseResult");
+  const { matched, totalColumns, columnMismatch, headerCount, valueCount } = parseRawData(text);
+
+  if (totalColumns === 0) {
+    resultEl.textContent = "Paste a header row + data row (tab-separated), or \"Label: Value\" lines, then try again.";
+    resultEl.classList.add("visible");
+    return;
+  }
+
+  matched.forEach(m => {
+    document.getElementById(m.id).value = m.value;
+  });
+
+  const matchedIds = new Set(matched.map(m => m.id));
+  if (matchedIds.has("yearPurchased") && !matchedIds.has("mortgageMonths")) {
+    autoEstimateMortgageMonths();
+  }
+
+  calculate();
+
+  let msg = "";
+  if (columnMismatch) {
+    if (valueCount > headerCount) {
+      msg += "⚠ Header row has " + headerCount + " columns but the data row split into " + valueCount +
+        " pieces — that's more pieces than there are headers, so something other than a simple blank " +
+        "field is going on. This usually means more than one client's row got pasted in together, or a " +
+        "field contains unquoted tab characters that confused the splitter. Try pasting just the header " +
+        "row plus exactly ONE client's data row. Values below may be filled in from the wrong place — " +
+        "double-check everything. ";
+    } else {
+      msg += "Note: this export has " + headerCount + " header columns but only " + valueCount +
+        " filled-in values for this client — that's normal when many fields are blank for them. " +
+        "Values still line up left-to-right with their headers. If something below looks like it landed " +
+        "in the wrong field, a blank cell partway through may have been dropped instead of left empty. ";
+    }
+  }
+
+  if (matched.length === 0) {
+    msg += "No matching fields found in that data — headers may need to be closer to the calculator's field names.";
+  } else {
+    const filledLabels = matched.map(m => FIELD_DISPLAY_NAMES[m.id]);
+    const missingLabels = Object.keys(FIELD_DISPLAY_NAMES)
+      .filter(id => !matchedIds.has(id))
+      .map(id => FIELD_DISPLAY_NAMES[id]);
+
+    msg += "Matched " + matched.length + " of " + totalColumns + " columns automatically: " + filledLabels.join(", ") + ".";
+    if (missingLabels.length) {
+      msg += " Still need: " + missingLabels.join(", ") + " — these are rarely in a raw CRM export, so fill them in by hand.";
+    }
+  }
+  resultEl.textContent = msg;
+  resultEl.classList.add("visible");
+});
+
+document.getElementById("clearPasteBtn").addEventListener("click", () => {
+  document.getElementById("rawPaste").value = "";
+  const resultEl = document.getElementById("parseResult");
+  resultEl.textContent = "";
+  resultEl.classList.remove("visible");
+});
+</script>
+
+</body>
+</html>
