@@ -1700,11 +1700,13 @@ function generateCasePageHtml(f, slug, interview) {
   // an invite to the interview appointment instead of completed findings --
   // the case hasn't actually been reviewed with the client yet, so nothing
   // downstream of that review (acceptance, findings, Case Strategy) is
-  // shown until Lead Status moves past it. A blank/unrecognized Lead Status
-  // (older published pages, or a CRM export that didn't carry the field)
-  // falls through to the normal full page, matching this tool's behavior
-  // before Lead Status existed.
-  var isPreInterview = String(f.leadStatus || '').trim().toLowerCase() === 'pre-interview';
+  // shown until Lead Status EXPLICITLY moves past it. A blank or
+  // unrecognized Lead Status defaults to Pre-Interview -- the safe,
+  // conservative default -- rather than silently falling through to a
+  // page that claims the case has been accepted. Only these specific,
+  // explicit statuses count as "past" Pre-Interview.
+  var PAST_PRE_INTERVIEW_STATUSES = ['post-interview', 'onboarding', 'case management'];
+  var isPreInterview = PAST_PRE_INTERVIEW_STATUSES.indexOf(String(f.leadStatus || '').trim().toLowerCase()) === -1;
   var hasInterview = INTERVIEW_ITEMS.some(function(it) {
     var a = interview[it.id];
     return !!(a && (a.answer || a.narrative || a.detail));
@@ -1829,7 +1831,7 @@ function generateCasePageHtml(f, slug, interview) {
   parts.push('<header class="site-header"><div class="wrap header-inner">');
   parts.push('<img src="' + LOGO_DATA_URI + '" alt="Client Protection Group" class="logo-img">');
   parts.push('<div class="brand-text"><div class="brand-name">CLIENT PROTECTION GROUP LLC</div><div class="brand-sub">Timeshare Cancellation Services</div>');
-  if (hasQuote) parts.push('<div class="status-badge">Case Accepted</div>');
+  if (hasQuote && !isPreInterview) parts.push('<div class="status-badge">Case Accepted</div>');
   parts.push('</div>');
   parts.push('<div class="header-contact"><div class="contact-name">Sebastian Short</div><div>o &nbsp;| (951) 228-5670</div><div>m | (864) 501-2068</div><div>m | (786) 202-0010</div><div>e &nbsp;| <a href="mailto:SebastianShort624@gmail.com">SebastianShort624@gmail.com</a></div></div>');
   parts.push('</div></header>');
