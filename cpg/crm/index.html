@@ -6,10 +6,11 @@
 <title>Client File Editor — CPG CRM</title>
 <style>
   :root {
-    --navy: #1a2332; --navy-2: #2a3648; --gray-700: #4a5568; --gray-500: #718096;
-    --gray-300: #cbd5e0; --gray-100: #f7f8fa; --border: #e2e5ea; --white: #ffffff;
-    --green: #1e7a44; --green-bg: #edf9f1; --green-border: #b7e4c7;
-    --blue: #1a56db; --radius: 10px; --shadow: 0 1px 3px rgba(20,24,33,.06);
+    --navy: #0C5AB1; --navy-2: #1F5093; --gray-700: #4B5263; --gray-500: #818691;
+    --gray-300: #C9D6E8; --gray-100: #E9EFF7; --border: #DCE6F2; --white: #ffffff;
+    --green: #1F5093; --green-bg: #E8F5DC; --green-border: #B7E06B; --lime: #87CC0E;
+    --warn-bg: #E8ECF2; --warn-border: #C7CEDA; --warn-text: #4B5263;
+    --blue: #0C5AB1; --radius: 10px; --shadow: 0 1px 3px rgba(12,90,177,.08);
   }
   * { box-sizing: border-box; }
   body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: var(--gray-100); color: var(--navy); line-height: 1.5; font-size: 15px; }
@@ -27,18 +28,20 @@
   .section-title { font-size: 19px; margin-bottom: 6px; }
   .section-intro { font-size: 13.5px; color: var(--gray-500); margin-bottom: 16px; }
 
-  textarea#raw-paste { width: 100%; min-height: 160px; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12.5px; resize: vertical; }
+  textarea#raw-paste, textarea#narrative-paste { width: 100%; min-height: 160px; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12.5px; resize: vertical; }
+  .client-resort-strip { background: var(--gray-100); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; font-size: 14px; color: var(--navy); font-weight: 700; }
+  .client-resort-strip .crs-sub { font-weight: 500; color: var(--gray-700); font-size: 12.5px; margin-top: 2px; }
   button { font-size: 14px; font-weight: 700; padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; }
   .btn-primary { background: var(--blue); color: #fff; }
   .btn-primary:hover { background: #1543ad; }
   .btn-secondary { background: var(--white); color: var(--navy); border: 1px solid var(--border); }
   .btn-secondary:hover { border-color: var(--navy); }
-  .btn-green { background: var(--green); color: #fff; }
-  .btn-green:hover { background: #165c34; }
+  .btn-green { background: var(--lime); color: var(--navy-2); }
+  .btn-green:hover { background: #76b30c; }
 
   .parse-status { margin-top: 10px; font-size: 13px; padding: 10px 12px; border-radius: 8px; display: none; }
   .parse-status.ok { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); display: block; }
-  .parse-status.warn { background: #fff8e6; color: #92620a; border: 1px solid #f0d896; display: block; }
+  .parse-status.warn { background: var(--warn-bg); color: var(--warn-text); border: 1px solid var(--warn-border); display: block; }
 
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .field label { display: block; font-size: 11.5px; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: .4px; margin-bottom: 4px; }
@@ -47,7 +50,7 @@
   }
   .field textarea { min-height: 70px; resize: vertical; }
   .field.full { grid-column: 1 / -1; }
-  .field .unmapped-flag { color: #b45309; font-size: 11px; font-weight: 600; }
+  .field .unmapped-flag { color: #4B5263; font-size: 11px; font-weight: 700; }
 
   .publish-bar { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); }
 
@@ -59,7 +62,34 @@
   .naming-option .opt-title { font-weight: 700; color: var(--navy); font-size: 14px; }
   .naming-option .opt-example { font-size: 12px; color: var(--gray-500); margin-top: 2px; }
 
+  .publish-result-modal .modal-box { max-width: 480px; }
+  .pr-icon { font-size: 32px; text-align: center; margin-bottom: 4px; }
+  .pr-status-line { text-align: center; font-weight: 800; font-size: 18px; letter-spacing: .3px; margin-bottom: 4px; }
+  .pr-status-line.success { color: var(--green); }
+  .pr-status-line.pending { color: var(--warn-text); }
+  .pr-status-line.error { color: #B91C1C; }
+  .pr-sub { text-align: center; font-size: 13px; color: var(--gray-500); margin-bottom: 18px; }
+  .pr-field-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; color: var(--gray-500); margin-bottom: 3px; }
+  .pr-client-name { font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 14px; }
+  .pr-link-row { display: flex; gap: 8px; margin-bottom: 6px; }
+  .pr-link-box { flex: 1; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--gray-100); font-size: 13px; color: var(--navy); word-break: break-all; }
+  .pr-copy-btn { white-space: nowrap; }
+  .pr-copy-btn.copied { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+  .pr-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+  .pr-error-detail { background: var(--warn-bg); border: 1px solid var(--warn-border); color: var(--warn-text); border-radius: 8px; padding: 10px 12px; font-size: 12.5px; margin-top: 4px; }
+
   @media (max-width: 720px) { .form-grid { grid-template-columns: 1fr; } }
+
+  .interview-intro { font-size: 13.5px; color: var(--gray-500); margin-bottom: 18px; }
+  .interview-right { margin-bottom: 24px; }
+  .interview-right h3 { font-size: 15px; color: var(--navy); border-bottom: 2px solid var(--gray-100); padding-bottom: 8px; margin-bottom: 14px; }
+  .interview-item { border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; background: var(--gray-100); }
+  .interview-q { display: block; font-size: 13.5px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+  .interview-item select, .interview-item textarea, .interview-item input[type="text"] {
+    width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 13.5px; font-family: inherit; color: var(--navy); background: #fff; margin-bottom: 8px;
+  }
+  .interview-item textarea { min-height: 50px; resize: vertical; }
+  .interview-item select { max-width: 240px; }
 </style>
 </head>
 <body>
@@ -84,10 +114,26 @@
       <div id="parse-status" class="parse-status"></div>
     </div>
 
+    <div class="card">
+      <div class="section-title">1b. Paste Transcript / Reasons Want Out / Violations</div>
+      <div class="section-intro">Separate from the CRM import above — paste a phone transcript, "reasons want out" writeup, violations notes, or any combination. This is extracted into the client file below; it never overwrites a field the CRM import already filled in, and nothing here is invented — only what's actually written in the text gets used.</div>
+      <textarea id="narrative-paste" placeholder="Example:&#10;&#10;Client:&#10;Ramon Jimenez &amp; Brenda Valenzuela&#10;Resort:&#10;Westgate Orlando&#10;&#10;(then the transcript, reasons, or violations text)"></textarea>
+      <div style="margin-top:12px">
+        <button class="btn-primary" onclick="extractFromNarrative()">Extract &amp; Merge</button>
+      </div>
+      <div id="narrative-status" class="parse-status"></div>
+    </div>
+
     <div class="card hidden" id="editor-card">
       <div class="section-title">2. Review &amp; Edit Client File</div>
       <div class="section-intro">Auto-filled from your pasted data — review and correct anything before publishing.</div>
+      <div class="client-resort-strip" id="client-resort-strip"></div>
       <div class="form-grid" id="editor-fields"></div>
+
+      <div class="section-title" style="margin-top:28px">3. Client Interview — Rights I–IV</div>
+      <div class="interview-intro">Conduct this once per client. Answers feed directly into that client's Case Strategy page at Publish — nothing here is invented: a blank answer stays blank, and "Don't remember" is never treated as yes or no.</div>
+      <div id="interview-fields"></div>
+
       <div class="publish-bar">
         <button class="btn-secondary" onclick="resetEditor()">Start Over</button>
         <button class="btn-green" onclick="openPublishModal()">Publish</button>
@@ -109,17 +155,27 @@
       <div class="opt-title">First Name – 2nd Owner First Name</div>
       <div class="opt-example" id="example-first-2nd">e.g. /cpg/hugo-mariana/</div>
     </button>
+    <button class="naming-option" onclick="publishWithNaming('both-full')">
+      <div class="opt-title">Both Owners, Full Names</div>
+      <div class="opt-example" id="example-both-full">e.g. /cpg/ramon-jimenez-brenda-valenzuela/</div>
+    </button>
     <div style="text-align:right;margin-top:10px">
       <button class="btn-secondary" onclick="closePublishModal()">Cancel</button>
     </div>
   </div>
 </div>
 
+<div class="modal-overlay hidden publish-result-modal" id="publish-result-modal">
+  <div class="modal-box" id="publish-result-box"></div>
+</div>
+
 <script>
-// Auto-publish Worker (sebastianlinks-publish-api) -- fill in PUBLISH_API_URL
-// with the Worker's URL once deployed (e.g. "https://sebastianlinks-publish-api.<subdomain>.workers.dev").
+// Auto-publish Worker (cpg-publish-worker -- see cpg-publish-worker.js and
+// DEPLOY-INSTRUCTIONS.md) -- fill in PUBLISH_API_URL with the Worker's URL
+// once deployed (e.g. "https://cpg-publish-worker.<subdomain>.workers.dev").
 // Left blank, Publish falls back to today's download-the-file flow, so this
 // tool never breaks even if the Worker isn't set up yet.
+var LOGO_DATA_URI = 'data:image/png;base64,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';
 var PUBLISH_API_URL = '';
 var PUBLISH_PASSPHRASE = 'Wht2QeYcbzGEpWr9r2rXNgva7czSAIi7';
 
@@ -131,55 +187,169 @@ var PUBLISH_PASSPHRASE = 'Wht2QeYcbzGEpWr9r2rXNgva7czSAIi7';
 var FIELD_DEFS = [
   { key: 'clientFirst', label: "Client First Name", headers: ['1st first name'] },
   { key: 'clientLast', label: "Client Last Name", headers: ['last name'] },
-  { key: 'secondOwnerFirst', label: "2nd Owner First Name", headers: ['2nd owner'] },
+  // Your CRM view has renamed this column at least once already ("2nd Owner
+  // First Name" -> "Owner First Name II") -- both spellings are kept as
+  // aliases so a future rename back (or a mix of old/new exports) still works.
+  { key: 'secondOwnerFirst', label: "2nd Owner First Name", headers: ['2nd owner', 'owner first name ii', 'owner first name 2', '2nd owner first name'] },
   { key: 'secondOwnerLast', label: "2nd Owner Last Name", headers: ['2nd owner last name'] },
   { key: 'phone', label: "Phone", headers: ['phone'] },
   { key: 'phone2', label: "2nd Phone", headers: ['2nd phone'] },
   { key: 'email', label: "Email", headers: ['email'] },
   { key: 'resort', label: "Resort Name", headers: ['resort name'] },
   { key: 'resortState', label: "Resort State", headers: ['res st', 'r1-resort state'] },
+  { key: 'yearPurchased', label: "Year Purchased", headers: ['r1-date purchased (roughly)', 'date purchased', 'year purchased'] },
   { key: 'timeZone', label: "Time Zone", headers: ['time zone'] },
   { key: 'language', label: "Eng/Esp", headers: ['eng/esp'] },
-  { key: 'appointment', label: "Appointment Date & Time", headers: ['appointment date'] },
-  { key: 'mtgMonthly', label: "MTG / Mo", headers: ['mtg /mo'] },
+  // Real exports often carry a reliable combined "User Appointment Date &
+  // Time" column (e.g. "2025-09-09 15:00:00") ALONGSIDE a less useful plain
+  // "Appointment Date" column that may just be a last-touched/today's-date
+  // stamp -- the combined column is tried first since it's the one that
+  // actually reflects a real scheduled appointment.
+  { key: 'appointment', label: "Appointment Date & Time", headers: ['user appointment date & time', 'appointment date & time', 'appointment date'] },
+  // Hidden helper field -- some exports give the appointment as two separate
+  // columns ("Appointment Date" + "Time") instead of one combined column.
+  // Captured here so applyDerivedFields() can stitch it onto `appointment`
+  // when the combined column wasn't available. Never shown as its own row
+  // in the editor (see renderEditorForm()'s skip list below).
+  { key: 'appointmentTimeRaw', label: "Appointment Time (raw)", headers: ['time'] },
+  { key: 'mtgMonthly', label: "MTG / Mo", headers: ['mtg /mo', 'mortgage payments (mo)'] },
   { key: 'mtgAnnual', label: "MTG / Yr", headers: ['mtg /yr'] },
-  { key: 'mtfAnnual', label: "MTF / Yr", headers: ['mtf / yr'] },
+  { key: 'mtfAnnual', label: "MTF / Yr", headers: ['mtf / yr', 'maintenance fees (yr)'] },
   { key: 'mtfMonthly', label: "MTF / Mo", headers: ['mtf/mo'] },
   { key: 'totalMonthly', label: "Total / Mo", headers: ['total / mo'] },
   { key: 'mtgMonthsBehind', label: "MTG Months Behind", headers: ['mtg # months behind'] },
   { key: 'mtgAmountBehind', label: "MTG $$ Behind", headers: ['mtg $$ behind'] },
-  { key: 'mtfMonthsBehind', label: "MTF Behind (Months)", headers: ['mtf behind'] },
+  // NOTE: do not add a bare 'mtf behind' alias here -- once punctuation is
+  // stripped by the normalizer, "MTF $$ Behind" (the DOLLAR column) also
+  // normalizes down to "mtf behind", so a bare alias would exact-match
+  // whichever of the two real columns the parser reaches first and swap
+  // the months/dollars values on real exports that have both columns.
+  // Every alias below keeps the word "month(s)" so it can only ever match
+  // the months column.
+  { key: 'mtfMonthsBehind', label: "MTF Behind (Months)", headers: ['mtf behind (months)', 'mtf months behind', 'mtf # months behind'] },
   { key: 'mtfAmountBehind', label: "MTF $$ Behind", headers: ['mtf $$ behind'] },
   { key: 'notes', label: "Notes / Findings (raw)", headers: ['notes'] },
-  { key: 'whyWantOut', label: "Why They Want Out", headers: ['r1-why do they want out?'] },
+  { key: 'whyWantOut', label: "Why They Want Out", headers: ['r1-why do they want out?', 'why they want out'] },
   { key: 'leadStatus', label: "Lead Status", headers: ['lead status'] },
-  // Quote/service fields are NOT part of a raw CRM lead export -- left
-  // blank for manual entry, same as CPG's page required a separately-
-  // negotiated quote.
-  { key: 'serviceFee', label: "Service Fee ($)", headers: [] },
-  { key: 'salesTaxPct', label: "Sales Tax %", headers: [] },
-  { key: 'downPayment', label: "Down Payment ($)", headers: [] },
-  { key: 'financingApr', label: "Financing APR", headers: [] },
-  { key: 'financingTermMonths', label: "Financing Term (months)", headers: [] },
+  // Never sourced from the CRM tab-paste (headers: []) -- populated only by
+  // the separate transcript/reasons/violations gatherer below, or manual
+  // entry. Kept as its own field so it never overwrites/gets overwritten by
+  // whyWantOut or notes, which come from the CRM export.
+  { key: 'narrativeNotes', label: "Additional Notes (Transcript/Narrative)", headers: [] },
+  // These used to never appear in a raw CRM export, so they were left
+  // headers:[] (manual entry only) -- a real export now DOES carry them
+  // (confirmed against an actual current header row), so pull the real
+  // negotiated figures in directly instead of always falling back to a
+  // guessed value. An explicit CRM value here still always wins over the
+  // Suggested Service Fee formula in applyDerivedFields(), same as every
+  // other derived field on this page -- the formula only ever fills in
+  // when this stays genuinely blank.
+  { key: 'serviceFee', label: "Service Fee ($)", headers: ['service fee ($)', 'service fee'] },
+  { key: 'salesTaxPct', label: "Sales Tax %", headers: ['sales tax %', 'sales tax'] },
+  { key: 'downPayment', label: "Down Payment ($)", headers: ['down payment'] },
+  { key: 'financingApr', label: "Financing APR", headers: ['financing apr'] },
+  { key: 'financingTermMonths', label: "Financing Term (months)", headers: ['loan term', 'financing term (months)'] },
+];
+
+// Client Interview -- Rights I-IV. Every question is asked ONCE; a handful
+// of topics bear on more than one Right (e.g. "pressure" is both a Right I
+// safety issue and a Right III being-heard issue) -- those items list every
+// Right they're relevant to in `rights`, but the interview FORM below groups
+// each item under only its first (primary) Right so it's never asked twice.
+// The generated Case Strategy page is free to display that one answer again
+// under every Right it's relevant to, since that's just re-presenting an
+// already-captured answer, not re-interviewing the client.
+// type 'yesno' -> Yes / No / Don't Remember. "Don't remember" is NEVER
+// treated as yes or no anywhere downstream. type 'text' -> a direct fact
+// with no yes/no framing (e.g. presentation duration).
+// `detail` (optional) -- a short companion fact worth capturing alongside
+// the yes/no answer (e.g. the APR actually quoted), per the interview
+// spec's "blank lines that should auto-fill" examples.
+var INTERVIEW_ITEMS = [
+  { id: 'presentationDuration', rights: ['I'], type: 'text', label: 'Approximately how long did the sales presentation last?', why: 'Captures the duration of the sales presentation and whether its length may have contributed to fatigue or pressure.', terms: ['Presentation Duration', 'Client Statement'] },
+  { id: 'multipleSalespeople', rights: ['I'], type: 'yesno', label: 'Did more than one salesperson take part in the presentation?', why: 'Documents whether multiple representatives were involved and whether the client experienced repeated sales pressure.', terms: ['Multiple Salespeople', 'Pressure Tactics'] },
+  { id: 'pressureFelt', rights: ['I', 'III'], type: 'yesno', label: 'Did you feel pressured during the presentation?', why: "Captures the client's own account of pressure experienced during the sales presentation.", terms: ['Pressure Tactics', 'Client Statement'] },
+  { id: 'mentalPhysicalCondition', rights: ['I'], type: 'yesno', label: 'Were you tired, ill, or otherwise not in your normal condition during the presentation?', why: "Documents circumstances that may have affected the client's ability to fully evaluate the transaction.", terms: ['Client Statement', 'Client Concern'] },
+  { id: 'attemptedToLeave', rights: ['I', 'II'], type: 'yesno', label: 'Did you try to leave the presentation and were prevented or discouraged from leaving?', why: 'Captures whether the client attempted to leave and how sales staff responded.', terms: ['Desire to Leave', 'Pressure Tactics'] },
+  { id: 'rushedSigning', rights: ['I'], type: 'yesno', label: 'Were you rushed through reviewing or signing the documents?', why: 'Documents whether adequate time was given to review the paperwork before signing.', terms: ['Contract Review', 'Pressure Tactics'] },
+  { id: 'saidNoInitially', rights: ['II'], type: 'yesno', label: 'Did you say no to purchasing at some point during the presentation?', why: 'Captures whether the client expressed an initial refusal to purchase.', terms: ['Repeated Refusal', 'Client Statement'] },
+  { id: 'repeatedRefusals', rights: ['II'], type: 'yesno', label: 'Did you say no more than once before being asked again?', why: 'Documents the client’s account of repeated refusal before the sale was completed.', terms: ['Repeated Refusal', 'Client Quote'] },
+  { id: 'artificialUrgency', rights: ['II'], type: 'yesno', label: 'Were you told you had to decide immediately or the deal/price would be lost?', why: 'Captures representations concerning urgency used to prompt an immediate purchase decision.', terms: ['False Sense of Urgency', 'Material Representation'] },
+  { id: 'oneDayOffer', rights: ['II'], type: 'yesno', label: 'Were you told the offer or price was only available that day?', why: 'Documents a representation that the offer or pricing was available only for a limited time.', terms: ['False Sense of Urgency', 'Material Representation'] },
+  { id: 'incentivesOffered', rights: ['II'], type: 'yesno', label: 'Were you offered gifts, prizes, or incentives to attend or to purchase?', why: 'Documents incentives connected to attendance or the purchase decision.', terms: ['Sales Incentive', 'Material Representation'] },
+  { id: 'spousePartnerPressure', rights: ['II'], type: 'yesno', label: 'Did sales staff pressure you regarding your spouse or partner’s presence or agreement?', why: "Captures pressure directed at the client's spouse or partner during the sales process.", terms: ['Pressure Tactics', 'Client Statement'] },
+  { id: 'splitFromPartner', rights: ['II'], type: 'yesno', label: 'Were you and your spouse or partner separated from one another during the presentation ("split the pack")?', why: 'Documents whether the client and their spouse or partner were separated during the presentation.', terms: ['Splitting the Pack', 'Pressure Tactics'] },
+  { id: 'beingIgnored', rights: ['III'], type: 'yesno', label: 'Did you feel your questions or concerns were ignored?', why: "Captures the client's own assessment of whether their concerns were acknowledged.", terms: ['Client Concern', 'Client Statement'] },
+  { id: 'talkedOver', rights: ['III'], type: 'yesno', label: 'Were you talked over or interrupted when you tried to speak?', why: "Documents the client's account of being talked over during the presentation.", terms: ['Client Statement', 'Sales Conduct'] },
+  { id: 'questionsUnanswered', rights: ['III'], type: 'yesno', label: 'Did you ask questions that were not answered?', why: 'Captures whether questions raised by the client went unanswered.', terms: ['Client Concern', 'Client Statement'] },
+  { id: 'perpetuityDiscussed', rights: ['III', 'IV'], type: 'yesno', label: 'Did the salesperson explain what happens to the timeshare after your death, or that the obligation could pass to your heirs?', why: 'Documents disclosure concerning the duration of the ownership obligation and whether it can pass to heirs.', terms: ['Contract Disclosure', 'Written Terms'] },
+  { id: 'specialAssessmentsDiscussed', rights: ['III', 'IV'], type: 'yesno', label: 'Were special assessments (charges beyond regular maintenance fees) discussed?', why: 'Captures disclosure of additional charges beyond regular maintenance fees.', terms: ['Financial Disclosure', 'Material Omission'] },
+  { id: 'additionalObligations', rights: ['III'], type: 'yesno', label: 'Were you told about any additional obligations beyond the purchase price and maintenance fees?', why: 'Documents disclosure of obligations beyond the base purchase price and maintenance fees.', terms: ['Financial Disclosure', 'Material Omission'] },
+  { id: 'investmentRepresentation', rights: ['IV'], type: 'yesno', label: 'Were you told the timeshare was a good investment?', why: 'Captures representations made about the investment value of the timeshare.', terms: ['Investment Representation', 'Material Representation'] },
+  { id: 'rentalRepresentation', rights: ['IV'], type: 'yesno', label: 'Were you told you could rent out the timeshare to offset the costs?', detail: 'Amount/income represented (if stated)', why: 'Captures representations concerning rental income used to offset ownership costs.', terms: ['Rental Representation', 'Material Representation'] },
+  { id: 'resaleRepresentation', rights: ['IV'], type: 'yesno', label: 'Were you told the timeshare would be easy to resell?', why: 'Captures representations concerning the resale value or ease of resale.', terms: ['Resale Representation', 'Material Representation'] },
+  { id: 'appreciationRepresentation', rights: ['IV'], type: 'yesno', label: 'Were you told the timeshare would increase in value over time?', why: 'Captures representations concerning appreciation or equity in the timeshare.', terms: ['Investment Representation', 'Material Representation'] },
+  { id: 'longTermCostsDisclosed', rights: ['IV'], type: 'yesno', label: 'Were you given accurate information about the long-term costs of ownership?', why: 'Documents whether long-term ownership costs were disclosed before purchase.', terms: ['Cost Disclosure', 'Financial Disclosure'] },
+  { id: 'maintenanceIncreaseRepresentation', rights: ['IV'], type: 'yesno', label: 'Were you told maintenance fees would stay the same or increase only slightly?', detail: 'Maintenance fee represented at purchase (if stated)', why: 'Captures representations concerning future maintenance fee increases.', terms: ['Maintenance Fee Disclosure', 'Material Representation'] },
+  { id: 'financingAprDisclosed', rights: ['IV'], type: 'yesno', label: 'Were you told the interest rate or APR on any financing?', detail: 'Interest rate / APR represented (if stated)', why: 'Documents disclosure of the interest rate or APR applicable to financing.', terms: ['Interest Rate Disclosure', 'Financial Disclosure'] },
+  { id: 'contractReviewTime', rights: ['IV'], type: 'yesno', label: 'Were you given adequate time to review the contract before signing?', why: 'Captures the opportunity provided to review the written agreement before signing.', terms: ['Contract Review', 'Written Terms'] },
+  { id: 'cancellationInfoGiven', rights: ['IV'], type: 'yesno', label: 'Were you told about your right to cancel and the cancellation deadline?', why: 'Documents disclosure of the right to cancel and the applicable deadline.', terms: ['Contract Disclosure', 'Written Terms'] },
+  { id: 'exchangeVacationRepresentation', rights: ['IV'], type: 'yesno', label: 'Were you told about exchange programs or other vacation benefits?', why: 'Captures representations made about exchange programs or additional vacation benefits.', terms: ['Material Representation', 'Written Representation'] }
+];
+var INTERVIEW_RIGHTS = [
+  ['I', 'Right I — Safety / Sales Environment'],
+  ['II', 'Right II — Choice'],
+  ['III', 'Right III — Being Heard'],
+  ['IV', 'Right IV — Being Informed']
 ];
 
 var parsedFields = {};
+document.getElementById('editor-fields').addEventListener('input', function(){ updateClientResortStrip(); });
 
 // Splits the pasted block into header row + first data row, tolerant
 // of the messy real-world export shape: duplicate header names,
 // stray control-character separator glyphs some sheets export
 // (e.g. the 𝄃𝄃𝄂𝄂𝄀𝄁𝄃𝄂𝄂𝄃 divider seen in real pasted CRM rows), and
 // blank/short trailing cells.
+// Quote-aware TSV tokenizer, same as the calculator pages use: a field
+// wrapped in "double quotes" can contain tabs and even literal line
+// breaks (a multi-line note or question, very common in wide CRM
+// exports) without those being mistaken for a column or row break. A
+// naive split on \n / \t breaks on such fields, silently splitting one
+// real header row into bogus extra "rows" and shifting every value
+// into the wrong column.
+function parseTsvRows(text) {
+  var rows = []; var row = []; var field = ''; var inQuotes = false; var i = 0;
+  while (i < text.length) {
+    var c = text[i];
+    if (inQuotes) {
+      if (c === '"') {
+        if (text[i + 1] === '"') { field += '"'; i += 2; continue; }
+        inQuotes = false; i++; continue;
+      }
+      field += c; i++; continue;
+    }
+    if (c === '"' && field === '') { inQuotes = true; i++; continue; }
+    if (c === '\t') { row.push(field); field = ''; i++; continue; }
+    if (c === '\r') { i++; continue; }
+    if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; i++; continue; }
+    field += c; i++; continue;
+  }
+  row.push(field);
+  rows.push(row);
+  return rows.filter(function(r) { return !(r.length === 1 && r[0].trim() === ''); });
+}
+
 function parseRawData() {
   var raw = document.getElementById('raw-paste').value;
-  var lines = raw.split(/\r?\n/).filter(function(l) { return l.trim() !== ''; });
-  if (lines.length < 2) {
+  var rows = parseTsvRows(raw);
+  if (rows.length < 2) {
     showParseStatus('warn', 'Paste both the header row and at least one data row (tab-separated).');
     return;
   }
 
-  var headers = lines[0].split('\t').map(function(h) { return h.trim(); });
-  var data = lines[1].split('\t');
+  var headers = rows[0].map(function(h) { return h.trim(); });
+  var data = rows[1];
 
   // Build normalized-header -> first-non-blank-value map. Iterating in
   // column order and never overwriting an already-set key means the
@@ -194,27 +364,197 @@ function parseRawData() {
     normalizedMap[norm] = val;
   }
 
+  // Two global passes so an EXACT match anywhere always wins a header
+  // before any field's fuzzy fallback gets a chance at it, and a header
+  // already claimed by one field can never also be claimed by another
+  // (e.g. "2nd owner last Name" belongs to Second Owner Last Name, not
+  // to Client Last Name's loose "last name" fallback alias).
   parsedFields = {};
+  var usedKeys = {};
+  function normalizeNeedle(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim(); }
+
+  FIELD_DEFS.forEach(function(def) {
+    for (var h = 0; h < def.headers.length; h++) {
+      var needle = normalizeNeedle(def.headers[h]);
+      if (normalizedMap.hasOwnProperty(needle) && !usedKeys[needle]) {
+        parsedFields[def.key] = normalizedMap[needle];
+        usedKeys[needle] = true;
+        break;
+      }
+    }
+  });
+  FIELD_DEFS.forEach(function(def) {
+    if (parsedFields[def.key]) return; // already matched exactly above
+    for (var h = 0; h < def.headers.length; h++) {
+      // Word-boundary-safe containment fallback -- padding both sides
+      // with spaces before checking .indexOf() so a short needle (e.g.
+      // "st") can't match inside an unrelated word (e.g. "fir-st name").
+      var needle = normalizeNeedle(def.headers[h]);
+      var paddedNeedle = ' ' + needle + ' ';
+      var key = Object.keys(normalizedMap).find(function(k) {
+        if (usedKeys[k]) return false;
+        var paddedKey = ' ' + k + ' ';
+        return paddedKey.indexOf(paddedNeedle) !== -1 || paddedNeedle.indexOf(paddedKey) !== -1;
+      });
+      if (key) { parsedFields[def.key] = normalizedMap[key]; usedKeys[key] = true; break; }
+    }
+  });
+
+  applyDerivedFields();
+
   var matchedCount = 0;
   FIELD_DEFS.forEach(function(def) {
-    var found = '';
-    for (var h = 0; h < def.headers.length; h++) {
-      // Normalize the needle the SAME way the map keys were built --
-      // otherwise a needle containing punctuation (e.g. "mtf / yr")
-      // never matches its normalized key ("mtf yr").
-      var needle = def.headers[h].toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
-      if (normalizedMap.hasOwnProperty(needle)) { found = normalizedMap[needle]; break; }
-      var key = Object.keys(normalizedMap).find(function(k) { return k.indexOf(needle) !== -1; });
-      if (key) { found = normalizedMap[key]; break; }
-    }
-    parsedFields[def.key] = found;
-    if (found) matchedCount++;
+    if (!parsedFields[def.key]) parsedFields[def.key] = '';
+    if (parsedFields[def.key]) matchedCount++;
   });
 
   renderEditorForm();
+  renderInterviewFormIfNeeded();
   document.getElementById('editor-card').classList.remove('hidden');
-  showParseStatus('ok', 'Matched ' + matchedCount + ' of ' + FIELD_DEFS.length + ' fields automatically. Review below — quote/financing fields are never in a raw CRM export and are left blank for manual entry.');
+  showParseStatus('ok', 'Matched ' + matchedCount + ' of ' + FIELD_DEFS.length + ' fields automatically. Review below — any quote/financing fields still blank aren\'t in this particular export and need manual entry.');
   document.getElementById('editor-card').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Derived fields: values computed from other matched fields rather than
+// pulled directly from a CRM column. Every derived value only ever fills a
+// field that's still blank -- an explicit CRM value (a real "MTF/Mo" or
+// "Service Fee" column, or a value the reviewer already typed) always wins
+// over a computed one, and nothing here is invented beyond straight
+// arithmetic on numbers the CRM actually supplied.
+function parseMoneyNum(v) {
+  if (!v) return NaN;
+  var n = parseFloat(String(v).replace(/[^0-9.\-]/g, ''));
+  return isNaN(n) ? NaN : n;
+}
+// Real CRM exports often export an untracked/formula money field as a
+// literal "$0" or "0.00" rather than leaving it truly blank (seen firsthand
+// in real Zoho exports, e.g. a computed "MTF/Mo" column showing "$0" even
+// though the account has no monthly-fee tracking at all). Treating a
+// zero-ish value the same as blank -- for the purpose of deciding whether a
+// MORE RELIABLE derived figure should fill it in -- avoids a placeholder
+// zero silently blocking a real, calculable number.
+function isZeroishMoney(v) {
+  var n = parseMoneyNum(v);
+  return isNaN(n) || n === 0;
+}
+// "Behind" if either the months-behind or $-behind field has a positive,
+// non-zero value. Blank / "0" / "no" / "none" all read as NOT behind.
+// Strips a lingering "%" from a raw CRM value before this page appends its
+// own -- some exports already include the percent sign in the cell (e.g.
+// "20%"), which would otherwise double up into a literal "20%% APR" (a
+// real bug found on a client's Contract for Review / interview-support
+// text, both of which display the raw CRM string directly rather than a
+// parsed number like the Payment Terms section already does).
+function aprText(v) {
+  var n = parseFloat(String(v || '').replace(/[^0-9.]/g, ''));
+  return isNaN(n) ? '' : (n === Math.round(n) ? String(Math.round(n)) : String(n));
+}
+function isBehindOn(monthsBehindVal, amountBehindVal) {
+  var m = parseMoneyNum(monthsBehindVal);
+  var a = parseMoneyNum(amountBehindVal);
+  if (!isNaN(m) && m > 0) return true;
+  if (!isNaN(a) && a > 0) return true;
+  return false;
+}
+// Some CRM exports carry a "$0.00"-style money placeholder in the
+// "Months Behind" column instead of a real month count (the same Zoho
+// zero-placeholder pattern already handled for the dollar fields). Left
+// unguarded, that placeholder string gets displayed verbatim as
+// "$0.00 months" -- nonsensical, and it reads like the whole line is
+// dollar-formatted. Parsing it as a NUMBER (never re-displaying the raw
+// string) means a stray "$0.00" can never be shown as if it were a
+// month count; a genuinely blank/zero value just omits the "X months"
+// prefix entirely rather than showing anything invented.
+//
+// SANITY GUARD: a real export has shown the "Months Behind" cell in Zoho
+// sometimes ends up holding a COPY of the monthly fee amount instead of an
+// actual month count (e.g. a $122/mo maintenance fee showing "122" months
+// behind -- over 10 years, and exactly equal to the fee, which is the
+// tell). Two independent checks catch this: the value exactly matches the
+// account's own monthly fee, or it's implausibly large on its own (more
+// than 5 years behind). Either one flags the value for manual review
+// instead of printing a confident but likely-wrong month count -- the
+// dollar amount (validated separately) still displays either way, so a
+// real arrears is never hidden, only the untrustworthy month count is.
+function monthsBehindPrefix(monthsVal, monthlyFeeVal, sep) {
+  var n = parseMoneyNum(monthsVal);
+  if (isNaN(n) || n <= 0) return '';
+  var fee = parseMoneyNum(monthlyFeeVal);
+  var looksLikeFeeAmount = !isNaN(fee) && fee > 0 && Math.round(n) === Math.round(fee);
+  var implausiblyLarge = n > 60; // more than 5 years behind, alone, is a red flag
+  if (looksLikeFeeAmount || implausiblyLarge) {
+    return 'months behind: flagged for review in CRM (value looks incorrect)' + sep;
+  }
+  var monthsStr = (n === Math.round(n)) ? String(Math.round(n)) : String(n);
+  return monthsStr + ' months' + sep;
+}
+function applyDerivedFields() {
+  // Some CRM exports put a literal placeholder word ("no", "unknown",
+  // "n/a", "none") in the 2nd Owner columns to mean "there isn't one,"
+  // instead of leaving the cell blank. Left as-is, that literal text
+  // becomes part of the client's displayed name everywhere on the page --
+  // title, heading, Contract for Review, and now the Publish result's
+  // "Client" line too -- e.g. "Eugene Haynes & no unknown", which is not
+  // anyone's actual name. Blank the field instead of ever showing a CRM
+  // placeholder token as if it were a real name.
+  function isPlaceholderNameValue(v) {
+    var norm = String(v || '').trim().toLowerCase().replace(/[^a-z]/g, '');
+    return norm === '' || ['no', 'none', 'na', 'unknown', 'tbd'].indexOf(norm) !== -1;
+  }
+  if (isPlaceholderNameValue(parsedFields.secondOwnerFirst)) parsedFields.secondOwnerFirst = '';
+  if (isPlaceholderNameValue(parsedFields.secondOwnerLast)) parsedFields.secondOwnerLast = '';
+
+  // Appointment Date & Time: if the export only gave us separate "Appointment
+  // Date" + "Time" columns (no single combined column), and what landed in
+  // `appointment` doesn't already look like it has a time on it, stitch the
+  // raw time column on. Never invents a time that wasn't in the export.
+  if (parsedFields.appointment && parsedFields.appointmentTimeRaw && !/\d{1,2}:\d{2}/.test(parsedFields.appointment)) {
+    parsedFields.appointment = parsedFields.appointment + ' ' + parsedFields.appointmentTimeRaw;
+  }
+
+  // MTG/Mo <-> MTG/Yr: whichever one the CRM actually gave a real (non-zero)
+  // figure for backs up the other, in either direction. Never overwrites a
+  // real, non-zero CRM value already on file.
+  if (isZeroishMoney(parsedFields.mtgMonthly)) {
+    var mtgAnnualNum = parseMoneyNum(parsedFields.mtgAnnual);
+    if (!isNaN(mtgAnnualNum) && mtgAnnualNum > 0) parsedFields.mtgMonthly = (mtgAnnualNum / 12).toFixed(2);
+  } else if (isZeroishMoney(parsedFields.mtgAnnual)) {
+    var mtgMonthlyForAnnual = parseMoneyNum(parsedFields.mtgMonthly);
+    if (!isNaN(mtgMonthlyForAnnual) && mtgMonthlyForAnnual > 0) parsedFields.mtgAnnual = (mtgMonthlyForAnnual * 12).toFixed(2);
+  }
+
+  // MTF/Mo <-> MTF/Yr: same cross-derivation, same direction-of-trust rule.
+  if (isZeroishMoney(parsedFields.mtfMonthly)) {
+    var mtfAnnualNum = parseMoneyNum(parsedFields.mtfAnnual);
+    if (!isNaN(mtfAnnualNum) && mtfAnnualNum > 0) parsedFields.mtfMonthly = (mtfAnnualNum / 12).toFixed(2);
+  } else if (isZeroishMoney(parsedFields.mtfAnnual)) {
+    var mtfMonthlyForAnnual = parseMoneyNum(parsedFields.mtfMonthly);
+    if (!isNaN(mtfMonthlyForAnnual) && mtfMonthlyForAnnual > 0) parsedFields.mtfAnnual = (mtfMonthlyForAnnual * 12).toFixed(2);
+  }
+
+  // Total/Mo: if the CRM's own Total/Mo column is blank or a placeholder
+  // zero, it's simply MTG/Mo + MTF/Mo added together -- never a separately
+  // maintained figure once the two components above are known.
+  if (isZeroishMoney(parsedFields.totalMonthly)) {
+    var mtgForTotal = parseMoneyNum(parsedFields.mtgMonthly);
+    var mtfForTotal = parseMoneyNum(parsedFields.mtfMonthly);
+    var totalSum = (isNaN(mtgForTotal) ? 0 : mtgForTotal) + (isNaN(mtfForTotal) ? 0 : mtfForTotal);
+    if (totalSum > 0) parsedFields.totalMonthly = totalSum.toFixed(2);
+  }
+
+  // Suggested Service Fee: base $2,890, plus 7x whichever of the monthly
+  // mortgage/maintenance payments the client is CURRENTLY PAYING (a
+  // payment they're already behind on is never added to the fee basis).
+  if (!parsedFields.serviceFee) {
+    var mtgMonthlyNum = parseMoneyNum(parsedFields.mtgMonthly);
+    var mtfMonthlyNum = parseMoneyNum(parsedFields.mtfMonthly);
+    var behindOnMortgage = isBehindOn(parsedFields.mtgMonthsBehind, parsedFields.mtgAmountBehind);
+    var behindOnMaintenance = isBehindOn(parsedFields.mtfMonthsBehind, parsedFields.mtfAmountBehind);
+    var feeBasis = 0;
+    if (!isNaN(mtgMonthlyNum) && !behindOnMortgage) feeBasis += mtgMonthlyNum;
+    if (!isNaN(mtfMonthlyNum) && !behindOnMaintenance) feeBasis += mtfMonthlyNum;
+    parsedFields.serviceFee = (2890 + feeBasis * 7).toFixed(2);
+  }
 }
 
 function showParseStatus(kind, msg) {
@@ -223,17 +563,265 @@ function showParseStatus(kind, msg) {
   el.textContent = msg;
 }
 
+function showNarrativeStatus(kind, msg) {
+  var el = document.getElementById('narrative-status');
+  el.className = 'parse-status ' + kind;
+  el.textContent = msg;
+}
+
+function splitNameLast(fullValue) {
+  var parts = String(fullValue).trim().split(/\s+/);
+  if (parts.length <= 1) return { first: parts[0] || '', last: '' };
+  return { first: parts.slice(0, -1).join(' '), last: parts[parts.length - 1] };
+}
+
+// Finds a "Label: value" or "Label:" (value on the next non-blank line)
+// match among the pasted lines. Returns the value string, or '' if the
+// label isn't present -- never guesses at a value that isn't actually
+// there.
+function findLabeledValue(lines, labelRegex) {
+  for (var i = 0; i < lines.length; i++) {
+    var m = lines[i].match(labelRegex);
+    if (!m) continue;
+    var sameLine = (m[1] || '').trim();
+    if (sameLine) return sameLine;
+    for (var j = i + 1; j < lines.length; j++) {
+      var next = lines[j].trim();
+      if (next) return next;
+    }
+  }
+  return '';
+}
+
+// Collapses runs of 3+ blank lines to one and trims trailing whitespace
+// from each line -- formatting cleanup only. Never rewords, summarizes, or
+// otherwise changes what the client actually said.
+function tidyNotesText(raw) {
+  return String(raw)
+    .split(/\r?\n/)
+    .map(function(line) { return line.replace(/[ \t]+$/, ''); })
+    .join('\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
+// Returns the sentence (period/!/? delimited) containing the character at
+// `index`, so an auto-filled interview answer can show the interviewer
+// exactly which words in the transcript triggered it.
+function findSentenceContaining(text, index) {
+  var start = 0;
+  for (var i = index - 1; i >= 0; i--) {
+    if (text[i] === '.' || text[i] === '!' || text[i] === '?' || text[i] === '\n') { start = i + 1; break; }
+  }
+  var end = text.length;
+  for (var j = index; j < text.length; j++) {
+    if (text[j] === '.' || text[j] === '!' || text[j] === '?' || text[j] === '\n') { end = j + 1; break; }
+  }
+  return text.slice(start, end).trim();
+}
+// A crude but effective guard against flipping a NEGATED statement (e.g.
+// "they never told us it was a good investment") into a false Yes -- checks
+// the ~25 characters immediately before the match for a negation word.
+function isNegatedContext(text, matchIndex) {
+  var context = text.slice(Math.max(0, matchIndex - 25), matchIndex).toLowerCase();
+  return /\b(not|never|n't|no|didn't|wasn't|weren't)\b/.test(context);
+}
+
+// Conservative narrative -> interview auto-fill. Every trigger below only
+// ever sets an answer to YES, from a clear, un-negated phrase in the
+// client's own words -- it NEVER infers or invents a No or an Unknown;
+// those only ever come from what the interviewer explicitly selects, and a
+// field the interviewer already answered is never touched.
+var INTERVIEW_TEXT_TRIGGERS = [
+  { id: 'multipleSalespeople', re: /\b(two|three|four|several|multiple|more than one)\s+(different\s+)?sales\s*(people|persons|reps?|man|men|associates?)\b/i },
+  { id: 'artificialUrgency', re: /\b(had to (decide|sign|buy)\s+(today|right (then|now)|immediately)|price (would|will|was going to) (go up|expire|be gone))\b/i },
+  { id: 'oneDayOffer', re: /\b(only (available|good|valid)\s+(today|that day)|one[- ]day\s+(offer|special|price|deal))\b/i },
+  { id: 'incentivesOffered', re: /\b(free (gift|breakfast|show|tickets?|voucher|dinner)|gave us (a free|free)|incentive(s)?\s+to\s+(attend|purchase|buy))\b/i },
+  { id: 'attemptedToLeave', re: /\b(would ?n'?t let (us|me) (leave|go)|tried to leave|kept us (there|from leaving))\b/i },
+  { id: 'rushedSigning', re: /\b(rushed (us|me|through)|no time to (read|review)|did ?n'?t (have|get) (time|a chance) to read|signed (it |the papers )?(quickly|fast))\b/i },
+  { id: 'pressureFelt', re: /\b(felt pressured|high[- ]pressure|pressured (us|me)|would ?n'?t (stop|leave us alone))\b/i },
+  { id: 'beingIgnored', re: /\b(ignored (our|my) (questions|concerns)|brushed (us|me) off)\b/i },
+  { id: 'talkedOver', re: /\b(talked over|interrupted (us|me)|cut (us|me) off)\b/i },
+  { id: 'questionsUnanswered', re: /\b(never answered (our|my) question|would ?n'?t answer (our|my) question|no answer to (our|my) question)\b/i },
+  { id: 'investmentRepresentation', re: /\b(good|great|solid|smart)\s+investment\b/i },
+  { id: 'rentalRepresentation', re: /\b(rent(?:al)?\s+(it|the (unit|timeshare))\s+out|rental income|pay for (itself|the maintenance))\b/i },
+  { id: 'resaleRepresentation', re: /\b(easy to (resell|sell)|sell it (whenever|any time)|no problem (reselling|selling))\b/i },
+  { id: 'appreciationRepresentation', re: /\b(increase in value|appreciate (in value|like)|go up in value|like real estate)\b/i },
+  { id: 'maintenanceIncreaseRepresentation', re: /\b(fees? (would|will) (stay|remain) the same|only (go up|increase) (a little|slightly))\b/i },
+  { id: 'cancellationInfoGiven', re: /\b(told (us|me) (we|I) (could|had the right to) cancel|right to cancel|cancellation (period|window|deadline))\b/i },
+  { id: 'perpetuityDiscussed', re: /\b(pass(es)? to (our|my) (kids|children|heirs|family)|after (we|I) die|perpetuity)\b/i },
+  { id: 'specialAssessmentsDiscussed', re: /\bspecial assessment(s)?\b/i }
+];
+
+function extractInterviewSignalsFromText(raw) {
+  var detected = [];
+  function setAnswerYesIfBlank(id, sentence) {
+    var selectEl = document.getElementById('interview-answer-' + id);
+    if (!selectEl || selectEl.value) return false; // never overwrite an existing answer
+    selectEl.value = 'yes';
+    var narrEl = document.getElementById('interview-narrative-' + id);
+    if (narrEl && !narrEl.value.trim()) narrEl.value = sentence;
+    return true;
+  }
+  function setDetailIfBlank(id, value) {
+    var detailEl = document.getElementById('interview-detail-' + id);
+    if (!detailEl || detailEl.value.trim()) return false;
+    detailEl.value = value;
+    return true;
+  }
+  function itemLabel(id) {
+    var match = INTERVIEW_ITEMS.filter(function(x) { return x.id === id; })[0];
+    return match ? match.label : id;
+  }
+
+  INTERVIEW_TEXT_TRIGGERS.forEach(function(trig) {
+    var m = trig.re.exec(raw);
+    if (!m || isNegatedContext(raw, m.index)) return;
+    if (setAnswerYesIfBlank(trig.id, findSentenceContaining(raw, m.index))) {
+      detected.push(itemLabel(trig.id) + ' → Yes (from narrative -- please confirm)');
+    }
+  });
+
+  // Presentation duration -- a direct fact, no yes/no framing.
+  var durMatch = /\d+(?:\.\d+)?\s*(?:to\s*\d+(?:\.\d+)?\s*)?hours?\b/i.exec(raw);
+  if (durMatch && setDetailIfBlank('presentationDuration', durMatch[0].trim())) {
+    detected.push('Approximate presentation duration → ' + durMatch[0].trim() + ' (from narrative)');
+  }
+
+  // Financing APR -- a stated percentage in this context implies the client
+  // was told a rate, so it also backs the Yes/No answer, not just the detail.
+  var aprMatch = /(\d{1,2}(?:\.\d+)?)\s*%\s*(apr|interest)/i.exec(raw);
+  if (aprMatch && !isNegatedContext(raw, aprMatch.index)) {
+    var setYes = setAnswerYesIfBlank('financingAprDisclosed', findSentenceContaining(raw, aprMatch.index));
+    var setDetail = setDetailIfBlank('financingAprDisclosed', aprMatch[1] + '%');
+    if (setYes || setDetail) detected.push('Financing APR disclosed → ' + aprMatch[1] + '% (from narrative)');
+  }
+
+  return detected;
+}
+
+// Second raw-data gatherer: phone transcripts, "reasons want out" writeups,
+// and violations notes -- separate from the tab-separated CRM importer
+// above. Only ever fills a field that's currently blank (never overwrites
+// what the CRM import already set), and never invents anything: an
+// explicit "Client:"/"Resort:" label gets structured out if present, and
+// the full pasted text is preserved verbatim as Additional Notes so
+// nothing the client said is lost or reworded.
+function extractFromNarrative() {
+  var raw = document.getElementById('narrative-paste').value;
+  if (!raw.trim()) { showNarrativeStatus('warn', 'Paste a transcript, reasons, or violations text first.'); return; }
+
+  if (!document.getElementById('editor-card') || document.getElementById('editor-card').classList.contains('hidden')) {
+    parsedFields = {};
+    FIELD_DEFS.forEach(function(def) { parsedFields[def.key] = ''; });
+    applyDerivedFields();
+    renderEditorForm();
+    document.getElementById('editor-card').classList.remove('hidden');
+  }
+  // The interview form needs to exist before we can auto-fill its answers
+  // below, whether or not this was the call that first showed editor-card.
+  renderInterviewFormIfNeeded();
+
+  var lines = raw.split(/\r?\n/);
+  var detected = [];
+
+  function fieldVal(key) { var el = document.getElementById('field-' + key); return el ? el.value.trim() : ''; }
+  function fillIfBlank(key, value) {
+    if (!value) return false;
+    var el = document.getElementById('field-' + key);
+    if (!el || el.value.trim()) return false; // already has a value -- never overwrite
+    el.value = value;
+    return true;
+  }
+
+  var clientLine = findLabeledValue(lines, /^\s*clients?\s*:?\s*(.*)$/i);
+  if (clientLine) {
+    var owners = clientLine.split(/\s*(?:&|\band\b)\s*/i).filter(Boolean);
+    // Treat each owner's First/Last as one pair: only fill from narrative
+    // when BOTH halves are currently blank. A CRM import that dumped a
+    // full name into just the First field (leaving Last blank) already
+    // identifies the client -- filling the empty Last half from a
+    // narrative paste would silently graft a stranger's last name onto it.
+    if (owners[0] && !fieldVal('clientFirst') && !fieldVal('clientLast')) {
+      var p1 = splitNameLast(owners[0]);
+      if (fillIfBlank('clientFirst', p1.first)) detected.push('Client First Name → ' + p1.first);
+      if (fillIfBlank('clientLast', p1.last)) detected.push('Client Last Name → ' + p1.last);
+    }
+    if (owners[1] && !fieldVal('secondOwnerFirst') && !fieldVal('secondOwnerLast')) {
+      var p2 = splitNameLast(owners[1]);
+      if (fillIfBlank('secondOwnerFirst', p2.first)) detected.push('2nd Owner First Name → ' + p2.first);
+      if (fillIfBlank('secondOwnerLast', p2.last)) detected.push('2nd Owner Last Name → ' + p2.last);
+    }
+  }
+
+  var resortLine = findLabeledValue(lines, /^\s*resort(?:\s*name)?\s*:?\s*(.*)$/i);
+  if (fillIfBlank('resort', resortLine)) detected.push('Resort Name → ' + resortLine);
+
+  var reasonLine = findLabeledValue(lines, /^\s*(?:reasons?\s*(?:want|wants|wanting)?\s*out|why\s*(?:do\s*they\s*want|they\s*want)\s*out)\s*:?\s*(.*)$/i);
+  if (fillIfBlank('whyWantOut', reasonLine)) detected.push('Why They Want Out → ' + reasonLine);
+
+  // The full pasted text always goes into Additional Notes verbatim --
+  // this is the "preserve client-reported information as client-reported"
+  // requirement: nothing here is summarized, categorized, or reworded. It's
+  // also lightly tidied (collapsed blank lines, trimmed trailing spaces) so
+  // it reads as clean notes rather than a raw paste dump -- the wording
+  // itself is never changed.
+  var notesEl = document.getElementById('field-narrativeNotes');
+  if (notesEl) {
+    var tidied = tidyNotesText(raw);
+    notesEl.value = notesEl.value ? (notesEl.value + '\n\n' + tidied) : tidied;
+    detected.push('Additional Notes (Transcript/Narrative) — ' + tidied.length + ' characters saved');
+  }
+
+  // Best-effort, conservative pass: if the transcript itself answers one of
+  // the Rights I-IV interview questions (e.g. "three different salespeople
+  // came in"), fill that answer in automatically instead of making the
+  // interviewer re-enter something the client already said. This NEVER
+  // invents a No or an Unknown -- it only ever sets an answer to Yes, only
+  // on a clear, un-negated phrase, and only into a field that's still
+  // blank. The exact sentence that triggered it is copied into that item's
+  // "Client's Account" box so it's fully visible and correctable before
+  // publish -- treat every auto-filled answer as a draft to confirm, not a
+  // final one.
+  var interviewDetected = extractInterviewSignalsFromText(raw);
+  detected = detected.concat(interviewDetected);
+
+  updateClientResortStrip();
+  document.getElementById('editor-card').scrollIntoView({ behavior: 'smooth' });
+
+  if (detected.length) {
+    showNarrativeStatus('ok', 'Detected/updated: ' + detected.join(' · '));
+  } else {
+    showNarrativeStatus('warn', 'No labeled Client/Resort/Reason lines found (or those fields were already filled in) — the full text was still saved to Additional Notes below.');
+  }
+}
+
 function renderEditorForm() {
   var container = document.getElementById('editor-fields');
   var html = '';
   FIELD_DEFS.forEach(function(def) {
+    if (def.key === 'appointmentTimeRaw') return; // hidden helper -- folded into `appointment` by applyDerivedFields(), never its own row
     var val = parsedFields[def.key] || '';
     var div = document.createElement('div'); div.textContent = val;
     var escaped = div.innerHTML.replace(/"/g, '&quot;');
-    var isLong = def.key === 'notes' || def.key === 'whyWantOut';
+    var isLong = def.key === 'notes' || def.key === 'whyWantOut' || def.key === 'narrativeNotes';
     html += '<div class="field' + (isLong ? ' full' : '') + '">';
     html += '<label>' + def.label + '</label>';
-    if (isLong) {
+    if (def.key === 'leadStatus') {
+      // Dropdown instead of free text -- matched case/punctuation-insensitively
+      // against whatever the CRM export gave us. If the incoming value doesn't
+      // cleanly match one of the four canonical stages, it's left unselected
+      // rather than forced into a guessed bucket.
+      var statusOptions = ['Pre-Interview', 'Post-Interview', 'Onboarding', 'Case Management'];
+      var normVal = val.toLowerCase().replace(/[^a-z]/g, '');
+      html += '<select id="field-' + def.key + '">';
+      html += '<option value=""' + (normVal ? '' : ' selected') + '>-- Select --</option>';
+      statusOptions.forEach(function(opt) {
+        var normOpt = opt.toLowerCase().replace(/[^a-z]/g, '');
+        html += '<option value="' + opt + '"' + (normVal && normVal === normOpt ? ' selected' : '') + '>' + opt + '</option>';
+      });
+      html += '</select>';
+    } else if (isLong) {
       html += '<textarea id="field-' + def.key + '">' + escaped + '</textarea>';
     } else {
       html += '<input type="text" id="field-' + def.key + '" value="' + escaped + '">';
@@ -241,6 +829,21 @@ function renderEditorForm() {
     html += '</div>';
   });
   container.innerHTML = html;
+  updateClientResortStrip();
+}
+
+// Live "Client / Resort" identification strip at the top of the editor --
+// reflects whatever is currently in the name/resort fields, from either
+// the CRM import or the narrative extractor, updating as the user edits.
+function updateClientResortStrip() {
+  var strip = document.getElementById('client-resort-strip');
+  if (!strip) return;
+  function v(key) { var el = document.getElementById('field-' + key); return el ? el.value.trim() : ''; }
+  var clientName = [v('clientFirst'), v('clientLast')].filter(Boolean).join(' ');
+  var secondName = [v('secondOwnerFirst'), v('secondOwnerLast')].filter(Boolean).join(' ');
+  var fullClient = [clientName, secondName].filter(Boolean).join(' & ') || 'No client name yet';
+  var resortLine = [v('resort'), v('resortState')].filter(Boolean).join(', ') || 'No resort yet';
+  strip.innerHTML = '<div>' + esc(fullClient) + '</div><div class="crs-sub">' + esc(resortLine) + '</div>';
 }
 
 function collectEditorFields() {
@@ -252,10 +855,74 @@ function collectEditorFields() {
   return out;
 }
 
+// Builds the Client Interview form once. Grouped by each item's PRIMARY
+// (first-listed) Right only, so an item relevant to more than one Right
+// (e.g. "pressure") gets exactly one input on screen -- asked once, never
+// duplicated. Guarded by renderInterviewFormIfNeeded() below so re-parsing
+// CRM data or pasting another narrative never wipes interview answers
+// already entered.
+function renderInterviewForm() {
+  var container = document.getElementById('interview-fields');
+  if (!container) return;
+  var html = '';
+  INTERVIEW_RIGHTS.forEach(function(r) {
+    var items = INTERVIEW_ITEMS.filter(function(it) { return it.rights[0] === r[0]; });
+    if (!items.length) return;
+    html += '<div class="interview-right"><h3>' + esc(r[1]) + '</h3>';
+    items.forEach(function(it) {
+      html += '<div class="interview-item">';
+      html += '<label class="interview-q" for="interview-answer-' + it.id + '">' + esc(it.label) + '</label>';
+      if (it.type === 'yesno') {
+        html += '<select id="interview-answer-' + it.id + '">';
+        html += '<option value="">-- Not asked --</option>';
+        html += '<option value="yes">Yes</option>';
+        html += '<option value="no">No</option>';
+        html += '<option value="unknown">Don’t remember / Unknown</option>';
+        html += '</select>';
+        html += '<textarea id="interview-narrative-' + it.id + '" placeholder="Client’s account -- what exactly happened or was said (optional, in their own words)"></textarea>';
+      } else {
+        html += '<input type="text" id="interview-detail-' + it.id + '" placeholder="e.g. 3 hours">';
+      }
+      if (it.detail) {
+        html += '<input type="text" id="interview-detail-' + it.id + '" placeholder="' + esc(it.detail) + '">';
+      }
+      html += '</div>';
+    });
+    html += '</div>';
+  });
+  container.innerHTML = html;
+}
+
+// Only builds the interview form the first time the editor appears --
+// never on a later re-parse or narrative extraction, which would otherwise
+// wipe out interview answers already on screen.
+function renderInterviewFormIfNeeded() {
+  var container = document.getElementById('interview-fields');
+  if (!container || container.children.length) return;
+  renderInterviewForm();
+}
+
+function collectInterviewAnswers() {
+  var out = {};
+  INTERVIEW_ITEMS.forEach(function(it) {
+    var answerEl = document.getElementById('interview-answer-' + it.id);
+    var narrativeEl = document.getElementById('interview-narrative-' + it.id);
+    var detailEl = document.getElementById('interview-detail-' + it.id);
+    out[it.id] = {
+      answer: answerEl ? answerEl.value : '',
+      narrative: narrativeEl ? narrativeEl.value.trim() : '',
+      detail: detailEl ? detailEl.value.trim() : ''
+    };
+  });
+  return out;
+}
+
 function resetEditor() {
   document.getElementById('raw-paste').value = '';
   document.getElementById('editor-card').classList.add('hidden');
   document.getElementById('parse-status').className = 'parse-status';
+  var interviewEl = document.getElementById('interview-fields');
+  if (interviewEl) interviewEl.innerHTML = '';
   parsedFields = {};
 }
 
@@ -269,29 +936,174 @@ function openPublishModal() {
     '/cpg/' + (slugify(f.clientFirst) || 'first') + '-' + (slugify(f.clientLast) || 'last') + '/';
   document.getElementById('example-first-2nd').textContent =
     '/cpg/' + (slugify(f.clientFirst) || 'first') + '-' + (slugify(f.secondOwnerFirst) || '2ndowner') + '/';
+  document.getElementById('example-both-full').textContent =
+    '/cpg/' + [f.clientFirst, f.clientLast, f.secondOwnerFirst, f.secondOwnerLast].filter(Boolean).map(slugify).join('-') + '/';
   document.getElementById('publish-modal').classList.remove('hidden');
 }
 function closePublishModal() {
   document.getElementById('publish-modal').classList.add('hidden');
 }
 
+var LIVE_SITE_BASE = 'https://sebastianlinks.com';
+
+// Holds whatever the result modal is currently showing, so its buttons
+// (Copy Link, Check Again) can be plain no-argument onclick handlers
+// instead of string-concatenating client-controlled data into inline HTML
+// attributes.
+var _prCurrentUrl = '';
+var _prCurrentClientName = '';
+
+function openPublishResultModal() { document.getElementById('publish-result-modal').classList.remove('hidden'); }
+function closePublishResultModal() { document.getElementById('publish-result-modal').classList.add('hidden'); }
+
+// Renders the four states of the publish-result panel. 'checking' and
+// 'pending'/'success' are two different honest outcomes of the SAME
+// verification step below -- this never shows 'success' just because
+// GitHub accepted the commit.
+function renderPublishResultBox(state, opts) {
+  opts = opts || {};
+  var box = document.getElementById('publish-result-box');
+  var html = '';
+  if (state === 'checking') {
+    html += '<div class="pr-icon">⏳</div>';
+    html += '<div class="pr-status-line pending">Publishing…</div>';
+    html += '<div class="pr-sub">' + esc(opts.detail || 'Verifying the live page is actually reachable before calling this done.') + '</div>';
+  } else if (state === 'success') {
+    html += '<div class="pr-icon">✅</div>';
+    html += '<div class="pr-status-line success">PUBLISHED SUCCESSFULLY</div>';
+    html += '<div class="pr-sub">Confirmed live and reachable — this isn\'t just “GitHub accepted the file.”</div>';
+    html += '<div class="pr-field-label">Client</div><div class="pr-client-name">' + esc(opts.clientName) + '</div>';
+    html += '<div class="pr-field-label">Live Client Link</div>';
+    html += '<div class="pr-link-row"><div class="pr-link-box">' + esc(opts.url) + '</div><button class="btn-green pr-copy-btn" id="pr-copy-btn" onclick="copyLiveLinkFromState()">Copy Link</button></div>';
+    html += '<div class="pr-actions"><a href="' + esc(opts.url) + '" target="_blank" rel="noopener" style="text-decoration:none"><button class="btn-secondary" type="button">Open Page</button></a><button class="btn-primary" onclick="closePublishResultModal()">Done</button></div>';
+  } else if (state === 'pending') {
+    html += '<div class="pr-icon">🕐</div>';
+    html += '<div class="pr-status-line pending">SAVED — NOT LIVE YET</div>';
+    html += '<div class="pr-sub">GitHub has the page, but it hasn\'t finished deploying yet. That\'s normal and usually clears within a couple of minutes — this deliberately does NOT call itself "published" until the link actually works.</div>';
+    html += '<div class="pr-field-label">Client</div><div class="pr-client-name">' + esc(opts.clientName) + '</div>';
+    html += '<div class="pr-field-label">Expected Live Link</div>';
+    html += '<div class="pr-link-row"><div class="pr-link-box">' + esc(opts.url) + '</div><button class="btn-green pr-copy-btn" id="pr-copy-btn" onclick="copyLiveLinkFromState()">Copy Link</button></div>';
+    html += '<div class="pr-actions"><button class="btn-secondary" onclick="recheckLiveUrlFromState()">Check Again</button><button class="btn-primary" onclick="closePublishResultModal()">Close</button></div>';
+  } else if (state === 'error') {
+    html += '<div class="pr-icon">⚠️</div>';
+    html += '<div class="pr-status-line error">PUBLISH FAILED</div>';
+    html += '<div class="pr-sub">Nothing on the live site was touched. The generated page downloaded to your computer instead, so no work is lost.</div>';
+    html += '<div class="pr-error-detail">' + esc(opts.detail || 'Unknown error') + '</div>';
+    html += '<div class="pr-actions"><button class="btn-primary" onclick="closePublishResultModal()">Close</button></div>';
+  }
+  box.innerHTML = html;
+}
+
+function copyLiveLinkFromState() { copyLiveLink(_prCurrentUrl); }
+function recheckLiveUrlFromState() { verifyLiveThenShow(_prCurrentUrl, _prCurrentClientName, _prCurrentClientMarker, true); }
+
+function copyLiveLink(url) {
+  var btn = document.getElementById('pr-copy-btn');
+  function showCopied() {
+    if (!btn) return;
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(function() { btn.textContent = 'Copy Link'; btn.classList.remove('copied'); }, 1800);
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(showCopied).catch(function() { fallbackCopyToClipboard(url, showCopied); });
+  } else {
+    fallbackCopyToClipboard(url, showCopied);
+  }
+}
+function fallbackCopyToClipboard(text, cb) {
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try { document.execCommand('copy'); } catch (e) { /* best-effort */ }
+  document.body.removeChild(ta);
+  if (cb) cb();
+}
+
+var _prCurrentClientMarker = '';
+
+// Confirms the freshly-published page is ACTUALLY reachable -- and
+// actually carries THIS publish's content, not a stale cached copy of
+// whatever used to be at this URL -- before ever showing "PUBLISHED
+// SUCCESSFULLY". GitHub's Contents API accepting a commit only means the
+// commit landed in the repo; GitHub Pages then has to rebuild and deploy
+// it, which can lag behind by anywhere from a few seconds to a couple of
+// minutes. Polls the real public URL with a cache-busting query param
+// (and cache:'no-store') so a stale browser cache can't produce a false
+// positive, and requires the client's own first name to actually appear
+// in the fetched HTML -- catching the case where the URL already existed
+// from an earlier publish and still 200s while serving the old content.
+function verifyLiveThenShow(url, clientName, contentMarker, isRecheck) {
+  _prCurrentUrl = url;
+  _prCurrentClientName = clientName;
+  _prCurrentClientMarker = contentMarker || '';
+  renderPublishResultBox('checking', { detail: isRecheck ? 'Checking again…' : undefined });
+  openPublishResultModal();
+
+  var attempts = 0;
+  var MAX_ATTEMPTS = 24;  // ~24 * 5s = 2 minutes
+  var INTERVAL_MS = 5000;
+
+  function attempt() {
+    attempts++;
+    var bustUrl = url + (url.indexOf('?') === -1 ? '?' : '&') + '_check=' + Date.now();
+    fetch(bustUrl, { method: 'GET', cache: 'no-store' })
+      .then(function(resp) {
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        return resp.text();
+      })
+      .then(function(text) {
+        var contentMatches = !contentMarker || text.indexOf(contentMarker) !== -1;
+        if (contentMatches) {
+          renderPublishResultBox('success', { clientName: clientName, url: url });
+        } else if (attempts < MAX_ATTEMPTS) {
+          setTimeout(attempt, INTERVAL_MS);
+        } else {
+          renderPublishResultBox('pending', { clientName: clientName, url: url });
+        }
+      })
+      .catch(function() {
+        if (attempts < MAX_ATTEMPTS) {
+          setTimeout(attempt, INTERVAL_MS);
+        } else {
+          renderPublishResultBox('pending', { clientName: clientName, url: url });
+        }
+      });
+  }
+  attempt();
+}
+
 function publishWithNaming(mode) {
   var f = collectEditorFields();
-  var slug = mode === 'first-last'
-    ? slugify(f.clientFirst) + '-' + slugify(f.clientLast)
-    : slugify(f.clientFirst) + '-' + slugify(f.secondOwnerFirst);
+  var slug;
+  if (mode === 'first-last') slug = slugify(f.clientFirst) + '-' + slugify(f.clientLast);
+  else if (mode === 'first-2ndfirst') slug = slugify(f.clientFirst) + '-' + slugify(f.secondOwnerFirst);
+  else slug = [f.clientFirst, f.clientLast, f.secondOwnerFirst, f.secondOwnerLast].filter(Boolean).map(slugify).join('-');
   if (!slug || slug === '-') {
     alert('Not enough name info to generate a URL slug — fill in the client name fields first.');
     return;
   }
   closePublishModal();
-  var html = generateCasePageHtml(f, slug);
+  var interview = collectInterviewAnswers();
+  var html = generateCasePageHtml(f, slug, interview);
+  var clientName = [f.clientFirst, f.clientLast].filter(Boolean).join(' ') || slug;
+  var secondName = [f.secondOwnerFirst, f.secondOwnerLast].filter(Boolean).join(' ');
+  if (secondName) clientName += ' & ' + secondName;
+  var liveUrl = LIVE_SITE_BASE + '/cpg/' + slug + '/';
 
   if (!PUBLISH_API_URL) {
     downloadFile(slug + '-index.html', html);
-    alert('Generated ' + slug + '-index.html.\n\nUpload it to your repo as:\ncpg/' + slug + '/index.html\n\n(Auto-publish isn\'t configured yet on this page — this download is the fallback path.)');
+    renderPublishResultBox('error', { detail: 'Auto-publish isn\'t configured yet on this page (PUBLISH_API_URL is blank). Downloaded ' + slug + '-index.html instead — upload it to your repo as cpg/' + slug + '/index.html.' });
+    openPublishResultModal();
     return;
   }
+
+  renderPublishResultBox('checking', { detail: 'Sending the page to GitHub…' });
+  openPublishResultModal();
 
   fetch(PUBLISH_API_URL.replace(/\/$/, '') + '/publish', {
     method: 'POST',
@@ -306,16 +1118,19 @@ function publishWithNaming(mode) {
     })
     .then(function(result) {
       if (result.data && result.data.ok) {
-        alert((result.data.updated ? 'Updated' : 'Published') + '!\n\n' + result.data.url);
+        // Committed to GitHub -- NOT the same as live. Hand off to the
+        // polling verifier before this is ever called a success.
+        var confirmedUrl = result.data.url || liveUrl;
+        verifyLiveThenShow(confirmedUrl, clientName, f.clientFirst || slug, false);
       } else {
         var reason = (result.data && result.data.error) || ('HTTP ' + result.status);
         downloadFile(slug + '-index.html', html);
-        alert('Auto-publish failed (' + reason + ') — downloaded ' + slug + '-index.html instead.\n\nUpload it to your repo as:\ncpg/' + slug + '/index.html');
+        renderPublishResultBox('error', { detail: 'Auto-publish failed (' + reason + ') — downloaded ' + slug + '-index.html instead. Upload it to your repo as cpg/' + slug + '/index.html.' });
       }
     })
     .catch(function(err) {
       downloadFile(slug + '-index.html', html);
-      alert('Could not reach the publish service (' + err.message + ') — downloaded ' + slug + '-index.html instead.\n\nUpload it to your repo as:\ncpg/' + slug + '/index.html');
+      renderPublishResultBox('error', { detail: 'Could not reach the publish service (' + err.message + ') — downloaded ' + slug + '-index.html instead. Upload it to your repo as cpg/' + slug + '/index.html.' });
     });
 }
 
@@ -330,102 +1145,710 @@ function esc(s) {
 }
 function money(s) {
   var n = parseFloat(String(s || '').replace(/[^0-9.\-]/g, ''));
-  return isNaN(n) ? '' : '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return isNaN(n) ? '$0' : '$' + Math.round(n).toLocaleString('en-US');
+}
+// Standard 20% APR amortization, same formula used site-wide on the
+// calculator pages: payment = principal * monthlyRate / (1 - (1+monthlyRate)^-months).
+function amortizedMonthlyPayment(principal, months, aprPct) {
+  if (!principal || !months) return 0;
+  var monthlyRate = (aprPct || 20) / 100 / 12;
+  if (monthlyRate === 0) return principal / months;
+  return principal * monthlyRate / (1 - Math.pow(1 + monthlyRate, -months));
 }
 
-function generateCasePageHtml(f, slug) {
+// -- Client Interview -> Case Strategy -------------------------------------
+// Everything below reads ONLY what the interviewer actually entered (plus a
+// couple of directly-matching fields already on the client record, e.g. the
+// Financing APR field backing up the "were you told the APR" answer). It
+// never infers, upgrades, or legally characterizes an answer: "Don't
+// remember" always renders as "Not remembered / Unknown", never as yes or
+// no, and a blank item always renders as "Not asked" / "Not provided",
+// never invented. There is no internal legal-strategy layer here -- this
+// generator only produces the client-facing factual record described in
+// the build spec; the internal FACT->EVIDENCE->LAW analysis is a separate,
+// not-yet-built tool, deliberately kept off this page.
+function interviewAnswerLabel(ans) {
+  if (ans === 'yes') return 'Yes';
+  if (ans === 'no') return 'No';
+  if (ans === 'unknown') return 'Not remembered / Unknown';
+  return 'Not asked';
+}
+// A small, honest set of direct links from an interview item to a fact
+// already on the client record -- only where that link is unambiguous.
+// Everything else legitimately has no supporting record data and shows
+// "Not provided" rather than a guessed connection.
+function interviewSupportingInfo(itemId, f) {
+  if (itemId === 'financingAprDisclosed' && f.financingApr) {
+    return aprText(f.financingApr) + '% APR on file for this client\'s financing.';
+  }
+  if (itemId === 'maintenanceIncreaseRepresentation' && (f.mtfAnnual || f.mtfMonthly)) {
+    var bits = [];
+    if (f.mtfAnnual) bits.push(money(f.mtfAnnual) + '/yr');
+    if (f.mtfMonthly) bits.push(money(f.mtfMonthly) + '/mo');
+    return 'Current maintenance fee on file: ' + bits.join(' (') + (bits.length > 1 ? ')' : '') + '.';
+  }
+  return '';
+}
+function interviewItemHtml(it, interview, f) {
+  var a = interview[it.id] || {};
+  var checked = a.answer === 'yes' ? '☑' : '☐';
+  // Default view is Question -> Answer -> Client's Exact Words (plus any
+  // directly-supporting figure already on file) -- everything a reviewer
+  // needs at a glance. The legal/explanatory layer (why the question
+  // matters, and the professional review terms it maps to) is real
+  // information but not part of that at-a-glance read, so it's tucked
+  // behind a native <details> disclosure instead of shown for all 29
+  // items at once.
+  var html = '<div class="cs-item">';
+  html += '<div class="cs-checkbox">' + checked + ' ' + esc(it.label) + '</div>';
+  if (it.type === 'yesno') {
+    html += '<div class="cs-layer"><strong>Client Answer:</strong> ' + interviewAnswerLabel(a.answer) + '</div>';
+    html += '<div class="cs-layer' + (a.narrative ? '' : ' muted') + '"><strong>Client\'s Exact Words:</strong> ' + (a.narrative ? esc(a.narrative) : 'Not provided') + '</div>';
+    var supporting = interviewSupportingInfo(it.id, f);
+    html += '<div class="cs-layer' + (supporting ? '' : ' muted') + '"><strong>Supporting Information:</strong> ' + (supporting ? esc(supporting) : 'Not provided') + '</div>';
+  } else {
+    html += '<div class="cs-layer' + (a.detail ? '' : ' muted') + '"><strong>Client Answer:</strong> ' + (a.detail ? esc(a.detail) : 'Not provided') + '</div>';
+  }
+  if (it.detail) {
+    html += '<div class="cs-layer' + (a.detail ? '' : ' muted') + '"><strong>' + esc(it.detail) + ':</strong> ' + (a.detail ? esc(a.detail) : 'Not provided') + '</div>';
+  }
+  if (it.why || (it.terms && it.terms.length)) {
+    html += '<details class="cs-why"><summary>Why this matters / review terms</summary>';
+    if (it.why) html += '<div class="cs-layer" style="margin-top:8px">' + esc(it.why) + '</div>';
+    if (it.terms && it.terms.length) html += '<div class="cs-layer" style="margin-bottom:0"><strong>Professional Review Terms:</strong> ' + it.terms.map(esc).join(' · ') + '</div>';
+    html += '</details>';
+  }
+  html += '</div>';
+  return html;
+}
+// Contract for Review -- an HTML rendition of Client Protection Group's own
+// standing Timeshare Cancellation Agreement (previously linked as a shared
+// PDF), tied to THIS client: their own name, resort, contact info, reason
+// for wanting out, and quoted fee are pre-filled wherever we actually have
+// that data; anything this tool doesn't collect (mailing address, payment
+// method, signature) is shown as an inert blank, exactly as it appears on
+// the real form -- never a live input, and nothing on this page is ever
+// submitted anywhere. This is a for-review copy only.
+function buildContractReviewHtml(f) {
+  var clientNames = [
+    [f.clientFirst, f.clientLast].filter(Boolean).join(' '),
+    [f.secondOwnerFirst, f.secondOwnerLast].filter(Boolean).join(' ')
+  ].filter(Boolean).join(' & ');
+  var todayStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  var blank = function(width) { return '<span class="cr-blank" style="min-width:' + (width || 90) + 'px"></span>'; };
+  var val = function(v, width) { return v ? esc(v) : blank(width); };
+
+  var parts = [];
+  parts.push('<section id="contract-review"><h2 class="section-title">Contract for Review</h2>');
+  parts.push('<p class="section-intro">A for-review copy of Client Protection Group LLC\'s standard Timeshare Cancellation Agreement, filled in with what\'s already on file for ' + (clientNames ? esc(clientNames) : 'this client') + '. This is not a submission form -- nothing entered or shown here is sent anywhere. Your signed copy will be provided separately as part of enrollment.</p>');
+  parts.push('<div style="text-align:right;margin-bottom:16px"><button onclick="printContractReview()" style="font-size:13px;font-weight:700;padding:9px 16px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--navy);cursor:pointer">🖨 Print / Save as PDF</button></div>');
+
+  parts.push('<div class="card cr-doc">');
+  parts.push('<h3 style="text-align:center;font-size:20px;margin-bottom:18px">TIMESHARE CANCELLATION AGREEMENT</h3>');
+  parts.push('<table class="cr-table">');
+  parts.push('<tr><td class="cr-label">Date</td><td>' + val(todayStr, 160) + '</td></tr>');
+  parts.push('<tr><td class="cr-label">Name(s) of Titled Owners</td><td>' + val(clientNames, 260) + '</td></tr>');
+  parts.push('<tr><td class="cr-label">Primary Phone</td><td>' + val(f.phone, 140) + '</td><td class="cr-label">Secondary Phone</td><td>' + val(f.phone2, 140) + '</td></tr>');
+  parts.push('<tr><td class="cr-label">Email</td><td colspan="3">' + val(f.email, 220) + '</td></tr>');
+  parts.push('</table>');
+
+  parts.push('<h4 style="margin:22px 0 10px;font-size:15px">Resort #1</h4><table class="cr-table">');
+  parts.push('<tr><td class="cr-label">Resort</td><td>' + val(f.resort, 220) + '</td><td class="cr-label">Location</td><td>' + val(f.resortState, 100) + '</td></tr>');
+  parts.push('<tr><td class="cr-label">Balance</td><td>' + (f.mtgAmountBehind ? val(money(f.mtgAmountBehind), 100) : blank(100)) + '</td><td class="cr-label">Mortgage Payment</td><td>' + (f.mtgMonthly ? esc(money(f.mtgMonthly)) + '/mo' : blank(100)) + '</td></tr>');
+  parts.push('<tr><td class="cr-label">Maintenance Fee</td><td colspan="3">' + (f.mtfAnnual ? esc(money(f.mtfAnnual)) + '/yr' : blank(100)) + '</td></tr>');
+  parts.push('</table>');
+  parts.push('<p style="font-size:12.5px;color:var(--gray-500);margin-top:8px">Additional owned resorts, if any, are reviewed and added to the final signed agreement individually -- never invented or assumed here.</p>');
+
+  parts.push('<h4 style="margin:22px 0 10px;font-size:15px">Reason for Wanting Out of Ownership(s)</h4>');
+  parts.push('<p style="border-bottom:1px solid var(--border);padding-bottom:8px;min-height:20px">' + (f.whyWantOut ? esc(f.whyWantOut) : blank(400)) + '</p>');
+
+  parts.push('<h4 style="margin:22px 0 10px;font-size:15px">Terms &amp; Conditions</h4>');
+  parts.push('<ol class="cr-terms">');
+  [
+    'I/We agree to pay Client Protection Group LLC’s Timeshare Cancellation Fee of ' + (f.serviceFee ? esc(money(f.serviceFee)) : blank(90)) + ' and for this fee, Client Protection Group LLC agrees to undertake all necessary steps to cancel the above-mentioned timeshare contract.',
+    'I/We authorize Client Protection Group LLC to release my information to a third-party company who will be responsible for blocking and/or repairing any credit damage (for timeshares with mortgage balances only.)',
+    'I/We understand that I/We have relinquished all usage rights to the above-mentioned property.',
+    'I/We understand that Client Protection Group LLC is NOT providing legal advice.',
+    'I/We understand that Client Protection Group LLC has NOT instructed me/us to stop making payments still owing on any timeshare mortgage, maintenance fees or assessment.',
+    'I/We understand that there is no promise of monetary compensation regarding the cancellation/transfer of our timeshare property has been made.',
+    'I/We understand that this contract represents the entire agreement and there have been no previous verbal or written agreements.',
+    'I/We agree to not disclose to any third party (including the timeshare developer) the Terms &amp; Conditions set forth in this agreement. Any and all documents, forms, e-mails, faxes, conversations, phone calls and all means of communications shall be deemed confidential information and shall not be shared.',
+    'I/We understand that the refusal to comply with any written requests for information from Client Protection Group LLC, any of our affiliates, the finance company and/or the timeshare developer for a period greater than 30 days, will result in the decline of services and forfeiture of any monies paid.',
+    'I/We understand that I/We are responsible for any fees related to the transfer/closing and/or settlement of the aforementioned timeshare.',
+    'I/We understand that the services paid for are rendered immediately and this transaction is non-reversible once the 3-calendar day Right of Rescission has passed. Requests for refunds must be made in writing.',
+    'Should I/We opt to terminate/cancel services with Client Protection Group LLC prior to this agreement’s completion, I/We are fully responsible to pay the financing arrangements in full to satisfy the services, and no refunds will be available.',
+    'I/We agree to and accept Client Protection Group LLC’s Timeshare Cancellation Guarantee.',
+    'I/We have provided accurate information to the best of my/our knowledge.'
+  ].forEach(function(term) { parts.push('<li>' + term + '</li>'); });
+  parts.push('</ol>');
+
+  parts.push('<h4 style="margin:22px 0 10px;font-size:15px">Timeshare Cancellation Guarantee</h4>');
+  parts.push('<p style="font-size:14px">Client Protection Group LLC guarantees the cancellation of your timeshare contract in addition to any associated contractual obligations. We commit to relentless work on your timeshare cancellation case until its complete resolution, regardless of the necessary timeframe, without charging any additional fees at any later time. Our guarantee in delivering these services hinges on our clients fulfilling their responsibilities. These responsibilities consist of providing Client Protection Group LLC with all required paperwork within a 30-day timeframe as detailed in #9 of our Terms &amp; Conditions in addition to promptly forwarding us any correspondences, bills, statements, or letters from the resort or collection agency. Our clients must strictly follow our instructions and refrain from contacting the resort during this process unless advised to. Should our services remain incomplete after a 24 month period our clients will qualify for a 100% money-back guarantee for the purchase price paid for its timeshare cancellation services. This guarantee is only available to clients that are still getting billed by their resort and have clearly followed our instructions throughout the process. If our clients have taken any action against our instructions or contacted the resort at all, they do not qualify for a refund.</p>');
+
+  parts.push('<h4 style="margin:22px 0 10px;font-size:15px">Payment Information</h4>');
+  parts.push('<table class="cr-table">');
+  parts.push('<tr><td class="cr-label">Timeshare Cancellation Fee</td><td>' + (f.serviceFee ? esc(money(f.serviceFee)) : blank(100)) + '</td><td class="cr-label">Down Payment</td><td>' + (f.downPayment ? esc(money(f.downPayment)) : blank(100)) + '</td></tr>');
+  parts.push('<tr><td class="cr-label">Amount Financed</td><td>' + blank(100) + '</td><td class="cr-label">Financing Rate</td><td>' + (f.financingApr ? aprText(f.financingApr) + '% APR' : blank(100)) + '</td></tr>');
+  parts.push('</table>');
+  parts.push('<p style="font-size:12.5px;color:var(--gray-500);margin-top:10px">Payment method, card, and account details are collected securely and privately during enrollment -- never on this page.</p>');
+
+  parts.push('<div style="margin-top:26px;display:flex;gap:60px;flex-wrap:wrap">');
+  parts.push('<div><div class="cr-sig-line"></div><div style="font-size:12.5px;color:var(--gray-500);margin-top:4px">Client 1 Signature &amp; Date</div></div>');
+  parts.push('<div><div class="cr-sig-line"></div><div style="font-size:12.5px;color:var(--gray-500);margin-top:4px">Client 2 Signature &amp; Date</div></div>');
+  parts.push('</div>');
+
+  parts.push('<p style="font-size:12px;color:var(--gray-500);margin-top:22px;margin-bottom:0">Client Protection Group LLC &middot; 550 N Parkcenter Dr #204, Santa Ana, CA 92705</p>');
+  parts.push('</div></section>');
+  return parts.join('');
+}
+
+// Reference terminology used across the industry to describe how
+// ownership of a timeshare is given up as part of a resolution. This is
+// an informational/review list, not a set of client-editable selections
+// -- this tool has no backend to save a selection to, and nothing here
+// asserts that every term applies to this specific case (several are
+// near-synonyms; which one ends up in the final release language is a
+// drafting decision made when documents are actually prepared).
+var RELEASE_TERMS = [
+  'Transfer of Ownership Interest', 'Transfer of Title', 'Conveyance', 'Conveyance of Ownership Interest',
+  'Relinquishment of Ownership Interest', 'Release of Ownership Interest', 'Quitclaim', 'Quitclaim Deed',
+  'Removal From Title', 'Removal From Deed', 'Change in Vesting', 'Surrender of Ownership Interest',
+  'Divestment of Title', 'Rescission', 'Deed-in-Lieu of Foreclosure'
+];
+
+function buildMutualReleaseHtml(f) {
+  var mtgArrears = parseFloat(String(f.mtgAmountBehind || '').replace(/[^0-9.]/g, '')) || 0;
+  var mtfArrears = parseFloat(String(f.mtfAmountBehind || '').replace(/[^0-9.]/g, '')) || 0;
+  var mtgMonthlyForRelease = parseFloat(String(f.mtgMonthly || '').replace(/[^0-9.]/g, '')) || 0;
+  var mtfAnnualForRelease = parseFloat(String(f.mtfAnnual || '').replace(/[^0-9.]/g, '')) || 0;
+
+  var parts = [];
+  parts.push('<div class="card" style="margin-top:20px"><h3 style="font-size:16px;margin-bottom:6px">📄 Mutual Release</h3>');
+  parts.push('<p style="font-size:13.5px;color:var(--gray-700);margin-bottom:16px">What the client wants resolution to accomplish, drawn from what’s already on file -- nothing below is a request the client needs to fill out.</p>');
+
+  parts.push('<div class="cs-summary-row">');
+  parts.push('<div class="cs-summary-item"><div class="cs-summary-label">Total Mortgage Arrears</div><div class="cs-summary-value">' + (mtgArrears ? money(mtgArrears) : 'Not provided') + '</div></div>');
+  parts.push('<div class="cs-summary-item"><div class="cs-summary-label">Total Maintenance Fee Arrears</div><div class="cs-summary-value">' + (mtfArrears ? money(mtfArrears) : 'Not provided') + '</div></div>');
+  parts.push('<div class="cs-summary-item"><div class="cs-summary-label">Future Mortgage Obligations</div><div class="cs-summary-value">' + (mtgMonthlyForRelease ? money(mtgMonthlyForRelease) + ' / month, ongoing until resolved' : 'Not provided') + '</div></div>');
+  parts.push('<div class="cs-summary-item"><div class="cs-summary-label">Future Maintenance Fee Obligations</div><div class="cs-summary-value">' + (mtfAnnualForRelease ? money(mtfAnnualForRelease) + ' / year, ongoing until resolved' : 'Not provided') + '</div></div>');
+  parts.push('<div class="cs-summary-item"><div class="cs-summary-label">State of Purchase</div><div class="cs-summary-value">' + (f.resortState ? esc(f.resortState) : 'Not provided') + '</div></div>');
+  parts.push('<div class="cs-summary-item"><div class="cs-summary-label">State of Residence</div><div class="cs-summary-value">Not provided</div></div>');
+  parts.push('</div>');
+
+  parts.push('<div style="margin-top:6px"><div class="cs-summary-label" style="margin-bottom:8px">Ownership Relinquishment Terminology (Reference)</div>');
+  parts.push('<p style="font-size:12.5px;color:var(--gray-500);margin-bottom:10px">These are industry terms for how ownership can be given up as part of a resolution. Listing a term here does not mean it necessarily applies to this case -- which term(s) apply is determined when release documents are actually prepared.</p>');
+  parts.push('<div class="grid-3" style="gap:8px 16px">');
+  RELEASE_TERMS.forEach(function(term) {
+    parts.push('<div style="font-size:13px;color:var(--navy-2);padding:6px 0;border-bottom:1px solid var(--border)">' + esc(term) + '</div>');
+  });
+  parts.push('</div></div>');
+  parts.push('</div>');
+  return parts.join('');
+}
+
+function buildCaseStrategyHtml(f, interview) {
+  var yesItems = INTERVIEW_ITEMS.filter(function(it) { var a = interview[it.id]; return a && a.answer === 'yes'; });
+  var yesByRight = function(right) {
+    return yesItems.filter(function(it) { return it.rights.indexOf(right) !== -1; }).map(function(it) { return it.label; });
+  };
+  var itemsAnswered = INTERVIEW_ITEMS.filter(function(it) {
+    var a = interview[it.id];
+    return a && (it.type === 'yesno' ? !!a.answer : !!a.detail);
+  }).length;
+  var interviewComplete = itemsAnswered === INTERVIEW_ITEMS.length;
+
+  var parts = [];
+  parts.push('<section id="case-strategy"><h2 class="section-title">📋 Case Strategy</h2>');
+  parts.push('<p class="section-intro">Built automatically from this client\'s record and completed interview. Nothing below is inferred beyond what was actually reported -- a blank line means that information is not yet on file, not that the answer is "no."</p>');
+  parts.push('<div style="text-align:right;margin-bottom:16px"><button onclick="printCaseStrategy()" style="font-size:13px;font-weight:700;padding:9px 16px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--navy);cursor:pointer">🖨 Print / Save as PDF</button></div>');
+
+  // Case Summary
+  var rightIandII = [];
+  INTERVIEW_ITEMS.forEach(function(it) {
+    var a = interview[it.id];
+    if (a && a.answer === 'yes' && (it.rights.indexOf('I') !== -1 || it.rights.indexOf('II') !== -1) && rightIandII.indexOf(it.label) === -1) rightIandII.push(it.label);
+  });
+  var rightIV = yesByRight('IV').filter(function(l, i, arr) { return arr.indexOf(l) === i; });
+  var financialConcernBits = [];
+  if (isBehindOn(f.mtgMonthsBehind, f.mtgAmountBehind)) financialConcernBits.push('Behind on mortgage: ' + monthsBehindPrefix(f.mtgMonthsBehind, f.mtgMonthly, ', ') + money(f.mtgAmountBehind) + '.');
+  if (isBehindOn(f.mtfMonthsBehind, f.mtfAmountBehind)) financialConcernBits.push('Behind on maintenance fees: ' + monthsBehindPrefix(f.mtfMonthsBehind, f.mtfMonthly, ', ') + money(f.mtfAmountBehind) + '.');
+  var docsAvailable = [];
+  if (f.narrativeNotes) docsAvailable.push('Client-provided transcript/narrative on file.');
+  if (f.notes) docsAvailable.push('Additional CRM notes on file.');
+
+  parts.push('<div class="card"><h3 style="font-size:16px;margin-bottom:14px">Case Summary</h3><div class="cs-summary-row">');
+  parts.push('<div class="cs-summary-item"><div class="cs-summary-label">Why Client Wants Out</div><div class="cs-summary-value">' + (f.whyWantOut ? esc(f.whyWantOut) : 'Not provided') + '</div></div>');
+  parts.push('<div class="cs-summary-item"><div class="cs-summary-label">Sales Presentation Concerns</div><div class="cs-summary-value">' + (rightIandII.length ? esc(rightIandII.join('; ')) : 'None identified') + '</div></div>');
+  parts.push('<div class="cs-summary-item"><div class="cs-summary-label">Financial Concerns</div><div class="cs-summary-value">' + (financialConcernBits.length ? financialConcernBits.join(' ') : 'None documented') + '</div></div>');
+  parts.push('<div class="cs-summary-item"><div class="cs-summary-label">Representations Identified</div><div class="cs-summary-value">' + (rightIV.length ? esc(rightIV.join('; ')) : 'None identified') + '</div></div>');
+  parts.push('<div class="cs-summary-item"><div class="cs-summary-label">Documentation Available</div><div class="cs-summary-value">' + (docsAvailable.length ? docsAvailable.join(' ') : 'None on file') + '</div></div>');
+  parts.push('</div>');
+  // Raw client-reported findings, preserved verbatim -- this is the same
+  // content the old standalone "Findings" section used to show, now folded
+  // in here since Case Strategy is the single completed-findings record.
+  if (f.whyWantOut || f.notes || f.narrativeNotes) {
+    parts.push('<div style="margin-top:4px"><div class="cs-summary-label" style="margin-bottom:8px">Client-Reported Findings (Raw)</div>');
+    if (f.whyWantOut) parts.push('<p style="font-size:14px">' + esc(f.whyWantOut) + '</p>');
+    if (f.notes) parts.push('<p style="font-size:14px">' + esc(f.notes) + '</p>');
+    if (f.narrativeNotes) parts.push('<p style="font-size:14px;white-space:pre-wrap;margin-bottom:0">' + esc(f.narrativeNotes) + '</p>');
+    parts.push('</div>');
+  }
+  parts.push('</div>');
+
+  // Consumer Rights Assessment: four Rights, each showing every item
+  // relevant to it (an item relevant to more than one Right legitimately
+  // appears again here -- it was only ever ASKED once, in the interview
+  // form). Each item defaults to Question -> Answer -> Client's Exact
+  // Words; the legal explanation and review terminology are tucked
+  // behind a disclosure so all 29 items aren't dumped open at once.
+  parts.push('<h3 style="font-size:15px;letter-spacing:.4px;text-transform:uppercase;color:var(--gray-500);margin:28px 0 14px">⚖️ Consumer Rights Assessment</h3>');
+  INTERVIEW_RIGHTS.forEach(function(r) {
+    var items = INTERVIEW_ITEMS.filter(function(it) { return it.rights.indexOf(r[0]) !== -1; });
+    parts.push('<div class="card"><h3 style="font-size:16px;margin-bottom:14px">' + esc(r[1]) + '</h3>');
+    items.forEach(function(it) { parts.push(interviewItemHtml(it, interview, f)); });
+    parts.push('</div>');
+  });
+
+  // Mutual Release -- what the client wants resolution to accomplish,
+  // built the same way as the rest of Case Strategy: from data already on
+  // file, never a form for the client to fill out.
+  parts.push(buildMutualReleaseHtml(f));
+
+  // Case Readiness
+  var checks = [
+    ['Client identity complete', !!(f.clientFirst && f.clientLast)],
+    ['Resort identified', !!f.resort],
+    ['Purchase information complete', !!f.yearPurchased],
+    ['Interview completed', interviewComplete],
+    ['Reason for exit documented', !!f.whyWantOut],
+    ['Sales circumstances documented', rightIandII.length > 0],
+    ['Material representations documented', rightIV.length > 0],
+    ['Financial information documented', !!(f.mtgMonthly || f.mtgAnnual || f.mtfAnnual || f.mtfMonthly)],
+    ['Contract information documented', !!(f.financingApr || f.financingTermMonths || f.downPayment || f.yearPurchased)],
+    ['Available evidence identified', !!(f.notes || f.narrativeNotes)]
+  ];
+  var allReady = checks.every(function(c) { return c[1]; });
+  var evidenceOk = checks[9][1];
+  var status = !interviewComplete ? 'CLIENT FOLLOW-UP REQUIRED'
+    : allReady ? 'READY FOR DEMAND'
+    : (!evidenceOk && checks.slice(0, 9).every(function(c) { return c[1]; })) ? 'DOCUMENTS NEEDED'
+    : 'MISSING INFORMATION';
+
+  parts.push('<div class="card"><h3 style="font-size:16px;margin-bottom:14px">Case Readiness</h3><ul class="cs-readiness-list">');
+  checks.forEach(function(c) {
+    parts.push('<li' + (c[1] ? '' : ' class="unchecked"') + '>' + (c[1] ? '☑' : '☐') + ' ' + esc(c[0]) + '</li>');
+  });
+  parts.push('</ul>');
+  parts.push('<div class="cs-status-badge ' + (status === 'READY FOR DEMAND' ? 'cs-status-ready' : 'cs-status-notready') + '">Case Status: ' + status + '</div>');
+  parts.push('</div>');
+
+  parts.push('</section>');
+  return parts.join('');
+}
+
+// Builds a full client quote page matching the site's standard proposal
+// format (case acceptance, findings, services, quote, guarantee, next
+// steps, financial summary, live True Cost of Ownership calculator) in
+// the standing green/cream sebastianlinks.com theme. Guarantee, Services
+// Included, and Next Steps are fixed company boilerplate -- identical on
+// every generated quote. The findings section shows whatever the client
+// reported ("why do they want out" / notes) as-is, with no legal
+// categorization -- this tool has no basis to invent case-specific legal
+// reasoning the way the fully bespoke case pages (e.g. Hugo & Mariana's)
+// do.
+function generateCasePageHtml(f, slug, interview) {
+  interview = interview || {};
   var clientName = [f.clientFirst, f.clientLast].filter(Boolean).join(' ');
   var secondOwnerName = [f.secondOwnerFirst, f.secondOwnerLast].filter(Boolean).join(' ');
   var fullClientLine = secondOwnerName ? clientName + ' & ' + secondOwnerName : clientName;
 
   var hasFinancials = f.mtgMonthly || f.mtfAnnual || f.totalMonthly;
-  var hasArrears = f.mtgAmountBehind || f.mtfAmountBehind;
-  var hasQuote = f.serviceFee;
+  var hasQuote = !!f.serviceFee;
+  // Lead Status drives the whole page's workflow stage. Pre-Interview shows
+  // an invite to the interview appointment instead of completed findings --
+  // the case hasn't actually been reviewed with the client yet, so nothing
+  // downstream of that review (acceptance, findings, Case Strategy) is
+  // shown until Lead Status moves past it. A blank/unrecognized Lead Status
+  // (older published pages, or a CRM export that didn't carry the field)
+  // falls through to the normal full page, matching this tool's behavior
+  // before Lead Status existed.
+  var isPreInterview = String(f.leadStatus || '').trim().toLowerCase() === 'pre-interview';
+  var hasInterview = INTERVIEW_ITEMS.some(function(it) {
+    var a = interview[it.id];
+    return !!(a && (a.answer || a.narrative || a.detail));
+  });
+  // Case Strategy is a post-interview product: available whenever Lead
+  // Status has moved past Pre-Interview, whether or not every question was
+  // actually answered -- the Case Readiness section inside it honestly
+  // reflects any gaps rather than hiding the page until it's "complete."
+  var showCaseStrategy = !isPreInterview;
 
-  var quoteTotal = '', quoteTax = '';
+  var feeNum = parseFloat(String(f.serviceFee || '').replace(/[^0-9.]/g, '')) || 0;
+  var taxPct = parseFloat(String(f.salesTaxPct || '').replace(/[^0-9.]/g, '')) || 0;
+  var taxAmt = feeNum * (taxPct / 100);
+  var totalContract = feeNum + taxAmt;
+  var downNum = parseFloat(String(f.downPayment || '').replace(/[^0-9.]/g, '')) || 0;
+  var financedPrincipal = Math.max(0, totalContract - downNum);
+  var termMonths = parseFloat(f.financingTermMonths) || 0;
+  var aprNum = parseFloat(f.financingApr) || 20;
+  var monthlyPayment = termMonths ? amortizedMonthlyPayment(financedPrincipal, termMonths, aprNum) : 0;
+
+  var mtgMonthlyNum = parseFloat(String(f.mtgMonthly || '').replace(/[^0-9.]/g, '')) || 0;
+  var mtfAnnualNum = parseFloat(String(f.mtfAnnual || '').replace(/[^0-9.]/g, '')) || 0;
+  var mtgAmountBehindNum = parseFloat(String(f.mtgAmountBehind || '').replace(/[^0-9.]/g, '')) || 0;
+  var mtfAmountBehindNum = parseFloat(String(f.mtfAmountBehind || '').replace(/[^0-9.]/g, '')) || 0;
+  var totalArrears = mtgAmountBehindNum + mtfAmountBehindNum;
+  // Hoisted so both the Savings section (solution half) and the Financial
+  // Summary section (situation half) use the exact same figure -- never
+  // two independently-computed "current cost" numbers on the same page.
+  var totalMonthlyNum = parseFloat(String(f.totalMonthly || '').replace(/[^0-9.]/g, '')) || (mtgMonthlyNum + mtfAnnualNum / 12);
+  var totalYearlyNum = totalMonthlyNum * 12;
+
+  // Savings figures -- built only from numbers already used elsewhere on
+  // this page (current monthly/yearly cost, the actual financed monthly
+  // payment when there is one, the total contract amount). Nothing here
+  // is a new assumption: a client paid in full has $0/mo owed to CPG
+  // starting immediately; a financed client's "our monthly equivalent" is
+  // the real computed payment, not an invented one. Only renders when
+  // both sides of the comparison (current cost AND a quoted fee) exist.
+  var showSavings = hasFinancials && hasQuote;
+  var isFinancedMonthly = !!(termMonths && monthlyPayment);
+  var ourMonthlyEquivalent = isFinancedMonthly ? monthlyPayment : 0;
+  var monthlySavings = totalMonthlyNum - ourMonthlyEquivalent;
+  var feePaidYear1 = isFinancedMonthly ? monthlyPayment * Math.min(termMonths, 12) : totalContract;
+  var yearlySavingsYear1 = totalYearlyNum - feePaidYear1;
+  var projectedSavings30 = (totalYearlyNum * 30) - totalContract;
+  var breakEvenMonths = totalMonthlyNum > 0 ? Math.ceil(totalContract / totalMonthlyNum) : 0;
+  var breakEvenDateStr = '';
+  if (breakEvenMonths > 0) {
+    var beDate = new Date();
+    beDate.setMonth(beDate.getMonth() + breakEvenMonths);
+    breakEvenDateStr = beDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+  }
+
+  // Mortgage Months Remaining: this tool has no actual data on when a
+  // client's timeshare loan is scheduled to be paid off (the CRM export
+  // doesn't carry a loan term or payoff date). Rather than guessing a
+  // term -- a fixed number of months, or the full 30-year length of the
+  // table below -- and presenting that guess as if it were a known fact,
+  // this defaults to 0 (no mortgage payments assumed beyond what's on
+  // file today). If a reviewer knows this client's real remaining term,
+  // the field is fully editable in the calculator below and the whole
+  // table recalculates from that instead.
+  var yearPurchasedNum = parseInt(String(f.yearPurchased || '').replace(/[^0-9]/g, ''), 10) || 0;
+  var mortgageMonthsRemaining = 0;
+
+  var resortLine = f.resort ? esc(f.resort) + (f.resortState ? ', ' + esc(f.resortState) : '') : '';
+
+  var parts = [];
+  parts.push('<!doctype html><html lang="en"><head><meta charset="utf-8">');
+  parts.push('<meta name="viewport" content="width=device-width, initial-scale=1">');
+  parts.push('<title>Case Findings &amp; Acceptance — ' + esc(fullClientLine) + ' | Client Protection Group LLC</title>');
+  parts.push('<style>');
+  parts.push(':root{--navy:#0C5AB1;--navy-2:#1F5093;--gray-700:#4B5263;--gray-500:#4B5263;--gray-300:rgba(75,82,99,.55);--gray-100:#E9EFF7;--border:#A7C1DF;--white:#ffffff;--green:#1F5093;--green-bg:#E8F5DC;--green-border:#B7E06B;--cream:#E2EBF6;--hero-blue:#2363B0;--lime:#87CC0E;--lime-text:#5C8A00;--radius:10px;--shadow:0 1px 3px rgba(12,90,177,.10)}');
+  parts.push('*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--white);color:var(--navy);line-height:1.55;font-size:16px}');
+  parts.push('.wrap{max-width:1160px;margin:0 auto;padding:0 24px}h1,h2,h3{color:var(--navy);font-weight:700;margin:0}p{color:var(--gray-700);margin:0 0 12px}a{color:var(--navy)}');
+  parts.push('header.site-header{background:var(--hero-blue);color:#fff;padding:24px 0 22px}header.site-header .header-inner{display:flex;align-items:center;gap:16px}header.site-header .logo-img{height:44px;width:auto;background:#fff;border-radius:8px;padding:6px 10px}');
+  parts.push('header.site-header .brand-text{flex:1}header.site-header .brand-name{font-size:22px;font-weight:800;letter-spacing:.5px}header.site-header .brand-sub{font-size:13px;color:rgba(255,255,255,.68);letter-spacing:1.5px;text-transform:uppercase;margin-top:4px}');
+  parts.push('header.site-header .header-contact{text-align:right;font-size:13px;color:rgba(255,255,255,.78);line-height:1.7}header.site-header .header-contact .contact-name{font-weight:700;color:#fff;font-size:14.5px;margin-bottom:3px}header.site-header .header-contact a{color:rgba(255,255,255,.78);text-decoration:none}');
+  parts.push('.status-badge{display:inline-block;background:var(--lime);color:var(--navy-2);font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:6px 14px;border-radius:999px;margin-top:14px}');
+  parts.push('nav.subnav{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--border);padding:12px 0}nav.subnav .wrap{display:flex;gap:28px;flex-wrap:wrap}nav.subnav a{text-decoration:none;color:var(--gray-700);font-size:14px;font-weight:600;letter-spacing:.3px}nav.subnav a:hover{color:var(--navy)}');
+  parts.push('main{padding:40px 0 60px}.hero{margin-bottom:36px}.hero .eyebrow{font-size:13px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--gray-500);margin-bottom:10px}.hero h1{font-size:32px;line-height:1.25;margin-bottom:10px}.hero .sub{font-size:17px;color:var(--gray-700)}');
+  parts.push('.vitals-card{display:grid;grid-template-columns:repeat(4,1fr);gap:18px 24px}.vitals-item .vitals-label{font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--gray-500);margin-bottom:3px}.vitals-item .vitals-value{font-size:15px;font-weight:700;color:var(--navy)}.vitals-item .vitals-value.missing{font-weight:400;font-style:italic;color:var(--gray-300)}');
+  parts.push('.card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:20px;box-shadow:var(--shadow)}.card.accent-green{background:var(--green-bg);border:1px solid var(--green-border)}');
+  parts.push('section{margin-bottom:44px;scroll-margin-top:70px}.section-title{font-size:22px;margin-bottom:6px}.section-intro{font-size:15px;color:var(--gray-700);margin-bottom:20px;max-width:760px}');
+  parts.push('.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}.finding-card h3{font-size:15px;letter-spacing:.3px;margin-bottom:8px}.finding-card p{font-size:14.5px;margin-bottom:0}');
+  parts.push('table.fin-table{width:100%;border-collapse:collapse;font-size:15px}table.fin-table td{padding:11px 4px;border-bottom:1px solid var(--border)}table.fin-table td:first-child{color:var(--gray-700)}table.fin-table td:last-child{text-align:right;font-weight:700;color:var(--navy)}table.fin-table tr.total td{font-size:17px;padding-top:16px}table.fin-table tr.total td:last-child{color:var(--green)}table.fin-table-sub{font-size:13px}table.fin-table-sub td:first-child{color:var(--gray-500)}table.fin-table-sub td:last-child{color:var(--gray-500);font-weight:600}#financial-summary table.fin-table td:last-child,#financial-summary table.fin-table tr.total td:last-child{color:#B91C1C}');
+  parts.push('.stat-card{background:var(--gray-100);border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center}.stat-card .stat-value{font-size:28px;font-weight:800;color:var(--navy)}.stat-card .stat-label{font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--gray-500);margin-top:6px}.stat-card.emphasis .stat-value{color:var(--green);font-size:32px}.stat-card.danger .stat-value{color:#B91C1C;font-size:32px}');
+  parts.push('.guarantee-card{background:var(--green-bg);border:2px solid var(--green-border);border-radius:var(--radius);padding:34px}.guarantee-card h2{color:var(--green);font-size:26px}.guarantee-card .guarantee-badge{display:inline-block;background:var(--lime);color:var(--navy-2);font-size:13px;font-weight:800;letter-spacing:.5px;padding:7px 16px;border-radius:999px;margin-bottom:14px}.guarantee-card p,.guarantee-card li{font-size:15px;color:var(--navy-2)}.guarantee-card ol{padding-left:20px}');
+  parts.push('.steps-row{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}.step{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:18px 14px;text-align:center}.step .step-num{width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;margin:0 auto 10px}.step .step-label{font-size:13px;font-weight:700;color:var(--navy);letter-spacing:.3px}');
+  parts.push('.tco-header{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;margin-bottom:20px}.tco-meta{font-size:14px;color:var(--gray-700)}.tco-meta strong{color:var(--navy)}.tco-monthly{text-align:right}.tco-monthly .tco-monthly-value{font-size:26px;font-weight:800;color:#B91C1C}.tco-monthly .tco-monthly-label{font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.4px}.stage-badge{display:inline-block;background:var(--gray-100);border:1px solid var(--border);color:var(--gray-700);font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;margin-top:4px}');
+  parts.push('table.tco-table{width:100%;border-collapse:collapse;font-size:14.5px}table.tco-table th{text-align:left;padding:8px 6px;font-size:12px;text-transform:uppercase;letter-spacing:.3px;color:var(--gray-500);border-bottom:2px solid var(--border)}table.tco-table th:not(:first-child),table.tco-table td:not(:first-child){text-align:right}table.tco-table td{padding:10px 6px;border-bottom:1px solid var(--border);color:var(--navy)}table.tco-table td:not(:first-child){color:#B91C1C}table.tco-table tr.total td{font-weight:800;color:var(--navy)}table.tco-table tr.total td:not(:first-child){color:#B91C1C}.tco-note{font-size:12.5px;color:var(--gray-500);margin-top:10px;margin-bottom:0}');
+  parts.push('.calc-inputs{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}.calc-field label{display:block;font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--gray-500);margin-bottom:6px}.calc-field input{width:100%;padding:9px 10px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;color:var(--navy);background:var(--cream)}.calc-field input:focus{outline:2px solid var(--navy);outline-offset:1px;border-color:var(--navy)}');
+  parts.push('.doc-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.doc-link{display:block;background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-decoration:none;text-align:center}.doc-link:hover{border-color:var(--navy)}.doc-link .doc-icon{font-size:26px;margin-bottom:8px}.doc-link .doc-title{font-weight:700;color:var(--navy);font-size:15px;margin-bottom:4px}.doc-link .doc-sub{font-size:12.5px;color:var(--gray-500)}');
+  parts.push('footer{background:var(--gray-100);border-top:1px solid var(--border);padding:32px 0;text-align:center}footer .foot-name{font-weight:800;color:var(--navy);font-size:15px;margin-bottom:6px}footer .foot-addr{font-size:13.5px;color:var(--gray-500);line-height:1.6}');
+  // Solution zone (first half): CPG blue background, white content cards,
+  // lime-green accents on numbers/badges/CTAs. Only .section-title and
+  // .section-intro are overridden to white here -- headings INSIDE white
+  // cards (h2/h3 in .card, .guarantee-card, .finding-card) keep their
+  // normal dark color since they already sit on a white/pale background,
+  // not directly on the blue zone backdrop.
+  parts.push('.solution-zone{background:linear-gradient(160deg,var(--hero-blue) 0%,var(--navy-2) 100%);padding:48px 0 56px;margin-bottom:0}');
+  parts.push('.solution-zone .section-title{color:#fff}.solution-zone .section-intro{color:rgba(255,255,255,.82)}');
+  parts.push('.solution-zone .stat-card{background:#fff;border-color:rgba(255,255,255,.5)}.solution-zone .stat-card.emphasis .stat-value{color:var(--lime-text)}');
+  parts.push('.solution-zone .step .step-num{background:var(--lime);color:var(--navy-2)}');
+  parts.push('.solution-hero-badge{display:inline-block;background:var(--lime);color:var(--navy-2);font-size:12px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;padding:6px 16px;border-radius:999px;margin-bottom:14px}');
+  parts.push('.solution-compare{display:grid;grid-template-columns:1fr 1fr;gap:16px}.solution-compare .compare-col{background:#fff;border-radius:var(--radius);padding:22px}.solution-compare .compare-col.them{border:1px solid rgba(255,255,255,.5)}.solution-compare .compare-col.us{background:var(--lime);border:1px solid var(--lime)}.solution-compare .compare-label{font-size:11px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;color:var(--gray-500)}.solution-compare .compare-col.us .compare-label{color:var(--navy-2)}.solution-compare .compare-value{font-size:24px;font-weight:800;color:var(--navy)}.solution-compare .compare-col.them .compare-value{color:#B91C1C}.solution-compare .compare-col.us .compare-value{color:var(--navy-2)}.solution-compare .compare-sub{font-size:12.5px;color:var(--gray-500);margin-top:4px}.solution-compare .compare-col.them .compare-sub{color:#B91C1C}.solution-compare .compare-col.us .compare-sub{color:var(--navy-2);opacity:.75}');
+  parts.push('.savings-hero{background:#fff;border-radius:var(--radius);padding:30px;text-align:center;margin-top:16px}.savings-hero .savings-hero-value{font-size:38px;font-weight:800;color:var(--lime-text)}.savings-hero .savings-hero-label{font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--gray-500);margin-top:6px}');
+  parts.push('.zone-divider{height:4px;background:linear-gradient(90deg,var(--hero-blue),var(--lime) 50%,var(--hero-blue))}');
+  parts.push('.situation-intro{padding:40px 0 8px;text-align:center}.situation-intro .eyebrow{font-size:13px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--gray-500);margin-bottom:8px}.situation-intro h2{font-size:26px;margin-bottom:8px}.situation-intro p{max-width:620px;margin:0 auto}');
+  parts.push('@media(max-width:820px){.vitals-card{grid-template-columns:repeat(2,1fr)}.grid-2,.grid-3,.doc-row,.solution-compare{grid-template-columns:1fr}.steps-row{grid-template-columns:1fr 1fr}.calc-inputs{grid-template-columns:1fr 1fr}.hero h1{font-size:26px}header.site-header .header-inner{flex-direction:column;align-items:flex-start}header.site-header .header-contact{text-align:left}}');
+  parts.push('@media(max-width:520px){.steps-row{grid-template-columns:1fr}.calc-inputs{grid-template-columns:1fr}.card{padding:20px}}');
+  parts.push('.cs-summary-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}.cs-summary-row .cs-summary-item{background:var(--gray-100);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px}.cs-summary-item .cs-summary-label{font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--gray-500);margin-bottom:6px}.cs-summary-item .cs-summary-value{font-size:14.5px;color:var(--navy)}');
+  parts.push('.cs-item{border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:12px}.cs-checkbox{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:8px}.cs-layer{font-size:13.5px;color:var(--gray-700);margin-bottom:4px}.cs-layer strong{color:var(--navy)}.cs-layer.muted{color:var(--gray-300);font-style:italic}');
+  parts.push('.cs-why{margin-top:8px}.cs-why summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(--navy);list-style:none;padding:4px 0}.cs-why summary::-webkit-details-marker{display:none}.cs-why summary::before{content:"▸ ";color:var(--gray-500)}.cs-why[open] summary::before{content:"▾ "}.cs-why[open] summary{margin-bottom:2px}');
+  parts.push('.cs-readiness-list{list-style:none;padding:0;margin:0 0 18px}.cs-readiness-list li{font-size:14.5px;color:var(--navy);padding:6px 0;border-bottom:1px solid var(--border)}.cs-readiness-list li:last-child{border-bottom:none}.cs-readiness-list li.unchecked{color:var(--gray-300)}');
+  parts.push('.cs-status-badge{display:inline-block;font-size:13px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:8px 18px;border-radius:999px}.cs-status-ready{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}.cs-status-notready{background:var(--gray-100);color:var(--gray-700);border:1px solid var(--border)}');
+  parts.push('.cr-doc{max-width:820px;margin:0 auto}.cr-table{width:100%;border-collapse:collapse;margin-bottom:6px}.cr-table td{padding:6px 8px 6px 0;font-size:13.5px;vertical-align:bottom}.cr-label{color:var(--gray-500);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;padding-bottom:2px!important}.cr-blank{display:inline-block;border-bottom:1px solid var(--gray-300);height:14px}.cr-terms{padding-left:20px;font-size:13.5px;color:var(--gray-700)}.cr-terms li{margin-bottom:10px}.cr-sig-line{width:220px;border-bottom:1px solid var(--navy);height:32px}');
+  parts.push('@media print{body.printing-case-strategy header.site-header,body.printing-case-strategy nav.subnav,body.printing-case-strategy .hero,body.printing-case-strategy #vitals,body.printing-case-strategy .solution-zone,body.printing-case-strategy .zone-divider,body.printing-case-strategy .situation-intro,body.printing-case-strategy #financial-summary,body.printing-case-strategy #true-cost,body.printing-case-strategy #documents,body.printing-case-strategy #contract-review,body.printing-case-strategy footer{display:none!important}');
+  parts.push('body.printing-contract-review header.site-header,body.printing-contract-review nav.subnav,body.printing-contract-review .hero,body.printing-contract-review #vitals,body.printing-contract-review .solution-zone,body.printing-contract-review .zone-divider,body.printing-contract-review .situation-intro,body.printing-contract-review #financial-summary,body.printing-contract-review #true-cost,body.printing-contract-review #documents,body.printing-contract-review #case-strategy,body.printing-contract-review footer{display:none!important}}');
+  parts.push('</style></head><body>');
+
+  parts.push('<header class="site-header"><div class="wrap header-inner">');
+  parts.push('<img src="' + LOGO_DATA_URI + '" alt="Client Protection Group" class="logo-img">');
+  parts.push('<div class="brand-text"><div class="brand-name">CLIENT PROTECTION GROUP LLC</div><div class="brand-sub">Timeshare Cancellation Services</div>');
+  if (hasQuote) parts.push('<div class="status-badge">Case Accepted</div>');
+  parts.push('</div>');
+  parts.push('<div class="header-contact"><div class="contact-name">Sebastian Short</div><div>o &nbsp;| (951) 228-5670</div><div>m | (864) 501-2068</div><div>m | (786) 202-0010</div><div>e &nbsp;| <a href="mailto:SebastianShort624@gmail.com">SebastianShort624@gmail.com</a></div></div>');
+  parts.push('</div></header>');
+
+  // "Why we accepted your case" content (client-reported concern,
+  // documented arrears, raw notes) is no longer a standalone section here --
+  // it's folded into Case Strategy's Case Summary, since that's now the
+  // single completed-findings record. See buildCaseStrategyHtml().
+
+  // Nav order: Client Information (vitals, always at top, not its own nav
+  // link) -> Services/Quote/Guarantee/etc -> Documents -> Case Strategy
+  // LAST. "Why Accepted"/"Findings" are no longer separate steps here --
+  // that content (why the client wants out, documented arrears, the raw
+  // notes/transcript) is folded into Case Strategy's Case Summary instead,
+  // since Case Strategy IS the completed findings record once Lead Status
+  // moves past Pre-Interview. There's also no separate client-facing
+  // "Interview" page in this pipeline -- the interview happens once, in
+  // the CRM tool, and feeds straight into Case Strategy.
+  var navLinks = [];
+  if (isPreInterview) navLinks.push('<a href="#case-review-invite">Your Interview</a>');
+  navLinks.push('<a href="#our-service">Our Service</a>');
+  navLinks.push('<a href="#whats-included">What\'s Included</a>');
+  if (hasQuote) navLinks.push('<a href="#our-fee">Our Fee</a>');
+  if (showSavings) navLinks.push('<a href="#savings">Savings</a>');
+  navLinks.push('<a href="#guarantee">Guarantee</a>');
+  navLinks.push('<a href="#next-steps">Next Steps</a>');
+  if (hasFinancials) navLinks.push('<a href="#financial-summary">Your Situation</a>');
+  navLinks.push('<a href="#true-cost">Calculator</a>');
+  if (hasQuote) navLinks.push('<a href="#documents">Documents</a>');
+  if (showCaseStrategy) navLinks.push('<a href="#case-strategy">📋 Case Strategy</a>');
+  parts.push('<nav class="subnav"><div class="wrap">' + navLinks.join('') + '</div></nav>');
+
+  parts.push('<main><div class="wrap">');
+
+  parts.push('<div class="hero"><div class="eyebrow">Case Findings &amp; Acceptance</div><h1>' + esc(fullClientLine) + '</h1>');
+  var subLine = [];
+  if (f.resort) subLine.push(esc(f.resort));
+  if (yearPurchasedNum) subLine.push('Year Purchased: ' + yearPurchasedNum);
+  if (subLine.length) parts.push('<div class="sub">' + subLine.join(' &nbsp;·&nbsp; ') + '</div>');
+  parts.push('</div>');
+
+  parts.push('<section id="vitals"><div class="card"><div class="vitals-card">');
+  var vitalsItems = [
+    ['Resort', resortLine],
+    ['Email', f.email ? esc(f.email) : ''],
+    ['Phone', f.phone ? esc(f.phone) : ''],
+    ['2nd Phone', f.phone2 ? esc(f.phone2) : ''],
+    ['Mortgage Behind', isBehindOn(f.mtgMonthsBehind, f.mtgAmountBehind) ? (monthsBehindPrefix(f.mtgMonthsBehind, f.mtgMonthly, ' — ') + money(mtgAmountBehindNum)) : ''],
+    ['Maintenance Behind', isBehindOn(f.mtfMonthsBehind, f.mtfAmountBehind) ? (monthsBehindPrefix(f.mtfMonthsBehind, f.mtfMonthly, ' — ') + money(mtfAmountBehindNum)) : ''],
+    ['Total Arrears', totalArrears ? money(totalArrears) : ''],
+    ['Lead Status', f.leadStatus ? esc(f.leadStatus) : '']
+  ];
+  vitalsItems.forEach(function (item) {
+    parts.push('<div class="vitals-item"><div class="vitals-label">' + item[0] + '</div><div class="vitals-value' + (item[1] ? '' : ' missing') + '">' + (item[1] || 'Not on file') + '</div></div>');
+  });
+  parts.push('</div></div></section>');
+  parts.push('</div>'); // close the neutral top wrap before entering the solution zone
+
+  parts.push('<div class="solution-zone"><div class="wrap">');
+
+  if (isPreInterview) {
+    // Pre-Interview: invite to the interview appointment. Deliberately does
+    // NOT show case acceptance or any findings -- the case hasn't actually
+    // been reviewed with the client yet.
+    parts.push('<section id="case-review-invite"><div class="card"><div class="solution-hero-badge">Under Review</div><div class="section-title" style="color:var(--navy)">Your Case Is Under Review</div>');
+    parts.push('<h2 style="font-size:24px;margin:6px 0 14px">Next Step: Your Case Review Interview</h2>');
+    parts.push('<p style="font-size:15.5px">We\'ve received the information you provided regarding your ' + (f.resort ? esc(f.resort) : 'timeshare') + ' ownership. Before we can complete our review and confirm your case, we need to speak with you directly about the circumstances of your original purchase.</p>');
+    parts.push('<p style="font-size:15.5px;margin-bottom:0"><strong>Your scheduled appointment:</strong> ' + (f.appointment ? esc(f.appointment) : 'Not yet scheduled -- our team will reach out to confirm a time.') + '</p>');
+    parts.push('</div></section>');
+  } else if (hasQuote) {
+    parts.push('<section id="case-accepted"><div class="card"><div class="solution-hero-badge">Case Accepted</div><div class="section-title" style="color:var(--navy)">Case Review Complete</div>');
+    parts.push('<h2 style="font-size:24px;margin:6px 0 14px">Your Case Has Been Accepted</h2>');
+    parts.push('<p style="font-size:15.5px;margin-bottom:0">Based on the information you provided regarding your ' + (f.resort ? esc(f.resort) : 'timeshare') + ' ownership, Client Protection Group LLC has accepted your case for cancellation services.</p>');
+    parts.push('</div></section>');
+  }
+
+  parts.push('<section id="our-service"><h2 class="section-title">Our Service</h2><p class="section-intro">Client Protection Group LLC works on your behalf to legally end your timeshare ownership -- the mortgage, the maintenance fees, and the contract itself -- so you\'re no longer responsible for any of it. One dedicated case specialist manages your file from start to finish, we tell you honestly what to expect before you commit, and the process isn\'t complete until you\'ve received written confirmation from the resort or developer.</p></section>');
+
+  parts.push('<section id="whats-included"><h2 class="section-title">What\'s Included</h2><p class="section-intro">Exactly what you receive as part of this service.</p><div class="grid-2">');
+  parts.push('<div class="card finding-card"><h3>Elimination of Past, Current &amp; Future Debt</h3><p>Release from all maintenance fees and assessments, and from any developer- or resort-financed mortgage obligation, associated with the ownership — covering amounts already owed as well as the obligation going forward.</p></div>');
+  parts.push('<div class="card finding-card"><h3>Ownership &amp; Deed of Contract Release</h3><p>Release from the ownership deed and contract, and from any remaining financial liability associated with the ownership.</p></div>');
+  parts.push('<div class="card finding-card"><h3>Resort Release Letter</h3><p>You will receive a release letter from the resort confirming that you are no longer the owner and that the property has been taken back into their inventory.</p></div>');
+  parts.push('</div></section>');
+
   if (hasQuote) {
-    var feeNum = parseFloat(String(f.serviceFee).replace(/[^0-9.]/g, '')) || 0;
-    var taxPct = parseFloat(String(f.salesTaxPct).replace(/[^0-9.]/g, '')) || 0;
-    var taxAmt = feeNum * (taxPct / 100);
-    quoteTax = money(taxAmt);
-    quoteTotal = money(feeNum + taxAmt);
-  }
+    parts.push('<section id="our-fee"><h2 class="section-title">Our Fee</h2><p class="section-intro">Client Protection Group LLC — One-Time Fee, backed by our 24-Month Money-Back Guarantee</p>');
+    parts.push('<div class="grid-3" style="margin-bottom:16px">');
+    parts.push('<div class="stat-card emphasis"><div class="stat-value">' + money(totalContract) + '</div><div class="stat-label">Total Contract Amount (One-Time Fee)</div></div>');
+    parts.push('<div class="stat-card emphasis"><div class="stat-value">' + (monthlyPayment ? money(monthlyPayment) + '/mo' : '—') + '</div><div class="stat-label">Monthly Payment</div></div>');
+    parts.push('<div class="stat-card emphasis"><div class="stat-value">' + (termMonths ? termMonths + ' mo.' : '—') + '</div><div class="stat-label">Term</div></div>');
+    parts.push('</div>');
+    parts.push('<div class="card"><div style="font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--gray-500);margin-bottom:10px">Fee Breakdown</div><table class="fin-table fin-table-sub">');
+    parts.push('<tr><td>Service Fee</td><td>' + money(feeNum) + '</td></tr>');
+    if (taxPct) parts.push('<tr><td>Sales Tax — ' + esc(String(taxPct)) + '%</td><td>' + money(taxAmt) + '</td></tr>');
+    parts.push('<tr><td>Down Payment</td><td>' + money(downNum) + '</td></tr>');
+    parts.push('</table></div></section>');
 
-  var html = '<!doctype html><html lang="en"><head><meta charset="utf-8">';
-  html += '<meta name="viewport" content="width=device-width, initial-scale=1">';
-  html += '<title>Case File — ' + esc(fullClientLine) + ' | Client Protection Group LLC</title>';
-  html += '<style>';
-  html += ':root{--navy:#1a2332;--gray-700:#4a5568;--gray-500:#718096;--border:#e2e5ea;--blue:#1e5a8c;--blue-bg:#eaf3fb;--blue-border:#b9d9ee;--radius:10px;--shadow:0 1px 3px rgba(20,24,33,.06)}';
-  html += '*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background:#fff;color:var(--navy);line-height:1.55;font-size:16px}';
-  html += '.wrap{max-width:1100px;margin:0 auto;padding:0 24px}h1,h2,h3{color:var(--navy);font-weight:700;margin:0}p{color:var(--gray-700);margin:0 0 12px}';
-  html += 'header.site-header{background:#fff;border-bottom:1px solid var(--border);padding:20px 0}header .logo-img{height:44px}';
-  html += 'main{padding:36px 0 60px}.card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:26px;margin-bottom:20px;box-shadow:var(--shadow)}';
-  html += 'section{margin-bottom:36px}.section-title{font-size:21px;margin-bottom:14px}';
-  html += 'table.fin-table{width:100%;border-collapse:collapse;font-size:15px}table.fin-table td{padding:10px 4px;border-bottom:1px solid var(--border)}table.fin-table td:first-child{color:var(--gray-700)}table.fin-table td:last-child{text-align:right;font-weight:700}';
-  html += '.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}.stat-card{background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:var(--radius);padding:20px;text-align:center}';
-  html += '.stat-card .stat-value{font-size:26px;font-weight:800;color:var(--blue)}.stat-card .stat-label{font-size:12px;font-weight:700;text-transform:uppercase;color:var(--gray-500);margin-top:6px}';
-  html += 'footer{background:#f7f8fa;border-top:1px solid var(--border);padding:28px 0;text-align:center;font-size:13px;color:var(--gray-500)}';
-  html += '@media(max-width:700px){.grid-2{grid-template-columns:1fr}}';
-  html += '</style></head><body>';
-
-  html += '<header class="site-header"><div class="wrap"><img src="/cpg/hugo-mariana/assets/cpg-logo.png" alt="Client Protection Group LLC" class="logo-img"></div></header>';
-  html += '<main><div class="wrap">';
-
-  html += '<div style="margin-bottom:30px"><div style="font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gray-500);margin-bottom:8px">Case File</div>';
-  html += '<h1 style="font-size:30px">' + esc(fullClientLine) + '</h1>';
-  if (f.resort) html += '<div style="font-size:16px;color:var(--gray-700);margin-top:6px">' + esc(f.resort) + (f.resortState ? ', ' + esc(f.resortState) : '') + '</div>';
-  html += '</div>';
-
-  // Contact
-  if (f.phone || f.email) {
-    html += '<section><div class="card"><div class="section-title" style="font-size:16px">Contact Information</div><table class="fin-table">';
-    if (f.phone) html += '<tr><td>Phone</td><td>' + esc(f.phone) + '</td></tr>';
-    if (f.phone2) html += '<tr><td>2nd Phone</td><td>' + esc(f.phone2) + '</td></tr>';
-    if (f.email) html += '<tr><td>Email</td><td>' + esc(f.email) + '</td></tr>';
-    html += '</table></div></section>';
-  }
-
-  // Findings (only what was actually reported -- framed as reported, not asserted)
-  if (f.whyWantOut || f.notes) {
-    html += '<section><h2 class="section-title">Client-Reported Findings</h2><div class="card">';
-    if (f.whyWantOut) html += '<p>' + esc(f.whyWantOut) + '</p>';
-    if (f.notes) html += '<p style="margin-bottom:0">' + esc(f.notes) + '</p>';
-    html += '</div></section>';
-  }
-
-  // Financial summary
-  if (hasFinancials) {
-    html += '<section><h2 class="section-title">Current Ownership Financial Summary</h2>';
-    html += '<div class="grid-2" style="margin-bottom:16px">';
-    if (f.totalMonthly) html += '<div class="stat-card"><div class="stat-value">' + money(f.totalMonthly) + '</div><div class="stat-label">Current Monthly Expense</div></div>';
-    if (hasArrears) {
-      var arrTotal = (parseFloat(String(f.mtgAmountBehind).replace(/[^0-9.]/g, '')) || 0) + (parseFloat(String(f.mtfAmountBehind).replace(/[^0-9.]/g, '')) || 0);
-      html += '<div class="stat-card"><div class="stat-value">' + money(arrTotal) + '</div><div class="stat-label">Total Arrears</div></div>';
+    if (termMonths) {
+      parts.push('<section id="payment-terms"><h2 class="section-title" style="font-size:20px">Our Payment Terms</h2><p class="section-intro">How you pay -- amortized over the term below.</p><div class="card"><table class="fin-table fin-table-sub">');
+      parts.push('<tr><td>Amount Financed</td><td>' + money(financedPrincipal) + '</td></tr>');
+      parts.push('<tr><td>Financing Rate</td><td>' + aprNum + '% APR</td></tr>');
+      parts.push('<tr><td>Term</td><td>' + termMonths + ' months</td></tr>');
+      parts.push('</table></div></section>');
     }
-    html += '</div><div class="card"><table class="fin-table">';
-    if (f.mtgMonthly) html += '<tr><td>Mortgage Payment</td><td>' + money(f.mtgMonthly) + ' / month</td></tr>';
-    if (f.mtfAnnual) html += '<tr><td>Maintenance Fee</td><td>' + money(f.mtfAnnual) + ' / year</td></tr>';
-    if (f.totalMonthly) html += '<tr><td>Total Monthly Expense</td><td>' + money(f.totalMonthly) + '</td></tr>';
-    if (f.mtgMonthsBehind || f.mtgAmountBehind) html += '<tr><td>Mortgage Arrears</td><td>' + esc(f.mtgMonthsBehind) + ' months — ' + money(f.mtgAmountBehind) + '</td></tr>';
-    if (f.mtfMonthsBehind || f.mtfAmountBehind) html += '<tr><td>Maintenance Fee Arrears</td><td>' + esc(f.mtfMonthsBehind) + ' months — ' + money(f.mtfAmountBehind) + '</td></tr>';
-    html += '</table></div></section>';
+
+    if (showSavings) {
+      parts.push('<section id="financial-solution"><h2 class="section-title">Our Financial Solution</h2><p class="section-intro">Side by side: what continuing your current ownership costs versus what resolving it with us costs.</p>');
+      parts.push('<div class="solution-compare">');
+      parts.push('<div class="compare-col them"><div class="compare-label">Keeping The Timeshare</div><div class="compare-value">' + money(totalMonthlyNum) + '/mo</div><div class="compare-sub">' + money(totalYearlyNum) + '/yr, continuing indefinitely</div></div>');
+      parts.push('<div class="compare-col us"><div class="compare-label">Resolving With CPG</div><div class="compare-value">' + (isFinancedMonthly ? money(ourMonthlyEquivalent) + '/mo' : money(totalContract) + ' one-time') + '</div><div class="compare-sub">' + (isFinancedMonthly ? 'for ' + termMonths + ' months, then $0' : 'paid once — $0/mo after enrollment') + '</div></div>');
+      parts.push('</div></section>');
+
+      parts.push('<section id="savings"><h2 class="section-title">Savings</h2><p class="section-intro">Figures below are calculated from what\'s on file for this case -- your current mortgage and maintenance fee costs, and our quoted fee.</p>');
+      parts.push('<div class="grid-3">');
+      parts.push('<div class="stat-card danger"><div class="stat-value">' + money(totalMonthlyNum) + '</div><div class="stat-label">Current Monthly Cost</div></div>');
+      parts.push('<div class="stat-card danger"><div class="stat-value">' + money(totalYearlyNum) + '</div><div class="stat-label">Current Yearly Cost</div></div>');
+      parts.push('<div class="stat-card emphasis"><div class="stat-value">' + (isFinancedMonthly ? money(ourMonthlyEquivalent) + '/mo' : '$0/mo') + '</div><div class="stat-label">Our Monthly Equivalent</div></div>');
+      parts.push('</div>');
+      parts.push('<div class="grid-2" style="margin-top:16px">');
+      parts.push('<div class="stat-card emphasis"><div class="stat-value">' + money(Math.max(monthlySavings, 0)) + '</div><div class="stat-label">Monthly Savings</div></div>');
+      parts.push('<div class="stat-card emphasis"><div class="stat-value">' + money(yearlySavingsYear1) + '</div><div class="stat-label">Year 1 Net Savings</div></div>');
+      parts.push('</div>');
+      parts.push('<div class="savings-hero"><div class="savings-hero-value">' + money(projectedSavings30) + '</div><div class="savings-hero-label">Projected Savings — 30 Year Horizon</div></div>');
+      parts.push('<p class="section-intro" style="margin-top:14px;font-size:13px">Assumes your current monthly cost stays flat and our one-time fee is paid in full once (both are the same conservative assumptions used in the True Cost of Ownership calculator below) -- not a guarantee of future costs.</p>');
+      if (breakEvenMonths > 0) {
+        parts.push('<div class="card" style="margin-top:6px;text-align:center"><div style="font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--gray-500);margin-bottom:6px">Monthly Break-Even</div><p style="margin-bottom:0;font-size:15px;color:var(--navy)">Based on your current monthly cost, our one-time fee is offset by roughly <strong>' + breakEvenMonths + ' months</strong> of ownership costs — around <strong>' + breakEvenDateStr + '</strong>.</p></div>');
+      }
+      parts.push('</section>');
+    }
   }
 
-  // Quote (only if manually filled in -- never in raw CRM data)
+  parts.push('<section id="guarantee"><div class="guarantee-card"><div class="guarantee-badge">24-Month Money-Back Guarantee</div><h2>Money-Back Guarantee</h2>');
+  parts.push('<p style="margin-top:14px">If the following conditions have not been fully accomplished within twenty-four (24) months from the date of hire, the Client shall be entitled to a 100% refund of all fees paid to the Company, provided that the Client has fully and timely complied with all obligations necessary to facilitate the process.</p>');
+  parts.push('<p style="font-weight:700;margin-bottom:6px">The Client agrees to:</p><ol>');
+  parts.push('<li>Release from all maintenance fees and assessments associated with the ownership;</li>');
+  parts.push('<li>Release from any developer- or resort-financed mortgage obligation associated with the ownership; and</li>');
+  parts.push('<li>Release from any remaining financial liability associated with the ownership.</li></ol>');
+  parts.push('<p>The Client must reasonably cooperate and actively participate in the process, including providing requested information and documentation, responding to communications in a timely manner, completing and executing documents when required, and taking any other reasonable actions necessary to facilitate the services.</p>');
+  parts.push('<p style="margin-bottom:0">The foregoing refund guarantee shall not apply to any delay, failure, or inability to achieve the stated outcome that results from the Client\'s failure to cooperate, failure to provide requested information or documentation, failure to execute required documents, or other material failure to fulfill the Client\'s obligations under the service agreement.</p>');
+  parts.push('</div></section>');
+
+  parts.push('<section id="next-steps"><h2 class="section-title">Your Next Steps</h2><p class="section-intro">A structured, transparent approach — from enrollment to confirmed resolution.</p><div class="steps-row">');
+  [
+    ['Initial Consultation', 'A specialist listens to your situation and gives an honest overview of what may be possible.'],
+    ['Contract &amp; Case Review', 'We review your contract, loan status, and maintenance fee history to identify which paths apply.'],
+    ['Engagement &amp; Process Start', 'We formalize the engagement and assign your dedicated case specialist.'],
+    ['Active Case Management', 'We manage the process and keep you updated at each significant stage.'],
+    ['Resort Response &amp; Follow-Up', 'We coordinate with the resort or developer and follow up as your case moves forward.'],
+    ['Confirmed Resolution', 'You receive written confirmation that your ownership obligations have ended.']
+  ].forEach(function (step, i) {
+    parts.push('<div class="step"><div class="step-num">' + (i + 1) + '</div><div class="step-label">' + step[0] + '</div><div style="font-size:12px;color:var(--gray-500);margin-top:6px">' + step[1] + '</div></div>');
+  });
+  parts.push('</div></section>');
+
+  parts.push('</div></div>'); // close solution-zone wrap + solution-zone
+  parts.push('<div class="zone-divider"></div>');
+  parts.push('<div class="situation-intro wrap"><div class="eyebrow">Now, Let\'s Look At</div><h2>Your Current Timeshare Situation</h2><p>Here is what\'s on file about your ownership, the costs behind it, and what you told us during your review.</p></div>');
+  parts.push('<div class="wrap">');
+
+  if (hasFinancials) {
+    parts.push('<section id="financial-summary"><h2 class="section-title">Current Ownership Financial Summary</h2>');
+    parts.push('<div class="grid-2" style="margin-bottom:16px">');
+    parts.push('<div class="stat-card danger"><div class="stat-value">' + money(totalMonthlyNum) + '</div><div class="stat-label">Current Monthly Expense</div></div>');
+    parts.push('<div class="stat-card danger"><div class="stat-value">' + money(totalArrears) + '</div><div class="stat-label">Total Arrears</div></div>');
+    parts.push('</div><div class="card"><table class="fin-table">');
+    if (yearPurchasedNum) parts.push('<tr><td>Year Purchased</td><td>' + yearPurchasedNum + '</td></tr>');
+    if (mtgMonthlyNum) parts.push('<tr><td>Mortgage Payment</td><td>' + money(mtgMonthlyNum) + ' / month</td></tr>');
+    if (mtfAnnualNum) parts.push('<tr><td>Maintenance Fee</td><td>' + money(mtfAnnualNum) + ' / year</td></tr>');
+    parts.push('<tr class="total"><td>Total Monthly Expense</td><td>' + money(totalMonthlyNum) + '</td></tr>');
+    parts.push('</table></div>');
+    // No "Mortgage Remaining" stat here -- this tool has no actual data on
+    // when this client's loan is scheduled to be paid off, and displaying a
+    // guessed payoff figure as if it were a known fact is exactly the
+    // invented-assumption problem the True Cost calculator below now avoids
+    // (see the mortgageMonthsRemaining comment above). The calculator lets
+    // a reviewer who DOES know the real remaining term model it explicitly.
+    if (mtgAmountBehindNum || mtfAmountBehindNum) {
+      parts.push('<div class="card" style="margin-top:16px"><table class="fin-table">');
+      if (isBehindOn(f.mtgMonthsBehind, f.mtgAmountBehind)) parts.push('<tr><td>Mortgage Arrears</td><td>' + monthsBehindPrefix(f.mtgMonthsBehind, f.mtgMonthly, ' — ') + money(mtgAmountBehindNum) + '</td></tr>');
+      if (isBehindOn(f.mtfMonthsBehind, f.mtfAmountBehind)) parts.push('<tr><td>Maintenance Fee Arrears</td><td>' + monthsBehindPrefix(f.mtfMonthsBehind, f.mtfMonthly, ' — ') + money(mtfAmountBehindNum) + '</td></tr>');
+      parts.push('<tr class="total"><td>Total Arrears</td><td>' + money(totalArrears) + '</td></tr>');
+      parts.push('</table></div>');
+    }
+    parts.push('</section>');
+  }
+
+  parts.push('<section id="true-cost"><h2 class="section-title">True Cost of Ownership Calculator</h2>');
+  parts.push('<p class="section-intro">What staying in this ownership actually costs — short term and long term. The figures below are pre-filled from what\'s on file for this case; adjust any field and the totals recalculate automatically.</p>');
+  parts.push('<div class="card"><div class="calc-inputs">');
+  parts.push('<div class="calc-field"><label for="tcoMortgagePmt">Monthly Mortgage Payment</label><input type="number" id="tcoMortgagePmt" value="' + mtgMonthlyNum + '" step="1" min="0" oninput="calcTCO()"></div>');
+  parts.push('<div class="calc-field"><label for="tcoMortgageMonths">Mortgage Months Remaining</label><input type="number" id="tcoMortgageMonths" value="' + mortgageMonthsRemaining + '" step="1" min="0" oninput="calcTCO()"></div>');
+  parts.push('<div class="calc-field"><label for="tcoMaintFee">Annual Maintenance Fee</label><input type="number" id="tcoMaintFee" value="' + mtfAnnualNum + '" step="10" min="0" oninput="calcTCO()"></div>');
+  parts.push('<div class="calc-field"><label for="tcoMaintIncrease">Maintenance Fee Annual Increase %</label><input type="number" id="tcoMaintIncrease" value="0" step="0.5" min="0" oninput="calcTCO()"></div>');
+  parts.push('</div>');
+  parts.push('<div class="tco-header"><div class="tco-meta"><div><strong>Client:</strong> ' + esc(fullClientLine) + '</div>' + (f.resort ? '<div><strong>Resort:</strong> ' + esc(f.resort) + '</div>' : '') + '<div class="stage-badge">Assessment</div></div>');
+  parts.push('<div class="tco-monthly"><div class="tco-monthly-value" id="tcoMonthlyValue">$0/mo</div><div class="tco-monthly-label">Current Combined Obligation</div></div></div>');
+  parts.push('<table class="tco-table" style="margin-bottom:22px"><thead><tr><th>Category</th><th>Monthly</th><th>Annual</th></tr></thead><tbody>');
+  parts.push('<tr><td>Mortgage Payment</td><td id="tcoMortMonthly">$0</td><td id="tcoMortAnnual">$0</td></tr>');
+  parts.push('<tr><td>Maintenance Fees (Year 1)</td><td id="tcoMaintMonthly">$0</td><td id="tcoMaintAnnual">$0</td></tr>');
+  parts.push('<tr class="total"><td>Total Monthly Obligation</td><td id="tcoTotalMonthly">$0</td><td id="tcoTotalAnnual">$0</td></tr>');
+  parts.push('</tbody></table>');
+  parts.push('<div class="grid-2"><div><table class="tco-table"><thead><tr><th>Short-Term Cost</th><th>Total Paid</th></tr></thead><tbody>');
+  parts.push('<tr><td>1 Month</td><td id="tco-1mo">$0</td></tr><tr><td>1 Year</td><td id="tco-1yr">$0</td></tr><tr><td>3 Years</td><td id="tco-3yr">$0</td></tr><tr><td>5 Years</td><td id="tco-5yr">$0</td></tr>');
+  parts.push('</tbody></table></div><div><table class="tco-table"><thead><tr><th>Long-Term Cost</th><th>Total Paid</th></tr></thead><tbody>');
+  parts.push('<tr><td>10 Years</td><td id="tco-10yr">$0</td></tr><tr><td>20 Years</td><td id="tco-20yr">$0</td></tr><tr><td>30 Years</td><td id="tco-30yr">$0</td></tr>');
+  parts.push('</tbody></table></div></div>');
+  parts.push('<p class="tco-note">"Mortgage Months Remaining" defaults to 0 because this tool doesn\'t have this client\'s actual loan payoff date -- it does not assume mortgage payments continue on a term nobody has confirmed. If the real remaining term is known, enter it above and every figure below (including the mortgage portion of the long-term totals) recalculates from that instead. Maintenance fees are assumed to continue indefinitely and to increase at the annual rate entered above. These are estimates based on the figures on file or entered above, not a guarantee of future costs.</p>');
+  parts.push('</div></section>');
+
+  // Documents -- only the real, standing company documents that actually
+  // exist (same files linked from the Hugo & Mariana page). Never invent a
+  // placeholder certificate for a client who doesn't have one. Contract for
+  // Review is an in-page HTML section (below), tied to this specific
+  // client's own data, rather than a generic shared PDF.
   if (hasQuote) {
-    html += '<section><h2 class="section-title">Service Quotation</h2><div class="card"><table class="fin-table">';
-    html += '<tr><td>Service Fee</td><td>' + money(f.serviceFee) + '</td></tr>';
-    if (f.salesTaxPct) html += '<tr><td>Sales Tax — ' + esc(f.salesTaxPct) + '%</td><td>' + quoteTax + '</td></tr>';
-    html += '<tr><td>Total Contract Amount</td><td>' + quoteTotal + '</td></tr>';
-    if (f.downPayment) html += '<tr><td>Down Payment</td><td>' + money(f.downPayment) + '</td></tr>';
-    if (f.financingApr) html += '<tr><td>Financing</td><td>' + esc(f.financingApr) + '% APR' + (f.financingTermMonths ? ', ' + esc(f.financingTermMonths) + ' months' : '') + '</td></tr>';
-    html += '</table></div></section>';
+    parts.push('<section id="documents"><h2 class="section-title">Documents</h2><div class="doc-row">');
+    parts.push('<a class="doc-link" href="/cpg/hugo-mariana/assets/certificate-of-guarantee.png" target="_blank" rel="noopener"><div class="doc-icon">📜</div><div class="doc-title">Certificate of Guarantee</div><div class="doc-sub">24-Month Money-Back Guarantee</div></a>');
+    parts.push('<a class="doc-link" href="/cpg/hugo-mariana/assets/bbb-accreditation.png" target="_blank" rel="noopener"><div class="doc-icon">🏆</div><div class="doc-title">BBB Accreditation</div><div class="doc-sub">Better Business Bureau</div></a>');
+    parts.push('<a class="doc-link" href="#contract-review"><div class="doc-icon">📋</div><div class="doc-title">Contract for Review</div><div class="doc-sub">Timeshare Cancellation Agreement (Blank)</div></a>');
+    parts.push('</div></section>');
+    parts.push(buildContractReviewHtml(f));
   }
 
-  html += '</div></main>';
-  html += '<footer><div class="wrap">Client Protection Group LLC</div></footer>';
-  html += '</body></html>';
-  return html;
+  // Case Strategy -- automatically built from the client record + the
+  // completed interview. LAST client-facing section on the page, per spec
+  // (Client Information -> Interview -> Documents -> Case Strategy). The
+  // interview itself has no separate client-facing page in this pipeline --
+  // it's conducted once in the CRM tool and feeds straight into this.
+  if (showCaseStrategy) {
+    parts.push(buildCaseStrategyHtml(f, interview));
+  }
+
+  parts.push('</div></main>');
+  parts.push('<footer><div class="wrap"><div class="foot-name">Client Protection Group LLC</div><div class="foot-addr">550 Parkcenter Dr Ste 204<br>Santa Ana, CA 92705-3529</div></div></footer>');
+
+  parts.push('<script>');
+  parts.push('function fmtMoney(n){if(!isFinite(n))n=0;return "$"+Math.round(n).toLocaleString("en-US");}');
+  parts.push('function tcoMortgageTotal(months,pmt,remainingMonths){return pmt*Math.min(months,Math.max(remainingMonths,0));}');
+  parts.push('function tcoMaintTotal(years,fee,ratePct){var r=ratePct/100;if(r===0)return fee*years;return fee*((Math.pow(1+r,years)-1)/r);}');
+  parts.push('function calcTCO(){var pmt=parseFloat(document.getElementById("tcoMortgagePmt").value)||0;var remMonths=parseFloat(document.getElementById("tcoMortgageMonths").value)||0;var fee=parseFloat(document.getElementById("tcoMaintFee").value)||0;var incPct=parseFloat(document.getElementById("tcoMaintIncrease").value)||0;');
+  parts.push('var maintMonthly=fee/12;var totalMonthly=pmt+maintMonthly;var totalAnnual=totalMonthly*12;');
+  parts.push('document.getElementById("tcoMonthlyValue").textContent=fmtMoney(totalMonthly)+"/mo";document.getElementById("tcoMortMonthly").textContent=fmtMoney(pmt);document.getElementById("tcoMortAnnual").textContent=fmtMoney(pmt*12);document.getElementById("tcoMaintMonthly").textContent=fmtMoney(maintMonthly);document.getElementById("tcoMaintAnnual").textContent=fmtMoney(fee);document.getElementById("tcoTotalMonthly").textContent=fmtMoney(totalMonthly);document.getElementById("tcoTotalAnnual").textContent=fmtMoney(totalAnnual);document.getElementById("tco-1mo").textContent=fmtMoney(tcoMortgageTotal(1,pmt,remMonths)+maintMonthly);');
+  parts.push('[1,3,5,10,20,30].forEach(function(yrs){var mortTotal=tcoMortgageTotal(yrs*12,pmt,remMonths);var maintTotal=tcoMaintTotal(yrs,fee,incPct);var el=document.getElementById("tco-"+yrs+"yr");if(el)el.textContent=fmtMoney(mortTotal+maintTotal);});');
+  parts.push('}');
+  parts.push('calcTCO();');
+  parts.push('function printCaseStrategy(){document.body.classList.add("printing-case-strategy");window.print();setTimeout(function(){document.body.classList.remove("printing-case-strategy");},500);}');
+  parts.push('function printContractReview(){document.body.classList.add("printing-contract-review");window.print();setTimeout(function(){document.body.classList.remove("printing-contract-review");},500);}');
+  parts.push('<\/script>');
+  parts.push('</body></html>');
+
+  return parts.join('');
 }
 
 function downloadFile(filename, content) {
