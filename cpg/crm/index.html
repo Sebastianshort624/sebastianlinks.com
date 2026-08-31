@@ -1706,8 +1706,8 @@ function generateCasePageHtml(f, slug, interview) {
     if (showSavings) {
       parts.push('<section id="financial-solution"><h2 class="section-title">Our Financial Solution</h2><p class="section-intro">Side by side: what continuing your current ownership costs versus what resolving it with us costs.</p>');
       parts.push('<div class="solution-compare">');
-      parts.push('<div class="compare-col them"><div class="compare-label">Keeping The Timeshare</div><div class="compare-value">' + money(totalMonthlyNum) + '/mo</div><div class="compare-sub">' + money(totalYearlyNum) + '/yr, continuing indefinitely</div></div>');
       parts.push('<div class="compare-col us"><div class="compare-label">Resolving With CPG</div><div class="compare-value">' + (isFinancedMonthly ? money(ourMonthlyEquivalent) + '/mo' : money(totalContract) + ' one-time') + '</div><div class="compare-sub">' + (isFinancedMonthly ? 'for ' + termMonths + ' months, then $0' : 'paid once — $0/mo after enrollment') + '</div></div>');
+      parts.push('<div class="compare-col them"><div class="compare-label">Keeping The Timeshare</div><div class="compare-value">' + money(totalMonthlyNum) + '/mo</div><div class="compare-sub">' + money(totalYearlyNum) + '/yr, continuing indefinitely</div></div>');
       parts.push('</div></section>');
 
       parts.push('<section id="savings"><h2 class="section-title">Savings</h2><p class="section-intro">Figures below are calculated from what\'s on file for this case -- your current mortgage and maintenance fee costs, and our quoted fee.</p>');
