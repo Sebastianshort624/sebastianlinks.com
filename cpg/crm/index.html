@@ -1077,6 +1077,237 @@ function verifyLiveThenShow(url, clientName, contentMarker, isRecheck) {
   attempt();
 }
 
+
+// ── Spanish translation layer ──────────────────────────────────────
+// Applied only when the parsed "Eng/Esp" field indicates Spanish.
+// Two parts: (1) a static dictionary of fixed template strings
+// (labels, legal boilerplate, headers -- identical across every
+// generated page), and (2) regex patterns for the handful of
+// sentences that are otherwise-fixed template text but have a
+// client-specific value (a fee, a resort name, a dollar figure)
+// embedded in the middle -- a plain dictionary can't match those
+// since the surrounding text is the same but the number/name isn't.
+var SPANISH_STATIC_DICT = {
+  "Timeshare Cancellation Services": "Servicios de Cancelación de Tiempo Compartido",
+  "Case Accepted": "Caso Aceptado",
+  "o  | (951) 228-5670": "of.  | (951) 228-5670",
+  "m | (864) 501-2068": "cel | (864) 501-2068",
+  "m | (786) 202-0010": "cel | (786) 202-0010",
+  "e  |": "correo  |",
+  "Your Interview": "Su Entrevista",
+  "Our Service": "Nuestro Servicio",
+  "What's Included": "Qué Incluye",
+  "Our Fee": "Nuestra Tarifa",
+  "Savings": "Ahorros",
+  "Guarantee": "Garantía",
+  "Next Steps": "Próximos Pasos",
+  "Your Situation": "Su Situación",
+  "Calculator": "Calculadora",
+  "Documents": "Documentos",
+  "Case Findings & Acceptance": "Hallazgos del Caso y Aceptación",
+  "Email": "Correo Electrónico",
+  "Phone": "Teléfono",
+  "2nd Phone": "2do Teléfono",
+  "Mortgage Behind": "Hipoteca Atrasada",
+  "Not on file": "No registrado",
+  "Maintenance Behind": "Mantenimiento Atrasado",
+  "Total Arrears": "Atraso Total",
+  "Lead Status": "Estado del Cliente Potencial",
+  "Pre-Interview": "Pre-Entrevista",
+  "Under Review": "En Revisión",
+  "Your Case Is Under Review": "Su Caso Está en Revisión",
+  "Next Step: Your Case Review Interview": "Próximo Paso: Su Entrevista de Revisión de Caso",
+  "Your scheduled appointment:": "Su cita programada:",
+  "Mon, Aug 31": "lun, 31 de ago",
+  "Client Protection Group LLC works on your behalf to legally end your timeshare ownership -- the mortgage, the maintenance fees, and the contract itself -- so you're no longer responsible for any of it. One dedicated case specialist manages your file from start to finish, we tell you honestly what to expect before you commit, and the process isn't complete until you've received written confirmation from the resort or developer.": "Client Protection Group LLC trabaja en su nombre para finalizar legalmente su propiedad de tiempo compartido — la hipoteca, las cuotas de mantenimiento y el contrato mismo — para que usted ya no sea responsable de nada de esto. Un especialista de caso dedicado maneja su expediente de principio a fin, le informamos honestamente qué esperar antes de que se comprometa, y el proceso no se considera completo hasta que usted haya recibido confirmación por escrito del resort o desarrollador.",
+  "Exactly what you receive as part of this service.": "Exactamente lo que usted recibe como parte de este servicio.",
+  "Elimination of Past, Current & Future Debt": "Eliminación de Deuda Pasada, Actual y Futura",
+  "Release from all maintenance fees and assessments, and from any developer- or resort-financed mortgage obligation, associated with the ownership — covering amounts already owed as well as the obligation going forward.": "Liberación de todas las cuotas de mantenimiento y evaluaciones, y de cualquier obligación hipotecaria financiada por el desarrollador o el resort, asociada con la propiedad — cubriendo tanto los montos ya adeudados como la obligación futura.",
+  "Ownership & Deed of Contract Release": "Liberación de Propiedad y Escritura del Contrato",
+  "Release from the ownership deed and contract, and from any remaining financial liability associated with the ownership.": "Liberación de la escritura de propiedad y el contrato, y de cualquier responsabilidad financiera restante asociada con la propiedad.",
+  "Resort Release Letter": "Carta de Liberación del Resort",
+  "You will receive a release letter from the resort confirming that you are no longer the owner and that the property has been taken back into their inventory.": "Usted recibirá una carta de liberación del resort confirmando que ya no es el propietario y que la propiedad ha sido reincorporada a su inventario.",
+  "Client Protection Group LLC — One-Time Fee, backed by our 24-Month Money-Back Guarantee": "Client Protection Group LLC — Tarifa Única, respaldada por nuestra Garantía de Devolución de Dinero de 24 Meses",
+  "Total Contract Amount (One-Time Fee)": "Monto Total del Contrato (Tarifa Única)",
+  "Monthly Payment": "Pago Mensual",
+  "36 mo.": "36 meses",
+  "Term": "Plazo",
+  "Fee Breakdown": "Desglose de la Tarifa",
+  "Service Fee": "Tarifa de Servicio",
+  "Sales Tax — 6%": "Impuesto sobre Ventas — 6%",
+  "Down Payment": "Pago Inicial",
+  "Our Payment Terms": "Nuestros Términos de Pago",
+  "How you pay -- amortized over the term below.": "Cómo paga usted -- amortizado durante el plazo indicado abajo.",
+  "Amount Financed": "Monto Financiado",
+  "Financing Rate": "Tasa de Financiamiento",
+  "36 months": "36 meses",
+  "Our Financial Solution": "Nuestra Solución Financiera",
+  "Side by side: what continuing your current ownership costs versus what resolving it with us costs.": "Comparación directa: lo que cuesta continuar con su propiedad actual versus lo que cuesta resolverlo con nosotros.",
+  "Resolving With CPG": "Resolviendo con CPG",
+  "Keeping The Timeshare": "Manteniendo el Tiempo Compartido",
+  "Figures below are calculated from what's on file for this case -- your current mortgage and maintenance fee costs, and our quoted fee.": "Las cifras a continuación se calculan a partir de lo que está registrado para este caso -- sus costos actuales de hipoteca y cuota de mantenimiento, y nuestra tarifa cotizada.",
+  "Current Monthly Cost": "Costo Mensual Actual",
+  "Current Yearly Cost": "Costo Anual Actual",
+  "Our Monthly Equivalent": "Nuestro Equivalente Mensual",
+  "Monthly Savings": "Ahorro Mensual",
+  "Year 1 Net Savings": "Ahorro Neto del Año 1",
+  "Projected Savings — 30 Year Horizon": "Ahorro Proyectado — Horizonte de 30 Años",
+  "Assumes your current monthly cost stays flat and our one-time fee is paid in full once (both are the same conservative assumptions used in the True Cost of Ownership calculator below) -- not a guarantee of future costs.": "Supone que su costo mensual actual se mantiene constante y que nuestra tarifa única se paga en su totalidad (ambos son los mismos supuestos conservadores utilizados en la calculadora de Costo Real de Propiedad a continuación) -- no es una garantía de costos futuros.",
+  "Monthly Break-Even": "Punto de Equilibrio Mensual",
+  "Based on your current monthly cost, our one-time fee is offset by roughly": "Según su costo mensual actual, nuestra tarifa única se compensa en aproximadamente",
+  "9 months": "9 meses",
+  "of ownership costs — around": "de costos de propiedad — alrededor de",
+  "May 2027": "mayo de 2027",
+  "24-Month Money-Back Guarantee": "Garantía de Devolución de Dinero de 24 Meses",
+  "Money-Back Guarantee": "Garantía de Devolución de Dinero",
+  "If the following conditions have not been fully accomplished within twenty-four (24) months from the date of hire, the Client shall be entitled to a 100% refund of all fees paid to the Company, provided that the Client has fully and timely complied with all obligations necessary to facilitate the process.": "Si las siguientes condiciones no se han cumplido en su totalidad dentro de los veinticuatro (24) meses a partir de la fecha de contratación, el Cliente tendrá derecho a un reembolso del 100% de todas las tarifas pagadas a la Compañía, siempre que el Cliente haya cumplido total y oportunamente con todas las obligaciones necesarias para facilitar el proceso.",
+  "The Client agrees to:": "El Cliente acepta:",
+  "Release from all maintenance fees and assessments associated with the ownership;": "Liberación de todas las cuotas de mantenimiento y evaluaciones asociadas con la propiedad;",
+  "Release from any developer- or resort-financed mortgage obligation associated with the ownership; and": "Liberación de cualquier obligación hipotecaria financiada por el desarrollador o el resort asociada con la propiedad; y",
+  "Release from any remaining financial liability associated with the ownership.": "Liberación de cualquier responsabilidad financiera restante asociada con la propiedad.",
+  "The Client must reasonably cooperate and actively participate in the process, including providing requested information and documentation, responding to communications in a timely manner, completing and executing documents when required, and taking any other reasonable actions necessary to facilitate the services.": "El Cliente debe cooperar razonablemente y participar activamente en el proceso, incluyendo proporcionar la información y documentación solicitada, responder a las comunicaciones de manera oportuna, completar y firmar documentos cuando sea necesario, y tomar cualquier otra acción razonable necesaria para facilitar los servicios.",
+  "The foregoing refund guarantee shall not apply to any delay, failure, or inability to achieve the stated outcome that results from the Client's failure to cooperate, failure to provide requested information or documentation, failure to execute required documents, or other material failure to fulfill the Client's obligations under the service agreement.": "La garantía de reembolso antes mencionada no aplicará a ningún retraso, fallo o incapacidad para lograr el resultado establecido que resulte de la falta de cooperación del Cliente, la falta de proporcionar la información o documentación solicitada, la falta de firmar los documentos requeridos, u otro incumplimiento material de las obligaciones del Cliente bajo el acuerdo de servicio.",
+  "Your Next Steps": "Sus Próximos Pasos",
+  "A structured, transparent approach — from enrollment to confirmed resolution.": "Un enfoque estructurado y transparente — desde la inscripción hasta la resolución confirmada.",
+  "Initial Consultation": "Consulta Inicial",
+  "A specialist listens to your situation and gives an honest overview of what may be possible.": "Un especialista escucha su situación y le da un panorama honesto de lo que puede ser posible.",
+  "Contract & Case Review": "Revisión de Contrato y Caso",
+  "We review your contract, loan status, and maintenance fee history to identify which paths apply.": "Revisamos su contrato, el estado de su préstamo y el historial de cuotas de mantenimiento para identificar qué opciones aplican.",
+  "Engagement & Process Start": "Contratación e Inicio del Proceso",
+  "We formalize the engagement and assign your dedicated case specialist.": "Formalizamos la contratación y le asignamos su especialista de caso dedicado.",
+  "Active Case Management": "Gestión Activa del Caso",
+  "We manage the process and keep you updated at each significant stage.": "Gestionamos el proceso y le mantenemos informado en cada etapa importante.",
+  "Resort Response & Follow-Up": "Respuesta del Resort y Seguimiento",
+  "We coordinate with the resort or developer and follow up as your case moves forward.": "Coordinamos con el resort o desarrollador y damos seguimiento a medida que su caso avanza.",
+  "Confirmed Resolution": "Resolución Confirmada",
+  "You receive written confirmation that your ownership obligations have ended.": "Usted recibe confirmación por escrito de que sus obligaciones de propiedad han terminado.",
+  "Now, Let's Look At": "Ahora, Veamos",
+  "Your Current Timeshare Situation": "Su Situación Actual de Tiempo Compartido",
+  "Here is what's on file about your ownership, the costs behind it, and what you told us during your review.": "Esto es lo que tenemos registrado sobre su propiedad, los costos detrás de ella, y lo que usted nos contó durante su revisión.",
+  "Current Ownership Financial Summary": "Resumen Financiero de la Propiedad Actual",
+  "Current Monthly Expense": "Gasto Mensual Actual",
+  "Year Purchased": "Año de Compra",
+  "Mortgage Payment": "Pago de Hipoteca",
+  "Maintenance Fee": "Cuota de Mantenimiento",
+  "Total Monthly Expense": "Gasto Mensual Total",
+  "True Cost of Ownership Calculator": "Calculadora del Costo Real de Propiedad",
+  "What staying in this ownership actually costs — short term and long term. The figures below are pre-filled from what's on file for this case; adjust any field and the totals recalculate automatically.": "Lo que realmente cuesta mantener esta propiedad — a corto y largo plazo. Las cifras a continuación están prellenadas con lo que está registrado para este caso; ajuste cualquier campo y los totales se recalculan automáticamente.",
+  "Monthly Mortgage Payment": "Pago Mensual de Hipoteca",
+  "Mortgage Months Remaining": "Meses Restantes de Hipoteca",
+  "Annual Maintenance Fee": "Cuota de Mantenimiento Anual",
+  "Maintenance Fee Annual Increase %": "% de Aumento Anual de la Cuota de Mantenimiento",
+  "Client:": "Cliente:",
+  "Assessment": "Evaluación",
+  "Current Combined Obligation": "Obligación Combinada Actual",
+  "Category": "Categoría",
+  "Monthly": "Mensual",
+  "Annual": "Anual",
+  "Maintenance Fees (Year 1)": "Cuotas de Mantenimiento (Año 1)",
+  "Total Monthly Obligation": "Obligación Mensual Total",
+  "Short-Term Cost": "Costo a Corto Plazo",
+  "Total Paid": "Total Pagado",
+  "1 Month": "1 Mes",
+  "1 Year": "1 Año",
+  "3 Years": "3 Años",
+  "5 Years": "5 Años",
+  "Long-Term Cost": "Costo a Largo Plazo",
+  "10 Years": "10 Años",
+  "20 Years": "20 Años",
+  "30 Years": "30 Años",
+  "\"Mortgage Months Remaining\" defaults to 0 because this tool doesn't have this client's actual loan payoff date -- it does not assume mortgage payments continue on a term nobody has confirmed. If the real remaining term is known, enter it above and every figure below (including the mortgage portion of the long-term totals) recalculates from that instead. Maintenance fees are assumed to continue indefinitely and to increase at the annual rate entered above. These are estimates based on the figures on file or entered above, not a guarantee of future costs.": "\"Meses Restantes de Hipoteca\" tiene un valor predeterminado de 0 porque esta herramienta no tiene la fecha real de liquidación del préstamo de este cliente -- no asume que los pagos de hipoteca continúan por un plazo que nadie ha confirmado. Si se conoce el plazo restante real, ingréselo arriba y cada cifra a continuación (incluyendo la parte de hipoteca de los totales a largo plazo) se recalculará a partir de eso. Se asume que las cuotas de mantenimiento continúan indefinidamente y aumentan a la tasa anual ingresada arriba. Estas son estimaciones basadas en las cifras registradas o ingresadas arriba, no una garantía de costos futuros.",
+  "Certificate of Guarantee": "Certificado de Garantía",
+  "BBB Accreditation": "Acreditación BBB",
+  "Contract for Review": "Contrato para Revisión",
+  "Timeshare Cancellation Agreement (Blank)": "Acuerdo de Cancelación de Tiempo Compartido (En Blanco)",
+  "🖨 Print / Save as PDF": "🖨 Imprimir / Guardar como PDF",
+  "TIMESHARE CANCELLATION AGREEMENT": "ACUERDO DE CANCELACIÓN DE TIEMPO COMPARTIDO",
+  "Date": "Fecha",
+  "August 31, 2026": "31 de agosto de 2026",
+  "Name(s) of Titled Owners": "Nombre(s) de los Propietarios Titulares",
+  "Primary Phone": "Teléfono Principal",
+  "Secondary Phone": "Teléfono Secundario",
+  "Location": "Ubicación",
+  "Balance": "Saldo",
+  "Additional owned resorts, if any, are reviewed and added to the final signed agreement individually -- never invented or assumed here.": "Resorts adicionales de su propiedad, si los hay, se revisan y se agregan individualmente al acuerdo final firmado -- nunca se inventan ni se asumen aquí.",
+  "Reason for Wanting Out of Ownership(s)": "Razón para Querer Salir de la(s) Propiedad(es)",
+  "They sold them a dream, then they upgraded her and lied to her so she can get into more debt. The husband tried to get out but they won't let him.": "Les vendieron un sueño, luego la actualizaron y le mintieron para que se endeudara más. El esposo intentó salir pero no lo dejaron.",
+  "Terms & Conditions": "Términos y Condiciones",
+  "I/We authorize Client Protection Group LLC to release my information to a third-party company who will be responsible for blocking and/or repairing any credit damage (for timeshares with mortgage balances only.)": "Yo/Nosotros autorizamos a Client Protection Group LLC a divulgar mi información a una empresa externa que será responsable de bloquear y/o reparar cualquier daño crediticio (solo para tiempos compartidos con saldos hipotecarios).",
+  "I/We understand that I/We have relinquished all usage rights to the above-mentioned property.": "Yo/Nosotros entendemos que hemos renunciado a todos los derechos de uso de la propiedad mencionada anteriormente.",
+  "I/We understand that Client Protection Group LLC is NOT providing legal advice.": "Yo/Nosotros entendemos que Client Protection Group LLC NO está brindando asesoría legal.",
+  "I/We understand that Client Protection Group LLC has NOT instructed me/us to stop making payments still owing on any timeshare mortgage, maintenance fees or assessment.": "Yo/Nosotros entendemos que Client Protection Group LLC NO me/nos ha instruido a dejar de hacer los pagos pendientes de cualquier hipoteca, cuota de mantenimiento o evaluación del tiempo compartido.",
+  "I/We understand that there is no promise of monetary compensation regarding the cancellation/transfer of our timeshare property has been made.": "Yo/Nosotros entendemos que no se ha hecho ninguna promesa de compensación monetaria con respecto a la cancelación/transferencia de nuestra propiedad de tiempo compartido.",
+  "I/We understand that this contract represents the entire agreement and there have been no previous verbal or written agreements.": "Yo/Nosotros entendemos que este contrato representa el acuerdo completo y que no ha habido acuerdos verbales o escritos previos.",
+  "I/We agree to not disclose to any third party (including the timeshare developer) the Terms & Conditions set forth in this agreement. Any and all documents, forms, e-mails, faxes, conversations, phone calls and all means of communications shall be deemed confidential information and shall not be shared.": "Yo/Nosotros aceptamos no divulgar a ningún tercero (incluyendo al desarrollador del tiempo compartido) los Términos y Condiciones establecidos en este acuerdo. Todos los documentos, formularios, correos electrónicos, faxes, conversaciones, llamadas telefónicas y todos los medios de comunicación se considerarán información confidencial y no se compartirán.",
+  "I/We understand that the refusal to comply with any written requests for information from Client Protection Group LLC, any of our affiliates, the finance company and/or the timeshare developer for a period greater than 30 days, will result in the decline of services and forfeiture of any monies paid.": "Yo/Nosotros entendemos que la negativa a cumplir con cualquier solicitud escrita de información de Client Protection Group LLC, cualquiera de nuestros afiliados, la compañía financiera y/o el desarrollador del tiempo compartido por un período mayor a 30 días, resultará en la suspensión de los servicios y la pérdida de cualquier dinero pagado.",
+  "I/We understand that I/We are responsible for any fees related to the transfer/closing and/or settlement of the aforementioned timeshare.": "Yo/Nosotros entendemos que somos responsables de cualquier tarifa relacionada con la transferencia/cierre y/o liquidación del tiempo compartido mencionado.",
+  "I/We understand that the services paid for are rendered immediately and this transaction is non-reversible once the 3-calendar day Right of Rescission has passed. Requests for refunds must be made in writing.": "Yo/Nosotros entendemos que los servicios pagados se prestan de inmediato y esta transacción no es reversible una vez que hayan transcurrido los 3 días calendario del Derecho de Rescisión. Las solicitudes de reembolso deben hacerse por escrito.",
+  "Should I/We opt to terminate/cancel services with Client Protection Group LLC prior to this agreement’s completion, I/We are fully responsible to pay the financing arrangements in full to satisfy the services, and no refunds will be available.": "Si Yo/Nosotros optamos por terminar/cancelar los servicios con Client Protection Group LLC antes de que se complete este acuerdo, Yo/Nosotros somos totalmente responsables de pagar en su totalidad los arreglos de financiamiento para satisfacer los servicios, y no habrá reembolsos disponibles.",
+  "I/We agree to and accept Client Protection Group LLC’s Timeshare Cancellation Guarantee.": "Yo/Nosotros aceptamos y acordamos la Garantía de Cancelación de Tiempo Compartido de Client Protection Group LLC.",
+  "I/We have provided accurate information to the best of my/our knowledge.": "Yo/Nosotros hemos proporcionado información precisa a mi/nuestro mejor entender.",
+  "Timeshare Cancellation Guarantee": "Garantía de Cancelación de Tiempo Compartido",
+  "Client Protection Group LLC guarantees the cancellation of your timeshare contract in addition to any associated contractual obligations. We commit to relentless work on your timeshare cancellation case until its complete resolution, regardless of the necessary timeframe, without charging any additional fees at any later time. Our guarantee in delivering these services hinges on our clients fulfilling their responsibilities. These responsibilities consist of providing Client Protection Group LLC with all required paperwork within a 30-day timeframe as detailed in #9 of our Terms & Conditions in addition to promptly forwarding us any correspondences, bills, statements, or letters from the resort or collection agency. Our clients must strictly follow our instructions and refrain from contacting the resort during this process unless advised to. Should our services remain incomplete after a 24 month period our clients will qualify for a 100% money-back guarantee for the purchase price paid for its timeshare cancellation services. This guarantee is only available to clients that are still getting billed by their resort and have clearly followed our instructions throughout the process. If our clients have taken any action against our instructions or contacted the resort at all, they do not qualify for a refund.": "Client Protection Group LLC garantiza la cancelación de su contrato de tiempo compartido además de cualquier obligación contractual asociada. Nos comprometemos a trabajar incansablemente en su caso de cancelación de tiempo compartido hasta su resolución completa, sin importar el plazo necesario, sin cobrar tarifas adicionales en ningún momento posterior. Nuestra garantía al brindar estos servicios depende de que nuestros clientes cumplan con sus responsabilidades. Estas responsabilidades consisten en proporcionar a Client Protection Group LLC toda la documentación requerida dentro de un plazo de 30 días como se detalla en el #9 de nuestros Términos y Condiciones, además de reenviarnos con prontitud cualquier correspondencia, facturas, estados de cuenta o cartas del resort o agencia de cobranza. Nuestros clientes deben seguir estrictamente nuestras instrucciones y abstenerse de contactar al resort durante este proceso a menos que se les indique lo contrario. Si nuestros servicios permanecen incompletos después de un período de 24 meses, nuestros clientes calificarán para una garantía de devolución del 100% del precio de compra pagado por sus servicios de cancelación de tiempo compartido. Esta garantía solo está disponible para clientes que todavía están siendo facturados por su resort y que han seguido claramente nuestras instrucciones durante todo el proceso. Si nuestros clientes han tomado alguna acción en contra de nuestras instrucciones o han contactado al resort de alguna manera, no calificarán para un reembolso.",
+  "Payment Information": "Información de Pago",
+  "Timeshare Cancellation Fee": "Tarifa de Cancelación de Tiempo Compartido",
+  "Payment method, card, and account details are collected securely and privately during enrollment -- never on this page.": "El método de pago, la tarjeta y los detalles de la cuenta se recopilan de forma segura y privada durante la inscripción -- nunca en esta página.",
+  "Client 1 Signature & Date": "Firma y Fecha del Cliente 1",
+  "Client 2 Signature & Date": "Firma y Fecha del Cliente 2",
+  "10 months": "10 meses",
+  "July 2027": "julio de 2027"
+};
+
+var SPANISH_DYNAMIC_PATTERNS = [
+  // "{Resort} · Year Purchased: {value}" -- only the label translates
+  [/Year Purchased:/g, 'Año de Compra:'],
+  // "for {N} months, then $0"
+  [/for (\d+) months, then \$0/g, 'durante $1 meses, luego $0'],
+  // "${amount}/yr, continuing indefinitely"
+  [/\$([\d,]+)\/yr, continuing indefinitely/g, '$$$1/año, continuando indefinidamente'],
+  // "$X / month" and "$X / year" (mortgage/maintenance summary rows)
+  [/\$([\d,.]+) \/ month/g, '\$$1 / mes'],
+  [/\$([\d,.]+) \/ year/g, '\$$1 / año'],
+  // The under-review intro sentence, resort name is the only variable
+  [/We['’]ve received the information you provided regarding your (.+?) ownership\. Before we can complete our review and confirm your case, we need to speak with you directly about the circumstances of your original purchase\./g,
+    'Hemos recibido la información que usted proporcionó sobre su propiedad en $1. Antes de poder completar nuestra revisión y confirmar su caso, necesitamos hablar con usted directamente sobre las circunstancias de su compra original.'],
+  // The Contract for Review intro paragraph, client name is the only variable
+  [/A for-review copy of Client Protection Group LLC['’]s standard Timeshare Cancellation Agreement, filled in with what['’]s already on file for (.+?)\. This is not a submission form -- nothing entered or shown here is sent anywhere\. Your signed copy will be provided separately as part of enrollment\./g,
+    'Una copia para revisión del Acuerdo de Cancelación de Tiempo Compartido estándar de Client Protection Group LLC, completada con lo que ya está registrado para $1. Este no es un formulario de envío -- nada de lo que se ingresa o muestra aquí se envía a ningún lugar. Su copia firmada se proporcionará por separado como parte de la inscripción.'],
+  // The Terms & Conditions fee clause, dollar amount is the only variable
+  [/I\/We agree to pay Client Protection Group LLC['’]s Timeshare Cancellation Fee of \$([\d,]+) and for this fee, Client Protection Group LLC agrees to undertake all necessary steps to cancel the above-mentioned timeshare contract\./g,
+    'Yo/Nosotros aceptamos pagar la Tarifa de Cancelación de Tiempo Compartido de Client Protection Group LLC de \$$1 y por esta tarifa, Client Protection Group LLC se compromete a realizar todos los pasos necesarios para cancelar el contrato de tiempo compartido mencionado anteriormente.']
+];
+
+// NOTE: this translates the fixed template (labels, legal boilerplate,
+// headers -- the large majority of the page). It does NOT translate
+// genuinely free-form narrative someone typed into a field (e.g. a
+// custom "Reason for Wanting Out" story) -- there's no dictionary for
+// prose nobody wrote yet. That text stays in whatever language it was
+// entered in.
+function applySpanishTranslation(html) {
+  var out = html;
+  // Dynamic (regex) patterns run FIRST -- they match longer, more
+  // specific phrases (e.g. "for 36 months, then $0"). Running them
+  // before the static dictionary prevents a shorter standalone entry
+  // (e.g. "36 months" -> "36 meses") from partially consuming a
+  // longer pattern's match out from under it.
+  SPANISH_DYNAMIC_PATTERNS.forEach(function(pair) {
+    out = out.replace(pair[0], pair[1]);
+  });
+  Object.keys(SPANISH_STATIC_DICT).forEach(function(en) {
+    // Split/join is a safe global literal replace -- avoids regex
+    // special-character issues in strings that contain them.
+    out = out.split(en).join(SPANISH_STATIC_DICT[en]);
+  });
+  out = out.replace('<html lang="en">', '<html lang="es">');
+  out = out.replace('Case Findings &amp; Acceptance', 'Hallazgos del Caso y Aceptación');
+  return out;
+}
+
+function isSpanishClient(f) {
+  var lang = (f.language || '').trim().toLowerCase();
+  return lang.indexOf('esp') === 0 || lang.indexOf('span') === 0;
+}
+
 function publishWithNaming(mode) {
   var f = collectEditorFields();
   var slug;
@@ -1090,6 +1321,7 @@ function publishWithNaming(mode) {
   closePublishModal();
   var interview = collectInterviewAnswers();
   var html = generateCasePageHtml(f, slug, interview);
+  if (isSpanishClient(f)) html = applySpanishTranslation(html);
   var clientName = [f.clientFirst, f.clientLast].filter(Boolean).join(' ') || slug;
   var secondName = [f.secondOwnerFirst, f.secondOwnerLast].filter(Boolean).join(' ');
   if (secondName) clientName += ' & ' + secondName;
