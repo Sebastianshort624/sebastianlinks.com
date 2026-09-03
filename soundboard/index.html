@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soundboard — ATC / CPG Script</title>
+<style>
+  :root {
+    --green-dark: #196869;
+    --green-light: #6fa1a1;
+    --green-pale: #e8f1f0;
+    --cream: #fff2cc;
+    --white: #ffffff;
+    --ink: #22333b;
+    --muted: #6b7d80;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--white);
+    color: var(--ink);
+    padding: 24px 16px 80px;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 8px 0 4px;
+    color: var(--green-dark);
+  }
+  .sub {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+  .search {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 14px;
+    border: 1px solid var(--green-pale);
+    background: var(--green-pale);
+    font-size: 15px;
+    margin-bottom: 20px;
+    outline: none;
+  }
+  .search:focus { border-color: var(--green-light); }
+  .card {
+    background: var(--white);
+    border: 1px solid #eef2f2;
+    border-radius: 18px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    overflow: hidden;
+    transition: box-shadow 0.15s ease;
+  }
+  .card.has-audio { border-color: var(--green-pale); }
+  .card:hover { box-shadow: 0 2px 10px rgba(0,0,0,0.07); }
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .badge {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--green-pale);
+    color: var(--green-dark);
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .title {
+    flex: 1;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--ink);
+  }
+  .no-audio-tag {
+    font-size: 10px;
+    color: var(--muted);
+    background: #f2f2f2;
+    padding: 2px 8px;
+    border-radius: 20px;
+    flex-shrink: 0;
+  }
+  .play-btn {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--green-dark);
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .play-btn:disabled {
+    background: #d9dede;
+    cursor: not-allowed;
+  }
+  .play-btn.playing { background: var(--green-light); }
+  .chev {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    color: var(--muted);
+    transition: transform 0.2s ease;
+  }
+  .card.open .chev { transform: rotate(180deg); }
+  .body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s ease, padding 0.25s ease;
+    padding: 0 16px;
+    background: var(--green-pale);
+  }
+  .card.open .body {
+    max-height: 400px;
+    padding: 14px 16px 18px;
+  }
+  .lang-block { margin-bottom: 10px; }
+  .lang-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--green-dark);
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+  .lang-text {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+  audio { width: 100%; margin-top: 8px; height: 32px; }
+  .count {
+    font-size: 12px;
+    color: var(--muted);
+    margin: -8px 0 16px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🔊 Soundboard</h1>
+  <div class="sub">Client Protection Group — Guión de llamadas / Call Script</div>
+  <input class="search" id="search" placeholder="Buscar / Search…" />
+  <div class="count" id="count"></div>
+  <div id="list"></div>
+</div>
+
+<script>
+let DATA = [];
+let currentAudio = null;
+let currentBtn = null;
+
+async function load() {
+  const res = await fetch('data.json');
+  DATA = await res.json();
+  render(DATA);
+}
+
+function render(items) {
+  const list = document.getElementById('list');
+  document.getElementById('count').textContent = items.length + ' sound bites';
+  list.innerHTML = '';
+  items.forEach((item, idx) => {
+    const card = document.createElement('div');
+    card.className = 'card' + (item.audio ? ' has-audio' : '');
+
+    const row = document.createElement('div');
+    row.className = 'row';
+    row.innerHTML = `
+      <div class="badge">${idx + 1}</div>
+      <div class="title">${item.title}</div>
+      ${item.audio ? '' : '<div class="no-audio-tag">sin audio</div>'}
+      <button class="play-btn" ${item.audio ? '' : 'disabled'} data-audio="${item.audio || ''}">▶</button>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M6 9l6 6 6-6"/>
+      </svg>
+    `;
+
+    const body = document.createElement('div');
+    body.className = 'body';
+    body.innerHTML = `
+      <div class="lang-block">
+        <div class="lang-label">Español</div>
+        <div class="lang-text">${item.es}</div>
+      </div>
+      <div class="lang-block">
+        <div class="lang-label">English</div>
+        <div class="lang-text">${item.en}</div>
+      </div>
+      ${item.audio ? `<audio controls preload="none" src="${item.audio}"></audio>` : ''}
+    `;
+
+    row.addEventListener('click', (e) => {
+      if (e.target.closest('.play-btn')) return;
+      card.classList.toggle('open');
+    });
+
+    const playBtn = row.querySelector('.play-btn');
+    if (item.audio) {
+      playBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const audioEl = body.querySelector('audio');
+        if (currentAudio && currentAudio !== audioEl) {
+          currentAudio.pause();
+          if (currentBtn) { currentBtn.textContent = '▶'; currentBtn.classList.remove('playing'); }
+        }
+        if (audioEl.paused) {
+          audioEl.play();
+          playBtn.textContent = '⏸';
+          playBtn.classList.add('playing');
+          currentAudio = audioEl;
+          currentBtn = playBtn;
+        } else {
+          audioEl.pause();
+          playBtn.textContent = '▶';
+          playBtn.classList.remove('playing');
+        }
+      });
+    }
+
+    card.appendChild(row);
+    card.appendChild(body);
+    list.appendChild(card);
+  });
+
+  list.querySelectorAll('audio').forEach(a => {
+    a.addEventListener('ended', () => {
+      if (currentBtn) { currentBtn.textContent = '▶'; currentBtn.classList.remove('playing'); }
+    });
+  });
+}
+
+document.getElementById('search').addEventListener('input', (e) => {
+  const q = e.target.value.toLowerCase();
+  const filtered = DATA.filter(item =>
+    item.title.toLowerCase().includes(q) ||
+    item.es.toLowerCase().includes(q) ||
+    item.en.toLowerCase().includes(q)
+  );
+  render(filtered);
+});
+
+load();
+</script>
+</body>
+</html>
