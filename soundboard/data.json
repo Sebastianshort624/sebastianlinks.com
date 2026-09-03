@@ -4,7 +4,7 @@
     "title": "Introducción",
     "es": "Yo soy Sebastian Short; y estoy llamando del Servicio de Protección al cliente de South Carolina.",
     "en": "This is Sebastian Short — I'm calling from Client Protection Services in South Carolina.",
-    "audio": null
+    "audio": "audio/1__Intro_Al_Fin.m4a"
   },
   {
     "id": "escritura",
@@ -148,9 +148,16 @@
   },
   {
     "id": "monitoreo-credito-1",
-    "title": "Monitoreo de Crédito",
-    "es": "Vamos a monitorear tu crédito con los tres burós de crédito — Equifax, Experian y TransUnion — durante todo el proceso, así que apenas el resort reporte algo negativo, nos enteramos de inmediato y así podemos disputarlo sin demora. Mientras trabajamos en tu caso, operamos de forma proactiva eliminando esos elementos negativos de tu informe de crédito — lo hacemos todos los días.",
-    "en": "We're going to monitor your credit with all three credit bureaus — Equifax, Experian, and TransUnion — throughout the whole process, so as soon as the resort reports anything negative, we're notified right away and can dispute it without delay. While we're working your case, we're proactively working to get those negative items removed from your credit report — we do this every day.",
+    "title": "Monitoreo de Crédito (1)",
+    "es": "Vamos a monitorear tu crédito con los tres burós de crédito — Equifax, Experian y TransUnion — durante todo el proceso, así que apenas el resort reporte algo negativo, nos enteramos de inmediato y así podemos disputarlo sin demora.",
+    "en": "We're going to monitor your credit with all three credit bureaus — Equifax, Experian, and TransUnion — throughout the whole process, so as soon as the resort reports anything negative, we're notified right away and can dispute it without delay.",
+    "audio": "audio/Monitoras_cre_dito.m4a"
+  },
+  {
+    "id": "monitoreo-credito-2",
+    "title": "Monitoreo de Crédito (2)",
+    "es": "Mientras trabajamos en tu caso, operamos de forma proactiva eliminando esos elementos negativos de tu informe de crédito — lo hacemos todos los días.",
+    "en": "While we're working your case, we're proactively working to get those negative items removed from your credit report — we do this every day.",
     "audio": "audio/Monitoras_cre_dito.m4a"
   },
   {
