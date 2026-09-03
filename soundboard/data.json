@@ -98,13 +98,6 @@
     "audio": "audio/100__ma_ster.m4a"
   },
   {
-    "id": "all-in-out",
-    "title": "Todos Dentro o Todos Fuera",
-    "es": "(Confirmar contenido exacto)",
-    "en": "(Confirm exact content)",
-    "audio": "audio/All_in_-_out.m4a"
-  },
-  {
     "id": "programar-cita-1",
     "title": "Programar Cita — Resultados",
     "es": "¿Te gustaría programar un asesoramiento para ver tus resultados?",
@@ -116,7 +109,7 @@
     "title": "Sin Nuevos Gastos",
     "es": "La entrevista no tiene costo, y para este servicio no estás pagando nada adicional. Simplemente estás redirigiendo una parte de lo que ya le pagas al resort.",
     "en": "The interview is free, and for this service you're not paying anything additional. You're simply redirecting a portion of what you already pay the resort.",
-    "audio": null
+    "audio": "audio/Cita_costo.m4a"
   },
   {
     "id": "6-meses",
@@ -135,16 +128,9 @@
   {
     "id": "programar-cita-2",
     "title": "Programar Cita — Más Tarde",
-    "es": "Bueno, déjame preguntarte — ¿sería posible programar un tiempito, no ahora, pero más tarde?",
-    "en": "Well, let me ask you — would it be possible to schedule a little time, not now, but later?",
+    "es": "¿Ven? Te pregunto — ¿es que sería muy imposible programarnos un tiempecito? No ahora, pero más tarde.",
+    "en": "See? Let me ask you — would it really be too much trouble to schedule us a little time? Not now, but later.",
     "audio": "audio/Cita_Ma_s_tarde.m4a"
-  },
-  {
-    "id": "cita-costo",
-    "title": "Objeción de Costo",
-    "es": "(Confirmar contenido — línea de manejo de objeción de costo)",
-    "en": "(Confirm content — cost objection handler line)",
-    "audio": "audio/Cita_costo.m4a"
   },
   {
     "id": "determinacion-honorarios",
@@ -162,23 +148,16 @@
   },
   {
     "id": "monitoreo-credito-1",
-    "title": "Monitoreo de Crédito (1)",
-    "es": "Vamos a monitorear tu crédito con los tres burós de crédito — Equifax, Experian y TransUnion — durante todo el proceso, así que apenas el resort reporte algo negativo, nos enteramos de inmediato y así podemos disputarlo sin demora.",
-    "en": "We're going to monitor your credit with all three credit bureaus — Equifax, Experian, and TransUnion — throughout the whole process, so as soon as the resort reports anything negative, we're notified right away and can dispute it without delay.",
-    "audio": null
-  },
-  {
-    "id": "monitoreo-credito-2",
-    "title": "Monitoreo de Crédito (2)",
-    "es": "Mientras trabajamos en tu caso, operamos de forma proactiva eliminando esos elementos negativos de tu informe de crédito — lo hacemos todos los días.",
-    "en": "While we're working your case, we're proactively working to get those negative items removed from your credit report — we do this every day.",
-    "audio": null
+    "title": "Monitoreo de Crédito",
+    "es": "Vamos a monitorear tu crédito con los tres burós de crédito — Equifax, Experian y TransUnion — durante todo el proceso, así que apenas el resort reporte algo negativo, nos enteramos de inmediato y así podemos disputarlo sin demora. Mientras trabajamos en tu caso, operamos de forma proactiva eliminando esos elementos negativos de tu informe de crédito — lo hacemos todos los días.",
+    "en": "We're going to monitor your credit with all three credit bureaus — Equifax, Experian, and TransUnion — throughout the whole process, so as soon as the resort reports anything negative, we're notified right away and can dispute it without delay. While we're working your case, we're proactively working to get those negative items removed from your credit report — we do this every day.",
+    "audio": "audio/Monitoras_cre_dito.m4a"
   },
   {
     "id": "monitoreo-credito-3",
     "title": "Monitoreo de Crédito (3)",
-    "es": "Y una vez que se cancele la cuenta del tiempo compartido y tengamos la confirmación, disputamos la cuenta por completo. Al final del proceso, esa cuenta aparecerá en tu informe con Equifax, Experian y TransUnion ya sea como pagada en su totalidad, o eliminada por completo.",
-    "en": "And once the timeshare account is canceled and we have confirmation, we dispute the account completely. By the end of the process, that account will show up on your report with Equifax, Experian, and TransUnion either marked as paid in full, or removed entirely.",
-    "audio": null
+    "es": "Y una vez que se cancele la cuenta del tiempo compartido y tengamos la confirmación, disputamos la cuenta por completo. Al final del proceso, esa cuenta aparecerá en tu informe con Equifax, Experian y TransUnion ya sea como pagada en su totalidad, o eliminada por completo — como si nunca hubiera existido.",
+    "en": "And once the timeshare account is canceled and we have confirmation, we dispute the account completely. By the end of the process, that account will show up on your report with Equifax, Experian, and TransUnion either marked as paid in full, or removed entirely — as if it never existed.",
+    "audio": "audio/Disputa_completa.m4a"
   }
 ]
