@@ -1,0 +1,184 @@
+[
+  {
+    "id": "intro",
+    "title": "Introducción",
+    "es": "Yo soy Sebastian Short; y estoy llamando del Servicio de Protección al cliente de South Carolina.",
+    "en": "This is Sebastian Short — I'm calling from Client Protection Services in South Carolina.",
+    "audio": null
+  },
+  {
+    "id": "escritura",
+    "title": "Escritura del Cliente",
+    "es": "Estoy mirando aquí una copia de un deed donde en las escrituras este teléfono es del comprador original de esta propiedad vacacional.",
+    "en": "I'm looking at a copy of a deed here, and according to the paperwork, this phone number belongs to the original buyer of this vacation property.",
+    "audio": "audio/Escrituras.m4a"
+  },
+  {
+    "id": "deed-take-back",
+    "title": "Deed Take Back",
+    "es": "¿Tú sabes si al fin el comprador logró devolver ese timeshare al resort, tal vez un Deed Take Back?",
+    "en": "Do you know if the buyer was ever able to return that timeshare to the resort — maybe through a Deed Take Back?",
+    "audio": null
+  },
+  {
+    "id": "te-rendiste",
+    "title": "¿Te Rendiste?",
+    "es": "¿O será que se rindieron en quitar su nombre de las escrituras?",
+    "en": "Or did they give up on getting their name off the deed?",
+    "audio": null
+  },
+  {
+    "id": "entrevistas",
+    "title": "Entrevistas con Propietarios",
+    "es": "Bueno, aquí llevamos unos meses entrevistando muchísimos dueños en este resort.",
+    "en": "Well, we've been interviewing a lot of owners at this resort for some time now.",
+    "audio": "audio/Intrevista.m4a"
+  },
+  {
+    "id": "group-filing-intro",
+    "title": "Group Filing | Reclamación Colectiva",
+    "es": "Y tenemos suficientes infracciones documentadas, demostrando suficientes multas acumuladas, para ya proceder con una reclamación colectiva ante este resort. Esto se llama un Group Filing.",
+    "en": "And we have enough documented violations—demonstrating a sufficient number of accumulated fines—to proceed with a collective claim against this resort. This is called a 'Group Filing.'",
+    "audio": null
+  },
+  {
+    "id": "group-filing-explicado",
+    "title": "Explicación del Group Filing",
+    "es": "En lugar de negociar con el resort como un caso individual, formamos lo que se llama un Group Filing —ahí es donde muchos dueños se reúnen como un solo colectivo, y ahí sí todo el grupo exige la liberación de los contratos con su resort.",
+    "en": "Instead of negotiating with the resort as a single case, we form what's called a Group Filing—that's where many owners come together as one collective, and that's when the entire group demands release from the contracts with their resort.",
+    "audio": "audio/Explicado.m4a"
+  },
+  {
+    "id": "riesgo-multas",
+    "title": "Riesgo de Multas",
+    "es": "¡Ahí sí! Es cuando el resort no demora en decidir que es mejor dejar salir a todo el grupo de sus contratos que enfrentarse a millones de dólares en multas.",
+    "en": "That's when the resort doesn't waste any time deciding it's better to let the entire group out of their contracts than face millions of dollars in fines.",
+    "audio": "audio/Multas.m4a"
+  },
+  {
+    "id": "liberacion-deudas-1",
+    "title": "Liberación de Deudas (1)",
+    "es": "Lo bueno de una liberación mutua, o lo que se llama una dación en pago, es que todos los dueños en el grupo quedan ya liberados de cualquier deuda pasada, presente o futura.",
+    "en": "What's great about a mutual release — or what's called a dación en pago — is that every owner in the group is already released from any past, present, or future debt.",
+    "audio": "audio/Deuda_futura.m4a"
+  },
+  {
+    "id": "liberacion-deudas-2",
+    "title": "Liberación de Deudas (2)",
+    "es": "La otra ventaja es que, con este servicio, no es necesario continuar haciendo pagos al resort durante el período de negociación.",
+    "en": "The other advantage is that, with this service, you don't need to keep making payments to the resort during the negotiation period.",
+    "audio": "audio/No_pagos.m4a"
+  },
+  {
+    "id": "como-se-cubren-costos",
+    "title": "Cómo se Cubren los Costos",
+    "es": "Si tu caso es aceptado y te invitan a participar en el group filing, no hay ningún gasto adicional. ¿Por qué? Porque estarías libre de todos los gastos del resort, y ya puedes redirigir una fracción de lo que antes le pagabas al resort — y así el costo del servicio se cubre por sí mismo.",
+    "en": "If your case is accepted and you're invited into the group filing, there is no additional expense. Why? Because you'd be free of all resort costs, and you can now redirect a portion of what you used to pay the resort — so the cost of the service covers itself.",
+    "audio": "audio/Se_cubre_x_si.m4a"
+  },
+  {
+    "id": "garantia-1",
+    "title": "Garantía de Devolución (1)",
+    "es": "Estos group filings cuentan con una garantía de devolución del 100% del dinero — el participante solo paga por el servicio si es liberado de las escrituras y de la propiedad.",
+    "en": "These group filings come with a 100% money-back guarantee — the participant only pays for the service if they're released from the deed and the ownership.",
+    "audio": "audio/100__garanti_a_copy.m4a"
+  },
+  {
+    "id": "garantia-2",
+    "title": "Garantía de Devolución (2)",
+    "es": "Al igual que en una demanda colectiva, o todos en el grupo son aceptados o todos son rechazados, y es por eso que tenemos mucho cuidado al escoger qué casos invitamos.",
+    "en": "Much like a class action, either everyone in the group is accepted or everyone is denied together — which is why we're very careful about which cases we invite.",
+    "audio": "audio/Cuidado.m4a"
+  },
+  {
+    "id": "garantia-master",
+    "title": "Garantía — Versión Completa",
+    "es": "(Versión combinada de garantía — confirmar contenido exacto)",
+    "en": "(Combined guarantee version — confirm exact content)",
+    "audio": "audio/100__ma_ster.m4a"
+  },
+  {
+    "id": "all-in-out",
+    "title": "Todos Dentro o Todos Fuera",
+    "es": "(Confirmar contenido exacto)",
+    "en": "(Confirm exact content)",
+    "audio": "audio/All_in_-_out.m4a"
+  },
+  {
+    "id": "programar-cita-1",
+    "title": "Programar Cita — Resultados",
+    "es": "¿Te gustaría programar un asesoramiento para ver tus resultados?",
+    "en": "Would you like to schedule a consultation to see your results?",
+    "audio": "audio/Cita_resultados.m4a"
+  },
+  {
+    "id": "sin-nuevos-gastos",
+    "title": "Sin Nuevos Gastos",
+    "es": "La entrevista no tiene costo, y para este servicio no estás pagando nada adicional. Simplemente estás redirigiendo una parte de lo que ya le pagas al resort.",
+    "en": "The interview is free, and for this service you're not paying anything additional. You're simply redirecting a portion of what you already pay the resort.",
+    "audio": null
+  },
+  {
+    "id": "6-meses",
+    "title": "6 Meses de Diferencia",
+    "es": "Mira, de hoy en 6 meses, la única diferencia es que si encontraste cómo participar en el grupo, ya estarías 6 meses más cerca de tu salida comparado a hoy. Y si no fuiste capaz, seguirías atrapado con más de lo mismo, pero peor, y para siempre.",
+    "en": "Look — six months from today, the only difference is: if you found a way to join the group, you'd already be six months closer to getting out compared to today. And if you didn't, you'd still be stuck with more of the same, but worse, and forever.",
+    "audio": "audio/6_mes.m4a"
+  },
+  {
+    "id": "cero-riesgo",
+    "title": "Cero Riesgo",
+    "es": "Y si tu caso no califica, no te cobramos nada. Es cero riesgo para ti.",
+    "en": "And if your case doesn't qualify, we don't charge you anything. It's zero risk for you.",
+    "audio": null
+  },
+  {
+    "id": "programar-cita-2",
+    "title": "Programar Cita — Más Tarde",
+    "es": "Bueno, déjame preguntarte — ¿sería posible programar un tiempito, no ahora, pero más tarde?",
+    "en": "Well, let me ask you — would it be possible to schedule a little time, not now, but later?",
+    "audio": "audio/Cita_Ma_s_tarde.m4a"
+  },
+  {
+    "id": "cita-costo",
+    "title": "Objeción de Costo",
+    "es": "(Confirmar contenido — línea de manejo de objeción de costo)",
+    "en": "(Confirm content — cost objection handler line)",
+    "audio": "audio/Cita_costo.m4a"
+  },
+  {
+    "id": "determinacion-honorarios",
+    "title": "Determinación de Honorarios",
+    "es": "Los honorarios dependen del resultado de tu evaluación. En realidad, todo se basa en las infracciones registradas, la cantidad que adeudas, cuánto tiempo has tenido la propiedad y cuántas veces la has utilizado.",
+    "en": "The fees depend on the outcome of your assessment. It really comes down to the violations on record, how much you owe, how long you've had it, and how many times you've used it.",
+    "audio": null
+  },
+  {
+    "id": "programar-entrevista",
+    "title": "Programar la Entrevista",
+    "es": "¿Qué horas podrían ser buenas más tarde hoy o por la mañana para hablar con los propietarios? Es una entrevista de entre 15 y 40 minutos.",
+    "en": "What times later today or tomorrow morning might work well to speak with the owners? It's an interview lasting between 15 and 40 minutes.",
+    "audio": null
+  },
+  {
+    "id": "monitoreo-credito-1",
+    "title": "Monitoreo de Crédito (1)",
+    "es": "Vamos a monitorear tu crédito con los tres burós de crédito — Equifax, Experian y TransUnion — durante todo el proceso, así que apenas el resort reporte algo negativo, nos enteramos de inmediato y así podemos disputarlo sin demora.",
+    "en": "We're going to monitor your credit with all three credit bureaus — Equifax, Experian, and TransUnion — throughout the whole process, so as soon as the resort reports anything negative, we're notified right away and can dispute it without delay.",
+    "audio": null
+  },
+  {
+    "id": "monitoreo-credito-2",
+    "title": "Monitoreo de Crédito (2)",
+    "es": "Mientras trabajamos en tu caso, operamos de forma proactiva eliminando esos elementos negativos de tu informe de crédito — lo hacemos todos los días.",
+    "en": "While we're working your case, we're proactively working to get those negative items removed from your credit report — we do this every day.",
+    "audio": null
+  },
+  {
+    "id": "monitoreo-credito-3",
+    "title": "Monitoreo de Crédito (3)",
+    "es": "Y una vez que se cancele la cuenta del tiempo compartido y tengamos la confirmación, disputamos la cuenta por completo. Al final del proceso, esa cuenta aparecerá en tu informe con Equifax, Experian y TransUnion ya sea como pagada en su totalidad, o eliminada por completo.",
+    "en": "And once the timeshare account is canceled and we have confirmation, we dispute the account completely. By the end of the process, that account will show up on your report with Equifax, Experian, and TransUnion either marked as paid in full, or removed entirely.",
+    "audio": null
+  }
+]
