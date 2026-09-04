@@ -9,7 +9,7 @@
 <script src="https://alphafiles.net/vitals/assets/case-engine.js"></script>
 <style>
 :root{
-  --cpg-blue:#01A9F4; --cpg-blue-dark:#0089E0; --cpg-blue-pale:#EAF6FE;
+  --cpg-blue:#0C5AB1; --cpg-blue-dark:#1F5093; --cpg-blue-pale:#E9EFF7;
   --slate-900:#1E2430; --slate-700:#4B5263; --slate-500:#6B7280; --slate-300:#D6DAE1;
   --bg:#F5F7FA; --card:#FFFFFF; --border:#E4E8EF;
   --shadow:0 1px 2px rgba(30,36,48,.04), 0 4px 16px rgba(30,36,48,.06);
@@ -57,7 +57,11 @@ body{font-family:"Inter",sans-serif;font-size:14px;background:var(--bg);color:va
 .btn-generate{width:100%;padding:16px;background:var(--slate-900);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:"Inter",sans-serif;letter-spacing:.3px}
 .btn-generate:hover{background:#111722}
 .status{margin-top:10px;font-size:12px;color:var(--slate-700);display:none;line-height:1.6}
-.pop-status{margin-left:12px;font-size:12px;font-weight:700;color:#16A34A;display:none}
+.pop-status{margin-left:12px;font-size:12px;font-weight:700;color:#5C8A0A;display:none}
+
+.narrative-status{margin-top:10px;font-size:12px;padding:10px 12px;border-radius:8px;display:none;line-height:1.6}
+.narrative-status.ok{background:var(--cpg-blue-pale);color:var(--cpg-blue-dark);border:1px solid var(--cpg-blue);display:block}
+.narrative-status.warn{background:var(--bg);color:var(--slate-700);border:1px solid var(--border);display:block}
 
 .resort-block{border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px;background:#FBFCFE}
 .resort-block-hdr{font-size:12px;font-weight:800;color:var(--cpg-blue-dark);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
@@ -68,11 +72,11 @@ body{font-family:"Inter",sans-serif;font-size:14px;background:var(--bg);color:va
 .review-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
 @media(max-width:560px){.review-grid{grid-template-columns:1fr}}
 .review-tile{text-align:center;padding:16px 8px;border-radius:10px;border:1px solid var(--border)}
-.review-tile.good{background:#F0FDF4;border-color:#BBF7D0}
-.review-tile.warn{background:#FFFBEB;border-color:#FDE68A}
+.review-tile.good{background:#E8F5DC;border-color:#B7E06B}
+.review-tile.warn{background:#E8ECF2;border-color:#C7CEDA}
 .review-num{font-size:26px;font-weight:800}
-.review-tile.good .review-num{color:#16A34A}
-.review-tile.warn .review-num{color:#D97706}
+.review-tile.good .review-num{color:#5C8A0A}
+.review-tile.warn .review-num{color:#4B5263}
 .review-lbl{font-size:11px;color:var(--slate-500);text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
 .blank-list{font-size:11px;color:var(--slate-500);line-height:1.8}
 
@@ -145,6 +149,17 @@ footer{text-align:center;padding:20px 0 40px;font-size:11px;color:var(--slate-50
     <div id="import-debug" style="display:none;margin-top:12px;padding:12px 14px;background:var(--bg);border-radius:8px;font-size:11px;color:var(--slate-700);line-height:1.7"></div>
   </div>
 
+  <!-- 2b. TRANSCRIPT / REASONS WANT OUT / VIOLATIONS -->
+  <div class="card" style="border-color:var(--cpg-blue)">
+    <div class="card-hdr"><span class="card-num">2b</span>Transcript / Reasons Want Out / Violations</div>
+    <div class="card-desc">Separate from the CRM import above — paste a phone transcript, "reasons want out" writeup, violations notes, or any combination. This is extracted into the client file below; it never overwrites a field the CRM import already filled in, and nothing here is invented — only what's actually written in the text gets used.</div>
+    <textarea id="narrative-paste" class="crm-box" placeholder="Example:&#10;&#10;Client:&#10;Ramon Jimenez &amp; Brenda Valenzuela&#10;Resort:&#10;Westgate Orlando&#10;&#10;(then the transcript, reasons, or violations text)"></textarea>
+    <div style="margin-top:10px">
+      <button class="btn btn-primary" onclick="extractFromNarrative()">Extract &amp; Merge</button>
+    </div>
+    <div id="narrative-status" class="narrative-status"></div>
+  </div>
+
   <!-- 3. RESORT & OWNERSHIP (Resort 1) -->
   <div class="card">
     <div class="card-hdr"><span class="card-num">3</span>Resort &amp; Ownership</div>
@@ -175,8 +190,9 @@ footer{text-align:center;padding:20px 0 40px;font-size:11px;color:var(--slate-50
   <!-- 4. ADDITIONAL RESORTS 2-4 -->
   <div class="card">
     <div class="card-hdr"><span class="card-num">4</span>Additional Resorts</div>
-    <div class="card-desc">Resorts #2–4 (leave blank if not applicable)</div>
-    <div id="resorts-234-mount"></div>
+    <div class="card-desc">Resorts #2–4 — hidden until the client has more than one. Shown automatically when CRM data names a distinct Resort #2/3/4, or add one manually below.</div>
+    <div class="pt" id="resorts-234-toggle" onclick="toggleResorts234()" style="cursor:pointer;color:var(--cpg-blue-dark);font-size:12px;font-weight:700">+ Add Another Resort</div>
+    <div id="resorts-234-mount" style="display:none;margin-top:10px"></div>
   </div>
 
   <!-- 5. CASE ASSESSMENT -->
@@ -327,14 +343,450 @@ footer{text-align:center;padding:20px 0 40px;font-size:11px;color:var(--slate-50
 
 window.toggleMorePM=function(){ var el=document.getElementById('pm-234-mount'); el.style.display = el.style.display==='none'?'block':'none'; };
 window.toggleOfficial=function(){ var el=document.getElementById('official-mount'); el.style.display = el.style.display==='none'?'block':'none'; };
+window.toggleResorts234=function(){ var el=document.getElementById('resorts-234-mount'); el.style.display = el.style.display==='none'?'block':'none'; };
 
 // Same-origin copy of the agreement PDF (see build notes on CORS).
 window.CASE_PDF_URL='/case-assessment/assets/cancellation-agreement.pdf';
 
+// ============================================================================
+// LocalCaseParser — fully local CRM raw-data detector.
+//
+// This replaces the CRM-parsing half of the old window.CaseEngine dependency
+// (https://alphafiles.net/vitals/assets/case-engine.js), which lives outside
+// this repository and can't be inspected, diffed, or edited from here.
+// generateCancellationPDF() below still uses window.CaseEngine — this only
+// takes over runPopulateFromCRM's job, so raw-data detection is no longer at
+// the mercy of an external, unversioned script.
+//
+// Ground rules this parser follows:
+//  - Never invents or infers a value that isn't literally present in the
+//    pasted data. A field with no matching column stays blank and is listed
+//    as unmapped, never guessed at.
+//  - Resort #1 (primary) may populate from either the explicit "R1-..."
+//    Zoho columns or the plain "Resort Name"/"ST"/etc. columns fronters use.
+//  - Resorts #2-4 populate ONLY from an explicit, exact "R2-Resort Name" /
+//    "R3-Resort Name" / "R4-Resort Name" column that has a non-blank value.
+//    They are never inferred from notes, the "reason for wanting out" text,
+//    a duplicate mention of the primary resort, or the mere presence of the
+//    "Own Any Other Timeshares?" field — see detectSecondaryResorts().
+// ============================================================================
+var LocalCaseParser = (function(){
+
+  function parseTsvRows(text) {
+    var rows = []; var row = []; var field = ''; var inQuotes = false; var i = 0;
+    while (i < text.length) {
+      var c = text[i];
+      if (inQuotes) {
+        if (c === '"') {
+          if (text[i + 1] === '"') { field += '"'; i += 2; continue; }
+          inQuotes = false; i++; continue;
+        }
+        field += c; i++; continue;
+      }
+      if (c === '"' && field === '') { inQuotes = true; i++; continue; }
+      if (c === '\t') { row.push(field); field = ''; i++; continue; }
+      if (c === '\r') { i++; continue; }
+      if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; i++; continue; }
+      field += c; i++; continue;
+    }
+    row.push(field);
+    rows.push(row);
+    return rows.filter(function(r) { return !(r.length === 1 && r[0].trim() === ''); });
+  }
+
+  function normalizeHeader(h) {
+    return String(h || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  }
+
+  // Drops values that are pure CRM UI ornament (rating-widget glyphs, pin/
+  // phone emoji markers with no real text) rather than actual client data.
+  function isRealValue(v) {
+    if (v == null) return false;
+    var s = String(v).trim();
+    if (!s) return false;
+    return /[a-zA-Z0-9]/.test(s);
+  }
+
+  function stripCurrency(raw) {
+    if (!isRealValue(raw)) return '';
+    var s = String(raw).replace(/[$,%]/g, '').trim();
+    if (s === '') return '';
+    var n = parseFloat(s);
+    return isNaN(n) ? '' : String(n);
+  }
+
+  function toYesNo(raw) {
+    var s = String(raw || '').trim().toLowerCase();
+    if (['yes', 'y', 'true', 'current', 'caught up'].indexOf(s) > -1) return 'yes';
+    if (['no', 'n', 'false', 'behind', 'not current'].indexOf(s) > -1) return 'no';
+    return '';
+  }
+
+  function toSelectValue(raw, optionMap) {
+    var s = String(raw || '').trim().toLowerCase();
+    if (!s) return '';
+    for (var i = 0; i < optionMap.length; i++) {
+      var pair = optionMap[i];
+      if (s === pair[0] || s.indexOf(pair[0]) > -1) return pair[1];
+    }
+    return '';
+  }
+
+  // Word-boundary-safe substring test — pads both sides with spaces so a
+  // short alias like "st" can't fuzzy-match inside an unrelated word like
+  // "first" or "state" when only a loose/fuzzy match is intended.
+  function containsWord(haystack, needle) {
+    return (' ' + haystack + ' ').indexOf(' ' + needle + ' ') > -1;
+  }
+
+  // Client-info + Resort #1 field defs, in priority order (earlier entries
+  // win when multiple headers could satisfy the same target field).
+  var FIELD_DEFS = [
+    { target: 'v-first-last', label: 'First/Last Name', headers: ['1st first name', 'first name', 'client first name', 'owner 1 name', 'client name', 'primary owner name'], splitName: true, exactOnly: false },
+    { target: 'v-co', label: 'Co-Owner First', headers: ['2nd owner', '2nd owner first name', 'co owner first name', 'second owner first name', 'co owner name'] },
+    { target: 'v-col', label: 'Co-Owner Last', headers: ['2nd owner last name', 'co owner last name', 'second owner last name'] },
+    { target: 'v-mail-addr', label: 'Mailing Address', headers: ['street', 'mailing address', 'client address', 'address'] },
+    { target: 'v-owner-city', label: 'City', headers: ['city', 'client city'], exactOnly: true },
+    { target: 'v-owner-state', label: 'State', headers: ['state'], exactOnly: true },
+    { target: 'v-owner-zip', label: 'ZIP', headers: ['zip', 'zip code', 'postal code'] },
+    { target: 'v-phone', label: 'Primary Phone', headers: ['phone', 'primary phone', '1st phone', 'client phone'] },
+    { target: 'v-phone2', label: 'Secondary Phone', headers: ['2nd phone', 'secondary phone', 'alternate phone'] },
+    { target: 'v-email', label: 'Email 1', headers: ['email', 'client email', '1st email'] },
+    { target: 'v-email2', label: 'Email 2', headers: ['2nd email', 'secondary email', 'alternate email'] },
+    { target: 'v-agr-date', label: 'Agreement Date', headers: ['agreement date', 'contract date', 'date signed'] },
+
+    { target: 'v-resort', label: 'Resort #1 Name', headers: ['r1 resort name', 'resort name', 'primary resort', 'timeshare resort'] },
+    { target: 'v-rescity', label: 'Resort #1 City', headers: ['r1 resort city', 'resort city', 'city of resort'] },
+    { target: 'v-loc', label: 'Resort #1 State', headers: ['r1 resort state', 'resort state', 'st'], exactOnly: true },
+    { target: 'v-r1-paidoff', label: 'Resort #1 Paid Off?', headers: ['r1 paid off', 'paid off'], transform: toYesNo, isSelect: true },
+    { target: 'v-balance', label: 'Resort #1 Balance', headers: ['r1 balance amount', 'balance amount', 'mtg balance', 'current balance', 'principal balance'], transform: stripCurrency },
+    { target: 'v-r1-current', label: 'Resort #1 Current?', headers: ['r1 current on mortgage', 'current on mortgage'], transform: toYesNo, isSelect: true },
+    { target: 'v-mtg', label: 'Resort #1 Payment Amount', headers: ['mtg mo', 'r1 ly mortgage payment', 'monthly mortgage payment', 'mortgage payment monthly', 'mortgage payment'], transform: stripCurrency },
+    { target: 'v-r1-owntype', label: 'Resort #1 Ownership Type', headers: ['r1 points or weeks', 'ownership type'], transform: function(v){return toSelectValue(v, [['week','week'],['points','points']]);}, isSelect: true },
+    { target: 'v-r1-usage', label: 'Resort #1 Usage Rights', headers: ['r1 usage', 'usage'], transform: function(v){return toSelectValue(v, [['annual','annual'],['even','even'],['odd','odd'],['triennial','triennial']]);}, isSelect: true },
+    { target: 'v-mtf', label: 'Resort #1 Maintenance Fee', headers: ['mtf mo', 'r1 mait tax fees', 'maintenance fee monthly', 'mait tax fees', 'maintenance fee'], transform: stripCurrency },
+    { target: 'v-r1-mtfcurrent', label: 'Resort #1 MTF Current?', headers: ['r1 current on mait fees', 'current on maintenance fees', 'current on mait fees'], transform: toYesNo, isSelect: true },
+    { target: 'v-why', label: 'Reason for Wanting Out', headers: ['r1 why do they want out', 'why do they want out', 'reason for wanting out', 'reason client wants out'] },
+
+    { target: 'v-fee', label: 'Timeshare Cancellation Fee', headers: ['total service cost', 'total amount charging', 'service fee', 'cancellation fee'], transform: stripCurrency },
+    { target: 'v-pay-down', label: 'Down Payment Amount', headers: ['down payment'], transform: stripCurrency },
+    { target: 'v-pay-financed', label: 'Amount Being Financed', headers: ['total loan amount', 'amount financed'], transform: stripCurrency },
+    { target: 'v-pay-terms', label: 'Payment Terms', headers: ['loan term'] },
+    { target: 'v-final-notes', label: 'Final Notes', headers: ['notes', 'details', 'agent notes'] }
+  ];
+
+  // Rn- prefixed field defs applied identically to resorts #2-4, but ONLY
+  // once detectSecondaryResorts() has already confirmed (via an explicit,
+  // exact "Rn-Resort Name" column with a real value) that resort n exists.
+  function secondaryResortSubFields(n) {
+    return [
+      { target: 'v-r' + n + '-loc-city', label: 'Resort #' + n + ' City', headers: ['r' + n + ' resort city'] },
+      { target: 'v-r' + n + '-loc-state', label: 'Resort #' + n + ' State', headers: ['r' + n + ' resort state'] },
+      { target: 'v-r' + n + '-balance', label: 'Resort #' + n + ' Balance', headers: ['r' + n + ' balance amount'], transform: stripCurrency },
+      { target: 'v-r' + n + '-payment', label: 'Resort #' + n + ' Payment Amount', headers: ['r' + n + ' ly mortgage payment'], transform: stripCurrency },
+      { target: 'v-r' + n + '-mtf', label: 'Resort #' + n + ' Maintenance Fee', headers: ['r' + n + ' mait tax fees'], transform: stripCurrency },
+      { target: 'v-r' + n + '-current', label: 'Resort #' + n + ' Current?', headers: ['r' + n + ' current on mortgage'], transform: toYesNo, isSelect: true },
+      { target: 'v-r' + n + '-mtfcurrent', label: 'Resort #' + n + ' MTF Current?', headers: ['r' + n + ' current on mait fees'], transform: toYesNo, isSelect: true },
+      { target: 'v-r' + n + '-owntype', label: 'Resort #' + n + ' Ownership Type', headers: ['r' + n + ' points or weeks'], transform: function(v){return toSelectValue(v, [['week','week'],['points','points']]);}, isSelect: true },
+      { target: 'v-r' + n + '-usage', label: 'Resort #' + n + ' Usage Rights', headers: ['r' + n + ' usage'], transform: function(v){return toSelectValue(v, [['annual','annual'],['even','even'],['odd','odd'],['triennial','triennial']]);}, isSelect: true },
+      { target: 'v-r' + n + '-notes', label: 'Resort #' + n + ' Notes', headers: ['r' + n + ' why do they want out'] }
+    ];
+  }
+
+  function setValue(id, value) {
+    var el = document.getElementById(id);
+    if (!el || !isRealValue(value)) return false;
+    if (el.tagName === 'SELECT') {
+      var has = Array.prototype.some.call(el.options, function(o){ return o.value === value; });
+      if (!has) return false;
+    }
+    el.value = value;
+    return true;
+  }
+
+  function splitNameLast(fullValue) {
+    var parts = String(fullValue).trim().split(/\s+/);
+    if (parts.length <= 1) return { first: parts[0] || '', last: '' };
+    return { first: parts.slice(0, -1).join(' '), last: parts[parts.length - 1] };
+  }
+
+  // STRICT SECONDARY RESORT RULE: resorts #2-4 populate ONLY when an exact
+  // "Rn-Resort Name" header exists AND its value is non-blank. Never scans
+  // notes, "why do they want out" text, or infers from "Own Any Other
+  // Timeshares?" — those are explicitly not evidence of a distinct resort.
+  function detectSecondaryResorts(normMap, mapped) {
+    var found = [];
+    [2, 3, 4].forEach(function(n) {
+      var key = 'r' + n + ' resort name';
+      var val = normMap[key];
+      if (!isRealValue(val)) return; // no explicit secondary resort column, or it's blank — skip entirely
+      setValue('v-r' + n + '-name', val);
+      mapped['Resort #' + n + ' Name'] = val;
+      found.push(n);
+      secondaryResortSubFields(n).forEach(function(def) {
+        var v = normMap[def.headers[0]];
+        if (!isRealValue(v)) return;
+        var out = def.transform ? def.transform(v) : v;
+        if (!isRealValue(out)) return;
+        if (def.target.indexOf('-loc-city') > -1 || def.target.indexOf('-loc-state') > -1) {
+          // Resorts 2-4 only have a single combined Location input — merge city+state into it.
+          var locId = 'v-r' + n + '-loc';
+          var locEl = document.getElementById(locId);
+          if (locEl) locEl.value = [locEl.value, out].filter(Boolean).join(', ');
+          mapped[def.label] = out;
+        } else if (setValue(def.target, out)) {
+          mapped[def.label || def.target] = out;
+        }
+      });
+    });
+    // Raw data explicitly named a distinct Resort #2/3/4 — reveal the
+    // Additional Resorts section automatically instead of leaving it
+    // collapsed behind the manual "+" toggle.
+    if (found.length) {
+      var mountEl = document.getElementById('resorts-234-mount');
+      if (mountEl) mountEl.style.display = 'block';
+    }
+    return found;
+  }
+
+  function applyFieldDefs(normMap, headerKeysWithData, mapped, usedKeys) {
+    var usedTargets = {};
+    // Pass 1 — exact header match only, in FIELD_DEFS priority order.
+    FIELD_DEFS.forEach(function(def) {
+      if (usedTargets[def.target]) return;
+      for (var i = 0; i < def.headers.length; i++) {
+        var h = def.headers[i];
+        if (usedKeys[h]) continue;
+        var raw = normMap[h];
+        if (!isRealValue(raw)) continue;
+        applyOne(def, raw, mapped, usedTargets);
+        usedKeys[h] = true;
+        break;
+      }
+    });
+    // Pass 2 — word-boundary-safe fuzzy fallback for fields still unmatched
+    // (skips any def marked exactOnly, and any header already claimed).
+    FIELD_DEFS.forEach(function(def) {
+      if (usedTargets[def.target] || def.exactOnly) return;
+      for (var key in normMap) {
+        if (usedKeys[key]) continue;
+        var raw = normMap[key];
+        if (!isRealValue(raw)) continue;
+        var matchedAlias = def.headers.some(function(h){ return h.length > 3 && containsWord(key, h) || containsWord(h, key); });
+        if (!matchedAlias) continue;
+        applyOne(def, raw, mapped, usedTargets);
+        usedKeys[key] = true;
+        break;
+      }
+    });
+  }
+
+  function applyOne(def, raw, mapped, usedTargets) {
+    if (def.splitName) {
+      var parts = splitNameLast(raw);
+      if (setValue('v-first', parts.first)) mapped['First Name'] = parts.first;
+      if (setValue('v-last', parts.last)) mapped['Last Name (split from "' + raw + '")'] = parts.last;
+      usedTargets[def.target] = true;
+      return;
+    }
+    var out = def.transform ? def.transform(raw) : raw;
+    if (!isRealValue(out)) return;
+    if (setValue(def.target, out)) {
+      mapped[def.label || def.target] = out;
+      usedTargets[def.target] = true;
+    }
+  }
+
+  function runOnZohoTable(headers, data) {
+    var normMap = {};
+    var headerKeysWithData = [];
+    for (var i = 0; i < headers.length; i++) {
+      var norm = normalizeHeader(headers[i]);
+      if (!norm) continue;
+      var val = (data[i] === undefined ? '' : data[i]).trim();
+      if (!(norm in normMap)) normMap[norm] = val; // first occurrence of a duplicate header wins
+      if (isRealValue(val)) headerKeysWithData.push(norm);
+    }
+
+    var mapped = {};
+    var usedKeys = {};
+    applyFieldDefs(normMap, headerKeysWithData, mapped, usedKeys);
+    detectSecondaryResorts(normMap, mapped);
+
+    // Merge Resort #1's city (hidden helper field) into its Location field,
+    // same convention populateFromCRM() already expects downstream.
+    var cityEl = document.getElementById('v-rescity'), locEl = document.getElementById('v-loc');
+    if (cityEl && locEl && cityEl.value) {
+      locEl.value = [cityEl.value, locEl.value].filter(Boolean).join(', ');
+      cityEl.value = '';
+    }
+
+    var unmapped = [];
+    var seen = {};
+    headerKeysWithData.forEach(function(k) {
+      if (usedKeys[k] || seen[k]) return;
+      seen[k] = true;
+      if (k === 'r2 resort name' || k === 'r3 resort name' || k === 'r4 resort name') return; // handled by detectSecondaryResorts, already accounted for
+      unmapped.push(k);
+    });
+
+    return {
+      mode: 'zoho-table',
+      headersDetected: headers.length,
+      rowsDetected: 1,
+      mapped: mapped,
+      unmapped: unmapped,
+      errors: []
+    };
+  }
+
+  function runOnPlainText(raw) {
+    var normMap = {};
+    var headerKeysWithData = [];
+    raw.split(/\r?\n/).forEach(function(line) {
+      var m = line.match(/^\s*([^:\t]+?)\s*[:\t]\s*(.+?)\s*$/);
+      if (!m) return;
+      var norm = normalizeHeader(m[1]);
+      if (!norm) return;
+      if (!(norm in normMap)) normMap[norm] = m[2].trim();
+      if (isRealValue(m[2])) headerKeysWithData.push(norm);
+    });
+
+    var mapped = {};
+    var usedKeys = {};
+    applyFieldDefs(normMap, headerKeysWithData, mapped, usedKeys);
+    detectSecondaryResorts(normMap, mapped);
+
+    var cityEl = document.getElementById('v-rescity'), locEl = document.getElementById('v-loc');
+    if (cityEl && locEl && cityEl.value) {
+      locEl.value = [cityEl.value, locEl.value].filter(Boolean).join(', ');
+      cityEl.value = '';
+    }
+
+    return {
+      mode: 'plain-text',
+      mapped: mapped,
+      unmapped: [],
+      errors: headerKeysWithData.length ? [] : ['Could not find any recognizable "Label: Value" lines in the pasted text.']
+    };
+  }
+
+  function runPopulateFromCRM(raw) {
+    var rows = parseTsvRows(raw);
+    if (rows.length >= 2 && rows[0].length >= 2) {
+      return runOnZohoTable(rows[0], rows[1]);
+    }
+    return runOnPlainText(raw);
+  }
+
+  function getFieldSummary() {
+    var els = document.querySelectorAll('.ff input, .ff select, .ff textarea');
+    var total = 0, filled = 0, blankList = [];
+    els.forEach(function(el) {
+      total++;
+      var has = el.value !== undefined && String(el.value).trim() !== '';
+      if (has) { filled++; }
+      else {
+        var label = el.closest('.ff');
+        var labelText = label ? (label.querySelector('label') || {}).textContent : el.id;
+        blankList.push(labelText || el.id);
+      }
+    });
+    return { total: total, filled: filled, blank: total - filled, blankList: blankList };
+  }
+
+  // ── 1b. TRANSCRIPT / REASONS WANT OUT / VIOLATIONS EXTRACTOR ──
+  // Separate, additive pass over free-text (a call transcript, a reasons-
+  // want-out writeup, violations notes, or any mix). Never overwrites a
+  // field the CRM import already filled in, and never invents anything —
+  // it only uses labeled lines it can actually find in the pasted text.
+  function findLabeledValue(lines, labelRegex) {
+    for (var i = 0; i < lines.length; i++) {
+      var m = lines[i].match(labelRegex);
+      if (!m) continue;
+      var sameLine = (m[1] || '').trim();
+      if (sameLine) return sameLine;
+      for (var j = i + 1; j < lines.length; j++) {
+        var next = lines[j].trim();
+        if (next) return next;
+      }
+    }
+    return '';
+  }
+
+  // Collapses runs of 3+ blank lines to one and trims trailing whitespace
+  // from each line -- formatting cleanup only. Never rewords, summarizes,
+  // or otherwise changes what the client actually said.
+  function tidyNotesText(raw) {
+    return String(raw)
+      .split(/\r?\n/)
+      .map(function(line) { return line.replace(/[ \t]+$/, ''); })
+      .join('\n')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
+  }
+
+  function fieldVal(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
+  function fillIfBlank(id, value) {
+    if (!value) return false;
+    var el = document.getElementById(id);
+    if (!el || el.value.trim()) return false; // already has a value -- never overwrite
+    el.value = value;
+    return true;
+  }
+
+  function runExtractFromNarrative(raw) {
+    var lines = raw.split(/\r?\n/);
+    var detected = [];
+
+    var clientLine = findLabeledValue(lines, /^\s*clients?\s*:?\s*(.*)$/i);
+    if (clientLine) {
+      var owners = clientLine.split(/\s*(?:&|\band\b)\s*/i).filter(Boolean);
+      // Only fill a name pair from the narrative when BOTH halves are
+      // currently blank -- see detectSecondaryResorts()'s comment above for
+      // why a half-filled pair from the CRM import must never be grafted onto.
+      if (owners[0] && !fieldVal('v-first') && !fieldVal('v-last')) {
+        var p1 = splitNameLast(owners[0]);
+        if (fillIfBlank('v-first', p1.first)) detected.push('First Name → ' + p1.first);
+        if (fillIfBlank('v-last', p1.last)) detected.push('Last Name → ' + p1.last);
+      }
+      if (owners[1] && !fieldVal('v-co') && !fieldVal('v-col')) {
+        var p2 = splitNameLast(owners[1]);
+        if (fillIfBlank('v-co', p2.first)) detected.push('Co-Owner First → ' + p2.first);
+        if (fillIfBlank('v-col', p2.last)) detected.push('Co-Owner Last → ' + p2.last);
+      }
+    }
+
+    var resortLine = findLabeledValue(lines, /^\s*resort(?:\s*name)?\s*:?\s*(.*)$/i);
+    if (fillIfBlank('v-resort', resortLine)) detected.push('Resort Name → ' + resortLine);
+
+    var reasonLine = findLabeledValue(lines, /^\s*(?:reasons?\s*(?:want|wants|wanting)?\s*out|why\s*(?:do\s*they\s*want|they\s*want)\s*out)\s*:?\s*(.*)$/i);
+    if (fillIfBlank('v-why', reasonLine)) detected.push('Reason for Wanting Out → ' + reasonLine);
+
+    // The full pasted text always goes into Final Notes verbatim (lightly
+    // tidied — collapsed blank lines, trimmed trailing spaces; the wording
+    // itself is never changed) so a transcript, reasons writeup, or
+    // violations notes is preserved as the client reported it, not
+    // summarized or categorized.
+    var notesEl = document.getElementById('v-final-notes');
+    if (notesEl) {
+      var tidied = tidyNotesText(raw);
+      if (tidied) {
+        notesEl.value = notesEl.value ? (notesEl.value + '\n\n' + tidied) : tidied;
+        detected.push('Final Notes (Transcript/Narrative) — ' + tidied.length + ' characters saved');
+      }
+    }
+
+    return { detected: detected };
+  }
+
+  return { runPopulateFromCRM: runPopulateFromCRM, getFieldSummary: getFieldSummary, runExtractFromNarrative: runExtractFromNarrative };
+})();
+
 function populateFromCRM(){
   var raw=document.getElementById('crm-paste-box').value;
   if(!raw.trim()){alert('Paste CRM data first.');return;}
-  var dbg=window.CaseEngine.runPopulateFromCRM(raw);
+  var dbg=LocalCaseParser.runPopulateFromCRM(raw);
   // This page shows Resort 1's city/state as one "Location" field, but the
   // shared parser (matching Vitals) sets them separately — merge for display.
   var cityEl=document.getElementById('v-rescity'), locEl=document.getElementById('v-loc');
@@ -372,6 +824,24 @@ function renderImportDebug(dbg){
 }
 window.populateFromCRM=populateFromCRM;
 
+function extractFromNarrative(){
+  var raw=document.getElementById('narrative-paste').value;
+  if(!raw.trim()){alert('Paste a transcript, reasons, or violations text first.');return;}
+  var res=LocalCaseParser.runExtractFromNarrative(raw);
+  var st=document.getElementById('narrative-status');
+  if(st){
+    if(res.detected.length){
+      st.className='narrative-status ok';
+      st.textContent='Detected/updated: '+res.detected.join(' · ');
+    } else {
+      st.className='narrative-status warn';
+      st.textContent='No labeled Client/Resort/Reason lines found (or those fields were already filled in) — the full text was still saved to Final Notes below.';
+    }
+  }
+  onFieldChange();
+}
+window.extractFromNarrative=extractFromNarrative;
+
 function generateCancellationPDF(){
   return window.CaseEngine.generateCancellationPDF({
     pdfUrl: window.CASE_PDF_URL,
@@ -382,8 +852,7 @@ function generateCancellationPDF(){
 window.generateCancellationPDF=generateCancellationPDF;
 
 function onFieldChange(){
-  if(typeof window.CaseEngine==='undefined') return;
-  var sum=window.CaseEngine.getFieldSummary();
+  var sum=LocalCaseParser.getFieldSummary();
   document.getElementById('rb-filled').textContent=sum.filled;
   document.getElementById('rb-total').textContent=sum.total;
   document.getElementById('rev-filled').textContent=sum.filled;
