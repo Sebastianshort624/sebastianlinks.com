@@ -170,7 +170,7 @@ footer{text-align:center;padding:20px 0 40px;font-size:11px;color:var(--slate-50
     </div>
     <input type="hidden" id="v-rescity">
     <div class="frow3">
-      <div class="ff"><label>Paid Off?</label><select id="v-r1-paidoff" onchange="onFieldChange()"><option value="">Select...</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+      <div class="ff"><label>Paid Off?</label><select id="v-r1-paidoff" onchange="this.dataset.autoLocked='true';onFieldChange()"><option value="">Select...</option><option value="yes">Yes</option><option value="no">No</option></select></div>
       <div class="ff"><label>Balance</label><input id="v-balance" type="number" oninput="onFieldChange()"></div>
       <div class="ff"><label>Current?</label><select id="v-r1-current" onchange="onFieldChange()"><option value="">Select...</option><option value="yes">Yes</option><option value="no">No</option></select></div>
     </div>
@@ -181,8 +181,8 @@ footer{text-align:center;padding:20px 0 40px;font-size:11px;color:var(--slate-50
     </div>
     <div class="frow3">
       <div class="ff"><label>Maintenance Fee</label><input id="v-mtf" type="number" oninput="onFieldChange()"></div>
-      <div class="ff"><label>MTF Paid</label><select id="v-r1-mtffreq2" onchange="onFieldChange()"><option value="">Select...</option><option value="annually">Annually</option><option value="biennially">Biennially</option><option value="triennially">Triennially</option></select></div>
-      <div class="ff"><label>MTF Current?</label><select id="v-r1-mtfcurrent" onchange="onFieldChange()"><option value="">Select...</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+      <div class="ff"><label>MTF Paid</label><select id="v-r1-mtffreq2" onchange="this.dataset.autoLocked='true';onFieldChange()"><option value="">Select...</option><option value="annually">Annually</option><option value="biennially">Biennially</option><option value="triennially">Triennially</option></select></div>
+      <div class="ff"><label>MTF Current?</label><select id="v-r1-mtfcurrent" onchange="this.dataset.autoLocked='true';onFieldChange()"><option value="">Select...</option><option value="yes">Yes</option><option value="no">No</option></select></div>
     </div>
     <div class="ff"><label>Notes</label><textarea id="v-r1-notes" oninput="onFieldChange()"></textarea></div>
   </div>
@@ -209,8 +209,8 @@ footer{text-align:center;padding:20px 0 40px;font-size:11px;color:var(--slate-50
     <div class="card-hdr"><span class="card-num">6</span>Payment Information</div>
     <div class="card-desc">Non-sensitive payment details only</div>
     <div class="frow">
-      <div class="ff"><label>Timeshare Cancellation Fee</label><input id="v-fee" type="number" oninput="onFieldChange()"></div>
-      <div class="ff"><label>Paid in Full?</label><select id="v-pay-paidinfull" onchange="onFieldChange()"><option value="">Select...</option><option value="yes">Yes</option></select></div>
+      <div class="ff"><label>Timeshare Cancellation Fee</label><input id="v-fee" type="number" oninput="this.dataset.autoLocked='true';onFieldChange()"></div>
+      <div class="ff"><label>Paid in Full?</label><select id="v-pay-paidinfull" onchange="this.dataset.autoLocked='true';onFieldChange()"><option value="">Select...</option><option value="yes">Yes</option></select></div>
     </div>
     <div class="frow">
       <div class="ff"><label>Down Payment Amount</label><input id="v-pay-down" type="number" oninput="onFieldChange()"></div>
@@ -220,8 +220,21 @@ footer{text-align:center;padding:20px 0 40px;font-size:11px;color:var(--slate-50
       <div class="ff"><label>2.5% Processing Charge</label><input id="v-pay-processing" type="number" oninput="onFieldChange()"></div>
       <div class="ff"><label>Total Charged Today</label><input id="v-pay-total-today" type="number" oninput="onFieldChange()"></div>
     </div>
-    <div class="ff"><label>Payment Terms</label><input id="v-pay-terms" oninput="onFieldChange()"></div>
+    <div class="ff" style="max-width:220px"><label>Payment Terms</label><input id="v-pay-terms" oninput="onFieldChange()"></div>
+    <div class="ff" style="max-width:220px"><label>Financing APR</label><input id="v-pay-apr" oninput="onFieldChange()"></div>
     <div class="notice">Card numbers, CVV, routing numbers, and account numbers are intentionally not collected here for security reasons.</div>
+
+    <div class="sec">Recommended Pricing Calculator</div>
+    <div class="card-desc" style="padding-left:0;margin-bottom:10px">Behind 1+ months on MTG or MTF → flat $2,982. Current on both → (Total Monthly Expense × 10) + $2,982. Sales tax applied on top of either.</div>
+    <div class="frow3">
+      <div class="ff"><label>MTG Months Behind</label><input id="calc-mtg-behind" type="number" oninput="recalcPricing()"></div>
+      <div class="ff"><label>MTF Months Behind</label><input id="calc-mtf-behind" type="number" oninput="recalcPricing()"></div>
+      <div class="ff"><label>Sales Tax %</label><input id="calc-tax" type="number" step="0.01" oninput="recalcPricing()"></div>
+    </div>
+    <div class="ff" style="max-width:220px"><label>Purchase Year (blank = 2022)</label><input id="calc-purchase-year" type="number" oninput="recalcPricing()"></div>
+    <div id="pricing-work" class="notice" style="font-family:'Inter',sans-serif"></div>
+    <div class="card-desc" style="padding-left:0;margin:2px 0 10px;font-style:italic">The Cancellation Fee below fills in from this formula automatically. Type your own number in and it stays locked to that instead — click below to snap it back to the formula.</div>
+    <div class="pt" onclick="applyRecommendedPrice()" style="cursor:pointer;color:var(--cpg-blue-dark);font-size:12px;font-weight:700;margin:2px 0 14px">↺ Reset Cancellation Fee to Formula</div>
 
     <div class="sec">Payment Method 1</div>
     <div class="frow">
@@ -443,7 +456,7 @@ var LocalCaseParser = (function(){
   // win when multiple headers could satisfy the same target field).
   var FIELD_DEFS = [
     { target: 'v-first-last', label: 'First/Last Name', headers: ['1st first name', 'first name', 'client first name', 'owner 1 name', 'client name', 'primary owner name'], splitName: true, exactOnly: false },
-    { target: 'v-co', label: 'Co-Owner First', headers: ['2nd owner', '2nd owner first name', 'co owner first name', 'second owner first name', 'co owner name'] },
+    { target: 'v-co', label: 'Co-Owner First', headers: ['2nd owner', '2nd owner first name', 'co owner first name', 'second owner first name', 'co owner name', 'first name ii'] },
     { target: 'v-col', label: 'Co-Owner Last', headers: ['2nd owner last name', 'co owner last name', 'second owner last name'] },
     { target: 'v-mail-addr', label: 'Mailing Address', headers: ['street', 'mailing address', 'client address', 'address'] },
     { target: 'v-owner-city', label: 'City', headers: ['city', 'client city'], exactOnly: true },
@@ -457,22 +470,29 @@ var LocalCaseParser = (function(){
 
     { target: 'v-resort', label: 'Resort #1 Name', headers: ['r1 resort name', 'resort name', 'primary resort', 'timeshare resort'] },
     { target: 'v-rescity', label: 'Resort #1 City', headers: ['r1 resort city', 'resort city', 'city of resort'] },
-    { target: 'v-loc', label: 'Resort #1 State', headers: ['r1 resort state', 'resort state', 'st'], exactOnly: true },
+    { target: 'v-loc', label: 'Resort #1 State', headers: ['r1 resort state', 'resort state', 'st', 'res st'], exactOnly: true },
     { target: 'v-r1-paidoff', label: 'Resort #1 Paid Off?', headers: ['r1 paid off', 'paid off'], transform: toYesNo, isSelect: true },
     { target: 'v-balance', label: 'Resort #1 Balance', headers: ['r1 balance amount', 'balance amount', 'mtg balance', 'current balance', 'principal balance'], transform: stripCurrency },
     { target: 'v-r1-current', label: 'Resort #1 Current?', headers: ['r1 current on mortgage', 'current on mortgage'], transform: toYesNo, isSelect: true },
-    { target: 'v-mtg', label: 'Resort #1 Payment Amount', headers: ['mtg mo', 'r1 ly mortgage payment', 'monthly mortgage payment', 'mortgage payment monthly', 'mortgage payment'], transform: stripCurrency },
+    { target: 'v-mtg', label: 'Resort #1 Payment Amount', headers: ['mtg mo', 'r1 ly mortgage payment', 'monthly mortgage payment', 'mortgage payment monthly', 'mortgage payment', 'mortgage payments mo'], transform: stripCurrency },
     { target: 'v-r1-owntype', label: 'Resort #1 Ownership Type', headers: ['r1 points or weeks', 'ownership type'], transform: function(v){return toSelectValue(v, [['week','week'],['points','points']]);}, isSelect: true },
     { target: 'v-r1-usage', label: 'Resort #1 Usage Rights', headers: ['r1 usage', 'usage'], transform: function(v){return toSelectValue(v, [['annual','annual'],['even','even'],['odd','odd'],['triennial','triennial']]);}, isSelect: true },
     { target: 'v-mtf', label: 'Resort #1 Maintenance Fee', headers: ['mtf mo', 'r1 mait tax fees', 'maintenance fee monthly', 'mait tax fees', 'maintenance fee'], transform: stripCurrency },
     { target: 'v-r1-mtfcurrent', label: 'Resort #1 MTF Current?', headers: ['r1 current on mait fees', 'current on maintenance fees', 'current on mait fees'], transform: toYesNo, isSelect: true },
-    { target: 'v-why', label: 'Reason for Wanting Out', headers: ['r1 why do they want out', 'why do they want out', 'reason for wanting out', 'reason client wants out'] },
+    { target: 'v-why', label: 'Reason for Wanting Out', headers: ['r1 why do they want out', 'why do they want out', 'reason for wanting out', 'reason client wants out', 'why they want out'] },
 
-    { target: 'v-fee', label: 'Timeshare Cancellation Fee', headers: ['total service cost', 'total amount charging', 'service fee', 'cancellation fee'], transform: stripCurrency },
     { target: 'v-pay-down', label: 'Down Payment Amount', headers: ['down payment'], transform: stripCurrency },
     { target: 'v-pay-financed', label: 'Amount Being Financed', headers: ['total loan amount', 'amount financed'], transform: stripCurrency },
     { target: 'v-pay-terms', label: 'Payment Terms', headers: ['loan term'] },
-    { target: 'v-final-notes', label: 'Final Notes', headers: ['notes', 'details', 'agent notes'] }
+    { target: 'v-pay-apr', label: 'Fee Financing APR', headers: ['financing apr'] },
+    { target: 'v-final-notes', label: 'Final Notes', headers: ['notes', 'details', 'agent notes'] },
+
+    // Inputs for the Recommended Pricing calculator below -- auto-filled from
+    // CRM data when present, but always editable/enterable by hand too.
+    { target: 'calc-mtg-behind', label: 'MTG Months Behind', headers: ['mtg months behind'], transform: stripCurrency },
+    { target: 'calc-mtf-behind', label: 'MTF Months Behind', headers: ['mtf behind months', 'mtf months behind'], transform: stripCurrency },
+    { target: 'calc-tax', label: 'Sales Tax %', headers: ['sales tax', 'sales tax pct'], transform: stripCurrency },
+    { target: 'calc-purchase-year', label: 'Purchase Year', headers: ['year purchased', 'purchase year'], transform: stripCurrency, exactOnly: true }
   ];
 
   // Rn- prefixed field defs applied identically to resorts #2-4, but ONLY
@@ -501,6 +521,7 @@ var LocalCaseParser = (function(){
       if (!has) return false;
     }
     el.value = value;
+    el.dataset.autoLocked = 'true'; // explicit value (CRM data) -- inferPaidOff() must never override this
     return true;
   }
 
@@ -508,6 +529,139 @@ var LocalCaseParser = (function(){
     var parts = String(fullValue).trim().split(/\s+/);
     if (parts.length <= 1) return { first: parts[0] || '', last: '' };
     return { first: parts.slice(0, -1).join(' '), last: parts[parts.length - 1] };
+  }
+
+  // Some CRM exports (e.g. the ESP pricing sheet) carry First Name and Last
+  // Name as two SEPARATE columns rather than one combined "Client Name"
+  // column. The 'v-first-last' def above assumes a combined column and
+  // would otherwise run splitNameLast() on the bare first name alone,
+  // silently dropping the real last name. When both a first-name column
+  // AND a last-name column carry real values, treat them as already-split
+  // and claim their header keys before the combined-name def ever runs.
+  function handleDiscreteFirstLast(normMap, mapped, usedKeys) {
+    var firstAliases = ['1st first name', 'first name', 'client first name'];
+    var lastAliases = ['last name', 'client last name', '1st last name'];
+    var fKey = firstAliases.filter(function(k){ return isRealValue(normMap[k]); })[0];
+    var lKey = lastAliases.filter(function(k){ return isRealValue(normMap[k]); })[0];
+    if (!fKey || !lKey) return; // no distinct last-name column found -- let the combined-name path handle it
+    if (setValue('v-first', normMap[fKey])) mapped['First Name'] = normMap[fKey];
+    if (setValue('v-last', normMap[lKey])) mapped['Last Name'] = normMap[lKey];
+    usedKeys[fKey] = true;
+    usedKeys[lKey] = true;
+  }
+
+  // The ESP pricing-sheet export's "MTF/Mo" column has a confirmed history
+  // of holding a stale/broken formula result (e.g. $2,167 for a client
+  // whose real monthly maintenance fee is $83.33 -- see the ESP-30 arrears
+  // rebuild). Its "MTF/Yr" column doesn't share that bug and IS reliable,
+  // so whenever a real annual figure is present, compute the monthly fee
+  // from that (÷12) instead of ever trusting the broken /Mo column --
+  // and claim every raw key that would otherwise feed the broken path so
+  // applyFieldDefs() can't overwrite this with the bad value afterward.
+  function deriveMtfFromAnnual(normMap, mapped, usedKeys) {
+    var yrAliases = ['mtf yr', 'maintenance fees yr', 'r1 mtf yr'];
+    var yrKey = yrAliases.filter(function(k){ return isRealValue(normMap[k]); })[0];
+    if (!yrKey) return; // no reliable annual figure on file -- fall back to the direct /Mo alias
+    var yr = parseFloat(stripCurrency(normMap[yrKey]));
+    if (isNaN(yr)) return;
+    var monthly = (yr / 12).toFixed(2);
+    if (setValue('v-mtf', monthly)) {
+      mapped['Resort #1 Maintenance Fee'] = monthly + ' (computed from MTF/Yr ' + normMap[yrKey] + ' ÷ 12 -- this sheet\'s MTF/Mo column has a known bad-cell history)';
+    }
+    usedKeys[yrKey] = true;
+    ['mtf mo', 'r1 mait tax fees', 'maintenance fee monthly', 'mait tax fees', 'maintenance fee'].forEach(function(k){ usedKeys[k] = true; });
+  }
+
+  // Two dollar fields in the ESP pricing-sheet export (Mortgage Payment,
+  // Maintenance Fee) have a known history of holding a stale/broken
+  // formula result far outside a normal monthly amount (see the
+  // ESP-30 arrears rebuild). Rather than silently trust an implausible
+  // number into the case file, the value is still imported (so nothing is
+  // ever blocked) but its debug-panel label is flagged for a human check.
+  function annotateIfImplausible(mapped, label, max) {
+    if (!(label in mapped)) return;
+    var n = parseFloat(mapped[label]);
+    if (!isNaN(n) && n > max) {
+      mapped[label] = mapped[label] + '  ⚠ verify — unusually high for a monthly amount (source sheet has had stale cells here before)';
+    }
+  }
+
+  // "Paid Off?" is answered NO whenever there's a mortgage payment on file,
+  // and YES whenever there isn't -- a mortgage payment and being paid off
+  // are mutually exclusive, so this is inferred rather than making the
+  // agent answer it separately. It keeps re-inferring as the mortgage
+  // payment field changes (so pasting CRM data after page load still
+  // corrects an earlier default) right up until either an explicit "Paid
+  // Off" CRM column sets it (setValue() locks it) or the agent manually
+  // picks a value in the dropdown (its onchange locks it) -- at that point
+  // it's never touched again.
+  function inferPaidOff() {
+    var el = document.getElementById('v-r1-paidoff');
+    if (!el || el.dataset.autoLocked === 'true') return false;
+    var mtgEl = document.getElementById('v-mtg');
+    var mtg = mtgEl ? parseFloat(mtgEl.value) : NaN;
+    var hasMortgage = !isNaN(mtg) && mtg > 0;
+    var val = hasMortgage ? 'no' : 'yes';
+    if (el.value === val) return false;
+    el.value = val;
+    return true;
+  }
+
+  // "MTF Paid" (billing frequency) defaults to Annually whenever there's a
+  // maintenance fee on file -- virtually all timeshare maintenance fees
+  // bill annually (and this sheet quotes MTF as a "/Yr" figure, confirming
+  // it), so there's nothing to ask the agent when no other frequency is
+  // indicated. Same auto-lock convention as inferPaidOff(): an explicit
+  // CRM column or a manual selection locks it and stops any further
+  // auto-answering.
+  function inferMtfFrequency() {
+    var el = document.getElementById('v-r1-mtffreq2');
+    if (!el || el.dataset.autoLocked === 'true') return false;
+    var mtfEl = document.getElementById('v-mtf');
+    var hasMtf = !!mtfEl && parseFloat(mtfEl.value) > 0;
+    var val = hasMtf ? 'annually' : '';
+    if (!val || el.value === val) return false;
+    el.value = val;
+    return true;
+  }
+
+  // "MTF Current?" is answered from MTF Months Behind whenever that figure
+  // is on file: behind 1+ months -> No, exactly 0 -> Yes. Left alone (never
+  // guessed) when months-behind is blank/unknown -- unlike Paid Off/mortgage,
+  // "no data" here isn't itself evidence of being current.
+  function inferMtfCurrent() {
+    var el = document.getElementById('v-r1-mtfcurrent');
+    if (!el || el.dataset.autoLocked === 'true') return false;
+    var behindEl = document.getElementById('calc-mtf-behind');
+    var behindRaw = behindEl ? behindEl.value.trim() : '';
+    if (!behindRaw) return false;
+    var behind = parseFloat(behindRaw);
+    if (isNaN(behind)) return false;
+    var val = behind > 0 ? 'no' : 'yes';
+    if (el.value === val) return false;
+    el.value = val;
+    return true;
+  }
+
+  // "Paid in Full?" and financing are mutually exclusive: this checkbox-style
+  // field only ever has "" or "yes" (there's no "no" -- a client either paid
+  // in full, or the financing fields below apply instead). Answered Yes only
+  // when NONE of Payment Terms / Financing APR / Amount Being Financed carry
+  // any data; cleared back to blank the moment any of them do (e.g. CRM data
+  // arrives after the page already loaded with everything empty).
+  function inferPaidInFull() {
+    var el = document.getElementById('v-pay-paidinfull');
+    if (!el || el.dataset.autoLocked === 'true') return false;
+    var termsEl = document.getElementById('v-pay-terms');
+    var aprEl = document.getElementById('v-pay-apr');
+    var financedEl = document.getElementById('v-pay-financed');
+    var hasFinancing = !!(termsEl && termsEl.value.trim())
+      || !!(aprEl && aprEl.value.trim())
+      || (financedEl && parseFloat(financedEl.value) > 0);
+    var val = hasFinancing ? '' : 'yes';
+    if (el.value === val) return false;
+    el.value = val;
+    return true;
   }
 
   // STRICT SECONDARY RESORT RULE: resorts #2-4 populate ONLY when an exact
@@ -610,8 +764,16 @@ var LocalCaseParser = (function(){
 
     var mapped = {};
     var usedKeys = {};
+    handleDiscreteFirstLast(normMap, mapped, usedKeys);
+    deriveMtfFromAnnual(normMap, mapped, usedKeys);
     applyFieldDefs(normMap, headerKeysWithData, mapped, usedKeys);
     detectSecondaryResorts(normMap, mapped);
+    annotateIfImplausible(mapped, 'Resort #1 Maintenance Fee', 600);
+    annotateIfImplausible(mapped, 'Resort #1 Payment Amount', 1500);
+    if (inferPaidOff()) mapped['Resort #1 Paid Off? (inferred from mortgage payment)'] = document.getElementById('v-r1-paidoff').value;
+    if (inferMtfFrequency()) mapped['Resort #1 MTF Paid (inferred, annually)'] = document.getElementById('v-r1-mtffreq2').value;
+    if (inferMtfCurrent()) mapped['Resort #1 MTF Current? (inferred from MTF Months Behind)'] = document.getElementById('v-r1-mtfcurrent').value;
+    if (inferPaidInFull()) mapped['Paid in Full? (inferred from financing fields)'] = document.getElementById('v-pay-paidinfull').value || '(blank -- financing applies)';
 
     // Merge Resort #1's city (hidden helper field) into its Location field,
     // same convention populateFromCRM() already expects downstream.
@@ -654,8 +816,16 @@ var LocalCaseParser = (function(){
 
     var mapped = {};
     var usedKeys = {};
+    handleDiscreteFirstLast(normMap, mapped, usedKeys);
+    deriveMtfFromAnnual(normMap, mapped, usedKeys);
     applyFieldDefs(normMap, headerKeysWithData, mapped, usedKeys);
     detectSecondaryResorts(normMap, mapped);
+    annotateIfImplausible(mapped, 'Resort #1 Maintenance Fee', 600);
+    annotateIfImplausible(mapped, 'Resort #1 Payment Amount', 1500);
+    if (inferPaidOff()) mapped['Resort #1 Paid Off? (inferred from mortgage payment)'] = document.getElementById('v-r1-paidoff').value;
+    if (inferMtfFrequency()) mapped['Resort #1 MTF Paid (inferred, annually)'] = document.getElementById('v-r1-mtffreq2').value;
+    if (inferMtfCurrent()) mapped['Resort #1 MTF Current? (inferred from MTF Months Behind)'] = document.getElementById('v-r1-mtfcurrent').value;
+    if (inferPaidInFull()) mapped['Paid in Full? (inferred from financing fields)'] = document.getElementById('v-pay-paidinfull').value || '(blank -- financing applies)';
 
     var cityEl = document.getElementById('v-rescity'), locEl = document.getElementById('v-loc');
     if (cityEl && locEl && cityEl.value) {
@@ -780,7 +950,7 @@ var LocalCaseParser = (function(){
     return { detected: detected };
   }
 
-  return { runPopulateFromCRM: runPopulateFromCRM, getFieldSummary: getFieldSummary, runExtractFromNarrative: runExtractFromNarrative };
+  return { runPopulateFromCRM: runPopulateFromCRM, getFieldSummary: getFieldSummary, runExtractFromNarrative: runExtractFromNarrative, inferPaidOff: inferPaidOff, inferMtfFrequency: inferMtfFrequency, inferMtfCurrent: inferMtfCurrent, inferPaidInFull: inferPaidInFull };
 })();
 
 function populateFromCRM(){
@@ -842,6 +1012,80 @@ function extractFromNarrative(){
 }
 window.extractFromNarrative=extractFromNarrative;
 
+// ── RECOMMENDED PRICING CALCULATOR ──
+// Formula as specified: behind 1+ months on MTG or MTF -> flat $2,982.
+// Current on both -> (Total Monthly Expense x 10) + $2,982. Sales tax
+// applied on top either way. Separately estimates the remaining mortgage
+// balance from the purchase year (10-yr/120-mo assumed term, defaulting
+// to 2022 when no purchase year is on file). Every input is editable by
+// hand and also auto-fillable from CRM data (see calc-* in FIELD_DEFS).
+function recalcPricing(){
+  var workEl = document.getElementById('pricing-work');
+  if (!workEl) return;
+
+  function numVal(id){ var el=document.getElementById(id); var n=el?parseFloat(el.value):NaN; return isNaN(n)?0:n; }
+  function money(n){ return '$' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+
+  var mtg = numVal('v-mtg');
+  var mtf = numVal('v-mtf');
+  var totalMonthly = mtg + mtf;
+
+  var mtgBehind = numVal('calc-mtg-behind');
+  var mtfBehind = numVal('calc-mtf-behind');
+  var behind = (mtgBehind >= 1) || (mtfBehind >= 1);
+
+  var taxPct = numVal('calc-tax');
+
+  var purchaseYearEl = document.getElementById('calc-purchase-year');
+  var purchaseYearRaw = purchaseYearEl ? purchaseYearEl.value.trim() : '';
+  var purchaseYear = purchaseYearRaw ? parseInt(purchaseYearRaw, 10) : 2022;
+  var thisYear = new Date().getFullYear();
+
+  var baseFee, feeExplain;
+  if (behind) {
+    baseFee = 2982;
+    feeExplain = 'Behind 1+ months on ' + (mtgBehind>=1 && mtfBehind>=1 ? 'both MTG and MTF' : (mtgBehind>=1 ? 'MTG' : 'MTF')) + ' → flat fee ' + money(2982);
+  } else {
+    baseFee = totalMonthly * 10 + 2982;
+    feeExplain = 'Current on both MTG and MTF → (Total Monthly Expense ' + money(totalMonthly) + ' × 10) + ' + money(2982) + ' = ' + money(baseFee);
+  }
+  var finalPrice = baseFee * (1 + taxPct / 100);
+
+  var elapsedYears = Math.max(0, thisYear - purchaseYear);
+  var remainingMonths = Math.max(0, 120 - elapsedYears * 12);
+  var estRemainingMortgage = remainingMonths * mtg;
+
+  workEl.innerHTML =
+      '<div><b>Total Monthly Expense</b> = MTG ' + money(mtg) + ' + MTF ' + money(mtf) + ' = ' + money(totalMonthly) + '</div>'
+    + '<div style="margin-top:6px"><b>Base Fee</b> — ' + feeExplain + '</div>'
+    + '<div style="margin-top:6px"><b>Final Price</b> = ' + money(baseFee) + ' × (1 + ' + taxPct + '%) = <span style="font-weight:800;color:var(--slate-900)">' + money(finalPrice) + '</span></div>'
+    + '<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border);font-weight:800;color:var(--slate-900)">Estimated Remaining Mortgage</div>'
+    + '<div style="margin-top:4px">' + thisYear + ' − Purchase Year (' + purchaseYear + (purchaseYearRaw ? '' : ', default — none on file') + ') = ' + elapsedYears + ' yrs elapsed</div>'
+    + '<div>120-mo term − (' + elapsedYears + ' yrs × 12) = ' + remainingMonths + ' months remaining</div>'
+    + '<div>' + remainingMonths + ' mo × ' + money(mtg) + '/mo = <span style="font-weight:800;color:var(--slate-900)">' + money(estRemainingMortgage) + '</span></div>';
+
+  window.__recommendedPrice = finalPrice;
+
+  // The formula IS the Cancellation Fee -- auto-fills it on every recalc
+  // (CRM import no longer sets this field directly; see FIELD_DEFS) unless
+  // the agent has typed their own number in, which locks it via v-fee's
+  // oninput handler and is never overwritten from here again.
+  var feeEl = document.getElementById('v-fee');
+  if (feeEl && feeEl.dataset.autoLocked !== 'true') {
+    var feeVal = finalPrice.toFixed(2);
+    if (feeEl.value !== feeVal) feeEl.value = feeVal;
+  }
+}
+window.recalcPricing = recalcPricing;
+
+function applyRecommendedPrice(){
+  var el = document.getElementById('v-fee');
+  if (el) el.dataset.autoLocked = 'false'; // explicit "sync to formula" action -- also re-enables auto-tracking going forward
+  recalcPricing();
+  onFieldChange();
+}
+window.applyRecommendedPrice = applyRecommendedPrice;
+
 function generateCancellationPDF(){
   return window.CaseEngine.generateCancellationPDF({
     pdfUrl: window.CASE_PDF_URL,
@@ -852,6 +1096,10 @@ function generateCancellationPDF(){
 window.generateCancellationPDF=generateCancellationPDF;
 
 function onFieldChange(){
+  LocalCaseParser.inferPaidOff();
+  LocalCaseParser.inferMtfFrequency();
+  LocalCaseParser.inferMtfCurrent();
+  LocalCaseParser.inferPaidInFull();
   var sum=LocalCaseParser.getFieldSummary();
   document.getElementById('rb-filled').textContent=sum.filled;
   document.getElementById('rb-total').textContent=sum.total;
@@ -869,6 +1117,7 @@ function onFieldChange(){
     hdrEl.style.display='none';
     listEl.textContent='';
   }
+  if (typeof recalcPricing === 'function') recalcPricing();
 }
 document.addEventListener('DOMContentLoaded', onFieldChange);
 </script>
