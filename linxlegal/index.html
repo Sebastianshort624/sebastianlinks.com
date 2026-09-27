@@ -189,6 +189,19 @@ const L = [
   { id: 'compra', s: 'financial', t: F, l: 'Compra original', field: 'purchasePrice', confirm: 'La compra original de {{purchaseYear}} fue de {{purchasePrice}}. ¿Correcto?', ask: '¿Cuánto pagaron por la compra original de {{purchaseYear}}?' },
   { id: 'upg-precio', s: 'financial', t: F, l: 'Upgrade', field: 'upgradePrice', confirm: 'El upgrade de {{upgradeDate}} fue de {{upgradePrice}}. ¿Correcto?', ask: '¿Y cuánto fue el upgrade de {{upgradeDate}}?', when: () => has('upgradeTo') || has('upgradeDate') },
   { id: 'enganche', s: 'financial', t: F, l: 'Down payment', field: 'downPayment', confirm: 'Tengo un down payment de {{downPayment}}. ¿Correcto?', ask: '¿Dieron algún down payment en la compra?' },
+  // Manuel/Rosa and future cases: expanded PRECALL issue-spotting questions
+  { id:'m-year', s:'missing', t:M, l:'Año de compra', text:'¿En qué año compraron originalmente el tiempo compartido con Westgate?' },
+  { id:'m-credit-score', s:'missing', t:M, l:'Crédito', text:'¿Cuál es su puntaje de crédito actualmente y aproximadamente cuánto era cuando compraron?' },
+  { id:'m-leave', s:'missing', t:M, l:'Presión / intento de salir', text:'Cuando sus hijos tenían frío y querían irse, ¿ustedes les dijeron directamente a los vendedores que querían terminar la presentación e irse? ¿Qué hicieron o dijeron los vendedores después?' },
+  { id:'m-two-cards', s:'missing', t:M, l:'Dos tarjetas de $500', text:'¿Quién les dijo que solicitaran las dos tarjetas de $500? ¿Sabían antes de solicitarlas que eran tarjetas de crédito a nombre de ustedes? ¿Les explicaron el APR, los términos y los pagos antes de solicitarlas?' },
+  { id:'m-card-docs', s:'missing', t:M, l:'Tarjetas / documentos', text:'¿Qué compañías emitieron las tarjetas? ¿Todavía tienen esas tarjetas o estados de cuenta? ¿Todavía deben algún saldo?' },
+  { id:'m-interest-free', s:'missing', t:M, l:'“Sin intereses”', text:'Cuando les dijeron que los pagos eran “sin intereses”, ¿a qué préstamo o cuenta se referían? ¿Quién se los dijo, qué tasa terminaron cobrando y cuándo descubrieron que sí había intereses?' },
+  { id:'m-cancel-detail', s:'missing', t:M, l:'Cancelación', text:'¿Quién les dijo que podían cancelar en cualquier momento? ¿Cuándo intentaron cancelar, cómo lo hicieron, qué les respondió Westgate y tienen correos, cartas, números de caso o algún comprobante?' },
+  { id:'m-rental-detail', s:'missing', t:M, l:'Alquiler / ingresos', text:'¿Qué les prometieron exactamente sobre alquilar el tiempo compartido? ¿Les dijeron cuánto podían ganar? ¿Quién supuestamente los iba a ayudar y algún empleado realmente intentó ayudarlos?' },
+  { id:'m-upgrade-detail', s:'missing', t:M, l:'Upgrade', text:'¿Qué les dijeron exactamente cuando afirmaron que el upgrade “se pagaría solo”? ¿Cómo supuestamente se iba a pagar solo? ¿Qué les dijeron sobre que sería un tax write-off y qué prometieron que mejoraría?' },
+  { id:'m-booking-detail', s:'missing', t:M, l:'Reservaciones', text:'¿Cuántas veces han intentado reservar? ¿Qué destinos y fechas solicitaron? ¿Qué les respondió Westgate? ¿Cuántas veces han logrado utilizar realmente el timeshare y cuándo fue la última vez?' },
+  { id:'m-impact', s:'missing', t:M, l:'Impacto financiero', text:'¿En qué trabajan actualmente? ¿Cuál es aproximadamente el ingreso mensual del hogar? ¿Estos pagos les están causando dificultad financiera? ¿Han tenido que utilizar ahorros o tarjetas para mantenerse al día?' },
+  { id:'m-catchall', s:'missing', t:M, l:'Última pregunta', text:'¿Hay alguna otra promesa que les hicieron verbalmente, o algo importante sobre la venta, el upgrade o sus intentos de cancelar, que todavía no hayamos cubierto?' },
   ...[
     ['presentacion', '¿Cuánto tiempo duró la presentación y aproximadamente cuántas veces dijeron que no antes de comprar?'],
     ['rescision', '¿Les explicaron claramente el período que tenían para cancelar después de firmar?'],
@@ -363,5 +376,23 @@ $('newBtn').onclick = newClient;
 $('clientSel').onchange = e => load(e.target.value);
 $('notesbox').addEventListener('input', e => { notes = e.target.value; persist(); });
 document.addEventListener('keydown', e => { if (['TEXTAREA', 'INPUT', 'SELECT'].includes(document.activeElement.tagName)) return; if (e.key === 'ArrowRight') step(1); if (e.key === 'ArrowLeft') step(-1); });
-if (clients.length) load(clients[0].id); else newClient();
+if (clients.length) load(clients[0].id); else {
+  const id='manuel-rosa-westgate';
+  cid=id;
+  D=blank();
+  Object.assign(D,{
+    owner1:'Manuel', owner2:'Rosa', resort:'Westgate',
+    phone:'+17866240181', email:'klinaresvenezuela@gmail.com',
+    payoff:'5500', payoffStatus:'estimado', payment:'198',
+    mf:'400', mfFreq:'anual', mfInflation:'8',
+    pressure:'sí', bookingProblems:'sí', rental:'sí', employeeHelp:'sí',
+    triedCancel:'sí', creditCards:'sí', fixProblem:'sí',
+    hasMortgage:'sí'
+  });
+  notes='Work phone: +17866262305\nMobile: +17866240181\nHome: 11260 NW 88th Terrace, Doral, FL 33178 US\n\nTony Cordon spoke with Manuel a couple of times. Nice guy. He worked late, so appointment was rescheduled for Sat 9/26 approx. 5:30–6 PM. Next call noted as 6:30 PM; confirmation call 6:00 PM. Person assigned / Phone Deal CB: Sebastian Short. Questionnaire uploaded; submitted by both husband and wife.\n\nKEY FACTS: Children were 4 and 10, got out of the pool, were cold and wanted to leave, but salespeople continued insisting. They did not have money for the down payment and were given two $500 credit cards, one for each spouse, to make the initial payment. Manuel describes the ownership as a useless lifetime debt and says they cannot get reservations.\n\nDOCUMENTED: pressured to purchase that day; offer good that day only; account flagged; told something was no longer offered; employee would help rent; upgrade would pay for new cost; tax write-off representation; better use; representative would personally help; told they could cancel anytime; tried to cancel and were not allowed; one or more credit cards; multiple credit inquiries; says forced into credit cards/additional financing; told payments were interest-free then discovered otherwise; very poor availability.\n\nMISSING / VERIFY: year purchased, credit score now/at purchase, purchase price, APR, last upgrade, presentation length, number of times they said no, exact card companies/accounts, card terms/status/balances, actual usage, reservation attempts, contracts available, employment, household income, savings/assets, financial strain, credit impact, formal Westgate complaint, future vacations, months remaining, additional timeshare debt.';
+  clients=[{id,name:'Manuel / Rosa'}];
+  localStorage.setItem(IDX,JSON.stringify(clients));
+  localStorage.setItem('linxtp:'+id,JSON.stringify({D,curId:null,history:{},notes}));
+  load(id);
+}
 </script></body></html>
