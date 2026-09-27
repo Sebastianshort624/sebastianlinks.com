@@ -1,0 +1,367 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Linx Legal — Teleprompter (manual)</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#ffffff;color:#222}
+header{position:sticky;top:0;z-index:5;background:#fff;padding:10px 18px;border-bottom:1px solid #d9d9d9;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.logo{height:30px;display:block;margin-bottom:6px}
+.top{display:flex;justify-content:space-between;gap:12px;align-items:center;color:#406f9b;flex-wrap:wrap}
+.jump{display:flex;gap:7px;overflow-x:auto;padding-top:10px}
+.jump button{white-space:nowrap;background:#fff;color:#406f9b;border:1px solid #406f9b}
+.jump button:hover,.jump button.on{background:#406f9b;color:#fff}
+main{max-width:1100px;margin:auto;padding:18px}
+.facts{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:12px}
+.fact{background:#fff;color:#222;border-radius:9px;padding:9px 11px;border:1px solid #e3e3e3;border-left:4px solid #406f9b;cursor:pointer}
+.fact b{font-size:11px;color:#406f9b;display:block;margin-bottom:3px}
+.slide{min-height:400px;padding:38px;border-radius:18px;background:#fff;border:1px solid #dedede;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+.slide.internal{border:2px dashed #406f9b}
+.stage{color:#406f9b;font-weight:900;letter-spacing:1px;font-size:12px}
+h2{font-size:20px;margin:8px 0 22px;color:#406f9b;display:flex;gap:10px;align-items:center}
+.mode{font-size:11px;border:1px solid #406f9b;border-radius:999px;padding:2px 8px;text-transform:uppercase}
+.mode.c{background:#406f9b;color:#fff}
+.script{font-size:clamp(24px,3vw,40px);font-weight:750;line-height:1.35;color:#202020}
+.slide.internal .script{font-size:clamp(17px,2vw,22px);font-weight:600}
+.v{color:#406f9b;border-bottom:2px dotted #406f9b;cursor:pointer}
+.v.missing{color:#b23b2e;border-color:#b23b2e}
+.onslide{margin-top:18px;border-top:1px solid #eee;padding-top:10px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px 14px}
+.onslide label,.grid label{font-size:12px;font-weight:700;color:#406f9b}
+.hint{margin-top:20px;color:#777;font-size:13px;border-top:1px solid #eee;padding-top:12px}
+.controls{display:flex;justify-content:space-between;align-items:center;margin-top:12px;gap:10px}
+button{padding:11px 15px;border:0;border-radius:8px;font-weight:800;cursor:pointer;font-family:inherit}
+#prev{background:#fff;color:#406f9b;border:1px solid #d4d4d4}
+#next{background:#406f9b;color:#fff}
+.quick{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.quick button{background:#fff;color:#406f9b;border:1px solid #ddd}
+.quick button:hover{background:#406f9b;color:#fff}
+.panel{display:none;background:#fff;color:#222;border-radius:12px;padding:16px;margin-bottom:12px;border:1px solid #ddd;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.panel.show{display:block}
+textarea,input,select{width:100%;padding:8px;margin-top:3px;background:#fff;border:1px solid #ccc;border-radius:6px;color:#222;font:inherit}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px 14px}
+.grp{grid-column:1/-1;margin-top:8px;font-weight:900;color:#406f9b;border-bottom:1px solid #eee;padding-bottom:4px}
+.row{display:flex;justify-content:space-between;border-bottom:1px solid #eee;padding:7px 0;gap:10px}
+.row b{color:#406f9b;white-space:nowrap}
+.small{font-size:12px;color:#777}
+.bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.bar input,.bar select{width:auto;min-width:200px}
+.notice{border:2px solid #406f9b;color:#406f9b;font-weight:700;border-radius:10px;padding:10px 14px;margin-bottom:12px;display:none}
+@media(max-width:860px){.facts{grid-template-columns:1fr 1fr}.slide{padding:22px}.grid,.onslide{grid-template-columns:1fr 1fr}}
+</style></head><body>
+<header>
+<img class="logo" src="logo.png" alt="LINX LEGAL INC">
+<div class="top">
+  <b id="title">LINX LEGAL · TELEPROMPTER</b>
+  <div class="bar">
+    <select id="clientSel" title="Clientes guardados en este navegador"></select>
+    <button id="newBtn" style="background:#406f9b;color:#fff">+ Nuevo cliente</button>
+    <span><span id="count"></span> · <span class="small" id="saved"></span></span>
+  </div>
+</div>
+<div class="jump" id="jump"></div></header>
+<main>
+<div class="facts" id="facts"></div>
+<div class="quick">
+<button onclick="toggle('data')">✏️ DATOS DEL CLIENTE</button>
+<button onclick="toggle('missingbox')">⚠️ FALTANTE</button>
+<button onclick="toggle('notes')">📝 NOTAS</button>
+<button onclick="toggle('fin')">🧮 CÁLCULOS</button>
+<button onclick="go('issues')">⚖️ HALLAZGOS</button>
+</div>
+<div class="notice" id="notice"></div>
+<div id="data" class="panel"><b>Escriba o corrija cualquier dato — los cálculos y todas las diapositivas se actualizan al instante, sin perder su lugar.</b><div class="grid" id="grid" style="margin-top:8px"></div></div>
+<div id="missingbox" class="panel"><div id="missinglive"></div></div>
+<div id="notes" class="panel"><b>Notas de la llamada</b> <span class="small">(se guardan en este navegador)</span><textarea id="notesbox" rows="6"></textarea></div>
+<div id="fin" class="panel"><div id="finbody"></div></div>
+<div class="slide" id="slidebox"><div class="stage" id="stage"></div><h2 id="label"></h2><div class="script" id="script"></div><div class="onslide" id="onslide"></div><div class="hint">← / → funcionan. Los botones de sección saltan sin perder su lugar. Toque cualquier valor azul/rojo para corregirlo.</div></div>
+<div class="controls"><button id="prev">← BACK</button><span class="small" id="upnext"></span><button id="next">NEXT →</button></div>
+</main>
+<script>
+// ───────────────── DATA MODEL (one record per client, stored only in this browser) ─────────────────
+const YN = ['', 'sí', 'no', 'no sé'];
+const FIELDS = [
+  ['Cliente', [
+    ['owner1', 'Propietario 1 (nombre)', 't'], ['owner2', 'Propietario 2 (nombre)', 't'], ['phone', 'Teléfono', 't'], ['email', 'Email', 't'],
+    ['resort', 'Resort / desarrollador', 't'], ['contracts', 'Contratos', 'n'], ['points', 'Puntos/año', 'n'], ['purchaseYear', 'Año de compra', 'n'],
+    ['upgradeDate', 'Último upgrade (cuándo)', 't'], ['upgradeFrom', 'Upgrade de (nivel)', 't'], ['upgradeTo', 'Upgrade a (nivel)', 't'], ['yearsNoUse', 'Años sin uso', 'n'],
+  ]],
+  ['Hipoteca', [
+    ['hasMortgage', '¿Tiene hipoteca?', ['sí', 'no']], ['payoff', 'Payoff (saldo) $', '$'], ['payoffStatus', 'Payoff', ['estimado', 'verificado']], ['payment', 'Pago mensual $', '$'],
+    ['apr', 'APR %', 'n'], ['termYears', 'Plazo (años)', 'n'], ['remainingMonths', 'Meses restantes', 'n'], ['downPayment', 'Down payment $', '$'],
+    ['purchasePrice', 'Compra original $', '$'], ['upgradePrice', 'Upgrade $', '$'],
+  ]],
+  ['Mantenimiento', [
+    ['mf', 'Mantenimiento $', '$'], ['mfFreq', 'Frecuencia', ['anual', 'semestral', 'trimestral', 'mensual']], ['mfOriginal', 'MF original $', '$'], ['mfInflation', 'Aumento MF %/año', 'n'],
+  ]],
+  ['Cuestionario (Case Analyst) — sí / no / no sé', [
+    ['sawCredibility', '¿Vieron BBB / Best Company?', YN], ['bookingProblems', '¿Sin disponibilidad al reservar?', YN], ['pressure', '¿Presión / oferta de un solo día?', YN],
+    ['fixProblem', '¿Upgrade para “resolver” un problema?', YN], ['rental', '¿Promesa de rentarlo para ingresos?', YN], ['employeeHelp', '¿Un empleado los ayudaría a rentar?', YN],
+    ['upgradeWorse', '¿Upgrade costó más / no resolvió?', YN], ['resaleSeen', '¿Vieron valores en eBay/RedWeek?', YN], ['investment', '¿Les dijeron que era inversión?', YN],
+    ['refinance', '¿Promesa de refinanciar?', YN], ['buyback', '¿Promesa de recompra?', YN], ['triedCancel', '¿Intentaron cancelar y no los dejaron?', YN],
+    ['creditCards', '¿Les abrieron tarjetas / consultas de crédito?', YN], ['wroteReasons', '¿Les pidieron escribir razones?', YN],
+  ]],
+  ['Pago', [['cash', 'Fondos disponibles $', '$'], ['card', 'Disponible en tarjeta $', '$']]],
+];
+const META = {}; FIELDS.forEach(([g, fs]) => fs.forEach(([k, l, t]) => META[k] = { l, t, g }));
+const blank = () => { const d = {}; Object.keys(META).forEach(k => d[k] = ''); d.mfFreq = 'anual'; d.mfInflation = 8; d.payoffStatus = 'estimado'; d.hasMortgage = 'sí'; return d; };
+
+const $ = x => document.getElementById(x);
+const num = v => { const n = parseFloat(String(v ?? '').replace(/[$,%\s]/g, '')); return isFinite(n) ? n : null; };
+const usd = (v, c) => v == null ? null : v.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: c ? 2 : 0, minimumFractionDigits: c ? 2 : 0 });
+const PER = { anual: 1, semestral: 2, trimestral: 4, mensual: 12 };
+const has = k => D[k] !== '' && D[k] != null;
+const yes = k => D[k] === 'sí';
+
+// ───────────────── STORAGE (multiple clients in this browser) ─────────────────
+const IDX = 'linxtp:index';
+let clients = []; try { clients = JSON.parse(localStorage.getItem(IDX) || '[]'); } catch (e) {}
+let cid = null, D = blank(), curId = null, history = {}, notes = '', order = [];
+function persist() {
+  if (!cid) return;
+  try {
+    localStorage.setItem('linxtp:' + cid, JSON.stringify({ D, curId, history, notes }));
+    const name = [D.owner1, D.owner2].filter(Boolean).join(' / ') || 'Sin nombre';
+    const e = clients.find(c => c.id === cid); if (e) e.name = name; else clients.unshift({ id: cid, name });
+    localStorage.setItem(IDX, JSON.stringify(clients));
+    $('saved').textContent = 'guardado ' + new Date().toLocaleTimeString();
+  } catch (e) { $('saved').textContent = 'no se pudo guardar'; }
+}
+function load(id) {
+  cid = id; let s = null; try { s = JSON.parse(localStorage.getItem('linxtp:' + id) || 'null'); } catch (e) {}
+  D = Object.assign(blank(), s?.D || {}); curId = s?.curId || null; history = s?.history || {}; notes = s?.notes || ''; order = [];
+  $('notesbox').value = notes; buildGrid(); render(); fillSel();
+}
+function newClient() { const id = 'c' + Date.now().toString(36); clients.unshift({ id, name: 'Nuevo cliente' }); load(id); persist(); $('data').classList.add('show'); }
+function fillSel() { $('clientSel').innerHTML = clients.map(c => `<option value="${c.id}" ${c.id === cid ? 'selected' : ''}>${c.name.replace(/</g, '&lt;')}</option>`).join(''); }
+
+// ───────────────── CALCULATIONS (from whatever has been entered) ─────────────────
+function calc() {
+  const mort = D.hasMortgage !== 'no';
+  const pay = mort ? num(D.payment) || 0 : 0;
+  let rem = num(D.remainingMonths);
+  if (rem == null && mort && num(D.termYears)) rem = Math.round(num(D.termYears) * 12);
+  rem = mort ? rem || 0 : 0;
+  const g = (num(D.mfInflation) ?? 8) / 100;
+  const mfA = num(D.mf) != null ? num(D.mf) * (PER[D.mfFreq] || 1) : null;
+  let t10 = 0, t20 = 0, mf10 = 0;
+  for (let y = 1; y <= 20; y++) { const m = (mfA || 0) * Math.pow(1 + g, y - 1); const l = Math.max(0, Math.min(12, rem - 12 * (y - 1))) * pay; if (y <= 10) { t10 += m + l; mf10 += m; } t20 += m + l; }
+  const payoff = mort ? num(D.payoff) : null;
+  const price = payoff ? Math.round((payoff * 0.47 + (payoff > 10000 ? 299 : 399)) * 100) / 100 : null;
+  const r = 0.20 / 12, fin = [12, 24, 36].map(n => ({ n, m: price ? price * r / (1 - Math.pow(1 + r, -n)) : null }));
+  const cash = num(D.cash) || 0, card = num(D.card) || 0;
+  const onCard = price ? Math.max(0, Math.min(card, price - cash)) : 0;
+  return { mort, pay, rem, mfA, remainingLoan: pay * rem, t10, t20, mf10, monthly: pay + (mfA || 0) / 12, price, fin, mfKnown: mfA != null, shortfall: price ? Math.max(0, price - cash) : null, onCard, cardFee: Math.round(onCard * 3) / 100 };
+}
+
+// ───────────────── MASTER SCRIPT LIBRARY ─────────────────
+// field+confirm/ask: 'sí' (or value on file) → CONFIRM · blank / 'no sé' → ASK · 'no' → SKIP
+// always:true → standing question, always asked · when() → conditional one-liner / follow-up
+const PC = 'PRECALL / CONTACT', CR = 'BBB / BEST COMPANY', Q = 'CONFIRMAR CUESTIONARIO', F = 'FINANZAS / DATOS FALTANTES', M = 'PREGUNTAS FALTANTES / ISSUE-SPOTTING', I = 'HALLAZGOS / DERECHOS / LEYES', PP = 'PRE-PRICE', P = 'PRICE', PAY = 'PAYMENT OPTIONS', CL = 'CLOSE / OBJECTIONS';
+const L = [
+  { id: 'inicio', s: 'precall', t: PC, l: 'Inicio', text: '{{names}}, antes de comenzar quiero confirmar la información que ya le dieron a nuestro equipo. No quiero hacerles repetir toda la entrevista. Voy a confirmar algunas cosas con ustedes y solamente les voy a preguntar lo que todavía nos falta. ¿Está bien?' },
+  { id: 'propiedad', s: 'precall', t: PC, l: 'Propiedad', field: 'contracts', confirm: 'Aquí tengo que tienen {{contracts}} contrato(s) con {{resort}}, que la primera compra fue en {{purchaseYear}}{{upgradeClause}}. ¿Eso está correcto?', ask: '¿Con qué resort es su tiempo compartido, cuántos contratos tienen y en qué año fue la primera compra?', fields: ['resort', 'contracts', 'purchaseYear', 'upgradeDate'] },
+  { id: 'upgrade', s: 'precall', t: PC, l: 'Upgrade', field: 'upgradeTo', confirm: 'Perfecto. También veo que pasaron de {{upgradeFrom}} a {{upgradeTo}}.', ask: '¿Han hecho algún upgrade? ¿De qué nivel a qué nivel, y cuándo?', fields: ['upgradeFrom', 'upgradeTo', 'upgradeDate'] },
+  { id: 'uso', s: 'precall', t: PC, l: 'Uso / disponibilidad', field: 'bookingProblems', confirm: 'También tengo que prácticamente no han podido utilizar el timeshare durante aproximadamente {{yearsNoUse}} años y que cuando llaman para reservar muchas veces no hay disponibilidad. ¿Correcto?', ask: '¿Cuántas veces han podido usar el timeshare, y cuando llaman para reservar, hay disponibilidad?', fields: ['bookingProblems', 'yearsNoUse'] },
+  { id: 'ol-puntos', s: 'precall', t: PC, l: 'Comentario', text: 'Eso es importante. Tener puntos y poder utilizar esos puntos cuando y donde ustedes quieren son dos cosas diferentes.', when: () => yes('bookingProblems') },
+  { id: 'puntos-varian', s: 'precall', t: PC, l: 'Seguimiento', text: '¿Les explicaron antes de comprar que la cantidad de puntos necesarios podía cambiar dependiendo de la propiedad, temporada, ubicación o fechas?', when: () => yes('bookingProblems') || num(D.points) > 0 },
+  { id: 'cred', s: 'cred', t: CR, l: 'Credibilidad', field: 'sawCredibility', confirm: 'Antes de continuar, veo que ambos ya revisaron los enlaces de credibilidad de Linx Legal, incluyendo BBB y Best Company. ¿Correcto?', ask: 'Antes de continuar, ¿ya revisaron los enlaces de credibilidad de Linx Legal, incluyendo BBB y Best Company?', keepNo: true, fields: ['sawCredibility'] },
+  { id: 'cred-no', s: 'cred', t: CR, l: 'Si NO', text: 'Por favor entren a www.linxlegalplan.com. Allí pueden abrir nuestros enlaces de BBB y Best Company. Cuando terminen, continuamos.', when: () => D.sawCredibility === 'no' },
+  { id: 'presion', s: 'questionnaire', t: Q, l: 'Presión', field: 'pressure', confirm: 'Aquí tengo que los presionaron para comprar ese mismo día y que les dijeron que la oferta era válida solamente ese día. ¿Correcto?', ask: '¿Les dijeron que la oferta era válida solamente ese día?' },
+  { id: 'ol-presion', s: 'questionnaire', t: Q, l: 'Comentario', text: 'Mirando hacia atrás, ¿sienten que tuvieron suficiente tiempo para tomar una decisión informada, o que la presión siguió aumentando hasta que dijeron que sí?', when: () => yes('pressure') },
+  { id: 'renta', s: 'questionnaire', t: Q, l: 'Renta', field: 'rental', confirm: 'También tengo que les dijeron que podían rentarlo para generar ingresos{{employeeClause}}. ¿Eso fue exactamente lo que les dijeron?', ask: '¿Les dijeron que podían rentar el timeshare para generar ingresos?', fields: ['rental', 'employeeHelp'] },
+  { id: 'ol-verbal', s: 'questionnaire', t: Q, l: 'Comentario', text: 'Okay. Eso es importante porque quiero distinguir entre lo que está escrito en el contrato y lo que les representaron verbalmente durante la venta.', when: () => yes('rental') || yes('investment') || yes('refinance') || yes('buyback') },
+  { id: 'inversion', s: 'questionnaire', t: Q, l: 'Inversión', field: 'investment', confirm: 'También tengo que les dijeron que era una inversión. ¿Qué les dijeron exactamente?', ask: '¿Les dijeron en algún momento que el timeshare era una inversión?' },
+  { id: 'ol-inversion', s: 'questionnaire', t: Q, l: 'Comentario', text: 'Un tiempo compartido se compra para vacacionar; no es una inversión financiera. La pregunta es: ¿qué está dispuesto a pagar un comprador hoy en el mercado de reventa?', when: () => yes('investment') },
+  { id: 'upgrade-conf', s: 'questionnaire', t: Q, l: 'Upgrade', field: 'upgradeWorse', confirm: 'Aquí tengo algo que quiero confirmar bien: les presentaron el upgrade como una manera de mejorar el uso de la propiedad, pero después terminaron con más puntos, mayores obligaciones y la disponibilidad no mejoró. ¿Correcto?', ask: '¿El upgrade resolvió el problema, o terminó costando más de lo que les dijeron?', when: () => has('upgradeTo') || yes('fixProblem') },
+  { id: 'upgrade-problema', s: 'questionnaire', t: Q, l: 'Upgrade', text: 'Entonces quiero entender qué problema específicamente les dijeron que ese upgrade iba a resolver.', when: () => yes('fixProblem') },
+  { id: 'reventa', s: 'questionnaire', t: Q, l: 'Reventa', field: 'resaleSeen', confirm: 'También veo que después descubrieron lo que propiedades similares aparecían por eBay y RedWeek, y dijeron que si hubieran visto esa información antes no habrían firmado. ¿Correcto?', ask: '¿Han visto lo que propiedades similares valen en eBay o RedWeek?' },
+  { id: 'ol-mercado', s: 'questionnaire', t: Q, l: 'Comentario', text: 'Hay una diferencia importante entre lo que cobra el desarrollador y lo que alguien realmente está dispuesto a pagar por esa propiedad en el mercado secundario.', when: () => yes('resaleSeen') || yes('investment') || yes('rental') },
+  { id: 'refi', s: 'questionnaire', t: Q, l: 'Refinanciar', field: 'refinance', confirm: 'Aquí tengo que les dijeron que podrían refinanciar a una tasa más baja. ¿Qué les dijeron exactamente?', ask: '¿Les dijeron que podrían refinanciar a una tasa más baja?' },
+  { id: 'recompra', s: 'questionnaire', t: Q, l: 'Recompra', field: 'buyback', confirm: 'También aparece que les dijeron que podrían recomprar la propiedad en el futuro. ¿Qué les prometieron exactamente?', ask: '¿Les dijeron que el resort les podría recomprar la propiedad en el futuro?' },
+  { id: 'cancel', s: 'questionnaire', t: Q, l: 'Cancelación', field: 'triedCancel', confirm: 'Veo que intentaron cancelar y no se lo permitieron. Cuéntenme cuándo ocurrió, con quién hablaron y qué les dijeron.', ask: '¿Intentaron cancelar en algún momento? ¿Qué les dijeron?' },
+  { id: 'credito', s: 'questionnaire', t: Q, l: 'Crédito', field: 'creditCards', confirm: 'Aquí aparece que fueron inscritos en una o más tarjetas de crédito y que hubo múltiples consultas de crédito. ¿Sabían que estaban solicitando esas cuentas?', ask: '¿Les abrieron alguna tarjeta de crédito o hicieron consultas de crédito durante la venta?' },
+  { id: 'escrito', s: 'questionnaire', t: Q, l: 'Documento escrito', field: 'wroteReasons', confirm: 'También tengo que les pidieron escribir las razones por las que compraron ese día. ¿Qué les dijeron que escribieran?', ask: '¿Les pidieron escribir o firmar las razones por las que compraban?' },
+  { id: 'hipoteca', s: 'financial', t: F, l: 'Hipoteca', field: 'payoff', confirm: 'Ahora vamos a confirmar los números. Tengo un saldo aproximado de {{payoff}} y un pago de {{payment}} al mes. ¿Siguen correctos esos números?', ask: 'Ahora vamos a confirmar los números. ¿Cuál es el saldo actual de la hipoteca y cuánto pagan al mes?', fields: ['payoff', 'payment'], when: () => D.hasMortgage !== 'no' },
+  { id: 'verificar', s: 'financial', t: F, l: 'Verificar payoff', text: '¿Los {{payoff}} son el saldo actual que aparece en su cuenta o es un estimado?', fields: ['payoffStatus'], when: () => D.hasMortgage !== 'no' && has('payoff') && D.payoffStatus !== 'verificado' },
+  { id: 'apr', s: 'financial', t: F, l: 'APR', field: 'apr', confirm: 'Tengo una tasa de interés de {{apr}}. ¿Correcto?', ask: '¿Qué tasa de interés aparece en su contrato?', when: () => D.hasMortgage !== 'no' },
+  { id: 'plazo', s: 'financial', t: F, l: 'Plazo', field: 'termYears', confirm: 'También aparece un plazo de {{termYears}} años. ¿Correcto? ¿Y cuántos meses quedan actualmente?', ask: '¿A cuántos años fue el préstamo, y cuántos meses quedan?', fields: ['termYears', 'remainingMonths'], when: () => D.hasMortgage !== 'no' },
+  { id: 'mf', s: 'financial', t: F, l: 'Mantenimiento', field: 'mf', confirm: 'Tengo sus cuotas de mantenimiento en {{mf}} ({{mfFreq}}). ¿Sigue siendo correcto?', ask: 'Esta es una de las cifras que todavía no tengo. ¿Cuánto pagan actualmente de cuotas de mantenimiento? ¿Es anual, semestral o mensual?', fields: ['mf', 'mfFreq'] },
+  { id: 'mf-hist', s: 'financial', t: F, l: 'Histórico MF', field: 'mfOriginal', confirm: 'Cuando compraron en {{purchaseYear}} pagaban aproximadamente {{mfOriginal}} de mantenimiento. ¿Correcto?', ask: '¿Cuánto pagaban aproximadamente cuando compraron originalmente en {{purchaseYear}}?' },
+  { id: 'compra', s: 'financial', t: F, l: 'Compra original', field: 'purchasePrice', confirm: 'La compra original de {{purchaseYear}} fue de {{purchasePrice}}. ¿Correcto?', ask: '¿Cuánto pagaron por la compra original de {{purchaseYear}}?' },
+  { id: 'upg-precio', s: 'financial', t: F, l: 'Upgrade', field: 'upgradePrice', confirm: 'El upgrade de {{upgradeDate}} fue de {{upgradePrice}}. ¿Correcto?', ask: '¿Y cuánto fue el upgrade de {{upgradeDate}}?', when: () => has('upgradeTo') || has('upgradeDate') },
+  { id: 'enganche', s: 'financial', t: F, l: 'Down payment', field: 'downPayment', confirm: 'Tengo un down payment de {{downPayment}}. ¿Correcto?', ask: '¿Dieron algún down payment en la compra?' },
+  ...[
+    ['presentacion', '¿Cuánto tiempo duró la presentación y aproximadamente cuántas veces dijeron que no antes de comprar?'],
+    ['rescision', '¿Les explicaron claramente el período que tenían para cancelar después de firmar?'],
+    ['clausula', '¿Les mostraron específicamente dónde estaba esa cláusula en los documentos?'],
+    ['mf-sube', '¿Les explicaron cuánto podían aumentar las cuotas de mantenimiento?'],
+    ['mf-10-20', '¿Les mostraron cuánto terminarían pagando de mantenimiento durante 10 o 20 años?'],
+    ['financ', '¿Les explicaron el costo total del financiamiento, no solamente el pago mensual y la tasa?', () => D.hasMortgage !== 'no'],
+    ['tarjetas', '¿Qué tarjetas de crédito les abrieron, cuánto les aprobaron y sabían que estaban solicitándolas?', () => yes('creditCards')],
+    ['refi-q', '¿Qué les dijeron exactamente sobre poder refinanciar a una tasa más baja?', () => yes('refinance')],
+    ['recompra-q', '¿Qué les dijeron exactamente sobre recomprar la propiedad en el futuro?', () => yes('buyback')],
+    ['cancel-q', 'Cuando intentaron cancelar y no se lo permitieron, ¿cuándo fue, con quién hablaron y qué les dijeron?', () => yes('triedCancel')],
+    ['contratos', '¿Tienen actualmente los contratos más recientes disponibles?'],
+    ['promesas', '¿Hay algo más que les prometieron verbalmente que no aparece en lo que acabamos de revisar?'],
+  ].map(([id, text, when]) => ({ id: 'm-' + id, s: 'missing', t: M, l: 'Pregunta faltante', text, when })),
+  { id: 'i-motor', s: 'issues', t: I, l: 'Motor interno (NO LEER)', internal: true, text: 'Marcar solo posibles problemas respaldados por los hechos — no declarar violaciones. Posibles: {{flags}}' },
+  { id: 'i-matriz', s: 'issues', t: I, l: 'Matriz (NO LEER)', internal: true, text: 'Revisar: FTC Act §5; ley estatal de timeshare (ej. Florida Ch. 721, cancelación de 10 días §721.10); FDUTPA; TILA / Regulation Z; RESPA solo si aplica. Clasificar: Posible coincidencia / Evidencia insuficiente / No aplica / Revisión legal requerida. S.3502 Timeshare Transparency Act = PROPUESTO (presentado 16-dic-2025, en comité) — NO es ley vigente.' },
+  { id: 'pp-tila', s: 'preprice', t: PP, l: 'Transición TILA', text: 'Aquí está el punto: están pagando aproximadamente {{payment}} al mes. Revisemos la divulgación de los términos del crédito.', when: () => D.hasMortgage !== 'no' },
+  { id: 'pp-interes', s: 'preprice', t: PP, l: 'Interés', text: 'Ahora quiero separar el APR de otra cifra importante: cuánto interés total terminarán pagando durante toda la vida del préstamo.', when: () => D.hasMortgage !== 'no' },
+  { id: 'pp-docs', s: 'preprice', t: PP, l: 'Documentos', text: 'Busquen en sus documentos la página de cálculos del préstamo. Si la tienen frente a ustedes, díganme qué números aparecen.', when: () => D.hasMortgage !== 'no' },
+  { id: 'pp-prestamo', s: 'preprice', t: PP, l: 'Costo préstamo', text: 'Sus pagos restantes del préstamo son aproximadamente {{remainingLoan}}. Ahora sumemos las cuotas de mantenimiento y el aumento proyectado.', when: () => D.hasMortgage !== 'no' },
+  { id: 'pp-oblig', s: 'preprice', t: PP, l: 'Obligación', text: 'Esto es lo que pagarían durante los próximos 10 a 20 años: {{total10}} en 10 años. Esta es Su obligación contractual: aproximadamente {{obligation}}.' },
+  { id: 'pp-bench', s: 'preprice', t: PP, l: 'Benchmark', text: 'Esta es la cifra que vamos a usar para evaluar y comparar su caso.' },
+  { id: 'pp-pagos', s: 'preprice', t: PP, l: 'Pagos', text: 'Legalmente no podemos decirles si deben continuar pagando o dejar de pagar al resort. Esa decisión es de ustedes. Sí podemos explicarles las implicaciones de cada opción.' },
+  { id: 'pp-credito', s: 'preprice', t: PP, l: 'Crédito', text: 'Si dejan de pagar, el resort se reserva el derecho de reportar negativamente a su crédito. No garantizamos resultados de crédito.' },
+  { id: 'pp-dti', s: 'preprice', t: PP, l: 'DTI', text: '¿Están pensando financiar una casa, vehículo, RV, bote u otra compra importante durante los próximos 12 a 18 meses?' },
+  { id: 'pp-reembolso', s: 'preprice', t: PP, l: 'Reembolso', text: 'No podemos garantizar recuperación de fondos. Cualquier reembolso no está garantizado.' },
+  { id: 'pp-objetivo', s: 'preprice', t: PP, l: 'Objetivo', text: 'El objetivo sigue siendo una cancelación completa y eliminar la obligación, ¿correcto?' },
+  { id: 'pp-eval', s: 'preprice', t: PP, l: 'Evaluación', text: 'Voy a ingresar la información final para confirmar si podemos aceptar el caso y cuál será el costo del servicio.' },
+  { id: 'precio', s: 'price', t: P, l: 'Precio', text: 'El costo de nuestro servicio es {{servicePrice}}.' },
+  { id: 'pay-1', s: 'payment', t: PAY, l: 'Transición', text: 'Si no tienen más preguntas sobre el proceso, revisemos las opciones de pago.' },
+  { id: 'pay-2', s: 'payment', t: PAY, l: 'Efectivo', text: 'La opción de menor costo es utilizar fondos disponibles: cuenta corriente, ahorros o fondos que puedan mover dentro de unos días.' },
+  { id: 'pay-3', s: 'payment', t: PAY, l: 'Pregunta', text: 'No quiero asumir. ¿Tienen {{servicePrice}}, o una parte, disponible o accesible dentro de unos días?', fields: ['cash'] },
+  { id: 'pay-4', s: 'payment', t: PAY, l: 'Shortfall', text: '¿Cuánto les falta exactamente? (faltan {{shortfall}})', fields: ['cash'] },
+  { id: 'pay-5', s: 'payment', t: PAY, l: 'Tarjeta', text: '¿Qué cantidad tienen disponible en tarjeta para cubrir el saldo?', fields: ['card'] },
+  { id: 'pay-6', s: 'payment', t: PAY, l: 'Combinación', text: 'Podemos combinar fondos disponibles y tarjeta. El cargo de procesamiento del 3% se aplica solamente a la cantidad cargada a tarjeta. {{cardLine}}' },
+  { id: 'pay-7', s: 'payment', t: PAY, l: 'UCFS', text: 'Si necesitan financiar, UCFS con $0 inicial a 20% APR: {{finance}}.' },
+  { id: 'c-1', s: 'close', t: CL, l: 'Aislar', text: 'Cuando dicen que necesitan pensarlo, ayúdenme a entender exactamente qué significa.' },
+  { id: 'c-2', s: 'close', t: CL, l: 'Aislar', text: '¿Necesitan decidir si quieren salir del timeshare, si quieren que nosotros lo manejemos, o simplemente cómo van a cubrir el pago?' },
+  { id: 'c-3', s: 'close', t: CL, l: 'Tercero', text: 'Si otra persona tiene que participar en la decisión o contribuir, si esa persona dice que no, ¿qué quieren hacer ustedes?' },
+  { id: 'c-4', s: 'close', t: CL, l: 'Reencuadre', text: 'Dejar de pagar por sí solo no es una estrategia de salida.' },
+  { id: 'c-5', s: 'close', t: CL, l: 'Precio', text: 'Si el problema es el precio, ¿de dónde salió el número con el que lo están comparando?' },
+  { id: 'c-6', s: 'close', t: CL, l: 'Valor', text: 'Comparemos {{servicePrice}} con aproximadamente {{obligation}} de Su obligación contractual.' },
+  { id: 'c-7', s: 'close', t: CL, l: 'Valor', text: 'La pregunta realmente es: ¿qué cuesta resolverlo versus qué cuesta continuar cargando con la obligación?' },
+  { id: 'c-8', s: 'close', t: CL, l: 'Competidor', text: 'Cuando comparen compañías, no comparen solamente el precio. Comparen exactamente qué está aceptando hacer cada compañía por ese precio.' },
+  { id: 'c-9', s: 'close', t: CL, l: 'Decisión', text: 'Basado en todo lo que revisamos —el timeshare, Su obligación contractual, lo que cuesta mantenerlo y el costo de resolverlo— ¿qué quieren hacer?' },
+  { id: 'c-10', s: 'close', t: CL, l: 'Bloqueo', text: '¿Qué específicamente les está impidiendo avanzar: la decisión, la compañía, el precio o el pago?' },
+  { id: 'c-11', s: 'close', t: CL, l: 'Cierre', text: 'Perfecto. Vamos a resolver esa parte.' },
+];
+const NAV = [['precall', PC], ['cred', CR], ['questionnaire', Q], ['financial', F], ['missing', M], ['issues', I], ['preprice', PP], ['price', P], ['payment', PAY], ['close', CL]];
+const FLAGS = [['pressure', 'Presión / oferta de un día'], ['investment', 'Representado como inversión'], ['rental', 'Promesa de renta'], ['fixProblem', 'Upgrade para resolver un problema'], ['upgradeWorse', 'Upgrade costó más / no resolvió'], ['refinance', 'Promesa de refinanciar'], ['buyback', 'Promesa de recompra'], ['triedCancel', 'Cancelación rechazada'], ['creditCards', 'Tarjetas / consultas de crédito'], ['wroteReasons', 'Razones escritas en la venta'], ['bookingProblems', 'Falta de disponibilidad']];
+
+// Build this client's slides from the library: CONFIRM / ASK / SKIP per answer.
+function build() {
+  const out = [];
+  for (const x of L) {
+    if (x.when && !x.when()) continue;
+    let mode = 'text', text = x.text || '';
+    if (x.field) {
+      const v = D[x.field];
+      if (v === 'no' && !x.keepNo && !touched.has(x.field)) continue;
+      if (v === '' || v == null || v === 'no sé' || v === 'no') { mode = 'ask'; text = x.ask; } else { mode = 'confirm'; text = x.confirm; }
+    }
+    out.push(Object.assign({}, x, { mode, text2: text }));
+  }
+  return out;
+}
+const touched = new Set();
+
+function tok(name) {
+  const C = calc();
+  const v = {
+    names: [D.owner1, D.owner2].filter(Boolean).join(', ') || '____',
+    upgradeClause: has('upgradeDate') ? ' y que hicieron el último upgrade en ' + ed('upgradeDate', D.upgradeDate) : '',
+    employeeClause: yes('employeeHelp') ? ' y que incluso un empleado les iba a ayudar con el proceso' : '',
+    remainingLoan: C.pay && C.rem ? usd(C.remainingLoan) : null,
+    total10: C.mfKnown ? usd(C.t10) : null, obligation: C.mfKnown ? usd(C.t20) : null,
+    servicePrice: usd(C.price), shortfall: usd(C.shortfall),
+    cardLine: C.onCard ? `Tarjeta ${usd(C.onCard)} + 3% (${usd(C.cardFee, true)}) = ${usd(C.onCard + C.cardFee, true)}.` : '',
+    finance: C.price ? C.fin.map(f => f.n + ' meses: ' + usd(f.m, true) + '/mes').join(' · ') : null,
+    flags: FLAGS.filter(([k]) => yes(k)).map(([, l]) => l).join(' · ') || 'ninguno marcado todavía',
+  };
+  if (name in v) { const s = v[name]; if (['names', 'upgradeClause', 'employeeClause', 'cardLine', 'flags'].includes(name)) return s; return s == null ? `<span class="v missing">____</span>` : `<b style="color:#406f9b">${s}</b>`; }
+  if (name in META) { const f = META[name]; const raw = D[name]; const shown = raw === '' || raw == null ? null : (f.t === '$' ? usd(num(raw), name === 'payment') : name === 'apr' ? raw + '%' : raw); return ed(name, shown); }
+  return '{{' + name + '}}';
+}
+const ed = (k, shown) => `<span class="v ${shown == null || shown === '' ? 'missing' : ''}" onclick="editVal('${k}')">${shown == null || shown === '' ? '____' : shown}</span>`;
+
+function inputFor(k) {
+  const f = META[k]; const val = D[k] ?? '';
+  if (Array.isArray(f.t)) return `<select data-k="${k}">${f.t.map(o => `<option ${String(val) === o ? 'selected' : ''} value="${o}">${o || '—'}</option>`).join('')}</select>`;
+  return `<input data-k="${k}" value="${String(val).replace(/"/g, '&quot;')}" inputmode="${f.t === 't' ? 'text' : 'decimal'}">`;
+}
+function wire(root) {
+  root.querySelectorAll('[data-k]').forEach(el => el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', e => setVal(e.target.dataset.k, e.target.value, e.target)));
+}
+function setVal(k, val, srcEl) {
+  const before = order.slice();
+  D[k] = val; touched.add(k);
+  document.querySelectorAll(`[data-k="${k}"]`).forEach(el => { if (el !== srcEl) el.value = val; });
+  render(before);
+}
+function buildGrid() {
+  $('grid').innerHTML = FIELDS.map(([g, fs]) => `<div class="grp">${g}</div>` + fs.map(([k, l]) => `<div><label>${l}</label>${inputFor(k)}</div>`).join('')).join('');
+  wire($('grid'));
+}
+function editVal(k) { $('data').classList.add('show'); const el = $('grid').querySelector(`[data-k="${k}"]`); if (el) { el.scrollIntoView({ block: 'center' }); el.focus(); } }
+
+function render(prevOrder) {
+  const slides = build();
+  const ids = slides.map(s => s.id);
+  // keep position; new slides that land behind the current one are queued right after it
+  if (prevOrder && prevOrder.length && curId && ids.includes(curId)) {
+    const pi = prevOrder.indexOf(curId);
+    const head = prevOrder.slice(0, pi + 1).filter(id => ids.includes(id));
+    const added = ids.filter(id => !prevOrder.includes(id));
+    const late = added.filter(id => ids.indexOf(id) < ids.indexOf(curId));
+    const removed = prevOrder.filter(id => !ids.includes(id) && prevOrder.indexOf(id) > pi);
+    order = [...head, ...late, ...ids.filter(id => !head.includes(id) && !late.includes(id))];
+    const msg = [];
+    if (added.length) msg.push(added.length + ' nueva(s) pregunta(s)/comentario(s) agregada(s) por la información corregida');
+    if (removed.length) msg.push(removed.length + ' pregunta(s) ya no necesaria(s)');
+    $('notice').style.display = msg.length ? 'block' : 'none'; $('notice').textContent = msg.join(' · ');
+  } else order = ids;
+  const byId = Object.fromEntries(slides.map(s => [s.id, s]));
+  if (!curId || !byId[curId]) curId = order[0];
+  const pos = order.indexOf(curId), s = byId[curId];
+  history[s.s] = curId;
+  $('stage').textContent = s.t + (s.internal ? ' · INTERNO' : '');
+  $('slidebox').className = 'slide' + (s.internal ? ' internal' : '');
+  $('label').innerHTML = s.l + (s.mode === 'ask' ? ' <span class="mode">pregunta</span>' : s.mode === 'confirm' ? ' <span class="mode c">confirmar</span>' : '');
+  $('script').innerHTML = (s.internal ? '' : '“') + s.text2.replace(/\{\{(\w+)\}\}/g, (_, k) => tok(k)) + (s.internal ? '' : '”');
+  const fs = s.fields || (s.field ? [s.field] : []);
+  $('onslide').innerHTML = fs.map(k => `<div><label>${META[k].l}</label>${inputFor(k)}</div>`).join('');
+  wire($('onslide'));
+  $('count').textContent = (pos + 1) + ' / ' + order.length;
+  $('upnext').textContent = 'Siguiente: ' + order.slice(pos + 1, pos + 3).map(id => byId[id].l).join(' · ');
+  document.querySelectorAll('.jump button').forEach(b => b.classList.toggle('on', b.dataset.sec === s.s));
+  $('title').textContent = 'LINX LEGAL · ' + ([D.owner1, D.owner2].filter(Boolean).join(' / ').toUpperCase() || 'NUEVO CLIENTE');
+  renderFacts(); renderFin(); renderMissing(); persist(); fillSel();
+}
+function renderFacts() {
+  const C = calc();
+  const F = [['PAYOFF', 'payoff', usd(num(D.payoff)), D.payoffStatus === 'estimado' && has('payoff') ? ' est.' : ''], ['PAGO', 'payment', usd(num(D.payment), true), '/mo'], ['APR', 'apr', has('apr') ? D.apr + '%' : null, ''], ['MANT.', 'mf', usd(num(D.mf)), has('mf') ? ' ' + D.mfFreq : ''], ['MENSUAL TOTAL', 'payment', usd(C.monthly, true), ''], ['PRECIO', 'payoff', usd(C.price), '']];
+  $('facts').innerHTML = F.map(([l, k, v, suf]) => `<div class="fact" onclick="editVal('${k}')"><b>${l}</b>${v == null ? '<span style="color:#b23b2e">____</span>' : v + suf}</div>`).join('');
+}
+function renderFin() {
+  const C = calc();
+  $('finbody').innerHTML = [
+    ['Costo mensual actual', C.mfKnown ? usd(C.monthly, true) : (C.pay ? usd(C.pay, true) + ' + MF ____' : '____')],
+    ['Pagos restantes del préstamo (' + C.rem + ' × ' + (usd(C.pay, true) || '$0') + ')', usd(C.remainingLoan)],
+    ['Costo a 10 años', C.mfKnown ? usd(C.t10) : 'falta MF'],
+    ['Su obligación contractual (20 años @ ' + (num(D.mfInflation) ?? 8) + '%)', C.mfKnown ? usd(C.t20) : 'falta MF'],
+    ['Precio del servicio (interno — decir solo el precio)', usd(C.price) || 'falta payoff'],
+    ['UCFS 12 / 24 / 36 (20% APR, $0 inicial)', C.price ? C.fin.map(f => usd(f.m, true)).join(' / ') : '—'],
+    ['Faltante después de fondos disponibles', C.shortfall != null ? usd(C.shortfall) : '—'],
+    ['En tarjeta + 3%', C.onCard ? usd(C.onCard) + ' + ' + usd(C.cardFee, true) + ' = ' + usd(C.onCard + C.cardFee, true) : '—'],
+  ].map(([a, b]) => `<div class="row"><span>${a}</span><b>${b ?? '—'}</b></div>`).join('');
+}
+function renderMissing() {
+  const need = ['owner1', 'resort', 'payoff', 'payment', 'apr', 'termYears', 'remainingMonths', 'mf', 'purchasePrice', 'downPayment', 'mfOriginal'].filter(k => !(D.hasMortgage === 'no' && ['payoff', 'payment', 'apr', 'termYears', 'remainingMonths'].includes(k)) && !has(k));
+  const qs = FLAGS.map(([k]) => k).concat(['sawCredibility']).filter(k => D[k] === '' || D[k] === 'no sé');
+  $('missinglive').innerHTML = '<b>Faltan datos:</b> ' + (need.length ? need.map(k => ed(k, null).replace('____', META[k].l)).join(' · ') : '<span style="color:#2e7d4f">completo</span>') +
+    '<br><br><b>Preguntas sin respuesta / “no sé”:</b> ' + (qs.length ? qs.map(k => ed(k, null).replace('____', META[k].l)).join(' · ') : '<span style="color:#2e7d4f">ninguna</span>');
+}
+function go(sec) { const id = history[sec] && order.includes(history[sec]) ? history[sec] : order.find(id => L.find(x => x.id === id)?.s === sec); if (id) { curId = id; $('notice').style.display = 'none'; render(); } }
+function step(d) { const pos = order.indexOf(curId); const id = order[Math.min(order.length - 1, Math.max(0, pos + d))]; if (id) { curId = id; $('notice').style.display = 'none'; render(); } }
+function toggle(id) { $(id).classList.toggle('show'); }
+
+NAV.forEach(([id, title]) => { const b = document.createElement('button'); b.textContent = title; b.dataset.sec = id; b.onclick = () => go(id); $('jump').appendChild(b); });
+$('prev').onclick = () => step(-1); $('next').onclick = () => step(1);
+$('newBtn').onclick = newClient;
+$('clientSel').onchange = e => load(e.target.value);
+$('notesbox').addEventListener('input', e => { notes = e.target.value; persist(); });
+document.addEventListener('keydown', e => { if (['TEXTAREA', 'INPUT', 'SELECT'].includes(document.activeElement.tagName)) return; if (e.key === 'ArrowRight') step(1); if (e.key === 'ArrowLeft') step(-1); });
+if (clients.length) load(clients[0].id); else newClient();
+</script></body></html>
