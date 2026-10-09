@@ -27,7 +27,6 @@
   table.vitals th, table.vitals td { border: 1px solid #bbb; padding: 7px 10px; text-align: left; vertical-align: top; }
   table.vitals th { background: #eef; width: 34%; }
   .missing { color: #b00020; font-weight: bold; }
-  .ok { color: #0a7a2e; }
   textarea.notes { width: 100%; min-height: 60px; font-family: inherit; font-size: 0.95em; border: 1px solid #999; border-radius: 4px; padding: 6px; box-sizing: border-box; }
   @media print { .how, #inputArea, .noprint { display: none; } #output { display: block !important; } }
 </style>
@@ -38,8 +37,8 @@
 
 <div id="inputArea">
   <div class="how">
-    <b>How to use:</b> open the client's Pipeline CRM people page → <b>SELECT ALL</b> → <b>COPY</b> → paste below → hit <b>Analyze</b>.
-    You'll get the 🚨 findings, the completion checklist, and the vitals table showing exactly what's still missing.
+    <b>How to use:</b> open the client's Pipeline CRM people page &rarr; <b>SELECT ALL</b> &rarr; <b>COPY</b> &rarr; paste below &rarr; hit <b>Analyze</b>.
+    You get the 🚨 findings, the completion checklist, and the vitals table showing exactly what's still missing.
   </div>
   <div class="row">
     <label>Client:</label><input type="text" id="clientName" style="width:280px">
@@ -72,28 +71,163 @@
 </div>
 
 <script>
-const DEVS = ["wyndham","westgate","diamond resorts","bluegreen","hilton","vidanta","holiday inn","marriott","disney","hyatt","sheraton","vistana","welk"];
-const MISSING = '<span class="missing">MISSING — ASK</span>';
+var DEVS = ["wyndham","westgate","diamond resorts","bluegreen","hilton","vidanta","holiday inn","marriott","disney","hyatt","sheraton","vistana","welk"];
+var MISSING = '<span class="missing">MISSING — ASK</span>';
 
-function clean(s){ return (s||"").replace(/\s+/g," ").trim(); }
-function money(n){ return "$" + Number(n.replace(/,/g,"")).toLocaleString("en-US"); }
-
+function clean(s){ return String(s||"").replace(/\s+/g," ").trim(); }
+function money(n){ return "$" + Number(String(n).replace(/,/g,"")).toLocaleString("en-US"); }
 function firstMatch(text, patterns){
-  for (const p of patterns){ const m = text.match(p); if (m) return m; }
+  for (var i=0;i<patterns.length;i++){ var m = text.match(patterns[i]); if (m) return m; }
   return null;
 }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 
 function analyze(){
-  const raw = document.getElementById("paste").value;
+  var raw = document.getElementById("paste").value;
   if (!raw.trim()){ alert("Paste the CRM content first."); return; }
-  const t = raw; // keep original case for quotes
-  const low = " " + raw.toLowerCase() + " ";
+  var low = " " + raw.toLowerCase() + " ";
 
-  // ---------- extract ----------
-  let dev = null;
-  for (const d of DEVS){ if (low.includes(d)){ dev = d.replace(/\b\w/g, c=>c.toUpperCase()); break; } }
+  // ---------- developer ----------
+  var dev = null, i, d;
+  for (i=0;i<DEVS.length;i++){ d = DEVS[i]; if (low.indexOf(d) >= 0){ dev = d.replace(/\b\w/g, function(c){return c.toUpperCase();}); break; } }
 
-  let resort = null;
-  let m = firstMatch(t, [/resort\s*[:\-–]\s*([^\n,;|]{3,60})/i, /property\s*[:\-–]\s*([^\n,;|]{3,60})/i]);
+  // ---------- exact resort ----------
+  var resort = null, m;
+  m = firstMatch(raw, [/resort\s*[:\-–]\s*([^\n,;|]{3,60})/i, /property\s*[:\-–]\s*([^\n,;|]{3,60})/i]);
   if (m) resort = clean(m[1]);
-  const verifyLoc = /verif\w*.
+  var verifyLoc = /verif\w*/.test(low) && low.indexOf("location") >= 0;
+
+  // ---------- year / purchase ----------
+  var year = null;
+  m = firstMatch(raw, [/purchase\w*\s*[:\-–]?\s*(?:in\s*)?(jan\w*|feb\w*|mar\w*|apr\w*|may|jun\w*|jul\w*|aug\w*|sep\w*|oct\w*|nov\w*|dec\w*)\s+((?:19|20)\d{2})/i, /purchased?\s+((?:19|20)\d{2})/i, /year\s*purchased?\s*[:\-–]?\s*((?:19|20)\d{2})/i]);
+  if (m) year = clean(m[0].replace(/^(purchase\w*|year\s*purchased?)\s*[:\-–]?\s*/i,""));
+
+  // ---------- money fields ----------
+  function grab(patterns){
+    var mm = firstMatch(raw, patterns);
+    return mm ? money(mm[1] || mm[2] || "0") : null;
+  }
+  var price = grab([/purchase\s*price\s*[:\-–]?\s*\$?\s*([\d,]+)/i, /paid\s*\$?\s*([\d,]+)\s*(?:for|purchase)/i]);
+  var payoff = grab([/pay\s*off\s*[:\-–]?\s*\$?\s*([\d,]+)/i, /balance\s*(?:owed|due)?\s*[:\-–]?\s*\$?\s*([\d,]+)/i, /mortgage\s*balance\s*[:\-–]?\s*\$?\s*([\d,]+)/i]);
+  var monthly = grab([/monthly\s*(?:mortgage|payment)?\s*[:\-–]?\s*\$?\s*([\d,]+)/i, /mortgage\s*[:\-–]?\s*\$?\s*([\d,]+)\s*(?:\/|per|a)?\s*mo/i]);
+  var mfCur = grab([/(?:current|annual)\s*maintenance\s*fees?\s*[:\-–]?\s*\$?\s*([\d,]+)/i, /maintenance\s*fees?\s*(?:now|currently|today)?\s*[:\-–]?\s*\$?\s*([\d,]+)/i]);
+  var mfOrig = grab([/original\s*maintenance\s*fees?\s*[:\-–]?\s*\$?\s*([\d,]+)/i, /maintenance\s*fees?\s*(?:at|when|of)\s*purchase\s*[:\-–]?\s*\$?\s*([\d,]+)/i]);
+  var apr = null;
+  m = firstMatch(raw, [/(\d{1,2}(?:\.\d+)?)\s*%\s*(?:apr|interest)/i]);
+  if (m) apr = m[1] + "%";
+  var points = null;
+  m = firstMatch(raw, [/([\d,]{3,})\s*points/i]);
+  if (m) points = m[1] + " points";
+  var contracts = null;
+  m = firstMatch(raw, [/(\d+)\s*(?:contract|deed)/i]);
+  if (m) contracts = m[1];
+
+  // ---------- completion evidence ----------
+  var ev = {
+    bbb: /bbb/.test(low),
+    best: /best company/.test(low),
+    redweek: /red\s*week/.test(low),
+    buildup: /build[\s\-]?up/.test(low),
+    score: null, price: !!price, payoff: !!payoff, year: !!year
+  };
+  m = firstMatch(raw, [/(?:credit\s*score|puntaje)[\s:]*(\d{3})/i]);
+  if (m){ ev.score = m[1]; }
+
+  // ---------- current on payments ----------
+  var currentPay = null;
+  if (/current on payments?\s*[:\-–]?\s*(yes|y|s[ií])/.test(low) || /al d[ií]a/.test(low)) currentPay = "Sí";
+  else if (/current on payments?\s*[:\-–]?\s*no/.test(low)) currentPay = "No";
+
+  // ---------- reason for cancellation ----------
+  var reason = null;
+  m = firstMatch(raw, [/reason\w*\s*(?:for\s*)?(?:cancel\w*|out)[\s:]*([^\n]{10,140})/i, /motivo[\s:]*([^\n]{10,140})/i, /raz[oó]n[\s:]*([^\n]{10,140})/i]);
+  if (m) reason = clean(m[1]).replace(/[|•\-–]\s*$/,"");
+  var costRise = /rising costs|costs?\s*(going|went)\s*up|increasing costs|aumento|subi[oó]|m[aá]s car/i.test(raw);
+
+  // ---------- last upgrade ----------
+  var upgrade = null;
+  m = firstMatch(raw, [/last\s*upgrade\s*[:\-–]?\s*([^\n,;|]{2,60})/i, /upgrade\s*[:\-–]\s*([^\n,;|]{2,60})/i]);
+  if (m) upgrade = clean(m[1]);
+
+  // ================= findings =================
+  var F = [];
+  function addF(title, body){ F.push({t:title, b:body}); }
+
+  if (reason) addF("Reason for cancellation documented", '<span class="q">\u201c' + esc(reason) + '\u201d</span>');
+  if ((payoff === "$0" || monthly === "$0") && !(payoff && payoff !== "$0"))
+    addF("Mortgage reported as $0", "Estimated payoff " + (payoff||"$0") + "; monthly mortgage " + (monthly||"$0") + ". Verify whether the ownership is fully paid off.");
+  if (costRise && !mfCur && !mfOrig)
+    addF("Maintenance fees missing", "The client reports rising costs, but the original and current amounts are not documented.");
+  if (dev && !resort)
+    addF("Exact " + esc(dev) + " resort missing", (verifyLoc ? "A note specifically requests verifying the " + esc(dev) + " location. " : "") + "No exact resort/property name found in the record.");
+  if (!price) addF("Purchase price missing", "No purchase price documented.");
+  if (!payoff) addF("Payoff not verified", "No balance/payoff figure documented.");
+  if (!mfCur && !costRise) addF("Current maintenance fees missing", "No current annual maintenance fee amount documented.");
+  if (!mfOrig) addF("Original maintenance fees missing", "No original maintenance fee amount documented.");
+  if (!apr) addF("APR / loan terms missing", "No interest rate or loan term documented.");
+  if (!ev.score) addF("Credit score missing", "No credit score documented.");
+
+  // ================= render =================
+  var cn = clean(document.getElementById("clientName").value);
+  var dt = clean(document.getElementById("docDate").value);
+  document.getElementById("outClient").textContent = (cn ? " — " + cn : "") + (dt ? " (" + dt + ")" : "");
+
+  var fh = "";
+  if (!F.length) fh = '<div class="finding"><b class="t">Nothing critical missing</b>All key fields have documented values.</div>';
+  for (i=0;i<F.length;i++) fh += '<div class="finding"><b class="t">' + esc(F[i].t) + '</b>' + F[i].b + '</div>';
+  document.getElementById("findings").innerHTML = fh;
+
+  function li(checked, label, detail){
+    return '<li><input type="checkbox"' + (checked ? " checked" : "") + "> " + label +
+      (detail ? ' — <span class="' + (checked ? "ok" : "") + '">' + detail + "</span>" : "") + "</li>";
+  }
+  var ch = "";
+  ch += li(ev.bbb, "BBB shown", ev.bbb ? "documented" : null);
+  ch += li(ev.best, "Best Company shown", ev.best ? "documented" : null);
+  ch += li(ev.redweek, "RedWeek shown", ev.redweek ? "documented" : null);
+  ch += li(ev.buildup, "Build-Up shown", ev.buildup ? "documented" : null);
+  ch += li(!!ev.score, "Credit Score", ev.score ? "Score " + esc(ev.score) : null);
+  ch += li(!!price, "Purchase Price", price ? "documented" : null);
+  ch += li(!!payoff, "Balance / Payoff verified", payoff ? ("Estimated " + payoff + (payoff === "$0" ? "; not verified" : "")) : null);
+  ch += li(!!year, "Year Purchased", year ? esc(year) + " (documented)" : null);
+  document.getElementById("checklist").innerHTML = ch;
+
+  function row(label, val){ return "<tr><th>" + label + "</th><td>" + (val || MISSING) + "</td></tr>"; }
+  var vh = "<tr><th>Item</th><th>Current record</th></tr>";
+  vh += row("Developer", dev ? esc(dev) : null);
+  vh += row("Exact resort", resort ? esc(resort) + (verifyLoc ? ' <span class="missing">(verify location)</span>' : "") : null);
+  vh += row("First purchase", year ? esc(year) : null);
+  vh += row("Last upgrade", upgrade ? esc(upgrade) : null);
+  vh += row("Contracts / deeds", contracts ? esc(contracts) : null);
+  vh += row("Current on payments", currentPay ? esc(currentPay) : null);
+  vh += row("Estimated payoff", payoff ? esc(payoff) : null);
+  vh += row("Verified payoff", (!payoff || payoff === "$0") ? null : '<span class="ok">Verified</span>');
+  vh += row("Monthly mortgage", monthly ? esc(monthly) : null);
+  vh += row("Annual maintenance fees", mfCur ? esc(mfCur) : null);
+  vh += row("Original maintenance fees", mfOrig ? esc(mfOrig) : null);
+  vh += row("Purchase price", price ? esc(price) : null);
+  vh += row("APR / loan term", apr ? esc(apr) : null);
+  vh += row("Points / usage", points ? esc(points) : null);
+  vh += row("Main reason", reason ? '<span class="q">\u201c' + esc(reason) + '\u201d</span>' : null);
+  document.getElementById("vitals").innerHTML = vh;
+
+  document.getElementById("output").style.display = "block";
+  document.getElementById("output").scrollIntoView();
+}
+
+function copySummary(){
+  var txt = document.getElementById("outClient").textContent + "\n\nFINDINGS\n";
+  var fs = document.querySelectorAll("#findings .finding");
+  for (var i=0;i<fs.length;i++) txt += "- " + fs[i].innerText.replace(/\n/g," ") + "\n";
+  txt += "\nVITALS\n";
+  var rows = document.querySelectorAll("#vitals tr");
+  for (var j=1;j<rows.length;j++){
+    var c = rows[j].querySelectorAll("th,td");
+    txt += c[0].innerText + ": " + c[1].innerText.replace(/\n/g," ") + "\n";
+  }
+  navigator.clipboard.writeText(txt).then(function(){ alert("Summary copied."); });
+}
+</script>
+
+</body>
+</html>
