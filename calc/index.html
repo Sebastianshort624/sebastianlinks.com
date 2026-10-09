@@ -119,9 +119,9 @@
   <h3>Deed-back price list</h3>
   <div class="tmin" id="deedmeta">No price list loaded.</div>
   <div style="margin:8px 0">
-    <button class="ghost" onclick="document.getElementById('deedfile').click()">Import CSV</button>
+    <button class="ghost" onclick="document.getElementById('deedfile').click()">Import CSV/XLSX</button>
     <button class="ghost" onclick="exportDeed()">Export</button>
-    <input type="file" id="deedfile" accept=".csv,text/csv" style="display:none" onchange="importDeed(this)">
+    <input type="file" id="deedfile" accept=".csv,.xlsx,text/csv" style="display:none" onchange="importDeed(this)">
   </div>
   <label class="f">Search developer or state <input id="deedq" placeholder="e.g. Westgate or FL" oninput="renderDeedResults()"></label>
   <div id="deedresults" style="margin-top:8px"></div>
@@ -150,6 +150,7 @@
 
 <div class="note">Clients are saved in this browser only — nothing is uploaded. Maintenance fees never end — the perpetuity clause passes them to heirs.</div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 function $(id){ return document.getElementById(id); }
 function fmt(n){ return '$' + Math.round(n).toLocaleString('en-US'); }
@@ -357,12 +358,35 @@ function parseCSV(t){
 }
 function importDeed(input){
   var f = input.files[0]; if (!f) return;
-  var rd = new FileReader();
-  rd.onload = function(){
+  var done = function(){ input.value = ''; };
+  if (/\.xlsx?$/i.test(f.name)){
+    if (typeof XLSX === 'undefined'){ alert('Excel support did not load — reload the page with internet, or export CSV.'); done(); return; }
+    var rd = new FileReader();
+    rd.onload = function(){
+      try {
+        var wb = XLSX.read(new Uint8Array(rd.result), {type: 'array'});
+        var ws = wb.Sheets[wb.SheetNames[0]];
+        processDeedRows(XLSX.utils.sheet_to_json(ws, {header: 1, raw: false}), wb.SheetNames[0]);
+      } catch(e){ alert('Could not read that file.'); }
+      done();
+    };
+    rd.readAsArrayBuffer(f);
+    return;
+  }
+  var rd2 = new FileReader();
+  rd2.onload = function(){
     try {
-      var rows = parseCSV(rd.result);
+      var rows = parseCSV(rd2.result);
       if (!rows.length) throw 0;
-      var h = rows[0].map(function(c){ return String(c).toLowerCase().replace(/[^a-z]/g, ''); });
+      processDeedRows(rows, null);
+    } catch(e){ alert('Could not read that CSV.'); }
+    done();
+  };
+  rd2.readAsText(f);
+}
+function processDeedRows(rows, tabName){
+      if (!rows.length) throw 0;
+      var h = rows[0].map(function(c){ return String(c == null ? '' : c).toLowerCase().replace(/[^a-z]/g, ''); });
       var hi = {dev:-1, state:-1, price:-1, info:-1};
       h.forEach(function(c, i){
         if (hi.dev < 0 && /developer|resort|brand/.test(c) && !/state/.test(c)) hi.dev = i;
@@ -381,13 +405,9 @@ function importDeed(input){
         out.push({dev: String(r[hi.dev] || '').trim(), state: String(r[hi.state] || '').trim(), price: isNaN(p) ? 0 : p,
           info: hi.info >= 0 ? String(r[hi.info] || '').trim() : ''});
       }
-      saveDeed({updated: new Date().toISOString().slice(0, 10), rows: out});
+      saveDeed({updated: new Date().toISOString().slice(0, 10), rows: out, tab: tabName || ''});
       renderDeedResults();
-      alert('Loaded ' + out.length + ' deed-back prices.');
-    } catch(e){ alert('Could not read that CSV.'); }
-    input.value = '';
-  };
-  rd.readAsText(f);
+      alert('Loaded ' + out.length + ' deed-back prices' + (tabName ? ' from tab "' + tabName + '"' : '') + '.');
 }
 function exportDeed(){
   var d = getDeed();
