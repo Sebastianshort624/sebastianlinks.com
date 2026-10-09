@@ -76,6 +76,7 @@
     <li>"They're good at being bad."</li>
     <li>"I can tell you this — if we can't save you a ridiculous amount of money, we're not going to even try to take your case."</li>
     <li>"This is not simple interest — it's compounded interest, just like a credit card."</li>
+    <li>"So when we take this back to Wyndham — they have to show us how that makes sense."</li>
   </ul>
 </aside>
 <aside class="sprinkle">
@@ -262,7 +263,7 @@ function pickClient(id){
 }
 (function initClientSel(){
   var sel = document.getElementById('clientSel'), cs = slClients();
-  cs.forEach(function(c){ var o = document.createElement('option'); o.value = c.id; o.textContent = c.name; sel.appendChild(o); });
+  cs.forEach(function(c){ var o = document.createElement('option'); o.value = c.id; o.textContent = c.name + (c.appt ? ' — ' + c.appt : ''); sel.appendChild(o); });
   if (!cs.length){ var o = document.createElement('option'); o.textContent = 'No clients yet — add them in /calc'; o.disabled = true; sel.appendChild(o); }
   sel.addEventListener('change', function(){ pickClient(sel.value); });
 })();
