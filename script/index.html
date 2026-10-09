@@ -15,6 +15,8 @@
   .clock { font-size: 0.85em; color: #555; margin-bottom: 10px; }
   ol.liners { margin: 8px 0 4px 20px; padding: 0; }
   ol.liners li { margin-bottom: 8px; }
+  ol.liners ol { margin: 6px 0 6px 18px; padding: 0; }
+  ol.liners ol li { margin-bottom: 5px; }
   .trans { background: #f0f4ff; border-left: 4px solid #0b3d91; padding: 8px 12px; margin: 0 0 6px; font-size: 0.95em; }
   .client-line { margin: 4px 0 12px; }
   .client-line input { border: none; border-bottom: 1px solid #333; font-size: 1em; width: 280px; font-family: inherit; }
@@ -24,24 +26,58 @@
 <body>
 
 <h1>🎯 90-Minute Appointment</h1>
-<div class="total">4 stages · 45 + 15 + 15 + 15</div>
+<div class="total">6 stages · 15 min each</div>
 <div class="client-line">Client: <input type="text"></div>
 
 <div class="stage">
-  <h2>STAGE 1 — GET TO YES <span class="t">45 MIN</span></h2>
-  <div class="clock">0:00–0:45 · intro → credibility → listen → CRM → violations → price → YES</div>
+  <h2>STAGE 1 — INTRODUCTION &amp; CREDIBILITY <span class="t">15 MIN</span></h2>
+  <div class="clock">0:00–0:15 · chit-chat → company research together → reviews</div>
   <ol class="liners">
     <li>"My role is to make sure the case we build is strong enough to bring to our approval team. The reason being we have a 99% success rate because we only take on cases we know we will win — because we give a 100% money-back guarantee, and it costs us money as we progress your case."</li>
+    <li>"I see you and [CA name] researched our company, so are you sure you have no questions re Linx Legal the company and our ability to do what we say we will do?"</li>
     <li>"Did they show you we are pioneers of the cancellation industry, the industry we created?"</li>
+    <li>Research together: <strong>sebastianlinks.com/linx</strong> — company credibility &amp; reviews.</li>
+    <li>"You saw our reviews yourself — that is our reputation."</li>
+  </ol>
+</div>
+<div class="trans">→ Credibility established. Now show them how we win.</div>
+
+<div class="stage">
+  <h2>STAGE 2 — HOW WE WIN <span class="t">15 MIN</span></h2>
+  <div class="clock">0:15–0:30 · violations → fines vs. release → compensation → competition</div>
+  <ol class="liners">
     <li>"What exactly were you told that convinced you to purchase?"</li>
-    <li>"If the stars align and my assessment team decides we can take on your case, is there anything at all that would prevent you from moving forward with us today?"</li>
+    <li>The main five violation questions:
+      <ol>
+        <li>Did they tell you you could sell it? (False sense of security — timeshares listed on eBay for $1.)</li>
+        <li>Did they disclose the perpetuity clause — that maintenance fees go on forever?</li>
+        <li>What was the maintenance fee at point of purchase? Did they mention fees increasing ~8%?</li>
+        <li>Right-to-choose: they promised "priority privilege" — yet RedWeek has lower prices, better availability, no owner presentations.</li>
+        <li>Right-to-choose: they told you reserving dates was a matter of days or weeks in advance — what was it really? Limited availability.</li>
+      </ol>
+    </li>
+    <li>"We take these violations and present the fines to the resort, so they see it's cheaper to release you than to risk paying those fines."</li>
+    <li>"And we go after compensation for the emotional and financial impact this had on you. Our competitors settle cases by getting the client to pay the resort — we do the opposite, and our reviews prove it."</li>
     <li>"We will never take on your case unless we can save you a ridiculous amount of money."</li>
   </ol>
 </div>
-<div class="trans">→ Price accepted. Move to payment.</div>
+<div class="trans">→ Violations documented. Now the approval process.</div>
 
 <div class="stage">
-  <h2>STAGE 2 — FIND THE MONEY <span class="t">15 MIN</span></h2>
+  <h2>STAGE 3 — THE APPROVAL PROCESS <span class="t">15 MIN</span></h2>
+  <div class="clock">0:30–0:45 · 99% selective → approval → scarcity → waiting list → YES</div>
+  <ol class="liners">
+    <li>"We win 99% of our cases by being very selective — we only take on cases we know we will win."</li>
+    <li>"Approval is a combination of two things: the strength of your case, and whether a case manager is willing to take it on."</li>
+    <li>"A case manager takes your case based on their opinion of the probability of getting the resort to pay compensation — that is what drives their availability."</li>
+    <li>"If no case manager can take your case right now, we do have a waiting list."</li>
+    <li>"If the stars align and my assessment team decides we can take on your case, is there anything at all that would prevent you from moving forward with us today?"</li>
+  </ol>
+</div>
+<div class="trans">→ YES secured. Move to payment.</div>
+
+<div class="stage">
+  <h2>STAGE 4 — FIND THE MONEY <span class="t">15 MIN</span></h2>
   <div class="clock">0:45–1:00 · checking/savings → short exactly → credit cards</div>
   <ol class="liners">
     <li>"The fastest, easiest, and smartest way to do so financially is: if you can pay it out of any checking or savings account. If you have the money, then well, pay it."</li>
@@ -51,11 +87,11 @@
     <li>"Okay, so the second way most people pay for our services is with credit cards."</li>
   </ol>
 </div>
-<div class="trans">→ Financing? Go to Stage 3. Cash/card? Collect DL + bank proof, skip to Stage 4.</div>
+<div class="trans">→ Financing? Apply now. Cash/card? Collect DL + bank proof, skip to Stage 6.</div>
 
 <div class="stage">
-  <h2>STAGE 3 — APPLY FOR CREDIT <span class="t">15 MIN</span></h2>
-  <div class="clock">1:00–1:15 · qualify → application info</div>
+  <h2>STAGE 5 — APPLY FOR CREDIT <span class="t">15 MIN</span></h2>
+  <div class="clock">1:00–1:15 · qualify → application info → hold</div>
   <ol class="liners">
     <li>"The third option is financing it and breaking it into monthly payments."</li>
     <li>"Do you have any idea what your credit score is?"</li>
@@ -67,14 +103,14 @@
 <div class="trans">→ Place them on hold — case goes to the approval team.</div>
 
 <div class="stage">
-  <h2>STAGE 4 — SIGN DOCUMENTS <span class="t">15 MIN</span></h2>
-  <div class="clock">1:15–1:30 · post-hold → prep agreement → DocuSign</div>
+  <h2>STAGE 6 — SIGN DOCUMENTS <span class="t">15 MIN</span></h2>
+  <div class="clock">1:15–1:30 · post-hold good news → prep agreement → DocuSign</div>
   <ol class="liners">
+    <li>"Good news — there are two potential case managers that can take this case tomorrow. One of them, she's very experienced at ___. The other one, he's amazing at ___."</li>
     <li>"Congratulations one of our case managers has decided to take your case. The total price is $________ — that includes the entire abolition of your entire contractual obligation — we will never ask you for another penny."</li>
     <li>"So what I'll need in order to move forward is: what I'm going to do next. I'm going to work on preparing our service agreement, right?"</li>
     <li>"It's going to take me about 10 minutes to prepare."</li>
     <li>"Do you know how to send pictures from your phone?"</li>
-    <li>"We will never ask you for another penny."</li>
   </ol>
 </div>
 
