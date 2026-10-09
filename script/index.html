@@ -44,6 +44,7 @@
   .qout { margin-top: 10px; font-size: 0.9em; border-top: 1px solid #0b3d91; padding-top: 8px; }
   .qout div { margin-bottom: 4px; }
   .qout b { float: right; }
+  .qidn { font-size: 0.85em; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #0b3d91; line-height: 1.55; }
   .topbar { position: sticky; top: 0; z-index: 50; background: #1a1a1a; color: #fff; padding: 10px 14px; margin: -20px -20px 16px; display: flex; gap: 10px; align-items: center; font-size: 1.05em; }
   .topbar.over { background: #a31212; }
   .topbar button { background: #0b3d91; color: #fff; border: none; border-radius: 5px; padding: 6px 14px; font-size: 0.9em; cursor: pointer; font-family: inherit; }
@@ -78,6 +79,7 @@
 
 <aside class="calcside">
   <h3>🧮 Calculator <button onclick="qSync(cur)" title="Reset to client">↺</button></h3>
+  <div class="qidn" id="q_idn" style="display:none"></div>
   <div class="tmin" id="q_cli" style="margin-bottom:8px">No client selected</div>
   <label class="qf">MF/yr <input id="q_mf" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">Esc % <input id="q_esc" type="number" min="0" oninput="qRecalc()"></label>
@@ -304,11 +306,21 @@ function pickClient(id){
   renderBar(c, n); applyFills(c, n); qSync(c);
 }
 function qNum(id){ var v = parseFloat($(id).value); return isNaN(v) ? 0 : v; }
+function qIdn(c){
+  var el = $('q_idn');
+  if (!c){ el.innerHTML = ''; el.style.display = 'none'; return; }
+  var ph = [c.phone, c.phone2].filter(function(x){ return x; }).join(' · ');
+  el.innerHTML = '<b>' + escH(c.name) + '</b>' +
+    (ph ? '<br>📞 ' + escH(ph) : '') +
+    (c.notes ? '<br><span class="tmin">' + escH(c.notes) + '</span>' : '');
+  el.style.display = 'block';
+}
 function qSync(c){
   $('q_mf').value = c ? c.mf : ''; $('q_esc').value = c ? (c.esc || 8) : '';
   $('q_payoff').value = c ? c.payoff : ''; $('q_fee').value = c && c.fee ? c.fee : '';
   $('q_down').value = c ? (c.down || '') : '';
   $('q_cli').textContent = c ? c.name : 'No client selected';
+  qIdn(c);
   qRecalc();
 }
 function qRecalc(){
