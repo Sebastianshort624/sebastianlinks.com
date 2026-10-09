@@ -49,7 +49,7 @@
   .qout div { margin-bottom: 4px; }
   .qout b { float: right; }
   .qsec { font-weight: bold; font-size: 0.9em; margin: 12px 0 6px; color: #0b3d91; }
-  .qidn { font-size: 0.85em; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #0b3d91; line-height: 1.55; }
+  .qidn { font-size: 0.85em; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #0b3d91; line-height: 1.55; overflow-wrap: break-word; word-wrap: break-word; }
   .topbar { position: sticky; top: 0; z-index: 50; background: #1a1a1a; color: #fff; padding: 10px 14px; margin: -20px -20px 16px; display: flex; gap: 10px; align-items: center; font-size: 1.05em; }
   .topbar.over { background: #a31212; }
   .topbar button { background: #0b3d91; color: #fff; border: none; border-radius: 5px; padding: 6px 14px; font-size: 0.9em; cursor: pointer; font-family: inherit; }
@@ -110,6 +110,19 @@
     <div>10-yr save <b id="q_s10">—</b></div>
     <div>Monthly <b id="q_mo">—</b></div>
     <div>12 / 24 / 36 <b id="q_opt">—</b></div>
+  </div>
+  <div class="qsec">Loan breakdown</div>
+  <div class="tmin" id="q_mleft" style="margin-bottom:6px">— mo left</div>
+  <label class="qf">Loan amt <input id="q_loan" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">APR % <input id="q_aapr" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">Months <input id="q_mos" type="number" min="1" max="120" oninput="qRecalc()"></label>
+  <div class="qout">
+    <div>Total paid <b id="q_paid">—</b></div>
+    <div>Principal <b id="q_prin">—</b></div>
+    <div>Interest <b id="q_inte">—</b></div>
+    <div>Balance (payoff) <b id="q_bal2">—</b></div>
+    <div>Term interest <b id="q_tint">—</b></div>
+    <div>Interest % of paid <b id="q_ipct">—</b></div>
   </div>
 </aside>
 
@@ -331,6 +344,15 @@ function qIdn(c){
     (c.notes ? '<br><span class="tmin">' + escH(c.notes) + '</span>' : '');
   el.style.display = 'block';
 }
+function amortSched(pv, apr, pmt, months){
+  var r = apr / 100 / 12, bal = pv, prin = 0, inte = 0;
+  for (var k = 0; k < months && bal > 0.005; k++){
+    var i = bal * r, p = Math.min(pmt - i, bal);
+    if (p < 0) p = 0;
+    inte += i; prin += p; bal -= p;
+  }
+  return {prin: prin, inte: inte, bal: Math.max(0, bal)};
+}
 function qSync(c){
   $('q_mmo').value = c ? (c.mmo || '') : '';
   $('q_mf').value = c ? c.mf : ''; $('q_esc').value = c ? (c.esc || 8) : '';
@@ -340,10 +362,14 @@ function qSync(c){
   $('q_fapr').value = c ? (c.fapr || '') : ''; $('q_fmo').value = c ? (c.fmo || '') : '';
   $('q_cli').textContent = c ? c.name : 'No client selected';
   qIdn(c);
+  var r0 = (c && c.apr ? c.apr : 0) / 100 / 12, t0 = (c && c.term ? c.term : 120), m0 = (c && c.mmo ? c.mmo : 0);
+  $('q_loan').value = (r0 > 0 && t0 > 0 && m0 > 0) ? Math.round(m0 * (1 - Math.pow(1 + r0, -t0)) / r0) : '';
+  $('q_aapr').value = c ? (c.apr || '') : '';
+  $('q_mos').value = (c && c.pyr) ? Math.min(t0, Math.max(0, (new Date().getFullYear() - c.pyr) * 12)) || '' : '';
   qRecalc();
 }
 function qRecalc(){
-  if (!cur){ ['q_t1','q_t3','q_t5','q_t10','q_t20','q_bal','q_s10','q_mo','q_opt'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); return; }
+  if (!cur){ ['q_t1','q_t3','q_t5','q_t10','q_t20','q_bal','q_s10','q_mo','q_opt','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— mo left'; return; }
   var mmo = qNum('q_mmo'), mf = qNum('q_mf'), esc = qNum('q_esc'), payoff = qNum('q_payoff');
   var pyr = parseInt(($('q_pyr').value || '').replace(/\D/g, ''), 10) || 0;
   var term = qNum('q_term') || 120;
@@ -365,6 +391,22 @@ function qRecalc(){
   $('q_s10').textContent = feeKnown ? fmtD(s10) : '—';
   $('q_mo').textContent = (feeKnown && fmo > 0) ? fmtD(amort(bal, fapr, fmo)) + '/mo' : '—';
   $('q_opt').textContent = feeKnown ? fmtD(amort(bal, fapr, 12)) + ' / ' + fmtD(amort(bal, fapr, 24)) + ' / ' + fmtD(amort(bal, fapr, 36)) : '—';
+  var loan = qNum('q_loan'), aapr = qNum('q_aapr');
+  var mos = Math.min(120, Math.max(0, Math.round(qNum('q_mos'))));
+  $('q_mleft').textContent = remMo + ' mo left on mtg';
+  if (loan > 0 && mos > 0 && mmo > 0){
+    var s = amortSched(loan, aapr, mmo, mos);
+    $('q_paid').textContent = fmtD(mos * mmo);
+    $('q_prin').textContent = fmtD(s.prin);
+    $('q_inte').textContent = fmtD(s.inte);
+    $('q_bal2').textContent = fmtD(s.bal);
+    var st = amortSched(loan, aapr, mmo, term);
+    var totPaid = term * mmo;
+    $('q_tint').textContent = fmtD(st.inte);
+    $('q_ipct').textContent = totPaid > 0 ? Math.round(st.inte / totPaid * 100) + '%' : '—';
+  } else {
+    ['q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct'].forEach(function(id){ $(id).textContent = '—'; });
+  }
   var n = {fee: fee, feeKnown: feeKnown, t5: t5, t10: t10, s10: s10};
   var c2 = {}, k;
   for (k in cur) c2[k] = cur[k];
