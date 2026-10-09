@@ -173,6 +173,31 @@ body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--text);min-
 </style>
 </head>
 <body>
+<div id="lock" style="position:fixed;inset:0;background:#1B2A4A;color:#fff;display:flex;align-items:center;justify-content:center;z-index:99999;">
+  <div style="text-align:center;padding:20px">
+    <div style="font-size:1.3em;margin-bottom:14px">🔒 Enter password</div>
+    <input id="pw" type="password" autocomplete="off" style="padding:10px;font-size:1.1em;border-radius:6px;border:none;width:220px;text-align:center" onkeydown="if(event.key==='Enter')unlockRoot()">
+    <div><button onclick="unlockRoot()" style="margin-top:14px;padding:10px 30px;font-size:1em;background:#0284C7;color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Unlock</button></div>
+    <div id="pwerr" style="color:#ff8888;margin-top:10px;display:none">Wrong password &mdash; try again</div>
+  </div>
+</div>
+<script>
+var ROOT_PASSWORD = "Grateful1!";
+function unlockRoot(){
+  if (document.getElementById('pw').value === ROOT_PASSWORD){
+    try { sessionStorage.setItem('sl_root_ok', '1'); } catch(e){}
+    document.getElementById('lock').style.display = 'none';
+  } else {
+    document.getElementById('pwerr').style.display = 'block';
+  }
+}
+(function(){
+  var ok = false;
+  try { ok = sessionStorage.getItem('sl_root_ok') === '1'; } catch(e){}
+  if (ok){ var l = document.getElementById('lock'); if (l) l.style.display = 'none'; }
+})();
+</script>
+
 
 <div class="topbar">
   <div class="topbar-left">
@@ -1050,3 +1075,4 @@ function clearLinks(){localStorage.removeItem('favorites');location.reload();}
 
 </body>
 </html>
+
