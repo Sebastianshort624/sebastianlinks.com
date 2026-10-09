@@ -6,75 +6,249 @@
 <meta name="robots" content="noindex, nofollow">
 <title>True Cost of Ownership — Calculator</title>
 <style>
-  body { font-family: Arial, Helvetica, sans-serif; max-width: 640px; margin: 0 auto; padding: 20px; color: #1a1a1a; line-height: 1.5; }
+  body { font-family: Arial, Helvetica, sans-serif; max-width: 700px; margin: 0 auto; padding: 20px; color: #1a1a1a; line-height: 1.5; }
   h1 { font-size: 1.4em; margin-bottom: 2px; }
+  h3 { margin: 18px 0 8px; }
   .sub { color: #555; margin-bottom: 18px; }
-  .calc { border: 2px solid #1a1a1a; border-radius: 8px; padding: 16px 18px; margin-bottom: 16px; }
-  .calc label { display: block; margin-bottom: 12px; font-weight: bold; }
-  .calc input { display: block; margin-top: 4px; padding: 8px; font-size: 1.1em; width: 200px; border: 1px solid #999; border-radius: 4px; font-family: inherit; }
-  .calc button { padding: 10px 28px; font-size: 1.05em; background: #0b3d91; color: #fff; border: none; border-radius: 6px; cursor: pointer; margin-top: 4px; }
-  .result { border: 2px solid #0b3d91; border-radius: 8px; padding: 16px 18px; margin-bottom: 16px; background: #f0f4ff; display: none; }
+  .tmin { font-size: 0.8em; color: #888; font-weight: normal; }
+  .box { border: 2px solid #1a1a1a; border-radius: 8px; padding: 16px 18px; margin-bottom: 16px; }
+  .box h3 { margin-top: 0; }
+  label.f { display: block; margin-bottom: 10px; font-weight: bold; font-size: 0.95em; }
+  label.f input, label.f select { display: block; margin-top: 4px; padding: 8px; font-size: 1em; width: 100%; max-width: 280px; border: 1px solid #999; border-radius: 4px; font-family: inherit; font-weight: normal; box-sizing: border-box; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
+  @media (max-width: 520px){ .grid { grid-template-columns: 1fr; } }
+  button { padding: 10px 22px; font-size: 1em; background: #0b3d91; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-family: inherit; margin: 4px 6px 4px 0; }
+  button.ghost { background: #666; }
+  button.danger { background: #a31212; }
+  .cdetails { background: #f0f4ff; border-radius: 6px; padding: 10px 12px; margin-top: 10px; font-size: 0.95em; display: none; }
+  .result { border: 2px solid #0b3d91; border-radius: 8px; padding: 16px 18px; margin-bottom: 16px; background: #f0f4ff; }
   .result .big { font-size: 2em; font-weight: bold; color: #0b3d91; margin: 6px 0; }
-  .result .cmp { color: #555; font-size: 0.95em; }
-  table { width: 100%; border-collapse: collapse; margin-top: 8px; display: none; }
-  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid #ddd; }
+  .result .row { display: flex; gap: 24px; flex-wrap: wrap; margin-top: 8px; }
+  .result .stat b { display: block; font-size: 1.25em; }
+  .result .stat span { font-size: 0.85em; color: #555; }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 4px; }
+  th, td { text-align: right; padding: 7px 10px; border-bottom: 1px solid #ddd; font-variant-numeric: tabular-nums; }
+  th:first-child, td:first-child { text-align: left; }
   th { background: #f4f4f4; }
-  td:last-child, th:last-child { text-align: right; }
+  tr.hl td { font-weight: bold; color: #0b3d91; }
   .note { color: #555; font-size: 0.9em; margin-top: 14px; }
+  #cform { display: none; border-top: 1px solid #ccc; margin-top: 12px; padding-top: 12px; }
 </style>
 </head>
 <body>
 
 <h1>💰 True Cost of Ownership</h1>
-<div class="sub">What your timeshare really costs over time — with annual fee increases.</div>
+<div class="sub">Select a client to auto-fill — or enter numbers manually.</div>
 
-<div class="calc">
-  <label>Annual maintenance fee ($)
-    <input id="fee" type="number" inputmode="decimal" value="1500" min="0">
+<div class="box">
+  <h3>Client</h3>
+  <label class="f">Select client
+    <select id="csel"><option value="">— Manual entry —</option></select>
   </label>
-  <label>Years to project
-    <input id="years" type="number" inputmode="numeric" value="20" min="1" max="100">
-  </label>
-  <label>Annual increase (%)
-    <input id="rate" type="number" inputmode="decimal" value="8" step="0.1" min="0">
-  </label>
+  <div>
+    <button onclick="showForm(false)">+ Add client</button>
+    <button class="ghost" onclick="showForm(true)" id="ebtn" style="display:none">Edit</button>
+    <button class="danger" onclick="delClient()" id="dbtn" style="display:none">Delete</button>
+  </div>
+  <div class="cdetails" id="cdetails"></div>
+  <div id="cform">
+    <div class="grid">
+      <label class="f">Full name <input id="f_name"></label>
+      <label class="f">Phone <input id="f_phone"></label>
+      <label class="f">Email <input id="f_email"></label>
+      <label class="f">Case analyst <input id="f_ca"></label>
+      <label class="f">Resort <input id="f_resort"></label>
+      <label class="f">Annual maint. fee ($) <input id="f_mf" type="number" min="0"></label>
+      <label class="f">Annual increase (%) <input id="f_esc" type="number" step="0.1" min="0" value="8"></label>
+      <label class="f">Payoff / debt owed ($) <input id="f_payoff" type="number" min="0"></label>
+      <label class="f">Loan APR (%) <input id="f_apr" type="number" step="0.1" min="0"></label>
+      <label class="f">Loan term (months) <input id="f_term" type="number" min="0"></label>
+      <label class="f">Linx fee ($) <span class="tmin">blank = 47% of payoff</span><input id="f_fee" type="number" min="0"></label>
+      <label class="f">Down payment ($) <input id="f_down" type="number" min="0"></label>
+      <label class="f">Finance APR (%) <input id="f_fapr" type="number" step="0.1" min="0"></label>
+      <label class="f">Finance months <input id="f_fmo" type="number" min="0"></label>
+    </div>
+    <button onclick="saveForm()">Save client</button>
+    <button class="ghost" onclick="hideForm()">Cancel</button>
+  </div>
+</div>
+
+<div class="box">
+  <h3>Numbers</h3>
+  <div class="grid">
+    <label class="f">Annual maint. fee ($) <input id="in_mf" type="number" value="1500" min="0"></label>
+    <label class="f">Annual increase (%) <input id="in_rate" type="number" value="8" step="0.1" min="0"></label>
+    <label class="f">Payoff / debt owed ($) <input id="in_payoff" type="number" value="0" min="0"></label>
+    <label class="f">Loan APR (%) <input id="in_apr" type="number" step="0.1" min="0" value="0"></label>
+    <label class="f">Loan term (months) <input id="in_term" type="number" min="0" value="0"></label>
+    <label class="f">Linx fee ($) <span class="tmin">blank = 47% of payoff</span><input id="in_fee" type="number" min="0"></label>
+    <label class="f">Down payment ($) <input id="in_down" type="number" min="0" value="0"></label>
+    <label class="f">Finance APR (%) <input id="in_fapr" type="number" step="0.1" min="0" value="0"></label>
+    <label class="f">Finance months <input id="in_fmo" type="number" min="0" value="0"></label>
+  </div>
   <button onclick="calc()">Calculate</button>
 </div>
 
-<div class="result" id="result">
-  <div>Total projected cost</div>
-  <div class="big" id="total">$0</div>
-  <div class="cmp" id="cmp"></div>
+<div class="result" id="result" style="display:none">
+  <div class="row">
+    <div class="stat"><span>Linx fee</span><b id="r_fee">$0</b></div>
+    <div class="stat"><span>10-yr savings</span><b id="r_sav">$0</b></div>
+    <div class="stat"><span>Principal / Interest</span><b id="r_pi">—</b></div>
+  </div>
 </div>
 
-<table id="breakdown">
-  <thead><tr><th>Year</th><th>Annual fee</th></tr></thead>
-  <tbody id="rows"></tbody>
+<h3>Projections</h3>
+<table id="mtable" style="display:none">
+  <thead><tr><th></th><th>5 yr</th><th>10 yr</th><th>20 yr</th></tr></thead>
+  <tbody>
+    <tr><td>Maint. fees</td><td id="m5">$0</td><td id="m10">$0</td><td id="m20">$0</td></tr>
+    <tr><td>Total cost (payoff + fees)</td><td id="t5">$0</td><td id="t10">$0</td><td id="t20">$0</td></tr>
+    <tr class="hl"><td>Savings vs. Linx fee</td><td id="s5">$0</td><td id="s10">$0</td><td id="s20">$0</td></tr>
+  </tbody>
 </table>
 
-<div class="note">Maintenance fees never end — the perpetuity clause passes them on to your heirs.</div>
+<h3>Price &amp; payments</h3>
+<table id="ptable" style="display:none">
+  <tbody>
+    <tr><td>Linx fee (47% of payoff)</td><td id="p_fee">$0</td></tr>
+    <tr><td>Down payment</td><td id="p_down">$0</td></tr>
+    <tr><td>Balance</td><td id="p_bal">$0</td></tr>
+    <tr><td>Monthly (<span id="p_terms">—</span>)</td><td id="p_mo">—</td></tr>
+    <tr><td>12 / 24 / 36 mo options</td><td id="p_opt">—</td></tr>
+  </tbody>
+</table>
+
+<div class="note">Clients are saved in this browser only — nothing is uploaded. Maintenance fees never end — the perpetuity clause passes them to heirs.</div>
 
 <script>
+function $(id){ return document.getElementById(id); }
 function fmt(n){ return '$' + Math.round(n).toLocaleString('en-US'); }
-function calc(){
-  var fee = parseFloat(document.getElementById('fee').value) || 0;
-  var years = parseInt(document.getElementById('years').value) || 0;
-  var rate = (parseFloat(document.getElementById('rate').value) || 0) / 100;
-  if (fee <= 0 || years <= 0) return;
-  var total = 0, html = '';
-  for (var y = 1; y <= years; y++) {
-    var amt = fee * Math.pow(1 + rate, y - 1);
-    total += amt;
-    html += '<tr><td>Year ' + y + '</td><td>' + fmt(amt) + '</td></tr>';
-  }
-  var flat = fee * years;
-  document.getElementById('total').textContent = fmt(total);
-  document.getElementById('cmp').textContent =
-    'Without annual increases: ' + fmt(flat) + ' — the increases alone add ' + fmt(total - flat) + '.';
-  document.getElementById('rows').innerHTML = html;
-  document.getElementById('result').style.display = 'block';
-  document.getElementById('breakdown').style.display = 'table';
+function num(v){ var n = parseFloat(v); return isNaN(n) ? 0 : n; }
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]; }); }
+function getClients(){ try { return JSON.parse(localStorage.getItem('sl_clients') || '[]'); } catch(e){ return []; } }
+function saveClients(c){ localStorage.setItem('sl_clients', JSON.stringify(c)); }
+function amort(P, aprPct, n){ var r = aprPct / 100 / 12; if (n <= 0) return 0; if (r <= 0) return P / n; return P * r / (1 - Math.pow(1 + r, -n)); }
+function mfTotal(mf, r, n){ if (n <= 0) return 0; if (r <= 0) return mf * n; return mf * ((Math.pow(1 + r, n) - 1) / r); }
+
+var editingId = null;
+
+function refreshSelect(keep){
+  var cs = getClients(), sel = $('csel'), cur = keep ? sel.value : '';
+  sel.innerHTML = '<option value="">— Manual entry —</option>';
+  cs.forEach(function(c){ var o = document.createElement('option'); o.value = c.id; o.textContent = c.name; sel.appendChild(o); });
+  sel.value = cur;
 }
+
+function showForm(edit){
+  var cs = getClients(), c = null;
+  editingId = null;
+  if (edit){
+    var id = $('csel').value; if (!id) return;
+    for (var i = 0; i < cs.length; i++) if (cs[i].id === id) c = cs[i];
+    if (!c) return;
+    editingId = c.id;
+  }
+  $('f_name').value = c ? c.name : ''; $('f_phone').value = c ? c.phone : '';
+  $('f_email').value = c ? c.email : ''; $('f_ca').value = c ? c.ca : '';
+  $('f_resort').value = c ? c.resort : ''; $('f_mf').value = c ? c.mf : '';
+  $('f_esc').value = c ? c.esc : 8; $('f_payoff').value = c ? c.payoff : '';
+  $('f_apr').value = c ? c.apr : ''; $('f_term').value = c ? c.term : '';
+  $('f_fee').value = c && c.fee ? c.fee : ''; $('f_down').value = c ? c.down : '';
+  $('f_fapr').value = c ? c.fapr : ''; $('f_fmo').value = c ? c.fmo : '';
+  $('cform').style.display = 'block';
+}
+function hideForm(){ $('cform').style.display = 'none'; editingId = null; }
+
+function saveForm(){
+  var name = $('f_name').value.trim();
+  if (!name){ alert('Name is required.'); return; }
+  var rec = {
+    id: editingId || ('c' + Date.now().toString(36)),
+    name: name, phone: $('f_phone').value.trim(), email: $('f_email').value.trim(),
+    ca: $('f_ca').value.trim(), resort: $('f_resort').value.trim(),
+    mf: num($('f_mf').value), esc: num($('f_esc').value) || 8, payoff: num($('f_payoff').value),
+    apr: num($('f_apr').value), term: num($('f_term').value), fee: num($('f_fee').value),
+    down: num($('f_down').value), fapr: num($('f_fapr').value), fmo: num($('f_fmo').value)
+  };
+  var cs = getClients(), found = false;
+  for (var i = 0; i < cs.length; i++) if (cs[i].id === rec.id){ cs[i] = rec; found = true; }
+  if (!found) cs.push(rec);
+  saveClients(cs); hideForm(); refreshSelect(); $('csel').value = rec.id; onSelect();
+}
+
+function delClient(){
+  var id = $('csel').value; if (!id) return;
+  if (!confirm('Delete this client from this browser?')) return;
+  saveClients(getClients().filter(function(c){ return c.id !== id; }));
+  refreshSelect(); $('csel').value = ''; onSelect();
+}
+
+function onSelect(){
+  var id = $('csel').value, cs = getClients(), c = null;
+  for (var i = 0; i < cs.length; i++) if (cs[i].id === id) c = cs[i];
+  $('ebtn').style.display = c ? '' : 'none';
+  $('dbtn').style.display = c ? '' : 'none';
+  var d = $('cdetails');
+  if (c){
+    d.innerHTML = '<b>' + esc(c.name) + '</b>' +
+      (c.resort ? ' · ' + esc(c.resort) : '') +
+      (c.phone ? '<br>📞 ' + esc(c.phone) : '') +
+      (c.email ? ' · ✉️ ' + esc(c.email) : '') +
+      (c.ca ? '<br>CA: ' + esc(c.ca) : '');
+    d.style.display = 'block';
+    $('in_mf').value = c.mf; $('in_rate').value = c.esc; $('in_payoff').value = c.payoff;
+    $('in_apr').value = c.apr; $('in_term').value = c.term; $('in_fee').value = c.fee || '';
+    $('in_down').value = c.down; $('in_fapr').value = c.fapr; $('in_fmo').value = c.fmo;
+  } else {
+    d.style.display = 'none';
+  }
+  calc();
+}
+
+function calc(){
+  var mf = num($('in_mf').value), r = num($('in_rate').value) / 100,
+      payoff = num($('in_payoff').value), apr = num($('in_apr').value), term = num($('in_term').value),
+      feeIn = num($('in_fee').value), down = num($('in_down').value),
+      fapr = num($('in_fapr').value), fmo = num($('in_fmo').value);
+  var fee = feeIn > 0 ? feeIn : payoff * 0.47;
+
+  function tot(n){ return payoff + mfTotal(mf, r, n); }
+  function sav(n){ return tot(n) - fee; }
+
+  $('r_fee').textContent = fmt(fee);
+  $('r_sav').textContent = fmt(sav(10));
+  if (apr > 0 && term > 0){
+    var mo = amort(payoff, apr, term);
+    $('r_pi').textContent = fmt(payoff) + ' / ' + fmt(mo * term - payoff);
+  } else {
+    $('r_pi').textContent = payoff > 0 ? fmt(payoff) + ' / —' : '—';
+  }
+
+  [5, 10, 20].forEach(function(n){
+    $('m' + n).textContent = fmt(mfTotal(mf, r, n));
+    $('t' + n).textContent = fmt(tot(n));
+    $('s' + n).textContent = fmt(sav(n));
+  });
+
+  var bal = Math.max(0, fee - down);
+  $('p_fee').textContent = fmt(fee) + (feeIn > 0 ? '' : ' (47%)');
+  $('p_down').textContent = fmt(down);
+  $('p_bal').textContent = fmt(bal);
+  if (fapr > 0 && fmo > 0){
+    $('p_terms').textContent = fmo + ' mo @ ' + fapr + '%';
+    $('p_mo').textContent = fmt(amort(bal, fapr, fmo)) + '/mo';
+  } else { $('p_terms').textContent = '—'; $('p_mo').textContent = '—'; }
+  if (bal > 0 && fapr >= 0){
+    $('p_opt').textContent = fmt(amort(bal, fapr, 12)) + ' / ' + fmt(amort(bal, fapr, 24)) + ' / ' + fmt(amort(bal, fapr, 36)) + ' /mo';
+  } else { $('p_opt').textContent = '—'; }
+
+  $('result').style.display = 'block';
+  $('mtable').style.display = 'table';
+  $('ptable').style.display = 'table';
+}
+
+$('csel').addEventListener('change', onSelect);
+refreshSelect();
 calc();
 </script>
 
