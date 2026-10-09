@@ -77,6 +77,7 @@
     <li>"I can tell you this — if we can't save you a ridiculous amount of money, we're not going to even try to take your case."</li>
     <li>"This is not simple interest — it's compounded interest, just like a credit card."</li>
     <li>"So when we take this back to Wyndham — they have to show us how that makes sense."</li>
+    <li>"They had to lie to you repeatedly to get you into that contract."</li>
   </ul>
 </aside>
 <aside class="sprinkle">
@@ -115,14 +116,13 @@
     <li>"In the first 10 years — between your mortgage payments and your maintenance payments — you signed agreeing to a total cost of <span data-fill="total10">$________</span> for this timeshare. But did they actually let you read that page before you signed? 📝"<br>→ "That's exactly what we're trying to prove. That contract is impenetrable — you can't just walk away from it. What we do is get it voided — because you should never have been in it in the first place. You were lied to."</li>
     <li>The main five, in plain talk:
       <ol>
-        <li>When you bought, did they make it sound like you could always just sell it if you wanted out? These things are listed on eBay for a dollar — you can't even give them away.</li>
-        <li>Did they tell you the maintenance fees never end — that they go on forever and get passed down to your kids?</li>
-        <li>What was the maintenance fee back when you bought? And did they tell you it goes up every single year — around 8%?</li>
-        <li>Did they make it sound like you had to be an owner to stay in these resorts — priority benefits, good availability, whatever you wanted whenever? <span data-fill="ca">[CA name]</span> showed you that's not true — you can rent the same rooms anytime for a fraction of the cost. Remember seeing rooms for like a hundred bucks a night? A whole week for 700 bucks — while as an owner you're paying thousands a year and you're lucky to get a single week.</li>
-        <li>And did they tell you booking was easy — just call a few days or weeks ahead? What was it actually like when you tried?</li>
+        <li>"When you bought, did they make it sound like you could always just sell it if you wanted out? These things are listed on eBay for a dollar — you can't even give them away."<br>→ "If they had followed the law and shown you what your total commitment was — just in the first 10 years — would you have ever signed that contract?"</li>
+        <li>"Did they tell you the maintenance fees never end — that they go on forever and get passed down to your kids?"<br>→ "If they had followed the law and shown you what your total commitment was — just in the first 10 years — would you have ever signed that contract?"</li>
+        <li>"What was the maintenance fee back when you bought? And did they tell you it goes up every single year — around 8%?"<br>→ "If they had followed the law and shown you what your total commitment was — just in the first 10 years — would you have ever signed that contract?"</li>
+        <li>"Did they make it sound like you had to be an owner to stay in these resorts — priority benefits, good availability, whatever you wanted whenever? <span data-fill="ca">[CA name]</span> showed you that's not true — you can rent the same rooms anytime for a fraction of the cost. Remember seeing rooms for like a hundred bucks a night? A whole week for 700 bucks — while as an owner you're paying thousands a year and you're lucky to get a single week."<br>→ "If they had followed the law and shown you what your total commitment was — just in the first 10 years — would you have ever signed that contract?"</li>
+        <li>"And did they tell you booking was easy — just call a few days or weeks ahead? What was it actually like when you tried?"<br>→ "If they had followed the law and shown you what your total commitment was — just in the first 10 years — would you have ever signed that contract?"</li>
       </ol>
     </li>
-    <li>Follow-up for any of the above: "If they had followed the law and shown you what your total commitment was — just in the first 10 years — would you have ever signed that contract?"</li>
     <li>"We take all of this to the resort and lay out the fines they're facing — so they see it's cheaper to let you out than to risk paying those fines."</li>
     <li>"And we go after compensation for the emotional and financial impact this had on you. Our competitors settle cases by getting the client to pay the resort — we do the opposite, and our reviews prove it."</li>
     <li>"We will never take on your case unless we can save you a ridiculous amount of money."</li>
@@ -247,18 +247,19 @@ function pickClient(id){
   var cs = slClients(), c = null, bar = document.getElementById('cbar');
   for (var i = 0; i < cs.length; i++) if (cs[i].id === id) c = cs[i];
   if (!c){ bar.style.display = 'none'; resetFills(); return; }
-  var fee = c.fee > 0 ? c.fee : c.payoff * 0.47;
+  var fee = c.fee > 0 ? c.fee : (c.dtype === 'deedback' ? 0 : c.payoff * 0.47);
+  var feeKnown = fee > 0;
   var r = (c.esc || 8) / 100;
-  var s10 = (c.payoff + mfTot(c.mf, r, 10)) - fee;
+  var s10 = feeKnown ? (c.payoff + mfTot(c.mf, r, 10)) - fee : 0;
   bar.innerHTML = '<strong>' + escH(c.name) + '</strong>' +
     (c.resort ? ' · ' + escH(c.resort) : '') +
     ' · MF ' + fmtD(c.mf) + '/yr · Payoff ' + fmtD(c.payoff) +
-    ' · Fee ' + fmtD(fee) + ' · 10-yr savings ' + fmtD(s10);
+    ' · Fee ' + (feeKnown ? fmtD(fee) : '—') + ' · 10-yr savings ' + (feeKnown ? fmtD(s10) : '—');
   bar.style.display = 'block';
   fillAll('[data-fill="down"]', c.down > 0 ? fmtD(c.down) : '$________');
-  fillAll('[data-fill="fee"]', fmtD(fee));
-  fillAll('[data-fill="savings"]', fmtD(s10));
-  fillAll('[data-fill="total10"]', fmtD(s10 + fee));
+  fillAll('[data-fill="fee"]', feeKnown ? fmtD(fee) : '$________');
+  fillAll('[data-fill="savings"]', feeKnown ? fmtD(s10) : '$________');
+  fillAll('[data-fill="total10"]', feeKnown ? fmtD(s10 + fee) : '$________');
   fillAll('[data-fill="ca"]', c.ca || '[CA name]');
 }
 (function initClientSel(){
