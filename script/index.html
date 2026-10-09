@@ -23,7 +23,8 @@
   .client-line { margin: 4px 0 12px; }
   .client-line input { border: none; border-bottom: 1px solid #333; font-size: 1em; width: 280px; font-family: inherit; }
   .client-line select { font-size: 1em; padding: 6px; font-family: inherit; max-width: 100%; }
-  .cbar { background: #f0f4ff; border: 1px solid #0b3d91; border-radius: 6px; padding: 8px 12px; margin-bottom: 14px; font-size: 0.92em; }
+  .cbar { position: sticky; top: 48px; z-index: 40; background: #1a1a1a; color: #fff; border-radius: 6px; padding: 8px 12px; margin-bottom: 14px; font-size: 0.85em; line-height: 1.65; }
+  .cbar strong { color: #fff; }
   .sprinkle { border: 2px dashed #0b3d91; border-radius: 8px; padding: 12px 14px; margin: 0 0 18px; background: #fafcff; }
   .sprinkle h3 { margin: 0 0 8px; font-size: 1em; }
   .sprinkle ul { margin: 0 0 0 18px; padding: 0; }
@@ -60,9 +61,8 @@
   <button onclick="resetOverall()" title="Reset overall timer">↺</button>
 </div>
 
-<h1>🎯 90-Minute Appointment</h1>
-<div class="total">6 stages · 15 min each</div>
-<div class="client-line">Client: <select id="clientSel"><option value="">— select client —</option></select></div>
+<h1 style="font-size:1.15em;margin-bottom:0">🎯 90-Minute Appointment <span class="tmin">· 6 stages × 15 min</span></h1>
+<div class="client-line" style="margin:6px 0 10px">Client: <select id="clientSel"><option value="">— select client —</option></select></div>
 <div class="cbar" id="cbar" style="display:none"></div>
 
 <div class="sideboxes">
@@ -250,11 +250,16 @@ function pickClient(id){
   var fee = c.fee > 0 ? c.fee : (c.dtype === 'deedback' ? 0 : c.payoff * 0.47);
   var feeKnown = fee > 0;
   var r = (c.esc || 8) / 100;
-  var s10 = feeKnown ? (c.payoff + mfTot(c.mf, r, 10)) - fee : 0;
-  bar.innerHTML = '<strong>' + escH(c.name) + '</strong>' +
-    (c.resort ? ' · ' + escH(c.resort) : '') +
-    ' · MF ' + fmtD(c.mf) + '/yr · Payoff ' + fmtD(c.payoff) +
-    ' · Fee ' + (feeKnown ? fmtD(fee) : '—') + ' · 10-yr savings ' + (feeKnown ? fmtD(s10) : '—');
+  var mmo = c.mmo || 0, mfmo = c.mf / 12;
+  var yrTot = mmo * 12 + c.mf;
+  var t5 = c.payoff + mfTot(c.mf, r, 5);
+  var t10 = c.payoff + mfTot(c.mf, r, 10);
+  var s10 = feeKnown ? t10 - fee : 0;
+  bar.innerHTML = '<strong>' + escH(c.name) + '</strong>' + (c.resort ? ' · ' + escH(c.resort) : '') +
+    (c.phone ? ' · 📞 ' + escH(c.phone) : '') + (c.email ? ' · ✉️ ' + escH(c.email) : '') + (c.tz ? ' · ' + escH(c.tz) : '') + '<br>' +
+    (mmo > 0 ? 'Mtg ' + fmtD(mmo) + '/mo · ' : '') + 'MF ' + fmtD(c.mf) + '/yr (' + fmtD(mfmo) + '/mo)' +
+    (mmo > 0 ? ' · Yr total ' + fmtD(yrTot) : '') + ' · 5-yr ' + fmtD(t5) + ' · 10-yr ' + fmtD(t10) +
+    (feeKnown ? ' · Fee ' + fmtD(fee) + ' · 10-yr save ' + fmtD(s10) : '');
   bar.style.display = 'block';
   fillAll('[data-fill="down"]', c.down > 0 ? fmtD(c.down) : '$________');
   fillAll('[data-fill="fee"]', feeKnown ? fmtD(fee) : '$________');
