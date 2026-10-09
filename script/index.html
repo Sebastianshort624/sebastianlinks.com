@@ -33,6 +33,8 @@
   .sprinkle li { margin: 0; padding: 9px 4px 9px 30px; font-size: 0.95em; border-bottom: 1px solid #d4e3fa; position: relative; }
   .sprinkle li:last-child { border-bottom: none; padding-bottom: 4px; }
   .sprinkle li:before { content: "✦"; position: absolute; left: 8px; top: 9px; color: #d99a17; font-size: 0.9em; }
+  .objsrch { width: 100%; box-sizing: border-box; padding: 7px 10px; margin-bottom: 8px; border: 1px solid #c9dcf7; border-radius: 6px; font-size: 0.9em; }
+  .objsrch:focus { outline: 2px solid #0b3d91; border-color: #0b3d91; }
   @media (min-width: 1350px){
     .sideboxes { position: fixed; right: 16px; top: 120px; width: 260px; margin: 0; max-height: 72vh; overflow-y: auto; }
     .sideboxes .sprinkle { margin-bottom: 12px; }
@@ -121,16 +123,18 @@
     <li>"<b>They had to lie to you repeatedly</b> to get you into that contract."</li>
   </ul>
 </aside>
-<aside class="sprinkle">
+<aside class="sprinkle" id="objbox">
   <h3>🛡️ Objection killers</h3>
+  <input class="objsrch" id="objq" placeholder="🔍 Search objections…" oninput="objFilter()">
   <ul>
-    <li><b>"I need to think about it."</b> → "Of course — think about what, specifically? The numbers won't change, but the case manager's availability might. <b>What part do you want to talk through?</b>"</li>
-    <li><b>"I need to talk to my spouse."</b> → "Absolutely — are they around right now? <b>Let's get them on</b>, because I'd rather answer their questions directly than have you re-explain all of this secondhand."</li>
-    <li><b>"I've been scammed before."</b> → "That's exactly why we do it this way — <b>100% money-back guarantee</b>, A+ with the BBB, and you saw our reviews yourself. If we don't get you out, you get your money back. What did the last company guarantee you?"</li>
-    <li><b>"Will this hurt my credit?"</b> → "<b>We never pull your credit</b> and we don't report anything to the bureaus. What part worries you?"</li>
-    <li><b>"It's too expensive."</b> → "Compared to what? Doing nothing costs you <b><span data-fill="total10">$________</span></b> over the next 10 years. This is <b><span data-fill="fee">$________</span></b> once — and then it's over forever."</li>
-    <li><b>"How are you different?"</b> → "Most companies get you out by having you pay the resort. We flip it — <b>the resort lets you out and pays you</b>. And nobody else backs it with a 100% money-back guarantee."</li>
+    <li data-keys="think thinking about it need time stall delay"><b>"I need to think about it."</b> → "Of course — think about what, specifically? The numbers won't change, but the case manager's availability might. <b>What part do you want to talk through?</b>"</li>
+    <li data-keys="spouse wife husband partner talk discuss family decide together"><b>"I need to talk to my spouse."</b> → "Absolutely — are they around right now? <b>Let's get them on</b>, because I'd rather answer their questions directly than have you re-explain all of this secondhand."</li>
+    <li data-keys="scam scammed burned ripped off trust skeptical"><b>"I've been scammed before."</b> → "That's exactly why we do it this way — <b>100% money-back guarantee</b>, A+ with the BBB, and you saw our reviews yourself. If we don't get you out, you get your money back. What did the last company guarantee you?"</li>
+    <li data-keys="credit score hurt damage report bureau bureaus"><b>"Will this hurt my credit?"</b> → "<b>We never pull your credit</b> and we don't report anything to the bureaus. What part worries you?"</li>
+    <li data-keys="expensive cost too much price afford can't afford money"><b>"It's too expensive."</b> → "Compared to what? Doing nothing costs you <b><span data-fill="total10">$________</span></b> over the next 10 years. This is <b><span data-fill="fee">$________</span></b> once — and then it's over forever."</li>
+    <li data-keys="different difference others other companies vs versus competitor"><b>"How are you different?"</b> → "Most companies get you out by having you pay the resort. We flip it — <b>the resort lets you out and pays you</b>. And nobody else backs it with a 100% money-back guarantee."</li>
   </ul>
+  <div id="objnone" class="tmin" style="display:none;padding:6px 4px">No matches — try another word.</div>
 </aside>
 </div>
 
@@ -352,6 +356,20 @@ function qRecalc(){
   for (k in cur) c2[k] = cur[k];
   c2.mf = mf; c2.payoff = payoff; c2.down = down;
   renderBar(c2, n); applyFills(c2, n);
+}
+function objFilter(){
+  var q = ($('objq').value || '').toLowerCase().trim();
+  var words = q ? q.split(/\s+/) : [];
+  var lis = document.querySelectorAll('#objbox li');
+  var shown = 0;
+  for (var i = 0; i < lis.length; i++){
+    var li = lis[i];
+    var hay = (li.textContent + ' ' + (li.getAttribute('data-keys') || '')).toLowerCase();
+    var show = words.every(function(w){ return hay.indexOf(w) >= 0; });
+    li.style.display = show ? '' : 'none';
+    if (show) shown++;
+  }
+  $('objnone').style.display = shown ? 'none' : 'block';
 }
 (function initClientSel(){
   var sel = document.getElementById('clientSel'), cs = slClients();
