@@ -22,6 +22,8 @@
   .plink { margin: 0 0 10px; font-size: 0.95em; }
   .client-line { margin: 4px 0 12px; }
   .client-line input { border: none; border-bottom: 1px solid #333; font-size: 1em; width: 280px; font-family: inherit; }
+  .client-line select { font-size: 1em; padding: 6px; font-family: inherit; max-width: 100%; }
+  .cbar { background: #f0f4ff; border: 1px solid #0b3d91; border-radius: 6px; padding: 8px 12px; margin-bottom: 14px; font-size: 0.92em; }
   .topbar { position: sticky; top: 0; z-index: 50; background: #1a1a1a; color: #fff; padding: 10px 14px; margin: -20px -20px 16px; display: flex; gap: 10px; align-items: center; font-size: 1.05em; }
   .topbar.over { background: #a31212; }
   .topbar button { background: #0b3d91; color: #fff; border: none; border-radius: 5px; padding: 6px 14px; font-size: 0.9em; cursor: pointer; font-family: inherit; }
@@ -43,14 +45,15 @@
 
 <h1>🎯 90-Minute Appointment</h1>
 <div class="total">6 stages · 15 min each</div>
-<div class="client-line">Client: <input type="text"></div>
+<div class="client-line">Client: <select id="clientSel"><option value="">— select client —</option></select></div>
+<div class="cbar" id="cbar" style="display:none"></div>
 
 <div class="stage">
   <h2>STAGE 1 — INTRODUCTION &amp; CREDIBILITY <span class="t">15 MIN</span></h2>
   <div class="clock">0:00–0:15 · chit-chat <span class="tmin">(5 min)</span> → credibility research together <span class="tmin">(10 min)</span> <span class="stimer"><button id="sb1" onclick="toggleStage(1)">▶ 00:00</button> <button class="rs" onclick="resetStage(1)" title="Reset">↺</button></span></div>
   <ol class="liners">
     <li>"My role is to make sure the case we build is strong enough to bring to our approval team. The reason being we have a 99% success rate because we only take on cases we know we will win — because we give a 100% money-back guarantee, and it costs us money as we progress your case."</li>
-    <li>"I see you and [CA name] researched our company, so are you sure you have no questions re Linx Legal the company and our ability to do what we say we will do?"</li>
+    <li>"I see you and <span data-fill="ca">[CA name]</span> researched our company, so are you sure you have no questions re Linx Legal the company and our ability to do what we say we will do?"</li>
     <li>"Did they show you we are pioneers of the cancellation industry, the industry we created?"</li>
     <li>Research together: <a href="https://sebastianlinks.com/linx">sebastianlinks.com/linx</a> — company credibility &amp; reviews.</li>
     <li>"You saw our reviews yourself — that is our reputation."</li>
@@ -100,7 +103,7 @@
     <li>"Now, if you don't have any other questions about our process, the next thing I can explain to you are the different ways most people pay for our services. The fastest, easiest, and smartest way to do so financially is: if you can pay it out of any checking or savings account. If you have the money, then well, pay it."</li>
     <li>"And again, I don't like to assume anything. So I'll just ask you straight up: do you have it in your checking account, savings account, or any type of retirement account, 401(k), IRA, anything like that, stocks, bonds, whatever, where you could get it into your checking account within a certain amount of days?"</li>
     <li>"About how far off are you from that number, exactly?"</li>
-    <li>"So what I'm hearing from you is that you have $________ that you could put towards this. Is that what I'm hearing from you?"</li>
+    <li>"So what I'm hearing from you is that you have <span data-fill="down">$________</span> that you could put towards this. Is that what I'm hearing from you?"</li>
     <li>"Okay, so the second way most people pay for our services is with credit cards."</li>
   </ol>
 </div>
@@ -113,7 +116,7 @@
   <ol class="liners">
     <li>"The third option is financing it and breaking it into monthly payments."</li>
     <li>"Do you have any idea what your credit score is?"</li>
-    <li>"You said that you can put down $________. So then we'd be looking at breaking the remaining into monthly payments."</li>
+    <li>"You said that you can put down <span data-fill="down">$________</span>. So then we'd be looking at breaking the remaining into monthly payments."</li>
     <li>"Let's go ahead and see what we can get you qualified for."</li>
     <li>"Now, a couple things I'm going to need is can you guys send me pictures of your driver's licenses?"</li>
   </ol>
@@ -127,7 +130,7 @@
   <ol class="liners">
     <li>"The approval team agrees with our assessment and has agreed to take on your case. We do have a case manager that feels they can get compensation for the emotional and financial impact."</li>
     <li>"Good news — there are two potential case managers that can take this case tomorrow. One of them, she's very experienced at ___. The other one, he's amazing at ___."</li>
-    <li>"The total fee to cancel 100% of all past, present, and future debt is $________ — saving you $________ over the next 10 years. We will never ask you for another penny."</li>
+    <li>"The total fee to cancel 100% of all past, present, and future debt is <span data-fill="fee">$________</span> — saving you <span data-fill="savings">$________</span> over the next 10 years. We will never ask you for another penny."</li>
     <li>"So what I'll need in order to move forward is: what I'm going to do next. I'm going to work on preparing our service agreement, right? It's going to take me about 10 minutes to prepare."</li>
     <li>"Do you know how to send pictures from your phone?"</li>
   </ol>
@@ -161,6 +164,42 @@ function render(){
 }
 setInterval(render, 500);
 render();
+
+/* ---- client dropdown: fills script blanks from /calc client list (same browser) ---- */
+function slClients(){ try { return JSON.parse(localStorage.getItem('sl_clients') || '[]'); } catch(e){ return []; } }
+function fmtD(n){ return '$' + Math.round(n).toLocaleString('en-US'); }
+function escH(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]; }); }
+function fillAll(sel, txt){ var els = document.querySelectorAll(sel); for (var i = 0; i < els.length; i++) els[i].textContent = txt; }
+function resetFills(){
+  fillAll('[data-fill="down"]', '$________');
+  fillAll('[data-fill="fee"]', '$________');
+  fillAll('[data-fill="savings"]', '$________');
+  fillAll('[data-fill="ca"]', '[CA name]');
+}
+function mfTot(mf, r, n){ if (n <= 0) return 0; if (r <= 0) return mf * n; return mf * ((Math.pow(1 + r, n) - 1) / r); }
+function pickClient(id){
+  var cs = slClients(), c = null, bar = document.getElementById('cbar');
+  for (var i = 0; i < cs.length; i++) if (cs[i].id === id) c = cs[i];
+  if (!c){ bar.style.display = 'none'; resetFills(); return; }
+  var fee = c.fee > 0 ? c.fee : c.payoff * 0.47;
+  var r = (c.esc || 8) / 100;
+  var s10 = (c.payoff + mfTot(c.mf, r, 10)) - fee;
+  bar.innerHTML = '<strong>' + escH(c.name) + '</strong>' +
+    (c.resort ? ' · ' + escH(c.resort) : '') +
+    ' · MF ' + fmtD(c.mf) + '/yr · Payoff ' + fmtD(c.payoff) +
+    ' · Fee ' + fmtD(fee) + ' · 10-yr savings ' + fmtD(s10);
+  bar.style.display = 'block';
+  fillAll('[data-fill="down"]', c.down > 0 ? fmtD(c.down) : '$________');
+  fillAll('[data-fill="fee"]', fmtD(fee));
+  fillAll('[data-fill="savings"]', fmtD(s10));
+  fillAll('[data-fill="ca"]', c.ca || '[CA name]');
+}
+(function initClientSel(){
+  var sel = document.getElementById('clientSel'), cs = slClients();
+  cs.forEach(function(c){ var o = document.createElement('option'); o.value = c.id; o.textContent = c.name; sel.appendChild(o); });
+  if (!cs.length){ var o = document.createElement('option'); o.textContent = 'No clients yet — add them in /calc'; o.disabled = true; sel.appendChild(o); }
+  sel.addEventListener('change', function(){ pickClient(sel.value); });
+})();
 </script>
 
 </body>
