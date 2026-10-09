@@ -76,6 +76,9 @@
   .qidn { font-size: 0.85em; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #0b3d91; line-height: 1.55; overflow-wrap: break-word; word-wrap: break-word; }
   .topbar { position: sticky; top: 0; z-index: 50; background: #1a1a1a; color: #fff; padding: 10px 14px; margin: -20px -20px 16px; display: flex; gap: 10px; align-items: center; font-size: 1.05em; }
   .topbar.over { background: #a31212; }
+  .snav { margin-left: auto; display: flex; gap: 4px; }
+  .snav a { color: #fff; background: #0b3d91; border-radius: 4px; padding: 4px 10px; text-decoration: none; font-size: 0.9em; }
+  .stage { scroll-margin-top: 64px; }
   .topbar button { background: #0b3d91; color: #fff; border: none; border-radius: 5px; padding: 6px 14px; font-size: 0.9em; cursor: pointer; font-family: inherit; }
   .topbar .tgt { color: #aaa; font-size: 0.85em; }
   .stimer { float: right; font-weight: normal; }
@@ -100,10 +103,13 @@
   <span class="tgt">/ 90:00</span>
   <button id="obtn" onclick="toggleOverall()">▶ Start</button>
   <button onclick="resetOverall()" title="Reset overall timer">↺</button>
+  <span class="snav"><a href="#stage1">1</a><a href="#stage2">2</a><a href="#stage3">3</a><a href="#stage4">4</a><a href="#stage5">5</a><a href="#stage6">6</a></span>
 </div>
 
 <h1 style="font-size:1.15em;margin-bottom:0">🎯 90-Minute Appointment <span class="tmin">· 6 stages × 15 min</span></h1>
-<div class="client-line" style="margin:6px 0 10px">Client: <select id="clientSel"><option value="">— select client —</option></select></div>
+<div class="client-line" style="margin:6px 0 10px">Client: <select id="clientSel"><option value="">— select client —</option></select>
+<button onclick="document.getElementById('s_impfile').click()" style="margin-left:8px;padding:6px 14px;font-size:0.9em;background:#0b3d91;color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Import JSON</button>
+<input type="file" id="s_impfile" accept=".json,application/json" style="display:none" onchange="importScriptClients(this)"></div>
 <div class="cbar" id="cbar" style="display:none"></div>
 
 <aside class="calcside">
@@ -191,6 +197,13 @@
     <label><input type="checkbox" id="qt_id" onchange="qTaskSave()"> Upload ID</label>
   </div>
   </div>
+  <div class="cbox">
+  <div class="qsec" style="margin-top:0">📎 Documents</div>
+  <div class="tmin" style="margin-bottom:6px">Stored in this browser only (a few MB max).</div>
+  <input type="file" id="q_docfile" multiple style="display:none" onchange="qDocAdd(this)">
+  <div><button onclick="document.getElementById('q_docfile').click()" style="padding:6px 14px;font-size:0.9em;background:#0b3d91;color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Upload docs</button></div>
+  <div id="q_docs" style="margin-top:6px"></div>
+  </div>
 </aside>
 
 <div class="sideboxes">
@@ -223,7 +236,7 @@
 </aside>
 </div>
 
-<div class="stage">
+<div class="stage" id="stage1">
   <h2>STAGE 1 — INTRODUCTION &amp; CREDIBILITY <span class="t">15 MIN</span></h2>
   <div class="clock">0:00–0:15 · chit-chat <span class="tmin">(5 min)</span> → credibility research together <span class="tmin">(10 min)</span> <span class="stimer"><button id="sb1" onclick="toggleStage(1)">▶ 15:00</button> <button class="rs" onclick="resetStage(1)" title="Reset">↺</button></span></div>
   <ol class="liners">
@@ -236,7 +249,7 @@
 </div>
 <div class="trans">→ Credibility established. Now let them talk.</div>
 
-<div class="stage">
+<div class="stage" id="stage2">
   <h2>STAGE 2 — HOW WE WIN <span class="t">15 MIN</span></h2>
   <div class="clock">0:15–0:30 · let them talk <span class="tmin">(5 min)</span> → violations &amp; how we win <span class="tmin">(10 min)</span> <span class="stimer"><button id="sb2" onclick="toggleStage(2)">▶ 15:00</button> <button class="rs" onclick="resetStage(2)" title="Reset">↺</button></span></div>
   <div class="plink">🔗 <a href="https://sebastianlinks.com/calc">sebastianlinks.com/calc</a> <span class="tmin">— cost of ownership calculator</span></div>
@@ -261,7 +274,7 @@
 </div>
 <div class="trans">→ Violations documented. Now the approval process.</div>
 
-<div class="stage">
+<div class="stage" id="stage3">
   <h2>STAGE 3 — THE APPROVAL PROCESS <span class="t">15 MIN</span></h2>
   <div class="clock">0:30–0:45 · selectivity <span class="tmin">(5 min)</span> → case manager assignment <span class="tmin">(5 min)</span> → scarcity, waiting list &amp; YES <span class="tmin">(5 min)</span> <span class="stimer"><button id="sb3" onclick="toggleStage(3)">▶ 15:00</button> <button class="rs" onclick="resetStage(3)" title="Reset">↺</button></span></div>
   <ol class="liners">
@@ -275,7 +288,7 @@
 </div>
 <div class="trans">→ YES secured. Move to payment.</div>
 
-<div class="stage">
+<div class="stage" id="stage4">
   <h2>STAGE 4 — FIND THE MONEY <span class="t">15 MIN</span></h2>
   <div class="clock">0:45–1:00 · checking/savings <span class="tmin">(5 min)</span> → how far off exactly <span class="tmin">(5 min)</span> → credit cards <span class="tmin">(5 min)</span> <span class="stimer"><button id="sb4" onclick="toggleStage(4)">▶ 15:00</button> <button class="rs" onclick="resetStage(4)" title="Reset">↺</button></span></div>
   <ol class="liners">
@@ -288,7 +301,7 @@
 </div>
 <div class="trans">→ Financing? Apply now. Cash/card? Collect DL + bank proof, skip to Stage 6.</div>
 
-<div class="stage">
+<div class="stage" id="stage5">
   <h2>STAGE 5 — APPLY FOR CREDIT <span class="t">15 MIN</span></h2>
   <div class="clock">1:00–1:15 · monthly payments <span class="tmin">(5 min)</span> → credit score &amp; down payment <span class="tmin">(5 min)</span> → application info <span class="tmin">(5 min)</span> <span class="stimer"><button id="sb5" onclick="toggleStage(5)">▶ 15:00</button> <button class="rs" onclick="resetStage(5)" title="Reset">↺</button></span></div>
   <div class="plink">🔗 Financing: <a href="https://distributor.ucfs.net/">UCFS merchant portal</a> · <a href="https://agent.uportal360.com/dashboard">UGA (uPortal360)</a> · Equity Bank</div>
@@ -303,7 +316,7 @@
 <div class="trans">✍️ <b>Before the hold:</b> have them write down 2 columns — <b>Years</b> | <b>Amount to pay the resort</b> — then ask: "Did they show you this?"</div>
 <div class="trans">→ Place them on hold — case goes to the approval team.</div>
 
-<div class="stage">
+<div class="stage" id="stage6">
   <h2>STAGE 6 — SIGN DOCUMENTS <span class="t">15 MIN</span></h2>
   <div class="clock">1:15–1:30 · post-hold good news <span class="tmin">(5 min)</span> → prepare the agreement <span class="tmin">(10 min)</span> <span class="stimer"><button id="sb6" onclick="toggleStage(6)">▶ 15:00</button> <button class="rs" onclick="resetStage(6)" title="Reset">↺</button></span></div>
   <div class="plink">🔗 <a href="https://account.docusign.com">DocuSign</a> · <a href="https://youtu.be/UQqgr5Q0r1I">How to send a DocuSign (video)</a></div>
@@ -542,8 +555,41 @@ function qSync(c){
   $('q_loan').value = (r0 > 0 && t0 > 0 && m0 > 0) ? Math.round(m0 * (1 - Math.pow(1 + r0, -t0)) / r0) : '';
   $('q_aapr').value = c ? (c.apr || '') : '';
   $('q_mos').value = (c && c.pyr) ? Math.min(t0, Math.max(0, (new Date().getFullYear() - c.pyr) * 12)) || '' : '';
-  qTaskSync();
+  qTaskSync(); qDocRender();
   qRecalc();
+}
+function qDocKey(){ return cur && cur.id ? 'sl_docs_' + cur.id : null; }
+function qDocs(){ try { return JSON.parse(localStorage.getItem(qDocKey()) || '[]'); } catch(e){ return []; } }
+function qDocAdd(input){
+  var files = input.files, k = qDocKey();
+  if (!files.length || !k) { if (!k) alert('Select a client first.'); input.value = ''; return; }
+  var docs = qDocs(), pending = files.length;
+  Array.prototype.forEach.call(files, function(f){
+    var rd = new FileReader();
+    rd.onload = function(){
+      docs.push({name: f.name, size: f.size, type: f.type || '', data: rd.result, ts: Date.now()});
+      if (--pending === 0){
+        try { localStorage.setItem(k, JSON.stringify(docs)); }
+        catch(e){ alert('Browser storage is full \u2014 delete old docs first.'); }
+        qDocRender();
+      }
+    };
+    rd.readAsDataURL(f);
+  });
+  input.value = '';
+}
+function qDocRender(){
+  var box = document.getElementById('q_docs'); if (!box) return;
+  var docs = qDocKey() ? qDocs() : [];
+  box.innerHTML = docs.length ? docs.map(function(d, i){
+    return '<div style="margin:4px 0;font-size:0.85em"><a href="' + d.data + '" download="' + escH(d.name) + '">' + escH(d.name) + '</a> <span class="tmin">' + Math.round(d.size / 1024) + 'KB</span> <button onclick="qDocDel(' + i + ')" title="Delete" style="margin-left:6px;background:#a31212;color:#fff;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-family:inherit">\u2715</button></div>';
+  }).join('') : '<span class="tmin">No documents yet.</span>';
+}
+function qDocDel(i){
+  var k = qDocKey(); if (!k) return;
+  var docs = qDocs(); docs.splice(i, 1);
+  try { localStorage.setItem(k, JSON.stringify(docs)); } catch(e){}
+  qDocRender();
 }
 function qRecalc(){
   if (!cur){ ['q_w30','q_w90','q_w6','q_t1','q_t3','q_t5','q_t10','q_t20','q_ftot','q_bal','q_s10','q_mo','q_mosn','q_t12','q_t24','q_t36','q_comm','q_cdate','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— mo left'; return; }
@@ -630,7 +676,28 @@ function qRecalc(){
   var c2 = {}, k;
   for (k in cur) c2[k] = cur[k];
   c2.mf = mf; c2.mmo = mmo; c2.payoff = payoff; c2.down = down;
-  renderBar(c2, n); applyFills(c2, n); qCover();
+  renderBar(c2, n); applyFills(c2, n); qCover(); qAutoSave();
+}
+var qSaveT = null;
+function qAutoSave(){
+  if (!cur || !cur.id) return;
+  var cid = cur.id;
+  if (qSaveT) clearTimeout(qSaveT);
+  qSaveT = setTimeout(function(){
+    try {
+      var cs = slClients(), ix = -1;
+      for (var i = 0; i < cs.length; i++) if (cs[i].id === cid){ ix = i; break; }
+      if (ix < 0) return;
+      var c = cs[ix];
+      c.mmo = qNum('q_mmo'); c.mf = qNum('q_mf'); c.esc = qNum('q_esc');
+      c.pyr = qNum2($('q_pyr').value); c.term = qNum('q_term'); c.payoff = qNum('q_payoff');
+      c.fee = qNum('q_fee'); c.down = qNum('q_down'); c.downt = $('q_downt').value;
+      c.paymethod = $('q_paym').value; c.fapr = qNum('q_fapr'); c.fmo = qNum('q_fmo');
+      c.pmtmo = qNum('q_pmt'); c.downdate = $('q_ddate').value; c.pmtdate = $('q_pdate').value;
+      localStorage.setItem('sl_clients', JSON.stringify(cs));
+      if (cur && cur.id === cid) cur = c;
+    } catch(e){}
+  }, 900);
 }
 function objFilter(){
   var q = ($('objq').value || '').toLowerCase().trim();
@@ -646,11 +713,53 @@ function objFilter(){
   }
   $('objnone').style.display = shown ? 'none' : 'block';
 }
-(function initClientSel(){
-  var sel = document.getElementById('clientSel'), cs = slClients();
+function refreshClientSel(){
+  var sel = document.getElementById('clientSel'), keep = sel.value, cs = slClients();
+  sel.innerHTML = '<option value="">— select client —</option>';
   cs.forEach(function(c){ var o = document.createElement('option'); o.value = c.id; o.textContent = c.name + (c.appt ? ' — ' + c.appt : ''); sel.appendChild(o); });
-  if (!cs.length){ var o = document.createElement('option'); o.textContent = 'No clients yet — add them in /calc'; o.disabled = true; sel.appendChild(o); }
-  sel.addEventListener('change', function(){ pickClient(sel.value); });
+  if (!cs.length){ var o = document.createElement('option'); o.textContent = 'No clients yet — import JSON above'; o.disabled = true; sel.appendChild(o); }
+  if (keep) sel.value = keep;
+}
+function importScriptClients(input){
+  var f = input.files[0]; if (!f) return;
+  var rd = new FileReader();
+  rd.onload = function(){
+    try {
+      var arr = JSON.parse(rd.result);
+      if (!Array.isArray(arr)) arr = [arr];
+      var cs = slClients(), added = 0, updated = 0;
+      arr.forEach(function(r){
+        if (!r || !r.name) return;
+        var ix = -1;
+        for (var i = 0; i < cs.length; i++){
+          if ((r.id && cs[i].id === r.id) || cs[i].name.toLowerCase() === String(r.name).toLowerCase()){ ix = i; break; }
+        }
+        var rec = {
+          id: ix >= 0 ? cs[ix].id : (r.id || ('c' + Date.now().toString(36) + Math.floor(Math.random() * 999))),
+          name: r.name, phone: r.phone || '', email: r.email || '', ca: r.ca || '',
+          appt: r.appt || '', resort: r.resort || '',
+          tz: r.tz || '', phone2: r.phone2 || '', notes: r.notes || '',
+          dtype: r.dtype || 'standard',
+          mf: qNum2(r.mf), esc: qNum2(r.esc) || 8, payoff: qNum2(r.payoff),
+          apr: qNum2(r.apr), term: qNum2(r.term), pyr: qNum2(r.pyr), mmo: qNum2(r.mmo), fee: qNum2(r.fee),
+          down: qNum2(r.down), downt: r.downt || 'dol', paymethod: r.paymethod || 'ach',
+          downdate: r.downdate || '', pmtmo: qNum2(r.pmtmo), pmtdate: r.pmtdate || '',
+          fapr: qNum2(r.fapr), fmo: qNum2(r.fmo), fu: r.fu || '', crmlink: r.crmlink || ''
+        };
+        if (ix >= 0){ cs[ix] = rec; updated++; } else { cs.push(rec); added++; }
+      });
+      localStorage.setItem('sl_clients', JSON.stringify(cs));
+      refreshClientSel();
+      alert('Imported: ' + added + ' new, ' + updated + ' updated.');
+    } catch(e){ alert('Could not read that file.'); }
+    input.value = '';
+  };
+  rd.readAsText(f);
+}
+function qNum2(v){ var n = parseFloat(String(v == null ? '' : v).replace(/[$,]/g, '')); return isNaN(n) ? 0 : n; }
+(function initClientSel(){
+  refreshClientSel();
+  document.getElementById('clientSel').addEventListener('change', function(){ pickClient(this.value); });
 })();
 </script>
 
