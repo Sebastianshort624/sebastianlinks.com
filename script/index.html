@@ -315,6 +315,7 @@ function qIdn(c){
   if (!c){ el.innerHTML = ''; el.style.display = 'none'; return; }
   var ph = [c.phone, c.phone2].filter(function(x){ return x; }).join(' · ');
   el.innerHTML = '<b>' + escH(c.name) + '</b>' +
+    (c.resort ? '<br><b>' + escH(c.resort) + '</b>' : '') +
     (ph ? '<br>📞 ' + escH(ph) : '') +
     (c.notes ? '<br><span class="tmin">' + escH(c.notes) + '</span>' : '');
   el.style.display = 'block';
