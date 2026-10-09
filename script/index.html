@@ -45,10 +45,32 @@
   .calcside h3 button { float: right; background: #666; color: #fff; border: none; border-radius: 5px; padding: 2px 8px; cursor: pointer; font-family: inherit; }
   .qf { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 0.9em; }
   .qf input { width: 110px; padding: 4px 6px; font-size: 1em; font-family: inherit; }
+  .qf select { padding: 4px 6px; font-size: 0.95em; font-family: inherit; max-width: 150px; }
+  .qf input[type="date"] { width: 140px; }
   .qout { margin-top: 10px; font-size: 0.9em; border-top: 1px solid #0b3d91; padding-top: 8px; }
   .qout div { margin-bottom: 4px; }
   .qout b { float: right; }
+  .qsm { font-size: 0.78em; color: #555; }
   .qsec { font-weight: bold; font-size: 0.9em; margin: 12px 0 6px; color: #0b3d91; }
+  .coversheet { border: 2px solid #0b3d91; border-radius: 8px; padding: 14px 18px; margin: 28px 0; background: #fff; }
+  .coversheet h2 { margin: 0 0 10px; font-size: 1.1em; color: #0b3d91; }
+  .csprint { float: right; background: #0b3d91; color: #fff; border: none; border-radius: 5px; padding: 5px 12px; cursor: pointer; font-family: inherit; font-size: 0.8em; }
+  .csgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 18px; font-size: 0.9em; margin-bottom: 10px; }
+  .csgrid div { padding: 3px 0; border-bottom: 1px dotted #c9dcf7; }
+  .cssec { font-weight: bold; color: #0b3d91; margin: 10px 0 4px; font-size: 0.9em; }
+  .cschecks label { display: inline-block; font-size: 0.88em; margin: 0 14px 6px 0; cursor: pointer; }
+  .cschecks input { margin-right: 5px; transform: scale(1.15); }
+  @media print {
+    body { padding: 0; max-width: none; }
+    .topbar, .calcside, .sideboxes, #lock, .cbar, .stage, .csprint, #clientSel { display: none !important; }
+    .coversheet { border: 1px solid #000; margin: 0; }
+  }
+  .qtasks label { display: block; font-size: 0.85em; margin-bottom: 7px; cursor: pointer; line-height: 1.4; }
+  .qtasks input[type="checkbox"] { margin-right: 6px; transform: scale(1.15); }
+  .qtasks select { font-size: 0.95em; font-family: inherit; padding: 3px 5px; max-width: calc(100% - 24px); margin: 3px 0 3px 24px; }
+  .qterms { margin: 8px 0 4px; font-size: 0.9em; border-top: 1px solid #d4e3fa; padding-top: 6px; }
+  .qterms div { display: flex; justify-content: space-between; margin-bottom: 3px; }
+  .qterms b { font-weight: bold; }
   .qidn { font-size: 0.85em; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #0b3d91; line-height: 1.55; overflow-wrap: break-word; word-wrap: break-word; }
   .topbar { position: sticky; top: 0; z-index: 50; background: #1a1a1a; color: #fff; padding: 10px 14px; margin: -20px -20px 16px; display: flex; gap: 10px; align-items: center; font-size: 1.05em; }
   .topbar.over { background: #a31212; }
@@ -94,6 +116,9 @@
   <label class="qf">Loan term mo <input id="q_term" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">Payoff <input id="q_payoff" type="number" min="0" oninput="qRecalc()"></label>
   <div class="qout">
+    <div class="qsm">Next 30 days <b id="q_w30">—</b></div>
+    <div class="qsm">Next 90 days <b id="q_w90">—</b></div>
+    <div class="qsm">Next 6 mo <b id="q_w6">—</b></div>
     <div>Next 1-yr <b id="q_t1">—</b></div>
     <div>Next 3-yr <b id="q_t3">—</b></div>
     <div>Next 5-yr <b id="q_t5">—</b></div>
@@ -102,14 +127,33 @@
   </div>
   <div class="qsec">Our fee &amp; financing</div>
   <label class="qf">Our fee <input id="q_fee" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf">Down paymt <input id="q_down" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">Pay via <select id="q_paym" onchange="qRecalc()">
+    <option value="ach">ACH</option>
+    <option value="check">CHECK</option>
+    <option value="cc">CC (+3%)</option>
+    <option value="ucfs">UCFS</option>
+    <option value="equity">EQUITY</option>
+    <option value="uga">UGA</option>
+  </select></label>
+  <label class="qf">Down paymt <span><select id="q_downt" onchange="qRecalc()" style="padding:4px;font-size:0.95em;font-family:inherit;"><option value="dol">$</option><option value="pct">%</option></select> <input id="q_down" type="number" min="0" oninput="qRecalc()" style="width:90px"></span></label>
+  <label class="qf">Down date <input id="q_ddate" type="date" onchange="qRecalc()"></label>
+  <label class="qf">Pmt/mo <input id="q_pmt" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">1st pmt date <input id="q_pdate" type="date" onchange="qRecalc()"></label>
   <label class="qf">Fin APR % <input id="q_fapr" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">Fin months <input id="q_fmo" type="number" min="0" oninput="qRecalc()"></label>
   <div class="qout">
+    <div>Total <b id="q_ftot">—</b></div>
     <div>Balance <b id="q_bal">—</b></div>
     <div>10-yr save <b id="q_s10">—</b></div>
     <div>Monthly <b id="q_mo">—</b></div>
-    <div>12 / 24 / 36 <b id="q_opt">—</b></div>
+    <div>Mos. needed <b id="q_mosn">—</b></div>
+    <div class="qterms">
+      <div><span>12 mo</span><b id="q_t12">—</b></div>
+      <div><span>24 mo</span><b id="q_t24">—</b></div>
+      <div><span>36 mo</span><b id="q_t36">—</b></div>
+    </div>
+    <div>Commission <b id="q_comm">—</b></div>
+    <div>Owed by <b id="q_cdate">—</b></div>
   </div>
   <div class="qsec">Loan breakdown</div>
   <div class="tmin" id="q_mleft" style="margin-bottom:6px">— mo left</div>
@@ -123,6 +167,20 @@
     <div>Balance (payoff) <b id="q_bal2">—</b></div>
     <div>Term interest <b id="q_tint">—</b></div>
     <div>Interest % of paid <b id="q_ipct">—</b></div>
+  </div>
+  <div class="qsec">Deal tasks</div>
+  <div class="qtasks">
+    <label><input type="checkbox" id="qt_email" onchange="qTaskSave()"> <a id="qt_emailL" href="#">Send email</a></label>
+    <label><input type="checkbox" id="qt_text" onchange="qTaskSave()"> <span id="qt_textT" onclick="qCopyText()" style="text-decoration:underline;cursor:pointer">Send text (tap to copy)</span></label>
+    <label><input type="checkbox" id="qt_ds" onchange="qTaskSave()"> Create DocuSign<br>
+      <select id="qt_tpl" onchange="qTaskSave()">
+        <option>Service Agreement</option>
+        <option>Service Agreement + Fin Auth</option>
+        <option>Deedback Agreement</option>
+        <option>Financial Auth only</option>
+      </select></label>
+    <label><input type="checkbox" id="qt_crm" onchange="qTaskSave()"> Update CRM <a id="qt_crmL" href="#" target="_blank" style="display:none">open lead ↗</a></label>
+    <label><input type="checkbox" id="qt_id" onchange="qTaskSave()"> Upload ID</label>
   </div>
 </aside>
 
@@ -247,6 +305,11 @@
   </ol>
 </div>
 
+<section class="coversheet" id="coversheet">
+  <h2>📋 Deal cover sheet <button onclick="window.print()" class="csprint">🖨 Print</button></h2>
+  <div id="cs_body"><span class="tmin">Select a client above to generate the cover sheet.</span></div>
+</section>
+
 <script>
 var stages = {};
 for (var i = 1; i <= 6; i++) stages[i] = { e: 0, run: false, t0: 0 };
@@ -319,7 +382,7 @@ function pickClient(id){
 function renderBar(c, n){
   var bar = $('cbar');
   var mmo = c.mmo || 0, mfmo = c.mf / 12, yrTot = mmo * 12 + c.mf;
-  bar.innerHTML = '<strong>' + escH(c.name) + '</strong>' + (c.resort ? ' · ' + escH(c.resort) : '') +
+  bar.innerHTML = '<strong>' + escH(c.name) + '</strong>' + (c.resort ? ' · <strong>' + escH(c.resort) + '</strong>' : '') +
     (c.phone ? ' · 📞 ' + escH(c.phone) : '') + (c.email ? ' · ✉️ ' + escH(c.email) : '') + (c.tz ? ' · ' + escH(c.tz) : '') + '<br>' +
     (mmo > 0 ? 'Mtg ' + fmtD(mmo) + '/mo · ' : '') + 'MF ' + fmtD(c.mf) + '/yr (' + fmtD(mfmo) + '/mo)' +
     (mmo > 0 ? ' · Yr total ' + fmtD(yrTot) : '') + ' · 5-yr ' + fmtD(n.t5) + ' · 10-yr ' + fmtD(n.t10) +
@@ -341,7 +404,8 @@ function qIdn(c){
   el.innerHTML = '<b>' + escH(c.name) + '</b>' +
     (c.resort ? '<br><b>' + escH(c.resort) + '</b>' : '') +
     (ph ? '<br>📞 ' + escH(ph) : '') +
-    (c.notes ? '<br><span class="tmin">' + escH(c.notes) + '</span>' : '');
+    (c.notes ? '<br><span class="tmin">' + escH(c.notes) + '</span>' : '') +
+    (c.crmlink ? '<br><a href="' + escH(c.crmlink) + '" target="_blank">CRM lead ↗</a>' : '');
   el.style.display = 'block';
 }
 function amortSched(pv, apr, pmt, months){
@@ -353,23 +417,125 @@ function amortSched(pv, apr, pmt, months){
   }
   return {prin: prin, inte: inte, bal: Math.max(0, bal)};
 }
+function qTaskKey(){ return cur ? 'sl_tasks_' + cur.id : null; }
+function qTaskSave(){
+  var k = qTaskKey(); if (!k) return;
+  try { localStorage.setItem(k, JSON.stringify({
+    email: $('qt_email').checked, text: $('qt_text').checked, ds: $('qt_ds').checked,
+    tpl: $('qt_tpl').value, crm: $('qt_crm').checked, id: $('qt_id').checked })); } catch(e){}
+}
+function qTaskLoad(){
+  ['qt_email','qt_text','qt_ds','qt_crm','qt_id'].forEach(function(id){ $(id).checked = false; });
+  $('qt_tpl').value = 'Service Agreement';
+  var k = qTaskKey(); if (!k) return;
+  try { var t = JSON.parse(localStorage.getItem(k) || 'null'); if (!t) return;
+    $('qt_email').checked = !!t.email; $('qt_text').checked = !!t.text; $('qt_ds').checked = !!t.ds;
+    if (t.tpl) $('qt_tpl').value = t.tpl;
+    $('qt_crm').checked = !!t.crm; $('qt_id').checked = !!t.id;
+  } catch(e){}
+}
+function qFirstName(){ return cur ? (cur.name || '').split(/[&/]/)[0].trim().split(' ')[0] || 'there' : 'there'; }
+function qEmailHref(){
+  if (!cur || !cur.email) return '#';
+  var subj = encodeURIComponent('Link for our call');
+  var body = encodeURIComponent('Hi ' + qFirstName() + ' — here is the link we will use on our call: https://sebastianlinks.com/linx\n\nSebastian');
+  return 'mailto:' + cur.email + '?subject=' + subj + '&body=' + body;
+}
+function qTextMsg(){ return 'Hi ' + qFirstName() + ', Sebastian Short here — here is the link for our call: https://sebastianlinks.com/linx'; }
+function qCopyText(){
+  var t = qTextMsg();
+  function done(){ alert('Text copied — paste it into your messages app.'); }
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, done);
+  else { var ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch(e){} ta.remove(); done(); }
+}
+function qTaskSync(){
+  qTaskLoad();
+  $('qt_emailL').href = qEmailHref();
+  var hasCrm = !!(cur && cur.crmlink);
+  $('qt_crmL').href = hasCrm ? cur.crmlink : '#';
+  $('qt_crmL').style.display = hasCrm ? '' : 'none';
+}
+function qSigners(){
+  if (!cur) return [];
+  var parts = cur.name.split(/[&/]/).map(function(s){ return s.trim(); }).filter(Boolean);
+  if (parts.length > 1){
+    var last = parts[parts.length - 1].split(' ').slice(-1)[0];
+    return parts.map(function(p, i){
+      if (i === parts.length - 1) return p;
+      return p + (p.split(' ').length === 1 ? ' ' + last : '');
+    });
+  }
+  return [cur.name];
+}
+function qCoverKey(){ return cur ? 'sl_cover_' + cur.id : null; }
+function qCoverSave(){
+  var k = qCoverKey(); if (!k) return;
+  var o = {};
+  ['cs_up_id','cs_up_pay','cs_up_agr'].forEach(function(id){ var el = $(id); o[id] = el ? el.checked : false; });
+  qSigners().forEach(function(s, i){ var el = $('cs_sg' + i); o['cs_sg' + i] = el ? el.checked : false; });
+  try { localStorage.setItem(k, JSON.stringify(o)); } catch(e){}
+}
+function qCover(){
+  var body = $('cs_body');
+  if (!cur){ body.innerHTML = '<span class="tmin">Select a client above to generate the cover sheet.</span>'; return; }
+  var payLabels = {ach:'ACH', check:'CHECK', cc:'CC (+3%)', ucfs:'UCFS', equity:'EQUITY', uga:'UGA'};
+  var paym = $('q_paym').value, sg = qSigners();
+  function fdate2(s){ return s || '—'; }
+  var html = '<div class="csgrid">' +
+    '<div><b>Client:</b> ' + escH(cur.name) + '</div>' +
+    '<div><b>Resort:</b> ' + escH(cur.resort || '—') + '</div>' +
+    '<div><b>Phone:</b> ' + escH([cur.phone, cur.phone2].filter(Boolean).join(' · ') || '—') + '</div>' +
+    '<div><b>Email:</b> ' + escH(cur.email || '—') + '</div>' +
+    '<div><b>Total fee:</b> ' + $('q_ftot').textContent + '</div>' +
+    '<div><b>Pay via:</b> ' + (payLabels[paym] || paym) + '</div>' +
+    '<div><b>Down:</b> ' + fmtD(qNum('q_down')) + ' on ' + fdate2($('q_ddate').value) + '</div>' +
+    '<div><b>Pmt/mo:</b> ' + fmtD(qNum('q_pmt')) + ' from ' + fdate2($('q_pdate').value) + '</div>' +
+    '<div><b>Fin:</b> ' + ($('q_fmo').value || '—') + ' mo @ ' + ($('q_fapr').value || '—') + '%</div>' +
+    '<div><b>Commission:</b> ' + $('q_comm').textContent + ' (owed by ' + $('q_cdate').textContent + ')</div>' +
+    '<div><b>10-yr save:</b> ' + $('q_s10').textContent + '</div>' +
+    '<div><b>DocuSign tpl:</b> ' + escH($('qt_tpl').value) + '</div>' +
+    '</div>';
+  var t = {};
+  try { t = JSON.parse(localStorage.getItem(qTaskKey()) || '{}'); } catch(e){}
+  function ck(v){ return v ? '☑' : '☐'; }
+  html += '<div class="cssec">Tasks</div><div class="cschecks"><span>' +
+    [ck(t.email) + ' Email', ck(t.text) + ' Text', ck(t.ds) + ' DocuSign', ck(t.crm) + ' CRM', ck(t.id) + ' ID'].join('</span> <span>') +
+    '</span></div>';
+  html += '<div class="cssec">Uploads</div><div class="cschecks">' +
+    '<label><input type="checkbox" id="cs_up_id" onchange="qCoverSave()"> ID</label>' +
+    '<label><input type="checkbox" id="cs_up_pay" onchange="qCoverSave()"> Payment proof</label>' +
+    '<label><input type="checkbox" id="cs_up_agr" onchange="qCoverSave()"> Signed agreement</label></div>';
+  html += '<div class="cssec">Signatures</div><div class="cschecks">' +
+    sg.map(function(s, i){ return '<label><input type="checkbox" id="cs_sg' + i + '" onchange="qCoverSave()"> ' + escH(s) + '</label>'; }).join('') +
+    '</div>';
+  body.innerHTML = html;
+  try { var o = JSON.parse(localStorage.getItem(qCoverKey()) || '{}');
+    ['cs_up_id','cs_up_pay','cs_up_agr'].forEach(function(id){ var el = $(id); if (el) el.checked = !!o[id]; });
+    sg.forEach(function(s, i){ var el2 = $('cs_sg' + i); if (el2) el2.checked = !!o['cs_sg' + i]; });
+  } catch(e){}
+}
 function qSync(c){
   $('q_mmo').value = c ? (c.mmo || '') : '';
   $('q_mf').value = c ? c.mf : ''; $('q_esc').value = c ? (c.esc || 8) : '';
   $('q_pyr').value = c ? (c.pyr || '') : ''; $('q_term').value = c ? (c.term || '') : '';
   $('q_payoff').value = c ? c.payoff : '';
   $('q_fee').value = c && c.fee ? c.fee : ''; $('q_down').value = c ? (c.down || '') : '';
-  $('q_fapr').value = c ? (c.fapr || '') : ''; $('q_fmo').value = c ? (c.fmo || '') : '';
+  $('q_paym').value = c ? (c.paymethod || 'ach') : 'ach';
+  $('q_fapr').value = (c && c.fapr > 0) ? c.fapr : 19.99; $('q_fmo').value = (c && c.fmo > 0) ? c.fmo : 36;
+  $('q_pmt').value = c ? (c.pmtmo || '') : '';
+  $('q_downt').value = c ? (c.downt || 'dol') : 'dol';
+  $('q_ddate').value = c ? (c.downdate || '') : ''; $('q_pdate').value = c ? (c.pmtdate || '') : '';
   $('q_cli').textContent = c ? c.name : 'No client selected';
   qIdn(c);
   var r0 = (c && c.apr ? c.apr : 0) / 100 / 12, t0 = (c && c.term ? c.term : 120), m0 = (c && c.mmo ? c.mmo : 0);
   $('q_loan').value = (r0 > 0 && t0 > 0 && m0 > 0) ? Math.round(m0 * (1 - Math.pow(1 + r0, -t0)) / r0) : '';
   $('q_aapr').value = c ? (c.apr || '') : '';
   $('q_mos').value = (c && c.pyr) ? Math.min(t0, Math.max(0, (new Date().getFullYear() - c.pyr) * 12)) || '' : '';
+  qTaskSync();
   qRecalc();
 }
 function qRecalc(){
-  if (!cur){ ['q_t1','q_t3','q_t5','q_t10','q_t20','q_bal','q_s10','q_mo','q_opt','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— mo left'; return; }
+  if (!cur){ ['q_w30','q_w90','q_w6','q_t1','q_t3','q_t5','q_t10','q_t20','q_ftot','q_bal','q_s10','q_mo','q_mosn','q_t12','q_t24','q_t36','q_comm','q_cdate','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— mo left'; return; }
   var mmo = qNum('q_mmo'), mf = qNum('q_mf'), esc = qNum('q_esc'), payoff = qNum('q_payoff');
   var pyr = parseInt(($('q_pyr').value || '').replace(/\D/g, ''), 10) || 0;
   var term = qNum('q_term') || 120;
@@ -377,21 +543,62 @@ function qRecalc(){
   var nowY = new Date().getFullYear();
   var remMo = Math.max(0, term - (pyr > 0 ? Math.max(0, (nowY - pyr) * 12) : 0));
   function win(y){ return Math.min(y * 12, remMo) * mmo + mfTot(mf, r, y); }
+  function winMo(m){ return Math.min(m, remMo) * mmo + mf * m / 12; }
+  var w30 = winMo(1), w90 = winMo(3), w6 = winMo(6);
   var t1 = win(1), t3 = win(3), t5 = win(5), t10 = win(10), t20 = win(20);
+  $('q_w30').textContent = fmtD(w30);
+  $('q_w90').textContent = fmtD(w90);
+  $('q_w6').textContent = fmtD(w6);
   $('q_t1').textContent = fmtD(t1);
   $('q_t3').textContent = fmtD(t3);
   $('q_t5').textContent = fmtD(t5);
   $('q_t10').textContent = fmtD(t10);
   $('q_t20').textContent = fmtD(t20);
-  var fee = qNum('q_fee'), down = qNum('q_down'), fapr = qNum('q_fapr'), fmo = qNum('q_fmo');
+  var fee = qNum('q_fee'), fapr = qNum('q_fapr'), fmo = qNum('q_fmo');
+  var paym = $('q_paym').value;
+  var isFin = paym === 'ucfs' || paym === 'equity' || paym === 'uga';
   var feeKnown = fee > 0;
-  var bal = Math.max(0, fee - down);
-  var s10 = feeKnown ? t10 - fee : 0;
+  var ftot = feeKnown && paym === 'cc' ? fee * 1.03 : fee;
+  var downRaw = qNum('q_down');
+  var down = $('q_downt').value === 'pct' ? ftot * downRaw / 100 : downRaw;
+  $('q_down').style.border = (isFin && feeKnown && !downRaw) ? '2px solid #d99a17' : '';
+  var bal = feeKnown ? Math.max(0, ftot - down) : 0;
+  var s10 = feeKnown ? t10 - ftot : 0;
+  $('q_ftot').textContent = feeKnown ? fmtD(ftot) + (paym === 'cc' ? ' (+3%)' : '') : '—';
   $('q_bal').textContent = feeKnown ? fmtD(bal) : '—';
   $('q_s10').textContent = feeKnown ? fmtD(s10) : '—';
   $('q_mo').textContent = (feeKnown && fmo > 0) ? fmtD(amort(bal, fapr, fmo)) + '/mo' : '—';
-  $('q_opt').textContent = feeKnown ? fmtD(amort(bal, fapr, 12)) + ' / ' + fmtD(amort(bal, fapr, 24)) + ' / ' + fmtD(amort(bal, fapr, 36)) : '—';
-  var loan = qNum('q_loan'), aapr = qNum('q_aapr');
+  var pmtEl = $('q_pmt');
+  if (feeKnown && !pmtEl.value) pmtEl.value = ftot < 10000 ? 299 : 399;
+  var qpmt = qNum('q_pmt'), mosn = '—';
+  if (feeKnown && qpmt > 0 && bal > 0){
+    for (var qn = 1; qn <= 360; qn++){ if (amort(bal, fapr, qn) <= qpmt){ mosn = qn + ' mo'; break; } }
+    if (mosn === '—') mosn = '360+ mo';
+  } else if (feeKnown && bal <= 0) mosn = 'paid in full';
+  $('q_mosn').textContent = mosn;
+  var t12 = feeKnown ? fmtD(amort(bal, fapr, 12)) : '—', t24 = feeKnown ? fmtD(amort(bal, fapr, 24)) : '—', t36 = feeKnown ? fmtD(amort(bal, fapr, 36)) : '—';
+  $('q_t12').textContent = t12; $('q_t24').textContent = t24; $('q_t36').textContent = t36;
+  var comm = feeKnown ? ftot * 0.10 : 0;
+  $('q_comm').textContent = feeKnown ? fmtD(comm) : '—';
+  var cdate = '—';
+  if (feeKnown){
+    var thresh = ftot * 0.25;
+    var pdate = function(s){ return s ? new Date(s + 'T12:00:00') : null; };
+    var fdate = function(d){ return (d.getMonth() + 1) + '/' + d.getDate() + '/' + d.getFullYear(); };
+    if (down >= thresh) cdate = $('q_ddate').value ? fdate(pdate($('q_ddate').value)) : 'now';
+    else if (qpmt > 0){
+      var cum = down, cdt = pdate($('q_pdate').value) || new Date(), guard = 0;
+      while (cum < thresh && guard < 360){ cdt = new Date(cdt.getFullYear(), cdt.getMonth() + 1, cdt.getDate()); cum += qpmt; guard++; }
+      cdate = cum >= thresh ? fdate(cdt) : '360+ mo';
+    }
+  }
+  $('q_cdate').textContent = cdate;
+  var laapr = qNum('q_aapr'), lterm = qNum('q_term') || 120;
+  if (!qNum('q_loan') && mmo > 0 && laapr > 0 && lterm > 0){
+    var lrr = laapr / 100 / 12;
+    $('q_loan').value = Math.round(mmo * (1 - Math.pow(1 + lrr, -lterm)) / lrr);
+  }
+  var loan = qNum('q_loan'), aapr = laapr;
   var mos = Math.min(120, Math.max(0, Math.round(qNum('q_mos'))));
   $('q_mleft').textContent = remMo + ' mo left on mtg';
   if (loan > 0 && mos > 0 && mmo > 0){
@@ -411,7 +618,7 @@ function qRecalc(){
   var c2 = {}, k;
   for (k in cur) c2[k] = cur[k];
   c2.mf = mf; c2.mmo = mmo; c2.payoff = payoff; c2.down = down;
-  renderBar(c2, n); applyFills(c2, n);
+  renderBar(c2, n); applyFills(c2, n); qCover();
 }
 function objFilter(){
   var q = ($('objq').value || '').toLowerCase().trim();
