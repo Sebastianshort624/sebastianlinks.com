@@ -348,21 +348,23 @@ function importDeed(input){
       var rows = parseCSV(rd.result);
       if (!rows.length) throw 0;
       var h = rows[0].map(function(c){ return String(c).toLowerCase().replace(/[^a-z]/g, ''); });
-      var hi = {dev:-1, state:-1, price:-1};
+      var hi = {dev:-1, state:-1, price:-1, info:-1};
       h.forEach(function(c, i){
         if (hi.dev < 0 && /developer|resort|brand/.test(c) && !/state/.test(c)) hi.dev = i;
         if (hi.state < 0 && /state/.test(c)) hi.state = i;
-        if (hi.price < 0 && /price|fee|amount|cost/.test(c)) hi.price = i;
+        if (hi.price < 0 && /price|fee|amount|cost|total/.test(c) && !/terminat/.test(c)) hi.price = i;
+        if (hi.info < 0 && /info|note|detail|comment|descrip/.test(c)) hi.info = i;
       });
       var start;
-      if (hi.dev < 0 && hi.price < 0){ hi = {dev:0, state:1, price:2}; start = 0; }
+      if (hi.dev < 0 && hi.price < 0){ hi = {dev:0, state:1, price:2, info:3}; start = 0; }
       else { start = 1; if (hi.dev < 0) hi.dev = 0; if (hi.state < 0) hi.state = 1; if (hi.price < 0) hi.price = 2; }
       var out = [];
       for (var i = start; i < rows.length; i++){
         var r = rows[i];
         var p = parseFloat(String(r[hi.price] || '').replace(/[$,]/g, ''));
         if (!String(r[hi.dev] || '').trim() && !String(r[hi.state] || '').trim()) continue;
-        out.push({dev: String(r[hi.dev] || '').trim(), state: String(r[hi.state] || '').trim(), price: isNaN(p) ? 0 : p});
+        out.push({dev: String(r[hi.dev] || '').trim(), state: String(r[hi.state] || '').trim(), price: isNaN(p) ? 0 : p,
+          info: hi.info >= 0 ? String(r[hi.info] || '').trim() : ''});
       }
       saveDeed({updated: new Date().toISOString().slice(0, 10), rows: out});
       renderDeedResults();
@@ -374,8 +376,8 @@ function importDeed(input){
 }
 function exportDeed(){
   var d = getDeed();
-  var csv = 'Developer,State,Price\n' + d.rows.map(function(r){
-    return '"' + r.dev.replace(/"/g, '""') + '","' + r.state.replace(/"/g, '""') + '",' + r.price;
+  var csv = 'Developer,State,Price,Info\n' + d.rows.map(function(r){
+    return '"' + r.dev.replace(/"/g, '""') + '","' + r.state.replace(/"/g, '""') + '",' + r.price + ',"' + (r.info || '').replace(/"/g, '""') + '"';
   }).join('\n');
   var blob = new Blob([csv], {type:'text/csv'});
   var a = document.createElement('a');
@@ -394,7 +396,8 @@ function renderDeedResults(){
   hits = hits.slice(0, 50);
   if (!hits.length){ box.innerHTML = '<span class="tmin">No matches.</span>'; return; }
   box.innerHTML = hits.map(function(h){
-    return '<div class="rrow"><span>' + esc(h.r.dev) + (h.r.state ? ' · ' + esc(h.r.state) : '') + ' — <b>' + fmt(h.r.price) + '</b></span>' +
+    return '<div class="rrow"><span>' + esc(h.r.dev) + (h.r.state ? ' · ' + esc(h.r.state) : '') + ' — <b>' + fmt(h.r.price) + '</b>' +
+      (h.r.info ? ' <span class="tmin">' + esc(h.r.info) + '</span>' : '') + '</span>' +
       ' <button class="ghost" onclick="applyDeedPrice(' + h.ix + ')">Use</button></div>';
   }).join('');
 }
