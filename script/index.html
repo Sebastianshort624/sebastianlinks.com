@@ -36,6 +36,15 @@
 </head>
 <body>
 
+<div id="lock" style="position:fixed;inset:0;background:#1a1a1a;color:#fff;display:flex;align-items:center;justify-content:center;z-index:100;">
+  <div style="text-align:center;padding:20px">
+    <div style="font-size:1.3em;margin-bottom:14px">🔒 Script — enter password</div>
+    <input id="pw" type="password" autocomplete="off" style="padding:10px;font-size:1.1em;border-radius:6px;border:none;width:220px;text-align:center" onkeydown="if(event.key==='Enter')unlock()">
+    <div><button onclick="unlock()" style="margin-top:14px;padding:10px 30px;font-size:1em;background:#0b3d91;color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Unlock</button></div>
+    <div id="pwerr" style="color:#ff8888;margin-top:10px;display:none">Wrong password — try again</div>
+  </div>
+</div>
+
 <div class="topbar" id="topbar">
   <span>⏱ <span id="ot">0:00:00</span></span>
   <span class="tgt">/ 90:00</span>
@@ -164,6 +173,23 @@ function render(){
 }
 setInterval(render, 500);
 render();
+
+/* ---- password gate ---- */
+var SCRIPT_PASSWORD = "Linx2026";
+function unlock(){
+  if (document.getElementById('pw').value === SCRIPT_PASSWORD){
+    try { sessionStorage.setItem('sl_script_ok', '1'); } catch(e){}
+    document.getElementById('lock').style.display = 'none';
+  } else {
+    document.getElementById('pwerr').style.display = 'block';
+  }
+}
+(function checkLock(){
+  var ok = false;
+  try { ok = sessionStorage.getItem('sl_script_ok') === '1'; } catch(e){}
+  if (ok){ document.getElementById('lock').style.display = 'none'; }
+  else { document.getElementById('pw').focus(); }
+})();
 
 /* ---- client dropdown: fills script blanks from /calc client list (same browser) ---- */
 function slClients(){ try { return JSON.parse(localStorage.getItem('sl_clients') || '[]'); } catch(e){ return []; } }
