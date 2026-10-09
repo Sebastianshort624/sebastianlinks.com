@@ -3,203 +3,78 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Close 1 — Liners</title>
+<title>90-Minute Appointment — Script</title>
 <style>
-  body { font-family: Arial, Helvetica, sans-serif; max-width: 860px; margin: 0 auto; padding: 24px; color: #1a1a1a; line-height: 1.55; }
-  h1 { font-size: 1.5em; border-bottom: 3px solid #1a1a1a; padding-bottom: 8px; }
-  h2 { font-size: 1.2em; background: #f0f0f0; padding: 10px 12px; border-left: 5px solid #1a1a1a; margin-top: 32px; }
-  ul.check { list-style: none; padding-left: 4px; }
-  ul.check li { margin: 8px 0; padding-left: 30px; position: relative; }
-  ul.check input[type="checkbox"] { position: absolute; left: 0; top: 3px; width: 18px; height: 18px; }
-  strong.jargon, b { color: #0b3d91; }
-  .fill { border: none; border-bottom: 1px solid #333; width: 140px; font-size: 1em; font-family: inherit; }
-  textarea.notes { width: 100%; min-height: 56px; font-family: inherit; font-size: 0.95em; margin-top: 6px; border: 1px solid #999; border-radius: 4px; padding: 6px; }
-  .notes-label { font-weight: bold; font-size: 0.9em; margin-top: 12px; display: block; }
-  .part { border: 2px solid #1a1a1a; border-radius: 8px; padding: 16px 20px; margin-top: 36px; }
-  .client-line { margin: 6px 0; }
-  .client-line input { border: none; border-bottom: 1px solid #333; font-size: 1em; width: 320px; font-family: inherit; }
-  @media print { body { padding: 0; } .part { break-inside: avoid; } }
+  body { font-family: Arial, Helvetica, sans-serif; max-width: 780px; margin: 0 auto; padding: 20px; color: #1a1a1a; line-height: 1.5; }
+  h1 { font-size: 1.4em; margin-bottom: 2px; }
+  .total { color: #555; margin-bottom: 18px; }
+  .stage { border: 2px solid #1a1a1a; border-radius: 8px; padding: 14px 18px; margin: 18px 0; }
+  .stage h2 { margin: 0 0 4px; font-size: 1.15em; }
+  .stage h2 .t { float: right; font-size: 0.85em; color: #0b3d91; }
+  .clock { font-size: 0.85em; color: #555; margin-bottom: 10px; }
+  ol.liners { margin: 8px 0 4px 20px; padding: 0; }
+  ol.liners li { margin-bottom: 8px; }
+  .trans { background: #f0f4ff; border-left: 4px solid #0b3d91; padding: 8px 12px; margin: 0 0 6px; font-size: 0.95em; }
+  .client-line { margin: 4px 0 12px; }
+  .client-line input { border: none; border-bottom: 1px solid #333; font-size: 1em; width: 280px; font-family: inherit; }
+  @media print { body { padding: 0; } .stage { break-inside: avoid; } }
 </style>
 </head>
 <body>
 
-<h1>🎯 Close 1 — Liners</h1>
+<h1>🎯 90-Minute Appointment</h1>
+<div class="total">4 stages · 45 + 15 + 15 + 15</div>
 <div class="client-line">Client: <input type="text"></div>
-<div class="client-line">Date: <input type="text"></div>
 
-<div class="part">
-<h1>⚖️ LINX LEGAL — ESSENTIAL VIOLATION-DISCOVERY QUESTIONS</h1>
-
-<h2>1. SALES PRESENTATION &amp; PRESSURE</h2>
-<ul class="check">
-  <li><input type="checkbox"> How long did the sales presentation last?</li>
-  <li><input type="checkbox"> Were you told it would only take 90 minutes?</li>
-  <li><input type="checkbox"> How many different salespeople did you speak with?</li>
-  <li><input type="checkbox"> How many times did you say NO?</li>
-  <li><input type="checkbox"> Did you ask to leave or end the presentation? What happened?</li>
-  <li><input type="checkbox"> Did you feel exhausted, confused, overwhelmed, or pressured?</li>
-  <li><input type="checkbox"> Did they separate you from your spouse or focus on one of you?</li>
-  <li><input type="checkbox"> Were you told the offer or price was only available that day?</li>
-  <li><input type="checkbox"> Were you given gifts, meals, drinks, or other incentives?</li>
-</ul>
-<span class="notes-label">Notes:</span>
-<textarea class="notes"></textarea>
-
-<h2>2. PROMISES &amp; REPRESENTATIONS</h2>
-<ul class="check">
-  <li><input type="checkbox"> What exactly were you told that convinced you to purchase?</li>
-  <li><input type="checkbox"> Were you told you could rent your <strong>timeshare</strong> for income?</li>
-  <li><input type="checkbox"> Were you told you could sell it or recover your purchase price?</li>
-  <li><input type="checkbox"> Was it presented as an investment or something that would increase in value?</li>
-  <li><input type="checkbox"> Were you promised availability, exchanges, or benefits you couldn't actually use?</li>
-  <li><input type="checkbox"> Were you promised <strong>refinancing</strong>, a <strong>buyback</strong>, or help selling or renting?</li>
-</ul>
-<span class="notes-label">Notes:</span>
-<textarea class="notes"></textarea>
-
-<h2>3. FINANCIAL DISCLOSURES</h2>
-<ul class="check">
-  <li><input type="checkbox"> Were the <strong>maintenance fees</strong> fully explained before signing?</li>
-  <li><input type="checkbox"> Were you told <strong>maintenance fees</strong> could increase every year?</li>
-  <li><input type="checkbox"> Were you told <strong>maintenance fees</strong> could continue indefinitely?</li>
-  <li><input type="checkbox"> Were you told the financial obligations could affect your children or estate?</li>
-  <li><input type="checkbox"> Were the interest rate, total interest, and total purchase cost explained?</li>
-  <li><input type="checkbox"> Were you shown the true cost over 5, 10, or 20 years?</li>
-  <li><input type="checkbox"> Were you asked to open <strong>credit cards</strong> or obtain additional <strong>financing</strong>?</li>
-</ul>
-<span class="notes-label">Notes:</span>
-<textarea class="notes"></textarea>
-
-<h2>4. CONTRACT &amp; CANCELLATION</h2>
-<ul class="check">
-  <li><input type="checkbox"> Were you given enough time to read and understand the entire contract?</li>
-  <li><input type="checkbox"> Was the contract in a language you understood?</li>
-  <li><input type="checkbox"> Did you discover terms afterward that were not explained?</li>
-  <li><input type="checkbox"> Were you told you could cancel the <strong>timeshare</strong>?</li>
-  <li><input type="checkbox"> Was the <strong>rescission</strong> or cancellation period explained?</li>
-  <li><input type="checkbox"> Did you try to cancel? What happened?</li>
-  <li><input type="checkbox"> Were you told what could happen if you stopped paying?</li>
-</ul>
-<span class="notes-label">Notes:</span>
-<textarea class="notes"></textarea>
-
-<h2>5. UPGRADES &amp; ADDITIONAL PURCHASES</h2>
-<ul class="check">
-  <li><input type="checkbox"> Were you told an <strong>upgrade</strong> would solve an existing problem?</li>
-  <li><input type="checkbox"> Were you promised lower fees or better availability?</li>
-  <li><input type="checkbox"> Did the <strong>upgrade</strong> actually deliver what was promised?</li>
-  <li><input type="checkbox"> Were you told you had to purchase more points or another contract?</li>
-</ul>
-<span class="notes-label">Notes:</span>
-<textarea class="notes"></textarea>
-
-<h2>6. DECISION IMPACT — MOST IMPORTANT</h2>
-<ul class="check">
-  <li><input type="checkbox"> If you had known then what you know today, would you still have purchased?</li>
-  <li><input type="checkbox"> What specific promise or information influenced your decision to sign?</li>
-  <li><input type="checkbox"> What did you later discover was different from what you were told?</li>
-  <li><input type="checkbox"> Which of those facts would have changed your decision?</li>
-  <li><input type="checkbox"> How has that affected you financially and emotionally?</li>
-</ul>
-<span class="notes-label">Notes:</span>
-<textarea class="notes"></textarea>
+<div class="stage">
+  <h2>STAGE 1 — GET TO YES <span class="t">45 MIN</span></h2>
+  <div class="clock">0:00–0:45 · intro → credibility → listen → CRM → violations → price → YES</div>
+  <ol class="liners">
+    <li>"My role is to make sure the case we build is strong enough to bring to our approval team. The reason being we have a 99% success rate because we only take on cases we know we will win — because we give a 100% money-back guarantee, and it costs us money as we progress your case."</li>
+    <li>"Did they show you we are pioneers of the cancellation industry, the industry we created?"</li>
+    <li>"What exactly were you told that convinced you to purchase?"</li>
+    <li>"If the stars align and my assessment team decides we can take on your case, is there anything at all that would prevent you from moving forward with us today?"</li>
+    <li>"We will never take on your case unless we can save you a ridiculous amount of money."</li>
+  </ol>
 </div>
+<div class="trans">→ Price accepted. Move to payment.</div>
 
-<div class="part">
-<h1>💳 PRICE → PAYMENT</h1>
-
-<h2>1. PRICE → PAYMENT TRANSITION</h2>
-<ul class="check">
-  <li><input type="checkbox"> Now, if you don't have any other questions about our process, the next thing I can explain to you are the different ways most people pay for our services.</li>
-  <li><input type="checkbox"> The fastest, easiest, and smartest way to do so financially is: if you can pay it out of any <strong>checking</strong> or <strong>savings</strong> account. If you have the money, then well, pay it.</li>
-  <li><input type="checkbox"> And again, I don't like to assume anything. So I'll just ask you straight up,</li>
-  <li><input type="checkbox"> Do you have it in your <strong>checking account</strong>, <strong>savings account</strong>, or any type of retirement account, <strong>401(k)</strong>, <strong>IRA</strong>, anything like that, <strong>stocks</strong>, <strong>bonds</strong>, whatever, where you could get it into your <strong>checking account</strong> within a certain amount of days?</li>
-  <li><input type="checkbox"> Again that's what most people say, I mean if you have it, then… well, that's the way to go.</li>
-</ul>
-
-<h2>2. SHORT EXACTLY</h2>
-<ul class="check">
-  <li><input type="checkbox"> About how far off are you from that number, exactly?</li>
-  <li><input type="checkbox"> So what I'm hearing from you is that you have $<input type="text" class="fill"> that you could put towards this. Is that what I'm hearing from you?</li>
-</ul>
-
-<h2>18. PAYMENT OPTION 2 — CREDIT CARDS</h2>
-<ul class="check">
-  <li><input type="checkbox"> Okay, so the second way most people pay for our services is with <strong>credit cards</strong>.</li>
-  <li><input type="checkbox"> Do you have the full balance or the remaining balance that you could put on any cards, maybe one, two, or even three cards?</li>
-  <li><input type="checkbox"> Do you have any available balances on any <strong>credit cards</strong> that can hold a portion of this?</li>
-</ul>
-
-<h2>19. PAYMENT OPTION 3 — EXTERNAL FINANCING / MONTHLY PAYMENTS</h2>
-<ul class="check">
-  <li><input type="checkbox"> The third option is financing it and breaking it into monthly payments.</li>
-  <li><input type="checkbox"> That's going to be dependent on whether or not you qualify for that. It'll only take me a few minutes to find out.</li>
-  <li><input type="checkbox"> Do you have any idea what your <strong>credit score</strong> is?</li>
-  <li><input type="checkbox"> You said that you can put down $<input type="text" class="fill">. So then we'd be looking at breaking the remaining into monthly payments.</li>
-  <li><input type="checkbox"> Let's go ahead and see what we can get you qualified for.</li>
-</ul>
-
-<h2>20. FINANCING APPLICATION INFORMATION</h2>
-<ul class="check">
-  <li><input type="checkbox"> Now, a couple things I'm going to need is can you guys send me pictures of your <strong>driver's licenses</strong>?</li>
-  <li><input type="checkbox"> I'm gonna have to ask you some questions. It's basically standard questions that you'd ask for any type of <strong>financing</strong> option: <strong>social security</strong>, date of birth, where you work, how long you've been working there, what kind of money you make per month, total.</li>
-</ul>
-<span class="notes-label">Notes:</span>
-<textarea class="notes"></textarea>
+<div class="stage">
+  <h2>STAGE 2 — FIND THE MONEY <span class="t">15 MIN</span></h2>
+  <div class="clock">0:45–1:00 · checking/savings → short exactly → credit cards</div>
+  <ol class="liners">
+    <li>"The fastest, easiest, and smartest way to do so financially is: if you can pay it out of any checking or savings account. If you have the money, then well, pay it."</li>
+    <li>"Do you have it in your checking account, savings account, or any type of retirement account, 401(k), IRA, anything like that, stocks, bonds, whatever, where you could get it into your checking account within a certain amount of days?"</li>
+    <li>"About how far off are you from that number, exactly?"</li>
+    <li>"So what I'm hearing from you is that you have $________ that you could put towards this. Is that what I'm hearing from you?"</li>
+    <li>"Okay, so the second way most people pay for our services is with credit cards."</li>
+  </ol>
 </div>
+<div class="trans">→ Financing? Go to Stage 3. Cash/card? Collect DL + bank proof, skip to Stage 4.</div>
 
-<div class="part">
-<h1>🎯 LINX LEGAL — CLOSING LINES</h1>
+<div class="stage">
+  <h2>STAGE 3 — APPLY FOR CREDIT <span class="t">15 MIN</span></h2>
+  <div class="clock">1:00–1:15 · qualify → application info</div>
+  <ol class="liners">
+    <li>"The third option is financing it and breaking it into monthly payments."</li>
+    <li>"Do you have any idea what your credit score is?"</li>
+    <li>"You said that you can put down $________. So then we'd be looking at breaking the remaining into monthly payments."</li>
+    <li>"Let's go ahead and see what we can get you qualified for."</li>
+    <li>"Now, a couple things I'm going to need is can you guys send me pictures of your driver's licenses?"</li>
+  </ol>
+</div>
+<div class="trans">→ Place them on hold — case goes to the approval team.</div>
 
-<h2>1. PAYMENT → CONTRACT TRANSITION</h2>
-<ul class="check">
-  <li><input type="checkbox"> I mean if you have it, then… well, that's the way to go.</li>
-  <li><input type="checkbox"> So what I'll need in order to move forward is: what I'm going to do next. I'm going to work on preparing our <strong>service agreement</strong>, right?</li>
-</ul>
-
-<h2>2. EXPLAIN THE AGREEMENT</h2>
-<ul class="check">
-  <li><input type="checkbox"> And our <strong>service agreement</strong> is going to basically outline, ok?, all the terms of what we're doing; including our <strong>money back policy</strong>, and I'm going to walk you through it, ok?, kind of do the do's and don'ts during the process.</li>
-  <li><input type="checkbox"> So I'm going to go ahead and work on putting that together. And then I'm going to email that over. And then we're going to go over it together here.</li>
-</ul>
-
-<h2>3. PREPARATION TIME</h2>
-<ul class="check">
-  <li><input type="checkbox"> It's going to take me about 10 minutes to prepare. In the meantime, ok?; what I'm going to need from you is I'm going to need:</li>
-</ul>
-
-<h2>4. DRIVER'S LICENSE</h2>
-<ul class="check">
-  <li><input type="checkbox"> Do you know how to send pictures from your phone?</li>
-  <li><input type="checkbox"> Okay, cool. What I need from you is: if you could just take your <strong>driver's license</strong>, put it on the table. Take a picture and send that to me. I'm going to need your <strong>driver's license</strong>.</li>
-</ul>
-
-<h2>5. CHECKING ACCOUNT</h2>
-<ul class="check">
-  <li><input type="checkbox"> And then I'm also going to need… you said it's a <strong>checking account</strong> or whatever. Is that what you're planning on doing? Okay, <strong>checking account</strong>? Well, then I'll just need some kind of picture. Do you happen to have a checkbook that you could write 'void' on? Yeah, take a picture of that.</li>
-</ul>
-
-<h2>6. NO CHECKBOOK — ONLINE BANKING</h2>
-<ul class="check">
-  <li><input type="checkbox"> No checkbook? Okay, no worries. Do you know how to log onto your <strong>online banking</strong>?</li>
-  <li><input type="checkbox"> Okay, cool. When you log into your <strong>online banking</strong> and you click on the <strong>checking account</strong> you want the money drafted out of, there's usually some kind of link or button that says 'see details.' That just allows you to see your <strong>account number</strong> and <strong>routing number</strong>.</li>
-  <li><input type="checkbox"> If you don't have proof of your <strong>account number</strong> and <strong>routing number</strong> from a checkbook, no worries — you can just take a screenshot from your bank. It doesn't have to have your name or balance on there.</li>
-  <li><input type="checkbox"> We just need something that has your <strong>account number</strong> and <strong>routing number</strong> so we can prove it's coming from you, from an account you own.</li>
-  <li><input type="checkbox"> So all you do is just take a screenshot and send that to me as well. 'Cause I'm gonna need that to put on our <strong>service agreement</strong>.</li>
-</ul>
-
-<h2>7. WHILE I PREPARE THE AGREEMENT</h2>
-<ul class="check">
-  <li><input type="checkbox"> Now, you'll hear me here — I'm going to work on preparing the <strong>service agreement</strong>. I may be a little quiet here in the background, you might not hear me, but I'm just working on it.</li>
-  <li><input type="checkbox"> If you have any questions, I can hear you. If I'm quiet, it's just because I'm trying to focus on preparing the <strong>service agreement</strong>. I don't want to make a mistake and have to redo it.</li>
-</ul>
-
-<h2>8. FINAL CLIENT INSTRUCTIONS</h2>
-<ul class="check">
-  <li><input type="checkbox"> OK, I'm going to work on that while you go ahead and get your <strong>driver's license</strong>. Go ahead and do that. Send me those pictures.</li>
-</ul>
-<span class="notes-label">Notes:</span>
-<textarea class="notes"></textarea>
+<div class="stage">
+  <h2>STAGE 4 — SIGN DOCUMENTS <span class="t">15 MIN</span></h2>
+  <div class="clock">1:15–1:30 · post-hold → prep agreement → DocuSign</div>
+  <ol class="liners">
+    <li>"Congratulations one of our case managers has decided to take your case. The total price is $________ — that includes the entire abolition of your entire contractual obligation — we will never ask you for another penny."</li>
+    <li>"So what I'll need in order to move forward is: what I'm going to do next. I'm going to work on preparing our service agreement, right?"</li>
+    <li>"It's going to take me about 10 minutes to prepare."</li>
+    <li>"Do you know how to send pictures from your phone?"</li>
+    <li>"We will never ask you for another penny."</li>
+  </ol>
 </div>
 
 </body>
