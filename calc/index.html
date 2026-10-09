@@ -73,6 +73,7 @@
       <label class="f">Payoff / debt owed ($) <input id="f_payoff" type="number" min="0"></label>
       <label class="f">Loan APR (%) <input id="f_apr" type="number" step="0.1" min="0"></label>
       <label class="f">Loan term (months) <input id="f_term" type="number" min="0"></label>
+      <label class="f">Year purchased <input id="f_pyr" type="number" min="0"></label>
       <label class="f">Monthly mortgage ($) <input id="f_mmo" type="number" min="0"></label>
       <label class="f">Linx fee ($) <span class="tmin">blank = 47% of payoff</span><input id="f_fee" type="number" min="0"></label>
       <label class="f">Down payment ($) <input id="f_down" type="number" min="0"></label>
@@ -177,7 +178,7 @@ function showForm(edit){
   $('f_resort').value = c ? c.resort : '';
   $('f_dtype').value = c ? (c.dtype || 'standard') : 'standard'; $('f_mf').value = c ? c.mf : '';
   $('f_esc').value = c ? c.esc : 8; $('f_payoff').value = c ? c.payoff : '';
-  $('f_apr').value = c ? c.apr : ''; $('f_term').value = c ? c.term : ''; $('f_mmo').value = c ? (c.mmo || '') : '';
+  $('f_apr').value = c ? c.apr : ''; $('f_term').value = c ? c.term : ''; $('f_pyr').value = c ? (c.pyr || '') : ''; $('f_mmo').value = c ? (c.mmo || '') : '';
   $('f_fee').value = c && c.fee ? c.fee : ''; $('f_down').value = c ? c.down : '';
   $('f_fapr').value = c ? c.fapr : ''; $('f_fmo').value = c ? c.fmo : '';
   $('cform').style.display = 'block';
@@ -196,7 +197,7 @@ function saveForm(){
     dtype: $('f_dtype').value,
     ca: $('f_ca').value.trim(), resort: $('f_resort').value.trim(),
     mf: num($('f_mf').value), esc: num($('f_esc').value) || 8, payoff: num($('f_payoff').value),
-    apr: num($('f_apr').value), term: num($('f_term').value), mmo: num($('f_mmo').value), fee: num($('f_fee').value),
+    apr: num($('f_apr').value), term: num($('f_term').value), pyr: num($('f_pyr').value), mmo: num($('f_mmo').value), fee: num($('f_fee').value),
     down: num($('f_down').value), fapr: num($('f_fapr').value), fmo: num($('f_fmo').value)
   };
   var cs = getClients(), found = false;
@@ -242,7 +243,7 @@ function importClients(input){
           tz: r.tz || '', phone2: r.phone2 || '', notes: r.notes || '',
           dtype: r.dtype || 'standard',
           mf: num(r.mf), esc: num(r.esc) || 8, payoff: num(r.payoff),
-          apr: num(r.apr), term: num(r.term), mmo: num(r.mmo), fee: num(r.fee),
+          apr: num(r.apr), term: num(r.term), pyr: num(r.pyr), mmo: num(r.mmo), fee: num(r.fee),
           down: num(r.down), fapr: num(r.fapr), fmo: num(r.fmo)
         };
         if (ix >= 0){ cs[ix] = rec; updated++; } else { cs.push(rec); added++; }
