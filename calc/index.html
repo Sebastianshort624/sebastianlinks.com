@@ -62,13 +62,16 @@
       <label class="f">Appointment <span class="tmin">e.g. Fri 2:00 PM</span><input id="f_appt"></label>
       <label class="f">Phone <input id="f_phone"></label>
       <label class="f">Email <input id="f_email"></label>
+      <label class="f">Timezone <span class="tmin">e.g. CT</span><input id="f_tz"></label>
       <label class="f">Case analyst <input id="f_ca"></label>
       <label class="f">Resort <input id="f_resort"></label>
+      <label class="f">Deal type <select id="f_dtype"><option value="standard">Standard (47%)</option><option value="deedback">Deedback</option></select></label>
       <label class="f">Annual maint. fee ($) <input id="f_mf" type="number" min="0"></label>
       <label class="f">Annual increase (%) <input id="f_esc" type="number" step="0.1" min="0" value="8"></label>
       <label class="f">Payoff / debt owed ($) <input id="f_payoff" type="number" min="0"></label>
       <label class="f">Loan APR (%) <input id="f_apr" type="number" step="0.1" min="0"></label>
       <label class="f">Loan term (months) <input id="f_term" type="number" min="0"></label>
+      <label class="f">Monthly mortgage ($) <input id="f_mmo" type="number" min="0"></label>
       <label class="f">Linx fee ($) <span class="tmin">blank = 47% of payoff</span><input id="f_fee" type="number" min="0"></label>
       <label class="f">Down payment ($) <input id="f_down" type="number" min="0"></label>
       <label class="f">Finance APR (%) <input id="f_fapr" type="number" step="0.1" min="0"></label>
@@ -101,6 +104,18 @@
     <div class="stat"><span>10-yr savings</span><b id="r_sav">$0</b></div>
     <div class="stat"><span>Principal / Interest</span><b id="r_pi">—</b></div>
   </div>
+</div>
+
+<div class="box">
+  <h3>Deed-back price list</h3>
+  <div class="tmin" id="deedmeta">No price list loaded.</div>
+  <div style="margin:8px 0">
+    <button class="ghost" onclick="document.getElementById('deedfile').click()">Import CSV</button>
+    <button class="ghost" onclick="exportDeed()">Export</button>
+    <input type="file" id="deedfile" accept=".csv,text/csv" style="display:none" onchange="importDeed(this)">
+  </div>
+  <label class="f">Search developer or state <input id="deedq" placeholder="e.g. Westgate or FL" oninput="renderDeedResults()"></label>
+  <div id="deedresults" style="margin-top:8px"></div>
 </div>
 
 <h3>Projections</h3>
@@ -156,10 +171,11 @@ function showForm(edit){
   }
   $('f_name').value = c ? c.name : ''; $('f_phone').value = c ? c.phone : '';
   $('f_appt').value = c ? (c.appt || '') : '';
-  $('f_email').value = c ? c.email : ''; $('f_ca').value = c ? c.ca : '';
-  $('f_resort').value = c ? c.resort : ''; $('f_mf').value = c ? c.mf : '';
+  $('f_email').value = c ? c.email : ''; $('f_ca').value = c ? c.ca : ''; $('f_tz').value = c ? (c.tz || '') : '';
+  $('f_resort').value = c ? c.resort : '';
+  $('f_dtype').value = c ? (c.dtype || 'standard') : 'standard'; $('f_mf').value = c ? c.mf : '';
   $('f_esc').value = c ? c.esc : 8; $('f_payoff').value = c ? c.payoff : '';
-  $('f_apr').value = c ? c.apr : ''; $('f_term').value = c ? c.term : '';
+  $('f_apr').value = c ? c.apr : ''; $('f_term').value = c ? c.term : ''; $('f_mmo').value = c ? (c.mmo || '') : '';
   $('f_fee').value = c && c.fee ? c.fee : ''; $('f_down').value = c ? c.down : '';
   $('f_fapr').value = c ? c.fapr : ''; $('f_fmo').value = c ? c.fmo : '';
   $('cform').style.display = 'block';
@@ -172,10 +188,12 @@ function saveForm(){
   var rec = {
     id: editingId || ('c' + Date.now().toString(36)),
     name: name, phone: $('f_phone').value.trim(), email: $('f_email').value.trim(),
+    tz: $('f_tz').value.trim(),
     appt: $('f_appt').value.trim(),
+    dtype: $('f_dtype').value,
     ca: $('f_ca').value.trim(), resort: $('f_resort').value.trim(),
     mf: num($('f_mf').value), esc: num($('f_esc').value) || 8, payoff: num($('f_payoff').value),
-    apr: num($('f_apr').value), term: num($('f_term').value), fee: num($('f_fee').value),
+    apr: num($('f_apr').value), term: num($('f_term').value), mmo: num($('f_mmo').value), fee: num($('f_fee').value),
     down: num($('f_down').value), fapr: num($('f_fapr').value), fmo: num($('f_fmo').value)
   };
   var cs = getClients(), found = false;
@@ -218,8 +236,10 @@ function importClients(input){
           id: ix >= 0 ? cs[ix].id : (r.id || ('c' + Date.now().toString(36) + Math.floor(Math.random() * 999))),
           name: r.name, phone: r.phone || '', email: r.email || '', ca: r.ca || '',
           appt: r.appt || '', resort: r.resort || '',
+          tz: r.tz || '',
+          dtype: r.dtype || 'standard',
           mf: num(r.mf), esc: num(r.esc) || 8, payoff: num(r.payoff),
-          apr: num(r.apr), term: num(r.term), fee: num(r.fee),
+          apr: num(r.apr), term: num(r.term), mmo: num(r.mmo), fee: num(r.fee),
           down: num(r.down), fapr: num(r.fapr), fmo: num(r.fmo)
         };
         if (ix >= 0){ cs[ix] = rec; updated++; } else { cs.push(rec); added++; }
@@ -232,9 +252,11 @@ function importClients(input){
   rd.readAsText(f);
 }
 
+var selDtype = 'standard';
 function onSelect(){
   var id = $('csel').value, cs = getClients(), c = null;
   for (var i = 0; i < cs.length; i++) if (cs[i].id === id) c = cs[i];
+  selDtype = c ? (c.dtype || 'standard') : 'standard';
   $('ebtn').style.display = c ? '' : 'none';
   $('dbtn').style.display = c ? '' : 'none';
   var d = $('cdetails');
@@ -242,6 +264,7 @@ function onSelect(){
     d.innerHTML = '<b>' + esc(c.name) + '</b>' +
       (c.appt ? ' · ' + esc(c.appt) : '') +
       (c.resort ? ' · ' + esc(c.resort) : '') +
+      (c.dtype === 'deedback' ? ' · Deedback' : '') +
       (c.phone ? '<br>📞 ' + esc(c.phone) : '') +
       (c.email ? ' · ✉️ ' + esc(c.email) : '') +
       (c.ca ? '<br>CA: ' + esc(c.ca) : '');
@@ -260,13 +283,14 @@ function calc(){
       payoff = num($('in_payoff').value), apr = num($('in_apr').value), term = num($('in_term').value),
       feeIn = num($('in_fee').value), down = num($('in_down').value),
       fapr = num($('in_fapr').value), fmo = num($('in_fmo').value);
-  var fee = feeIn > 0 ? feeIn : payoff * 0.47;
+  var fee = feeIn > 0 ? feeIn : (selDtype === 'deedback' ? 0 : payoff * 0.47);
+  var feeKnown = fee > 0;
 
   function tot(n){ return payoff + mfTotal(mf, r, n); }
   function sav(n){ return tot(n) - fee; }
 
-  $('r_fee').textContent = fmt(fee);
-  $('r_sav').textContent = fmt(sav(10));
+  $('r_fee').textContent = feeKnown ? fmt(fee) : '—';
+  $('r_sav').textContent = feeKnown ? fmt(sav(10)) : '—';
   if (apr > 0 && term > 0){
     var mo = amort(payoff, apr, term);
     $('r_pi').textContent = fmt(payoff) + ' / ' + fmt(mo * term - payoff);
@@ -277,18 +301,18 @@ function calc(){
   [5, 10, 20].forEach(function(n){
     $('m' + n).textContent = fmt(mfTotal(mf, r, n));
     $('t' + n).textContent = fmt(tot(n));
-    $('s' + n).textContent = fmt(sav(n));
+    $('s' + n).textContent = feeKnown ? fmt(sav(n)) : '—';
   });
 
   var bal = Math.max(0, fee - down);
-  $('p_fee').textContent = fmt(fee) + (feeIn > 0 ? '' : ' (47%)');
+  $('p_fee').textContent = feeKnown ? fmt(fee) + (feeIn > 0 ? '' : ' (47%)') : '—';
   $('p_down').textContent = fmt(down);
-  $('p_bal').textContent = fmt(bal);
-  if (fapr > 0 && fmo > 0){
+  $('p_bal').textContent = feeKnown ? fmt(bal) : '—';
+  if (feeKnown && fapr > 0 && fmo > 0){
     $('p_terms').textContent = fmo + ' mo @ ' + fapr + '%';
     $('p_mo').textContent = fmt(amort(bal, fapr, fmo)) + '/mo';
   } else { $('p_terms').textContent = '—'; $('p_mo').textContent = '—'; }
-  if (bal > 0 && fapr >= 0){
+  if (feeKnown && bal > 0 && fapr >= 0){
     $('p_opt').textContent = fmt(amort(bal, fapr, 12)) + ' / ' + fmt(amort(bal, fapr, 24)) + ' / ' + fmt(amort(bal, fapr, 36)) + ' /mo';
   } else { $('p_opt').textContent = '—'; }
 
@@ -297,8 +321,93 @@ function calc(){
   $('ptable').style.display = 'table';
 }
 
+function getDeed(){ try { return JSON.parse(localStorage.getItem('sl_deedprices') || 'null') || {updated:null, rows:[]}; } catch(e){ return {updated:null, rows:[]}; } }
+function saveDeed(d){ localStorage.setItem('sl_deedprices', JSON.stringify(d)); deedMeta(); }
+function deedMeta(){ var d = getDeed(); $('deedmeta').textContent = d.rows.length ? (d.rows.length + ' prices · updated ' + (d.updated || '—')) : 'No price list loaded.'; }
+function parseCSV(t){
+  var rows = [], row = [], cur = '', q = false;
+  for (var i = 0; i < t.length; i++){
+    var ch = t[i];
+    if (q){ if (ch === '"'){ if (t[i+1] === '"'){ cur += '"'; i++; } else q = false; } else cur += ch; }
+    else if (ch === '"') q = true;
+    else if (ch === ','){ row.push(cur); cur = ''; }
+    else if (ch === '\n' || ch === '\r'){ if (ch === '\r' && t[i+1] === '\n') i++; row.push(cur); rows.push(row); row = []; cur = ''; }
+    else cur += ch;
+  }
+  if (cur !== '' || row.length){ row.push(cur); rows.push(row); }
+  return rows.filter(function(r){ return r.some(function(c){ return String(c).trim() !== ''; }); });
+}
+function importDeed(input){
+  var f = input.files[0]; if (!f) return;
+  var rd = new FileReader();
+  rd.onload = function(){
+    try {
+      var rows = parseCSV(rd.result);
+      if (!rows.length) throw 0;
+      var h = rows[0].map(function(c){ return String(c).toLowerCase().replace(/[^a-z]/g, ''); });
+      var hi = {dev:-1, state:-1, price:-1};
+      h.forEach(function(c, i){
+        if (hi.dev < 0 && /developer|resort|brand/.test(c) && !/state/.test(c)) hi.dev = i;
+        if (hi.state < 0 && /state/.test(c)) hi.state = i;
+        if (hi.price < 0 && /price|fee|amount|cost/.test(c)) hi.price = i;
+      });
+      var start;
+      if (hi.dev < 0 && hi.price < 0){ hi = {dev:0, state:1, price:2}; start = 0; }
+      else { start = 1; if (hi.dev < 0) hi.dev = 0; if (hi.state < 0) hi.state = 1; if (hi.price < 0) hi.price = 2; }
+      var out = [];
+      for (var i = start; i < rows.length; i++){
+        var r = rows[i];
+        var p = parseFloat(String(r[hi.price] || '').replace(/[$,]/g, ''));
+        if (!String(r[hi.dev] || '').trim() && !String(r[hi.state] || '').trim()) continue;
+        out.push({dev: String(r[hi.dev] || '').trim(), state: String(r[hi.state] || '').trim(), price: isNaN(p) ? 0 : p});
+      }
+      saveDeed({updated: new Date().toISOString().slice(0, 10), rows: out});
+      renderDeedResults();
+      alert('Loaded ' + out.length + ' deed-back prices.');
+    } catch(e){ alert('Could not read that CSV.'); }
+    input.value = '';
+  };
+  rd.readAsText(f);
+}
+function exportDeed(){
+  var d = getDeed();
+  var csv = 'Developer,State,Price\n' + d.rows.map(function(r){
+    return '"' + r.dev.replace(/"/g, '""') + '","' + r.state.replace(/"/g, '""') + '",' + r.price;
+  }).join('\n');
+  var blob = new Blob([csv], {type:'text/csv'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = 'deedback-prices.csv';
+  document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+function renderDeedResults(){
+  var d = getDeed(), q = ($('deedq').value || '').toLowerCase().trim();
+  var box = $('deedresults');
+  if (!d.rows.length){ box.innerHTML = '<span class="tmin">Import the CSV from your price sheet to search.</span>'; return; }
+  var hits = [];
+  d.rows.forEach(function(r, ix){
+    if (!q || r.dev.toLowerCase().indexOf(q) >= 0 || r.state.toLowerCase().indexOf(q) >= 0) hits.push({r:r, ix:ix});
+  });
+  hits = hits.slice(0, 50);
+  if (!hits.length){ box.innerHTML = '<span class="tmin">No matches.</span>'; return; }
+  box.innerHTML = hits.map(function(h){
+    return '<div class="rrow"><span>' + esc(h.r.dev) + (h.r.state ? ' · ' + esc(h.r.state) : '') + ' — <b>' + fmt(h.r.price) + '</b></span>' +
+      ' <button class="ghost" onclick="applyDeedPrice(' + h.ix + ')">Use</button></div>';
+  }).join('');
+}
+function applyDeedPrice(ix){
+  var d = getDeed(), r = d.rows[ix]; if (!r) return;
+  var id = $('csel').value;
+  if (!id){ alert('Select a client first.'); return; }
+  var cs = getClients();
+  for (var i = 0; i < cs.length; i++) if (cs[i].id === id){ cs[i].fee = r.price; cs[i].dtype = 'deedback'; }
+  saveClients(cs); onSelect();
+  alert('Deed-back price ' + fmt(r.price) + ' applied to client.');
+}
+
 $('csel').addEventListener('change', onSelect);
 refreshSelect();
+deedMeta(); renderDeedResults();
 calc();
 </script>
 
