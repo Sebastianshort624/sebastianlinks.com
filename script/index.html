@@ -1,14 +1,13 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Close 1 — Liners (Español)</title>
+<title>Close 1 — Liners</title>
 <style>
   body { font-family: Arial, Helvetica, sans-serif; max-width: 860px; margin: 0 auto; padding: 24px; color: #1a1a1a; line-height: 1.55; }
   h1 { font-size: 1.5em; border-bottom: 3px solid #1a1a1a; padding-bottom: 8px; }
   h2 { font-size: 1.2em; background: #f0f0f0; padding: 10px 12px; border-left: 5px solid #1a1a1a; margin-top: 32px; }
-  h2 .num { display: inline-block; background: #1a1a1a; color: #fff; border-radius: 50%; width: 28px; height: 28px; line-height: 28px; text-align: center; font-size: 0.85em; margin-right: 8px; }
   ul.check { list-style: none; padding-left: 4px; }
   ul.check li { margin: 8px 0; padding-left: 30px; position: relative; }
   ul.check input[type="checkbox"] { position: absolute; left: 0; top: 3px; width: 18px; height: 18px; }
@@ -16,151 +15,192 @@
   .fill { border: none; border-bottom: 1px solid #333; width: 140px; font-size: 1em; font-family: inherit; }
   textarea.notes { width: 100%; min-height: 56px; font-family: inherit; font-size: 0.95em; margin-top: 6px; border: 1px solid #999; border-radius: 4px; padding: 6px; }
   .notes-label { font-weight: bold; font-size: 0.9em; margin-top: 12px; display: block; }
+  .part { border: 2px solid #1a1a1a; border-radius: 8px; padding: 16px 20px; margin-top: 36px; }
   .client-line { margin: 6px 0; }
   .client-line input { border: none; border-bottom: 1px solid #333; font-size: 1em; width: 320px; font-family: inherit; }
-  @media print { body { padding: 0; } h2 { break-after: avoid; } ul.check { break-inside: avoid; } }
+  @media print { body { padding: 0; } .part { break-inside: avoid; } }
 </style>
 </head>
 <body>
 
-<h1>🎯 Close 1 — Liners (Español)</h1>
-<div class="client-line">Cliente: <input type="text"></div>
-<div class="client-line">Fecha: <input type="text"></div>
+<h1>🎯 Close 1 — Liners</h1>
+<div class="client-line">Client: <input type="text"></div>
+<div class="client-line">Date: <input type="text"></div>
 
-<h2><span class="num">1</span> VIOLACIONES — PRESENTACIÓN DE VENTAS Y PRESIÓN</h2>
+<div class="part">
+<h1>⚖️ LINX LEGAL — ESSENTIAL VIOLATION-DISCOVERY QUESTIONS</h1>
+
+<h2>1. SALES PRESENTATION &amp; PRESSURE</h2>
 <ul class="check">
-  <li><input type="checkbox"> ¿Cuánto duró la presentación de ventas?</li>
-  <li><input type="checkbox"> ¿Te dijeron que solo iba a durar 90 minutos?</li>
-  <li><input type="checkbox"> ¿Con cuántos vendedores diferentes hablaste?</li>
-  <li><input type="checkbox"> ¿Cuántas veces dijiste que NO?</li>
-  <li><input type="checkbox"> ¿Pediste irte o terminar la presentación? ¿Qué pasó?</li>
-  <li><input type="checkbox"> ¿Te sentiste agotado(a), confundido(a), abrumado(a) o presionado(a)?</li>
-  <li><input type="checkbox"> ¿Te separaron de tu esposo(a) o se enfocaron solo en uno de los dos?</li>
-  <li><input type="checkbox"> ¿Te dijeron que la oferta o el precio solo valía ese día?</li>
-  <li><input type="checkbox"> ¿Te dieron regalos, comidas, tragos u otros incentivos?</li>
+  <li><input type="checkbox"> How long did the sales presentation last?</li>
+  <li><input type="checkbox"> Were you told it would only take 90 minutes?</li>
+  <li><input type="checkbox"> How many different salespeople did you speak with?</li>
+  <li><input type="checkbox"> How many times did you say NO?</li>
+  <li><input type="checkbox"> Did you ask to leave or end the presentation? What happened?</li>
+  <li><input type="checkbox"> Did you feel exhausted, confused, overwhelmed, or pressured?</li>
+  <li><input type="checkbox"> Did they separate you from your spouse or focus on one of you?</li>
+  <li><input type="checkbox"> Were you told the offer or price was only available that day?</li>
+  <li><input type="checkbox"> Were you given gifts, meals, drinks, or other incentives?</li>
 </ul>
-<span class="notes-label">Notas:</span>
+<span class="notes-label">Notes:</span>
 <textarea class="notes"></textarea>
 
-<h2><span class="num">2</span> VIOLACIONES — PROMESAS Y LO QUE TE DIJERON</h2>
+<h2>2. PROMISES &amp; REPRESENTATIONS</h2>
 <ul class="check">
-  <li><input type="checkbox"> ¿Qué fue exactamente lo que te dijeron que te convenció de comprar?</li>
-  <li><input type="checkbox"> ¿Te dijeron que podías rentar tu <strong>timeshare</strong> para ganar plata?</li>
-  <li><input type="checkbox"> ¿Te dijeron que lo podías vender o recuperar lo que pagaste?</li>
-  <li><input type="checkbox"> ¿Te lo presentaron como una inversión o algo que iba a subir de valor?</li>
-  <li><input type="checkbox"> ¿Te prometieron disponibilidad, intercambios o beneficios que en realidad no pudiste usar?</li>
-  <li><input type="checkbox"> ¿Te prometieron <strong>refinancing</strong>, un <strong>buyback</strong> o ayuda para vender o rentar?</li>
+  <li><input type="checkbox"> What exactly were you told that convinced you to purchase?</li>
+  <li><input type="checkbox"> Were you told you could rent your <strong>timeshare</strong> for income?</li>
+  <li><input type="checkbox"> Were you told you could sell it or recover your purchase price?</li>
+  <li><input type="checkbox"> Was it presented as an investment or something that would increase in value?</li>
+  <li><input type="checkbox"> Were you promised availability, exchanges, or benefits you couldn't actually use?</li>
+  <li><input type="checkbox"> Were you promised <strong>refinancing</strong>, a <strong>buyback</strong>, or help selling or renting?</li>
 </ul>
-<span class="notes-label">Notas:</span>
+<span class="notes-label">Notes:</span>
 <textarea class="notes"></textarea>
 
-<h2><span class="num">3</span> VIOLACIONES — INFORMACIÓN FINANCIERA</h2>
+<h2>3. FINANCIAL DISCLOSURES</h2>
 <ul class="check">
-  <li><input type="checkbox"> ¿Te explicaron bien los <strong>maintenance fees</strong> antes de firmar?</li>
-  <li><input type="checkbox"> ¿Te dijeron que los <strong>maintenance fees</strong> podían subir cada año?</li>
-  <li><input type="checkbox"> ¿Te dijeron que los <strong>maintenance fees</strong> podían seguir para siempre?</li>
-  <li><input type="checkbox"> ¿Te dijeron que esas obligaciones financieras podían afectar a tus hijos o tu herencia?</li>
-  <li><input type="checkbox"> ¿Te explicaron la tasa de interés, el interés total y el costo total de la compra?</li>
-  <li><input type="checkbox"> ¿Te mostraron el costo real a 5, 10 o 20 años?</li>
-  <li><input type="checkbox"> ¿Te pidieron abrir <strong>credit cards</strong> o sacar más <strong>financing</strong>?</li>
+  <li><input type="checkbox"> Were the <strong>maintenance fees</strong> fully explained before signing?</li>
+  <li><input type="checkbox"> Were you told <strong>maintenance fees</strong> could increase every year?</li>
+  <li><input type="checkbox"> Were you told <strong>maintenance fees</strong> could continue indefinitely?</li>
+  <li><input type="checkbox"> Were you told the financial obligations could affect your children or estate?</li>
+  <li><input type="checkbox"> Were the interest rate, total interest, and total purchase cost explained?</li>
+  <li><input type="checkbox"> Were you shown the true cost over 5, 10, or 20 years?</li>
+  <li><input type="checkbox"> Were you asked to open <strong>credit cards</strong> or obtain additional <strong>financing</strong>?</li>
 </ul>
-<span class="notes-label">Notas:</span>
+<span class="notes-label">Notes:</span>
 <textarea class="notes"></textarea>
 
-<h2><span class="num">4</span> VIOLACIONES — CONTRATO, CANCELACIÓN Y UPGRADES</h2>
+<h2>4. CONTRACT &amp; CANCELLATION</h2>
 <ul class="check">
-  <li><input type="checkbox"> ¿Te dieron suficiente tiempo para leer y entender todo el contrato?</li>
-  <li><input type="checkbox"> ¿El contrato estaba en un idioma que entendías?</li>
-  <li><input type="checkbox"> ¿Descubriste después condiciones que no te habían explicado?</li>
-  <li><input type="checkbox"> ¿Te dijeron que podías cancelar el <strong>timeshare</strong>?</li>
-  <li><input type="checkbox"> ¿Te explicaron el período de <strong>rescission</strong> o cancelación?</li>
-  <li><input type="checkbox"> ¿Trataste de cancelar? ¿Qué pasó?</li>
-  <li><input type="checkbox"> ¿Te dijeron qué podía pasar si dejabas de pagar?</li>
-  <li><input type="checkbox"> ¿Te dijeron que un <strong>upgrade</strong> iba a resolver un problema que ya tenías?</li>
-  <li><input type="checkbox"> ¿Te prometieron cuotas más bajas o mejor disponibilidad?</li>
-  <li><input type="checkbox"> ¿El <strong>upgrade</strong> sí cumplió lo que te prometieron?</li>
-  <li><input type="checkbox"> ¿Te dijeron que tenías que comprar más puntos u otro contrato?</li>
+  <li><input type="checkbox"> Were you given enough time to read and understand the entire contract?</li>
+  <li><input type="checkbox"> Was the contract in a language you understood?</li>
+  <li><input type="checkbox"> Did you discover terms afterward that were not explained?</li>
+  <li><input type="checkbox"> Were you told you could cancel the <strong>timeshare</strong>?</li>
+  <li><input type="checkbox"> Was the <strong>rescission</strong> or cancellation period explained?</li>
+  <li><input type="checkbox"> Did you try to cancel? What happened?</li>
+  <li><input type="checkbox"> Were you told what could happen if you stopped paying?</li>
 </ul>
-<span class="notes-label">Notas:</span>
+<span class="notes-label">Notes:</span>
 <textarea class="notes"></textarea>
 
-<h2><span class="num">5</span> VIOLACIONES — IMPACTO EN TU DECISIÓN (LO MÁS IMPORTANTE)</h2>
+<h2>5. UPGRADES &amp; ADDITIONAL PURCHASES</h2>
 <ul class="check">
-  <li><input type="checkbox"> Si en ese momento hubieras sabido lo que sabes hoy, ¿igual habrías comprado?</li>
-  <li><input type="checkbox"> ¿Qué promesa o información específica influyó en tu decisión de firmar?</li>
-  <li><input type="checkbox"> ¿Qué descubriste después que era diferente a lo que te habían dicho?</li>
-  <li><input type="checkbox"> ¿Cuál de esos datos habría cambiado tu decisión?</li>
-  <li><input type="checkbox"> ¿Cómo te ha afectado eso en lo económico y en lo emocional?</li>
+  <li><input type="checkbox"> Were you told an <strong>upgrade</strong> would solve an existing problem?</li>
+  <li><input type="checkbox"> Were you promised lower fees or better availability?</li>
+  <li><input type="checkbox"> Did the <strong>upgrade</strong> actually deliver what was promised?</li>
+  <li><input type="checkbox"> Were you told you had to purchase more points or another contract?</li>
 </ul>
-<span class="notes-label">Notas:</span>
+<span class="notes-label">Notes:</span>
 <textarea class="notes"></textarea>
 
-<h2><span class="num">6</span> TRANSICIÓN: DEL PRECIO AL PAGO</h2>
+<h2>6. DECISION IMPACT — MOST IMPORTANT</h2>
 <ul class="check">
-  <li><input type="checkbox"> Bueno, si no tienes más preguntas sobre nuestro proceso, lo siguiente que te puedo explicar son las diferentes formas en que la mayoría de la gente paga por nuestros servicios.</li>
-  <li><input type="checkbox"> La forma más rápida, más fácil y más inteligente financieramente es: si lo puedes pagar de cualquier <strong>checking account</strong> o <strong>savings account</strong>. Si tienes la plata, pues, págalo.</li>
-  <li><input type="checkbox"> Y de nuevo, no me gusta asumir nada. Entonces te lo voy a preguntar directo,</li>
-  <li><input type="checkbox"> ¿la tienes en tu <strong>checking account</strong>, <strong>savings account</strong>, o algún tipo de cuenta de retiro, <strong>401(k)</strong>, <strong>IRA</strong>, algo así, <strong>stocks</strong>, <strong>bonds</strong>, lo que sea, de donde la puedas pasar a tu <strong>checking account</strong> en cierta cantidad de días?</li>
-  <li><input type="checkbox"> Eso es lo que dice la mayoría, o sea, si la tienes, entonces… pues, esa es la mejor opción.</li>
+  <li><input type="checkbox"> If you had known then what you know today, would you still have purchased?</li>
+  <li><input type="checkbox"> What specific promise or information influenced your decision to sign?</li>
+  <li><input type="checkbox"> What did you later discover was different from what you were told?</li>
+  <li><input type="checkbox"> Which of those facts would have changed your decision?</li>
+  <li><input type="checkbox"> How has that affected you financially and emotionally?</li>
 </ul>
-
-<h2><span class="num">7</span> PAGO — CORTO Y EXACTO</h2>
-<ul class="check">
-  <li><input type="checkbox"> ¿Más o menos cuánto te falta para llegar a ese número, exactamente?</li>
-  <li><input type="checkbox"> Entonces lo que estoy escuchando es que tienes $<input type="text" class="fill"> que podrías poner para esto. ¿Eso es lo que estoy escuchando?</li>
-</ul>
-
-<h2><span class="num">8</span> OPCIÓN DE PAGO 2 — CREDIT CARDS</h2>
-<ul class="check">
-  <li><input type="checkbox"> Bueno, la segunda forma en que la mayoría paga por nuestros servicios es con <strong>credit cards</strong>.</li>
-  <li><input type="checkbox"> ¿Tienes el saldo total o el saldo restante que podrías poner en alguna tarjeta, de pronto una, dos o hasta tres tarjetas?</li>
-  <li><input type="checkbox"> ¿Tienes algún cupo disponible en alguna <strong>credit card</strong> que pueda cubrir una parte de esto?</li>
-</ul>
-
-<h2><span class="num">9</span> OPCIÓN DE PAGO 3 — FINANCIAMIENTO EXTERNO / PAGOS MENSUALES</h2>
-<ul class="check">
-  <li><input type="checkbox"> La tercera opción es financiarlo y dividirlo en pagos mensuales.</li>
-  <li><input type="checkbox"> Eso va a depender de si calificas o no. Solo me toma unos minutos averiguarlo.</li>
-  <li><input type="checkbox"> ¿Tienes alguna idea de cuánto es tu <strong>credit score</strong>?</li>
-  <li><input type="checkbox"> Dijiste que puedes dar $<input type="text" class="fill"> de <strong>down payment</strong>. Entonces estaríamos hablando de dividir el resto en pagos mensuales.</li>
-  <li><input type="checkbox"> Vamos a ver para qué te podemos calificar.</li>
-</ul>
-
-<h2><span class="num">10</span> APLICACIÓN DE FINANCIAMIENTO — DOCUMENTOS E INFORMACIÓN</h2>
-<ul class="check">
-  <li><input type="checkbox"> Bueno, un par de cosas que voy a necesitar es que me manden fotos de sus <strong>driver's licenses</strong>.</li>
-  <li><input type="checkbox"> Te voy a tener que hacer unas preguntas. Son básicamente las preguntas normales que se hacen para cualquier tipo de <strong>financing</strong>: <strong>social security</strong>, fecha de nacimiento, dónde trabajas, cuánto tiempo llevas ahí, cuánta plata ganas al mes, en total.</li>
-</ul>
-<span class="notes-label">Notas:</span>
+<span class="notes-label">Notes:</span>
 <textarea class="notes"></textarea>
+</div>
 
-<h2><span class="num">11</span> PREPARAR EL SERVICE AGREEMENT — DRIVER'S LICENSE Y CUENTA</h2>
-<ul class="check">
-  <li><input type="checkbox"> O sea, si la tienes, entonces… pues, esa es la mejor opción.</li>
-  <li><input type="checkbox"> Entonces lo que voy a necesitar para seguir adelante es: lo que voy a hacer ahora. Voy a trabajar en preparar nuestro <strong>service agreement</strong>, ¿sí?</li>
-  <li><input type="checkbox"> Y nuestro <strong>service agreement</strong> básicamente va a resumir, ¿ok?, todos los términos de lo que estamos haciendo; incluyendo nuestra <strong>money back policy</strong>, y te lo voy a explicar paso a paso, ¿ok?, como lo que sí y lo que no se debe hacer durante el proceso.</li>
-  <li><input type="checkbox"> Entonces voy a ponerme a armarlo. Y después te lo voy a mandar por email. Y luego lo vamos a revisar juntos aquí.</li>
-  <li><input type="checkbox"> Me va a tomar como 10 minutos prepararlo. Mientras tanto, ¿ok?; lo que voy a necesitar de ti es que voy a necesitar:</li>
-  <li><input type="checkbox"> ¿Sabes cómo mandar fotos desde tu teléfono?</li>
-  <li><input type="checkbox"> Listo, chévere. Lo que necesito de ti es: que agarres tu <strong>driver's license</strong>, la pongas en la mesa. Le tomas una foto y me la mandas. Voy a necesitar tu <strong>driver's license</strong>.</li>
-  <li><input type="checkbox"> Y también voy a necesitar… dijiste que es una <strong>checking account</strong> o lo que sea. ¿Eso es lo que piensas hacer? ¿Ok, <strong>checking account</strong>? Bueno, entonces solo voy a necesitar como una foto. ¿De pronto tienes una chequera? ¿En la que puedas escribir "<strong>void</strong>"? Sí, tómale una foto a eso.</li>
-  <li><input type="checkbox"> ¿No tienes chequera? Listo, no te preocupes. ¿Sabes cómo entrar a tu <strong>online banking</strong>?</li>
-  <li><input type="checkbox"> Listo, chévere. Cuando entras a tu <strong>online banking</strong> y le das clic a la <strong>checking account</strong> de donde quieres que salga la plata, normalmente hay como un link o un botón que dice "<strong>see details</strong>". Eso básicamente te deja ver tu <strong>account number</strong> y tu <strong>routing number</strong>.</li>
-  <li><input type="checkbox"> Si no tienes cómo comprobar tu <strong>account number</strong> y <strong>routing number</strong> con una chequera, no te preocupes, puedes simplemente tomarle un pantallazo a tu banco. No tiene que tener tu nombre ni tu saldo ni nada.</li>
-  <li><input type="checkbox"> Solo necesitamos algo que tenga tu <strong>account number</strong> y tu <strong>routing number</strong>, para poder comprobar que viene de ti, de una cuenta que es tuya. Listo.</li>
-  <li><input type="checkbox"> Entonces todo lo que haces es tomar un pantallazo y mandármelo también. Porque voy a necesitar eso para ponerlo en nuestro <strong>service agreement</strong>.</li>
-</ul>
-<span class="notes-label">Notas:</span>
-<textarea class="notes"></textarea>
+<div class="part">
+<h1>💳 PRICE → PAYMENT</h1>
 
-<h2><span class="num">12</span> CIERRE — MIENTRAS PREPARO EL ACUERDO</h2>
+<h2>1. PRICE → PAYMENT TRANSITION</h2>
 <ul class="check">
-  <li><input type="checkbox"> Bueno, me vas a escuchar aquí, voy a trabajar en preparar el <strong>service agreement</strong>. De pronto me quedo un poco callado aquí en el fondo, de pronto no me escuchas, pero es que estoy trabajando en eso.</li>
-  <li><input type="checkbox"> Si tienes alguna pregunta, yo te escucho. Si estoy callado es solo porque estoy tratando de concentrarme en preparar el <strong>service agreement</strong>. No quiero cometer un error y tener que hacerlo de nuevo.</li>
-  <li><input type="checkbox"> Ok, voy a trabajar en eso mientras tú vas adelantando lo de tu <strong>driver's license</strong>, dale, haz eso. Mándame esas fotos.</li>
+  <li><input type="checkbox"> Now, if you don't have any other questions about our process, the next thing I can explain to you are the different ways most people pay for our services.</li>
+  <li><input type="checkbox"> The fastest, easiest, and smartest way to do so financially is: if you can pay it out of any <strong>checking</strong> or <strong>savings</strong> account. If you have the money, then well, pay it.</li>
+  <li><input type="checkbox"> And again, I don't like to assume anything. So I'll just ask you straight up,</li>
+  <li><input type="checkbox"> Do you have it in your <strong>checking account</strong>, <strong>savings account</strong>, or any type of retirement account, <strong>401(k)</strong>, <strong>IRA</strong>, anything like that, <strong>stocks</strong>, <strong>bonds</strong>, whatever, where you could get it into your <strong>checking account</strong> within a certain amount of days?</li>
+  <li><input type="checkbox"> Again that's what most people say, I mean if you have it, then… well, that's the way to go.</li>
 </ul>
-<span class="notes-label">Notas:</span>
+
+<h2>2. SHORT EXACTLY</h2>
+<ul class="check">
+  <li><input type="checkbox"> About how far off are you from that number, exactly?</li>
+  <li><input type="checkbox"> So what I'm hearing from you is that you have $<input type="text" class="fill"> that you could put towards this. Is that what I'm hearing from you?</li>
+</ul>
+
+<h2>18. PAYMENT OPTION 2 — CREDIT CARDS</h2>
+<ul class="check">
+  <li><input type="checkbox"> Okay, so the second way most people pay for our services is with <strong>credit cards</strong>.</li>
+  <li><input type="checkbox"> Do you have the full balance or the remaining balance that you could put on any cards, maybe one, two, or even three cards?</li>
+  <li><input type="checkbox"> Do you have any available balances on any <strong>credit cards</strong> that can hold a portion of this?</li>
+</ul>
+
+<h2>19. PAYMENT OPTION 3 — EXTERNAL FINANCING / MONTHLY PAYMENTS</h2>
+<ul class="check">
+  <li><input type="checkbox"> The third option is financing it and breaking it into monthly payments.</li>
+  <li><input type="checkbox"> That's going to be dependent on whether or not you qualify for that. It'll only take me a few minutes to find out.</li>
+  <li><input type="checkbox"> Do you have any idea what your <strong>credit score</strong> is?</li>
+  <li><input type="checkbox"> You said that you can put down $<input type="text" class="fill">. So then we'd be looking at breaking the remaining into monthly payments.</li>
+  <li><input type="checkbox"> Let's go ahead and see what we can get you qualified for.</li>
+</ul>
+
+<h2>20. FINANCING APPLICATION INFORMATION</h2>
+<ul class="check">
+  <li><input type="checkbox"> Now, a couple things I'm going to need is can you guys send me pictures of your <strong>driver's licenses</strong>?</li>
+  <li><input type="checkbox"> I'm gonna have to ask you some questions. It's basically standard questions that you'd ask for any type of <strong>financing</strong> option: <strong>social security</strong>, date of birth, where you work, how long you've been working there, what kind of money you make per month, total.</li>
+</ul>
+<span class="notes-label">Notes:</span>
 <textarea class="notes"></textarea>
+</div>
+
+<div class="part">
+<h1>🎯 LINX LEGAL — CLOSING LINES</h1>
+
+<h2>1. PAYMENT → CONTRACT TRANSITION</h2>
+<ul class="check">
+  <li><input type="checkbox"> I mean if you have it, then… well, that's the way to go.</li>
+  <li><input type="checkbox"> So what I'll need in order to move forward is: what I'm going to do next. I'm going to work on preparing our <strong>service agreement</strong>, right?</li>
+</ul>
+
+<h2>2. EXPLAIN THE AGREEMENT</h2>
+<ul class="check">
+  <li><input type="checkbox"> And our <strong>service agreement</strong> is going to basically outline, ok?, all the terms of what we're doing; including our <strong>money back policy</strong>, and I'm going to walk you through it, ok?, kind of do the do's and don'ts during the process.</li>
+  <li><input type="checkbox"> So I'm going to go ahead and work on putting that together. And then I'm going to email that over. And then we're going to go over it together here.</li>
+</ul>
+
+<h2>3. PREPARATION TIME</h2>
+<ul class="check">
+  <li><input type="checkbox"> It's going to take me about 10 minutes to prepare. In the meantime, ok?; what I'm going to need from you is I'm going to need:</li>
+</ul>
+
+<h2>4. DRIVER'S LICENSE</h2>
+<ul class="check">
+  <li><input type="checkbox"> Do you know how to send pictures from your phone?</li>
+  <li><input type="checkbox"> Okay, cool. What I need from you is: if you could just take your <strong>driver's license</strong>, put it on the table. Take a picture and send that to me. I'm going to need your <strong>driver's license</strong>.</li>
+</ul>
+
+<h2>5. CHECKING ACCOUNT</h2>
+<ul class="check">
+  <li><input type="checkbox"> And then I'm also going to need… you said it's a <strong>checking account</strong> or whatever. Is that what you're planning on doing? Okay, <strong>checking account</strong>? Well, then I'll just need some kind of picture. Do you happen to have a checkbook that you could write 'void' on? Yeah, take a picture of that.</li>
+</ul>
+
+<h2>6. NO CHECKBOOK — ONLINE BANKING</h2>
+<ul class="check">
+  <li><input type="checkbox"> No checkbook? Okay, no worries. Do you know how to log onto your <strong>online banking</strong>?</li>
+  <li><input type="checkbox"> Okay, cool. When you log into your <strong>online banking</strong> and you click on the <strong>checking account</strong> you want the money drafted out of, there's usually some kind of link or button that says 'see details.' That just allows you to see your <strong>account number</strong> and <strong>routing number</strong>.</li>
+  <li><input type="checkbox"> If you don't have proof of your <strong>account number</strong> and <strong>routing number</strong> from a checkbook, no worries — you can just take a screenshot from your bank. It doesn't have to have your name or balance on there.</li>
+  <li><input type="checkbox"> We just need something that has your <strong>account number</strong> and <strong>routing number</strong> so we can prove it's coming from you, from an account you own.</li>
+  <li><input type="checkbox"> So all you do is just take a screenshot and send that to me as well. 'Cause I'm gonna need that to put on our <strong>service agreement</strong>.</li>
+</ul>
+
+<h2>7. WHILE I PREPARE THE AGREEMENT</h2>
+<ul class="check">
+  <li><input type="checkbox"> Now, you'll hear me here — I'm going to work on preparing the <strong>service agreement</strong>. I may be a little quiet here in the background, you might not hear me, but I'm just working on it.</li>
+  <li><input type="checkbox"> If you have any questions, I can hear you. If I'm quiet, it's just because I'm trying to focus on preparing the <strong>service agreement</strong>. I don't want to make a mistake and have to redo it.</li>
+</ul>
+
+<h2>8. FINAL CLIENT INSTRUCTIONS</h2>
+<ul class="check">
+  <li><input type="checkbox"> OK, I'm going to work on that while you go ahead and get your <strong>driver's license</strong>. Go ahead and do that. Send me those pictures.</li>
+</ul>
+<span class="notes-label">Notes:</span>
+<textarea class="notes"></textarea>
+</div>
 
 </body>
 </html>
