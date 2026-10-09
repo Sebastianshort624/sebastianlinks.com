@@ -22,10 +22,24 @@
   .plink { margin: 0 0 10px; font-size: 0.95em; }
   .client-line { margin: 4px 0 12px; }
   .client-line input { border: none; border-bottom: 1px solid #333; font-size: 1em; width: 280px; font-family: inherit; }
-  @media print { body { padding: 0; } .stage { break-inside: avoid; } }
+  .topbar { position: sticky; top: 0; z-index: 50; background: #1a1a1a; color: #fff; padding: 10px 14px; margin: -20px -20px 16px; display: flex; gap: 10px; align-items: center; font-size: 1.05em; }
+  .topbar.over { background: #a31212; }
+  .topbar button { background: #0b3d91; color: #fff; border: none; border-radius: 5px; padding: 6px 14px; font-size: 0.9em; cursor: pointer; font-family: inherit; }
+  .topbar .tgt { color: #aaa; font-size: 0.85em; }
+  .stimer { float: right; font-weight: normal; }
+  .stimer button { background: #0b3d91; color: #fff; border: none; border-radius: 5px; padding: 4px 10px; font-size: 0.85em; cursor: pointer; font-family: inherit; font-variant-numeric: tabular-nums; }
+  .stimer button.rs { background: #666; padding: 4px 8px; }
+  @media print { body { padding: 0; } .stage { break-inside: avoid; } .topbar, .stimer { display: none; } }
 </style>
 </head>
 <body>
+
+<div class="topbar" id="topbar">
+  <span>⏱ <span id="ot">0:00:00</span></span>
+  <span class="tgt">/ 90:00</span>
+  <button id="obtn" onclick="toggleOverall()">▶ Start</button>
+  <button onclick="resetOverall()" title="Reset overall timer">↺</button>
+</div>
 
 <h1>🎯 90-Minute Appointment</h1>
 <div class="total">6 stages · 15 min each</div>
@@ -33,7 +47,7 @@
 
 <div class="stage">
   <h2>STAGE 1 — INTRODUCTION &amp; CREDIBILITY <span class="t">15 MIN</span></h2>
-  <div class="clock">0:00–0:15 · chit-chat <span class="tmin">(5 min)</span> → credibility research together <span class="tmin">(10 min)</span></div>
+  <div class="clock">0:00–0:15 · chit-chat <span class="tmin">(5 min)</span> → credibility research together <span class="tmin">(10 min)</span> <span class="stimer"><button id="sb1" onclick="toggleStage(1)">▶ 00:00</button> <button class="rs" onclick="resetStage(1)" title="Reset">↺</button></span></div>
   <ol class="liners">
     <li>"My role is to make sure the case we build is strong enough to bring to our approval team. The reason being we have a 99% success rate because we only take on cases we know we will win — because we give a 100% money-back guarantee, and it costs us money as we progress your case."</li>
     <li>"I see you and [CA name] researched our company, so are you sure you have no questions re Linx Legal the company and our ability to do what we say we will do?"</li>
@@ -46,7 +60,7 @@
 
 <div class="stage">
   <h2>STAGE 2 — HOW WE WIN <span class="t">15 MIN</span></h2>
-  <div class="clock">0:15–0:30 · let them talk <span class="tmin">(5 min)</span> → violations &amp; how we win <span class="tmin">(10 min)</span></div>
+  <div class="clock">0:15–0:30 · let them talk <span class="tmin">(5 min)</span> → violations &amp; how we win <span class="tmin">(10 min)</span> <span class="stimer"><button id="sb2" onclick="toggleStage(2)">▶ 00:00</button> <button class="rs" onclick="resetStage(2)" title="Reset">↺</button></span></div>
   <div class="plink">🔗 <a href="https://sebastianlinks.com/calc">sebastianlinks.com/calc</a> <span class="tmin">— cost of ownership calculator</span></div>
   <ol class="liners">
     <li>"Now that you've seen who we are and what our reviews say — I want to hear your story. Tell me about your experience with your timeshare." <span class="tmin">— let them talk</span></li>
@@ -68,7 +82,7 @@
 
 <div class="stage">
   <h2>STAGE 3 — THE APPROVAL PROCESS <span class="t">15 MIN</span></h2>
-  <div class="clock">0:30–0:45 · selectivity &amp; approval <span class="tmin">(5 min)</span> → scarcity &amp; waiting list <span class="tmin">(5 min)</span> → the YES <span class="tmin">(5 min)</span></div>
+  <div class="clock">0:30–0:45 · selectivity &amp; approval <span class="tmin">(5 min)</span> → scarcity &amp; waiting list <span class="tmin">(5 min)</span> → the YES <span class="tmin">(5 min)</span> <span class="stimer"><button id="sb3" onclick="toggleStage(3)">▶ 00:00</button> <button class="rs" onclick="resetStage(3)" title="Reset">↺</button></span></div>
   <ol class="liners">
     <li>"We win 99% of our cases by being very selective — we only take on cases we know we will win."</li>
     <li>"Approval is a combination of two things: the strength of your case, and whether a case manager is willing to take it on."</li>
@@ -81,7 +95,7 @@
 
 <div class="stage">
   <h2>STAGE 4 — FIND THE MONEY <span class="t">15 MIN</span></h2>
-  <div class="clock">0:45–1:00 · checking/savings <span class="tmin">(5 min)</span> → how far off exactly <span class="tmin">(5 min)</span> → credit cards <span class="tmin">(5 min)</span></div>
+  <div class="clock">0:45–1:00 · checking/savings <span class="tmin">(5 min)</span> → how far off exactly <span class="tmin">(5 min)</span> → credit cards <span class="tmin">(5 min)</span> <span class="stimer"><button id="sb4" onclick="toggleStage(4)">▶ 00:00</button> <button class="rs" onclick="resetStage(4)" title="Reset">↺</button></span></div>
   <ol class="liners">
     <li>"The fastest, easiest, and smartest way to do so financially is: if you can pay it out of any checking or savings account. If you have the money, then well, pay it."</li>
     <li>"Do you have it in your checking account, savings account, or any type of retirement account, 401(k), IRA, anything like that, stocks, bonds, whatever, where you could get it into your checking account within a certain amount of days?"</li>
@@ -94,7 +108,8 @@
 
 <div class="stage">
   <h2>STAGE 5 — APPLY FOR CREDIT <span class="t">15 MIN</span></h2>
-  <div class="clock">1:00–1:15 · monthly payments <span class="tmin">(5 min)</span> → credit score &amp; down payment <span class="tmin">(5 min)</span> → application info <span class="tmin">(5 min)</span></div>
+  <div class="clock">1:00–1:15 · monthly payments <span class="tmin">(5 min)</span> → credit score &amp; down payment <span class="tmin">(5 min)</span> → application info <span class="tmin">(5 min)</span> <span class="stimer"><button id="sb5" onclick="toggleStage(5)">▶ 00:00</button> <button class="rs" onclick="resetStage(5)" title="Reset">↺</button></span></div>
+  <div class="plink">🔗 Financing: <a href="https://distributor.ucfs.net/">UCFS merchant portal</a> · <a href="https://agent.uportal360.com/dashboard">UGA (uPortal360)</a> · Equity Bank</div>
   <ol class="liners">
     <li>"The third option is financing it and breaking it into monthly payments."</li>
     <li>"Do you have any idea what your credit score is?"</li>
@@ -107,7 +122,8 @@
 
 <div class="stage">
   <h2>STAGE 6 — SIGN DOCUMENTS <span class="t">15 MIN</span></h2>
-  <div class="clock">1:15–1:30 · post-hold good news <span class="tmin">(5 min)</span> → prepare the agreement <span class="tmin">(10 min)</span></div>
+  <div class="clock">1:15–1:30 · post-hold good news <span class="tmin">(5 min)</span> → prepare the agreement <span class="tmin">(10 min)</span> <span class="stimer"><button id="sb6" onclick="toggleStage(6)">▶ 00:00</button> <button class="rs" onclick="resetStage(6)" title="Reset">↺</button></span></div>
+  <div class="plink">🔗 <a href="https://account.docusign.com">DocuSign</a> · <a href="https://youtu.be/UQqgr5Q0r1I">How to send a DocuSign (video)</a></div>
   <ol class="liners">
     <li>"Good news — there are two potential case managers that can take this case tomorrow. One of them, she's very experienced at ___. The other one, he's amazing at ___."</li>
     <li>"Congratulations one of our case managers has decided to take your case. The total price is $________ — that includes the entire abolition of your entire contractual obligation — we will never ask you for another penny."</li>
@@ -116,6 +132,36 @@
     <li>"Do you know how to send pictures from your phone?"</li>
   </ol>
 </div>
+
+<script>
+var stages = {};
+for (var i = 1; i <= 6; i++) stages[i] = { e: 0, run: false, t0: 0 };
+var ov = { e: 0, run: false, t0: 0 };
+function p2(n){ return (n < 10 ? '0' : '') + n; }
+function fmt(s){ s = Math.floor(s); return p2(Math.floor(s / 60)) + ':' + p2(s % 60); }
+function fmtH(s){ s = Math.floor(s); return Math.floor(s / 3600) + ':' + p2(Math.floor(s % 3600 / 60)) + ':' + p2(s % 60); }
+function nowS(st){ return st.e + (st.run ? (Date.now() - st.t0) / 1000 : 0); }
+function toggleStage(n){
+  var st = stages[n];
+  if (st.run) { st.e = nowS(st); st.run = false; }
+  else {
+    for (var i = 1; i <= 6; i++) if (i !== n && stages[i].run) { stages[i].e = nowS(stages[i]); stages[i].run = false; }
+    st.t0 = Date.now(); st.run = true;
+  }
+  render();
+}
+function resetStage(n){ stages[n].e = 0; stages[n].run = false; render(); }
+function toggleOverall(){ if (ov.run) { ov.e = nowS(ov); ov.run = false; } else { ov.t0 = Date.now(); ov.run = true; } render(); }
+function resetOverall(){ ov.e = 0; ov.run = false; render(); }
+function render(){
+  for (var i = 1; i <= 6; i++) document.getElementById('sb' + i).textContent = (stages[i].run ? '\u23F8 ' : '\u25B6 ') + fmt(nowS(stages[i]));
+  document.getElementById('ot').textContent = fmtH(nowS(ov));
+  document.getElementById('obtn').textContent = ov.run ? '\u23F8 Pause' : '\u25B6 Start';
+  document.getElementById('topbar').classList.toggle('over', nowS(ov) > 90 * 60);
+}
+setInterval(render, 500);
+render();
+</script>
 
 </body>
 </html>
