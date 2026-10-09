@@ -124,6 +124,7 @@
     <input type="file" id="deedfile" accept=".csv,.xlsx,text/csv" style="display:none" onchange="importDeed(this)">
   </div>
   <label class="f">Search developer or state <input id="deedq" placeholder="e.g. Westgate or FL" oninput="renderDeedResults()"></label>
+  <label class="f">MF/yr for cycles <input id="deedmf" inputmode="decimal" placeholder="auto from selected client" oninput="renderDeedResults()"></label>
   <div id="deedresults" style="margin-top:8px"></div>
 </div>
 
@@ -295,6 +296,7 @@ function onSelect(){
     d.style.display = 'none';
   }
   calc();
+  renderDeedResults();
 }
 
 function calc(){
@@ -397,13 +399,15 @@ function processDeedRows(rows, tabName){
       var start;
       if (hi.dev < 0 && hi.price < 0){ hi = {dev:0, state:1, price:2, info:3}; start = 0; }
       else { start = 1; if (hi.dev < 0) hi.dev = 0; if (hi.state < 0) hi.state = 1; if (hi.price < 0) hi.price = 2; }
+      if (h.length >= 5) hi.price = 4; // column E is the client price
       var out = [];
       for (var i = start; i < rows.length; i++){
         var r = rows[i];
         var p = parseFloat(String(r[hi.price] || '').replace(/[$,]/g, ''));
         if (!String(r[hi.dev] || '').trim() && !String(r[hi.state] || '').trim()) continue;
         out.push({dev: String(r[hi.dev] || '').trim(), state: String(r[hi.state] || '').trim(), price: isNaN(p) ? 0 : p,
-          info: hi.info >= 0 ? String(r[hi.info] || '').trim() : ''});
+          info: hi.info >= 0 ? String(r[hi.info] || '').trim() : '',
+          contract: r.length > 6 ? String(r[6] || '').trim() : ''});
       }
       saveDeed({updated: new Date().toISOString().slice(0, 10), rows: out, tab: tabName || ''});
       renderDeedResults();
@@ -420,6 +424,13 @@ function exportDeed(){
   document.body.appendChild(a); a.click();
   setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
 }
+function deedMF(){
+  var v = parseFloat(($('deedmf').value || '').replace(/[$,]/g, ''));
+  if (v > 0) return v;
+  var id = $('csel').value, cs = getClients();
+  for (var i = 0; i < cs.length; i++) if (cs[i].id === id) return num(cs[i].mf) || 0;
+  return 0;
+}
 function renderDeedResults(){
   var d = getDeed(), q = ($('deedq').value || '').toLowerCase().trim();
   var box = $('deedresults');
@@ -430,20 +441,28 @@ function renderDeedResults(){
   });
   hits = hits.slice(0, 50);
   if (!hits.length){ box.innerHTML = '<span class="tmin">No matches.</span>'; return; }
+  var mf = deedMF();
   box.innerHTML = hits.map(function(h){
-    return '<div class="rrow"><span>' + esc(h.r.dev) + (h.r.state ? ' · ' + esc(h.r.state) : '') + ' — <b>' + fmt(h.r.price) + '</b>' +
-      (h.r.info ? ' <span class="tmin">' + esc(h.r.info) + '</span>' : '') + '</span>' +
-      ' <button class="ghost" onclick="applyDeedPrice(' + h.ix + ')">Use</button></div>';
+    var base = h.r.price, c1 = base + mf, c2 = base + 2 * mf;
+    return '<div class="rrow"><span>' + esc(h.r.dev) + (h.r.state ? ' · ' + esc(h.r.state) : '') +
+      (h.r.contract ? ' · <b>' + esc(h.r.contract) + '</b>' : '') +
+      (h.r.info ? ' <span class="tmin">' + esc(h.r.info) + '</span>' : '') + '<br>' +
+      'Col E <b>' + fmt(base) + '</b>' +
+      (mf > 0 ? ' · +1yr <b>' + fmt(c1) + '</b> · +2yr <b>' + fmt(c2) + '</b>' : ' <span class="tmin">(enter MF for cycle totals)</span>') +
+      '</span><span style="white-space:nowrap"><button class="ghost" onclick="applyDeedPrice(' + h.ix + ',0)">Use base</button>' +
+      (mf > 0 ? ' <button class="ghost" onclick="applyDeedPrice(' + h.ix + ',1)">+1yr</button> <button class="ghost" onclick="applyDeedPrice(' + h.ix + ',2)">+2yr</button>' : '') +
+      '</span></div>';
   }).join('');
 }
-function applyDeedPrice(ix){
+function applyDeedPrice(ix, cyc){
   var d = getDeed(), r = d.rows[ix]; if (!r) return;
   var id = $('csel').value;
   if (!id){ alert('Select a client first.'); return; }
+  var price = r.price + (cyc || 0) * deedMF();
   var cs = getClients();
-  for (var i = 0; i < cs.length; i++) if (cs[i].id === id){ cs[i].fee = r.price; cs[i].dtype = 'deedback'; }
+  for (var i = 0; i < cs.length; i++) if (cs[i].id === id){ cs[i].fee = price; cs[i].dtype = 'deedback'; }
   saveClients(cs); onSelect();
-  alert('Deed-back price ' + fmt(r.price) + ' applied to client.');
+  alert('Deed-back price ' + fmt(price) + ' applied to client.');
 }
 
 $('csel').addEventListener('change', onSelect);
