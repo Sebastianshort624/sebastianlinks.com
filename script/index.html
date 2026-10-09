@@ -87,13 +87,18 @@
   <div class="qidn" id="q_idn" style="display:none"></div>
   <div class="tmin" id="q_cli" style="margin-bottom:8px">No client selected</div>
   <div class="qsec">Ownership cost</div>
+  <label class="qf">Mo mortgage <input id="q_mmo" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">MF/yr <input id="q_mf" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">Esc % <input id="q_esc" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">Yr purchased <input id="q_pyr" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">Loan term mo <input id="q_term" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">Payoff <input id="q_payoff" type="number" min="0" oninput="qRecalc()"></label>
   <div class="qout">
-    <div>1-yr total <b id="q_t1">—</b></div>
-    <div>5-yr total <b id="q_t5">—</b></div>
-    <div>10-yr total <b id="q_t10">—</b></div>
+    <div>Next 1-yr <b id="q_t1">—</b></div>
+    <div>Next 3-yr <b id="q_t3">—</b></div>
+    <div>Next 5-yr <b id="q_t5">—</b></div>
+    <div>Next 10-yr <b id="q_t10">—</b></div>
+    <div>Next 20-yr <b id="q_t20">—</b></div>
   </div>
   <div class="qsec">Our fee &amp; financing</div>
   <label class="qf">Our fee <input id="q_fee" type="number" min="0" oninput="qRecalc()"></label>
@@ -327,7 +332,9 @@ function qIdn(c){
   el.style.display = 'block';
 }
 function qSync(c){
+  $('q_mmo').value = c ? (c.mmo || '') : '';
   $('q_mf').value = c ? c.mf : ''; $('q_esc').value = c ? (c.esc || 8) : '';
+  $('q_pyr').value = c ? (c.pyr || '') : ''; $('q_term').value = c ? (c.term || '') : '';
   $('q_payoff').value = c ? c.payoff : '';
   $('q_fee').value = c && c.fee ? c.fee : ''; $('q_down').value = c ? (c.down || '') : '';
   $('q_fapr').value = c ? (c.fapr || '') : ''; $('q_fmo').value = c ? (c.fmo || '') : '';
@@ -336,13 +343,20 @@ function qSync(c){
   qRecalc();
 }
 function qRecalc(){
-  if (!cur){ ['q_t1','q_t5','q_t10','q_bal','q_s10','q_mo','q_opt'].forEach(function(id){ $(id).textContent = '—'; }); return; }
-  var mf = qNum('q_mf'), esc = qNum('q_esc'), payoff = qNum('q_payoff');
+  if (!cur){ ['q_t1','q_t3','q_t5','q_t10','q_t20','q_bal','q_s10','q_mo','q_opt'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); return; }
+  var mmo = qNum('q_mmo'), mf = qNum('q_mf'), esc = qNum('q_esc'), payoff = qNum('q_payoff');
+  var pyr = parseInt(($('q_pyr').value || '').replace(/\D/g, ''), 10) || 0;
+  var term = qNum('q_term') || 120;
   var r = (esc || 8) / 100;
-  var t1 = payoff + mfTot(mf, r, 1), t5 = payoff + mfTot(mf, r, 5), t10 = payoff + mfTot(mf, r, 10);
+  var nowY = new Date().getFullYear();
+  var remMo = Math.max(0, term - (pyr > 0 ? Math.max(0, (nowY - pyr) * 12) : 0));
+  function win(y){ return Math.min(y * 12, remMo) * mmo + mfTot(mf, r, y); }
+  var t1 = win(1), t3 = win(3), t5 = win(5), t10 = win(10), t20 = win(20);
   $('q_t1').textContent = fmtD(t1);
+  $('q_t3').textContent = fmtD(t3);
   $('q_t5').textContent = fmtD(t5);
   $('q_t10').textContent = fmtD(t10);
+  $('q_t20').textContent = fmtD(t20);
   var fee = qNum('q_fee'), down = qNum('q_down'), fapr = qNum('q_fapr'), fmo = qNum('q_fmo');
   var feeKnown = fee > 0;
   var bal = Math.max(0, fee - down);
@@ -354,7 +368,7 @@ function qRecalc(){
   var n = {fee: fee, feeKnown: feeKnown, t5: t5, t10: t10, s10: s10};
   var c2 = {}, k;
   for (k in cur) c2[k] = cur[k];
-  c2.mf = mf; c2.payoff = payoff; c2.down = down;
+  c2.mf = mf; c2.mmo = mmo; c2.payoff = payoff; c2.down = down;
   renderBar(c2, n); applyFills(c2, n);
 }
 function objFilter(){
