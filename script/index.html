@@ -40,7 +40,9 @@
     .sideboxes .sprinkle { margin-bottom: 12px; }
     .calcside { position: fixed; left: 16px; top: 120px; width: 270px; margin: 0; max-height: 85vh; overflow-y: auto; }
   }
-  .calcside { border: 2px solid #0b3d91; border-radius: 8px; padding: 12px 14px; margin: 0 0 18px; background: #fafcff; }
+  .calcside { padding: 2px; margin: 0 0 18px; background: transparent; border: none; }
+  .cbox { background: #fff; border: 1px solid #c9dcf7; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; }
+  .cbox-fee { border: 2px solid #0b3d91; background: #f0f6ff; box-shadow: 0 1px 5px rgba(11,61,145,.14); }
   .calcside h3 { margin: 0 0 8px; font-size: 1em; }
   .calcside h3 button { float: right; background: #666; color: #fff; border: none; border-radius: 5px; padding: 2px 8px; cursor: pointer; font-family: inherit; }
   .qf { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 0.9em; }
@@ -108,7 +110,8 @@
   <h3>🧮 Calculator <button onclick="qSync(cur)" title="Reset to client">↺</button></h3>
   <div class="qidn" id="q_idn" style="display:none"></div>
   <div class="tmin" id="q_cli" style="margin-bottom:8px">No client selected</div>
-  <div class="qsec">Ownership cost</div>
+  <div class="cbox">
+  <div class="qsec" style="margin-top:0">🏨 Resort numbers</div>
   <label class="qf">Mo mortgage <input id="q_mmo" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">MF/yr <input id="q_mf" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">Esc % <input id="q_esc" type="number" min="0" oninput="qRecalc()"></label>
@@ -125,7 +128,22 @@
     <div>Next 10-yr <b id="q_t10">—</b></div>
     <div>Next 20-yr <b id="q_t20">—</b></div>
   </div>
-  <div class="qsec">Our fee &amp; financing</div>
+  <div class="qsec">Loan breakdown</div>
+  <div class="tmin" id="q_mleft" style="margin-bottom:6px">— mo left</div>
+  <label class="qf">Loan amt <input id="q_loan" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">APR % <input id="q_aapr" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">Months <input id="q_mos" type="number" min="1" max="120" oninput="qRecalc()"></label>
+  <div class="qout">
+    <div>Total paid <b id="q_paid">—</b></div>
+    <div>Principal <b id="q_prin">—</b></div>
+    <div>Interest <b id="q_inte">—</b></div>
+    <div>Balance (payoff) <b id="q_bal2">—</b></div>
+    <div>Term interest <b id="q_tint">—</b></div>
+    <div>Interest % of paid <b id="q_ipct">—</b></div>
+  </div>
+  </div>
+  <div class="cbox cbox-fee">
+  <div class="qsec" style="margin-top:0">💰 My fee &amp; financing</div>
   <label class="qf">Our fee <input id="q_fee" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">Pay via <select id="q_paym" onchange="qRecalc()">
     <option value="ach">ACH</option>
@@ -155,20 +173,10 @@
     <div>Commission <b id="q_comm">—</b></div>
     <div>Owed by <b id="q_cdate">—</b></div>
   </div>
-  <div class="qsec">Loan breakdown</div>
-  <div class="tmin" id="q_mleft" style="margin-bottom:6px">— mo left</div>
-  <label class="qf">Loan amt <input id="q_loan" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf">APR % <input id="q_aapr" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf">Months <input id="q_mos" type="number" min="1" max="120" oninput="qRecalc()"></label>
-  <div class="qout">
-    <div>Total paid <b id="q_paid">—</b></div>
-    <div>Principal <b id="q_prin">—</b></div>
-    <div>Interest <b id="q_inte">—</b></div>
-    <div>Balance (payoff) <b id="q_bal2">—</b></div>
-    <div>Term interest <b id="q_tint">—</b></div>
-    <div>Interest % of paid <b id="q_ipct">—</b></div>
+
   </div>
-  <div class="qsec">Deal tasks</div>
+  <div class="cbox">
+  <div class="qsec" style="margin-top:0">Deal tasks</div>
   <div class="qtasks">
     <label><input type="checkbox" id="qt_email" onchange="qTaskSave()"> <a id="qt_emailL" href="#">Send email</a></label>
     <label><input type="checkbox" id="qt_text" onchange="qTaskSave()"> <span id="qt_textT" onclick="qCopyText()" style="text-decoration:underline;cursor:pointer">Send text (tap to copy)</span></label>
@@ -181,6 +189,7 @@
       </select></label>
     <label><input type="checkbox" id="qt_crm" onchange="qTaskSave()"> Update CRM <a id="qt_crmL" href="#" target="_blank" style="display:none">open lead ↗</a></label>
     <label><input type="checkbox" id="qt_id" onchange="qTaskSave()"> Upload ID</label>
+  </div>
   </div>
 </aside>
 
