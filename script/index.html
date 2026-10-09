@@ -29,7 +29,8 @@
   .sprinkle ul { margin: 0 0 0 18px; padding: 0; }
   .sprinkle li { margin-bottom: 8px; font-size: 0.95em; }
   @media (min-width: 1350px){
-    .sprinkle { position: fixed; right: 16px; top: 120px; width: 250px; margin: 0; max-height: 70vh; overflow-y: auto; }
+    .sideboxes { position: fixed; right: 16px; top: 120px; width: 260px; margin: 0; max-height: 72vh; overflow-y: auto; }
+    .sideboxes .sprinkle { margin-bottom: 12px; }
   }
   .topbar { position: sticky; top: 0; z-index: 50; background: #1a1a1a; color: #fff; padding: 10px 14px; margin: -20px -20px 16px; display: flex; gap: 10px; align-items: center; font-size: 1.05em; }
   .topbar.over { background: #a31212; }
@@ -38,7 +39,7 @@
   .stimer { float: right; font-weight: normal; }
   .stimer button { background: #0b3d91; color: #fff; border: none; border-radius: 5px; padding: 4px 10px; font-size: 0.85em; cursor: pointer; font-family: inherit; font-variant-numeric: tabular-nums; }
   .stimer button.rs { background: #666; padding: 4px 8px; }
-  @media print { body { padding: 0; } .stage { break-inside: avoid; } .topbar, .stimer { display: none; } .sprinkle { position: static; width: auto; max-height: none; } }
+  @media print { body { padding: 0; } .stage { break-inside: avoid; } .topbar, .stimer { display: none; } .sideboxes { position: static; width: auto; max-height: none; } }
 </style>
 </head>
 <body>
@@ -64,6 +65,7 @@
 <div class="client-line">Client: <select id="clientSel"><option value="">— select client —</option></select></div>
 <div class="cbar" id="cbar" style="display:none"></div>
 
+<div class="sideboxes">
 <aside class="sprinkle">
   <h3>🎲 Sprinkle-ins — drop anywhere</h3>
   <ul>
@@ -75,6 +77,18 @@
     <li>"I can tell you this — if we can't save you a ridiculous amount of money, we're not going to even try to take your case."</li>
   </ul>
 </aside>
+<aside class="sprinkle">
+  <h3>🛡️ Objection killers</h3>
+  <ul>
+    <li><b>"I need to think about it."</b> → "Of course — think about what, specifically? The numbers won't change, but the case manager's availability might. What part do you want to talk through?"</li>
+    <li><b>"I need to talk to my spouse."</b> → "Absolutely — are they around right now? Let's get them on, because I'd rather answer their questions directly than have you re-explain all of this secondhand."</li>
+    <li><b>"I've been scammed before."</b> → "That's exactly why we do it this way — 100% money-back guarantee, A+ with the BBB, and you saw our reviews yourself. If we don't get you out, you get your money back. What did the last company guarantee you?"</li>
+    <li><b>"Will this hurt my credit?"</b> → "We never pull your credit and we don't report anything to the bureaus. What part worries you?"</li>
+    <li><b>"It's too expensive."</b> → "Compared to what? Doing nothing costs you <span data-fill="total10">$________</span> over the next 10 years. This is <span data-fill="fee">$________</span> once — and then it's over forever."</li>
+    <li><b>"How are you different?"</b> → "Most companies get you out by having you pay the resort. We flip it — the resort lets you out and pays you. And nobody else backs it with a 100% money-back guarantee."</li>
+  </ul>
+</aside>
+</div>
 
 <div class="stage">
   <h2>STAGE 1 — INTRODUCTION &amp; CREDIBILITY <span class="t">15 MIN</span></h2>
@@ -219,6 +233,7 @@ function resetFills(){
   fillAll('[data-fill="down"]', '$________');
   fillAll('[data-fill="fee"]', '$________');
   fillAll('[data-fill="savings"]', '$________');
+  fillAll('[data-fill="total10"]', '$________');
   fillAll('[data-fill="ca"]', '[CA name]');
 }
 function mfTot(mf, r, n){ if (n <= 0) return 0; if (r <= 0) return mf * n; return mf * ((Math.pow(1 + r, n) - 1) / r); }
@@ -237,6 +252,7 @@ function pickClient(id){
   fillAll('[data-fill="down"]', c.down > 0 ? fmtD(c.down) : '$________');
   fillAll('[data-fill="fee"]', fmtD(fee));
   fillAll('[data-fill="savings"]', fmtD(s10));
+  fillAll('[data-fill="total10"]', fmtD(s10 + fee));
   fillAll('[data-fill="ca"]', c.ca || '[CA name]');
 }
 (function initClientSel(){
