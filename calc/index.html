@@ -76,9 +76,15 @@
       <label class="f">Year purchased <input id="f_pyr" type="number" min="0"></label>
       <label class="f">Monthly mortgage ($) <input id="f_mmo" type="number" min="0"></label>
       <label class="f">Linx fee ($) <span class="tmin">blank = 47% of payoff</span><input id="f_fee" type="number" min="0"></label>
-      <label class="f">Down payment ($) <input id="f_down" type="number" min="0"></label>
-      <label class="f">Finance APR (%) <input id="f_fapr" type="number" step="0.1" min="0"></label>
+      <label class="f">Pay via <select id="f_paymethod"><option value="ach">ACH</option><option value="check">CHECK</option><option value="cc">Credit card (+3%)</option><option value="ucfs">UCFS</option><option value="equity">EQUITY</option><option value="uga">UGA</option></select></label>
+      <label class="f">Down payment <span><select id="f_downt" style="width:52px"><option value="dol">$</option><option value="pct">%</option></select> <input id="f_down" type="number" min="0" style="width:calc(100% - 60px);display:inline-block"></span></label>
+      <label class="f">Down date <input id="f_downdate" type="date"></label>
+      <label class="f">Pmt/mo quote <input id="f_pmtmo" type="number" min="0"></label>
+      <label class="f">1st pmt date <input id="f_pmtdate" type="date"></label>
+      <label class="f">Finance APR (%) <input id="f_fapr" type="number" step="0.01" min="0"></label>
       <label class="f">Finance months <input id="f_fmo" type="number" min="0"></label>
+      <label class="f">FU date <input id="f_fu" type="date"></label>
+      <label class="f">CRM lead link <input id="f_crmlink" placeholder="https://…"></label>
     </div>
     <button onclick="saveForm()">Save client</button>
     <button class="ghost" onclick="hideForm()">Cancel</button>
@@ -179,8 +185,11 @@ function showForm(edit){
   $('f_dtype').value = c ? (c.dtype || 'standard') : 'standard'; $('f_mf').value = c ? c.mf : '';
   $('f_esc').value = c ? c.esc : 8; $('f_payoff').value = c ? c.payoff : '';
   $('f_apr').value = c ? c.apr : ''; $('f_term').value = c ? c.term : ''; $('f_pyr').value = c ? (c.pyr || '') : ''; $('f_mmo').value = c ? (c.mmo || '') : '';
-  $('f_fee').value = c && c.fee ? c.fee : ''; $('f_down').value = c ? c.down : '';
-  $('f_fapr').value = c ? c.fapr : ''; $('f_fmo').value = c ? c.fmo : '';
+  $('f_fee').value = c && c.fee ? c.fee : ''; $('f_down').value = c ? c.down : ''; $('f_downt').value = c ? (c.downt || 'dol') : 'dol';
+  $('f_paymethod').value = c ? (c.paymethod || 'ach') : 'ach';
+  $('f_downdate').value = c ? (c.downdate || '') : ''; $('f_pmtmo').value = c ? (c.pmtmo || '') : ''; $('f_pmtdate').value = c ? (c.pmtdate || '') : '';
+  $('f_fapr').value = (c && c.fapr > 0) ? c.fapr : 19.99; $('f_fmo').value = (c && c.fmo > 0) ? c.fmo : 36;
+  $('f_fu').value = c ? (c.fu || '') : ''; $('f_crmlink').value = c ? (c.crmlink || '') : '';
   $('cform').style.display = 'block';
 }
 function hideForm(){ $('cform').style.display = 'none'; editingId = null; }
@@ -198,7 +207,10 @@ function saveForm(){
     ca: $('f_ca').value.trim(), resort: $('f_resort').value.trim(),
     mf: num($('f_mf').value), esc: num($('f_esc').value) || 8, payoff: num($('f_payoff').value),
     apr: num($('f_apr').value), term: num($('f_term').value), pyr: num($('f_pyr').value), mmo: num($('f_mmo').value), fee: num($('f_fee').value),
-    down: num($('f_down').value), fapr: num($('f_fapr').value), fmo: num($('f_fmo').value)
+    down: num($('f_down').value), downt: $('f_downt').value, paymethod: $('f_paymethod').value,
+    downdate: $('f_downdate').value, pmtmo: num($('f_pmtmo').value), pmtdate: $('f_pmtdate').value,
+    fapr: num($('f_fapr').value), fmo: num($('f_fmo').value),
+    fu: $('f_fu').value, crmlink: $('f_crmlink').value.trim()
   };
   var cs = getClients(), found = false;
   for (var i = 0; i < cs.length; i++) if (cs[i].id === rec.id){ cs[i] = rec; found = true; }
@@ -244,7 +256,9 @@ function importClients(input){
           dtype: r.dtype || 'standard',
           mf: num(r.mf), esc: num(r.esc) || 8, payoff: num(r.payoff),
           apr: num(r.apr), term: num(r.term), pyr: num(r.pyr), mmo: num(r.mmo), fee: num(r.fee),
-          down: num(r.down), fapr: num(r.fapr), fmo: num(r.fmo)
+          down: num(r.down), downt: r.downt || 'dol', paymethod: r.paymethod || 'ach',
+          downdate: r.downdate || '', pmtmo: num(r.pmtmo), pmtdate: r.pmtdate || '',
+          fapr: num(r.fapr), fmo: num(r.fmo), fu: r.fu || '', crmlink: r.crmlink || ''
         };
         if (ix >= 0){ cs[ix] = rec; updated++; } else { cs.push(rec); added++; }
       });
