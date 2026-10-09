@@ -256,6 +256,7 @@
     <li>"We take all of this to the resort and lay out the <b>fines they're facing</b> — so they see it's <b>cheaper to let you out</b> than to risk paying those fines."</li>
     <li>"And we go after compensation for the emotional and financial impact this had on you. Our competitors settle cases by getting the client to pay the resort — <b>we do the opposite</b>, and our reviews prove it."</li>
     <li>"We will never take on your case unless we can save you a <b>ridiculous amount of money</b>."</li>
+    <li><i>Emotional impact:</i> "How did you feel when you found out <b>X</b> — or <b>Y</b>, or <b>Z</b> — turned out to be untrue?"</li>
   </ol>
 </div>
 <div class="trans">→ Violations documented. Now the approval process.</div>
@@ -299,6 +300,7 @@
     <li>"Now, a couple things I'm going to need is can you guys send me pictures of your <b>driver's licenses?</b>"</li>
   </ol>
 </div>
+<div class="trans">✍️ <b>Before the hold:</b> have them write down 2 columns — <b>Years</b> | <b>Amount to pay the resort</b> — then ask: "Did they show you this?"</div>
 <div class="trans">→ Place them on hold — case goes to the approval team.</div>
 
 <div class="stage">
@@ -546,11 +548,12 @@ function qSync(c){
 function qRecalc(){
   if (!cur){ ['q_w30','q_w90','q_w6','q_t1','q_t3','q_t5','q_t10','q_t20','q_ftot','q_bal','q_s10','q_mo','q_mosn','q_t12','q_t24','q_t36','q_comm','q_cdate','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— mo left'; return; }
   var mmo = qNum('q_mmo'), mf = qNum('q_mf'), esc = qNum('q_esc'), payoff = qNum('q_payoff');
-  var pyr = parseInt(($('q_pyr').value || '').replace(/\D/g, ''), 10) || 0;
+  var pyrIn = parseInt(($('q_pyr').value || '').replace(/\D/g, ''), 10) || 0;
+  var pyr = pyrIn > 0 ? pyrIn : 2023; // hidden default for math only — field stays blank
   var term = qNum('q_term') || 120;
   var r = (esc || 8) / 100;
   var nowY = new Date().getFullYear();
-  var remMo = Math.max(0, term - (pyr > 0 ? Math.max(0, (nowY - pyr) * 12) : 0));
+  var remMo = Math.max(0, term - Math.max(0, (nowY - pyr) * 12));
   function win(y){ return Math.min(y * 12, remMo) * mmo + mfTot(mf, r, y); }
   function winMo(m){ return Math.min(m, remMo) * mmo + mf * m / 12; }
   var w30 = winMo(1), w90 = winMo(3), w6 = winMo(6);
