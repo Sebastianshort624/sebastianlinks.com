@@ -24,6 +24,13 @@
   .client-line input { border: none; border-bottom: 1px solid #333; font-size: 1em; width: 280px; font-family: inherit; }
   .client-line select { font-size: 1em; padding: 6px; font-family: inherit; max-width: 100%; }
   .cbar { background: #f0f4ff; border: 1px solid #0b3d91; border-radius: 6px; padding: 8px 12px; margin-bottom: 14px; font-size: 0.92em; }
+  .sprinkle { border: 2px dashed #0b3d91; border-radius: 8px; padding: 12px 14px; margin: 0 0 18px; background: #fafcff; }
+  .sprinkle h3 { margin: 0 0 8px; font-size: 1em; }
+  .sprinkle ul { margin: 0 0 0 18px; padding: 0; }
+  .sprinkle li { margin-bottom: 8px; font-size: 0.95em; }
+  @media (min-width: 1350px){
+    .sprinkle { position: fixed; right: 16px; top: 120px; width: 250px; margin: 0; max-height: 70vh; overflow-y: auto; }
+  }
   .topbar { position: sticky; top: 0; z-index: 50; background: #1a1a1a; color: #fff; padding: 10px 14px; margin: -20px -20px 16px; display: flex; gap: 10px; align-items: center; font-size: 1.05em; }
   .topbar.over { background: #a31212; }
   .topbar button { background: #0b3d91; color: #fff; border: none; border-radius: 5px; padding: 6px 14px; font-size: 0.9em; cursor: pointer; font-family: inherit; }
@@ -31,7 +38,7 @@
   .stimer { float: right; font-weight: normal; }
   .stimer button { background: #0b3d91; color: #fff; border: none; border-radius: 5px; padding: 4px 10px; font-size: 0.85em; cursor: pointer; font-family: inherit; font-variant-numeric: tabular-nums; }
   .stimer button.rs { background: #666; padding: 4px 8px; }
-  @media print { body { padding: 0; } .stage { break-inside: avoid; } .topbar, .stimer { display: none; } }
+  @media print { body { padding: 0; } .stage { break-inside: avoid; } .topbar, .stimer { display: none; } .sprinkle { position: static; width: auto; max-height: none; } }
 </style>
 </head>
 <body>
@@ -56,6 +63,18 @@
 <div class="total">6 stages · 15 min each</div>
 <div class="client-line">Client: <select id="clientSel"><option value="">— select client —</option></select></div>
 <div class="cbar" id="cbar" style="display:none"></div>
+
+<aside class="sprinkle">
+  <h3>🎲 Sprinkle-ins — drop anywhere</h3>
+  <ul>
+    <li>"It's not meant to work — it's meant to keep you in a perpetual payment."</li>
+    <li>"Did they try to serve you alcohol, or were you on some sort of medication? 💊"</li>
+    <li>"Financially, what did you guys understand that you were agreeing to?"</li>
+    <li>"Not making your timeshare payments is not a cancellation strategy."</li>
+    <li>"They're good at being bad."</li>
+    <li>"I can tell you this — if we can't save you a ridiculous amount of money, we're not going to even try to take your case."</li>
+  </ul>
+</aside>
 
 <div class="stage">
   <h2>STAGE 1 — INTRODUCTION &amp; CREDIBILITY <span class="t">15 MIN</span></h2>
