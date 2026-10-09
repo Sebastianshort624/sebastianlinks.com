@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex, nofollow">
 <title>90-Minute Appointment — Script</title>
 <style>
-  body { font-family: Arial, Helvetica, sans-serif; max-width: 780px; margin: 0 auto; padding: 20px; color: #1a1a1a; line-height: 1.5; }
+  body { font-family: Arial, Helvetica, sans-serif; font-size: 18px; max-width: 780px; margin: 0 auto; padding: 20px; color: #1a1a1a; line-height: 1.5; }
   h1 { font-size: 1.4em; margin-bottom: 2px; }
   .total { color: #555; margin-bottom: 18px; }
   .stage { border: 2px solid #1a1a1a; border-radius: 8px; padding: 14px 18px; margin: 18px 0; }
@@ -32,7 +32,16 @@
   @media (min-width: 1350px){
     .sideboxes { position: fixed; right: 16px; top: 120px; width: 260px; margin: 0; max-height: 72vh; overflow-y: auto; }
     .sideboxes .sprinkle { margin-bottom: 12px; }
+    .calcside { position: fixed; left: 16px; top: 120px; width: 270px; margin: 0; max-height: 85vh; overflow-y: auto; }
   }
+  .calcside { border: 2px solid #0b3d91; border-radius: 8px; padding: 12px 14px; margin: 0 0 18px; background: #fafcff; }
+  .calcside h3 { margin: 0 0 8px; font-size: 1em; }
+  .calcside h3 button { float: right; background: #666; color: #fff; border: none; border-radius: 5px; padding: 2px 8px; cursor: pointer; font-family: inherit; }
+  .qf { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 0.9em; }
+  .qf input { width: 110px; padding: 4px 6px; font-size: 1em; font-family: inherit; }
+  .qout { margin-top: 10px; font-size: 0.9em; border-top: 1px solid #0b3d91; padding-top: 8px; }
+  .qout div { margin-bottom: 4px; }
+  .qout b { float: right; }
   .topbar { position: sticky; top: 0; z-index: 50; background: #1a1a1a; color: #fff; padding: 10px 14px; margin: -20px -20px 16px; display: flex; gap: 10px; align-items: center; font-size: 1.05em; }
   .topbar.over { background: #a31212; }
   .topbar button { background: #0b3d91; color: #fff; border: none; border-radius: 5px; padding: 6px 14px; font-size: 0.9em; cursor: pointer; font-family: inherit; }
@@ -64,6 +73,21 @@
 <h1 style="font-size:1.15em;margin-bottom:0">🎯 90-Minute Appointment <span class="tmin">· 6 stages × 15 min</span></h1>
 <div class="client-line" style="margin:6px 0 10px">Client: <select id="clientSel"><option value="">— select client —</option></select></div>
 <div class="cbar" id="cbar" style="display:none"></div>
+
+<aside class="calcside">
+  <h3>🧮 Calculator <button onclick="qSync(cur)" title="Reset to client">↺</button></h3>
+  <div class="tmin" id="q_cli" style="margin-bottom:8px">No client selected</div>
+  <label class="qf">MF/yr <input id="q_mf" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">Esc % <input id="q_esc" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">Payoff <input id="q_payoff" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">Down paymt <input id="q_down" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">Fee <input id="q_fee" type="number" min="0" oninput="qRecalc()"></label>
+  <div class="qout">
+    <div>10-yr total <b id="q_t10">—</b></div>
+    <div>10-yr save <b id="q_s10">—</b></div>
+    <div>Fee <b id="q_feeout">—</b></div>
+  </div>
+</aside>
 
 <div class="sideboxes">
 <aside class="sprinkle">
@@ -243,29 +267,59 @@ function resetFills(){
   fillAll('[data-fill="ca"]', '[CA name]');
 }
 function mfTot(mf, r, n){ if (n <= 0) return 0; if (r <= 0) return mf * n; return mf * ((Math.pow(1 + r, n) - 1) / r); }
-function pickClient(id){
-  var cs = slClients(), c = null, bar = document.getElementById('cbar');
-  for (var i = 0; i < cs.length; i++) if (cs[i].id === id) c = cs[i];
-  if (!c){ bar.style.display = 'none'; resetFills(); return; }
-  var fee = c.fee > 0 ? c.fee : (c.dtype === 'deedback' ? 0 : c.payoff * 0.47);
+function $(id){ return document.getElementById(id); }
+var cur = null;
+function clientNumbers(mf, esc, payoff, feeIn, dtype){
+  var fee = feeIn > 0 ? feeIn : (dtype === 'deedback' ? 0 : payoff * 0.47);
   var feeKnown = fee > 0;
-  var r = (c.esc || 8) / 100;
-  var mmo = c.mmo || 0, mfmo = c.mf / 12;
-  var yrTot = mmo * 12 + c.mf;
-  var t5 = c.payoff + mfTot(c.mf, r, 5);
-  var t10 = c.payoff + mfTot(c.mf, r, 10);
-  var s10 = feeKnown ? t10 - fee : 0;
+  var r = (esc || 8) / 100;
+  var t5 = payoff + mfTot(mf, r, 5), t10 = payoff + mfTot(mf, r, 10);
+  return {fee: fee, feeKnown: feeKnown, t5: t5, t10: t10, s10: feeKnown ? t10 - fee : 0};
+}
+function renderBar(c, n){
+  var bar = $('cbar');
+  var mmo = c.mmo || 0, mfmo = c.mf / 12, yrTot = mmo * 12 + c.mf;
   bar.innerHTML = '<strong>' + escH(c.name) + '</strong>' + (c.resort ? ' · ' + escH(c.resort) : '') +
     (c.phone ? ' · 📞 ' + escH(c.phone) : '') + (c.email ? ' · ✉️ ' + escH(c.email) : '') + (c.tz ? ' · ' + escH(c.tz) : '') + '<br>' +
     (mmo > 0 ? 'Mtg ' + fmtD(mmo) + '/mo · ' : '') + 'MF ' + fmtD(c.mf) + '/yr (' + fmtD(mfmo) + '/mo)' +
-    (mmo > 0 ? ' · Yr total ' + fmtD(yrTot) : '') + ' · 5-yr ' + fmtD(t5) + ' · 10-yr ' + fmtD(t10) +
-    (feeKnown ? ' · Fee ' + fmtD(fee) + ' · 10-yr save ' + fmtD(s10) : '');
+    (mmo > 0 ? ' · Yr total ' + fmtD(yrTot) : '') + ' · 5-yr ' + fmtD(n.t5) + ' · 10-yr ' + fmtD(n.t10) +
+    (n.feeKnown ? ' · Fee ' + fmtD(n.fee) + ' · 10-yr save ' + fmtD(n.s10) : '');
   bar.style.display = 'block';
+}
+function applyFills(c, n){
   fillAll('[data-fill="down"]', c.down > 0 ? fmtD(c.down) : '$________');
-  fillAll('[data-fill="fee"]', feeKnown ? fmtD(fee) : '$________');
-  fillAll('[data-fill="savings"]', feeKnown ? fmtD(s10) : '$________');
-  fillAll('[data-fill="total10"]', feeKnown ? fmtD(s10 + fee) : '$________');
+  fillAll('[data-fill="fee"]', n.feeKnown ? fmtD(n.fee) : '$________');
+  fillAll('[data-fill="savings"]', n.feeKnown ? fmtD(n.s10) : '$________');
+  fillAll('[data-fill="total10"]', n.feeKnown ? fmtD(n.s10 + n.fee) : '$________');
   fillAll('[data-fill="ca"]', c.ca || '[CA name]');
+}
+function pickClient(id){
+  var cs = slClients(), c = null;
+  for (var i = 0; i < cs.length; i++) if (cs[i].id === id) c = cs[i];
+  cur = c;
+  if (!c){ $('cbar').style.display = 'none'; resetFills(); qSync(null); return; }
+  var n = clientNumbers(c.mf, c.esc, c.payoff, c.fee, c.dtype);
+  renderBar(c, n); applyFills(c, n); qSync(c);
+}
+function qNum(id){ var v = parseFloat($(id).value); return isNaN(v) ? 0 : v; }
+function qSync(c){
+  $('q_mf').value = c ? c.mf : ''; $('q_esc').value = c ? (c.esc || 8) : '';
+  $('q_payoff').value = c ? c.payoff : ''; $('q_fee').value = c && c.fee ? c.fee : '';
+  $('q_down').value = c ? (c.down || '') : '';
+  $('q_cli').textContent = c ? c.name : 'No client selected';
+  qRecalc();
+}
+function qRecalc(){
+  if (!cur){ $('q_t10').textContent = '—'; $('q_s10').textContent = '—'; $('q_feeout').textContent = '—'; return; }
+  var mf = qNum('q_mf'), esc = qNum('q_esc'), payoff = qNum('q_payoff'), feeIn = qNum('q_fee');
+  var n = clientNumbers(mf, esc, payoff, feeIn, cur.dtype);
+  $('q_t10').textContent = fmtD(n.t10);
+  $('q_s10').textContent = n.feeKnown ? fmtD(n.s10) : '—';
+  $('q_feeout').textContent = n.feeKnown ? fmtD(n.fee) : '—';
+  var c2 = {}, k;
+  for (k in cur) c2[k] = cur[k];
+  c2.mf = mf; c2.payoff = payoff; c2.down = qNum('q_down');
+  renderBar(c2, n); applyFills(c2, n);
 }
 (function initClientSel(){
   var sel = document.getElementById('clientSel'), cs = slClients();
