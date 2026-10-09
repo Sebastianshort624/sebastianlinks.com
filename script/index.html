@@ -270,6 +270,7 @@
     <li>"And we go after compensation for the emotional and financial impact this had on you. Our competitors settle cases by getting the client to pay the resort — <b>we do the opposite</b>, and our reviews prove it."</li>
     <li>"We will never take on your case unless we can save you a <b>ridiculous amount of money</b>."</li>
     <li><i>Emotional impact:</i> "How did you feel when you found out <b>X</b> — or <b>Y</b>, or <b>Z</b> — turned out to be untrue?"</li>
+    <li>"The most important part is the <b>letter of explanation</b> — then we can file a formal complaint with <b>________</b>. We will be filing in the state of <b>________</b> <span class="tmin">(residence)</span> and the state where you purchased it, and at that point we are issued what\u2019s called a <b>complaint number</b>. Ok? We spend a lot on <b>filing fees</b> in order to do that, so we ask that you get that letter back to us within <b>3 business days</b>. Can you <b>commit</b> to doing that?"</li>
   </ol>
 </div>
 <div class="trans">→ Violations documented. Now the approval process.</div>
@@ -323,6 +324,7 @@
   <ol class="liners">
     <li>"The approval team agrees with our assessment and has <b>agreed to take on your case</b>. We do have a case manager that feels they can get <b>compensation</b> for the emotional and financial impact."</li>
     <li>"Good news — there are two potential case managers that can take this case tomorrow. One of them, she's <b>very experienced</b> at ___. The other one, he's <b>amazing</b> at ___."</li>
+    <li>"Your TOTAL CONTRACTUAL OBLIGATION to <b><span data-fill="resort">_________</span></b> is <b>your total monthly times 120</b> — and the amount we are going to save you is <b><span data-fill="savings">$________</span></b> — so the total cost to get you out of this is <b><span data-fill="fee">$________</span></b>."</li>
     <li>"The total fee to cancel 100% of all past, present, and future debt is <b><span data-fill="fee">$________</span></b> — saving you <b><span data-fill="savings">$________</span></b> over the next 10 years. <b>We will never ask you for another penny.</b>"</li>
     <li>"So what I'll need in order to move forward is: what I'm going to do next. I'm going to work on preparing our <b>service agreement</b>, right? It's going to take me about <b>10 minutes</b> to prepare."</li>
     <li>"Do you know how to <b>send pictures from your phone?</b>"</li>
@@ -391,6 +393,7 @@ function resetFills(){
   fillAll('[data-fill="savings"]', '$________');
   fillAll('[data-fill="total10"]', '$________');
   fillAll('[data-fill="ca"]', '[CA name]');
+  fillAll('[data-fill="resort"]', '_________');
 }
 function mfTot(mf, r, n){ if (n <= 0) return 0; if (r <= 0) return mf * n; return mf * ((Math.pow(1 + r, n) - 1) / r); }
 function $(id){ return document.getElementById(id); }
@@ -419,6 +422,7 @@ function applyFills(c, n){
   fillAll('[data-fill="savings"]', n.feeKnown ? fmtD(n.s10) : '$________');
   fillAll('[data-fill="total10"]', n.feeKnown ? fmtD(n.t10) : '$________');
   fillAll('[data-fill="ca"]', c.ca || '[CA name]');
+  fillAll('[data-fill="resort"]', c.resort || '_________');
 }
 function qNum(id){ var v = parseFloat($(id).value); return isNaN(v) ? 0 : v; }
 function qIdn(c){
