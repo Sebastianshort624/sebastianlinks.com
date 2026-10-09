@@ -61,8 +61,10 @@
       <label class="f">Full name <input id="f_name"></label>
       <label class="f">Appointment <span class="tmin">e.g. Fri 2:00 PM</span><input id="f_appt"></label>
       <label class="f">Phone <input id="f_phone"></label>
+      <label class="f">Alt phones <input id="f_phone2"></label>
       <label class="f">Email <input id="f_email"></label>
       <label class="f">Timezone <span class="tmin">e.g. CT</span><input id="f_tz"></label>
+      <label class="f">Notes <span class="tmin">ages, location, etc.</span><input id="f_notes"></label>
       <label class="f">Case analyst <input id="f_ca"></label>
       <label class="f">Resort <input id="f_resort"></label>
       <label class="f">Deal type <select id="f_dtype"><option value="standard">Standard (47%)</option><option value="deedback">Deedback</option></select></label>
@@ -169,9 +171,9 @@ function showForm(edit){
     if (!c) return;
     editingId = c.id;
   }
-  $('f_name').value = c ? c.name : ''; $('f_phone').value = c ? c.phone : '';
+  $('f_name').value = c ? c.name : ''; $('f_phone').value = c ? c.phone : ''; $('f_phone2').value = c ? (c.phone2 || '') : '';
   $('f_appt').value = c ? (c.appt || '') : '';
-  $('f_email').value = c ? c.email : ''; $('f_ca').value = c ? c.ca : ''; $('f_tz').value = c ? (c.tz || '') : '';
+  $('f_email').value = c ? c.email : ''; $('f_ca').value = c ? c.ca : ''; $('f_tz').value = c ? (c.tz || '') : ''; $('f_notes').value = c ? (c.notes || '') : '';
   $('f_resort').value = c ? c.resort : '';
   $('f_dtype').value = c ? (c.dtype || 'standard') : 'standard'; $('f_mf').value = c ? c.mf : '';
   $('f_esc').value = c ? c.esc : 8; $('f_payoff').value = c ? c.payoff : '';
@@ -188,6 +190,7 @@ function saveForm(){
   var rec = {
     id: editingId || ('c' + Date.now().toString(36)),
     name: name, phone: $('f_phone').value.trim(), email: $('f_email').value.trim(),
+    phone2: $('f_phone2').value.trim(), notes: $('f_notes').value.trim(),
     tz: $('f_tz').value.trim(),
     appt: $('f_appt').value.trim(),
     dtype: $('f_dtype').value,
@@ -236,7 +239,7 @@ function importClients(input){
           id: ix >= 0 ? cs[ix].id : (r.id || ('c' + Date.now().toString(36) + Math.floor(Math.random() * 999))),
           name: r.name, phone: r.phone || '', email: r.email || '', ca: r.ca || '',
           appt: r.appt || '', resort: r.resort || '',
-          tz: r.tz || '',
+          tz: r.tz || '', phone2: r.phone2 || '', notes: r.notes || '',
           dtype: r.dtype || 'standard',
           mf: num(r.mf), esc: num(r.esc) || 8, payoff: num(r.payoff),
           apr: num(r.apr), term: num(r.term), mmo: num(r.mmo), fee: num(r.fee),
