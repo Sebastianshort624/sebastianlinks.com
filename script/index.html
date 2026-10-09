@@ -7,7 +7,7 @@
 <meta name="format-detection" content="telephone=no,email=no,address=no">
 <title>90-Minute Appointment — Script</title>
 <style>
-  body { font-family: Arial, Helvetica, sans-serif; font-size: 18px; max-width: 780px; margin: 0 auto; padding: 20px; color: #1a1a1a; line-height: 1.5; }
+  body { font-family: Arial, Helvetica, sans-serif; font-size: 21px; max-width: 780px; margin: 0 auto; padding: 20px; color: #1a1a1a; line-height: 1.5; }
   h1 { font-size: 1.4em; margin-bottom: 2px; }
   .total { color: #555; margin-bottom: 18px; }
   .stage { border: 2px solid #1a1a1a; border-radius: 8px; padding: 14px 18px; margin: 18px 0; }
@@ -24,9 +24,9 @@
   .client-line { margin: 4px 0 12px; }
   .client-line input { border: none; border-bottom: 1px solid #333; font-size: 1em; width: 280px; font-family: inherit; }
   .client-line select { font-size: 1em; padding: 6px; font-family: inherit; max-width: 100%; }
-  .cbar { position: sticky; top: 48px; z-index: 40; background: #0b3d91; color: #fff; border-radius: 6px; padding: 8px 12px; margin-bottom: 14px; font-size: 0.85em; line-height: 1.65; }
-  .cbar strong { color: #fff; }
-  .cbar a { color: #fff; text-decoration: none; }
+  .cbar { position: sticky; top: 48px; z-index: 40; background: #dbeafe; color: #0b3d91; border-radius: 6px; padding: 8px 12px; margin-bottom: 14px; font-size: 0.85em; line-height: 1.65; }
+  .cbar strong { color: #0b3d91; }
+  .cbar a { color: #0b3d91; text-decoration: none; }
   .sprinkle { border: 2px dashed #0b3d91; border-radius: 8px; padding: 12px 14px; margin: 0 0 18px; background: #fafcff; }
   .sprinkle h3 { margin: 0 0 8px; font-size: 1em; }
   .sprinkle ul { margin: 0 0 0 18px; padding: 0; }
@@ -44,6 +44,7 @@
   .qout { margin-top: 10px; font-size: 0.9em; border-top: 1px solid #0b3d91; padding-top: 8px; }
   .qout div { margin-bottom: 4px; }
   .qout b { float: right; }
+  .qsec { font-weight: bold; font-size: 0.9em; margin: 12px 0 6px; color: #0b3d91; }
   .qidn { font-size: 0.85em; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #0b3d91; line-height: 1.55; }
   .topbar { position: sticky; top: 0; z-index: 50; background: #1a1a1a; color: #fff; padding: 10px 14px; margin: -20px -20px 16px; display: flex; gap: 10px; align-items: center; font-size: 1.05em; }
   .topbar.over { background: #a31212; }
@@ -81,15 +82,25 @@
   <h3>🧮 Calculator <button onclick="qSync(cur)" title="Reset to client">↺</button></h3>
   <div class="qidn" id="q_idn" style="display:none"></div>
   <div class="tmin" id="q_cli" style="margin-bottom:8px">No client selected</div>
+  <div class="qsec">Ownership cost</div>
   <label class="qf">MF/yr <input id="q_mf" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">Esc % <input id="q_esc" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">Payoff <input id="q_payoff" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf">Down paymt <input id="q_down" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf">Fee <input id="q_fee" type="number" min="0" oninput="qRecalc()"></label>
   <div class="qout">
+    <div>1-yr total <b id="q_t1">—</b></div>
+    <div>5-yr total <b id="q_t5">—</b></div>
     <div>10-yr total <b id="q_t10">—</b></div>
+  </div>
+  <div class="qsec">Our fee &amp; financing</div>
+  <label class="qf">Our fee <input id="q_fee" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">Down paymt <input id="q_down" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">Fin APR % <input id="q_fapr" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">Fin months <input id="q_fmo" type="number" min="0" oninput="qRecalc()"></label>
+  <div class="qout">
+    <div>Balance <b id="q_bal">—</b></div>
     <div>10-yr save <b id="q_s10">—</b></div>
-    <div>Fee <b id="q_feeout">—</b></div>
+    <div>Monthly <b id="q_mo">—</b></div>
+    <div>12 / 24 / 36 <b id="q_opt">—</b></div>
   </div>
 </aside>
 
@@ -273,12 +284,13 @@ function resetFills(){
 function mfTot(mf, r, n){ if (n <= 0) return 0; if (r <= 0) return mf * n; return mf * ((Math.pow(1 + r, n) - 1) / r); }
 function $(id){ return document.getElementById(id); }
 var cur = null;
-function clientNumbers(mf, esc, payoff, feeIn, dtype){
-  var fee = feeIn > 0 ? feeIn : (dtype === 'deedback' ? 0 : payoff * 0.47);
-  var feeKnown = fee > 0;
-  var r = (esc || 8) / 100;
-  var t5 = payoff + mfTot(mf, r, 5), t10 = payoff + mfTot(mf, r, 10);
-  return {fee: fee, feeKnown: feeKnown, t5: t5, t10: t10, s10: feeKnown ? t10 - fee : 0};
+function amort(pv, apr, n){ var r = apr / 100 / 12; if (!(r > 0)) return n > 0 ? pv / n : 0; return pv * r / (1 - Math.pow(1 + r, -n)); }
+function pickClient(id){
+  var cs = slClients(), c = null;
+  for (var i = 0; i < cs.length; i++) if (cs[i].id === id) c = cs[i];
+  cur = c;
+  if (!c){ $('cbar').style.display = 'none'; resetFills(); qSync(null); return; }
+  qSync(c);
 }
 function renderBar(c, n){
   var bar = $('cbar');
@@ -294,16 +306,8 @@ function applyFills(c, n){
   fillAll('[data-fill="down"]', c.down > 0 ? fmtD(c.down) : '$________');
   fillAll('[data-fill="fee"]', n.feeKnown ? fmtD(n.fee) : '$________');
   fillAll('[data-fill="savings"]', n.feeKnown ? fmtD(n.s10) : '$________');
-  fillAll('[data-fill="total10"]', n.feeKnown ? fmtD(n.s10 + n.fee) : '$________');
+  fillAll('[data-fill="total10"]', n.feeKnown ? fmtD(n.t10) : '$________');
   fillAll('[data-fill="ca"]', c.ca || '[CA name]');
-}
-function pickClient(id){
-  var cs = slClients(), c = null;
-  for (var i = 0; i < cs.length; i++) if (cs[i].id === id) c = cs[i];
-  cur = c;
-  if (!c){ $('cbar').style.display = 'none'; resetFills(); qSync(null); return; }
-  var n = clientNumbers(c.mf, c.esc, c.payoff, c.fee, c.dtype);
-  renderBar(c, n); applyFills(c, n); qSync(c);
 }
 function qNum(id){ var v = parseFloat($(id).value); return isNaN(v) ? 0 : v; }
 function qIdn(c){
@@ -317,22 +321,33 @@ function qIdn(c){
 }
 function qSync(c){
   $('q_mf').value = c ? c.mf : ''; $('q_esc').value = c ? (c.esc || 8) : '';
-  $('q_payoff').value = c ? c.payoff : ''; $('q_fee').value = c && c.fee ? c.fee : '';
-  $('q_down').value = c ? (c.down || '') : '';
+  $('q_payoff').value = c ? c.payoff : '';
+  $('q_fee').value = c && c.fee ? c.fee : ''; $('q_down').value = c ? (c.down || '') : '';
+  $('q_fapr').value = c ? (c.fapr || '') : ''; $('q_fmo').value = c ? (c.fmo || '') : '';
   $('q_cli').textContent = c ? c.name : 'No client selected';
   qIdn(c);
   qRecalc();
 }
 function qRecalc(){
-  if (!cur){ $('q_t10').textContent = '—'; $('q_s10').textContent = '—'; $('q_feeout').textContent = '—'; return; }
-  var mf = qNum('q_mf'), esc = qNum('q_esc'), payoff = qNum('q_payoff'), feeIn = qNum('q_fee');
-  var n = clientNumbers(mf, esc, payoff, feeIn, cur.dtype);
-  $('q_t10').textContent = fmtD(n.t10);
-  $('q_s10').textContent = n.feeKnown ? fmtD(n.s10) : '—';
-  $('q_feeout').textContent = n.feeKnown ? fmtD(n.fee) : '—';
+  if (!cur){ ['q_t1','q_t5','q_t10','q_bal','q_s10','q_mo','q_opt'].forEach(function(id){ $(id).textContent = '—'; }); return; }
+  var mf = qNum('q_mf'), esc = qNum('q_esc'), payoff = qNum('q_payoff');
+  var r = (esc || 8) / 100;
+  var t1 = payoff + mfTot(mf, r, 1), t5 = payoff + mfTot(mf, r, 5), t10 = payoff + mfTot(mf, r, 10);
+  $('q_t1').textContent = fmtD(t1);
+  $('q_t5').textContent = fmtD(t5);
+  $('q_t10').textContent = fmtD(t10);
+  var fee = qNum('q_fee'), down = qNum('q_down'), fapr = qNum('q_fapr'), fmo = qNum('q_fmo');
+  var feeKnown = fee > 0;
+  var bal = Math.max(0, fee - down);
+  var s10 = feeKnown ? t10 - fee : 0;
+  $('q_bal').textContent = feeKnown ? fmtD(bal) : '—';
+  $('q_s10').textContent = feeKnown ? fmtD(s10) : '—';
+  $('q_mo').textContent = (feeKnown && fmo > 0) ? fmtD(amort(bal, fapr, fmo)) + '/mo' : '—';
+  $('q_opt').textContent = feeKnown ? fmtD(amort(bal, fapr, 12)) + ' / ' + fmtD(amort(bal, fapr, 24)) + ' / ' + fmtD(amort(bal, fapr, 36)) : '—';
+  var n = {fee: fee, feeKnown: feeKnown, t5: t5, t10: t10, s10: s10};
   var c2 = {}, k;
   for (k in cur) c2[k] = cur[k];
-  c2.mf = mf; c2.payoff = payoff; c2.down = qNum('q_down');
+  c2.mf = mf; c2.payoff = payoff; c2.down = down;
   renderBar(c2, n); applyFills(c2, n);
 }
 (function initClientSel(){
