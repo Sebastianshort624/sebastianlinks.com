@@ -27,10 +27,12 @@
   .cbar { position: sticky; top: 48px; z-index: 40; background: #dbeafe; color: #0b3d91; border-radius: 6px; padding: 8px 12px; margin-bottom: 14px; font-size: 0.85em; line-height: 1.65; }
   .cbar strong { color: #0b3d91; }
   .cbar a { color: #0b3d91; text-decoration: none; }
-  .sprinkle { border: 2px dashed #0b3d91; border-radius: 8px; padding: 12px 14px; margin: 0 0 18px; background: #fafcff; }
-  .sprinkle h3 { margin: 0 0 8px; font-size: 1em; }
-  .sprinkle ul { margin: 0 0 0 18px; padding: 0; }
-  .sprinkle li { margin-bottom: 8px; font-size: 0.95em; }
+  .sprinkle { border: 1px solid #c9dcf7; border-left: 4px solid #0b3d91; border-radius: 8px; padding: 12px 14px; margin: 0 0 18px; background: #f2f7ff; }
+  .sprinkle h3 { margin: 0 0 6px; font-size: 1em; color: #0b3d91; }
+  .sprinkle ul { margin: 0; padding: 0; list-style: none; }
+  .sprinkle li { margin: 0; padding: 9px 4px 9px 30px; font-size: 0.95em; border-bottom: 1px solid #d4e3fa; position: relative; }
+  .sprinkle li:last-child { border-bottom: none; padding-bottom: 4px; }
+  .sprinkle li:before { content: "✦"; position: absolute; left: 8px; top: 9px; color: #d99a17; font-size: 0.9em; }
   @media (min-width: 1350px){
     .sideboxes { position: fixed; right: 16px; top: 120px; width: 260px; margin: 0; max-height: 72vh; overflow-y: auto; }
     .sideboxes .sprinkle { margin-bottom: 12px; }
