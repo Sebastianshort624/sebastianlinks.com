@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>True Cost of Ownership — Calculator</title>
+<style>
+  body { font-family: Arial, Helvetica, sans-serif; max-width: 640px; margin: 0 auto; padding: 20px; color: #1a1a1a; line-height: 1.5; }
+  h1 { font-size: 1.4em; margin-bottom: 2px; }
+  .sub { color: #555; margin-bottom: 18px; }
+  .calc { border: 2px solid #1a1a1a; border-radius: 8px; padding: 16px 18px; margin-bottom: 16px; }
+  .calc label { display: block; margin-bottom: 12px; font-weight: bold; }
+  .calc input { display: block; margin-top: 4px; padding: 8px; font-size: 1.1em; width: 200px; border: 1px solid #999; border-radius: 4px; font-family: inherit; }
+  .calc button { padding: 10px 28px; font-size: 1.05em; background: #0b3d91; color: #fff; border: none; border-radius: 6px; cursor: pointer; margin-top: 4px; }
+  .result { border: 2px solid #0b3d91; border-radius: 8px; padding: 16px 18px; margin-bottom: 16px; background: #f0f4ff; display: none; }
+  .result .big { font-size: 2em; font-weight: bold; color: #0b3d91; margin: 6px 0; }
+  .result .cmp { color: #555; font-size: 0.95em; }
+  table { width: 100%; border-collapse: collapse; margin-top: 8px; display: none; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid #ddd; }
+  th { background: #f4f4f4; }
+  td:last-child, th:last-child { text-align: right; }
+  .note { color: #555; font-size: 0.9em; margin-top: 14px; }
+</style>
+</head>
+<body>
+
+<h1>💰 True Cost of Ownership</h1>
+<div class="sub">What your timeshare really costs over time — with annual fee increases.</div>
+
+<div class="calc">
+  <label>Annual maintenance fee ($)
+    <input id="fee" type="number" inputmode="decimal" value="1500" min="0">
+  </label>
+  <label>Years to project
+    <input id="years" type="number" inputmode="numeric" value="20" min="1" max="100">
+  </label>
+  <label>Annual increase (%)
+    <input id="rate" type="number" inputmode="decimal" value="8" step="0.1" min="0">
+  </label>
+  <button onclick="calc()">Calculate</button>
+</div>
+
+<div class="result" id="result">
+  <div>Total projected cost</div>
+  <div class="big" id="total">$0</div>
+  <div class="cmp" id="cmp"></div>
+</div>
+
+<table id="breakdown">
+  <thead><tr><th>Year</th><th>Annual fee</th></tr></thead>
+  <tbody id="rows"></tbody>
+</table>
+
+<div class="note">Maintenance fees never end — the perpetuity clause passes them on to your heirs.</div>
+
+<script>
+function fmt(n){ return '$' + Math.round(n).toLocaleString('en-US'); }
+function calc(){
+  var fee = parseFloat(document.getElementById('fee').value) || 0;
+  var years = parseInt(document.getElementById('years').value) || 0;
+  var rate = (parseFloat(document.getElementById('rate').value) || 0) / 100;
+  if (fee <= 0 || years <= 0) return;
+  var total = 0, html = '';
+  for (var y = 1; y <= years; y++) {
+    var amt = fee * Math.pow(1 + rate, y - 1);
+    total += amt;
+    html += '<tr><td>Year ' + y + '</td><td>' + fmt(amt) + '</td></tr>';
+  }
+  var flat = fee * years;
+  document.getElementById('total').textContent = fmt(total);
+  document.getElementById('cmp').textContent =
+    'Without annual increases: ' + fmt(flat) + ' — the increases alone add ' + fmt(total - flat) + '.';
+  document.getElementById('rows').innerHTML = html;
+  document.getElementById('result').style.display = 'block';
+  document.getElementById('breakdown').style.display = 'table';
+}
+calc();
+</script>
+
+</body>
+</html>
