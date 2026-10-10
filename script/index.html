@@ -16,9 +16,12 @@
   .clock { font-size: 0.85em; color: #555; margin-bottom: 10px; }
   .tmin { font-size: 0.8em; color: #888; font-weight: normal; }
   ol.liners { margin: 8px 0 4px 20px; padding: 0; }
-  ol.liners li { margin-bottom: 8px; }
-  ol.liners ol { margin: 6px 0 6px 18px; padding: 0; list-style-type: lower-alpha; }
-  ol.liners ol li { margin-bottom: 5px; }
+  ol.liners > li { margin-bottom: 12px; }
+  ol.liners > li::marker { font-weight: bold; font-size: 1.05em; }
+  ol.liners ol { margin: 6px 0 6px 18px; padding: 0; list-style: none; counter-reset: sub; }
+  ol.liners ol > li { counter-increment: sub; margin-bottom: 7px; }
+  ol.liners ol > li::before { content: counter(sub, lower-alpha) ") "; font-weight: bold; }
+  .grp { font-weight: bold; }
   .trans { background: #f0f4ff; border-left: 4px solid #0b3d91; padding: 8px 12px; margin: 0 0 6px; font-size: 0.95em; }
   .plink { margin: 0 0 10px; font-size: 0.95em; }
   .client-line { margin: 4px 0 12px; }
@@ -287,10 +290,14 @@
   <div class="clock">0:00–0:15 · chit-chat <span class="tmin">(5 min)</span> → credibility research together <span class="tmin">(10 min)</span> <span class="stimer"><button id="sb1" onclick="toggleStage(1)">▶ 15:00</button> <button class="rs" onclick="resetStage(1)" title="Reset">↺</button></span></div>
   <ol class="liners">
     <li>"My role is to make sure the case we build is strong enough to bring to our approval team. The reason being we have a <b>99% success rate</b> because we only take on cases we know we will win — because we give a <b>100% money-back guarantee</b>, and it costs us money as we progress your case."</li>
-    <li>"Did you get a chance to do some research on our company? <span data-fill="ca">[CA name]</span> usually sends the links over — did you see we're <b>A+ rated and accredited</b> by the Better Business Bureau, and ranked the <b>number one timeshare cancellation company in the world</b> by Best Company?"</li>
-    <li>"Best Company is a <b>third-party organization</b> — all they do is rank the top companies in the world. Did you happen to see we're ranked <b>number one</b> in the timeshare cancellation industry — the industry we created?"</li>
-    <li>Research together: <a href="https://sebastianlinks.com/linx">sebastianlinks.com/linx</a> — company credibility &amp; reviews.</li>
-    <li>"OK great — so <b>no questions about our credibility</b>, or our ability to do what we say we'll do — is that correct? Perfect."</li>
+    <li><span class="grp">Credibility research:</span>
+      <ol>
+        <li>"Did you get a chance to do some research on our company? <span data-fill="ca">[CA name]</span> usually sends the links over — did you see we're <b>A+ rated and accredited</b> by the Better Business Bureau, and ranked the <b>number one timeshare cancellation company in the world</b> by Best Company?"</li>
+        <li>"Best Company is a <b>third-party organization</b> — all they do is rank the top companies in the world. Did you happen to see we're ranked <b>number one</b> in the timeshare cancellation industry — the industry we created?"</li>
+        <li>Research together: <a href="https://sebastianlinks.com/linx">sebastianlinks.com/linx</a> — company credibility &amp; reviews.</li>
+        <li>"OK great — so <b>no questions about our credibility</b>, or our ability to do what we say we'll do — is that correct? Perfect."</li>
+      </ol>
+    </li>
   </ol>
 </div>
 <div class="trans">→ Credibility established. Now let them talk.</div>
@@ -300,8 +307,12 @@
   <div class="clock">0:15–0:30 · let them talk <span class="tmin">(5 min)</span> → violations &amp; how we win <span class="tmin">(10 min)</span> <span class="stimer"><button id="sb2" onclick="toggleStage(2)">▶ 15:00</button> <button class="rs" onclick="resetStage(2)" title="Reset">↺</button></span></div>
   <div class="plink">🔗 <a href="https://sebastianlinks.com/calc">sebastianlinks.com/calc</a> <span class="tmin">— cost of ownership calculator</span></div>
   <ol class="liners">
-    <li>"Now that you've seen who we are and what our reviews say — <b>I want to hear your story</b>. Tell me about your experience with your timeshare." <span class="tmin">— let them talk</span></li>
-    <li>"<b>What exactly were you told that convinced you</b> to purchase?"</li>
+    <li><span class="grp">Their story:</span>
+      <ol>
+        <li>"Now that you've seen who we are and what our reviews say — <b>I want to hear your story</b>. Tell me about your experience with your timeshare." <span class="tmin">— let them talk</span></li>
+        <li>"<b>What exactly were you told that convinced you</b> to purchase?"</li>
+      </ol>
+    </li>
     <li>"In the first 10 years — between your mortgage payments and your maintenance payments — you signed agreeing to a total cost of <b><span data-fill="total10">$________</span></b> for this timeshare. But <b>did they actually let you read that page before you signed?</b> 📝"<br>→ "That's exactly what we're trying to prove. That contract is impenetrable — you can't just walk away from it. What we do is <b>get it voided</b> — because <b>you should never have been in it in the first place</b>. You were lied to."</li>
     <li>The main five, in plain talk:
       <ol>
@@ -312,10 +323,14 @@
         <li>"And did they tell you booking was easy — just call a few days or weeks ahead? <b>What was it actually like when you tried?</b>"<br>→ "If they had followed the law and shown you what your total commitment was — just in the first 10 years — <b>would you have ever signed that contract?</b>"</li>
       </ol>
     </li>
-    <li>"We take all of this to the resort and lay out the <b>fines they're facing</b> — so they see it's <b>cheaper to let you out</b> than to risk paying those fines."</li>
-    <li>"And we go after compensation for the emotional and financial impact this had on you. Our competitors settle cases by getting the client to pay the resort — <b>we do the opposite</b>, and our reviews prove it."</li>
-    <li>"We will never take on your case unless we can save you a <b>ridiculous amount of money</b>."</li>
-    <li><i>Emotional impact:</i> "How did you feel when you found out <b>X</b> — or <b>Y</b>, or <b>Z</b> — turned out to be untrue?"</li>
+    <li><span class="grp">How we win:</span>
+      <ol>
+        <li>"We take all of this to the resort and lay out the <b>fines they're facing</b> — so they see it's <b>cheaper to let you out</b> than to risk paying those fines."</li>
+        <li>"And we go after compensation for the emotional and financial impact this had on you. Our competitors settle cases by getting the client to pay the resort — <b>we do the opposite</b>, and our reviews prove it."</li>
+        <li>"We will never take on your case unless we can save you a <b>ridiculous amount of money</b>."</li>
+        <li><i>Emotional impact:</i> "How did you feel when you found out <b>X</b> — or <b>Y</b>, or <b>Z</b> — turned out to be untrue?"</li>
+      </ol>
+    </li>
     <li>"The most important part is the <b>letter of explanation</b> — then we can file a formal complaint with <b>________</b>. We will be filing in the state of <b>________</b> <span class="tmin">(residence)</span> and the state where you purchased it, and at that point we are issued what\u2019s called a <b>complaint number</b>. Ok? We spend a lot on <b>filing fees</b> in order to do that, so we ask that you get that letter back to us within <b>3 business days</b>. Can you <b>commit</b> to doing that?"</li>
   </ol>
 </div>
@@ -325,11 +340,19 @@
   <h2>STAGE 3 — THE APPROVAL PROCESS <span class="t">15 MIN</span></h2>
   <div class="clock">0:30–0:45 · selectivity <span class="tmin">(5 min)</span> → case manager assignment <span class="tmin">(5 min)</span> → scarcity, waiting list &amp; YES <span class="tmin">(5 min)</span> <span class="stimer"><button id="sb3" onclick="toggleStage(3)">▶ 15:00</button> <button class="rs" onclick="resetStage(3)" title="Reset">↺</button></span></div>
   <ol class="liners">
-    <li>"We win <b>99%</b> of our cases by being <b>very selective</b> — we only take on cases we know we will win."</li>
-    <li>"Is there anything that you still need to do on your end that would <b>prevent you from being assigned a case manager today?</b>"</li>
-    <li>"Approval is a combination of two things: the <b>strength of your case</b>, and whether a case manager is <b>willing to take it on</b>."</li>
-    <li>"A case manager takes your case based on their opinion of the probability of getting the <b>resort to pay compensation</b> — that is what drives their availability."</li>
-    <li>"If no case manager can take your case right now, we do have a <b>waiting list</b>."</li>
+    <li><span class="grp">Selectivity:</span>
+      <ol>
+        <li>"We win <b>99%</b> of our cases by being <b>very selective</b> — we only take on cases we know we will win."</li>
+        <li>"Is there anything that you still need to do on your end that would <b>prevent you from being assigned a case manager today?</b>"</li>
+      </ol>
+    </li>
+    <li><span class="grp">How approval works:</span>
+      <ol>
+        <li>"Approval is a combination of two things: the <b>strength of your case</b>, and whether a case manager is <b>willing to take it on</b>."</li>
+        <li>"A case manager takes your case based on their opinion of the probability of getting the <b>resort to pay compensation</b> — that is what drives their availability."</li>
+        <li>"If no case manager can take your case right now, we do have a <b>waiting list</b>."</li>
+      </ol>
+    </li>
     <li>"If the stars align and my assessment team decides we can take on your case, is there anything at all that would <b>prevent you from moving forward with us today?</b>"</li>
   </ol>
 </div>
@@ -339,10 +362,18 @@
   <h2>STAGE 4 — FIND THE MONEY <span class="t">15 MIN</span></h2>
   <div class="clock">0:45–1:00 · checking/savings <span class="tmin">(5 min)</span> → how far off exactly <span class="tmin">(5 min)</span> → credit cards <span class="tmin">(5 min)</span> <span class="stimer"><button id="sb4" onclick="toggleStage(4)">▶ 15:00</button> <button class="rs" onclick="resetStage(4)" title="Reset">↺</button></span></div>
   <ol class="liners">
-    <li>"Now, if you don't have any other questions about our process, the next thing I can explain to you are the <b>different ways most people pay</b> for our services. The fastest, easiest, and smartest way to do so financially is: if you can pay it out of any <b>checking or savings account</b>. If you have the money, then well, pay it."</li>
-    <li>"And again, I don't like to assume anything. So I'll just ask you <b>straight up</b>: do you have it in your checking account, savings account, or any type of retirement account, 401(k), IRA, anything like that, stocks, bonds, whatever, where you could get it into your checking account within a certain amount of days?"</li>
-    <li>"About <b>how far off</b> are you from that number, <b>exactly?</b>"</li>
-    <li>"So what I'm hearing from you is that you have <b><span data-fill="down">$________</span></b> that you could put towards this. <b>Is that what I'm hearing from you?</b>"</li>
+    <li><span class="grp">Checking / savings:</span>
+      <ol>
+        <li>"Now, if you don't have any other questions about our process, the next thing I can explain to you are the <b>different ways most people pay</b> for our services. The fastest, easiest, and smartest way to do so financially is: if you can pay it out of any <b>checking or savings account</b>. If you have the money, then well, pay it."</li>
+        <li>"And again, I don't like to assume anything. So I'll just ask you <b>straight up</b>: do you have it in your checking account, savings account, or any type of retirement account, 401(k), IRA, anything like that, stocks, bonds, whatever, where you could get it into your checking account within a certain amount of days?"</li>
+      </ol>
+    </li>
+    <li><span class="grp">How far off:</span>
+      <ol>
+        <li>"About <b>how far off</b> are you from that number, <b>exactly?</b>"</li>
+        <li>"So what I'm hearing from you is that you have <b><span data-fill="down">$________</span></b> that you could put towards this. <b>Is that what I'm hearing from you?</b>"</li>
+      </ol>
+    </li>
     <li>"Okay, so the second way most people pay for our services is with <b>credit cards</b>."</li>
   </ol>
 </div>
@@ -353,10 +384,14 @@
   <div class="clock">1:00–1:15 · monthly payments <span class="tmin">(5 min)</span> → credit score &amp; down payment <span class="tmin">(5 min)</span> → application info <span class="tmin">(5 min)</span> <span class="stimer"><button id="sb5" onclick="toggleStage(5)">▶ 15:00</button> <button class="rs" onclick="resetStage(5)" title="Reset">↺</button></span></div>
   <div class="plink">🔗 Financing: <a href="https://distributor.ucfs.net/">UCFS merchant portal</a> · <a href="https://agent.uportal360.com/dashboard">UGA (uPortal360)</a> · Equity Bank</div>
   <ol class="liners">
-    <li>"The third option is <b>financing</b> it and breaking it into <b>monthly payments</b>."</li>
-    <li>"Do you have any idea what your <b>credit score</b> is?"</li>
-    <li>"You said that you can put down <b><span data-fill="down">$________</span></b>. So then we'd be looking at <b>breaking the remaining into monthly payments</b>."</li>
-    <li>"Let's go ahead and see what we can get you <b>qualified</b> for."</li>
+    <li><span class="grp">Financing:</span>
+      <ol>
+        <li>"The third option is <b>financing</b> it and breaking it into <b>monthly payments</b>."</li>
+        <li>"Do you have any idea what your <b>credit score</b> is?"</li>
+        <li>"You said that you can put down <b><span data-fill="down">$________</span></b>. So then we'd be looking at <b>breaking the remaining into monthly payments</b>."</li>
+        <li>"Let's go ahead and see what we can get you <b>qualified</b> for."</li>
+      </ol>
+    </li>
     <li>"Now, a couple things I'm going to need is can you guys send me pictures of your <b>driver's licenses?</b>"</li>
   </ol>
 </div>
@@ -368,12 +403,24 @@
   <div class="clock">1:15–1:30 · post-hold good news <span class="tmin">(5 min)</span> → prepare the agreement <span class="tmin">(10 min)</span> <span class="stimer"><button id="sb6" onclick="toggleStage(6)">▶ 15:00</button> <button class="rs" onclick="resetStage(6)" title="Reset">↺</button></span></div>
   <div class="plink">🔗 <a href="https://account.docusign.com">DocuSign</a> · <a href="https://youtu.be/UQqgr5Q0r1I">How to send a DocuSign (video)</a></div>
   <ol class="liners">
-    <li>"The approval team agrees with our assessment and has <b>agreed to take on your case</b>. We do have a case manager that feels they can get <b>compensation</b> for the emotional and financial impact."</li>
-    <li>"Good news — there are two potential case managers that can take this case tomorrow. One of them, she's <b>very experienced</b> at ___. The other one, he's <b>amazing</b> at ___."</li>
-    <li>"Your TOTAL CONTRACTUAL OBLIGATION to <b><span data-fill="resort">_________</span></b> is <b>your total monthly times 120</b> — and the amount we are going to save you is <b><span data-fill="savings">$________</span></b> — so the total cost to get you out of this is <b><span data-fill="fee">$________</span></b>."</li>
-    <li>"The total fee to cancel 100% of all past, present, and future debt is <b><span data-fill="fee">$________</span></b> — saving you <b><span data-fill="savings">$________</span></b> over the next 10 years. <b>We will never ask you for another penny.</b>"</li>
-    <li>"So what I'll need in order to move forward is: what I'm going to do next. I'm going to work on preparing our <b>service agreement</b>, right? It's going to take me about <b>10 minutes</b> to prepare."</li>
-    <li>"Do you know how to <b>send pictures from your phone?</b>"</li>
+    <li><span class="grp">The good news:</span>
+      <ol>
+        <li>"The approval team agrees with our assessment and has <b>agreed to take on your case</b>. We do have a case manager that feels they can get <b>compensation</b> for the emotional and financial impact."</li>
+        <li>"Good news — there are two potential case managers that can take this case tomorrow. One of them, she's <b>very experienced</b> at ___. The other one, he's <b>amazing</b> at ___."</li>
+      </ol>
+    </li>
+    <li><span class="grp">The price:</span>
+      <ol>
+        <li>"Your TOTAL CONTRACTUAL OBLIGATION to <b><span data-fill="resort">_________</span></b> is <b>your total monthly times 120</b> — and the amount we are going to save you is <b><span data-fill="savings">$________</span></b> — so the total cost to get you out of this is <b><span data-fill="fee">$________</span></b>."</li>
+        <li>"The total fee to cancel 100% of all past, present, and future debt is <b><span data-fill="fee">$________</span></b> — saving you <b><span data-fill="savings">$________</span></b> over the next 10 years. <b>We will never ask you for another penny.</b>"</li>
+      </ol>
+    </li>
+    <li><span class="grp">Preparing the agreement:</span>
+      <ol>
+        <li>"So what I'll need in order to move forward is: what I'm going to do next. I'm going to work on preparing our <b>service agreement</b>, right? It's going to take me about <b>10 minutes</b> to prepare."</li>
+        <li>"Do you know how to <b>send pictures from your phone?</b>"</li>
+      </ol>
+    </li>
   </ol>
 </div>
 
