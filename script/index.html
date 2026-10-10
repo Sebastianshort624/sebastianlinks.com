@@ -505,6 +505,7 @@ function renderBar(c, n){
   var ph = [c.phone, c.phone2].filter(function(x){ return x; }).join(' · ');
   bar.innerHTML = '<strong>' + escH(c.name) + '</strong>' +
     (ph ? ' · 📞 ' + escH(ph) : '') + (c.resort ? ' · <strong>' + escH(c.resort) + '</strong>' : '') +
+    (c.ca ? ' · CA: <strong>' + escH(c.ca) + '</strong>' : '') +
     (c.email ? ' · ✉️ ' + escH(c.email) : '') + (c.tz ? ' · ' + escH(c.tz) : '') + '<br>' +
     (mmo > 0 ? 'Mtg ' + fmtD(mmo) + '/mo · ' : '') + 'MF ' + fmtD(c.mf) + '/yr (' + fmtD(mfmo) + '/mo)' +
     (mmo > 0 ? ' · Yr total ' + fmtD(yrTot) : '') + ' · 5-yr ' + fmtD(n.t5) + ' · 10-yr ' + fmtD(n.t10) +
