@@ -502,8 +502,10 @@ function pickClient(id){
 function renderBar(c, n){
   var bar = $('cbar');
   var mmo = c.mmo || 0, mfmo = c.mf / 12, yrTot = mmo * 12 + c.mf;
-  bar.innerHTML = '<strong>' + escH(c.name) + '</strong>' + (c.resort ? ' · <strong>' + escH(c.resort) + '</strong>' : '') +
-    (c.phone ? ' · 📞 ' + escH(c.phone) : '') + (c.email ? ' · ✉️ ' + escH(c.email) : '') + (c.tz ? ' · ' + escH(c.tz) : '') + '<br>' +
+  var ph = [c.phone, c.phone2].filter(function(x){ return x; }).join(' · ');
+  bar.innerHTML = '<strong>' + escH(c.name) + '</strong>' +
+    (ph ? ' · 📞 ' + escH(ph) : '') + (c.resort ? ' · <strong>' + escH(c.resort) + '</strong>' : '') +
+    (c.email ? ' · ✉️ ' + escH(c.email) : '') + (c.tz ? ' · ' + escH(c.tz) : '') + '<br>' +
     (mmo > 0 ? 'Mtg ' + fmtD(mmo) + '/mo · ' : '') + 'MF ' + fmtD(c.mf) + '/yr (' + fmtD(mfmo) + '/mo)' +
     (mmo > 0 ? ' · Yr total ' + fmtD(yrTot) : '') + ' · 5-yr ' + fmtD(n.t5) + ' · 10-yr ' + fmtD(n.t10) +
     (n.feeKnown ? ' · Fee ' + fmtD(n.fee) + ' · 10-yr save ' + fmtD(n.s10) : '');
