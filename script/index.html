@@ -134,6 +134,18 @@
     <div>Next 10-yr <b id="q_t10">—</b></div>
     <div>Next 20-yr <b id="q_t20">—</b></div>
   </div>
+  <div class="qsec">📊 Expense breakdown</div>
+  <div class="qout">
+    <div>Monthly Mortgage <b id="q_xmmo">—</b></div>
+    <div>Monthly Maintenance <b id="q_xmfmo">—</b></div>
+    <div>Total Monthly <b id="q_xtotmo">—</b></div>
+    <div>Annual Mortgage <b id="q_xmoyr">—</b></div>
+    <div>Annual Maintenance <b id="q_xmfyr">—</b></div>
+    <div>Annual Total <b id="q_xtotyr">—</b></div>
+    <div>10-Yr Mortgage <b id="q_xmo10">—</b></div>
+    <div>10-Yr Maintenance (<span id="q_xescp">8</span>% esc) <b id="q_xmf10">—</b></div>
+    <div>10-Yr Projection <b id="q_xproj10">—</b></div>
+  </div>
   <div class="qsec">Loan breakdown</div>
   <div class="tmin" id="q_mleft" style="margin-bottom:6px">— mo left</div>
   <label class="qf">Loan amt <input id="q_loan" type="number" min="0" oninput="qRecalc()"></label>
@@ -596,7 +608,7 @@ function qDocDel(i){
   qDocRender();
 }
 function qRecalc(){
-  if (!cur){ ['q_w30','q_w90','q_w6','q_t1','q_t3','q_t5','q_t10','q_t20','q_ftot','q_bal','q_s10','q_mo','q_mosn','q_t12','q_t24','q_t36','q_comm','q_cdate','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— mo left'; return; }
+  if (!cur){ ['q_w30','q_w90','q_w6','q_t1','q_t3','q_t5','q_t10','q_t20','q_ftot','q_bal','q_s10','q_mo','q_mosn','q_t12','q_t24','q_t36','q_comm','q_cdate','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct','q_xmmo','q_xmfmo','q_xtotmo','q_xmoyr','q_xmfyr','q_xtotyr','q_xmo10','q_xmf10','q_xproj10'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— mo left'; return; }
   var mmo = qNum('q_mmo'), mf = qNum('q_mf'), esc = qNum('q_esc'), payoff = qNum('q_payoff');
   var pyrIn = parseInt(($('q_pyr').value || '').replace(/\D/g, ''), 10) || 0;
   var pyr = pyrIn > 0 ? pyrIn : 2023; // hidden default for math only — field stays blank
@@ -616,6 +628,17 @@ function qRecalc(){
   $('q_t5').textContent = fmtD(t5);
   $('q_t10').textContent = fmtD(t10);
   $('q_t20').textContent = fmtD(t20);
+  // Expense breakdown (matches his table: monthly MF floored, 10-yr MF escalated)
+  var mfmo = Math.floor(mf / 12), mfoyr = mfmo * 12, moyr = mmo * 12, totyr = moyr + mfoyr;
+  var mo10 = moyr * 10, escR = (esc || 8) / 100;
+  var mf10 = escR > 0 ? Math.round(mfoyr * (Math.pow(1 + escR, 10) - 1) / escR) : mfoyr * 10;
+  $('q_xmmo').textContent = fmtD(mmo); $('q_xmfmo').textContent = fmtD(mfmo);
+  $('q_xtotmo').textContent = fmtD(mmo + mfmo);
+  $('q_xmoyr').textContent = fmtD(moyr); $('q_xmfyr').textContent = fmtD(mfoyr);
+  $('q_xtotyr').textContent = fmtD(totyr);
+  $('q_xmo10').textContent = fmtD(mo10);
+  $('q_xescp').textContent = (esc || 8); $('q_xmf10').textContent = fmtD(mf10);
+  $('q_xproj10').textContent = fmtD(mo10 + mf10);
   var fee = qNum('q_fee'), fapr = qNum('q_fapr'), fmo = qNum('q_fmo');
   var paym = $('q_paym').value;
   var isFin = paym === 'ucfs' || paym === 'equity' || paym === 'uga';
