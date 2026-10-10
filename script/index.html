@@ -85,6 +85,39 @@
   .stimer button { background: #0b3d91; color: #fff; border: none; border-radius: 5px; padding: 4px 10px; font-size: 0.85em; cursor: pointer; font-family: inherit; font-variant-numeric: tabular-nums; }
   .stimer button.rs { background: #666; padding: 4px 8px; }
   @media print { body { padding: 0; } .stage { break-inside: avoid; } .topbar, .stimer { display: none; } .sideboxes { position: static; width: auto; max-height: none; } }
+  #notesFab { position: fixed; bottom: 18px; right: 18px; z-index: 900; background: #0b3d91; color: #fff; border: none; border-radius: 999px; padding: 12px 20px; font-size: 1em; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.3); font-family: inherit; }
+  #notesFab.has::after { content: '●'; color: #ffd34d; margin-left: 6px; }
+  #notesModal { position: fixed; inset: 0; z-index: 950; background: rgba(0,0,0,.55); display: none; align-items: center; justify-content: center; padding: 20px; }
+  #notesModal.open { display: flex; }
+  .notesBox { background: #fff; border-radius: 10px; width: min(860px, 94vw); height: min(640px, 88vh); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 8px 30px rgba(0,0,0,.4); }
+  .notesHead { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #0b3d91; color: #fff; font-size: 1.05em; }
+  .notesHead button { background: rgba(255,255,255,.2); color: #fff; border: none; border-radius: 5px; padding: 4px 12px; cursor: pointer; font-size: 1em; font-family: inherit; }
+  #notesArea { flex: 1; border: none; padding: 14px; font-size: 1.05em; line-height: 1.55; font-family: inherit; resize: none; outline: none; }
+  .notesFoot { padding: 8px 14px; color: #888; font-size: 0.82em; background: #f4f4f4; }
+  @media print { #notesFab, #notesModal { display: none !important; } }
+  #lcModal { position: fixed; inset: 0; z-index: 960; background: rgba(0,0,0,.55); display: none; align-items: center; justify-content: center; padding: 20px; }
+  #lcModal.open { display: flex; }
+  .lcBox { background: #fff; border-radius: 10px; width: min(920px, 96vw); height: min(700px, 90vh); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 8px 30px rgba(0,0,0,.4); }
+  .lcHead { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #0b3d91; color: #fff; font-size: 1.05em; }
+  .lcHead button { background: rgba(255,255,255,.2); color: #fff; border: none; border-radius: 5px; padding: 4px 12px; cursor: pointer; font-size: 1em; font-family: inherit; }
+  .lcForm { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px 12px; padding: 12px 14px; background: #f4f6fa; border-bottom: 1px solid #ddd; }
+  .lcForm label { display: flex; flex-direction: column; font-size: 0.82em; color: #555; gap: 3px; }
+  .lcForm input, .lcForm select { padding: 6px 8px; font-size: 1em; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; }
+  .lcForm .row2 { display: flex; gap: 6px; }
+  .lcForm .row2 input, .lcForm .row2 select { flex: 1; min-width: 0; }
+  .lcRes { display: flex; flex-wrap: wrap; gap: 6px 22px; padding: 10px 14px; background: #fff; border-bottom: 1px solid #ddd; font-size: 0.95em; }
+  .lcRes b { font-variant-numeric: tabular-nums; }
+  .lcRes .big { font-size: 1.15em; color: #0b3d91; }
+  .lcTabs { display: flex; gap: 8px; padding: 10px 14px 0; }
+  .lcTabs button { background: #e8e8e8; border: none; border-radius: 5px; padding: 6px 16px; cursor: pointer; font-size: 0.95em; font-family: inherit; }
+  .lcTabs button.on { background: #0b3d91; color: #fff; }
+  #lcBody { flex: 1; overflow: auto; padding: 10px 14px; }
+  #lcBody table { width: 100%; border-collapse: collapse; font-size: 0.92em; font-variant-numeric: tabular-nums; }
+  #lcBody th, #lcBody td { padding: 6px 8px; border-bottom: 1px solid #eee; text-align: right; }
+  #lcBody th:first-child, #lcBody td:first-child, #lcBody th:nth-child(2), #lcBody td:nth-child(2) { text-align: left; }
+  #lcBody thead th { background: #f4f6fa; position: sticky; top: 0; }
+  .lcBtn { display: block; width: 100%; margin-top: 8px; background: #0b3d91; color: #fff; border: none; border-radius: 5px; padding: 8px; font-size: 0.95em; cursor: pointer; font-family: inherit; }
+  @media print { #lcModal { display: none !important; } }
 </style>
 </head>
 <body>
@@ -158,6 +191,7 @@
     <div>Balance (payoff) <b id="q_bal2">—</b></div>
     <div>Term interest <b id="q_tint">—</b></div>
     <div>Interest % of paid <b id="q_ipct">—</b></div>
+    <button class="lcBtn" onclick="lcOpen()">🏦 Loan calculator</button>
   </div>
   </div>
   <div class="cbox cbox-fee">
@@ -415,8 +449,8 @@ function pickClient(id){
   var cs = slClients(), c = null;
   for (var i = 0; i < cs.length; i++) if (cs[i].id === id) c = cs[i];
   cur = c;
-  if (!c){ $('cbar').style.display = 'none'; resetFills(); qSync(null); return; }
-  qSync(c);
+  if (!c){ $('cbar').style.display = 'none'; resetFills(); qSync(null); notesBadge(); return; }
+  qSync(c); notesBadge();
 }
 function renderBar(c, n){
   var bar = $('cbar');
@@ -784,11 +818,125 @@ function importScriptClients(input){
   rd.readAsText(f);
 }
 function qNum2(v){ var n = parseFloat(String(v == null ? '' : v).replace(/[$,]/g, '')); return isNaN(n) ? 0 : n; }
+function notesKey(){ return 'sl_notes_' + (cur && cur.id ? cur.id : 'global'); }
+function notesGet(){ try { return localStorage.getItem(notesKey()) || ''; } catch(e){ return ''; } }
+function notesOpen(){
+  $('notesWho').textContent = (cur && cur.name ? cur.name : 'General') + ' — notes';
+  $('notesArea').value = notesGet();
+  $('notesModal').classList.add('open');
+  setTimeout(function(){ $('notesArea').focus(); }, 50);
+}
+function notesClose(){ $('notesModal').classList.remove('open'); notesBadge(); }
+var notesT = null;
+function notesChanged(){ clearTimeout(notesT); notesT = setTimeout(function(){ try { localStorage.setItem(notesKey(), $('notesArea').value); } catch(e){} }, 400); }
+function notesBadge(){ var b = $('notesFab'); if (b) b.classList.toggle('has', notesGet().trim().length > 0); }
+function fmtC(n){ return '$' + Number(n).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
+var lcMode = 'a';
+var lcMon = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function lcOpen(){
+  $('lcWho').textContent = (cur && cur.name) ? cur.name : 'General';
+  var la = qNum('q_loan'), laa = qNum('q_aapr');
+  $('lc_amt').value = la > 0 ? la : ((cur && cur.payoff > 0) ? cur.payoff : '');
+  $('lc_apr').value = laa > 0 ? laa : ((cur && cur.apr > 0) ? cur.apr : '');
+  var t = Math.round((cur && cur.term) || 0);
+  $('lc_yrs').value = t > 0 ? Math.floor(t / 12) : '';
+  $('lc_mos').value = t > 0 ? (t % 12) : '';
+  var now = new Date();
+  $('lc_smo').value = String(now.getMonth() + 1);
+  $('lc_syr').value = now.getFullYear();
+  $('lcModal').classList.add('open');
+  lcCalc();
+}
+function lcClose(){ $('lcModal').classList.remove('open'); }
+function lcTab(m){ lcMode = m; $('lcTabA').classList.toggle('on', m === 'a'); $('lcTabM').classList.toggle('on', m === 'm'); lcCalc(); }
+function lcCalc(){
+  var amt = qNum('lc_amt'), apr = parseFloat($('lc_apr').value) || 0;
+  var n = Math.round(qNum('lc_yrs')) * 12 + Math.round(qNum('lc_mos'));
+  var smo = Math.min(12, Math.max(1, Math.round(qNum('lc_smo')) || 1));
+  var syr = Math.round(qNum('lc_syr')) || new Date().getFullYear();
+  var feeV = parseFloat($('lc_ofee').value) || 0;
+  var feeT = $('lc_oft').value, feeP = $('lc_ofp').value;
+  var ins = parseFloat($('lc_ins').value) || 0;
+  var res = $('lcRes'), body = $('lcBody');
+  if (!(amt > 0) || !(n > 0)){ res.innerHTML = '<span style="color:#888">Enter a loan amount and term.</span>'; body.innerHTML = ''; return; }
+  var r = apr / 100 / 12;
+  var base = r > 0 ? amt * r / (1 - Math.pow(1 + r, -n)) : amt / n;
+  var mpay = base + ins, totPay = mpay * n, totInt = base * n - amt;
+  var feeAmt = feeT === 'pct' ? amt * feeV / 100 : feeV;
+  var endD = new Date(syr, smo - 1 + n, 1);
+  var h = '<span>Monthly pay: <b class="big">' + fmtC(mpay) + '</b></span>' +
+    '<span>Total of ' + n + ' payments: <b>' + fmtC(totPay) + '</b></span>' +
+    '<span>Total interest: <b>' + fmtC(totInt) + '</b></span>' +
+    '<span>Payoff date: <b>' + lcMon[endD.getMonth()] + '. ' + endD.getFullYear() + '</b></span>';
+  if (feeAmt > 0) h += feeP === 'deduct'
+    ? '<span>Fee deducted — you receive <b>' + fmtC(amt - feeAmt) + '</b></span>'
+    : '<span>Fee paid upfront: <b>' + fmtC(feeAmt) + '</b></span>';
+  res.innerHTML = h;
+  var rows = [], bal = amt, m, d;
+  for (m = 1; m <= n; m++){
+    var inte = bal * r, prin = Math.min(base - inte, bal);
+    if (m === n) prin = bal;
+    bal -= prin;
+    d = new Date(syr, smo - 1 + m - 1, 1);
+    rows.push({ m: m, d: d, pmt: prin + inte + ins, inte: inte, prin: prin, bal: Math.max(bal, 0) });
+  }
+  var md = function(x){ return (x.getMonth() + 1) + '/' + String(x.getFullYear()).slice(2); };
+  var t2 = '';
+  if (lcMode === 'a'){
+    t2 = '<table><thead><tr><th>Year</th><th>Date</th><th>Interest</th><th>Principal</th><th>Ending Balance</th></tr></thead><tbody>';
+    var yrs = Math.ceil(n / 12), y, k;
+    for (y = 1; y <= yrs; y++){
+      var yi = 0, yp = 0, lb = 0, fD = null, lD = null;
+      for (k = (y - 1) * 12; k < Math.min(y * 12, n); k++){
+        yi += rows[k].inte; yp += rows[k].prin; lb = rows[k].bal;
+        if (!fD) fD = rows[k].d; lD = rows[k].d;
+      }
+      t2 += '<tr><td>' + y + '</td><td>' + md(fD) + '-' + md(lD) + '</td><td>' + fmtC(yi) + '</td><td>' + fmtC(yp) + '</td><td>' + fmtC(lb) + '</td></tr>';
+    }
+  } else {
+    t2 = '<table><thead><tr><th>#</th><th>Date</th><th>Payment</th><th>Interest</th><th>Principal</th><th>Balance</th></tr></thead><tbody>';
+    for (var j = 0; j < rows.length; j++){
+      var rw = rows[j];
+      t2 += '<tr><td>' + rw.m + '</td><td>' + lcMon[rw.d.getMonth()] + ' ' + rw.d.getFullYear() + '</td><td>' + fmtC(rw.pmt) + '</td><td>' + fmtC(rw.inte) + '</td><td>' + fmtC(rw.prin) + '</td><td>' + fmtC(rw.bal) + '</td></tr>';
+    }
+  }
+  body.innerHTML = t2 + '</tbody></table>';
+}
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape'){ notesClose(); lcClose(); } });
 (function initClientSel(){
   refreshClientSel();
   document.getElementById('clientSel').addEventListener('change', function(){ pickClient(this.value); });
+  document.getElementById('notesModal').addEventListener('click', function(e){ if (e.target === this) notesClose(); });
+  document.getElementById('lcModal').addEventListener('click', function(e){ if (e.target === this) lcClose(); });
+  notesBadge();
 })();
 </script>
+
+<button id="notesFab" onclick="notesOpen()">📝 Notes</button>
+<div id="notesModal">
+  <div class="notesBox">
+    <div class="notesHead"><span>📝 <span id="notesWho">Notes</span></span><button onclick="notesClose()">✕ Close</button></div>
+    <textarea id="notesArea" placeholder="Type or paste notes here — they save automatically for the selected client." oninput="notesChanged()"></textarea>
+    <div class="notesFoot">Auto-saves in this browser, per client. Esc or click outside to close.</div>
+  </div>
+</div>
+<div id="lcModal">
+  <div class="lcBox">
+    <div class="lcHead"><span>🏦 Loan calculator — <span id="lcWho">General</span></span><button onclick="lcClose()">✕ Close</button></div>
+    <div class="lcForm">
+      <label>Loan amount<input id="lc_amt" type="number" min="0" oninput="lcCalc()"></label>
+      <label>Interest rate %<input id="lc_apr" type="number" min="0" step="0.01" oninput="lcCalc()"></label>
+      <label>Loan term<span class="row2"><input id="lc_yrs" type="number" min="0" placeholder="yrs" oninput="lcCalc()"><input id="lc_mos" type="number" min="0" max="11" placeholder="mos" oninput="lcCalc()"></span></label>
+      <label>Start date<span class="row2"><select id="lc_smo" onchange="lcCalc()"><option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option><option value="4">Apr</option><option value="5">May</option><option value="6">Jun</option><option value="7">Jul</option><option value="8">Aug</option><option value="9">Sep</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option></select><input id="lc_syr" type="number" placeholder="year" oninput="lcCalc()"></span></label>
+      <label>Origination fee<span class="row2"><input id="lc_ofee" type="number" min="0" step="0.01" oninput="lcCalc()"><select id="lc_oft" onchange="lcCalc()"><option value="pct">%</option><option value="dol">$</option></select></span></label>
+      <label>Fee handling<select id="lc_ofp" onchange="lcCalc()"><option value="deduct">deducted from loan</option><option value="upfront">paid upfront</option></select></label>
+      <label>Insurance $/mo<input id="lc_ins" type="number" min="0" step="0.01" oninput="lcCalc()"></label>
+    </div>
+    <div class="lcRes" id="lcRes"></div>
+    <div class="lcTabs"><button id="lcTabA" class="on" onclick="lcTab('a')">Annual schedule</button><button id="lcTabM" onclick="lcTab('m')">Monthly schedule</button></div>
+    <div id="lcBody"></div>
+  </div>
+</div>
 
 </body>
 </html>
