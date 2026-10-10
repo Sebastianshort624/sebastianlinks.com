@@ -722,12 +722,12 @@ function qRecalc(){
   $('q_mleft').textContent = remMo + ' mo left on mtg';
   if (loan > 0 && mos > 0 && mmo > 0){
     var s = amortSched(loan, aapr, mmo, mos);
-    $('q_paid').textContent = fmtD(mos * mmo);
+    $('q_paid').textContent = fmtD(s.prin + s.inte);
     $('q_prin').textContent = fmtD(s.prin);
     $('q_inte').textContent = fmtD(s.inte);
     $('q_bal2').textContent = fmtD(s.bal);
     var st = amortSched(loan, aapr, mmo, term);
-    var totPaid = term * mmo;
+    var totPaid = st.prin + st.inte;
     $('q_tint').textContent = fmtD(st.inte);
     $('q_ipct').textContent = totPaid > 0 ? Math.round(st.inte / totPaid * 100) + '%' : '—';
   } else {
@@ -811,6 +811,11 @@ function importScriptClients(input){
       });
       localStorage.setItem('sl_clients', JSON.stringify(cs));
       refreshClientSel();
+      if (cur && cur.id){
+        var stillThere = false, cs3 = slClients();
+        for (var j = 0; j < cs3.length; j++) if (cs3[j].id === cur.id){ stillThere = true; break; }
+        if (stillThere) pickClient(cur.id);
+      }
       alert('Imported: ' + added + ' new, ' + updated + ' updated.');
     } catch(e){ alert('Could not read that file.'); }
     input.value = '';
