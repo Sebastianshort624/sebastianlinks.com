@@ -962,6 +962,17 @@ function lcCalc(){
     d = new Date(syr, smo - 1 + m - 1, 1);
     rows.push({ m: m, d: d, pmt: prin + inte + ins, inte: inte, prin: prin, bal: Math.max(bal, 0) });
   }
+  // Payoff today — after X payments made
+  var made = Math.round(qNum('lc_made')) || 0;
+  if (made > 0 && made <= n){
+    var rw = rows[made - 1];
+    var totPd = mpay * made, prinPd = amt - rw.bal, intPd = totPd - prinPd - ins * made;
+    res.innerHTML += '<div style="margin-top:8px;padding-top:8px;border-top:2px solid #2e7d32;">' +
+      '<span>Payoff today (after ' + made + ' payments): <b class="big" style="color:#2e7d32">' + fmtC(rw.bal) + '</b></span>' +
+      '<span>Total paid so far: <b>' + fmtC(totPd) + '</b></span>' +
+      '<span>Principal paid: <b>' + fmtC(prinPd) + '</b></span>' +
+      '<span>Interest paid: <b style="color:#c62828">' + fmtC(intPd) + '</b></span></div>';
+  }
   var md = function(x){ return (x.getMonth() + 1) + '/' + String(x.getFullYear()).slice(2); };
   var t2 = '';
   if (lcMode === 'a'){
@@ -1013,6 +1024,7 @@ document.addEventListener('keydown', function(e){ if (e.key === 'Escape'){ notes
       <label>Origination fee<span class="row2"><input id="lc_ofee" type="number" min="0" step="0.01" oninput="lcCalc()"><select id="lc_oft" onchange="lcCalc()"><option value="pct">%</option><option value="dol">$</option></select></span></label>
       <label>Fee handling<select id="lc_ofp" onchange="lcCalc()"><option value="deduct">deducted from loan</option><option value="upfront">paid upfront</option></select></label>
       <label>Insurance $/mo<input id="lc_ins" type="number" min="0" step="0.01" oninput="lcCalc()"></label>
+      <label style="grid-column:1/-1;border-top:1px solid #ddd;padding-top:8px;margin-top:4px;"><b>Payoff today</b> — payments made so far<input id="lc_made" type="number" min="0" placeholder="# of payments made" oninput="lcCalc()"></label>
     </div>
     <div class="lcRes" id="lcRes"></div>
     <div class="lcTabs"><button id="lcTabA" class="on" onclick="lcTab('a')">Annual schedule</button><button id="lcTabM" onclick="lcTab('m')">Monthly schedule</button></div>
