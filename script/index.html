@@ -543,7 +543,7 @@ function qIdn(c){
   el.innerHTML = '<b>' + escH(c.name) + '</b>' +
     (c.resort ? '<br><b>' + escH(c.resort) + '</b>' : '') +
     (ph ? '<br>📞 ' + escH(ph) : '') +
-    (c.notes ? '<br><span class="tmin">' + escH(c.notes) + '</span>' : '') +
+    (c.notes ? '<br><a href="javascript:void(0)" onclick="document.getElementById(\'q_notes_full\').style.display=document.getElementById(\'q_notes_full\').style.display===\'none\'?\'block\':\'none\'" style="font-size:0.85em;">📋 Client notes (tap to expand)</a><div id="q_notes_full" style="display:none;margin-top:6px;"><span class="tmin">' + escH(c.notes) + '</span></div>' : '') +
     (c.crmlink ? '<br><a href="' + escH(c.crmlink) + '" target="_blank">CRM lead ↗</a>' : '');
   el.style.display = 'block';
 }
