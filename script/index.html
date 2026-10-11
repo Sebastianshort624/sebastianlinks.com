@@ -528,10 +528,10 @@ function renderBar(c, n){
   bar.style.display = 'block';
 }
 function applyFills(c, n){
-  fillAll('[data-fill="down"]', c.down > 0 ? fmtD(c.down) : '$________');
-  fillAll('[data-fill="fee"]', n.feeKnown ? fmtD(n.fee) : '$________');
-  fillAll('[data-fill="savings"]', n.feeKnown ? fmtD(n.s10) : '$________');
-  fillAll('[data-fill="total10"]', n.feeKnown ? fmtD(n.t10) : '$________');
+  fillAll('[data-fill="down"]', c.down > 0 ? fmtC(c.down) : '$________');
+  fillAll('[data-fill="fee"]', n.feeKnown ? fmtC(n.fee) : '$________');
+  fillAll('[data-fill="savings"]', n.feeKnown ? fmtC(n.s10) : '$________');
+  fillAll('[data-fill="total10"]', n.feeKnown ? fmtC(n.t10) : '$________');
   fillAll('[data-fill="ca"]', c.ca || '[CA name]');
   fillAll('[data-fill="resort"]', c.resort || '_________');
 }
