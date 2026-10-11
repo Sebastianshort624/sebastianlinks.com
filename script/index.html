@@ -492,6 +492,7 @@ function unlock(){
 /* ---- client dropdown: fills script blanks from /calc client list (same browser) ---- */
 function slClients(){ try { return JSON.parse(localStorage.getItem('sl_clients') || '[]'); } catch(e){ return []; } }
 function fmtD(n){ return '$' + Math.round(n).toLocaleString('en-US'); }
+function fmtC(n){ return '$' + Number(n).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
 function escH(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]; }); }
 function fillAll(sel, txt){ var els = document.querySelectorAll(sel); for (var i = 0; i < els.length; i++) els[i].textContent = txt; }
 function resetFills(){
@@ -521,9 +522,9 @@ function renderBar(c, n){
     (ph ? ' · 📞 ' + escH(ph) : '') + (c.resort ? ' · <strong>' + escH(c.resort) + '</strong>' : '') +
     (c.ca ? ' · CA: <strong>' + escH(c.ca) + '</strong>' : '') +
     (c.email ? ' · ✉️ ' + escH(c.email) : '') + (c.tz ? ' · ' + escH(c.tz) : '') + '<br>' +
-    (mmo > 0 ? 'Mtg ' + fmtD(mmo) + '/mo · ' : '') + 'MF ' + fmtD(c.mf) + '/yr (' + fmtD(mfmo) + '/mo)' +
-    (mmo > 0 ? ' · Yr total ' + fmtD(yrTot) : '') + ' · 5-yr ' + fmtD(n.t5) + ' · 10-yr ' + fmtD(n.t10) +
-    (n.feeKnown ? ' · Fee ' + fmtD(n.fee) + ' · 10-yr save ' + fmtD(n.s10) : '');
+    (mmo > 0 ? 'Mtg ' + fmtC(mmo) + '/mo · ' : '') + 'MF ' + fmtC(c.mf) + '/yr (' + fmtC(mfmo) + '/mo)' +
+    (mmo > 0 ? ' · Yr total ' + fmtC(yrTot) : '') + ' · 5-yr ' + fmtC(n.t5) + ' · 10-yr ' + fmtC(n.t10) +
+    (n.feeKnown ? ' · Fee ' + fmtC(n.fee) + ' · 10-yr save ' + fmtC(n.s10) : '');
   bar.style.display = 'block';
 }
 function applyFills(c, n){
@@ -718,14 +719,14 @@ function qRecalc(){
   function winMo(m){ return Math.min(m, remMo) * mmo + mf * m / 12; }
   var w30 = winMo(1), w90 = winMo(3), w6 = winMo(6);
   var t1 = win(1), t3 = win(3), t5 = win(5), t10 = win(10), t20 = win(20);
-  $('q_w30').textContent = fmtD(w30);
-  $('q_w90').textContent = fmtD(w90);
-  $('q_w6').textContent = fmtD(w6);
-  $('q_t1').textContent = fmtD(t1);
-  $('q_t3').textContent = fmtD(t3);
-  $('q_t5').textContent = fmtD(t5);
-  $('q_t10').textContent = fmtD(t10);
-  $('q_t20').textContent = fmtD(t20);
+  $('q_w30').textContent = fmtC(w30);
+  $('q_w90').textContent = fmtC(w90);
+  $('q_w6').textContent = fmtC(w6);
+  $('q_t1').textContent = fmtC(t1);
+  $('q_t3').textContent = fmtC(t3);
+  $('q_t5').textContent = fmtC(t5);
+  $('q_t10').textContent = fmtC(t10);
+  $('q_t20').textContent = fmtC(t20);
   // Expense breakdown (matches his table: monthly MF floored, 10-yr MF escalated)
   var mfmo = Math.floor(mf / 12), mfoyr = mfmo * 12, moyr = mmo * 12, totyr = moyr + mfoyr;
   var mo10 = moyr * 10, escR = (esc || 8) / 100;
