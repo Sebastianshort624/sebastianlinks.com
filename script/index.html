@@ -38,6 +38,14 @@
   .sprinkle li:before { content: "✦"; position: absolute; left: 8px; top: 9px; color: #d99a17; font-size: 0.9em; }
   .objsrch { width: 100%; box-sizing: border-box; padding: 7px 10px; margin-bottom: 8px; border: 1px solid #c9dcf7; border-radius: 6px; font-size: 0.9em; }
   .objsrch:focus { outline: 2px solid #0b3d91; border-color: #0b3d91; }
+  /* Client fact highlighting: green=client facts, blue=calculated figures, yellow=missing */
+  .hl-g { color: #0a7a2e; font-weight: bold; }
+  .hl-b { color: #0b3d91; font-weight: bold; }
+  .hl-m { background: #fff3cd; color: #856404; font-weight: bold; padding: 0 4px; border-radius: 3px; }
+  .jumpline { position: sticky; top: 0; z-index: 50; background: #fff; padding: 10px 0; margin-bottom: 10px; border-bottom: 2px solid #0b3d91; }
+  .jumpline a { display: inline-block; margin-right: 16px; padding: 10px 20px; font-size: 1.1em; font-weight: bold; text-decoration: none; border-radius: 8px; }
+  .jumpline a.jprice { background: #0a7a2e; color: #fff; }
+  .jumpline a.jcontract { background: #0b3d91; color: #fff; }
   @media (min-width: 1350px){
     .sideboxes { position: fixed; right: 16px; top: 120px; width: 260px; margin: 0; max-height: 72vh; overflow-y: auto; }
     .sideboxes .sprinkle { margin-bottom: 12px; }
@@ -147,6 +155,10 @@
 <button onclick="document.getElementById('s_impfile').click()" style="margin-left:8px;padding:6px 14px;font-size:0.9em;background:#0b3d91;color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Import JSON</button>
 <input type="file" id="s_impfile" accept=".json,application/json" style="display:none" onchange="importScriptClients(this)"></div>
 <div class="cbar" id="cbar" style="display:none"></div>
+<div class="jumpline">
+  <a href="#price-anchor" class="jprice">💰 JUMP TO PRICE →</a>
+  <a href="#coversheet" class="jcontract">📝 JUMP TO CONTRACT →</a>
+</div>
 
 <aside class="calcside">
   <h3>🧮 Calculator <button onclick="qSync(cur)" title="Reset to client">↺</button></h3>
@@ -289,10 +301,11 @@
   <h2>STAGE 1 — INTRODUCTION &amp; CREDIBILITY <span class="t">15 MIN</span></h2>
   <div class="clock">0:00–0:15 · chit-chat <span class="tmin">(5 min)</span> → credibility research together <span class="tmin">(10 min)</span> <span class="stimer"><button id="sb1" onclick="toggleStage(1)">▶ 15:00</button> <button class="rs" onclick="resetStage(1)" title="Reset">↺</button></span></div>
   <ol class="liners">
-    <li>"My role is to make sure the case we build is strong enough to bring to our approval team. The reason being we have a <b>99% success rate</b> because we only take on cases we know we will win — because we give a <b>100% money-back guarantee</b>, and it costs us money as we progress your case."</li>
+    <li>"That timeshare contract you signed — it's impenetrable. It was designed to lock you into a perpetual obligation — maintenance fees not just for your lifetime, but for generations. I'm not trying to discredit the contract — your signature is on it multiple times. What we're building is every reason why, had you not been lied to, you never would have signed it in the first place."</li>
+    <li>"But first I'm going to confirm what you and <span class="hl-g" data-fill="ca">[CA name]</span> have documented thus far."</li>
     <li><span class="grp">Credibility research:</span>
       <ol>
-        <li>"Did you get a chance to do some research on our company? <span data-fill="ca">[CA name]</span> usually sends the links over — did you see we're <b>A+ rated and accredited</b> by the Better Business Bureau, and ranked the <b>number one timeshare cancellation company in the world</b> by Best Company?"</li>
+        <li>"Did you get a chance to do some research on our company? <span class="hl-g" data-fill="ca">[CA name]</span> usually sends the links over — did you see we're <b>A+ rated and accredited</b> by the Better Business Bureau, and ranked the <b>number one timeshare cancellation company in the world</b> by Best Company?"</li>
         <li>"Best Company is a <b>third-party organization</b> — all they do is rank the top companies in the world. Did you happen to see we're ranked <b>number one</b> in the timeshare cancellation industry — the industry we created?"</li>
         <li>Research together: <a href="https://sebastianlinks.com/linx">sebastianlinks.com/linx</a> — company credibility &amp; reviews.</li>
         <li>"OK great — so <b>no questions about our credibility</b>, or our ability to do what we say we'll do — is that correct? Perfect."</li>
@@ -319,7 +332,7 @@
         <li>"When you bought, did they make it sound like you could <b>always just sell it</b> if you wanted out? These things are <b>listed on eBay for a dollar</b> — you can't even give them away."<br>→ "If they had followed the law and shown you what your total commitment was — just in the first 10 years — <b>would you have ever signed that contract?</b>"</li>
         <li>"Did they tell you the maintenance fees <b>never end</b> — that they go on forever and <b>get passed down to your kids?</b>"<br>→ "If they had followed the law and shown you what your total commitment was — just in the first 10 years — <b>would you have ever signed that contract?</b>"</li>
         <li>"What was the maintenance fee back when you bought? And did they tell you it <b>goes up every single year</b> — around 8%?"<br>→ "If they had followed the law and shown you what your total commitment was — just in the first 10 years — <b>would you have ever signed that contract?</b>"</li>
-        <li>"Did they make it sound like you had to be an owner to stay in these resorts — priority benefits, good availability, whatever you wanted whenever? <span data-fill="ca">[CA name]</span> showed you that's not true — <b>you can rent the same rooms anytime for a fraction of the cost</b>. Remember seeing rooms for like a hundred bucks a night? A whole week for 700 bucks — while as an owner you're paying thousands a year and you're lucky to get a single week."<br>→ "If they had followed the law and shown you what your total commitment was — just in the first 10 years — <b>would you have ever signed that contract?</b>"</li>
+        <li>"Did they make it sound like you had to be an owner to stay in these resorts — priority benefits, good availability, whatever you wanted whenever? <span class="hl-g" data-fill="ca">[CA name]</span> showed you that's not true — <b>you can rent the same rooms anytime for a fraction of the cost</b>. Remember seeing rooms for like a hundred bucks a night? A whole week for 700 bucks — while as an owner you're paying thousands a year and you're lucky to get a single week."<br>→ "If they had followed the law and shown you what your total commitment was — just in the first 10 years — <b>would you have ever signed that contract?</b>"</li>
         <li>"And did they tell you booking was easy — just call a few days or weeks ahead? <b>What was it actually like when you tried?</b>"<br>→ "If they had followed the law and shown you what your total commitment was — just in the first 10 years — <b>would you have ever signed that contract?</b>"</li>
       </ol>
     </li>
@@ -364,8 +377,9 @@
   <ol class="liners">
     <li><span class="grp">Checking / savings:</span>
       <ol>
+        <li id="price-anchor">"Your total price is <b><span class="hl-b" data-fill="fee">$________</span></b> — and this includes all, beginning to end. We never ask for another dollar. This price eliminates all past, present and future debt, and your name is removed from the deed at the county level, so your estate is safe and your next of kin will never inherit this nightmare."</li>
         <li>"Now, if you don't have any other questions about our process, the next thing I can explain to you are the <b>different ways most people pay</b> for our services. The fastest, easiest, and smartest way to do so financially is: if you can pay it out of any <b>checking or savings account</b>. If you have the money, then well, pay it."</li>
-        <li>"And again, I don't like to assume anything. So I'll just ask you <b>straight up</b>: do you have it in your checking account, savings account, or any type of retirement account, 401(k), IRA, anything like that, stocks, bonds, whatever, where you could get it into your checking account within a certain amount of days?"</li>
+        <li>"And again, I don't like to assume anything. So I'll just ask you <b>straight up</b>: do you have it in your checking account, savings account, stocks, bonds, whatever, where you could get it into your checking account within a certain amount of days?"</li>
       </ol>
     </li>
     <li><span class="grp">How far off:</span>
@@ -840,22 +854,34 @@ function importScriptClients(input){
       if (!Array.isArray(arr)) arr = [arr];
       var cs = slClients(), added = 0, updated = 0;
       arr.forEach(function(r){
-        if (!r || !r.name) return;
+        if (!r || (!r.name && !r.first_name)) return;
         var ix = -1;
+        var rname = r.name || ((r.first_name || '') + (r.co_owner ? ' & ' + r.co_owner : ''));
         for (var i = 0; i < cs.length; i++){
-          if ((r.id && cs[i].id === r.id) || cs[i].name.toLowerCase() === String(r.name).toLowerCase()){ ix = i; break; }
+          if ((r.id && cs[i].id === r.id) || cs[i].name.toLowerCase() === String(rname).toLowerCase()){ ix = i; break; }
         }
+        // Support both flat and nested (October JSON) structures
+        var ans = r.answers || {};
+        var inp = r.inputs || {};
         var rec = {
           id: ix >= 0 ? cs[ix].id : (r.id || ('c' + Date.now().toString(36) + Math.floor(Math.random() * 999))),
-          name: r.name, phone: r.phone || '', email: r.email || '', ca: r.ca || '',
+          name: rname, phone: r.phone || '', email: r.email || '',
+          ca: r.ca || ans.caseAnalyst || r.sca_name || '',
           appt: r.appt || '', resort: r.resort || '',
           tz: r.tz || '', phone2: r.phone2 || '', notes: r.notes || '',
           dtype: r.dtype || 'standard',
-          mf: qNum2(r.mf), esc: qNum2(r.esc) || 8, payoff: qNum2(r.payoff),
-          apr: qNum2(r.apr), term: qNum2(r.term), pyr: qNum2(r.pyr), mmo: qNum2(r.mmo), fee: qNum2(r.fee),
+          mf: qNum2(r.mf != null ? r.mf : (inp.annualMF != null ? inp.annualMF : ans.mfAmount)),
+          esc: qNum2(r.esc) || 8,
+          payoff: qNum2(r.payoff != null ? r.payoff : inp.loanBalance),
+          apr: qNum2(r.apr != null ? r.apr : inp.interestRate),
+          term: qNum2(r.term != null ? r.term : inp.loanTermMonths),
+          pyr: qNum2(r.pyr != null ? r.pyr : inp.purchaseYear),
+          mmo: qNum2(r.mmo != null ? r.mmo : inp.monthlyPayment),
+          fee: qNum2(r.fee != null ? r.fee : inp.caseFee),
           down: qNum2(r.down), downt: r.downt || 'dol', paymethod: r.paymethod || 'ach',
-          downdate: r.downdate || '', pmtmo: qNum2(r.pmtmo), pmtdate: r.pmtdate || '',
-          fapr: qNum2(r.fapr), fmo: qNum2(r.fmo), fu: r.fu || '', crmlink: r.crmlink || ''
+          downdate: r.downdate || '', pmtmo: qNum2(r.pmtmo != null ? r.pmtmo : r.pmtmo), pmtdate: r.pmtdate || '',
+          fapr: qNum2(r.fapr != null ? r.fapr : r.fapr), fmo: qNum2(r.fmo != null ? r.fmo : r.fmo),
+          fu: r.fu || '', crmlink: r.crmlink || ''
         };
         if (ix >= 0){ cs[ix] = rec; updated++; } else { cs.push(rec); added++; }
       });
@@ -995,3 +1021,4 @@ document.addEventListener('keydown', function(e){ if (e.key === 'Escape'){ notes
 
 </body>
 </html>
+
