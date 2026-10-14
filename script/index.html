@@ -164,14 +164,18 @@
   <h3>🧮 Calculator <button onclick="qSync(cur)" title="Reset to client">↺</button></h3>
   <div class="qidn" id="q_idn" style="display:none"></div>
   <div class="tmin" id="q_cli" style="margin-bottom:8px">No client selected</div>
+  <div id="q_dtypebar" style="display:flex;gap:6px;margin-bottom:10px">
+    <button id="q_btn_mtg" onclick="qSetDtype('MTG')" style="flex:1;padding:9px 6px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:0.95em;background:#0b3d91;color:#fff">\uD83C\uDFE6 Mortgage</button>
+    <button id="q_btn_db" onclick="qSetDtype('DB')" style="flex:1;padding:9px 6px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:0.95em;background:#e2e8f0;color:#334155">\uD83D\uDD34 DEED-BACK</button>
+  </div>
   <div class="cbox">
   <div class="qsec" style="margin-top:0">🏨 Resort numbers</div>
-  <label class="qf">Mo mortgage <input id="q_mmo" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf mtgOnly">Mo mortgage <input id="q_mmo" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">MF/yr <input id="q_mf" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">Esc % <input id="q_esc" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf">Yr purchased <input id="q_pyr" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf">Loan term mo <input id="q_term" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf">Payoff <input id="q_payoff" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf mtgOnly">Yr purchased <input id="q_pyr" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf mtgOnly">Loan term mo <input id="q_term" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf mtgOnly">Payoff <input id="q_payoff" type="number" min="0" oninput="qRecalc()"></label>
   <div class="qout">
     <div class="qsm">Next 30 days <b id="q_w30">—</b></div>
     <div class="qsm">Next 90 days <b id="q_w90">—</b></div>
@@ -184,22 +188,22 @@
   </div>
   <div class="qsec">📊 Expense breakdown</div>
   <div class="qout">
-    <div>Monthly Mortgage <b id="q_xmmo">—</b></div>
+    <div class="mtgOnly">Monthly Mortgage <b id="q_xmmo">—</b></div>
     <div>Monthly Maintenance <b id="q_xmfmo">—</b></div>
     <div>Total Monthly <b id="q_xtotmo">—</b></div>
-    <div>Annual Mortgage <b id="q_xmoyr">—</b></div>
+    <div class="mtgOnly">Annual Mortgage <b id="q_xmoyr">—</b></div>
     <div>Annual Maintenance <b id="q_xmfyr">—</b></div>
     <div>Annual Total <b id="q_xtotyr">—</b></div>
-    <div>10-Yr Mortgage <b id="q_xmo10">—</b></div>
+    <div class="mtgOnly">10-Yr Mortgage <b id="q_xmo10">—</b></div>
     <div>10-Yr Maintenance (<span id="q_xescp">8</span>% esc) <b id="q_xmf10">—</b></div>
     <div>10-Yr Projection <b id="q_xproj10">—</b></div>
   </div>
-  <div class="qsec">Loan breakdown</div>
-  <div class="tmin" id="q_mleft" style="margin-bottom:6px">— mo left</div>
-  <label class="qf">Loan amt <input id="q_loan" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf">APR % <input id="q_aapr" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf">Months <input id="q_mos" type="number" min="1" max="120" oninput="qRecalc()"></label>
-  <div class="qout">
+  <div class="qsec mtgOnly">Loan breakdown</div>
+  <div class="tmin mtgOnly" id="q_mleft" style="margin-bottom:6px">— mo left</div>
+  <label class="qf mtgOnly">Loan amt <input id="q_loan" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf mtgOnly">APR % <input id="q_aapr" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf mtgOnly">Months <input id="q_mos" type="number" min="1" max="120" oninput="qRecalc()"></label>
+  <div class="qout mtgOnly">
     <div>Total paid <b id="q_paid">—</b></div>
     <div>Principal <b id="q_prin">—</b></div>
     <div>Interest <b id="q_inte">—</b></div>
@@ -506,6 +510,28 @@ function resetFills(){
 function mfTot(mf, r, n){ if (n <= 0) return 0; if (r <= 0) return mf * n; return mf * ((Math.pow(1 + r, n) - 1) / r); }
 function $(id){ return document.getElementById(id); }
 var cur = null;
+var qDtype = 'MTG';
+function qIsDB(){ return qDtype === 'DB'; }
+function qApplyDtype(){
+  var db = qIsDB();
+  var els = document.querySelectorAll('.mtgOnly');
+  for (var i = 0; i < els.length; i++) els[i].style.display = db ? 'none' : '';
+  var bm = $('q_btn_mtg'), bd = $('q_btn_db');
+  if (bm && bd){
+    bm.style.background = db ? '#e2e8f0' : '#0b3d91'; bm.style.color = db ? '#334155' : '#fff';
+    bd.style.background = db ? '#b91c1c' : '#e2e8f0'; bd.style.color = db ? '#fff' : '#334155';
+  }
+}
+function qSetDtype(t){
+  qDtype = t === 'DB' ? 'DB' : 'MTG';
+  if (cur && cur.id){
+    cur.dtype = qDtype;
+    var cs = slClients();
+    for (var i = 0; i < cs.length; i++) if (cs[i].id === cur.id) cs[i].dtype = qDtype;
+    try { localStorage.setItem('sl_clients', JSON.stringify(cs)); } catch(e){}
+  }
+  qApplyDtype(); qRecalc();
+}
 function amort(pv, apr, n){ var r = apr / 100 / 12; if (!(r > 0)) return n > 0 ? pv / n : 0; return pv * r / (1 - Math.pow(1 + r, -n)); }
 function pickClient(id){
   var cs = slClients(), c = null;
@@ -518,13 +544,16 @@ function renderBar(c, n){
   var bar = $('cbar');
   var mmo = c.mmo || 0, mfmo = c.mf / 12, yrTot = mmo * 12 + c.mf;
   var ph = [c.phone, c.phone2].filter(function(x){ return x; }).join(' · ');
-  bar.innerHTML = '<strong>' + escH(c.name) + '</strong>' +
+  var escR = (c.esc || 8) / 100;
+  var acum = c.mf > 0 ? '<br><span style="font-weight:700;">Acum. maintenance: 5-yr ' + fmtC(mfTot(c.mf, escR, 5)) + ' \u00b7 10-yr ' + fmtC(mfTot(c.mf, escR, 10)) + ' \u00b7 20-yr ' + fmtC(mfTot(c.mf, escR, 20)) + ' \u00b7 30-yr ' + fmtC(mfTot(c.mf, escR, 30)) + '</span>' : '';
+  var dbbanner = c.dtype === 'DB' ? '<div style="background:#b91c1c;color:#fff;font-size:1.9em;font-weight:800;text-align:center;padding:10px 6px;border-radius:6px;letter-spacing:1px;margin-bottom:6px;">\uD83D\uDD34 DEED-BACK \uD83D\uDD34</div>' : '';
+  bar.innerHTML = dbbanner + '<strong>' + escH(c.name) + '</strong>' +
     (ph ? ' · 📞 ' + escH(ph) : '') + (c.resort ? ' · <strong>' + escH(c.resort) + '</strong>' : '') +
     (c.ca ? ' · CA: <strong>' + escH(c.ca) + '</strong>' : '') +
     (c.email ? ' · ✉️ ' + escH(c.email) : '') + (c.tz ? ' · ' + escH(c.tz) : '') + '<br>' +
     (mmo > 0 ? 'Mtg ' + fmtC(mmo) + '/mo · ' : '') + 'MF ' + fmtC(c.mf) + '/yr (' + fmtC(mfmo) + '/mo)' +
     (mmo > 0 ? ' · Yr total ' + fmtC(yrTot) : '') + ' · 5-yr ' + fmtC(n.t5) + ' · 10-yr ' + fmtC(n.t10) +
-    (n.feeKnown ? ' · Fee ' + fmtC(n.fee) + ' · 10-yr save ' + fmtC(n.s10) : '');
+    (n.feeKnown ? ' · Fee ' + fmtC(n.fee) + ' · 10-yr save ' + fmtC(n.s10) : '') + acum;
   bar.style.display = 'block';
 }
 function applyFills(c, n){
@@ -654,6 +683,7 @@ function qCover(){
   } catch(e){}
 }
 function qSync(c){
+  qDtype = (c && c.dtype === 'DB') ? 'DB' : 'MTG'; qApplyDtype();
   $('q_mmo').value = c ? (c.mmo || '') : '';
   $('q_mf').value = c ? c.mf : ''; $('q_esc').value = c ? (c.esc || 8) : '';
   $('q_pyr').value = c ? (c.pyr || '') : ''; $('q_term').value = c ? (c.term || '') : '';
@@ -708,7 +738,7 @@ function qDocDel(i){
 }
 function qRecalc(){
   if (!cur){ ['q_w30','q_w90','q_w6','q_t1','q_t3','q_t5','q_t10','q_t20','q_ftot','q_bal','q_s10','q_mo','q_mosn','q_t12','q_t24','q_t36','q_comm','q_cdate','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct','q_xmmo','q_xmfmo','q_xtotmo','q_xmoyr','q_xmfyr','q_xtotyr','q_xmo10','q_xmf10','q_xproj10'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— mo left'; return; }
-  var mmo = qNum('q_mmo'), mf = qNum('q_mf'), esc = qNum('q_esc'), payoff = qNum('q_payoff');
+  var mmo = qIsDB() ? 0 : qNum('q_mmo'), mf = qNum('q_mf'), esc = qNum('q_esc'), payoff = qNum('q_payoff');
   var pyrIn = parseInt(($('q_pyr').value || '').replace(/\D/g, ''), 10) || 0;
   var pyr = pyrIn > 0 ? pyrIn : 2023; // hidden default for math only — field stays blank
   var term = qNum('q_term') || 120;
