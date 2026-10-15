@@ -39,7 +39,7 @@
   .ib-ctl select, .ib-ctl input { font-family: inherit; font-size: 0.95em; padding: 3px 6px; width: 118px; min-width: 0; border: 1px solid #9db9e4; border-radius: 4px; background: #fff; color: #0b3d91; }
   .ib-lab { font-size: 0.62em; font-weight: 800; letter-spacing: 1.2px; color: #40669c; text-transform: uppercase; }
   .ib-ca { font-size: 1.45em; font-weight: 400; line-height: 1.15; color: #0b3d91; }
-  .ib-client { font-size: 1.5em; font-weight: 600; line-height: 1.15; color: #0b3d91; }
+  .ib-client { font-size: 1.5em; font-weight: 800; line-height: 1.15; color: #0b3d91; }
   .ib-cal { font-size: 1em; margin-top: 3px; }
   .ib-lab2 { font-size: 0.68em; font-weight: 400; letter-spacing: 1.2px; color: #40669c; }
   .ib-client a { text-decoration: underline; }
@@ -142,16 +142,14 @@
   .qterms b { font-weight: bold; }
   .qidn { font-size: 0.85em; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #0b3d91; line-height: 1.55; overflow-wrap: break-word; word-wrap: break-word; }
   #pegbar { position: sticky; top: 0; z-index: 60; margin: 0 -32px 16px; }
-  .lockrow { display: flex; gap: 10px; align-items: stretch; }
-  .lockrow .cbar { margin-top: 0; flex: 1; min-width: 0; }
-  .navrail { display: flex; flex-direction: column; gap: 7px; background: #eef4ff; border: 1px solid #c9dcf7; border-radius: 6px; padding: 10px 12px; font-size: 0.92em; min-width: 118px; }
-  .navrail a { color: #0b3d91; text-decoration: none; font-weight: 400; }
-  .navrail a:hover { text-decoration: underline; }
+  .navline { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; font-size: 0.85em; font-weight: 400; padding: 3px 6px; }
+  .navline a { color: #0b3d91; text-decoration: none; font-weight: 400; }
+  .navline a:hover { text-decoration: underline; }
+  .navline .nv-timer { margin-left: auto; }
   .snav { display: flex; gap: 9px; flex-wrap: wrap; }
   .nv-timer { color: #0b3d91; white-space: nowrap; font-variant-numeric: tabular-nums; }
   #topbar.over { color: #a31212; font-weight: 700; }
-  @media (max-width: 640px){ .lockrow { flex-direction: column; } .navrail { flex-direction: row; flex-wrap: wrap; align-items: center; } }
-  .stage { scroll-margin-top: 230px; }
+  .stage { scroll-margin-top: 260px; }
   .pagolink { display: block; background: #0b3d91; color: #ffd34d; font-weight: 800; font-size: 1.15em; line-height: 1.35; text-align: center; padding: 10px 14px; border-radius: 8px; margin-top: 6px; text-decoration: none; }
   .pagolink:hover { background: #0a357e; }
   #pago-transicion { scroll-margin-top: 300px; font-weight: 800; font-size: 1.12em; color: #0b3d91; background: #fdf6d8; border-radius: 6px; padding: 6px 10px; }
@@ -207,29 +205,27 @@
 </div>
 
 <div id="pegbar">
-  <div class="lockrow">
-    <div class="navrail">
-      <a href="#" onclick="resetOverall();return false;" title="Reiniciar el temporizador general">↺ Reiniciar</a>
-      <span class="snav"><a href="#stage1">1</a><a href="#stage2">2</a><a href="#stage3">3</a><a href="#stage4">4</a><a href="#stage5">5</a><a href="#stage6">6</a></span>
-      <a href="#price-anchor">💰 Precio</a>
-      <a href="#coversheet">📝 Contrato</a>
-      <span class="nv-timer" id="topbar">⏱ <span id="ot">1:30:00</span> <a href="#" id="obtn" onclick="toggleOverall();return false;">▶ Iniciar</a></span>
-    </div>
-    <div class="cbar" id="cbar" style="display:none">
-      <div class="ib-wrap">
-        <div class="ib-col" id="ibL"></div>
-        <div class="ib-col" id="ibM"></div>
-        <div class="ib-col">
-          <div id="ibR"></div>
-          <div class="ib-ctl">
-            <label>Mes de compra <select id="b_pmonth" onchange="qBarCtl()"><option value="">—</option><option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option><option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option><option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option></select></label>
-            <label>Año de compra <input id="b_pyr" type="number" min="0" oninput="qBarCtl()"></label>
-            <label>Noches/año <input id="b_nights" type="number" min="0" oninput="qBarCtl()"></label>
-          </div>
+  <div class="navline">
+    <a href="#" onclick="resetOverall();return false;" title="Reiniciar el temporizador general">↺ Reiniciar</a>
+    <span class="snav"><a href="#stage1">1</a><a href="#stage2">2</a><a href="#stage3">3</a><a href="#stage4">4</a><a href="#stage5">5</a><a href="#stage6">6</a></span>
+    <a href="#price-anchor">💰 Precio</a>
+    <a href="#coversheet">📝 Contrato</a>
+    <span class="nv-timer" id="topbar">⏱ <span id="ot">1:30:00</span> <a href="#" id="obtn" onclick="toggleOverall();return false;">▶ Iniciar</a></span>
+  </div>
+  <div class="cbar" id="cbar" style="display:none">
+    <div class="ib-wrap">
+      <div class="ib-col" id="ibL"></div>
+      <div class="ib-col" id="ibM"></div>
+      <div class="ib-col">
+        <div id="ibR"></div>
+        <div class="ib-ctl">
+          <label>Mes de compra <select id="b_pmonth" onchange="qBarCtl()"><option value="">—</option><option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option><option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option><option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option></select></label>
+          <label>Año de compra <input id="b_pyr" type="number" min="0" oninput="qBarCtl()"></label>
+          <label>Noches/año <input id="b_nights" type="number" min="0" oninput="qBarCtl()"></label>
         </div>
       </div>
-      <div id="ibLinks"></div>
     </div>
+    <div id="ibLinks"></div>
   </div>
   <a class="pagolink" href="#pago-transicion" onclick="var e=document.getElementById('pago-transicion');var b=document.getElementById('pegbar');window.scrollTo({top:e.getBoundingClientRect().top+window.scrollY-(b?b.offsetHeight:0)-10,behavior:'smooth'});return false;">Ahora bien, si no tienes más preguntas sobre nuestro proceso, lo siguiente que puedo explicarte son las diferentes formas en que la mayoría de las personas pagan por nuestros servicios.</a>
 </div>
@@ -718,13 +714,17 @@ function renderBar(c, n){
   if (c.loanNote || c.folderPath) lk.push('<a href="#" onclick="qCopyInfo(\'loan\', this);return false;" title="' + escH((c.loanNote || 'Contrato de préstamo') + (c.folderPath ? ' — ' + c.folderPath : '') + ' — clic para copiar la ruta') + '">📄 Préstamo</a>');
   $('ibL').innerHTML = '<div class="ib-client">' + qNameLink(c) + chip + '</div>' +
       '<div class="ib-cal"><span class="ib-lab2">ANALISTA DE CASOS:</span> ' + escH(c.ca || '—') + '</div>' + (ph ? '<div class="ib-ph">📞 ' + escH(ph) + '</div>' : '') +
-      (c.email ? '<div class="ib-line">✉️ ' + escH(c.email) + '</div>' : '');
+      (c.email ? '<div class="ib-line">✉️ ' + escH(c.email) + '</div>' : '') +
+      (c.address ? '<div class="ib-line">📍 ' + escH(c.address) + '</div>' : '');
   $('ibM').innerHTML = '<div class="ib-stats">' +
       '<div><div class="ib-lab">Payoff</div><div class="ib-big">' + (c.payoff > 0 ? fmtC(c.payoff) : '—') + '</div></div>' +
       '<div><div class="ib-lab">Total anual</div><div class="ib-big">' + fmtC(totyr) + '</div></div>' +
       '<div><div class="ib-lab">Costo por noche</div><div class="ib-big">' + perNight + '</div></div></div>' + grid;
+  var monNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  var compLine = (c.pyr > 0 || (c.pmonth >= 1 && c.pmonth <= 12)) ? '<div class="ib-line">Comprado: ' + ((c.pmonth >= 1 && c.pmonth <= 12) ? monNames[c.pmonth - 1] + (c.pyr > 0 ? ' ' : '') : '') + (c.pyr > 0 ? c.pyr : '') + '</div>' : '';
   $('ibR').innerHTML = '<div class="ib-resort">' + escH(c.resort || '—') + '</div>' +
-      (c.address ? '<div class="ib-line">📍 ' + escH(c.address) + '</div>' : '') +
+      (c.loc ? '<div class="ib-line">📍 ' + escH(c.loc) + '</div>' : '') +
+      compLine +
       '<div class="ib-line">Contratos: ' + (c.contracts > 0 ? c.contracts : '—') + '</div>' +
       '<div class="ib-line">MTG: <b>' + fmtD(mmo) + '/mes</b></div>' +
       '<div class="ib-line">MF: <b>' + fmtD(mf) + '/año</b> (' + fmtD(mfmo) + '/mes)</div>' +
