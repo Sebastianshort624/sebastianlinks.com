@@ -114,6 +114,10 @@
   .qout div { margin-bottom: 4px; }
   .qout b { float: right; }
   .qsm { font-size: 0.78em; color: #555; }
+  .qcontract { background: #f4f8ff; border: 1px solid #c9dcf7; border-radius: 6px; padding: 6px 9px; margin-bottom: 5px; }
+  .qcontract .qch { font-size: 0.92em; }
+  .qcontract .qcfig { font-size: 0.85em; color: #334155; }
+  .qctot { font-size: 0.92em; font-weight: 700; color: #0b3d91; background: #e8f0fd; border-radius: 6px; padding: 6px 9px; margin-bottom: 5px; }
   .qsec { font-weight: bold; font-size: 0.9em; margin: 12px 0 6px; color: #0b3d91; }
   .coversheet { border: 2px solid #0b3d91; border-radius: 8px; padding: 14px 18px; margin: 28px 0; background: #fff; }
   .coversheet h2 { margin: 0 0 10px; font-size: 1.1em; color: #0b3d91; }
@@ -238,6 +242,7 @@
   </div>
   <div class="calcgrid"><div class="cpanel cpanel-trap">
   <div class="qsec" style="margin-top:0">🏨 Situación del resort — la trampa actual</div>
+  <div id="q_contracts" style="display:none"></div>
   <label class="qf mtgOnly">Hipoteca mensual <input id="q_mmo" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">MF/año <input id="q_mf" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">Esc % <input id="q_esc" type="number" min="0" oninput="qRecalc()"></label>
@@ -921,6 +926,27 @@ function qCover(){
     sg.forEach(function(s, i){ var el2 = $('cs_sg' + i); if (el2) el2.checked = !!o['cs_sg' + i]; });
   } catch(e){}
 }
+function qMulti(c){ return !!(c && c.contractsList && c.contractsList.length >= 2); }
+function qRenderContracts(c){
+  var box = $('q_contracts'); if (!box) return;
+  if (!qMulti(c)){ box.style.display = 'none'; box.innerHTML = ''; return; }
+  var h = '';
+  c.contractsList.forEach(function(k, i){
+    var figs = [];
+    figs.push('Payoff: ' + (k.payoff > 0 ? fmtD(k.payoff) : 'por verificar'));
+    if (k.mmo > 0) figs.push(fmtD(k.mmo) + '/mes');
+    if (k.mf > 0) figs.push('MF ' + fmtD(k.mf) + '/año');
+    if (k.pyr > 0) figs.push('Compra ' + k.pyr);
+    h += '<div class="qcontract"><div class="qch">Contrato ' + (i + 1) + ' — <b>' + escH(k.resort || '—') + '</b>' + (k.loc ? ' · ' + escH(k.loc) : '') + '</div><div class="qcfig">' + figs.join(' · ') + '</div></div>';
+  });
+  var tot = [];
+  tot.push('Payoff: ' + (c.payoff > 0 ? fmtD(c.payoff) : '—'));
+  if (c.mmo > 0) tot.push(fmtD(c.mmo) + '/mes');
+  if (c.mf > 0) tot.push('MF ' + fmtD(c.mf) + '/año');
+  h += '<div class="qctot">TOTAL COMBINADO (' + c.contractsList.length + ' contratos): ' + tot.join(' · ') + '</div>';
+  h += '<div class="qsm" style="margin-bottom:8px">Los campos editables de abajo son los totales combinados; el precio se calcula sobre el payoff combinado.</div>';
+  box.innerHTML = h; box.style.display = '';
+}
 function qSync(c){
   qDtype = (c && c.dtype === 'DB') ? 'DB' : 'MTG'; qApplyDtype();
   $('q_mmo').value = c ? (c.mmo || '') : '';
@@ -942,6 +968,7 @@ function qSync(c){
   $('q_folder').value = c && c.folderPath ? c.folderPath : '';
   $('q_loannote').value = c && c.loanNote ? c.loanNote : '';
   $('q_sheetfee').value = c && c.sheetFee ? c.sheetFee : ''; $('q_sheetdown').value = c && c.sheetDown ? c.sheetDown : '';
+  qRenderContracts(c);
   qIdn(c);
   var r0 = (c && c.apr ? c.apr : 0) / 100 / 12, t0 = (c && c.term ? c.term : 120), m0 = (c && c.mmo ? c.mmo : 0);
   $('q_loan').value = (r0 > 0 && t0 > 0 && m0 > 0) ? Math.round(m0 * (1 - Math.pow(1 + r0, -t0)) / r0) : '';
@@ -1024,7 +1051,7 @@ function qRecalc(){
   var sugEl = $('q_feesug');
   if (sugEl){
     if (qIsDB()) sugEl.innerHTML = sheetFeeActive ? 'Fee activo: el de la hoja PRE-CALL (deed-back).' : 'Deed-back: el fee sale de la hoja PRE-CALL \u2014 ingr\u00e9salo en el recuadro rojo.';
-    else if (payoff > 0){ var s47 = payoff * 0.47, adm = s47 < 10000 ? 299 : 399; sugEl.innerHTML = 'F\u00f3rmula: payoff \u00d7 47% = ' + fmtD(s47) + ' + admin ' + fmtD(adm) + ' = <b>' + fmtD(s47 + adm) + '</b> <a href="#" onclick="document.getElementById(\'q_fee\').value=' + Math.round(s47 + adm) + ';qRecalc();return false;">Usar</a>'; }
+    else if (payoff > 0){ var s47 = payoff * 0.47, adm = s47 < 10000 ? 299 : 399; var mcN = qMulti(cur) ? ' (payoff combinado de ' + cur.contractsList.length + ' contratos)' : ''; sugEl.innerHTML = 'F\u00f3rmula: payoff \u00d7 47% = ' + fmtD(s47) + ' + admin ' + fmtD(adm) + ' = <b>' + fmtD(s47 + adm) + '</b>' + mcN + ' <a href="#" onclick="document.getElementById(\'q_fee\').value=' + Math.round(s47 + adm) + ';qRecalc();return false;">Usar</a>'; }
     else sugEl.textContent = '';
   }
   var paym = $('q_paym').value;
