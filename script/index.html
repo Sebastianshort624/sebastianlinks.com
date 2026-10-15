@@ -121,6 +121,10 @@
   .snav { margin-left: auto; display: flex; gap: 4px; }
   .snav a { color: #fff; background: #0b3d91; border-radius: 4px; padding: 4px 10px; text-decoration: none; font-size: 0.9em; }
   .stage { scroll-margin-top: 230px; }
+  .pagolink { display: block; background: #0b3d91; color: #ffd34d; font-weight: 800; font-size: 1.15em; line-height: 1.35; text-align: center; padding: 10px 14px; border-radius: 8px; margin-top: 6px; text-decoration: none; }
+  .pagolink:hover { background: #0a357e; }
+  #pago-transicion { scroll-margin-top: 300px; font-weight: 800; font-size: 1.12em; color: #0b3d91; background: #fdf6d8; border-radius: 6px; padding: 6px 10px; }
+  @media (max-width: 640px) { .pagolink { font-size: 0.98em; padding: 8px 10px; } }
   .navstrip button { background: #0b3d91; color: #fff; border: none; border-radius: 5px; padding: 6px 14px; font-size: 0.9em; cursor: pointer; font-family: inherit; }
   .navstrip .tgt { color: #aaa; font-size: 0.85em; }
   .stimer { float: right; font-weight: normal; }
@@ -184,6 +188,7 @@
     <a class="nlink jcontract" href="#coversheet">📝 Contrato</a>
   </div>
   <div class="cbar" id="cbar" style="display:none"></div>
+  <a class="pagolink" href="#pago-transicion" onclick="var e=document.getElementById('pago-transicion');var b=document.getElementById('pegbar');window.scrollTo({top:e.getBoundingClientRect().top+window.scrollY-(b?b.offsetHeight:0)-10,behavior:'smooth'});return false;">Ahora bien, si no tiene más preguntas sobre nuestro proceso, lo siguiente que puedo explicarle son las diferentes formas en que la mayoría de las personas pagan por nuestros servicios.</a>
 </div>
 
 <h1 style="font-size:1.15em;margin-bottom:0">🎯 Cita de 90 minutos <span class="tmin">· 6 etapas × 15 min</span></h1>
@@ -449,7 +454,8 @@
     <li><span class="grp">Checking / savings:</span>
       <ol>
         <li id="price-anchor">"Your total price is <b><span class="hl-b" data-fill="fee">$________</span></b> — and this includes all, beginning to end. We never ask for another dollar. This price eliminates all past, present and future debt, and your name is removed from the deed at the county level, so your estate is safe and your next of kin will never inherit this nightmare."</li>
-        <li>"Now, if you don't have any other questions about our process, the next thing I can explain to you are the <b>different ways most people pay</b> for our services. The fastest, easiest, and smartest way to do so financially is: if you can pay it out of any <b>checking or savings account</b>. If you have the money, then well, pay it."</li>
+        <li id="pago-transicion">Ahora bien, si no tiene más preguntas sobre nuestro proceso, lo siguiente que puedo explicarle son las diferentes formas en que la mayoría de las personas pagan por nuestros servicios.</li>
+        <li>"The fastest, easiest, and smartest way to do so financially is: if you can pay it out of any <b>checking or savings account</b>. If you have the money, then well, pay it."</li>
         <li>"And again, I don't like to assume anything. So I'll just ask you <b>straight up</b>: do you have it in your checking account, savings account, stocks, bonds, whatever, where you could get it into your checking account within a certain amount of days?"</li>
       </ol>
     </li>
@@ -1224,4 +1230,5 @@ document.addEventListener('keydown', function(e){ if (e.key === 'Escape'){ notes
 
 </body>
 </html>
+
 
