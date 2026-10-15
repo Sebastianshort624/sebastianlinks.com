@@ -196,7 +196,9 @@
   <div class="qidn" id="q_idn" style="display:none"></div>
   <label class="qf" style="margin-bottom:6px">Pipeline URL <input id="q_pipe" type="text" placeholder="https://app.pipelinecrm.com/people/…" onchange="qPipeSave()" style="width:170px"></label>
   <label class="qf" style="margin-bottom:6px">Hoja PRE-CALL URL <input id="q_sheet" type="text" placeholder="https://docs.google.com/spreadsheets/…" onchange="qPipeSave()" style="width:170px"></label>
-  <label class="qf" style="margin-bottom:10px">DocuSign URL <input id="q_dsurl" type="text" placeholder="https://app.docusign.com/documents/details/…" onchange="qPipeSave()" style="width:170px"></label>
+  <label class="qf" style="margin-bottom:6px">DocuSign URL <input id="q_dsurl" type="text" placeholder="https://app.docusign.com/documents/details/…" onchange="qPipeSave()" style="width:170px"></label>
+  <label class="qf" style="margin-bottom:6px">Carpeta del cliente <input id="q_folder" type="text" placeholder="~/Desktop/deals/…" onchange="qPipeSave()" style="width:170px"></label>
+  <label class="qf" style="margin-bottom:10px">Préstamo (nota) <input id="q_loannote" type="text" placeholder="Ej.: contrato firmado en la carpeta" onchange="qPipeSave()" style="width:170px"></label>
   <div class="tmin" id="q_cli" style="margin-bottom:8px">Ningún cliente seleccionado</div>
   <div id="q_dtypebar" style="display:flex;gap:6px;margin-bottom:10px">
     <button id="q_btn_mtg" onclick="qSetDtype('MTG')" style="flex:1;padding:9px 6px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:0.95em;background:#0b3d91;color:#fff">🏦 Hipoteca</button>
@@ -637,7 +639,10 @@ function renderBar(c, n){
   var lk = [];
   if (qPipeUrl(c)) lk.push('<a href="' + escH(qPipeUrl(c)) + '" target="_blank" rel="noopener">🔗 Pipeline</a>');
   if (c.sheetUrl) lk.push('<a href="' + escH(c.sheetUrl) + '" target="_blank" rel="noopener">📋 Hoja PRE-CALL</a>');
+  if (c.id) lk.push('<a href="#" onclick="qCopyInfo(\'script\', this);return false;" title="Copiar el enlace /script de este cliente">🔗 Copiar enlace /script</a>');
   if (c.docusignUrl) lk.push('<a href="' + escH(c.docusignUrl) + '" target="_blank" rel="noopener">✍️ DocuSign</a>');
+  if (c.folderPath) lk.push('<a href="#" onclick="qCopyInfo(\'folder\', this);return false;" title="' + escH(c.folderPath) + ' — clic para copiar la ruta">📁 Carpeta</a>');
+  if (c.loanNote || c.folderPath) lk.push('<a href="#" onclick="qCopyInfo(\'loan\', this);return false;" title="' + escH((c.loanNote || 'Contrato de préstamo') + (c.folderPath ? ' — ' + c.folderPath : '') + ' — clic para copiar la ruta') + '">📄 Préstamo</a>');
   var linksRow = lk.length ? '<div class="ib-links">' + lk.join('<span class="ib-sep">·</span>') + '</div>' : '';
   bar.innerHTML = dbbanner + '<div class="ib-wrap">' +
     '<div class="ib-col"><div class="ib-lab">Analista de casos</div><div class="ib-ca">' + escH(c.ca || '—') + '</div>' +
@@ -715,6 +720,19 @@ function qFpLoad(){
   } catch(e){}
 }
 function qPipeSave(){ qRecalc(); if (cur) qIdn(cur); }
+function qCopyInfo(kind, el){
+  if (!cur) return;
+  var t = '';
+  if (kind === 'folder') t = cur.folderPath || '';
+  else if (kind === 'loan') t = cur.folderPath || cur.loanNote || '';
+  else if (kind === 'script') t = 'https://sebastianlinks.com/script/?c=' + encodeURIComponent(cur.id || '');
+  if (!t) return;
+  function done(){
+    if (el){ var old = el.innerHTML; el.innerHTML = '✓ Copiado'; setTimeout(function(){ el.innerHTML = old; }, 1200); }
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, done);
+  else { var ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch(e){} ta.remove(); done(); }
+}
 function qFirstName(){ return cur ? (cur.name || '').split(/[&/]/)[0].trim().split(' ')[0] || 'cliente' : 'cliente'; }
 function qEmailHref(){
   if (!cur || !cur.email) return '#';
@@ -813,6 +831,8 @@ function qSync(c){
   $('q_pipe').value = c && (c.pipelineUrl || c.crmlink) ? (c.pipelineUrl || c.crmlink) : '';
   $('q_sheet').value = c && c.sheetUrl ? c.sheetUrl : '';
   $('q_dsurl').value = c && c.docusignUrl ? c.docusignUrl : '';
+  $('q_folder').value = c && c.folderPath ? c.folderPath : '';
+  $('q_loannote').value = c && c.loanNote ? c.loanNote : '';
   qIdn(c);
   var r0 = (c && c.apr ? c.apr : 0) / 100 / 12, t0 = (c && c.term ? c.term : 120), m0 = (c && c.mmo ? c.mmo : 0);
   $('q_loan').value = (r0 > 0 && t0 > 0 && m0 > 0) ? Math.round(m0 * (1 - Math.pow(1 + r0, -t0)) / r0) : '';
@@ -974,6 +994,7 @@ function qAutoSave(){
       c.pmonth = parseInt($('q_pmonth').value, 10) || 0; c.nights = qNum('q_nights');
       c.crmlink = $('q_pipe').value.trim(); c.pipelineUrl = c.crmlink;
       c.sheetUrl = $('q_sheet').value.trim(); c.docusignUrl = $('q_dsurl').value.trim();
+      c.folderPath = $('q_folder').value.trim(); c.loanNote = $('q_loannote').value.trim();
       localStorage.setItem('sl_clients', JSON.stringify(cs));
       if (cur && cur.id === cid) cur = c;
     } catch(e){}
@@ -1039,6 +1060,7 @@ function importScriptClients(input){
           fu: r.fu || '', crmlink: r.crmlink || r.pipeline || r.pipeline_url || r.link || '',
           pipelineUrl: r.pipelineUrl || r.pipeline || r.pipeline_url || r.link || r.crmlink || '',
           sheetUrl: r.sheetUrl || '', docusignUrl: r.docusignUrl || '',
+          folderPath: r.folderPath || '', loanNote: r.loanNote || '',
           address: r.address || inp.address || '',
           pmonth: qNum2(r.pmonth != null ? r.pmonth : inp.purchaseMonth),
           nights: qNum2(r.nights != null ? r.nights : (r.nightsPerYear != null ? r.nightsPerYear : inp.nightsPerYear)),
