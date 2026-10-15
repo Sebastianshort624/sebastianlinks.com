@@ -7,16 +7,16 @@
 <meta name="format-detection" content="telephone=no,email=no,address=no">
 <title>Cita de 90 minutos — Guión de llamada</title>
 <style>
-  body { font-family: Arial, Helvetica, sans-serif; font-size: 21px; max-width: 780px; margin: 0 auto; padding: 20px; color: #1a1a1a; line-height: 1.5; }
+  body { font-family: Arial, Helvetica, sans-serif; font-size: 17px; max-width: 1680px; margin: 0 auto; padding: 24px 32px; color: #1a1a1a; line-height: 1.55; }
   h1 { font-size: 1.4em; margin-bottom: 2px; }
   .total { color: #555; margin-bottom: 18px; }
-  .stage { border: 2px solid #1a1a1a; border-radius: 8px; padding: 14px 18px; margin: 18px 0; }
+  .stage { border: 2px solid #1a1a1a; border-radius: 8px; padding: 20px 26px; margin: 18px 0; }
   .stage h2 { margin: 0 0 4px; font-size: 1.15em; }
   .stage h2 .t { float: right; font-size: 0.85em; color: #0b3d91; }
   .clock { font-size: 0.85em; color: #555; margin-bottom: 10px; }
   .tmin { font-size: 0.8em; color: #888; font-weight: normal; }
   ol.liners { margin: 8px 0 4px 20px; padding: 0; }
-  ol.liners > li { margin-bottom: 12px; }
+  ol.liners > li { margin-bottom: 16px; }
   ol.liners > li::marker { font-weight: bold; font-size: 1.05em; }
   ol.liners ol { margin: 6px 0 6px 18px; padding: 0; list-style: none; counter-reset: sub; }
   ol.liners ol > li { counter-increment: sub; margin-bottom: 7px; }
@@ -73,12 +73,20 @@
   .jumpline a { display: inline-block; margin-right: 16px; padding: 10px 20px; font-size: 1.1em; font-weight: bold; text-decoration: none; border-radius: 8px; }
   .jumpline a.jprice { background: #0a7a2e; color: #fff; }
   .jumpline a.jcontract { background: #0b3d91; color: #fff; }
-  @media (min-width: 1350px){
-    .sideboxes { position: fixed; right: 16px; top: 120px; width: 260px; margin: 0; max-height: 72vh; overflow-y: auto; }
-    .sideboxes .sprinkle { margin-bottom: 12px; }
-    .calcside { position: fixed; left: 16px; top: 120px; width: 270px; margin: 0; max-height: 85vh; overflow-y: auto; }
-  }
-  .calcside { padding: 2px; margin: 0 0 18px; background: transparent; border: none; }
+  .calc-head { margin-bottom: 16px; }
+  .calc-head h3 { font-size: 1.1em; }
+  .urlgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2px 24px; }
+  .calcgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; align-items: start; }
+  .cpanel { background: #fff; border: 1px solid #c9dcf7; border-radius: 10px; padding: 16px 18px; }
+  .cpanel-trap { border-top: 5px solid #0b3d91; }
+  .cpanel-fee { border: 2px solid #0b3d91; background: #f0f6ff; box-shadow: 0 1px 5px rgba(11,61,145,.14); }
+  .cpanel .qsec { font-size: 1.02em; }
+  .sideboxes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 0 0 18px; align-items: start; }
+  .sideboxes .sprinkle { margin: 0; }
+  .sline { display: block; margin-top: 7px; }
+  .sline.first { display: inline; margin-top: 0; }
+  .sline.cont { padding-left: 1.5em; }
+  .calcside { margin: 0 0 18px; }
   .cbox { background: #fff; border: 1px solid #c9dcf7; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; }
   .cbox-fee { border: 2px solid #0b3d91; background: #f0f6ff; box-shadow: 0 1px 5px rgba(11,61,145,.14); }
   .calcside h3 { margin: 0 0 8px; font-size: 1em; }
@@ -112,9 +120,9 @@
   .qterms div { display: flex; justify-content: space-between; margin-bottom: 3px; }
   .qterms b { font-weight: bold; }
   .qidn { font-size: 0.85em; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #0b3d91; line-height: 1.55; overflow-wrap: break-word; word-wrap: break-word; }
-  #pegbar { position: sticky; top: 0; z-index: 60; margin: 0 -20px 16px; }
+  #pegbar { position: sticky; top: 0; z-index: 60; margin: 0 -32px 16px; }
   .navstrip { background: #1a1a1a; color: #fff; padding: 10px 14px; display: flex; gap: 10px; align-items: center; font-size: 1.05em; flex-wrap: wrap; border-radius: 8px; }
-  .timerbar { background: #1a1a1a; color: #fff; padding: 10px 14px; display: flex; gap: 10px; align-items: center; font-size: 1.05em; flex-wrap: wrap; border-radius: 8px; margin: -20px -20px 8px; position: static; }
+  .timerbar { background: #1a1a1a; color: #fff; padding: 10px 14px; display: flex; gap: 10px; align-items: center; font-size: 1.05em; flex-wrap: wrap; border-radius: 8px; margin: -24px -32px 8px; position: static; }
   .timerbar.over { background: #a31212; }
   .timerbar button { background: #0b3d91; color: #fff; border: none; border-radius: 5px; padding: 6px 14px; font-size: 0.9em; cursor: pointer; font-family: inherit; }
   .timerbar .tgt { color: #aaa; font-size: 0.85em; }
@@ -203,21 +211,18 @@
 <button onclick="document.getElementById('s_impfile').click()" style="margin-left:8px;padding:6px 14px;font-size:0.9em;background:#0b3d91;color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Importar JSON</button>
 <input type="file" id="s_impfile" accept=".json,application/json" style="display:none" onchange="importScriptClients(this)"></div>
 
-<aside class="calcside">
-  <h3>🧮 Calculadora <button onclick="qSync(cur)" title="Restablecer al cliente">↺</button></h3>
-  <div class="qidn" id="q_idn" style="display:none"></div>
-  <label class="qf" style="margin-bottom:6px">Pipeline URL <input id="q_pipe" type="text" placeholder="https://app.pipelinecrm.com/people/…" onchange="qPipeSave()" style="width:170px"></label>
-  <label class="qf" style="margin-bottom:6px">Hoja PRE-CALL URL <input id="q_sheet" type="text" placeholder="https://docs.google.com/spreadsheets/…" onchange="qPipeSave()" style="width:170px"></label>
-  <label class="qf" style="margin-bottom:6px">DocuSign URL <input id="q_dsurl" type="text" placeholder="https://app.docusign.com/documents/details/…" onchange="qPipeSave()" style="width:170px"></label>
-  <label class="qf" style="margin-bottom:6px">Carpeta del cliente <input id="q_folder" type="text" placeholder="~/Desktop/deals/…" onchange="qPipeSave()" style="width:170px"></label>
-  <label class="qf" style="margin-bottom:10px">Préstamo (nota) <input id="q_loannote" type="text" placeholder="Ej.: contrato firmado en la carpeta" onchange="qPipeSave()" style="width:170px"></label>
-  <div class="tmin" id="q_cli" style="margin-bottom:8px">Ningún cliente seleccionado</div>
-  <div id="q_dtypebar" style="display:flex;gap:6px;margin-bottom:10px">
+<aside class="calcside calcarea">
+  <div class="cbox calc-head"><h3>🧮 Calculadora <button onclick="qSync(cur)" title="Restablecer al cliente">↺</button></h3>
+    <div class="qidn" id="q_idn" style="display:none"></div>
+    <div class="urlgrid"><label class="qf" style="margin-bottom:6px">Pipeline URL <input id="q_pipe" type="text" placeholder="https://app.pipelinecrm.com/people/…" onchange="qPipeSave()" style="width:170px"></label><label class="qf" style="margin-bottom:6px">Hoja PRE-CALL URL <input id="q_sheet" type="text" placeholder="https://docs.google.com/spreadsheets/…" onchange="qPipeSave()" style="width:170px"></label><label class="qf" style="margin-bottom:6px">DocuSign URL <input id="q_dsurl" type="text" placeholder="https://app.docusign.com/documents/details/…" onchange="qPipeSave()" style="width:170px"></label><label class="qf" style="margin-bottom:6px">Carpeta del cliente <input id="q_folder" type="text" placeholder="~/Desktop/deals/…" onchange="qPipeSave()" style="width:170px"></label><label class="qf" style="margin-bottom:10px">Préstamo (nota) <input id="q_loannote" type="text" placeholder="Ej.: contrato firmado en la carpeta" onchange="qPipeSave()" style="width:170px"></label></div>
+    <div class="tmin" id="q_cli" style="margin-bottom:8px">Ningún cliente seleccionado</div>
+    <div id="q_dtypebar" style="display:flex;gap:6px;margin-bottom:10px">
     <button id="q_btn_mtg" onclick="qSetDtype('MTG')" style="flex:1;padding:9px 6px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:0.95em;background:#0b3d91;color:#fff">🏦 Hipoteca</button>
     <button id="q_btn_db" onclick="qSetDtype('DB')" style="flex:1;padding:9px 6px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:0.95em;background:#e2e8f0;color:#334155">🔴 DEED-BACK</button>
   </div>
-  <div class="cbox">
-  <div class="qsec" style="margin-top:0">🏨 Números del resort</div>
+  </div>
+  <div class="calcgrid"><div class="cpanel cpanel-trap">
+  <div class="qsec" style="margin-top:0">🏨 Situación del resort — la trampa actual</div>
   <label class="qf mtgOnly">Hipoteca mensual <input id="q_mmo" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">MF/año <input id="q_mf" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">Esc % <input id="q_esc" type="number" min="0" oninput="qRecalc()"></label>
@@ -226,6 +231,7 @@
   <label class="qf">Noches/año <input id="q_nights" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf mtgOnly">Plazo (meses) <input id="q_term" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf mtgOnly">Payoff <input id="q_payoff" type="number" min="0" oninput="qRecalc()"></label>
+  <div class="qsec">📈 Proyección — la trampa</div>
   <div class="qout">
     <div class="qsm">Próximos 30 días <b id="q_w30">—</b></div>
     <div class="qsm">Próximos 90 días <b id="q_w90">—</b></div>
@@ -244,6 +250,7 @@
     <div class="mtgOnly">Hipoteca anual <b id="q_xmoyr">—</b></div>
     <div>Mantenimiento anual <b id="q_xmfyr">—</b></div>
     <div>Total anual <b id="q_xtotyr">—</b></div>
+    <div>Costo por noche <b id="q_xnight">—</b></div>
     <div class="mtgOnly">Hipoteca 10 años <b id="q_xmo10">—</b></div>
     <div>Mantenimiento 10 años (<span id="q_xescp">8</span>% esc) <b id="q_xmf10">—</b></div>
     <div>Proyección 10 años <b id="q_xproj10">—</b></div>
@@ -263,9 +270,16 @@
     <button class="lcBtn" onclick="lcOpen()">🏦 Calculadora de préstamo</button>
   </div>
   </div>
-  <div class="cbox cbox-fee">
-  <div class="qsec" style="margin-top:0">💰 Mi tarifa y financiamiento</div>
+    <div class="cpanel cpanel-fee">
+  <div class="qsec" style="margin-top:0">💰 Mi fee y pagos</div>
+  <div id="q_sheetfeebox" style="display:none;background:#fef2f2;border:1px solid #f0b4b4;border-radius:6px;padding:10px 12px;margin-bottom:10px">
+    <div class="qsec" style="margin-top:0;color:#b91c1c">🔴 Fee deed-back — desde la hoja PRE-CALL</div>
+    <label class="qf">Fee (desde la hoja PRE-CALL) <input id="q_sheetfee" type="number" min="0" oninput="qRecalc()"></label>
+    <label class="qf">Anticipo (desde la hoja) <input id="q_sheetdown" type="number" min="0" oninput="qRecalc()"></label>
+    <div class="qsm">En deed-back el fee sale de la hoja PRE-CALL, no de la fórmula del 47%. Editar estos valores corrige el fee y los pagos.</div>
+  </div>
   <label class="qf">Nuestra tarifa <input id="q_fee" type="number" min="0" oninput="qRecalc()"></label>
+  <div class="qsm" id="q_feesug" style="margin:-2px 0 8px"></div>
   <label class="qf">Forma de pago <select id="q_paym" onchange="qRecalc()">
     <option value="ach">ACH</option>
     <option value="check">CHECK</option>
@@ -296,7 +310,8 @@
   </div>
 
   </div>
-  <div class="cbox">
+  </div>
+  <div class="calcgrid"><div class="cpanel">
   <div class="qsec" style="margin-top:0">Tareas del deal</div>
   <div class="qtasks">
     <label><input type="checkbox" id="qt_email" onchange="qTaskSave()"> <a id="qt_emailL" href="#">Enviar correo</a></label>
@@ -312,12 +327,13 @@
     <label><input type="checkbox" id="qt_id" onchange="qTaskSave()"> Subir ID</label>
   </div>
   </div>
-  <div class="cbox">
+    <div class="cpanel">
   <div class="qsec" style="margin-top:0">📎 Documentos</div>
   <div class="tmin" style="margin-bottom:6px">Se guardan solo en este navegador (unos pocos MB máximo).</div>
   <input type="file" id="q_docfile" multiple style="display:none" onchange="qDocAdd(this)">
   <div><button onclick="document.getElementById('q_docfile').click()" style="padding:6px 14px;font-size:0.9em;background:#0b3d91;color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Subir documentos</button></div>
   <div id="q_docs" style="margin-top:6px"></div>
+  </div>
   </div>
 </aside>
 
@@ -355,20 +371,18 @@
   <h2>ETAPA 1 — INTRODUCCIÓN Y CREDIBILIDAD <span class="t">15 MIN</span></h2>
   <div class="clock">0:00–0:15 · charla inicial <span class="tmin">(5 min)</span> → investigamos la credibilidad juntos <span class="tmin">(10 min)</span> <span class="stimer"><button id="sb1" onclick="toggleStage(1)">▶ 15:00</button> <button class="rs" onclick="resetStage(1)" title="Reiniciar">↺</button></span></div>
   <ol class="liners">
-    <li>"That timeshare contract you signed — it's impenetrable. It was designed to lock you into a perpetual obligation — maintenance fees not just for your lifetime, but for generations. I'm not trying to discredit the contract — your signature is on it multiple times. What we're building is every reason why, had you not been lied to, you never would have signed it in the first place."</li>
-    <li>"But first I'm going to confirm what you and <span class="hl-g" data-fill="ca">[CA name]</span> have documented thus far."</li>
-    <li><span class="grp">Credibility research:</span>
-      <ol>
-        <li>"Did you get a chance to do some research on our company? <span class="hl-g" data-fill="ca">[CA name]</span> usually sends the links over — did you see we're <b>A+ rated and accredited</b> by the Better Business Bureau, and ranked the <b>number one timeshare cancellation company in the world</b> by Best Company?"</li>
-        <li>"Best Company is a <b>third-party organization</b> — all they do is rank the top companies in the world. Did you happen to see we're ranked <b>number one</b> in the timeshare cancellation industry — the industry we created?"</li>
-        <li>Research together: <a href="https://sebastianlinks.com/linx">sebastianlinks.com/linx</a> — company credibility &amp; reviews.</li>
-        <li>"OK great — so <b>no questions about our credibility</b>, or our ability to do what we say we'll do — is that correct? Perfect."</li>
-        <li>"¿<span class="hl-g" data-fill="ca">[CA name]</span> te habló de RedWeek y te ayudó a hacer tu propia investigación sobre nuestra compañía?"</li>
-        <li>"Hazme un favor: en tu teléfono o en tu computadora, escribe este sitio web: <a href="https://investiganos.com" target="_blank"><b>investiganos.com</b></a>."</li>
-        <li>"Ahí ve a <a href="https://www.redweek.com/timeshare-resales" target="_blank"><b>RedWeek</b></a>. ¿Te dijeron que podías rentar tu tiempo compartido, o que podías venderlo?" <span class="tmin">— muéstrale también <a href="https://www.ebay.com/b/Timeshares-for-Sale/15897/bn_1858924" target="_blank">eBay: tiempos compartidos desde $1</a></span></li>
-        <li>"<span class="hl-g" data-fill="ca">[CA name]</span> normalmente te envía unos enlaces para que hagas tu propia investigación. Pero así como yo quiero sentir que tu caso es uno que vamos a ganar con un <b>100% de certeza</b>, quiero que sea <b>abrumadoramente obvio</b> que somos la compañía que va a lograrlo: basado en <b>17 años de testimonios</b> y en <b>agencias independientes de evaluación de compañías</b>."</li>
-      </ol>
-    </li>
+    <li><span class="sline first">"That timeshare contract you signed — it's impenetrable.</span><span class="sline cont">It was designed to lock you into a perpetual obligation — maintenance fees not just for your lifetime, but for generations.</span><span class="sline cont">I'm not trying to discredit the contract — your signature is on it multiple times.</span><span class="sline cont">What we're building is every reason why, had you not been lied to, you never would have signed it in the first place."</span></li>
+    <li><span class="sline first">"But first I'm going to confirm what you and <span class="hl-g" data-fill="ca">[CA name]</span> have documented thus far."</span></li>
+    <li><span class="sline first"><span class="grp">Credibility research:</span></span><ol>
+        <li><span class="sline first">"Did you get a chance to do some research on our company? <span class="hl-g" data-fill="ca">[CA name]</span> usually sends the links over — did you see we're <b>A+ rated and accredited</b> by the Better Business Bureau, and ranked the <b>number one timeshare cancellation company in the world</b> by Best Company?"</span></li>
+        <li><span class="sline first">"Best Company is a <b>third-party organization</b> — all they do is rank the top companies in the world.</span><span class="sline cont">Did you happen to see we're ranked <b>number one</b> in the timeshare cancellation industry — the industry we created?"</span></li>
+        <li><span class="sline first">Research together: <a href="https://sebastianlinks.com/linx">sebastianlinks.com/linx</a> — company credibility &amp; reviews.</span></li>
+        <li><span class="sline first">"OK great — so <b>no questions about our credibility</b>, or our ability to do what we say we'll do — is that correct?</span><span class="sline cont">Perfect."</span></li>
+        <li><span class="sline first">"¿<span class="hl-g" data-fill="ca">[CA name]</span> te habló de RedWeek y te ayudó a hacer tu propia investigación sobre nuestra compañía?"</span></li>
+        <li><span class="sline first">"Hazme un favor: en tu teléfono o en tu computadora, escribe este sitio web: <a href="https://investiganos.com" target="_blank"><b>investiganos.com</b></a>."</span></li>
+        <li><span class="sline first">"Ahí ve a <a href="https://www.redweek.com/timeshare-resales" target="_blank"><b>RedWeek</b></a>.</span><span class="sline cont">¿Te dijeron que podías rentar tu tiempo compartido, o que podías venderlo?" <span class="tmin">— muéstrale también <a href="https://www.ebay.com/b/Timeshares-for-Sale/15897/bn_1858924" target="_blank">eBay: tiempos compartidos desde $1</a></span></span></li>
+        <li><span class="sline first">"<span class="hl-g" data-fill="ca">[CA name]</span> normalmente te envía unos enlaces para que hagas tu propia investigación.</span><span class="sline cont">Pero así como yo quiero sentir que tu caso es uno que vamos a ganar con un <b>100% de certeza</b>, quiero que sea <b>abrumadoramente obvio</b> que somos la compañía que va a lograrlo: basado en <b>17 años de testimonios</b> y en <b>agencias independientes de evaluación de compañías</b>."</span></li>
+      </ol></li>
   </ol>
 </div>
 <div class="trans">→ Credibilidad establecida. Ahora déjalos hablar.</div>
@@ -403,31 +417,25 @@
   <div class="clock">0:15–0:30 · que ellos hablen <span class="tmin">(5 min)</span> → violaciones y cómo ganamos <span class="tmin">(10 min)</span> <span class="stimer"><button id="sb2" onclick="toggleStage(2)">▶ 15:00</button> <button class="rs" onclick="resetStage(2)" title="Reiniciar">↺</button></span></div>
   <div class="plink">🔗 <a href="https://sebastianlinks.com/calc">sebastianlinks.com/calc</a> <span class="tmin">— calculadora del costo de propiedad</span></div>
   <ol class="liners">
-    <li><span class="grp">Their story:</span>
-      <ol>
-        <li>"Now that you've seen who we are and what our reviews say — <b>I want to hear your story</b>. Tell me about your experience with your timeshare." <span class="tmin">— let them talk</span></li>
-        <li>"<b>What exactly were you told that convinced you</b> to purchase?"</li>
-      </ol>
-    </li>
-    <li>"In the first 10 years — between your mortgage payments and your maintenance payments — you signed agreeing to a total cost of <b><span data-fill="total10">$________</span></b> for this timeshare. But <b>did they actually let you read that page before you signed?</b> 📝"<br>→ "That's exactly what we're trying to prove. That contract is impenetrable — you can't just walk away from it. What we do is <b>get it voided</b> — because <b>you should never have been in it in the first place</b>. You were lied to."</li>
-    <li>The main five, in plain talk:
-      <ol>
-        <li>"When you bought, did they make it sound like you could <b>always just sell it</b> if you wanted out? These things are <b>listed on eBay for a dollar</b> — you can't even give them away."<br>→ "If they had followed the law and shown you what your total commitment was — just in the first 10 years — <b>would you have ever signed that contract?</b>"</li>
-        <li>"Did they tell you the maintenance fees <b>never end</b> — that they go on forever and <b>get passed down to your kids?</b>"<br>→ "If they had followed the law and shown you what your total commitment was — just in the first 10 years — <b>would you have ever signed that contract?</b>"</li>
-        <li>"What was the maintenance fee back when you bought? And did they tell you it <b>goes up every single year</b> — around 8%?"<br>→ "If they had followed the law and shown you what your total commitment was — just in the first 10 years — <b>would you have ever signed that contract?</b>"</li>
-        <li>"Did they make it sound like you had to be an owner to stay in these resorts — priority benefits, good availability, whatever you wanted whenever? <span class="hl-g" data-fill="ca">[CA name]</span> showed you that's not true — <b>you can rent the same rooms anytime for a fraction of the cost</b>. Remember seeing rooms for like a hundred bucks a night? A whole week for 700 bucks — while as an owner you're paying thousands a year and you're lucky to get a single week."<br>→ "If they had followed the law and shown you what your total commitment was — just in the first 10 years — <b>would you have ever signed that contract?</b>"</li>
-        <li>"And did they tell you booking was easy — just call a few days or weeks ahead? <b>What was it actually like when you tried?</b>"<br>→ "If they had followed the law and shown you what your total commitment was — just in the first 10 years — <b>would you have ever signed that contract?</b>"</li>
-      </ol>
-    </li>
-    <li><span class="grp">How we win:</span>
-      <ol>
-        <li>"We take all of this to the resort and lay out the <b>fines they're facing</b> — so they see it's <b>cheaper to let you out</b> than to risk paying those fines."</li>
-        <li>"And we go after compensation for the emotional and financial impact this had on you. Our competitors settle cases by getting the client to pay the resort — <b>we do the opposite</b>, and our reviews prove it."</li>
-        <li>"We will never take on your case unless we can save you a <b>ridiculous amount of money</b>."</li>
-        <li><i>Emotional impact:</i> "How did you feel when you found out <b>X</b> — or <b>Y</b>, or <b>Z</b> — turned out to be untrue?"</li>
-      </ol>
-    </li>
-    <li>"The most important part is the <b>letter of explanation</b> — then we can file a formal complaint with <b>________</b>. We will be filing in the state of <b>________</b> <span class="tmin">(residence)</span> and the state where you purchased it, and at that point we are issued what’s called a <b>complaint number</b>. Ok? We spend a lot on <b>filing fees</b> in order to do that, so we ask that you get that letter back to us within <b>3 business days</b>. Can you <b>commit</b> to doing that?"</li>
+    <li><span class="sline first"><span class="grp">Their story:</span></span><ol>
+        <li><span class="sline first">"Now that you've seen who we are and what our reviews say — <b>I want to hear your story</b>.</span><span class="sline cont">Tell me about your experience with your timeshare." <span class="tmin">— let them talk</span></span></li>
+        <li><span class="sline first">"<b>What exactly were you told that convinced you</b> to purchase?"</span></li>
+      </ol></li>
+    <li><span class="sline first">"In the first 10 years — between your mortgage payments and your maintenance payments — you signed agreeing to a total cost of <b><span data-fill="total10">$________</span></b> for this timeshare.</span><span class="sline cont">But <b>did they actually let you read that page before you signed?</b> 📝"</span><span class="sline cont">→ "That's exactly what we're trying to prove.</span><span class="sline cont">That contract is impenetrable — you can't just walk away from it.</span><span class="sline cont">What we do is <b>get it voided</b> — because <b>you should never have been in it in the first place</b>.</span><span class="sline cont">You were lied to."</span></li>
+    <li><span class="sline first">The main five, in plain talk:</span><ol>
+        <li><span class="sline first">"When you bought, did they make it sound like you could <b>always just sell it</b> if you wanted out?</span><span class="sline cont">These things are <b>listed on eBay for a dollar</b> — you can't even give them away."</span><span class="sline cont">→ "If they had followed the law and shown you what your total commitment was — just in the first 10 years — <b>would you have ever signed that contract?</b>"</span></li>
+        <li><span class="sline first">"Did they tell you the maintenance fees <b>never end</b> — that they go on forever and <b>get passed down to your kids?</b>"</span><span class="sline cont">→ "If they had followed the law and shown you what your total commitment was — just in the first 10 years — <b>would you have ever signed that contract?</b>"</span></li>
+        <li><span class="sline first">"What was the maintenance fee back when you bought?</span><span class="sline cont">And did they tell you it <b>goes up every single year</b> — around 8%?"</span><span class="sline cont">→ "If they had followed the law and shown you what your total commitment was — just in the first 10 years — <b>would you have ever signed that contract?</b>"</span></li>
+        <li><span class="sline first">"Did they make it sound like you had to be an owner to stay in these resorts — priority benefits, good availability, whatever you wanted whenever? <span class="hl-g" data-fill="ca">[CA name]</span> showed you that's not true — <b>you can rent the same rooms anytime for a fraction of the cost</b>.</span><span class="sline cont">Remember seeing rooms for like a hundred bucks a night?</span><span class="sline cont">A whole week for 700 bucks — while as an owner you're paying thousands a year and you're lucky to get a single week."</span><span class="sline cont">→ "If they had followed the law and shown you what your total commitment was — just in the first 10 years — <b>would you have ever signed that contract?</b>"</span></li>
+        <li><span class="sline first">"And did they tell you booking was easy — just call a few days or weeks ahead?</span><span class="sline cont"><b>What was it actually like when you tried?</b>"</span><span class="sline cont">→ "If they had followed the law and shown you what your total commitment was — just in the first 10 years — <b>would you have ever signed that contract?</b>"</span></li>
+      </ol></li>
+    <li><span class="sline first"><span class="grp">How we win:</span></span><ol>
+        <li><span class="sline first">"We take all of this to the resort and lay out the <b>fines they're facing</b> — so they see it's <b>cheaper to let you out</b> than to risk paying those fines."</span></li>
+        <li><span class="sline first">"And we go after compensation for the emotional and financial impact this had on you.</span><span class="sline cont">Our competitors settle cases by getting the client to pay the resort — <b>we do the opposite</b>, and our reviews prove it."</span></li>
+        <li><span class="sline first">"We will never take on your case unless we can save you a <b>ridiculous amount of money</b>."</span></li>
+        <li><span class="sline first"><i>Emotional impact:</i> "How did you feel when you found out <b>X</b> — or <b>Y</b>, or <b>Z</b> — turned out to be untrue?"</span></li>
+      </ol></li>
+    <li><span class="sline first">"The most important part is the <b>letter of explanation</b> — then we can file a formal complaint with <b>________</b>.</span><span class="sline cont">We will be filing in the state of <b>________</b> <span class="tmin">(residence)</span> and the state where you purchased it, and at that point we are issued what’s called a <b>complaint number</b>.</span><span class="sline cont">Ok?</span><span class="sline cont">We spend a lot on <b>filing fees</b> in order to do that, so we ask that you get that letter back to us within <b>3 business days</b>.</span><span class="sline cont">Can you <b>commit</b> to doing that?"</span></li>
   </ol>
 </div>
 <div class="trans">→ Violaciones documentadas. Ahora, el proceso de aprobación.</div>
@@ -436,20 +444,16 @@
   <h2>ETAPA 3 — EL PROCESO DE APROBACIÓN <span class="t">15 MIN</span></h2>
   <div class="clock">0:30–0:45 · selectividad <span class="tmin">(5 min)</span> → asignación del gerente de caso <span class="tmin">(5 min)</span> → escasez, lista de espera y el SÍ <span class="tmin">(5 min)</span> <span class="stimer"><button id="sb3" onclick="toggleStage(3)">▶ 15:00</button> <button class="rs" onclick="resetStage(3)" title="Reiniciar">↺</button></span></div>
   <ol class="liners">
-    <li><span class="grp">Selectivity:</span>
-      <ol>
-        <li>"We win <b>99%</b> of our cases by being <b>very selective</b> — we only take on cases we know we will win."</li>
-        <li>"Is there anything that you still need to do on your end that would <b>prevent you from being assigned a case manager today?</b>"</li>
-      </ol>
-    </li>
-    <li><span class="grp">How approval works:</span>
-      <ol>
-        <li>"Approval is a combination of two things: the <b>strength of your case</b>, and whether a case manager is <b>willing to take it on</b>."</li>
-        <li>"A case manager takes your case based on their opinion of the probability of getting the <b>resort to pay compensation</b> — that is what drives their availability."</li>
-        <li>"If no case manager can take your case right now, we do have a <b>waiting list</b>."</li>
-      </ol>
-    </li>
-    <li>"If the stars align and my assessment team decides we can take on your case, is there anything at all that would <b>prevent you from moving forward with us today?</b>"</li>
+    <li><span class="sline first"><span class="grp">Selectivity:</span></span><ol>
+        <li><span class="sline first">"We win <b>99%</b> of our cases by being <b>very selective</b> — we only take on cases we know we will win."</span></li>
+        <li><span class="sline first">"Is there anything that you still need to do on your end that would <b>prevent you from being assigned a case manager today?</b>"</span></li>
+      </ol></li>
+    <li><span class="sline first"><span class="grp">How approval works:</span></span><ol>
+        <li><span class="sline first">"Approval is a combination of two things: the <b>strength of your case</b>, and whether a case manager is <b>willing to take it on</b>."</span></li>
+        <li><span class="sline first">"A case manager takes your case based on their opinion of the probability of getting the <b>resort to pay compensation</b> — that is what drives their availability."</span></li>
+        <li><span class="sline first">"If no case manager can take your case right now, we do have a <b>waiting list</b>."</span></li>
+      </ol></li>
+    <li><span class="sline first">"If the stars align and my assessment team decides we can take on your case, is there anything at all that would <b>prevent you from moving forward with us today?</b>"</span></li>
   </ol>
 </div>
 <div class="trans">→ SÍ asegurado. Pasamos al pago.</div>
@@ -458,21 +462,17 @@
   <h2>ETAPA 4 — ENCONTRAR EL DINERO <span class="t">15 MIN</span></h2>
   <div class="clock">0:45–1:00 · cuenta de cheques/ahorros <span class="tmin">(5 min)</span> → qué tan lejos exactamente <span class="tmin">(5 min)</span> → tarjetas de crédito <span class="tmin">(5 min)</span> <span class="stimer"><button id="sb4" onclick="toggleStage(4)">▶ 15:00</button> <button class="rs" onclick="resetStage(4)" title="Reiniciar">↺</button></span></div>
   <ol class="liners">
-    <li><span class="grp">Checking / savings:</span>
-      <ol>
-        <li id="price-anchor">"Your total price is <b><span class="hl-b" data-fill="fee">$________</span></b> — and this includes all, beginning to end. We never ask for another dollar. This price eliminates all past, present and future debt, and your name is removed from the deed at the county level, so your estate is safe and your next of kin will never inherit this nightmare."</li>
-        <li id="pago-transicion">Ahora bien, si no tienes más preguntas sobre nuestro proceso, lo siguiente que puedo explicarte son las diferentes formas en que la mayoría de las personas pagan por nuestros servicios.</li>
-        <li>"The fastest, easiest, and smartest way to do so financially is: if you can pay it out of any <b>checking or savings account</b>. If you have the money, then well, pay it."</li>
-        <li>"And again, I don't like to assume anything. So I'll just ask you <b>straight up</b>: do you have it in your checking account, savings account, stocks, bonds, whatever, where you could get it into your checking account within a certain amount of days?"</li>
-      </ol>
-    </li>
-    <li><span class="grp">How far off:</span>
-      <ol>
-        <li>"About <b>how far off</b> are you from that number, <b>exactly?</b>"</li>
-        <li>"So what I'm hearing from you is that you have <b><span data-fill="down">$________</span></b> that you could put towards this. <b>Is that what I'm hearing from you?</b>"</li>
-      </ol>
-    </li>
-    <li>"Okay, so the second way most people pay for our services is with <b>credit cards</b>."</li>
+    <li><span class="sline first"><span class="grp">Checking / savings:</span></span><ol>
+        <li id="price-anchor"><span class="sline first">"Your total price is <b><span class="hl-b" data-fill="fee">$________</span></b> — and this includes all, beginning to end.</span><span class="sline cont">We never ask for another dollar.</span><span class="sline cont">This price eliminates all past, present and future debt, and your name is removed from the deed at the county level, so your estate is safe and your next of kin will never inherit this nightmare."</span></li>
+        <li id="pago-transicion"><span class="sline first">Ahora bien, si no tienes más preguntas sobre nuestro proceso, lo siguiente que puedo explicarte son las diferentes formas en que la mayoría de las personas pagan por nuestros servicios.</span></li>
+        <li><span class="sline first">"The fastest, easiest, and smartest way to do so financially is: if you can pay it out of any <b>checking or savings account</b>.</span><span class="sline cont">If you have the money, then well, pay it."</span></li>
+        <li><span class="sline first">"And again, I don't like to assume anything.</span><span class="sline cont">So I'll just ask you <b>straight up</b>: do you have it in your checking account, savings account, stocks, bonds, whatever, where you could get it into your checking account within a certain amount of days?"</span></li>
+      </ol></li>
+    <li><span class="sline first"><span class="grp">How far off:</span></span><ol>
+        <li><span class="sline first">"About <b>how far off</b> are you from that number, <b>exactly?</b>"</span></li>
+        <li><span class="sline first">"So what I'm hearing from you is that you have <b><span data-fill="down">$________</span></b> that you could put towards this.</span><span class="sline cont"><b>Is that what I'm hearing from you?</b>"</span></li>
+      </ol></li>
+    <li><span class="sline first">"Okay, so the second way most people pay for our services is with <b>credit cards</b>."</span></li>
   </ol>
 </div>
 <div class="trans">→ ¿Financiamiento? A solicitar ahora. ¿Efectivo/tarjeta? Recoge la licencia y la prueba bancaria y salta a la Etapa 6.</div>
@@ -482,15 +482,13 @@
   <div class="clock">1:00–1:15 · pagos mensuales <span class="tmin">(5 min)</span> → puntaje de crédito y anticipo <span class="tmin">(5 min)</span> → datos de la solicitud <span class="tmin">(5 min)</span> <span class="stimer"><button id="sb5" onclick="toggleStage(5)">▶ 15:00</button> <button class="rs" onclick="resetStage(5)" title="Reiniciar">↺</button></span></div>
   <div class="plink">🔗 Financiamiento: <a href="https://distributor.ucfs.net/">UCFS merchant portal</a> · <a href="https://agent.uportal360.com/dashboard">UGA (uPortal360)</a> · Equity Bank</div>
   <ol class="liners">
-    <li><span class="grp">Financing:</span>
-      <ol>
-        <li>"The third option is <b>financing</b> it and breaking it into <b>monthly payments</b>."</li>
-        <li>"Do you have any idea what your <b>credit score</b> is?"</li>
-        <li>"You said that you can put down <b><span data-fill="down">$________</span></b>. So then we'd be looking at <b>breaking the remaining into monthly payments</b>."</li>
-        <li>"Let's go ahead and see what we can get you <b>qualified</b> for."</li>
-      </ol>
-    </li>
-    <li>"Now, a couple things I'm going to need is can you guys send me pictures of your <b>driver's licenses?</b>"</li>
+    <li><span class="sline first"><span class="grp">Financing:</span></span><ol>
+        <li><span class="sline first">"The third option is <b>financing</b> it and breaking it into <b>monthly payments</b>."</span></li>
+        <li><span class="sline first">"Do you have any idea what your <b>credit score</b> is?"</span></li>
+        <li><span class="sline first">"You said that you can put down <b><span data-fill="down">$________</span></b>.</span><span class="sline cont">So then we'd be looking at <b>breaking the remaining into monthly payments</b>."</span></li>
+        <li><span class="sline first">"Let's go ahead and see what we can get you <b>qualified</b> for."</span></li>
+      </ol></li>
+    <li><span class="sline first">"Now, a couple things I'm going to need is can you guys send me pictures of your <b>driver's licenses?</b>"</span></li>
   </ol>
 </div>
 <div class="trans">✍️ <b>Antes de la espera:</b> que escriban 2 columnas — <b>Años</b> | <b>Monto a pagar al resort</b> — y pregunta: "¿Les mostraron esto?"</div>
@@ -501,24 +499,18 @@
   <div class="clock">1:15–1:30 · buenas noticias tras la espera <span class="tmin">(5 min)</span> → preparar el acuerdo <span class="tmin">(10 min)</span> <span class="stimer"><button id="sb6" onclick="toggleStage(6)">▶ 15:00</button> <button class="rs" onclick="resetStage(6)" title="Reiniciar">↺</button></span></div>
   <div class="plink">🔗 <a href="https://account.docusign.com">DocuSign</a> · <a href="https://youtu.be/UQqgr5Q0r1I">Cómo enviar un DocuSign (video)</a></div>
   <ol class="liners">
-    <li><span class="grp">The good news:</span>
-      <ol>
-        <li>"The approval team agrees with our assessment and has <b>agreed to take on your case</b>. We do have a case manager that feels they can get <b>compensation</b> for the emotional and financial impact."</li>
-        <li>"Good news — there are two potential case managers that can take this case tomorrow. One of them, she's <b>very experienced</b> at ___. The other one, he's <b>amazing</b> at ___."</li>
-      </ol>
-    </li>
-    <li><span class="grp">The price:</span>
-      <ol>
-        <li>"Your TOTAL CONTRACTUAL OBLIGATION to <b><span data-fill="resort">_________</span></b> is <b>your total monthly times 120</b> — and the amount we are going to save you is <b><span data-fill="savings">$________</span></b> — so the total cost to get you out of this is <b><span data-fill="fee">$________</span></b>."</li>
-        <li>"The total fee to cancel 100% of all past, present, and future debt is <b><span data-fill="fee">$________</span></b> — saving you <b><span data-fill="savings">$________</span></b> over the next 10 years. <b>We will never ask you for another penny.</b>"</li>
-      </ol>
-    </li>
-    <li><span class="grp">Preparing the agreement:</span>
-      <ol>
-        <li>"So what I'll need in order to move forward is: what I'm going to do next. I'm going to work on preparing our <b>service agreement</b>, right? It's going to take me about <b>10 minutes</b> to prepare."</li>
-        <li>"Do you know how to <b>send pictures from your phone?</b>"</li>
-      </ol>
-    </li>
+    <li><span class="sline first"><span class="grp">The good news:</span></span><ol>
+        <li><span class="sline first">"The approval team agrees with our assessment and has <b>agreed to take on your case</b>.</span><span class="sline cont">We do have a case manager that feels they can get <b>compensation</b> for the emotional and financial impact."</span></li>
+        <li><span class="sline first">"Good news — there are two potential case managers that can take this case tomorrow.</span><span class="sline cont">One of them, she's <b>very experienced</b> at ___.</span><span class="sline cont">The other one, he's <b>amazing</b> at ___."</span></li>
+      </ol></li>
+    <li><span class="sline first"><span class="grp">The price:</span></span><ol>
+        <li><span class="sline first">"Your TOTAL CONTRACTUAL OBLIGATION to <b><span data-fill="resort">_________</span></b> is <b>your total monthly times 120</b> — and the amount we are going to save you is <b><span data-fill="savings">$________</span></b> — so the total cost to get you out of this is <b><span data-fill="fee">$________</span></b>."</span></li>
+        <li><span class="sline first">"The total fee to cancel 100% of all past, present, and future debt is <b><span data-fill="fee">$________</span></b> — saving you <b><span data-fill="savings">$________</span></b> over the next 10 years.</span><span class="sline cont"><b>We will never ask you for another penny.</b>"</span></li>
+      </ol></li>
+    <li><span class="sline first"><span class="grp">Preparing the agreement:</span></span><ol>
+        <li><span class="sline first">"So what I'll need in order to move forward is: what I'm going to do next.</span><span class="sline cont">I'm going to work on preparing our <b>service agreement</b>, right?</span><span class="sline cont">It's going to take me about <b>10 minutes</b> to prepare."</span></li>
+        <li><span class="sline first">"Do you know how to <b>send pictures from your phone?</b>"</span></li>
+      </ol></li>
   </ol>
 </div>
 
@@ -611,6 +603,7 @@ function qApplyDtype(){
     bm.style.background = db ? '#e2e8f0' : '#0b3d91'; bm.style.color = db ? '#334155' : '#fff';
     bd.style.background = db ? '#b91c1c' : '#e2e8f0'; bd.style.color = db ? '#fff' : '#334155';
   }
+  var sfb = $('q_sheetfeebox'); if (sfb) sfb.style.display = db ? '' : 'none';
 }
 function qSetDtype(t){
   qDtype = t === 'DB' ? 'DB' : 'MTG';
@@ -846,6 +839,7 @@ function qSync(c){
   $('q_dsurl').value = c && c.docusignUrl ? c.docusignUrl : '';
   $('q_folder').value = c && c.folderPath ? c.folderPath : '';
   $('q_loannote').value = c && c.loanNote ? c.loanNote : '';
+  $('q_sheetfee').value = c && c.sheetFee ? c.sheetFee : ''; $('q_sheetdown').value = c && c.sheetDown ? c.sheetDown : '';
   qIdn(c);
   var r0 = (c && c.apr ? c.apr : 0) / 100 / 12, t0 = (c && c.term ? c.term : 120), m0 = (c && c.mmo ? c.mmo : 0);
   $('q_loan').value = (r0 > 0 && t0 > 0 && m0 > 0) ? Math.round(m0 * (1 - Math.pow(1 + r0, -t0)) / r0) : '';
@@ -888,7 +882,7 @@ function qDocDel(i){
   qDocRender();
 }
 function qRecalc(){
-  if (!cur){ ['q_w30','q_w90','q_w6','q_t1','q_t3','q_t5','q_t10','q_t20','q_ftot','q_bal','q_s10','q_mo','q_mosn','q_t12','q_t24','q_t36','q_comm','q_cdate','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct','q_xmmo','q_xmfmo','q_xtotmo','q_xmoyr','q_xmfyr','q_xtotyr','q_xmo10','q_xmf10','q_xproj10'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— meses restantes'; return; }
+  if (!cur){ ['q_w30','q_w90','q_w6','q_t1','q_t3','q_t5','q_t10','q_t20','q_ftot','q_bal','q_s10','q_mo','q_mosn','q_t12','q_t24','q_t36','q_comm','q_cdate','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct','q_xmmo','q_xmfmo','q_xtotmo','q_xmoyr','q_xmfyr','q_xtotyr','q_xmo10','q_xmf10','q_xproj10','q_xnight'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— meses restantes'; var fe0 = $('q_feesug'); if (fe0) fe0.textContent = ''; return; }
   var mmo = qIsDB() ? 0 : qNum('q_mmo'), mf = qNum('q_mf'), esc = qNum('q_esc'), payoff = qNum('q_payoff');
   var pyrIn = parseInt(($('q_pyr').value || '').replace(/\D/g, ''), 10) || 0;
   var pyr = pyrIn > 0 ? pyrIn : 2023; // hidden default for math only — field stays blank
@@ -916,16 +910,27 @@ function qRecalc(){
   $('q_xtotmo').textContent = fmtD(mmo + mfmo);
   $('q_xmoyr').textContent = fmtD(moyr); $('q_xmfyr').textContent = fmtD(mfoyr);
   $('q_xtotyr').textContent = fmtD(totyr);
+  var nightsV = qNum('q_nights');
+  $('q_xnight').textContent = nightsV > 0 ? fmtC(totyr / nightsV) : '—';
   $('q_xmo10').textContent = fmtD(mo10);
   $('q_xescp').textContent = (esc || 8); $('q_xmf10').textContent = fmtD(mf10);
   $('q_xproj10').textContent = fmtD(mo10 + mf10);
   var fee = qNum('q_fee'), fapr = qNum('q_fapr'), fmo = qNum('q_fmo');
+  var sheetFeeActive = qIsDB() && $('q_sheetfee').value !== '' && qNum('q_sheetfee') > 0;
+  if (sheetFeeActive) fee = qNum('q_sheetfee');
+  var sugEl = $('q_feesug');
+  if (sugEl){
+    if (qIsDB()) sugEl.innerHTML = sheetFeeActive ? 'Fee activo: el de la hoja PRE-CALL (deed-back).' : 'Deed-back: el fee sale de la hoja PRE-CALL \u2014 ingr\u00e9salo en el recuadro rojo.';
+    else if (payoff > 0){ var s47 = payoff * 0.47, adm = s47 < 10000 ? 299 : 399; sugEl.innerHTML = 'F\u00f3rmula: payoff \u00d7 47% = ' + fmtD(s47) + ' + admin ' + fmtD(adm) + ' = <b>' + fmtD(s47 + adm) + '</b> <a href="#" onclick="document.getElementById(\'q_fee\').value=' + Math.round(s47 + adm) + ';qRecalc();return false;">Usar</a>'; }
+    else sugEl.textContent = '';
+  }
   var paym = $('q_paym').value;
   var isFin = paym === 'ucfs' || paym === 'equity' || paym === 'uga';
   var feeKnown = fee > 0;
   var ftot = feeKnown && paym === 'cc' ? fee * 1.03 : fee;
   var downRaw = qNum('q_down');
   var down = $('q_downt').value === 'pct' ? ftot * downRaw / 100 : downRaw;
+  if (qIsDB() && $('q_sheetdown').value !== '' && qNum('q_sheetdown') > 0) down = qNum('q_sheetdown');
   $('q_down').style.border = (isFin && feeKnown && !downRaw) ? '2px solid #d99a17' : '';
   var bal = feeKnown ? Math.max(0, ftot - down) : 0;
   var s10 = feeKnown ? t10 - ftot : 0;
@@ -1008,6 +1013,7 @@ function qAutoSave(){
       c.crmlink = $('q_pipe').value.trim(); c.pipelineUrl = c.crmlink;
       c.sheetUrl = $('q_sheet').value.trim(); c.docusignUrl = $('q_dsurl').value.trim();
       c.folderPath = $('q_folder').value.trim(); c.loanNote = $('q_loannote').value.trim();
+      c.sheetFee = qNum('q_sheetfee'); c.sheetDown = qNum('q_sheetdown');
       localStorage.setItem('sl_clients', JSON.stringify(cs));
       if (cur && cur.id === cid) cur = c;
     } catch(e){}
@@ -1073,7 +1079,7 @@ function importScriptClients(input){
           fu: r.fu || '', crmlink: r.crmlink || r.pipeline || r.pipeline_url || r.link || '',
           pipelineUrl: r.pipelineUrl || r.pipeline || r.pipeline_url || r.link || r.crmlink || '',
           sheetUrl: r.sheetUrl || '', docusignUrl: r.docusignUrl || '',
-          folderPath: r.folderPath || '', loanNote: r.loanNote || '',
+          folderPath: r.folderPath || '', loanNote: r.loanNote || '', sheetFee: qNum2(r.sheetFee), sheetDown: qNum2(r.sheetDown),
           address: r.address || inp.address || '',
           pmonth: qNum2(r.pmonth != null ? r.pmonth : inp.purchaseMonth),
           nights: qNum2(r.nights != null ? r.nights : (r.nightsPerYear != null ? r.nightsPerYear : inp.nightsPerYear)),
@@ -1237,6 +1243,7 @@ document.addEventListener('keydown', function(e){ if (e.key === 'Escape'){ notes
 
 </body>
 </html>
+
 
 
 
