@@ -731,8 +731,8 @@ function renderBar(c, n){
   if (c.loanNote || c.folderPath) lk.push('<a href="#" onclick="qCopyInfo(\'loan\', this);return false;" title="' + escH((c.loanNote || 'Contrato de préstamo') + (c.folderPath ? ' — ' + c.folderPath : '') + ' — clic para copiar la ruta') + '">📄 Préstamo</a>');
   var linksHtml = lk.length ? '<div class="ib-links">' + lk.join('<span class="ib-sep">·</span>') + '</div>' : '';
   $('ibL').innerHTML = '<div class="ib-client">' + qNameLink(c) + chip + '</div>' +
-      '<div class="ib-cal"><span class="ib-lab2">ANALISTA DE CASOS:</span> ' + escH(c.ca || '—') + '</div>' + (ph ? '<div class="ib-ph">📞 ' + escH(ph) + '</div>' : '') +
-      (c.email ? '<div class="ib-line">✉️ ' + escH(c.email) + '</div>' : '') +
+      '<div class="ib-cal"><span class="ib-lab2">ANALISTA DE CASOS:</span> ' + escH(c.ca || '—') + '</div>' + (ph ? '<div class="ib-ph">' + escH(ph) + '</div>' : '') +
+      (c.email ? '<div class="ib-line">' + escH(c.email) + '</div>' : '') +
       (c.address ? '<div class="ib-line">📍 ' + escH(c.address) + '</div>' : '') + linksHtml;
   $('ibM').innerHTML = '<div class="ib-stats">' +
       '<div><div class="ib-lab">Payoff</div><div class="ib-big">' + (c.payoff > 0 ? fmtC(c.payoff) : '—') + '</div></div>' +
@@ -781,7 +781,7 @@ function qIdn(c){
   el.innerHTML = '<b>' + qNameLink(c) + '</b>' +
     (c.resort ? '<br><b>' + escH(c.resort) + '</b>' : '') +
     (c.address ? '<br>📍 ' + escH(c.address) : '') +
-    (ph ? '<br>📞 ' + escH(ph) : '') +
+    (ph ? '<br>' + escH(ph) : '') +
     (c.notes ? '<br><a href="javascript:void(0)" onclick="document.getElementById(\'q_notes_full\').style.display=document.getElementById(\'q_notes_full\').style.display===\'none\'?\'block\':\'none\'" style="font-size:0.85em;">📋 Notas del cliente (toca para expandir)</a><div id="q_notes_full" style="display:none;margin-top:6px;"><span class="tmin">' + escH(c.notes) + '</span></div>' : '') +
     (qPipeUrl(c) ? '<br><a href="' + escH(qPipeUrl(c)) + '" target="_blank">Lead en Pipeline ↗</a>' : '');
   el.style.display = 'block';
