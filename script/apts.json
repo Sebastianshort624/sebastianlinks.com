@@ -1,0 +1,34 @@
+{
+ "generated": "2026-10-15T13:28:59-04:00",
+ "days": {
+  "2026-10-15": [
+   {
+    "time": "12:00 PM",
+    "name": "Jackeline Vera Ruiz",
+    "clientMatch": "Jackeline Vera Ruiz",
+    "deedback": false,
+    "lang": "es"
+   },
+   {
+    "time": "7:30 PM",
+    "name": "Rafael Estevez / Audrey Hernandez",
+    "clientMatch": "Rafael Estevez / Audrey Hernandez",
+    "deedback": false
+   }
+  ],
+  "2026-10-16": [
+   {
+    "time": "12:00 PM",
+    "name": "Dora I de los santos",
+    "clientMatch": "Dora I de los santos",
+    "deedback": false
+   },
+   {
+    "time": "7:30 PM",
+    "name": "Eduardo Martinez / Geraldine Martinez",
+    "clientMatch": "Eduardo Martinez / Geraldine Martinez",
+    "deedback": false
+   }
+  ]
+ }
+}
