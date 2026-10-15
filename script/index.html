@@ -629,7 +629,23 @@ function unlock(){
 })();
 
 /* ---- client dropdown: fills script blanks from /calc client list (same browser) ---- */
-function slClients(){ try { return JSON.parse(localStorage.getItem('sl_clients') || '[]'); } catch(e){ return []; } }
+/* Built-in clients ship with the page so a client is selectable even before a JSON
+   import reaches this browser. Once the same client (matched by name) exists in the
+   imported list, the imported copy wins and the built-in one is skipped. */
+var BUILTIN_CLIENTS = [
+{"appt":"Thu Oct 15 12:00 PM","apr":0,"ca":"","down":0,"dtype":"MTG","email":"","esc":8,"fee":0,"lang":"es","loc":"Northridge, CA","mf":0,"mmo":0,"name":"Jackeline Vera Ruiz","notes":"Westgate, Northridge, CA. Appointment Thu Oct 15, 2026, 12:00-2:30 PM. Amount $20,000 per CRM agenda (payoff figure, not lender-verified). Phone +51 958050828 (Peru). Location corrected by Sebastian Oct 15: Northridge, CA (earlier data said San Jose, CA). CA not on record.","paymethod":"","payoff":20000,"phone":"+51958050828","phone2":"","pyr":0,"resort":"Westgate","term":0,"tz":"America/New_York","pipelineUrl":"https://app.pipelinecrm.com/people/1310392540","sheetUrl":"https://docs.google.com/spreadsheets/d/1P-F605ws8W1_XgRNQ2_5caHvl7cwZ-5RouqF4qOwb5I/edit#gid=1938478731","folderPath":"~/Desktop/deals/Jackeline Vera Ruiz/"}
+];
+function slClients(){
+  var cs = [];
+  try { cs = JSON.parse(localStorage.getItem('sl_clients') || '[]'); } catch(e){ cs = []; }
+  if (!Array.isArray(cs)) cs = [];
+  BUILTIN_CLIENTS.forEach(function(b){
+    var found = false;
+    for (var i = 0; i < cs.length; i++) if (cs[i].name && String(cs[i].name).toLowerCase() === b.name.toLowerCase()){ found = true; break; }
+    if (!found) cs.push(b);
+  });
+  return cs;
+}
 function fmtD(n){ return '$' + Math.round(n).toLocaleString('en-US'); }
 function fmtC(n){ return '$' + Number(n).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
 function escH(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]; }); }
@@ -681,7 +697,7 @@ function qSetDtype(t){
 function amort(pv, apr, n){ var r = apr / 100 / 12; if (!(r > 0)) return n > 0 ? pv / n : 0; return pv * r / (1 - Math.pow(1 + r, -n)); }
 function pickClient(id){
   var cs = slClients(), c = null;
-  for (var i = 0; i < cs.length; i++) if (cs[i].id === id) c = cs[i];
+  for (var i = 0; i < cs.length; i++) if (cs[i].id === id || (cs[i].id == null && cs[i].name === id)) c = cs[i];
   cur = c;
   if (!c){ $('cbar').style.display = 'none'; resetFills(); qSync(null); notesBadge(); return; }
   qSync(c); notesBadge();
@@ -1192,7 +1208,7 @@ function objFilter(){
 function refreshClientSel(){
   var sel = document.getElementById('clientSel'), keep = sel.value, cs = slClients();
   sel.innerHTML = '<option value="">— seleccionar cliente —</option>';
-  cs.forEach(function(c){ var o = document.createElement('option'); o.value = c.id; o.textContent = c.name + (c.appt ? ' — ' + c.appt : ''); sel.appendChild(o); });
+  cs.forEach(function(c){ var o = document.createElement('option'); o.value = (c.id != null ? c.id : c.name); o.textContent = c.name + (c.appt ? ' — ' + c.appt : ''); sel.appendChild(o); });
   if (!cs.length){ var o = document.createElement('option'); o.textContent = 'Aún no hay clientes — importa el JSON arriba'; o.disabled = true; sel.appendChild(o); }
   if (keep) sel.value = keep;
 }
