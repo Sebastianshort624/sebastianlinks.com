@@ -313,9 +313,7 @@
     <option value="uga">UGA</option>
   </select></label>
   <label class="qf">Anticipo <span><select id="q_downt" onchange="qRecalc()" style="padding:4px;font-size:0.95em;font-family:inherit;"><option value="dol">$</option><option value="pct">%</option></select> <input id="q_down" type="number" min="0" oninput="qRecalc()" style="width:90px"></span></label>
-  <label class="qf">Fecha del anticipo <input id="q_ddate" type="date" onchange="qRecalc()"></label>
   <label class="qf">Pago/mes <input id="q_pmt" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf">Fecha 1er pago <input id="q_pdate" type="date" onchange="qRecalc()"></label>
   <label class="qf">APR financ. % <input id="q_fapr" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">Meses financ. <input id="q_fmo" type="number" min="0" oninput="qRecalc()"></label>
   <div class="qout">
@@ -330,6 +328,10 @@
       <div><span>36 meses</span><b id="q_t36">—</b></div>
     </div>
     <div>Comisión <b id="q_comm">—</b></div>
+  </div>
+  <div id="q_dates" style="display:none;margin-top:10px">
+    <label class="qf">Fecha del anticipo <input id="q_ddate" type="date" onchange="qRecalc()"></label>
+    <label class="qf">Fecha 1er pago <input id="q_pdate" type="date" onchange="qRecalc()"></label>
     <div>Comisión lista el <b id="q_cdate">—</b></div>
   </div>
 
@@ -1054,6 +1056,7 @@ function qDocDel(i){
   qDocRender();
 }
 function qRecalc(){
+  var qdEl = $('q_dates'); if (qdEl) qdEl.style.display = ($('q_paym').value === 'uga') ? '' : 'none';
   if (!cur){ ['q_w30','q_w90','q_w6','q_t1','q_t3','q_t5','q_t10','q_t20','q_ftot','q_bal','q_s10','q_mo','q_mosn','q_t12','q_t24','q_t36','q_comm','q_cdate','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct','q_xmmo','q_xmfmo','q_xtotmo','q_xmoyr','q_xmfyr','q_xtotyr','q_xmo10','q_xmf10','q_xproj10','q_xnight'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— meses restantes'; var fe0 = $('q_feesug'); if (fe0) fe0.textContent = ''; return; }
   var mmo = qIsDB() ? 0 : qNum('q_mmo'), mf = qNum('q_mf'), esc = qNum('q_esc'), payoff = qNum('q_payoff');
   var pyrIn = parseInt(($('q_pyr').value || '').replace(/\D/g, ''), 10) || 0;
