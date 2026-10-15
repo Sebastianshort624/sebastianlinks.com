@@ -174,6 +174,26 @@
   #notesAddBtn { margin: 0; border: none; background: #2e7d32; color: #fff; padding: 10px; font-size: 1em; cursor: pointer; font-family: inherit; }
   #notesAddBtn:hover { background: #256528; }
   .notesFoot { padding: 8px 14px; color: #888; font-size: 0.82em; background: #f4f4f4; }
+  .notesTabs { display: flex; gap: 6px; padding: 10px 14px 0; background: #fff; }
+  .notesTabs button { border: 1px solid #0b3d91; background: #fff; color: #0b3d91; border-radius: 999px; padding: 4px 14px; cursor: pointer; font-family: inherit; font-size: 0.9em; }
+  .notesTabs button.on { background: #0b3d91; color: #fff; }
+  #notesArea { flex: 0 0 96px; border-top: none; border-bottom: 2px solid #0b3d91; }
+  .notesTools { display: flex; gap: 6px; padding: 8px 14px; background: #f4f4f4; border-bottom: 1px solid #ddd; }
+  .notesTools input[type="text"] { flex: 1; padding: 6px 10px; border: 1px solid #ccc; border-radius: 6px; font-family: inherit; font-size: 0.95em; min-width: 0; }
+  .notesTools input[type="date"] { padding: 5px 8px; border: 1px solid #ccc; border-radius: 6px; font-family: inherit; font-size: 0.95em; }
+  .notesClearBtn { border: 1px solid #ccc; background: #fff; border-radius: 6px; padding: 5px 10px; cursor: pointer; font-family: inherit; font-size: 0.9em; white-space: nowrap; }
+  .noteDay { font-weight: 800; color: #0b3d91; font-size: 1.02em; margin: 14px 0 6px; padding-bottom: 3px; border-bottom: 2px solid #0b3d91; }
+  .noteDay:first-child { margin-top: 0; }
+  .noteClient { color: #555; font-weight: 700; }
+  .noteMeta { margin-top: 6px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .noteEdited { color: #8d6e00; font-size: 0.85em; font-weight: 700; text-decoration: none; }
+  .noteEditBtn { margin-left: auto; border: 1px solid #0b3d91; background: #fff; color: #0b3d91; border-radius: 5px; padding: 3px 12px; cursor: pointer; font-family: inherit; font-size: 0.85em; }
+  .noteHist { margin-top: 8px; border-top: 1px dashed #ccc; padding-top: 8px; }
+  .noteHistItem { background: #fafafa; border: 1px solid #eee; border-radius: 6px; padding: 6px 10px; margin-bottom: 6px; opacity: 0.85; }
+  .noteEditArea { width: 100%; min-height: 84px; border: 1px solid #0b3d91; border-radius: 6px; padding: 8px 10px; font-family: inherit; font-size: 1em; line-height: 1.5; resize: vertical; box-sizing: border-box; }
+  .noteBtns { margin-top: 6px; display: flex; gap: 6px; }
+  .noteSaveBtn { background: #2e7d32; color: #fff; border: none; border-radius: 5px; padding: 5px 14px; cursor: pointer; font-family: inherit; }
+  .noteCancelBtn { background: #eee; color: #333; border: 1px solid #ccc; border-radius: 5px; padding: 5px 14px; cursor: pointer; font-family: inherit; }
   @media print { #notesFab, #notesModal { display: none !important; } }
   #lcModal { position: fixed; inset: 0; z-index: 960; background: rgba(0,0,0,.55); display: none; align-items: center; justify-content: center; padding: 20px; }
   #lcModal.open { display: flex; }
@@ -1330,39 +1350,250 @@ function importScriptClients(input){
 }
 function qNum2(v){ var n = parseFloat(String(v == null ? '' : v).replace(/[$,]/g, '')); return isNaN(n) ? 0 : n; }
 function notesKey(){ return 'sl_notes_' + (cur && cur.id ? cur.id : 'global'); }
-function notesLog(){
-  var raw = ''; try { raw = localStorage.getItem(notesKey()) || ''; } catch(e){}
-  if (!raw) return [];
-  try { var v = JSON.parse(raw); if (Array.isArray(v)) return v.filter(function(n){ return n && n.x; }); } catch(e){}
-  return [{ t: 0, x: raw }];
+// ===== NOTAS PERMANENTES — historial fechado por cliente =====
+// Base de datos (Supabase): completa url + anon key aqui y las notas se guardan
+// permanentes en la tabla script_notes (ver script-notes-migration.sql).
+// Sin configurar, corre en MODO LOCAL (localStorage) con la misma experiencia:
+// notas por cliente, fechadas, agrupadas por dia, con historial de ediciones.
+var NOTES_DB = { url: '', key: '' };
+function notesDbOn(){ return !!(NOTES_DB.url && NOTES_DB.key); }
+var notesView = 'client';        // 'client' | 'all'
+var notesCache = [];             // notas normalizadas de la vista actual (mas nuevas primero)
+var notesShown = [];             // notas visibles tras filtros (referencias a notesCache)
+var notesEditing = null;         // nota en edicion (objeto) o null
+var notesDbError = '';
+var notesCurHas = false;         // el cliente actual tiene notas (ultimo estado cargado)
+var notesLocalArrays = {};       // cid -> arreglo local normalizado en memoria
+
+function notesClientId(){ return (cur && cur.id) ? cur.id : 'global'; }
+function notesClientName(){ return (cur && cur.name) ? cur.name : 'General'; }
+function notesNameFor(cid){
+  if (cid === notesClientId()) return notesClientName();
+  try { var cs = slClients(); for (var i = 0; i < cs.length; i++) if (cs[i].id === cid) return cs[i].name || cid; } catch(e){}
+  return cid;
 }
-function notesSaveLog(log){ try { localStorage.setItem(notesKey(), JSON.stringify(log)); } catch(e){} }
-function notesStamp(t){
-  if (!t) return 'Nota anterior';
-  try { return new Date(t).toLocaleString('es', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' }); } catch(e){ return new Date(t).toLocaleString(); }
+// Nota normalizada: { dbid, cid, cname, t (creada, ms), et (editada, ms), x, edits: [{t, x}] }
+function notesNormLocal(n, cid){
+  return { dbid: '', cid: cid, cname: n.cname || notesNameFor(cid), t: n.t || 0, et: n.et || 0, x: n.x || '',
+    edits: (n.edits || []).map(function(e){ return { t: e.t || 0, x: e.x || '' }; }) };
 }
-function notesRender(){
-  var log = notesLog(), box = $('notesList'); if (!box) return;
-  if (!log.length){ box.innerHTML = '<div style="color:#888;padding:6px 2px;">Sin notas todavía.</div>'; return; }
-  var h = '';
-  for (var i = log.length - 1; i >= 0; i--) h += '<div class="noteItem"><div class="noteStamp">\uD83D\uDCC5 ' + escH(notesStamp(log[i].t)) + '</div><div class="noteText">' + escH(log[i].x) + '</div></div>';
-  box.innerHTML = h;
+function notesLocalArr(cid){
+  if (notesLocalArrays[cid]) return notesLocalArrays[cid];
+  var raw = ''; try { raw = localStorage.getItem('sl_notes_' + cid) || ''; } catch(e){}
+  var arr = [];
+  if (raw){
+    try { var v = JSON.parse(raw); if (Array.isArray(v)) arr = v.filter(function(n){ return n && n.x; }).map(function(n){ return notesNormLocal(n, cid); }); } catch(e){}
+    if (!arr.length) arr = [{ dbid: '', cid: cid, cname: notesNameFor(cid), t: 0, et: 0, x: raw, edits: [] }];
+  }
+  notesLocalArrays[cid] = arr;
+  return arr;
+}
+function notesLocalSave(cid){
+  var arr = notesLocalArrays[cid] || [];
+  try { localStorage.setItem('sl_notes_' + cid, JSON.stringify(arr.map(function(n){ return { t: n.t, et: n.et || 0, x: n.x, cname: n.cname, edits: n.edits }; }))); } catch(e){}
+}
+function notesSortDesc(a){ return a.slice().sort(function(p, q){ return (q.t || 0) - (p.t || 0); }); }
+function notesLocalView(){
+  if (notesView === 'all'){
+    var out = [], seen = {};
+    try { for (var i = 0; i < localStorage.length; i++){ var k = localStorage.key(i); if (k && k.indexOf('sl_notes_') === 0){ var cid = k.slice(9); seen[cid] = 1; out = out.concat(notesLocalArr(cid)); } } } catch(e){}
+    for (var c2 in notesLocalArrays) if (!seen[c2]) out = out.concat(notesLocalArrays[c2]);
+    return notesSortDesc(out);
+  }
+  return notesSortDesc(notesLocalArr(notesClientId()));
+}
+// --- Supabase (PostgREST) ---
+function notesDbReq(path, opts){
+  var o = opts || {};
+  var h = { 'apikey': NOTES_DB.key, 'Authorization': 'Bearer ' + NOTES_DB.key, 'Content-Type': 'application/json' };
+  if (o.headers) for (var k in o.headers) h[k] = o.headers[k];
+  o.headers = h;
+  return fetch(NOTES_DB.url.replace(/\/+$/, '') + '/rest/v1/script_notes' + path, o).then(function(r){
+    if (!r.ok) throw new Error('Error ' + r.status);
+    return r.status === 204 ? null : r.json();
+  });
+}
+function notesNormDb(row){
+  return { dbid: row.id || '', cid: row.client_id || 'global', cname: row.client_name || '', t: row.created_at ? Date.parse(row.created_at) : 0,
+    et: row.edited_at ? Date.parse(row.edited_at) : 0, x: row.body || '',
+    edits: (row.revisions || []).map(function(e){ return { t: (typeof e.t === 'number') ? e.t : (Date.parse(e.t) || 0), x: e.x || '' }; }) };
+}
+function notesLoad(){
+  notesDbError = '';
+  if (!notesDbOn()){ notesCache = notesLocalView(); notesAfterLoad(); return; }
+  var path = (notesView === 'client')
+    ? '?client_id=eq.' + encodeURIComponent(notesClientId()) + '&deleted=eq.false&order=created_at.desc&select=*'
+    : '?deleted=eq.false&order=created_at.desc&select=*&limit=500';
+  notesDbReq(path).then(function(rows){
+    notesCache = (rows || []).map(notesNormDb);
+    notesAfterLoad();
+  }).catch(function(e){
+    notesDbError = 'No se pudo conectar con la base de datos (' + e.message + '). Mostrando las notas locales de este navegador.';
+    notesCache = notesLocalView();
+    notesAfterLoad();
+  });
+}
+function notesAfterLoad(){
+  if (notesView === 'client') notesCurHas = notesCache.length > 0;
+  notesRender(); notesBadge(); notesFoot();
+}
+function notesFoot(){
+  var f = $('notesFoot'); if (!f) return;
+  if (notesDbError){ f.textContent = '\u26A0\uFE0F ' + notesDbError; return; }
+  f.textContent = notesDbOn()
+    ? 'Base de datos conectada \u2014 cada nota queda guardada permanente, con su fecha y hora. Las ediciones conservan el historial completo.'
+    : 'Modo local \u2014 falta conectar la base de datos. Por ahora las notas se guardan solo en este navegador, por cliente.';
+}
+function notesSetView(v){
+  notesEditing = null;
+  notesView = v;
+  var bc = $('notesTabClient'), ba = $('notesTabAll');
+  if (bc) bc.classList.toggle('on', v === 'client');
+  if (ba) ba.classList.toggle('on', v === 'all');
+  notesLoad();
 }
 function notesAdd(){
   var ta = $('notesArea'); if (!ta) return false;
   var txt = (ta.value || '').trim(); if (!txt) return false;
-  var log = notesLog(); log.push({ t: Date.now(), x: txt }); notesSaveLog(log);
-  ta.value = ''; notesRender(); notesBadge(); return true;
+  ta.value = '';
+  if (notesDbOn() && !notesDbError){
+    notesDbReq('', { method: 'POST', headers: { 'Prefer': 'return=representation' },
+      body: JSON.stringify({ client_id: notesClientId(), client_name: notesClientName(), body: txt }) })
+    .then(function(rows){
+      var n = (rows && rows[0]) ? notesNormDb(rows[0]) : { dbid: '', cid: notesClientId(), cname: notesClientName(), t: Date.now(), et: 0, x: txt, edits: [] };
+      notesCache.unshift(n);
+      notesCurHas = true; notesRender(); notesBadge();
+    })
+    .catch(function(e){
+      notesDbError = 'No se pudo guardar en la base de datos (' + e.message + '). La nota quedo guardada localmente en este navegador.';
+      notesLocalArr(notesClientId()).push({ dbid: '', cid: notesClientId(), cname: notesClientName(), t: Date.now(), et: 0, x: txt, edits: [] });
+      notesLocalSave(notesClientId());
+      notesCache = notesLocalView(); notesCurHas = true;
+      notesRender(); notesBadge(); notesFoot();
+    });
+    return true;
+  }
+  notesLocalArr(notesClientId()).push({ dbid: '', cid: notesClientId(), cname: notesClientName(), t: Date.now(), et: 0, x: txt, edits: [] });
+  notesLocalSave(notesClientId());
+  notesCache = notesLocalView(); notesCurHas = true;
+  notesRender(); notesBadge();
+  return true;
+}
+// --- Edicion con historial (la version anterior nunca se pierde) ---
+function notesEditStart(i){ notesEditing = notesShown[i] || null; notesRender(); var ta = $('notesEditArea'); if (ta){ ta.focus(); try { ta.setSelectionRange(ta.value.length, ta.value.length); } catch(e){} } }
+function notesEditCancel(){ notesEditing = null; notesRender(); }
+function notesEditSave(){
+  var n = notesEditing; if (!n) return;
+  var ta = $('notesEditArea'); var txt = ta ? (ta.value || '').trim() : '';
+  if (!txt || txt === n.x){ notesEditCancel(); return; }
+  var prev = { t: n.et || n.t || Date.now(), x: n.x };
+  var nowMs = Date.now();
+  if (n.dbid && notesDbOn()){
+    var revs = n.edits.map(function(e){ return { t: new Date(e.t || prev.t).toISOString(), x: e.x }; });
+    revs.push({ t: new Date(prev.t).toISOString(), x: prev.x });
+    notesDbReq('?id=eq.' + encodeURIComponent(n.dbid), { method: 'PATCH', headers: { 'Prefer': 'return=representation' },
+      body: JSON.stringify({ body: txt, edited_at: new Date(nowMs).toISOString(), revisions: revs }) })
+    .then(function(){ n.edits.push(prev); n.x = txt; n.et = nowMs; notesEditing = null; notesRender(); })
+    .catch(function(e){ notesDbError = 'No se pudo guardar la edicion en la base de datos (' + e.message + ').'; notesFoot(); });
+    return;
+  }
+  n.edits.push(prev); n.x = txt; n.et = nowMs;
+  notesLocalSave(n.cid);
+  notesEditing = null; notesRender();
+}
+function notesToggleHist(i){
+  var d = $('notesHist' + i); if (!d) return;
+  d.style.display = (d.style.display === 'none') ? 'block' : 'none';
+}
+// --- Fechas y agrupacion por dia ---
+function notesStamp(t){
+  if (!t) return 'Nota anterior';
+  try { return new Date(t).toLocaleString('es', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' }); } catch(e){ return new Date(t).toLocaleString(); }
+}
+function notesDayKey(t){ if (!t) return 'legacy'; var d = new Date(t); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
+function notesDayLabel(t){
+  if (!t) return 'Notas anteriores';
+  var s = ''; try { s = new Date(t).toLocaleDateString('es', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }); } catch(e){ s = new Date(t).toLocaleDateString(); }
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+function notesGroupByDay(list){
+  var groups = [], byKey = {};
+  for (var i = 0; i < list.length; i++){
+    var k = notesDayKey(list[i].t);
+    if (!byKey[k]){ byKey[k] = { key: k, t: list[i].t, items: [] }; groups.push(byKey[k]); }
+    byKey[k].items.push(list[i]);
+  }
+  return groups;
+}
+function notesFiltered(){
+  var q = (($('notesSearch') && $('notesSearch').value) || '').trim().toLowerCase();
+  var dv = ($('notesDate') && $('notesDate').value) || '';
+  return notesCache.filter(function(n){
+    if (dv){
+      if (!n.t) return false;
+      var d = new Date(n.t);
+      var dk = d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+      if (dk !== dv) return false;
+    }
+    if (q && (n.x + ' ' + (n.cname || '')).toLowerCase().indexOf(q) < 0) return false;
+    return true;
+  });
+}
+function notesClearFilters(){
+  var sq = $('notesSearch'); if (sq) sq.value = '';
+  var sd = $('notesDate'); if (sd) sd.value = '';
+  notesRender();
+}
+function notesRender(){
+  var box = $('notesList'); if (!box) return;
+  notesShown = notesFiltered();
+  if (!notesShown.length){
+    box.innerHTML = '<div style="color:#888;padding:6px 2px;">' + (notesCache.length ? 'Sin notas que coincidan con el filtro.' : 'Sin notas todav\u00EDa.') + '</div>';
+    return;
+  }
+  var groups = notesGroupByDay(notesShown), h = '';
+  for (var g = 0; g < groups.length; g++){
+    h += '<div class="noteDay">' + escH(notesDayLabel(groups[g].t)) + '</div>';
+    for (var i = 0; i < groups[g].items.length; i++){
+      var n = groups[g].items[i], si = notesShown.indexOf(n);
+      h += '<div class="noteItem">';
+      h += '<div class="noteStamp">\uD83D\uDCC5 ' + escH(notesStamp(n.t)) + ((notesView === 'all' && n.cname) ? ' \u00B7 <span class="noteClient">' + escH(n.cname) + '</span>' : '') + '</div>';
+      if (notesEditing === n){
+        h += '<textarea id="notesEditArea" class="noteEditArea">' + escH(n.x) + '</textarea>';
+        h += '<div class="noteBtns"><button class="noteSaveBtn" onclick="notesEditSave()">Guardar</button><button class="noteCancelBtn" onclick="notesEditCancel()">Cancelar</button></div>';
+      } else {
+        h += '<div class="noteText">' + escH(n.x) + '</div>';
+        var meta = '';
+        if (n.edits && n.edits.length) meta += '<a href="javascript:void(0)" class="noteEdited" onclick="notesToggleHist(' + si + ')">\u270F\uFE0F editada ' + escH(notesStamp(n.et || n.t)) + ' \u00B7 ver historial (' + n.edits.length + ')</a>';
+        if (n.cid === notesClientId()) meta += '<button class="noteEditBtn" onclick="notesEditStart(' + si + ')">Editar</button>';
+        if (meta) h += '<div class="noteMeta">' + meta + '</div>';
+        if (n.edits && n.edits.length){
+          h += '<div class="noteHist" id="notesHist' + si + '" style="display:none;">';
+          for (var e = n.edits.length - 1; e >= 0; e--) h += '<div class="noteHistItem"><div class="noteStamp">' + escH(notesStamp(n.edits[e].t)) + '</div><div class="noteText">' + escH(n.edits[e].x) + '</div></div>';
+          h += '</div>';
+        }
+      }
+      h += '</div>';
+    }
+  }
+  box.innerHTML = h;
 }
 function notesOpen(){
-  $('notesWho').textContent = (cur && cur.name ? cur.name : 'General') + ' — notas';
-  $('notesArea').value = '';
-  notesRender();
+  $('notesWho').textContent = (cur && cur.name ? cur.name : 'General') + ' \u2014 notas';
+  var ta = $('notesArea'); if (ta) ta.value = '';
+  var sq = $('notesSearch'); if (sq) sq.value = '';
+  var sd = $('notesDate'); if (sd) sd.value = '';
+  notesEditing = null;
+  notesSetView('client');
   $('notesModal').classList.add('open');
-  setTimeout(function(){ $('notesArea').focus(); }, 50);
+  setTimeout(function(){ var a = $('notesArea'); if (a) a.focus(); }, 50);
 }
 function notesClose(){ notesAdd(); $('notesModal').classList.remove('open'); notesBadge(); }
-function notesBadge(){ var b = $('notesFab'); if (b) b.classList.toggle('has', notesLog().length > 0); }
+function notesBadge(){
+  var b = $('notesFab'); if (!b) return;
+  var has = notesCurHas || notesLocalArr(notesClientId()).length > 0;
+  b.classList.toggle('has', has);
+}
 function fmtC(n){ return '$' + Number(n).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
 var lcMode = 'a';
 var lcMon = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
@@ -1468,10 +1699,12 @@ document.addEventListener('keydown', function(e){ if (e.key === 'Escape'){ notes
 <div id="notesModal">
   <div class="notesBox">
     <div class="notesHead"><span>📝 <span id="notesWho">Notas</span></span><button onclick="notesClose()">✕ Cerrar</button></div>
+    <div class="notesTabs"><button id="notesTabClient" class="on" onclick="notesSetView('client')">Este cliente</button><button id="notesTabAll" onclick="notesSetView('all')">Todas</button></div>
+    <textarea id="notesArea" placeholder="Escribe una nota nueva y pulsa Guardar nota — queda guardada con la fecha y hora de hoy."></textarea>
+    <button id="notesAddBtn" onclick="notesAdd()">💾 Guardar nota</button>
+    <div class="notesTools"><input id="notesSearch" type="text" placeholder="🔎 Buscar en las notas…" oninput="notesRender()"><input id="notesDate" type="date" onchange="notesRender()"><button class="notesClearBtn" onclick="notesClearFilters()">Limpiar filtros</button></div>
     <div id="notesList"></div>
-    <textarea id="notesArea" placeholder="Escribe una nota nueva y pulsa Agregar — queda guardada con la fecha y hora de hoy."></textarea>
-    <button id="notesAddBtn" onclick="notesAdd()">➕ Agregar nota con fecha</button>
-    <div class="notesFoot">Cada nota queda con su fecha y hora — el historial no se borra ni se edita. Si cierras con texto sin agregar, se agrega solo con la fecha de hoy. Se guarda en este navegador, por cliente.</div>
+    <div class="notesFoot" id="notesFoot">Modo local — falta conectar la base de datos.</div>
   </div>
 </div>
 <div id="lcModal">
