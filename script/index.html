@@ -27,16 +27,16 @@
   .client-line { margin: 4px 0 12px; }
   .client-line input { border: none; border-bottom: 1px solid #333; font-size: 1em; width: 280px; font-family: inherit; }
   .client-line select { font-size: 1em; padding: 6px; font-family: inherit; max-width: 100%; }
-  .cbar { background: #dbeafe; color: #0b3d91; border-radius: 6px; padding: 10px 14px; margin-top: 10px; box-shadow: 0 2px 8px rgba(11,61,145,.18); }
+  .cbar { background: #dbeafe; color: #0b3d91; border-radius: 6px; padding: 8px 14px; margin-top: 6px; line-height: 1.32; box-shadow: 0 2px 8px rgba(11,61,145,.18); }
   .ib-wrap { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,2fr) minmax(0,1fr); gap: 14px; align-items: start; }
   .ib-col { min-width: 0; overflow-wrap: break-word; }
   .ib-col + .ib-col { border-left: 2px solid rgba(11,61,145,.30); padding-left: 14px; }
   .ib-chip { display: inline-block; font-size: 0.52em; font-weight: 700; padding: 3px 9px; border-radius: 999px; letter-spacing: .4px; color: #fff; white-space: nowrap; vertical-align: 0.38em; margin-left: 8px; }
   .ib-chip-db { background: #b91c1c; }
   .ib-chip-mtg { background: #0b3d91; }
-  .ib-ctl { margin-top: 8px; display: grid; gap: 4px; font-size: 0.85em; }
-  .ib-ctl label { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: #0b3d91; }
-  .ib-ctl select, .ib-ctl input { font-family: inherit; font-size: 0.95em; padding: 3px 6px; width: 118px; min-width: 0; border: 1px solid #9db9e4; border-radius: 4px; background: #fff; color: #0b3d91; }
+  .ib-ctl { margin-top: 6px; display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 6px; font-size: 0.85em; }
+  .ib-ctl label { display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 2px; color: #0b3d91; }
+  .ib-ctl select, .ib-ctl input { font-family: inherit; font-size: 0.95em; padding: 3px 6px; width: 100%; box-sizing: border-box; min-width: 0; border: 1px solid #9db9e4; border-radius: 4px; background: #fff; color: #0b3d91; }
   .ib-lab { font-size: 0.62em; font-weight: 800; letter-spacing: 1.2px; color: #40669c; text-transform: uppercase; }
   .ib-ca { font-size: 1.45em; font-weight: 400; line-height: 1.15; color: #0b3d91; }
   .ib-client { font-size: 1.5em; font-weight: 800; line-height: 1.15; color: #0b3d91; }
@@ -45,7 +45,7 @@
   .ib-client a { text-decoration: underline; }
   .ib-ph { font-size: 0.85em; margin-top: 2px; }
   .ib-line { font-size: 0.85em; margin-top: 2px; }
-  .ib-stats { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 6px; }
+  .ib-stats { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 4px; }
   .ib-big { font-size: 1.5em; font-weight: 800; color: #0b3d91; line-height: 1.1; }
   .ib-grid { border-collapse: collapse; font-size: 0.66em; width: 100%; }
   .ib-grid th, .ib-grid td { padding: 2px 6px; text-align: right; border-bottom: 1px solid #b9d2f5; font-variant-numeric: tabular-nums; }
@@ -149,11 +149,11 @@
   .snav { display: flex; gap: 9px; flex-wrap: wrap; }
   .nv-timer { color: #0b3d91; white-space: nowrap; font-variant-numeric: tabular-nums; }
   #topbar.over { color: #a31212; font-weight: 700; }
-  .stage { scroll-margin-top: 260px; }
-  .pagolink { display: block; background: #0b3d91; color: #ffd34d; font-weight: 800; font-size: 1.15em; line-height: 1.35; text-align: center; padding: 10px 14px; border-radius: 8px; margin-top: 6px; text-decoration: none; }
+  .stage { scroll-margin-top: 300px; }
+  .pagolink { display: block; background: #0b3d91; color: #ffd34d; font-weight: 800; font-size: 0.95em; line-height: 1.3; text-align: center; padding: 7px 10px; border-radius: 6px; margin-top: 8px; text-decoration: none; }
   .pagolink:hover { background: #0a357e; }
   #pago-transicion { scroll-margin-top: 300px; font-weight: 800; font-size: 1.12em; color: #0b3d91; background: #fdf6d8; border-radius: 6px; padding: 6px 10px; }
-  @media (max-width: 640px) { .pagolink { font-size: 0.98em; padding: 8px 10px; } }
+  @media (max-width: 640px) { .pagolink { font-size: 0.9em; padding: 6px 8px; } }
   .stimer { float: right; font-weight: normal; }
   .stimer button { background: #0b3d91; color: #fff; border: none; border-radius: 5px; padding: 4px 10px; font-size: 0.85em; cursor: pointer; font-family: inherit; font-variant-numeric: tabular-nums; }
   .stimer button.rs { background: #666; padding: 4px 8px; }
@@ -225,9 +225,7 @@
         </div>
       </div>
     </div>
-    <div id="ibLinks"></div>
   </div>
-  <a class="pagolink" href="#pago-transicion" onclick="var e=document.getElementById('pago-transicion');var b=document.getElementById('pegbar');window.scrollTo({top:e.getBoundingClientRect().top+window.scrollY-(b?b.offsetHeight:0)-10,behavior:'smooth'});return false;">Ahora bien, si no tienes más preguntas sobre nuestro proceso, lo siguiente que puedo explicarte son las diferentes formas en que la mayoría de las personas pagan por nuestros servicios.</a>
 </div>
 
 <h1 style="font-size:1.15em;margin-bottom:0">🎯 Cita de 90 minutos <span class="tmin">· 6 etapas × 15 min</span></h1>
@@ -633,7 +631,7 @@ function unlock(){
    import reaches this browser. Once the same client (matched by name) exists in the
    imported list, the imported copy wins and the built-in one is skipped. */
 var BUILTIN_CLIENTS = [
-{"appt":"Thu Oct 15 12:00 PM","apr":0,"ca":"Jesse Rivera","down":0,"dtype":"MTG","email":"marieladelgado0510@gmail.com","esc":8,"fee":0,"lang":"es","loc":"Northridge, CA","mf":800,"mmo":0,"name":"Jackeline Vera Ruiz","notes":"Westgate. 1 contrato. Comprado 5 jul 2026. Cuotas $800/ano. Plazo 10 anos. Pago mensual hipoteca: NO esta en el CRM (preguntar en la llamada). Tasa en el CRM dice \"400.00\" = error de digitacion, NO usar. Payoff estimado del cuestionario: $20,000 (no verificado). Al corriente: Si. El timeshare esta SOLO a nombre de su sobrina (vive en Peru, +51 958050828); la sobrina esta de acuerdo con la salida. Intentaron cancelar antes sin exito. CA: Jesse Rivera. Espanol confirmado (Spanish Lead: Yes). Email duena #1: marieladelgado0510@gmail.com. Direccion: 7856 Louise Ave, Northridge, CA 91325. Resort: nombre de propiedad y ubicacion NO constan en el CRM.","paymethod":"","payoff":20000,"phone":"+18187216166","phone2":"+51958050828","pyr":2026,"resort":"Westgate","term":120,"tz":"America/New_York","pipelineUrl":"https://app.pipelinecrm.com/people/1310392540","sheetUrl":"https://docs.google.com/spreadsheets/d/1P-F605ws8W1_XgRNQ2_5caHvl7cwZ-5RouqF4qOwb5I/edit#gid=1938478731","folderPath":"~/Desktop/deals/Jackeline Vera Ruiz/","pmonth":7,"contracts":1,"address":"7856 Louise Ave, Northridge, CA 91325"}
+{"appt":"Thu Oct 15 12:00 PM","apr":0,"ca":"Jesse Rivera","down":0,"dtype":"MTG","email":"marieladelgado0510@gmail.com","esc":8,"fee":0,"lang":"es","loc":"Northridge, CA","mf":800,"mmo":400,"name":"Jackeline Vera Ruiz","notes":"Westgate. 1 contrato. Comprado 5 jul 2026. Cuotas $800/ano. Plazo 10 anos. Pago mensual hipoteca: NO esta en el CRM (preguntar en la llamada). Tasa en el CRM dice \"400.00\" = error de digitacion, NO usar. Payoff estimado del cuestionario: $20,000 (no verificado). Al corriente: Si. El timeshare esta SOLO a nombre de su sobrina (vive en Peru, +51 958050828); la sobrina esta de acuerdo con la salida. Intentaron cancelar antes sin exito. CA: Jesse Rivera. Espanol confirmado (Spanish Lead: Yes). Email duena #1: marieladelgado0510@gmail.com. Direccion: 7856 Louise Ave, Northridge, CA 91325. Resort: nombre de propiedad y ubicacion NO constan en el CRM.","paymethod":"","payoff":20000,"phone":"+18187216166","phone2":"+51958050828","pyr":2026,"resort":"Westgate","term":120,"tz":"America/New_York","pipelineUrl":"https://app.pipelinecrm.com/people/1310392540","sheetUrl":"https://docs.google.com/spreadsheets/d/1P-F605ws8W1_XgRNQ2_5caHvl7cwZ-5RouqF4qOwb5I/edit#gid=1938478731","folderPath":"~/Desktop/deals/Jackeline Vera Ruiz/","pmonth":7,"contracts":1,"address":"7856 Louise Ave, Northridge, CA 91325"}
 ];
 function slClients(){
   var cs = [];
@@ -647,6 +645,7 @@ function slClients(){
   return cs;
 }
 function fmtD(n){ return '$' + Math.round(n).toLocaleString('en-US'); }
+function fmtPhone(v){ var s = String(v == null ? '' : v), d = s.replace(/\D/g, ''); if (d.length === 11 && d.charAt(0) === '1') return '+1 ' + d.slice(1,4) + '-' + d.slice(4,7) + '-' + d.slice(7); if (d.length === 11 && d.slice(0,2) === '51') return '+51 ' + d.slice(2,5) + '-' + d.slice(5,8) + '-' + d.slice(8); if (d.length === 10) return d.slice(0,3) + '-' + d.slice(3,6) + '-' + d.slice(6); return s; }
 function fmtC(n){ return '$' + Number(n).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
 function escH(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]; }); }
 var MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
@@ -718,7 +717,7 @@ function renderBar(c, n){
     '<tr class="ib-tot"><td>Ambas juntas</td>' + yrs.map(function(y){ return '<td>' + fmtD(moY(y) + mfY(y)) + '</td>'; }).join('') + '</tr></table>';
   var nights = c.nights || 0;
   var perNight = nights > 0 ? fmtC(totyr / nights) : '—';
-  var ph = [c.phone, c.phone2].filter(function(x){ return x; }).join(' · ');
+  var ph = [c.phone, c.phone2].filter(function(x){ return x; }).map(fmtPhone).join(' · ');
   var isDB = c.dtype === 'DB';
   var chip = isDB ? ' <span class="ib-chip ib-chip-db">🔴 DEED-BACK</span>' : ' <span class="ib-chip ib-chip-mtg">🏦 NO DEED-BACK — CON HIPOTECA</span>';
   var lk = [];
@@ -728,14 +727,16 @@ function renderBar(c, n){
   if (c.docusignUrl) lk.push('<a href="' + escH(c.docusignUrl) + '" target="_blank" rel="noopener">✍️ DocuSign</a>');
   if (c.folderPath) lk.push('<a href="#" onclick="qCopyInfo(\'folder\', this);return false;" title="' + escH(c.folderPath) + ' — clic para copiar la ruta">📁 Carpeta</a>');
   if (c.loanNote || c.folderPath) lk.push('<a href="#" onclick="qCopyInfo(\'loan\', this);return false;" title="' + escH((c.loanNote || 'Contrato de préstamo') + (c.folderPath ? ' — ' + c.folderPath : '') + ' — clic para copiar la ruta') + '">📄 Préstamo</a>');
+  var linksHtml = lk.length ? '<div class="ib-links">' + lk.join('<span class="ib-sep">·</span>') + '</div>' : '';
   $('ibL').innerHTML = '<div class="ib-client">' + qNameLink(c) + chip + '</div>' +
       '<div class="ib-cal"><span class="ib-lab2">ANALISTA DE CASOS:</span> ' + escH(c.ca || '—') + '</div>' + (ph ? '<div class="ib-ph">📞 ' + escH(ph) + '</div>' : '') +
       (c.email ? '<div class="ib-line">✉️ ' + escH(c.email) + '</div>' : '') +
-      (c.address ? '<div class="ib-line">📍 ' + escH(c.address) + '</div>' : '');
+      (c.address ? '<div class="ib-line">📍 ' + escH(c.address) + '</div>' : '') + linksHtml;
   $('ibM').innerHTML = '<div class="ib-stats">' +
       '<div><div class="ib-lab">Payoff</div><div class="ib-big">' + (c.payoff > 0 ? fmtC(c.payoff) : '—') + '</div></div>' +
       '<div><div class="ib-lab">Total anual</div><div class="ib-big">' + fmtC(totyr) + '</div></div>' +
-      '<div><div class="ib-lab">Costo por noche</div><div class="ib-big">' + perNight + '</div></div></div>' + grid;
+      '<div><div class="ib-lab">Costo por noche</div><div class="ib-big">' + perNight + '</div></div></div>' + grid +
+      '<a class="pagolink" href="#pago-transicion" onclick="var e=document.getElementById(\'pago-transicion\');var b=document.getElementById(\'pegbar\');window.scrollTo({top:e.getBoundingClientRect().top+window.scrollY-(b?b.offsetHeight:0)-10,behavior:\'smooth\'});return false;">Ahora bien, si no tienes más preguntas sobre nuestro proceso, lo siguiente que puedo explicarte son las diferentes formas en que la mayoría de las personas pagan por nuestros servicios.</a>';
   var monNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
   var compLine = (c.pyr > 0 || (c.pmonth >= 1 && c.pmonth <= 12)) ? '<div class="ib-line">Comprado: ' + ((c.pmonth >= 1 && c.pmonth <= 12) ? monNames[c.pmonth - 1] + (c.pyr > 0 ? ' ' : '') : '') + (c.pyr > 0 ? c.pyr : '') + '</div>' : '';
   $('ibR').innerHTML = '<div class="ib-resort">' + escH(c.resort || '—') + '</div>' +
@@ -746,7 +747,6 @@ function renderBar(c, n){
       '<div class="ib-line">MF: <b>' + fmtD(mf) + '/año</b> (' + fmtD(mfmo) + '/mes)</div>' +
       '<div class="ib-line">Total mensual: <b>' + fmtD(mmo + mfmo) + '</b></div>' +
       (n && n.feeKnown ? '<div class="ib-line">Tarifa: <b>' + fmtC(n.fee) + '</b> · Ahorro 10 años: <b>' + fmtC(n.s10) + '</b></div>' : '');
-  $('ibLinks').innerHTML = lk.length ? '<div class="ib-links">' + lk.join('<span class="ib-sep">·</span>') + '</div>' : '';
   bar.style.display = 'block';
   qBarCtlSync();
 }
@@ -775,7 +775,7 @@ function qNum(id){ var v = parseFloat($(id).value); return isNaN(v) ? 0 : v; }
 function qIdn(c){
   var el = $('q_idn');
   if (!c){ el.innerHTML = ''; el.style.display = 'none'; return; }
-  var ph = [c.phone, c.phone2].filter(function(x){ return x; }).join(' · ');
+  var ph = [c.phone, c.phone2].filter(function(x){ return x; }).map(fmtPhone).join(' · ');
   el.innerHTML = '<b>' + qNameLink(c) + '</b>' +
     (c.resort ? '<br><b>' + escH(c.resort) + '</b>' : '') +
     (c.address ? '<br>📍 ' + escH(c.address) : '') +
@@ -937,7 +937,7 @@ function qCover(){
   var html = '<div class="csgrid">' +
     '<div><b>Cliente:</b> ' + qNameLink(cur) + '</div>' +
     '<div><b>Resort:</b> ' + escH(cur.resort || '—') + '</div>' +
-    '<div><b>Teléfono:</b> ' + escH([cur.phone, cur.phone2].filter(Boolean).join(' · ') || '—') + '</div>' +
+    '<div><b>Teléfono:</b> ' + escH([cur.phone, cur.phone2].filter(Boolean).map(fmtPhone).join(' · ') || '—') + '</div>' +
     '<div><b>Correo:</b> ' + escH(cur.email || '—') + '</div>' +
     '<div><b>Tarifa total:</b> ' + $('q_ftot').textContent + '</div>' +
     '<div><b>Forma de pago:</b> ' + (payLabels[paym] || paym) + '</div>' +
