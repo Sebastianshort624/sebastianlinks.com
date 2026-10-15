@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>True Cost of Ownership — Calculator</title>
+<title>Costo real de ser propietario — Calculadora</title>
 <style>
   body { font-family: Arial, Helvetica, sans-serif; max-width: 700px; margin: 0 auto; padding: 20px; color: #1a1a1a; line-height: 1.5; }
   h1 { font-size: 1.4em; margin-bottom: 2px; }
@@ -37,119 +37,119 @@
 </head>
 <body>
 
-<h1>💰 True Cost of Ownership</h1>
-<div class="sub">Select a client to auto-fill — or enter numbers manually.</div>
+<h1>💰 Costo real de ser propietario</h1>
+<div class="sub">Seleccione un cliente para llenar los datos automáticamente, o ingrese los números manualmente.</div>
 
 <div class="box">
-  <h3>Client</h3>
-  <label class="f">Select client
-    <select id="csel"><option value="">— Manual entry —</option></select>
+  <h3>Cliente</h3>
+  <label class="f">Seleccionar cliente
+    <select id="csel"><option value="">— Ingreso manual —</option></select>
   </label>
   <div>
-    <button onclick="showForm(false)">+ Add client</button>
-    <button class="ghost" onclick="showForm(true)" id="ebtn" style="display:none">Edit</button>
-    <button class="danger" onclick="delClient()" id="dbtn" style="display:none">Delete</button>
+    <button onclick="showForm(false)">+ Agregar cliente</button>
+    <button class="ghost" onclick="showForm(true)" id="ebtn" style="display:none">Editar</button>
+    <button class="danger" onclick="delClient()" id="dbtn" style="display:none">Eliminar</button>
   </div>
   <div style="margin-top:10px">
-    <button class="ghost" onclick="exportClients()">Export</button>
-    <button class="ghost" onclick="document.getElementById('impfile').click()">Import</button>
+    <button class="ghost" onclick="exportClients()">Exportar</button>
+    <button class="ghost" onclick="document.getElementById('impfile').click()">Importar</button>
     <input type="file" id="impfile" accept=".json,application/json" style="display:none" onchange="importClients(this)">
   </div>
   <div class="cdetails" id="cdetails"></div>
   <div id="cform">
     <div class="grid">
-      <label class="f">Full name <input id="f_name"></label>
-      <label class="f">Appointment <span class="tmin">e.g. Fri 2:00 PM</span><input id="f_appt"></label>
-      <label class="f">Phone <input id="f_phone"></label>
-      <label class="f">Alt phones <input id="f_phone2"></label>
-      <label class="f">Email <input id="f_email"></label>
-      <label class="f">Timezone <span class="tmin">e.g. CT</span><input id="f_tz"></label>
-      <label class="f">Notes <span class="tmin">ages, location, etc.</span><input id="f_notes"></label>
-      <label class="f">Case analyst <input id="f_ca"></label>
+      <label class="f">Nombre completo <input id="f_name"></label>
+      <label class="f">Cita <span class="tmin">ej. vie 2:00 PM</span><input id="f_appt"></label>
+      <label class="f">Teléfono <input id="f_phone"></label>
+      <label class="f">Teléfonos alternos <input id="f_phone2"></label>
+      <label class="f">Correo electrónico <input id="f_email"></label>
+      <label class="f">Zona horaria <span class="tmin">ej. CT</span><input id="f_tz"></label>
+      <label class="f">Notas <span class="tmin">edades, ubicación, etc.</span><input id="f_notes"></label>
+      <label class="f">Analista de casos <input id="f_ca"></label>
       <label class="f">Resort <input id="f_resort"></label>
-      <label class="f">Deal type <select id="f_dtype"><option value="standard">Standard (47%)</option><option value="deedback">Deedback</option></select></label>
-      <label class="f">Annual maint. fee ($) <input id="f_mf" type="number" min="0"></label>
-      <label class="f">Annual increase (%) <input id="f_esc" type="number" step="0.1" min="0" value="8"></label>
-      <label class="f">Payoff / debt owed ($) <input id="f_payoff" type="number" min="0"></label>
-      <label class="f">Loan APR (%) <input id="f_apr" type="number" step="0.1" min="0"></label>
-      <label class="f">Loan term (months) <input id="f_term" type="number" min="0"></label>
-      <label class="f">Year purchased <input id="f_pyr" type="number" min="0"></label>
-      <label class="f">Monthly mortgage ($) <input id="f_mmo" type="number" min="0"></label>
-      <label class="f">Linx fee ($) <span class="tmin">blank = 47% of payoff</span><input id="f_fee" type="number" min="0"></label>
-      <label class="f">Pay via <select id="f_paymethod"><option value="ach">ACH</option><option value="check">CHECK</option><option value="cc">Credit card (+3%)</option><option value="ucfs">UCFS</option><option value="equity">EQUITY</option><option value="uga">UGA</option></select></label>
-      <label class="f">Down payment <span><select id="f_downt" style="width:52px"><option value="dol">$</option><option value="pct">%</option></select> <input id="f_down" type="number" min="0" style="width:calc(100% - 60px);display:inline-block"></span></label>
-      <label class="f">Down date <input id="f_downdate" type="date"></label>
-      <label class="f">Pmt/mo quote <input id="f_pmtmo" type="number" min="0"></label>
-      <label class="f">1st pmt date <input id="f_pmtdate" type="date"></label>
-      <label class="f">Finance APR (%) <input id="f_fapr" type="number" step="0.01" min="0"></label>
-      <label class="f">Finance months <input id="f_fmo" type="number" min="0"></label>
-      <label class="f">FU date <input id="f_fu" type="date"></label>
-      <label class="f">CRM lead link <input id="f_crmlink" placeholder="https://…"></label>
+      <label class="f">Tipo de trato <select id="f_dtype"><option value="standard">Estándar (47%)</option><option value="deedback">Deed-back</option></select></label>
+      <label class="f">Cuota de mantenimiento anual ($) <input id="f_mf" type="number" min="0"></label>
+      <label class="f">Aumento anual (%) <input id="f_esc" type="number" step="0.1" min="0" value="8"></label>
+      <label class="f">Saldo a liquidar / deuda ($) <input id="f_payoff" type="number" min="0"></label>
+      <label class="f">APR del préstamo (%) <input id="f_apr" type="number" step="0.1" min="0"></label>
+      <label class="f">Plazo del préstamo (meses) <input id="f_term" type="number" min="0"></label>
+      <label class="f">Año de compra <input id="f_pyr" type="number" min="0"></label>
+      <label class="f">Hipoteca mensual ($) <input id="f_mmo" type="number" min="0"></label>
+      <label class="f">Tarifa de Linx ($) <span class="tmin">en blanco = 47% del saldo</span><input id="f_fee" type="number" min="0"></label>
+      <label class="f">Método de pago <select id="f_paymethod"><option value="ach">ACH</option><option value="check">CHEQUE</option><option value="cc">Tarjeta de crédito (+3%)</option><option value="ucfs">UCFS</option><option value="equity">EQUITY</option><option value="uga">UGA</option></select></label>
+      <label class="f">Cuota inicial <span><select id="f_downt" style="width:52px"><option value="dol">$</option><option value="pct">%</option></select> <input id="f_down" type="number" min="0" style="width:calc(100% - 60px);display:inline-block"></span></label>
+      <label class="f">Fecha de la cuota inicial <input id="f_downdate" type="date"></label>
+      <label class="f">Cuota mensual cotizada <input id="f_pmtmo" type="number" min="0"></label>
+      <label class="f">Fecha del primer pago <input id="f_pmtdate" type="date"></label>
+      <label class="f">APR de financiamiento (%) <input id="f_fapr" type="number" step="0.01" min="0"></label>
+      <label class="f">Meses de financiamiento <input id="f_fmo" type="number" min="0"></label>
+      <label class="f">Fecha de seguimiento <input id="f_fu" type="date"></label>
+      <label class="f">Enlace del lead en CRM <input id="f_crmlink" placeholder="https://…"></label>
     </div>
-    <button onclick="saveForm()">Save client</button>
-    <button class="ghost" onclick="hideForm()">Cancel</button>
+    <button onclick="saveForm()">Guardar cliente</button>
+    <button class="ghost" onclick="hideForm()">Cancelar</button>
   </div>
 </div>
 
 <div class="box">
-  <h3>Numbers</h3>
+  <h3>Números</h3>
   <div class="grid">
-    <label class="f">Annual maint. fee ($) <input id="in_mf" type="number" value="1500" min="0"></label>
-    <label class="f">Annual increase (%) <input id="in_rate" type="number" value="8" step="0.1" min="0"></label>
-    <label class="f">Payoff / debt owed ($) <input id="in_payoff" type="number" value="0" min="0"></label>
-    <label class="f">Loan APR (%) <input id="in_apr" type="number" step="0.1" min="0" value="0"></label>
-    <label class="f">Loan term (months) <input id="in_term" type="number" min="0" value="0"></label>
-    <label class="f">Linx fee ($) <span class="tmin">blank = 47% of payoff</span><input id="in_fee" type="number" min="0"></label>
-    <label class="f">Down payment ($) <input id="in_down" type="number" min="0" value="0"></label>
-    <label class="f">Finance APR (%) <input id="in_fapr" type="number" step="0.1" min="0" value="0"></label>
-    <label class="f">Finance months <input id="in_fmo" type="number" min="0" value="0"></label>
+    <label class="f">Cuota de mantenimiento anual ($) <input id="in_mf" type="number" value="1500" min="0"></label>
+    <label class="f">Aumento anual (%) <input id="in_rate" type="number" value="8" step="0.1" min="0"></label>
+    <label class="f">Saldo a liquidar / deuda ($) <input id="in_payoff" type="number" value="0" min="0"></label>
+    <label class="f">APR del préstamo (%) <input id="in_apr" type="number" step="0.1" min="0" value="0"></label>
+    <label class="f">Plazo del préstamo (meses) <input id="in_term" type="number" min="0" value="0"></label>
+    <label class="f">Tarifa de Linx ($) <span class="tmin">en blanco = 47% del saldo</span><input id="in_fee" type="number" min="0"></label>
+    <label class="f">Cuota inicial ($) <input id="in_down" type="number" min="0" value="0"></label>
+    <label class="f">APR de financiamiento (%) <input id="in_fapr" type="number" step="0.1" min="0" value="0"></label>
+    <label class="f">Meses de financiamiento <input id="in_fmo" type="number" min="0" value="0"></label>
   </div>
-  <button onclick="calc()">Calculate</button>
+  <button onclick="calc()">Calcular</button>
 </div>
 
 <div class="result" id="result" style="display:none">
   <div class="row">
-    <div class="stat"><span>Linx fee</span><b id="r_fee">$0</b></div>
-    <div class="stat"><span>10-yr savings</span><b id="r_sav">$0</b></div>
-    <div class="stat"><span>Principal / Interest</span><b id="r_pi">—</b></div>
+    <div class="stat"><span>Tarifa de Linx</span><b id="r_fee">$0</b></div>
+    <div class="stat"><span>Ahorro a 10 años</span><b id="r_sav">$0</b></div>
+    <div class="stat"><span>Capital / Intereses</span><b id="r_pi">—</b></div>
   </div>
 </div>
 
 <div class="box">
-  <h3>Deed-back price list</h3>
-  <div class="tmin" id="deedmeta">No price list loaded.</div>
+  <h3>Lista de precios deed-back</h3>
+  <div class="tmin" id="deedmeta">No hay lista de precios cargada.</div>
   <div style="margin:8px 0">
-    <button class="ghost" onclick="document.getElementById('deedfile').click()">Import CSV/XLSX</button>
-    <button class="ghost" onclick="exportDeed()">Export</button>
+    <button class="ghost" onclick="document.getElementById('deedfile').click()">Importar CSV/XLSX</button>
+    <button class="ghost" onclick="exportDeed()">Exportar</button>
     <input type="file" id="deedfile" accept=".csv,.xlsx,text/csv" style="display:none" onchange="importDeed(this)">
   </div>
-  <label class="f">Search developer or state <input id="deedq" placeholder="e.g. Westgate or FL" oninput="renderDeedResults()"></label>
-  <label class="f">MF/yr for cycles <input id="deedmf" inputmode="decimal" placeholder="auto from selected client" oninput="renderDeedResults()"></label>
+  <label class="f">Buscar desarrollador o estado <input id="deedq" placeholder="ej. Westgate o FL" oninput="renderDeedResults()"></label>
+  <label class="f">Mantenimiento anual para ciclos <input id="deedmf" inputmode="decimal" placeholder="automático del cliente seleccionado" oninput="renderDeedResults()"></label>
   <div id="deedresults" style="margin-top:8px"></div>
 </div>
 
-<h3>Projections</h3>
+<h3>Proyecciones</h3>
 <table id="mtable" style="display:none">
-  <thead><tr><th></th><th>5 yr</th><th>10 yr</th><th>20 yr</th></tr></thead>
+  <thead><tr><th></th><th>5 años</th><th>10 años</th><th>20 años</th></tr></thead>
   <tbody>
-    <tr><td>Maint. fees</td><td id="m5">$0</td><td id="m10">$0</td><td id="m20">$0</td></tr>
-    <tr><td>Total cost (payoff + fees)</td><td id="t5">$0</td><td id="t10">$0</td><td id="t20">$0</td></tr>
-    <tr class="hl"><td>Savings vs. Linx fee</td><td id="s5">$0</td><td id="s10">$0</td><td id="s20">$0</td></tr>
+    <tr><td>Cuotas de mantenimiento</td><td id="m5">$0</td><td id="m10">$0</td><td id="m20">$0</td></tr>
+    <tr><td>Costo total (saldo + cuotas)</td><td id="t5">$0</td><td id="t10">$0</td><td id="t20">$0</td></tr>
+    <tr class="hl"><td>Ahorro vs. tarifa de Linx</td><td id="s5">$0</td><td id="s10">$0</td><td id="s20">$0</td></tr>
   </tbody>
 </table>
 
-<h3>Price &amp; payments</h3>
+<h3>Precio y pagos</h3>
 <table id="ptable" style="display:none">
   <tbody>
-    <tr><td>Linx fee (47% of payoff)</td><td id="p_fee">$0</td></tr>
-    <tr><td>Down payment</td><td id="p_down">$0</td></tr>
-    <tr><td>Balance</td><td id="p_bal">$0</td></tr>
-    <tr><td>Monthly (<span id="p_terms">—</span>)</td><td id="p_mo">—</td></tr>
-    <tr><td>12 / 24 / 36 mo options</td><td id="p_opt">—</td></tr>
+    <tr><td>Tarifa de Linx (47% del saldo)</td><td id="p_fee">$0</td></tr>
+    <tr><td>Cuota inicial</td><td id="p_down">$0</td></tr>
+    <tr><td>Saldo</td><td id="p_bal">$0</td></tr>
+    <tr><td>Mensual (<span id="p_terms">—</span>)</td><td id="p_mo">—</td></tr>
+    <tr><td>Opciones a 12 / 24 / 36 meses</td><td id="p_opt">—</td></tr>
   </tbody>
 </table>
 
-<div class="note">Clients are saved in this browser only — nothing is uploaded. Maintenance fees never end — the perpetuity clause passes them to heirs.</div>
+<div class="note">Los clientes se guardan solo en este navegador; no se sube nada. Las cuotas de mantenimiento nunca terminan: la cláusula de perpetuidad las pasa a los herederos.</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
@@ -166,7 +166,7 @@ var editingId = null;
 
 function refreshSelect(keep){
   var cs = getClients(), sel = $('csel'), cur = keep ? sel.value : '';
-  sel.innerHTML = '<option value="">— Manual entry —</option>';
+  sel.innerHTML = '<option value="">— Ingreso manual —</option>';
   cs.forEach(function(c){ var o = document.createElement('option'); o.value = c.id; o.textContent = c.name + (c.appt ? ' — ' + c.appt : ''); sel.appendChild(o); });
   sel.value = cur;
 }
@@ -198,7 +198,7 @@ function hideForm(){ $('cform').style.display = 'none'; editingId = null; }
 
 function saveForm(){
   var name = $('f_name').value.trim();
-  if (!name){ alert('Name is required.'); return; }
+  if (!name){ alert('El nombre es obligatorio.'); return; }
   var rec = {
     id: editingId || ('c' + Date.now().toString(36)),
     name: name, phone: $('f_phone').value.trim(), email: $('f_email').value.trim(),
@@ -222,7 +222,7 @@ function saveForm(){
 
 function delClient(){
   var id = $('csel').value; if (!id) return;
-  if (!confirm('Delete this client from this browser?')) return;
+  if (!confirm('¿Eliminar este cliente de este navegador?')) return;
   saveClients(getClients().filter(function(c){ return c.id !== id; }));
   refreshSelect(); $('csel').value = ''; onSelect();
 }
@@ -265,8 +265,8 @@ function importClients(input){
         if (ix >= 0){ cs[ix] = rec; updated++; } else { cs.push(rec); added++; }
       });
       saveClients(cs); refreshSelect();
-      alert('Imported: ' + added + ' new, ' + updated + ' updated.');
-    } catch(e){ alert('Could not read that file.'); }
+      alert('Importados: ' + added + ' nuevos, ' + updated + ' actualizados.');
+    } catch(e){ alert('No se pudo leer ese archivo.'); }
     input.value = '';
   };
   rd.readAsText(f);
@@ -284,7 +284,7 @@ function onSelect(){
     d.innerHTML = '<b>' + esc(c.name) + '</b>' +
       (c.appt ? ' · ' + esc(c.appt) : '') +
       (c.resort ? ' · ' + esc(c.resort) : '') +
-      (c.dtype === 'deedback' ? ' · Deedback' : '') +
+      (c.dtype === 'deedback' ? ' · Deed-back' : '') +
       (c.phone ? '<br>📞 ' + esc(c.phone) : '') +
       (c.email ? ' · ✉️ ' + esc(c.email) : '') +
       (c.ca ? '<br>CA: ' + esc(c.ca) : '');
@@ -330,11 +330,11 @@ function calc(){
   $('p_down').textContent = fmt(down);
   $('p_bal').textContent = feeKnown ? fmt(bal) : '—';
   if (feeKnown && fapr > 0 && fmo > 0){
-    $('p_terms').textContent = fmo + ' mo @ ' + fapr + '%';
-    $('p_mo').textContent = fmt(amort(bal, fapr, fmo)) + '/mo';
+    $('p_terms').textContent = fmo + ' meses al ' + fapr + '%';
+    $('p_mo').textContent = fmt(amort(bal, fapr, fmo)) + '/mes';
   } else { $('p_terms').textContent = '—'; $('p_mo').textContent = '—'; }
   if (feeKnown && bal > 0 && fapr >= 0){
-    $('p_opt').textContent = fmt(amort(bal, fapr, 12)) + ' / ' + fmt(amort(bal, fapr, 24)) + ' / ' + fmt(amort(bal, fapr, 36)) + ' /mo';
+    $('p_opt').textContent = fmt(amort(bal, fapr, 12)) + ' / ' + fmt(amort(bal, fapr, 24)) + ' / ' + fmt(amort(bal, fapr, 36)) + ' /mes';
   } else { $('p_opt').textContent = '—'; }
 
   $('result').style.display = 'block';
@@ -344,7 +344,7 @@ function calc(){
 
 function getDeed(){ try { return JSON.parse(localStorage.getItem('sl_deedprices') || 'null') || {updated:null, rows:[]}; } catch(e){ return {updated:null, rows:[]}; } }
 function saveDeed(d){ localStorage.setItem('sl_deedprices', JSON.stringify(d)); deedMeta(); }
-function deedMeta(){ var d = getDeed(); $('deedmeta').textContent = d.rows.length ? (d.rows.length + ' prices · updated ' + (d.updated || '—')) : 'No price list loaded.'; }
+function deedMeta(){ var d = getDeed(); $('deedmeta').textContent = d.rows.length ? (d.rows.length + ' precios · actualizada ' + (d.updated || '—')) : 'No hay lista de precios cargada.'; }
 function parseCSV(t){
   var rows = [], row = [], cur = '', q = false;
   for (var i = 0; i < t.length; i++){
@@ -362,14 +362,14 @@ function importDeed(input){
   var f = input.files[0]; if (!f) return;
   var done = function(){ input.value = ''; };
   if (/\.xlsx?$/i.test(f.name)){
-    if (typeof XLSX === 'undefined'){ alert('Excel support did not load — reload the page with internet, or export CSV.'); done(); return; }
+    if (typeof XLSX === 'undefined'){ alert('El soporte de Excel no cargó. Recargue la página con conexión a internet o exporte en CSV.'); done(); return; }
     var rd = new FileReader();
     rd.onload = function(){
       try {
         var wb = XLSX.read(new Uint8Array(rd.result), {type: 'array'});
         var ws = wb.Sheets[wb.SheetNames[0]];
         processDeedRows(XLSX.utils.sheet_to_json(ws, {header: 1, raw: false}), wb.SheetNames[0]);
-      } catch(e){ alert('Could not read that file.'); }
+      } catch(e){ alert('No se pudo leer ese archivo.'); }
       done();
     };
     rd.readAsArrayBuffer(f);
@@ -381,7 +381,7 @@ function importDeed(input){
       var rows = parseCSV(rd2.result);
       if (!rows.length) throw 0;
       processDeedRows(rows, null);
-    } catch(e){ alert('Could not read that CSV.'); }
+    } catch(e){ alert('No se pudo leer ese CSV.'); }
     done();
   };
   rd2.readAsText(f);
@@ -411,7 +411,7 @@ function processDeedRows(rows, tabName){
       }
       saveDeed({updated: new Date().toISOString().slice(0, 10), rows: out, tab: tabName || ''});
       renderDeedResults();
-      alert('Loaded ' + out.length + ' deed-back prices' + (tabName ? ' from tab "' + tabName + '"' : '') + '.');
+      alert('Se cargaron ' + out.length + ' precios deed-back' + (tabName ? ' de la pestaña "' + tabName + '"' : '') + '.');
 }
 function exportDeed(){
   var d = getDeed();
@@ -434,35 +434,35 @@ function deedMF(){
 function renderDeedResults(){
   var d = getDeed(), q = ($('deedq').value || '').toLowerCase().trim();
   var box = $('deedresults');
-  if (!d.rows.length){ box.innerHTML = '<span class="tmin">Import the CSV from your price sheet to search.</span>'; return; }
+  if (!d.rows.length){ box.innerHTML = '<span class="tmin">Importe el CSV de su hoja de precios para buscar.</span>'; return; }
   var hits = [];
   d.rows.forEach(function(r, ix){
     if (!q || r.dev.toLowerCase().indexOf(q) >= 0 || r.state.toLowerCase().indexOf(q) >= 0) hits.push({r:r, ix:ix});
   });
   hits = hits.slice(0, 50);
-  if (!hits.length){ box.innerHTML = '<span class="tmin">No matches.</span>'; return; }
+  if (!hits.length){ box.innerHTML = '<span class="tmin">Sin resultados.</span>'; return; }
   var mf = deedMF();
   box.innerHTML = hits.map(function(h){
     var base = h.r.price, c1 = base + mf, c2 = base + 2 * mf;
     return '<div class="rrow"><span>' + esc(h.r.dev) + (h.r.state ? ' · ' + esc(h.r.state) : '') +
       (h.r.contract ? ' · <b>' + esc(h.r.contract) + '</b>' : '') +
       (h.r.info ? ' <span class="tmin">' + esc(h.r.info) + '</span>' : '') + '<br>' +
-      'Col E <b>' + fmt(base) + '</b>' +
-      (mf > 0 ? ' · +1yr <b>' + fmt(c1) + '</b> · +2yr <b>' + fmt(c2) + '</b>' : ' <span class="tmin">(enter MF for cycle totals)</span>') +
-      '</span><span style="white-space:nowrap"><button class="ghost" onclick="applyDeedPrice(' + h.ix + ',0)">Use base</button>' +
-      (mf > 0 ? ' <button class="ghost" onclick="applyDeedPrice(' + h.ix + ',1)">+1yr</button> <button class="ghost" onclick="applyDeedPrice(' + h.ix + ',2)">+2yr</button>' : '') +
+      'Col. E <b>' + fmt(base) + '</b>' +
+      (mf > 0 ? ' · +1 año <b>' + fmt(c1) + '</b> · +2 años <b>' + fmt(c2) + '</b>' : ' <span class="tmin">(ingrese el mantenimiento anual para ver los totales por ciclo)</span>') +
+      '</span><span style="white-space:nowrap"><button class="ghost" onclick="applyDeedPrice(' + h.ix + ',0)">Usar base</button>' +
+      (mf > 0 ? ' <button class="ghost" onclick="applyDeedPrice(' + h.ix + ',1)">+1 año</button> <button class="ghost" onclick="applyDeedPrice(' + h.ix + ',2)">+2 años</button>' : '') +
       '</span></div>';
   }).join('');
 }
 function applyDeedPrice(ix, cyc){
   var d = getDeed(), r = d.rows[ix]; if (!r) return;
   var id = $('csel').value;
-  if (!id){ alert('Select a client first.'); return; }
+  if (!id){ alert('Primero seleccione un cliente.'); return; }
   var price = r.price + (cyc || 0) * deedMF();
   var cs = getClients();
   for (var i = 0; i < cs.length; i++) if (cs[i].id === id){ cs[i].fee = price; cs[i].dtype = 'deedback'; }
   saveClients(cs); onSelect();
-  alert('Deed-back price ' + fmt(price) + ' applied to client.');
+  alert('Precio deed-back de ' + fmt(price) + ' aplicado al cliente.');
 }
 
 $('csel').addEventListener('change', onSelect);
