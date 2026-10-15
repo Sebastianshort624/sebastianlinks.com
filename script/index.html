@@ -194,6 +194,13 @@
   .noteBtns { margin-top: 6px; display: flex; gap: 6px; }
   .noteSaveBtn { background: #2e7d32; color: #fff; border: none; border-radius: 5px; padding: 5px 14px; cursor: pointer; font-family: inherit; }
   .noteCancelBtn { background: #eee; color: #333; border: 1px solid #ccc; border-radius: 5px; padding: 5px 14px; cursor: pointer; font-family: inherit; }
+  .notesCol { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+  #notesSection #notesArea { width: 100%; box-sizing: border-box; border: 1px solid #c9dcf7; border-radius: 6px; min-height: 84px; flex: none; padding: 10px 12px; }
+  #notesSection #notesList { max-height: 560px; border: 1px solid #e3ecfa; border-radius: 6px; margin-top: 10px; }
+  #notesSection #notesAddBtn { width: 100%; border-radius: 6px; margin-top: 8px; }
+  #notesSection .notesTabs { padding: 0 0 2px; }
+  #notesSection .notesTools { border: 1px solid #e3ecfa; border-radius: 6px; margin-top: 10px; }
+  #notesSection .notesFoot { background: transparent; padding: 8px 2px 0; }
   @media print { #notesFab, #notesModal { display: none !important; } }
   #lcModal { position: fixed; inset: 0; z-index: 960; background: rgba(0,0,0,.55); display: none; align-items: center; justify-content: center; padding: 20px; }
   #lcModal.open { display: flex; }
@@ -352,7 +359,7 @@
     <button class="lcBtn" onclick="lcOpen()">🏦 Calculadora de préstamo</button>
   </div>
   </div>
-    <div class="cpanel cpanel-fee">
+    <div class="notesCol"><div class="cpanel cpanel-fee">
   <div class="qsec" style="margin-top:0">💰 Mi fee y pagos</div>
   <div id="q_sheetfeebox" style="display:none;background:#fef2f2;border:1px solid #f0b4b4;border-radius:6px;padding:10px 12px;margin-bottom:10px">
     <div class="qsec" style="margin-top:0;color:#b91c1c">🔴 Fee deed-back — desde la hoja PRE-CALL</div>
@@ -394,6 +401,16 @@
     <div>Comisión lista el <b id="q_cdate">—</b></div>
   </div>
 
+  </div>
+  <div class="cpanel" id="notesSection">
+  <div class="qsec" style="margin-top:0">📝 Notas — historial <span class="tmin" id="notesWho"></span></div>
+  <div class="notesTabs"><button id="notesTabClient" class="on" onclick="notesSetView('client')">Este cliente</button><button id="notesTabAll" onclick="notesSetView('all')">Todas</button></div>
+  <textarea id="notesArea" placeholder="Escribe una nota nueva y pulsa Guardar nota — queda guardada con la fecha y hora de hoy."></textarea>
+  <button id="notesAddBtn" onclick="notesAdd()">💾 Guardar nota</button>
+  <div class="notesTools"><input id="notesSearch" type="text" placeholder="🔎 Buscar en las notas…" oninput="notesRender()"><input id="notesDate" type="date" onchange="notesRender()"><button class="notesClearBtn" onclick="notesClearFilters()">Limpiar filtros</button></div>
+  <div id="notesList"></div>
+  <div class="notesFoot" id="notesFoot">Modo local — falta conectar la base de datos.</div>
+  </div>
   </div>
   </div>
   <div class="calcgrid"><div class="cpanel">
@@ -1364,6 +1381,7 @@ var notesEditing = null;         // nota en edicion (objeto) o null
 var notesDbError = '';
 var notesCurHas = false;         // el cliente actual tiene notas (ultimo estado cargado)
 var notesLocalArrays = {};       // cid -> arreglo local normalizado en memoria
+var notesLoadedFor = null;       // cid cuyas notas muestra la seccion ahora
 
 function notesClientId(){ return (cur && cur.id) ? cur.id : 'global'; }
 function notesClientName(){ return (cur && cur.name) ? cur.name : 'General'; }
@@ -1434,7 +1452,8 @@ function notesLoad(){
   });
 }
 function notesAfterLoad(){
-  if (notesView === 'client') notesCurHas = notesCache.length > 0;
+  if (notesView === 'client'){ notesCurHas = notesCache.length > 0; notesLoadedFor = notesClientId(); }
+  var who = $('notesWho'); if (who) who.textContent = (notesView === 'all') ? '\u00B7 todos los clientes' : '\u00B7 ' + notesClientName();
   notesRender(); notesBadge(); notesFoot();
 }
 function notesFoot(){
@@ -1578,21 +1597,16 @@ function notesRender(){
   }
   box.innerHTML = h;
 }
-function notesOpen(){
-  $('notesWho').textContent = (cur && cur.name ? cur.name : 'General') + ' \u2014 notas';
-  var ta = $('notesArea'); if (ta) ta.value = '';
-  var sq = $('notesSearch'); if (sq) sq.value = '';
-  var sd = $('notesDate'); if (sd) sd.value = '';
-  notesEditing = null;
-  notesSetView('client');
-  $('notesModal').classList.add('open');
-  setTimeout(function(){ var a = $('notesArea'); if (a) a.focus(); }, 50);
+function notesJump(){
+  var s = $('notesSection');
+  if (s && s.scrollIntoView) s.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  setTimeout(function(){ var a = $('notesArea'); if (a) a.focus(); }, 350);
 }
-function notesClose(){ notesAdd(); $('notesModal').classList.remove('open'); notesBadge(); }
+function notesOpen(){ notesJump(); }
+function notesClose(){ notesAdd(); notesBadge(); }
 function notesBadge(){
-  var b = $('notesFab'); if (!b) return;
-  var has = notesCurHas || notesLocalArr(notesClientId()).length > 0;
-  b.classList.toggle('has', has);
+  var b = $('notesFab'); if (b) b.classList.toggle('has', notesCurHas || notesLocalArr(notesClientId()).length > 0);
+  if (notesLoadedFor !== notesClientId() && $('notesSection')){ notesLoadedFor = notesClientId(); notesSetView('client'); }
 }
 function fmtC(n){ return '$' + Number(n).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
 var lcMode = 'a';
@@ -1681,7 +1695,6 @@ document.addEventListener('keydown', function(e){ if (e.key === 'Escape'){ notes
 (function initClientSel(){
   refreshClientSel();
   document.getElementById('clientSel').addEventListener('change', function(){ pickClient(this.value); });
-  document.getElementById('notesModal').addEventListener('click', function(e){ if (e.target === this) notesClose(); });
   document.getElementById('lcModal').addEventListener('click', function(e){ if (e.target === this) lcClose(); });
   try {
     var dcid = new URLSearchParams(location.search).get('c');
@@ -1695,18 +1708,7 @@ document.addEventListener('keydown', function(e){ if (e.key === 'Escape'){ notes
 })();
 </script>
 
-<button id="notesFab" onclick="notesOpen()">📝 Notas</button>
-<div id="notesModal">
-  <div class="notesBox">
-    <div class="notesHead"><span>📝 <span id="notesWho">Notas</span></span><button onclick="notesClose()">✕ Cerrar</button></div>
-    <div class="notesTabs"><button id="notesTabClient" class="on" onclick="notesSetView('client')">Este cliente</button><button id="notesTabAll" onclick="notesSetView('all')">Todas</button></div>
-    <textarea id="notesArea" placeholder="Escribe una nota nueva y pulsa Guardar nota — queda guardada con la fecha y hora de hoy."></textarea>
-    <button id="notesAddBtn" onclick="notesAdd()">💾 Guardar nota</button>
-    <div class="notesTools"><input id="notesSearch" type="text" placeholder="🔎 Buscar en las notas…" oninput="notesRender()"><input id="notesDate" type="date" onchange="notesRender()"><button class="notesClearBtn" onclick="notesClearFilters()">Limpiar filtros</button></div>
-    <div id="notesList"></div>
-    <div class="notesFoot" id="notesFoot">Modo local — falta conectar la base de datos.</div>
-  </div>
-</div>
+<button id="notesFab" onclick="notesJump()">📝 Notas</button>
 <div id="lcModal">
   <div class="lcBox">
     <div class="lcHead"><span>🏦 Calculadora de préstamo — <span id="lcWho">General</span></span><button onclick="lcClose()">✕ Cerrar</button></div>
