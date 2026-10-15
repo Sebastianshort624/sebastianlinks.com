@@ -28,7 +28,12 @@
   .client-line input { border: none; border-bottom: 1px solid #333; font-size: 1em; width: 280px; font-family: inherit; }
   .client-line select { font-size: 1em; padding: 6px; font-family: inherit; max-width: 100%; }
   .cbar { background: #dbeafe; color: #0b3d91; border-radius: 6px; padding: 10px 14px; margin-top: 10px; box-shadow: 0 2px 8px rgba(11,61,145,.18); }
-  .ib-wrap { display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 14px; align-items: start; }
+  .ib-wrap { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,2fr) minmax(0,1fr); gap: 14px; align-items: start; }
+  .ib-col { min-width: 0; overflow-wrap: break-word; }
+  .ib-col + .ib-col { border-left: 2px solid rgba(11,61,145,.30); padding-left: 14px; }
+  .ib-badge { font-size: 1.15em; font-weight: 800; text-align: center; padding: 7px 10px; border-radius: 6px; letter-spacing: .5px; margin-bottom: 8px; color: #fff; }
+  .ib-badge-db { background: #b91c1c; }
+  .ib-badge-mtg { background: #0b3d91; }
   .ib-lab { font-size: 0.62em; font-weight: 800; letter-spacing: 1.2px; color: #40669c; text-transform: uppercase; }
   .ib-ca { font-size: 1.45em; font-weight: 800; line-height: 1.15; color: #0b3d91; }
   .ib-client { font-size: 1.05em; font-weight: 700; margin-top: 2px; }
@@ -47,7 +52,7 @@
   .ib-links a { font-weight: 700; }
   .ib-sep { color: #40669c; }
   .ib-db { background: #b91c1c; color: #fff; font-size: 1.6em; font-weight: 800; text-align: center; padding: 8px 6px; border-radius: 6px; letter-spacing: 1px; margin-bottom: 8px; }
-  @media (max-width: 900px){ .ib-wrap { grid-template-columns: 1fr; } }
+  @media (max-width: 640px){ .ib-wrap { grid-template-columns: 1fr; } .ib-col + .ib-col { border-left: none; padding-left: 0; border-top: 2px solid rgba(11,61,145,.30); padding-top: 10px; } }
   .rlinks { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0 4px; }
   .rlinks a { display: block; border: 1px solid #c9dcf7; border-left: 4px solid #0b3d91; border-radius: 6px; padding: 8px 12px; text-decoration: none; color: #0b3d91; background: #f2f7ff; font-size: 0.95em; }
   .rlinks a span { display: block; font-size: 0.82em; color: #555; }
@@ -677,7 +682,9 @@ function renderBar(c, n){
   var nights = c.nights || 0;
   var perNight = nights > 0 ? fmtC(totyr / nights) : '—';
   var ph = [c.phone, c.phone2].filter(function(x){ return x; }).join(' · ');
-  var dbbanner = c.dtype === 'DB' ? '<div class="ib-db">🔴 DEED-BACK 🔴</div>' : '';
+  var isDB = c.dtype === 'DB';
+  var dbbanner = isDB ? '<div class="ib-db">🔴 DEED-BACK 🔴</div>' : '';
+  var badge = isDB ? '<div class="ib-badge ib-badge-db">🔴 DEED-BACK</div>' : '<div class="ib-badge ib-badge-mtg">🏦 NO DEED-BACK — CON HIPOTECA</div>';
   var bought = pyr > 0 ? '<div class="ib-line">Comprado: ' + (c.pmonth >= 1 && c.pmonth <= 12 ? MESES[c.pmonth - 1] + ' ' : '') + pyr + '</div>' : '';
   var lk = [];
   if (qPipeUrl(c)) lk.push('<a href="' + escH(qPipeUrl(c)) + '" target="_blank" rel="noopener">🔗 Pipeline</a>');
@@ -687,7 +694,7 @@ function renderBar(c, n){
   if (c.folderPath) lk.push('<a href="#" onclick="qCopyInfo(\'folder\', this);return false;" title="' + escH(c.folderPath) + ' — clic para copiar la ruta">📁 Carpeta</a>');
   if (c.loanNote || c.folderPath) lk.push('<a href="#" onclick="qCopyInfo(\'loan\', this);return false;" title="' + escH((c.loanNote || 'Contrato de préstamo') + (c.folderPath ? ' — ' + c.folderPath : '') + ' — clic para copiar la ruta') + '">📄 Préstamo</a>');
   var linksRow = lk.length ? '<div class="ib-links">' + lk.join('<span class="ib-sep">·</span>') + '</div>' : '';
-  bar.innerHTML = dbbanner + '<div class="ib-wrap">' +
+  bar.innerHTML = dbbanner + badge + '<div class="ib-wrap">' +
     '<div class="ib-col"><div class="ib-lab">Analista de casos</div><div class="ib-ca">' + escH(c.ca || '—') + '</div>' +
       '<div class="ib-client">' + qNameLink(c) + '</div>' + (ph ? '<div class="ib-ph">📞 ' + escH(ph) + '</div>' : '') +
       (c.email ? '<div class="ib-line">✉️ ' + escH(c.email) + '</div>' : '') + '</div>' +
@@ -697,7 +704,7 @@ function renderBar(c, n){
       '<div><div class="ib-lab">Costo por noche</div><div class="ib-big">' + perNight + '</div></div></div>' + grid + '</div>' +
     '<div class="ib-col"><div class="ib-resort">' + escH(c.resort || '—') + '</div>' +
       (c.address ? '<div class="ib-line">📍 ' + escH(c.address) + '</div>' : '') + bought +
-      (c.contracts > 0 ? '<div class="ib-line">Contratos: ' + c.contracts + '</div>' : '') +
+      '<div class="ib-line">Contratos: ' + (c.contracts > 0 ? c.contracts : '—') + '</div>' +
       (n && n.feeKnown ? '<div class="ib-line">Tarifa: <b>' + fmtC(n.fee) + '</b> · Ahorro 10 años: <b>' + fmtC(n.s10) + '</b></div>' : '') + '</div></div>' + linksRow;
   bar.style.display = 'block';
 }
