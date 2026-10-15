@@ -102,7 +102,7 @@
   .cschecks input { margin-right: 5px; transform: scale(1.15); }
   @media print {
     body { padding: 0; max-width: none; }
-    #pegbar, .calcside, .sideboxes, #lock, .cbar, .stage, .csprint, #clientSel { display: none !important; }
+    #pegbar, .timerbar, .calcside, .sideboxes, #lock, .cbar, .stage, .csprint, #clientSel { display: none !important; }
     .coversheet { border: 1px solid #000; margin: 0; }
   }
   .qtasks label { display: block; font-size: 0.85em; margin-bottom: 7px; cursor: pointer; line-height: 1.4; }
@@ -112,8 +112,12 @@
   .qterms div { display: flex; justify-content: space-between; margin-bottom: 3px; }
   .qterms b { font-weight: bold; }
   .qidn { font-size: 0.85em; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #0b3d91; line-height: 1.55; overflow-wrap: break-word; word-wrap: break-word; }
-  #pegbar { position: sticky; top: 0; z-index: 60; margin: -20px -20px 16px; }
+  #pegbar { position: sticky; top: 0; z-index: 60; margin: 0 -20px 16px; }
   .navstrip { background: #1a1a1a; color: #fff; padding: 10px 14px; display: flex; gap: 10px; align-items: center; font-size: 1.05em; flex-wrap: wrap; border-radius: 8px; }
+  .timerbar { background: #1a1a1a; color: #fff; padding: 10px 14px; display: flex; gap: 10px; align-items: center; font-size: 1.05em; flex-wrap: wrap; border-radius: 8px; margin: -20px -20px 8px; position: static; }
+  .timerbar.over { background: #a31212; }
+  .timerbar button { background: #0b3d91; color: #fff; border: none; border-radius: 5px; padding: 6px 14px; font-size: 0.9em; cursor: pointer; font-family: inherit; }
+  .timerbar .tgt { color: #aaa; font-size: 0.85em; }
   .navstrip a.nlink { color: #fff; text-decoration: none; padding: 4px 10px; border-radius: 4px; font-size: 0.9em; }
   .navstrip a.jprice { background: #0a7a2e; }
   .navstrip a.jcontract { background: #0b3d91; }
@@ -130,7 +134,7 @@
   .stimer { float: right; font-weight: normal; }
   .stimer button { background: #0b3d91; color: #fff; border: none; border-radius: 5px; padding: 4px 10px; font-size: 0.85em; cursor: pointer; font-family: inherit; font-variant-numeric: tabular-nums; }
   .stimer button.rs { background: #666; padding: 4px 8px; }
-  @media print { body { padding: 0; } .stage { break-inside: avoid; } #pegbar, .stimer { display: none; } .sideboxes { position: static; width: auto; max-height: none; } }
+  @media print { body { padding: 0; } .stage { break-inside: avoid; } #pegbar, .timerbar, .stimer { display: none; } .sideboxes { position: static; width: auto; max-height: none; } }
   #notesFab { position: fixed; bottom: 18px; right: 18px; z-index: 900; background: #0b3d91; color: #fff; border: none; border-radius: 999px; padding: 12px 20px; font-size: 1em; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.3); font-family: inherit; }
   #notesFab.has::after { content: '●'; color: #ffd34d; margin-left: 6px; }
   #notesModal { position: fixed; inset: 0; z-index: 950; background: rgba(0,0,0,.55); display: none; align-items: center; justify-content: center; padding: 20px; }
@@ -177,18 +181,21 @@
   </div>
 </div>
 
+<div class="timerbar" id="topbar">
+  <span>⏱ <span id="ot">1:30:00</span></span>
+  <span class="tgt">/ 90:00</span>
+  <button id="obtn" onclick="toggleOverall()">▶ Iniciar</button>
+</div>
+
 <div id="pegbar">
-  <div class="navstrip" id="topbar">
-    <span>⏱ <span id="ot">1:30:00</span></span>
-    <span class="tgt">/ 90:00</span>
-    <button id="obtn" onclick="toggleOverall()">▶ Iniciar</button>
+  <div class="navstrip">
     <button onclick="resetOverall()" title="Reiniciar el temporizador general">↺</button>
     <span class="snav"><a href="#stage1">1</a><a href="#stage2">2</a><a href="#stage3">3</a><a href="#stage4">4</a><a href="#stage5">5</a><a href="#stage6">6</a></span>
     <a class="nlink jprice" href="#price-anchor">💰 Precio</a>
     <a class="nlink jcontract" href="#coversheet">📝 Contrato</a>
   </div>
   <div class="cbar" id="cbar" style="display:none"></div>
-  <a class="pagolink" href="#pago-transicion" onclick="var e=document.getElementById('pago-transicion');var b=document.getElementById('pegbar');window.scrollTo({top:e.getBoundingClientRect().top+window.scrollY-(b?b.offsetHeight:0)-10,behavior:'smooth'});return false;">Ahora bien, si no tiene más preguntas sobre nuestro proceso, lo siguiente que puedo explicarle son las diferentes formas en que la mayoría de las personas pagan por nuestros servicios.</a>
+  <a class="pagolink" href="#pago-transicion" onclick="var e=document.getElementById('pago-transicion');var b=document.getElementById('pegbar');window.scrollTo({top:e.getBoundingClientRect().top+window.scrollY-(b?b.offsetHeight:0)-10,behavior:'smooth'});return false;">Ahora bien, si no tienes más preguntas sobre nuestro proceso, lo siguiente que puedo explicarte son las diferentes formas en que la mayoría de las personas pagan por nuestros servicios.</a>
 </div>
 
 <h1 style="font-size:1.15em;margin-bottom:0">🎯 Cita de 90 minutos <span class="tmin">· 6 etapas × 15 min</span></h1>
@@ -356,10 +363,10 @@
         <li>"Best Company is a <b>third-party organization</b> — all they do is rank the top companies in the world. Did you happen to see we're ranked <b>number one</b> in the timeshare cancellation industry — the industry we created?"</li>
         <li>Research together: <a href="https://sebastianlinks.com/linx">sebastianlinks.com/linx</a> — company credibility &amp; reviews.</li>
         <li>"OK great — so <b>no questions about our credibility</b>, or our ability to do what we say we'll do — is that correct? Perfect."</li>
-        <li>"¿<span class="hl-g" data-fill="ca">[CA name]</span> le habló de RedWeek y le ayudó a hacer su propia investigación sobre nuestra compañía?"</li>
-        <li>"Hágame un favor: en su teléfono o en su computadora, escriba este sitio web: <a href="https://investiganos.com" target="_blank"><b>investiganos.com</b></a>."</li>
-        <li>"Ahí vaya a <a href="https://www.redweek.com/timeshare-resales" target="_blank"><b>RedWeek</b></a>. ¿Le dijeron que usted podía rentar su tiempo compartido, o que podía venderlo?" <span class="tmin">— muéstrale también <a href="https://www.ebay.com/b/Timeshares-for-Sale/15897/bn_1858924" target="_blank">eBay: tiempos compartidos desde $1</a></span></li>
-        <li>"<span class="hl-g" data-fill="ca">[CA name]</span> normalmente le envía unos enlaces para que haga su propia investigación. Pero así como yo quiero sentir que su caso es uno que vamos a ganar con un <b>100% de certeza</b>, quiero que sea <b>abrumadoramente obvio</b> que somos la compañía que va a lograrlo: basado en <b>17 años de testimonios</b> y en <b>agencias independientes de evaluación de compañías</b>."</li>
+        <li>"¿<span class="hl-g" data-fill="ca">[CA name]</span> te habló de RedWeek y te ayudó a hacer tu propia investigación sobre nuestra compañía?"</li>
+        <li>"Hazme un favor: en tu teléfono o en tu computadora, escribe este sitio web: <a href="https://investiganos.com" target="_blank"><b>investiganos.com</b></a>."</li>
+        <li>"Ahí ve a <a href="https://www.redweek.com/timeshare-resales" target="_blank"><b>RedWeek</b></a>. ¿Te dijeron que podías rentar tu tiempo compartido, o que podías venderlo?" <span class="tmin">— muéstrale también <a href="https://www.ebay.com/b/Timeshares-for-Sale/15897/bn_1858924" target="_blank">eBay: tiempos compartidos desde $1</a></span></li>
+        <li>"<span class="hl-g" data-fill="ca">[CA name]</span> normalmente te envía unos enlaces para que hagas tu propia investigación. Pero así como yo quiero sentir que tu caso es uno que vamos a ganar con un <b>100% de certeza</b>, quiero que sea <b>abrumadoramente obvio</b> que somos la compañía que va a lograrlo: basado en <b>17 años de testimonios</b> y en <b>agencias independientes de evaluación de compañías</b>."</li>
       </ol>
     </li>
   </ol>
@@ -382,12 +389,12 @@
     <a href="https://linxlegal.com/where-we-work-linx-legal/" target="_blank"><b>Dónde trabajamos ↗</b><span>Estados y resorts que atendemos</span></a>
   </div>
   <div class="qsec">3 · FALSOS PRETEXTOS — MARCA LO QUE LES DIJERON</div>
-  <div class="fpitem"><label><input type="checkbox" id="fp1" onchange="qFpSave()"><span><b>¿Firmó su contrato porque le dijeron que podía rentar o vender su tiempo compartido?</b><span class="cf">Si no le hubieran dicho esto antes de firmar, ¿habría firmado el contrato?</span></span></label></div>
-  <div class="fpitem"><label><input type="checkbox" id="fp2" onchange="qFpSave()"><span><b>¿Le revelaron la cláusula de perpetuidad: que las cuotas de mantenimiento son una obligación para siempre?</b><span class="cf">Si no le hubieran dicho esto antes de firmar, ¿habría firmado el contrato?</span></span></label></div>
-  <div class="fpitem"><label><input type="checkbox" id="fp3" onchange="qFpSave()"><span><b>¿Le dijeron cuál era la cuota de mantenimiento al momento de la compra, y que esas cuotas aumentarían año tras año?</b><span class="cf">Si no le hubieran dicho esto antes de firmar, ¿habría firmado el contrato?</span></span></label></div>
-  <div class="fpitem"><label><input type="checkbox" id="fp4" onchange="qFpSave()"><span><b>¿Le prometieron privilegio de prioridad al reservar, con mejor disponibilidad que el público en general?</b><span class="cf">Si no le hubieran dicho esto antes de firmar, ¿habría firmado el contrato?</span></span></label></div>
-  <div class="fpitem"><label><input type="checkbox" id="fp5" onchange="qFpSave()"><span><b>¿Le dijeron que reservar sus fechas era cuestión de solo días o semanas de anticipación?</b><span class="cf">Si no le hubieran dicho esto antes de firmar, ¿habría firmado el contrato?</span></span></label></div>
-  <div class="fpitem"><label><input type="checkbox" id="fp6" onchange="qFpSave()"><span><b>¿Le mostraron el verdadero costo total de ser propietario antes de firmar?</b><span class="cf">Si no le hubieran dicho esto antes de firmar, ¿habría firmado el contrato?</span></span></label></div>
+  <div class="fpitem"><label><input type="checkbox" id="fp1" onchange="qFpSave()"><span><b>¿Firmaste tu contrato porque te dijeron que podías rentar o vender tu tiempo compartido?</b><span class="cf">Si no te hubieran dicho esto antes de firmar, ¿habrías firmado el contrato?</span></span></label></div>
+  <div class="fpitem"><label><input type="checkbox" id="fp2" onchange="qFpSave()"><span><b>¿Te revelaron la cláusula de perpetuidad: que las cuotas de mantenimiento son una obligación para siempre?</b><span class="cf">Si no te hubieran dicho esto antes de firmar, ¿habrías firmado el contrato?</span></span></label></div>
+  <div class="fpitem"><label><input type="checkbox" id="fp3" onchange="qFpSave()"><span><b>¿Te dijeron cuál era la cuota de mantenimiento al momento de la compra, y que esas cuotas aumentarían año tras año?</b><span class="cf">Si no te hubieran dicho esto antes de firmar, ¿habrías firmado el contrato?</span></span></label></div>
+  <div class="fpitem"><label><input type="checkbox" id="fp4" onchange="qFpSave()"><span><b>¿Te prometieron privilegio de prioridad al reservar, con mejor disponibilidad que el público en general?</b><span class="cf">Si no te hubieran dicho esto antes de firmar, ¿habrías firmado el contrato?</span></span></label></div>
+  <div class="fpitem"><label><input type="checkbox" id="fp5" onchange="qFpSave()"><span><b>¿Te dijeron que reservar tus fechas era cuestión de solo días o semanas de anticipación?</b><span class="cf">Si no te hubieran dicho esto antes de firmar, ¿habrías firmado el contrato?</span></span></label></div>
+  <div class="fpitem"><label><input type="checkbox" id="fp6" onchange="qFpSave()"><span><b>¿Te mostraron el verdadero costo total de ser propietario antes de firmar?</b><span class="cf">Si no te hubieran dicho esto antes de firmar, ¿habrías firmado el contrato?</span></span></label></div>
 </div>
 
 
@@ -454,7 +461,7 @@
     <li><span class="grp">Checking / savings:</span>
       <ol>
         <li id="price-anchor">"Your total price is <b><span class="hl-b" data-fill="fee">$________</span></b> — and this includes all, beginning to end. We never ask for another dollar. This price eliminates all past, present and future debt, and your name is removed from the deed at the county level, so your estate is safe and your next of kin will never inherit this nightmare."</li>
-        <li id="pago-transicion">Ahora bien, si no tiene más preguntas sobre nuestro proceso, lo siguiente que puedo explicarle son las diferentes formas en que la mayoría de las personas pagan por nuestros servicios.</li>
+        <li id="pago-transicion">Ahora bien, si no tienes más preguntas sobre nuestro proceso, lo siguiente que puedo explicarte son las diferentes formas en que la mayoría de las personas pagan por nuestros servicios.</li>
         <li>"The fastest, easiest, and smartest way to do so financially is: if you can pay it out of any <b>checking or savings account</b>. If you have the money, then well, pay it."</li>
         <li>"And again, I don't like to assume anything. So I'll just ask you <b>straight up</b>: do you have it in your checking account, savings account, stocks, bonds, whatever, where you could get it into your checking account within a certain amount of days?"</li>
       </ol>
@@ -1230,5 +1237,6 @@ document.addEventListener('keydown', function(e){ if (e.key === 'Escape'){ notes
 
 </body>
 </html>
+
 
 
