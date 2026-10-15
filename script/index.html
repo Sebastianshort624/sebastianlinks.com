@@ -102,6 +102,8 @@
   .qf input { width: 110px; padding: 4px 6px; font-size: 1em; font-family: inherit; }
   .qf select { padding: 4px 6px; font-size: 0.95em; font-family: inherit; max-width: 150px; }
   .qf input[type="date"] { width: 140px; }
+  .urlgo { color: #0000ee; text-decoration: underline; font-weight: 700; white-space: nowrap; margin-left: 10px; cursor: pointer; flex-shrink: 0; }
+  .urlgo:visited { color: #0000ee; }
   .qout { margin-top: 10px; font-size: 0.9em; border-top: 1px solid #0b3d91; padding-top: 8px; }
   .qout div { margin-bottom: 4px; }
   .qout b { float: right; }
@@ -221,7 +223,7 @@
 <aside class="calcside calcarea">
   <div class="cbox calc-head"><h3>🧮 Calculadora <button onclick="qSync(cur)" title="Restablecer al cliente">↺</button></h3>
     <div class="qidn" id="q_idn" style="display:none"></div>
-    <div class="urlgrid"><label class="qf" style="margin-bottom:6px">Pipeline URL <input id="q_pipe" type="text" placeholder="https://app.pipelinecrm.com/people/…" onchange="qPipeSave()" style="width:170px"></label><label class="qf" style="margin-bottom:6px">Hoja PRE-CALL URL <input id="q_sheet" type="text" placeholder="https://docs.google.com/spreadsheets/…" onchange="qPipeSave()" style="width:170px"></label><label class="qf" style="margin-bottom:6px">DocuSign URL <input id="q_dsurl" type="text" placeholder="https://app.docusign.com/documents/details/…" onchange="qPipeSave()" style="width:170px"></label><label class="qf" style="margin-bottom:6px">Carpeta del cliente <input id="q_folder" type="text" placeholder="~/Desktop/deals/…" onchange="qPipeSave()" style="width:170px"></label><label class="qf" style="margin-bottom:10px">Préstamo (nota) <input id="q_loannote" type="text" placeholder="Ej.: contrato firmado en la carpeta" onchange="qPipeSave()" style="width:170px"></label></div>
+    <div class="urlgrid"><label class="qf" style="margin-bottom:6px">Pipeline URL <input id="q_pipe" type="text" placeholder="https://app.pipelinecrm.com/people/…" onchange="qPipeSave()" oninput="qUrlLinks()" style="width:170px"><a id="q_pipe_go" class="urlgo" href="#" target="_blank" rel="noopener" style="display:none">↗ Abrir</a></label><label class="qf" style="margin-bottom:6px">Hoja PRE-CALL URL <input id="q_sheet" type="text" placeholder="https://docs.google.com/spreadsheets/…" onchange="qPipeSave()" oninput="qUrlLinks()" style="width:170px"><a id="q_sheet_go" class="urlgo" href="#" target="_blank" rel="noopener" style="display:none">↗ Abrir</a></label><label class="qf" style="margin-bottom:6px">DocuSign URL <input id="q_dsurl" type="text" placeholder="https://app.docusign.com/documents/details/…" onchange="qPipeSave()" oninput="qUrlLinks()" style="width:170px"><a id="q_dsurl_go" class="urlgo" href="#" target="_blank" rel="noopener" style="display:none">↗ Abrir</a></label><label class="qf" style="margin-bottom:6px">Carpeta del cliente <input id="q_folder" type="text" placeholder="~/Desktop/deals/…" onchange="qPipeSave()" oninput="qUrlLinks()" style="width:170px"><a id="q_folder_go" class="urlgo" href="#" onclick="qCopyFolderPath(this);return false;" style="display:none">📋 Copiar</a></label><label class="qf" style="margin-bottom:10px">Préstamo (nota) <input id="q_loannote" type="text" placeholder="Ej.: contrato firmado en la carpeta" onchange="qPipeSave()" style="width:170px"></label></div>
     <div class="tmin" id="q_cli" style="margin-bottom:8px">Ningún cliente seleccionado</div>
     <div id="q_dtypebar" style="display:flex;gap:6px;margin-bottom:10px">
     <button id="q_btn_mtg" onclick="qSetDtype('MTG')" style="flex:1;padding:9px 6px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:0.95em;background:#0b3d91;color:#fff">🏦 Hipoteca</button>
@@ -801,7 +803,25 @@ function qPhLoad(){
     for (i = 1; i <= 20; i++){ el = $('ph' + i); if (el) el.checked = !!o['ph' + i]; }
   } catch(e){}
 }
-function qPipeSave(){ qRecalc(); if (cur) qIdn(cur); }
+function qPipeSave(){ qRecalc(); if (cur) qIdn(cur); qUrlLinks(); }
+function qUrlLinks(){
+  var map = [['q_pipe', 'q_pipe_go', 1], ['q_sheet', 'q_sheet_go', 0], ['q_dsurl', 'q_dsurl_go', 0]];
+  for (var i = 0; i < map.length; i++){
+    var inp = $(map[i][0]), a = $(map[i][1]); if (!inp || !a) continue;
+    var v = (inp.value || '').trim();
+    if (map[i][2]) v = v.replace(/^(https?:\/\/)(www\.)?pipelinecrm\.com/i, '$1app.pipelinecrm.com');
+    if (v){ a.href = v; a.style.display = ''; } else { a.removeAttribute('href'); a.style.display = 'none'; }
+  }
+  var f = $('q_folder'), cp = $('q_folder_go');
+  if (f && cp) cp.style.display = (f.value || '').trim() ? '' : 'none';
+}
+function qCopyFolderPath(el){
+  var f = $('q_folder'); var t = f ? f.value.trim() : '';
+  if (!t) return;
+  function done(){ if (el){ var old = el.innerHTML; el.innerHTML = '✓ Copiado'; setTimeout(function(){ el.innerHTML = old; }, 1200); } }
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, done);
+  else { var ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch(e){} ta.remove(); done(); }
+}
 function qCopyInfo(kind, el){
   if (!cur) return;
   var t = '';
@@ -922,6 +942,7 @@ function qSync(c){
   $('q_aapr').value = c ? (c.apr || '') : '';
   $('q_mos').value = (c && c.pyr) ? Math.min(t0, Math.max(0, (new Date().getFullYear() - c.pyr) * 12)) || '' : '';
   qTaskSync(); qDocRender();
+  qUrlLinks();
   qRecalc();
 }
 function qDocKey(){ return cur && cur.id ? 'sl_docs_' + cur.id : null; }
