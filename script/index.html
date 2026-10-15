@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <meta name="format-detection" content="telephone=no,email=no,address=no">
-<title>90-Minute Appointment — Script</title>
+<title>Cita de 90 minutos — Guión de llamada</title>
 <style>
   body { font-family: Arial, Helvetica, sans-serif; font-size: 21px; max-width: 780px; margin: 0 auto; padding: 20px; color: #1a1a1a; line-height: 1.5; }
   h1 { font-size: 1.4em; margin-bottom: 2px; }
@@ -27,7 +27,34 @@
   .client-line { margin: 4px 0 12px; }
   .client-line input { border: none; border-bottom: 1px solid #333; font-size: 1em; width: 280px; font-family: inherit; }
   .client-line select { font-size: 1em; padding: 6px; font-family: inherit; max-width: 100%; }
-  .cbar { position: sticky; top: 48px; z-index: 40; background: #dbeafe; color: #0b3d91; border-radius: 6px; padding: 8px 12px; margin-bottom: 14px; font-size: 0.85em; line-height: 1.65; }
+  .cbar { background: #dbeafe; color: #0b3d91; border-radius: 6px; padding: 10px 14px; margin-top: 10px; box-shadow: 0 2px 8px rgba(11,61,145,.18); }
+  .ib-wrap { display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 14px; align-items: start; }
+  .ib-lab { font-size: 0.62em; font-weight: 800; letter-spacing: 1.2px; color: #40669c; text-transform: uppercase; }
+  .ib-ca { font-size: 1.45em; font-weight: 800; line-height: 1.15; color: #0b3d91; }
+  .ib-client { font-size: 1.05em; font-weight: 700; margin-top: 2px; }
+  .ib-client a { text-decoration: underline; }
+  .ib-ph { font-size: 0.85em; margin-top: 2px; }
+  .ib-line { font-size: 0.85em; margin-top: 2px; }
+  .ib-stats { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 6px; }
+  .ib-big { font-size: 1.5em; font-weight: 800; color: #0b3d91; line-height: 1.1; }
+  .ib-grid { border-collapse: collapse; font-size: 0.66em; width: 100%; }
+  .ib-grid th, .ib-grid td { padding: 2px 6px; text-align: right; border-bottom: 1px solid #b9d2f5; font-variant-numeric: tabular-nums; }
+  .ib-grid th { color: #40669c; }
+  .ib-grid td:first-child, .ib-grid th:first-child { text-align: left; font-weight: 700; white-space: nowrap; }
+  .ib-grid tr.ib-tot td { font-weight: 800; color: #0b3d91; border-top: 2px solid #0b3d91; }
+  .ib-resort { font-size: 1.4em; font-weight: 800; line-height: 1.15; color: #0b3d91; }
+  .ib-links { margin-top: 8px; font-size: 0.82em; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .ib-links a { font-weight: 700; }
+  .ib-sep { color: #40669c; }
+  .ib-db { background: #b91c1c; color: #fff; font-size: 1.6em; font-weight: 800; text-align: center; padding: 8px 6px; border-radius: 6px; letter-spacing: 1px; margin-bottom: 8px; }
+  @media (max-width: 900px){ .ib-wrap { grid-template-columns: 1fr; } }
+  .rlinks { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0 4px; }
+  .rlinks a { display: block; border: 1px solid #c9dcf7; border-left: 4px solid #0b3d91; border-radius: 6px; padding: 8px 12px; text-decoration: none; color: #0b3d91; background: #f2f7ff; font-size: 0.95em; }
+  .rlinks a span { display: block; font-size: 0.82em; color: #555; }
+  .fpitem { border-bottom: 1px solid #d4e3fa; padding: 9px 4px; }
+  .fpitem label { display: flex; gap: 10px; cursor: pointer; align-items: flex-start; font-size: 0.98em; }
+  .fpitem input { transform: scale(1.3); margin-top: 6px; }
+  .fpitem .cf { display: block; font-size: 0.85em; color: #40669c; font-style: italic; margin-top: 3px; }
   .cbar strong { color: #0b3d91; }
   .cbar a { color: #0b3d91; text-decoration: none; }
   .sprinkle { border: 1px solid #c9dcf7; border-left: 4px solid #0b3d91; border-radius: 8px; padding: 12px 14px; margin: 0 0 18px; background: #f2f7ff; }
@@ -42,7 +69,7 @@
   .hl-g { color: #0a7a2e; font-weight: bold; }
   .hl-b { color: #0b3d91; font-weight: bold; }
   .hl-m { background: #fff3cd; color: #856404; font-weight: bold; padding: 0 4px; border-radius: 3px; }
-  .jumpline { position: sticky; top: 0; z-index: 50; background: #fff; padding: 10px 0; margin-bottom: 10px; border-bottom: 2px solid #0b3d91; }
+  .jumpline { background: #fff; padding: 10px 0; margin-bottom: 10px; border-bottom: 2px solid #0b3d91; }
   .jumpline a { display: inline-block; margin-right: 16px; padding: 10px 20px; font-size: 1.1em; font-weight: bold; text-decoration: none; border-radius: 8px; }
   .jumpline a.jprice { background: #0a7a2e; color: #fff; }
   .jumpline a.jcontract { background: #0b3d91; color: #fff; }
@@ -75,7 +102,7 @@
   .cschecks input { margin-right: 5px; transform: scale(1.15); }
   @media print {
     body { padding: 0; max-width: none; }
-    .topbar, .calcside, .sideboxes, #lock, .cbar, .stage, .csprint, #clientSel { display: none !important; }
+    #pegbar, .calcside, .sideboxes, #lock, .cbar, .stage, .csprint, #clientSel { display: none !important; }
     .coversheet { border: 1px solid #000; margin: 0; }
   }
   .qtasks label { display: block; font-size: 0.85em; margin-bottom: 7px; cursor: pointer; line-height: 1.4; }
@@ -85,17 +112,21 @@
   .qterms div { display: flex; justify-content: space-between; margin-bottom: 3px; }
   .qterms b { font-weight: bold; }
   .qidn { font-size: 0.85em; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #0b3d91; line-height: 1.55; overflow-wrap: break-word; word-wrap: break-word; }
-  .topbar { position: sticky; top: 0; z-index: 50; background: #1a1a1a; color: #fff; padding: 10px 14px; margin: -20px -20px 16px; display: flex; gap: 10px; align-items: center; font-size: 1.05em; }
-  .topbar.over { background: #a31212; }
+  #pegbar { position: sticky; top: 0; z-index: 60; margin: -20px -20px 16px; }
+  .navstrip { background: #1a1a1a; color: #fff; padding: 10px 14px; display: flex; gap: 10px; align-items: center; font-size: 1.05em; flex-wrap: wrap; border-radius: 8px; }
+  .navstrip a.nlink { color: #fff; text-decoration: none; padding: 4px 10px; border-radius: 4px; font-size: 0.9em; }
+  .navstrip a.jprice { background: #0a7a2e; }
+  .navstrip a.jcontract { background: #0b3d91; }
+  .navstrip.over { background: #a31212; }
   .snav { margin-left: auto; display: flex; gap: 4px; }
   .snav a { color: #fff; background: #0b3d91; border-radius: 4px; padding: 4px 10px; text-decoration: none; font-size: 0.9em; }
-  .stage { scroll-margin-top: 64px; }
-  .topbar button { background: #0b3d91; color: #fff; border: none; border-radius: 5px; padding: 6px 14px; font-size: 0.9em; cursor: pointer; font-family: inherit; }
-  .topbar .tgt { color: #aaa; font-size: 0.85em; }
+  .stage { scroll-margin-top: 230px; }
+  .navstrip button { background: #0b3d91; color: #fff; border: none; border-radius: 5px; padding: 6px 14px; font-size: 0.9em; cursor: pointer; font-family: inherit; }
+  .navstrip .tgt { color: #aaa; font-size: 0.85em; }
   .stimer { float: right; font-weight: normal; }
   .stimer button { background: #0b3d91; color: #fff; border: none; border-radius: 5px; padding: 4px 10px; font-size: 0.85em; cursor: pointer; font-family: inherit; font-variant-numeric: tabular-nums; }
   .stimer button.rs { background: #666; padding: 4px 8px; }
-  @media print { body { padding: 0; } .stage { break-inside: avoid; } .topbar, .stimer { display: none; } .sideboxes { position: static; width: auto; max-height: none; } }
+  @media print { body { padding: 0; } .stage { break-inside: avoid; } #pegbar, .stimer { display: none; } .sideboxes { position: static; width: auto; max-height: none; } }
   #notesFab { position: fixed; bottom: 18px; right: 18px; z-index: 900; background: #0b3d91; color: #fff; border: none; border-radius: 999px; padding: 12px 20px; font-size: 1em; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.3); font-family: inherit; }
   #notesFab.has::after { content: '●'; color: #ffd34d; margin-left: 6px; }
   #notesModal { position: fixed; inset: 0; z-index: 950; background: rgba(0,0,0,.55); display: none; align-items: center; justify-content: center; padding: 20px; }
@@ -135,88 +166,93 @@
 
 <div id="lock" style="position:fixed;inset:0;background:#1a1a1a;color:#fff;display:flex;align-items:center;justify-content:center;z-index:100;">
   <div style="text-align:center;padding:20px">
-    <div style="font-size:1.3em;margin-bottom:14px">🔒 Script — enter password</div>
+    <div style="font-size:1.3em;margin-bottom:14px">🔒 Guión — ingresa la contraseña</div>
     <input id="pw" type="password" autocomplete="off" style="padding:10px;font-size:1.1em;border-radius:6px;border:none;width:220px;text-align:center" onkeydown="if(event.key==='Enter')unlock()">
-    <div><button onclick="unlock()" style="margin-top:14px;padding:10px 30px;font-size:1em;background:#0b3d91;color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Unlock</button></div>
-    <div id="pwerr" style="color:#ff8888;margin-top:10px;display:none">Wrong password — try again</div>
+    <div><button onclick="unlock()" style="margin-top:14px;padding:10px 30px;font-size:1em;background:#0b3d91;color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Desbloquear</button></div>
+    <div id="pwerr" style="color:#ff8888;margin-top:10px;display:none">Contraseña incorrecta — inténtalo de nuevo</div>
   </div>
 </div>
 
-<div class="topbar" id="topbar">
-  <span>⏱ <span id="ot">1:30:00</span></span>
-  <span class="tgt">/ 90:00</span>
-  <button id="obtn" onclick="toggleOverall()">▶ Start</button>
-  <button onclick="resetOverall()" title="Reset overall timer">↺</button>
-  <span class="snav"><a href="#stage1">1</a><a href="#stage2">2</a><a href="#stage3">3</a><a href="#stage4">4</a><a href="#stage5">5</a><a href="#stage6">6</a></span>
+<div id="pegbar">
+  <div class="navstrip" id="topbar">
+    <span>⏱ <span id="ot">1:30:00</span></span>
+    <span class="tgt">/ 90:00</span>
+    <button id="obtn" onclick="toggleOverall()">▶ Iniciar</button>
+    <button onclick="resetOverall()" title="Reiniciar el temporizador general">↺</button>
+    <span class="snav"><a href="#stage1">1</a><a href="#stage2">2</a><a href="#stage3">3</a><a href="#stage4">4</a><a href="#stage5">5</a><a href="#stage6">6</a></span>
+    <a class="nlink jprice" href="#price-anchor">💰 Precio</a>
+    <a class="nlink jcontract" href="#coversheet">📝 Contrato</a>
+  </div>
+  <div class="cbar" id="cbar" style="display:none"></div>
 </div>
 
-<h1 style="font-size:1.15em;margin-bottom:0">🎯 90-Minute Appointment <span class="tmin">· 6 stages × 15 min</span></h1>
-<div class="client-line" style="margin:6px 0 10px">Client: <select id="clientSel"><option value="">— select client —</option></select>
-<button onclick="document.getElementById('s_impfile').click()" style="margin-left:8px;padding:6px 14px;font-size:0.9em;background:#0b3d91;color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Import JSON</button>
+<h1 style="font-size:1.15em;margin-bottom:0">🎯 Cita de 90 minutos <span class="tmin">· 6 etapas × 15 min</span></h1>
+<div class="client-line" style="margin:6px 0 10px">Cliente: <select id="clientSel"><option value="">— seleccionar cliente —</option></select>
+<button onclick="document.getElementById('s_impfile').click()" style="margin-left:8px;padding:6px 14px;font-size:0.9em;background:#0b3d91;color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Importar JSON</button>
 <input type="file" id="s_impfile" accept=".json,application/json" style="display:none" onchange="importScriptClients(this)"></div>
-<div class="cbar" id="cbar" style="display:none"></div>
-<div class="jumpline">
-  <a href="#price-anchor" class="jprice">💰 JUMP TO PRICE →</a>
-  <a href="#coversheet" class="jcontract">📝 JUMP TO CONTRACT →</a>
-</div>
 
 <aside class="calcside">
-  <h3>🧮 Calculator <button onclick="qSync(cur)" title="Reset to client">↺</button></h3>
+  <h3>🧮 Calculadora <button onclick="qSync(cur)" title="Restablecer al cliente">↺</button></h3>
   <div class="qidn" id="q_idn" style="display:none"></div>
-  <div class="tmin" id="q_cli" style="margin-bottom:8px">No client selected</div>
+  <label class="qf" style="margin-bottom:6px">Pipeline URL <input id="q_pipe" type="text" placeholder="https://app.pipelinecrm.com/people/…" onchange="qPipeSave()" style="width:170px"></label>
+  <label class="qf" style="margin-bottom:6px">Hoja PRE-CALL URL <input id="q_sheet" type="text" placeholder="https://docs.google.com/spreadsheets/…" onchange="qPipeSave()" style="width:170px"></label>
+  <label class="qf" style="margin-bottom:10px">DocuSign URL <input id="q_dsurl" type="text" placeholder="https://app.docusign.com/documents/details/…" onchange="qPipeSave()" style="width:170px"></label>
+  <div class="tmin" id="q_cli" style="margin-bottom:8px">Ningún cliente seleccionado</div>
   <div id="q_dtypebar" style="display:flex;gap:6px;margin-bottom:10px">
-    <button id="q_btn_mtg" onclick="qSetDtype('MTG')" style="flex:1;padding:9px 6px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:0.95em;background:#0b3d91;color:#fff">\uD83C\uDFE6 Mortgage</button>
-    <button id="q_btn_db" onclick="qSetDtype('DB')" style="flex:1;padding:9px 6px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:0.95em;background:#e2e8f0;color:#334155">\uD83D\uDD34 DEED-BACK</button>
+    <button id="q_btn_mtg" onclick="qSetDtype('MTG')" style="flex:1;padding:9px 6px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:0.95em;background:#0b3d91;color:#fff">🏦 Hipoteca</button>
+    <button id="q_btn_db" onclick="qSetDtype('DB')" style="flex:1;padding:9px 6px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:0.95em;background:#e2e8f0;color:#334155">🔴 DEED-BACK</button>
   </div>
   <div class="cbox">
-  <div class="qsec" style="margin-top:0">🏨 Resort numbers</div>
-  <label class="qf mtgOnly">Mo mortgage <input id="q_mmo" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf">MF/yr <input id="q_mf" type="number" min="0" oninput="qRecalc()"></label>
+  <div class="qsec" style="margin-top:0">🏨 Números del resort</div>
+  <label class="qf mtgOnly">Hipoteca mensual <input id="q_mmo" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">MF/año <input id="q_mf" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">Esc % <input id="q_esc" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf mtgOnly">Yr purchased <input id="q_pyr" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf mtgOnly">Loan term mo <input id="q_term" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf mtgOnly">Año de compra <input id="q_pyr" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">Mes de compra <select id="q_pmonth" onchange="qRecalc()"><option value="">—</option><option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option><option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option><option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option></select></label>
+  <label class="qf">Noches/año <input id="q_nights" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf mtgOnly">Plazo (meses) <input id="q_term" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf mtgOnly">Payoff <input id="q_payoff" type="number" min="0" oninput="qRecalc()"></label>
   <div class="qout">
-    <div class="qsm">Next 30 days <b id="q_w30">—</b></div>
-    <div class="qsm">Next 90 days <b id="q_w90">—</b></div>
-    <div class="qsm">Next 6 mo <b id="q_w6">—</b></div>
-    <div>Next 1-yr <b id="q_t1">—</b></div>
-    <div>Next 3-yr <b id="q_t3">—</b></div>
-    <div>Next 5-yr <b id="q_t5">—</b></div>
-    <div>Next 10-yr <b id="q_t10">—</b></div>
-    <div>Next 20-yr <b id="q_t20">—</b></div>
+    <div class="qsm">Próximos 30 días <b id="q_w30">—</b></div>
+    <div class="qsm">Próximos 90 días <b id="q_w90">—</b></div>
+    <div class="qsm">Próximos 6 meses <b id="q_w6">—</b></div>
+    <div>Próximo 1 año <b id="q_t1">—</b></div>
+    <div>Próximos 3 años <b id="q_t3">—</b></div>
+    <div>Próximos 5 años <b id="q_t5">—</b></div>
+    <div>Próximos 10 años <b id="q_t10">—</b></div>
+    <div>Próximos 20 años <b id="q_t20">—</b></div>
   </div>
-  <div class="qsec">📊 Expense breakdown</div>
+  <div class="qsec">📊 Desglose de gastos</div>
   <div class="qout">
-    <div class="mtgOnly">Monthly Mortgage <b id="q_xmmo">—</b></div>
-    <div>Monthly Maintenance <b id="q_xmfmo">—</b></div>
-    <div>Total Monthly <b id="q_xtotmo">—</b></div>
-    <div class="mtgOnly">Annual Mortgage <b id="q_xmoyr">—</b></div>
-    <div>Annual Maintenance <b id="q_xmfyr">—</b></div>
-    <div>Annual Total <b id="q_xtotyr">—</b></div>
-    <div class="mtgOnly">10-Yr Mortgage <b id="q_xmo10">—</b></div>
-    <div>10-Yr Maintenance (<span id="q_xescp">8</span>% esc) <b id="q_xmf10">—</b></div>
-    <div>10-Yr Projection <b id="q_xproj10">—</b></div>
+    <div class="mtgOnly">Hipoteca mensual <b id="q_xmmo">—</b></div>
+    <div>Mantenimiento mensual <b id="q_xmfmo">—</b></div>
+    <div>Total mensual <b id="q_xtotmo">—</b></div>
+    <div class="mtgOnly">Hipoteca anual <b id="q_xmoyr">—</b></div>
+    <div>Mantenimiento anual <b id="q_xmfyr">—</b></div>
+    <div>Total anual <b id="q_xtotyr">—</b></div>
+    <div class="mtgOnly">Hipoteca 10 años <b id="q_xmo10">—</b></div>
+    <div>Mantenimiento 10 años (<span id="q_xescp">8</span>% esc) <b id="q_xmf10">—</b></div>
+    <div>Proyección 10 años <b id="q_xproj10">—</b></div>
   </div>
-  <div class="qsec mtgOnly">Loan breakdown</div>
-  <div class="tmin mtgOnly" id="q_mleft" style="margin-bottom:6px">— mo left</div>
-  <label class="qf mtgOnly">Loan amt <input id="q_loan" type="number" min="0" oninput="qRecalc()"></label>
+  <div class="qsec mtgOnly">Desglose del préstamo</div>
+  <div class="tmin mtgOnly" id="q_mleft" style="margin-bottom:6px">— meses restantes</div>
+  <label class="qf mtgOnly">Monto del préstamo <input id="q_loan" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf mtgOnly">APR % <input id="q_aapr" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf mtgOnly">Months <input id="q_mos" type="number" min="1" max="120" oninput="qRecalc()"></label>
+  <label class="qf mtgOnly">Meses <input id="q_mos" type="number" min="1" max="120" oninput="qRecalc()"></label>
   <div class="qout mtgOnly">
-    <div>Total paid <b id="q_paid">—</b></div>
-    <div>Principal <b id="q_prin">—</b></div>
-    <div>Interest <b id="q_inte">—</b></div>
-    <div>Balance (payoff) <b id="q_bal2">—</b></div>
-    <div>Term interest <b id="q_tint">—</b></div>
-    <div>Interest % of paid <b id="q_ipct">—</b></div>
-    <button class="lcBtn" onclick="lcOpen()">🏦 Loan calculator</button>
+    <div>Total pagado <b id="q_paid">—</b></div>
+    <div>Capital <b id="q_prin">—</b></div>
+    <div>Interés <b id="q_inte">—</b></div>
+    <div>Saldo (payoff) <b id="q_bal2">—</b></div>
+    <div>Interés del plazo <b id="q_tint">—</b></div>
+    <div>% interés de lo pagado <b id="q_ipct">—</b></div>
+    <button class="lcBtn" onclick="lcOpen()">🏦 Calculadora de préstamo</button>
   </div>
   </div>
   <div class="cbox cbox-fee">
-  <div class="qsec" style="margin-top:0">💰 My fee &amp; financing</div>
-  <label class="qf">Our fee <input id="q_fee" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf">Pay via <select id="q_paym" onchange="qRecalc()">
+  <div class="qsec" style="margin-top:0">💰 Mi tarifa y financiamiento</div>
+  <label class="qf">Nuestra tarifa <input id="q_fee" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">Forma de pago <select id="q_paym" onchange="qRecalc()">
     <option value="ach">ACH</option>
     <option value="check">CHECK</option>
     <option value="cc">CC (+3%)</option>
@@ -224,56 +260,56 @@
     <option value="equity">EQUITY</option>
     <option value="uga">UGA</option>
   </select></label>
-  <label class="qf">Down paymt <span><select id="q_downt" onchange="qRecalc()" style="padding:4px;font-size:0.95em;font-family:inherit;"><option value="dol">$</option><option value="pct">%</option></select> <input id="q_down" type="number" min="0" oninput="qRecalc()" style="width:90px"></span></label>
-  <label class="qf">Down date <input id="q_ddate" type="date" onchange="qRecalc()"></label>
-  <label class="qf">Pmt/mo <input id="q_pmt" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf">1st pmt date <input id="q_pdate" type="date" onchange="qRecalc()"></label>
-  <label class="qf">Fin APR % <input id="q_fapr" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf">Fin months <input id="q_fmo" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">Anticipo <span><select id="q_downt" onchange="qRecalc()" style="padding:4px;font-size:0.95em;font-family:inherit;"><option value="dol">$</option><option value="pct">%</option></select> <input id="q_down" type="number" min="0" oninput="qRecalc()" style="width:90px"></span></label>
+  <label class="qf">Fecha del anticipo <input id="q_ddate" type="date" onchange="qRecalc()"></label>
+  <label class="qf">Pago/mes <input id="q_pmt" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">Fecha 1er pago <input id="q_pdate" type="date" onchange="qRecalc()"></label>
+  <label class="qf">APR financ. % <input id="q_fapr" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">Meses financ. <input id="q_fmo" type="number" min="0" oninput="qRecalc()"></label>
   <div class="qout">
     <div>Total <b id="q_ftot">—</b></div>
-    <div>Balance <b id="q_bal">—</b></div>
-    <div>10-yr save <b id="q_s10">—</b></div>
-    <div>Monthly <b id="q_mo">—</b></div>
-    <div>Mos. needed <b id="q_mosn">—</b></div>
+    <div>Saldo <b id="q_bal">—</b></div>
+    <div>Ahorro 10 años <b id="q_s10">—</b></div>
+    <div>Mensual <b id="q_mo">—</b></div>
+    <div>Meses necesarios <b id="q_mosn">—</b></div>
     <div class="qterms">
-      <div><span>12 mo</span><b id="q_t12">—</b></div>
-      <div><span>24 mo</span><b id="q_t24">—</b></div>
-      <div><span>36 mo</span><b id="q_t36">—</b></div>
+      <div><span>12 meses</span><b id="q_t12">—</b></div>
+      <div><span>24 meses</span><b id="q_t24">—</b></div>
+      <div><span>36 meses</span><b id="q_t36">—</b></div>
     </div>
-    <div>Commission <b id="q_comm">—</b></div>
-    <div>Owed by <b id="q_cdate">—</b></div>
+    <div>Comisión <b id="q_comm">—</b></div>
+    <div>Comisión lista el <b id="q_cdate">—</b></div>
   </div>
 
   </div>
   <div class="cbox">
-  <div class="qsec" style="margin-top:0">Deal tasks</div>
+  <div class="qsec" style="margin-top:0">Tareas del deal</div>
   <div class="qtasks">
-    <label><input type="checkbox" id="qt_email" onchange="qTaskSave()"> <a id="qt_emailL" href="#">Send email</a></label>
-    <label><input type="checkbox" id="qt_text" onchange="qTaskSave()"> <span id="qt_textT" onclick="qCopyText()" style="text-decoration:underline;cursor:pointer">Send text (tap to copy)</span></label>
-    <label><input type="checkbox" id="qt_ds" onchange="qTaskSave()"> Create DocuSign<br>
+    <label><input type="checkbox" id="qt_email" onchange="qTaskSave()"> <a id="qt_emailL" href="#">Enviar correo</a></label>
+    <label><input type="checkbox" id="qt_text" onchange="qTaskSave()"> <span id="qt_textT" onclick="qCopyText()" style="text-decoration:underline;cursor:pointer">Enviar texto (toca para copiar)</span></label>
+    <label><input type="checkbox" id="qt_ds" onchange="qTaskSave()"> Crear DocuSign<br>
       <select id="qt_tpl" onchange="qTaskSave()">
-        <option>Service Agreement</option>
-        <option>Service Agreement + Fin Auth</option>
-        <option>Deedback Agreement</option>
-        <option>Financial Auth only</option>
+        <option>Acuerdo de servicio</option>
+        <option>Acuerdo de servicio + Aut. financiera</option>
+        <option>Acuerdo deed-back</option>
+        <option>Solo aut. financiera</option>
       </select></label>
-    <label><input type="checkbox" id="qt_crm" onchange="qTaskSave()"> Update CRM <a id="qt_crmL" href="#" target="_blank" style="display:none">open lead ↗</a></label>
-    <label><input type="checkbox" id="qt_id" onchange="qTaskSave()"> Upload ID</label>
+    <label><input type="checkbox" id="qt_crm" onchange="qTaskSave()"> Actualizar CRM <a id="qt_crmL" href="#" target="_blank" style="display:none">abrir lead ↗</a></label>
+    <label><input type="checkbox" id="qt_id" onchange="qTaskSave()"> Subir ID</label>
   </div>
   </div>
   <div class="cbox">
-  <div class="qsec" style="margin-top:0">📎 Documents</div>
-  <div class="tmin" style="margin-bottom:6px">Stored in this browser only (a few MB max).</div>
+  <div class="qsec" style="margin-top:0">📎 Documentos</div>
+  <div class="tmin" style="margin-bottom:6px">Se guardan solo en este navegador (unos pocos MB máximo).</div>
   <input type="file" id="q_docfile" multiple style="display:none" onchange="qDocAdd(this)">
-  <div><button onclick="document.getElementById('q_docfile').click()" style="padding:6px 14px;font-size:0.9em;background:#0b3d91;color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Upload docs</button></div>
+  <div><button onclick="document.getElementById('q_docfile').click()" style="padding:6px 14px;font-size:0.9em;background:#0b3d91;color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Subir documentos</button></div>
   <div id="q_docs" style="margin-top:6px"></div>
   </div>
 </aside>
 
 <div class="sideboxes">
 <aside class="sprinkle">
-  <h3>🎲 Sprinkle-ins — drop anywhere</h3>
+  <h3>🎲 Frases sueltas — para cualquier momento</h3>
   <ul>
     <li>"It's not meant to work — it's meant to keep you in a <b>perpetual payment</b>."</li>
     <li>"Did they try to serve you <b>alcohol</b>, or were you on some sort of <b>medication</b>? 💊"</li>
@@ -287,8 +323,8 @@
   </ul>
 </aside>
 <aside class="sprinkle" id="objbox">
-  <h3>🛡️ Objection killers</h3>
-  <input class="objsrch" id="objq" placeholder="🔍 Search objections…" oninput="objFilter()">
+  <h3>🛡️ Contraobjeciones</h3>
+  <input class="objsrch" id="objq" placeholder="🔍 Buscar objeciones…" oninput="objFilter()">
   <ul>
     <li data-keys="think thinking about it need time stall delay"><b>"I need to think about it."</b> → "Of course — think about what, specifically? The numbers won't change, but the case manager's availability might. <b>What part do you want to talk through?</b>"</li>
     <li data-keys="spouse wife husband partner talk discuss family decide together"><b>"I need to talk to my spouse."</b> → "Absolutely — are they around right now? <b>Let's get them on</b>, because I'd rather answer their questions directly than have you re-explain all of this secondhand."</li>
@@ -297,13 +333,13 @@
     <li data-keys="expensive cost too much price afford can't afford money"><b>"It's too expensive."</b> → "Compared to what? Doing nothing costs you <b><span data-fill="total10">$________</span></b> over the next 10 years. This is <b><span data-fill="fee">$________</span></b> once — and then it's over forever."</li>
     <li data-keys="different difference others other companies vs versus competitor"><b>"How are you different?"</b> → "Most companies get you out by having you pay the resort. We flip it — <b>the resort lets you out and pays you</b>. And nobody else backs it with a 100% money-back guarantee."</li>
   </ul>
-  <div id="objnone" class="tmin" style="display:none;padding:6px 4px">No matches — try another word.</div>
+  <div id="objnone" class="tmin" style="display:none;padding:6px 4px">Sin resultados — prueba con otra palabra.</div>
 </aside>
 </div>
 
 <div class="stage" id="stage1">
-  <h2>STAGE 1 — INTRODUCTION &amp; CREDIBILITY <span class="t">15 MIN</span></h2>
-  <div class="clock">0:00–0:15 · chit-chat <span class="tmin">(5 min)</span> → credibility research together <span class="tmin">(10 min)</span> <span class="stimer"><button id="sb1" onclick="toggleStage(1)">▶ 15:00</button> <button class="rs" onclick="resetStage(1)" title="Reset">↺</button></span></div>
+  <h2>ETAPA 1 — INTRODUCCIÓN Y CREDIBILIDAD <span class="t">15 MIN</span></h2>
+  <div class="clock">0:00–0:15 · charla inicial <span class="tmin">(5 min)</span> → investigamos la credibilidad juntos <span class="tmin">(10 min)</span> <span class="stimer"><button id="sb1" onclick="toggleStage(1)">▶ 15:00</button> <button class="rs" onclick="resetStage(1)" title="Reiniciar">↺</button></span></div>
   <ol class="liners">
     <li>"That timeshare contract you signed — it's impenetrable. It was designed to lock you into a perpetual obligation — maintenance fees not just for your lifetime, but for generations. I'm not trying to discredit the contract — your signature is on it multiple times. What we're building is every reason why, had you not been lied to, you never would have signed it in the first place."</li>
     <li>"But first I'm going to confirm what you and <span class="hl-g" data-fill="ca">[CA name]</span> have documented thus far."</li>
@@ -313,16 +349,45 @@
         <li>"Best Company is a <b>third-party organization</b> — all they do is rank the top companies in the world. Did you happen to see we're ranked <b>number one</b> in the timeshare cancellation industry — the industry we created?"</li>
         <li>Research together: <a href="https://sebastianlinks.com/linx">sebastianlinks.com/linx</a> — company credibility &amp; reviews.</li>
         <li>"OK great — so <b>no questions about our credibility</b>, or our ability to do what we say we'll do — is that correct? Perfect."</li>
+        <li>"¿<span class="hl-g" data-fill="ca">[CA name]</span> le habló de RedWeek y le ayudó a hacer su propia investigación sobre nuestra compañía?"</li>
+        <li>"Hágame un favor: en su teléfono o en su computadora, escriba este sitio web: <a href="https://investiganos.com" target="_blank"><b>investiganos.com</b></a>."</li>
+        <li>"Ahí vaya a <a href="https://www.redweek.com/timeshare-resales" target="_blank"><b>RedWeek</b></a>. ¿Le dijeron que usted podía rentar su tiempo compartido, o que podía venderlo?" <span class="tmin">— muéstrale también <a href="https://www.ebay.com/b/Timeshares-for-Sale/15897/bn_1858924" target="_blank">eBay: tiempos compartidos desde $1</a></span></li>
+        <li>"<span class="hl-g" data-fill="ca">[CA name]</span> normalmente le envía unos enlaces para que haga su propia investigación. Pero así como yo quiero sentir que su caso es uno que vamos a ganar con un <b>100% de certeza</b>, quiero que sea <b>abrumadoramente obvio</b> que somos la compañía que va a lograrlo: basado en <b>17 años de testimonios</b> y en <b>agencias independientes de evaluación de compañías</b>."</li>
       </ol>
     </li>
   </ol>
 </div>
-<div class="trans">→ Credibility established. Now let them talk.</div>
+<div class="trans">→ Credibilidad establecida. Ahora déjalos hablar.</div>
+<div class="stage" id="showclient">
+  <h2>👀 MOSTRAR AL CLIENTE — EN ESTE ORDEN</h2>
+  <div class="qsec" style="margin-top:2px">1 · MERCADO DE REVENTA — REDWEEK Y EBAY</div>
+  <div class="rlinks">
+    <a href="https://www.redweek.com/timeshare-resales" target="_blank"><b>RedWeek ↗</b><span>Mira por cuánto se revenden realmente los tiempos compartidos</span></a>
+    <a href="https://www.ebay.com/b/Timeshares-for-Sale/15897/bn_1858924" target="_blank"><b>eBay — Tiempos compartidos en venta ↗</b><span>Anuncios desde $1</span></a>
+  </div>
+  <div class="qsec">2 · INVESTÍGANOS — INVESTIGA NUESTRA COMPAÑÍA</div>
+  <div class="rlinks">
+    <a href="https://sebastianlinks.com" target="_blank"><b>Sebastian Short — Asesor Hipotecario ↗</b><span>Tu contacto directo en Linx Legal</span></a>
+    <a href="https://linxlegal.com/about-us/" target="_blank"><b>Linx Legal — Nuestros líderes ↗</b><span>Quiénes somos</span></a>
+    <a href="https://bestcompany.com/timeshare-cancellation/linx-legal-inc" target="_blank"><b>Best Company ↗</b><span>Reseñas verificadas de clientes</span></a>
+    <a href="https://www.bbb.org/us/nc/charlotte/profile/timeshare-cancellation/linx-legal-inc-0473-576031" target="_blank"><b>Better Business Bureau ↗</b><span>Calificación A+ · Acreditado por el BBB</span></a>
+    <a href="https://www.google.com/search?q=linx+legal+5+stars+industry+pioneer&amp;sca_esv=683d24960322eb4b&amp;sxsrf=APpeQnsB4MI2fXBSuXr-xT5MQabnig2Lsw%3A1790973988703&amp;ei=JBjAau2rKo63wN4PyNmHCQ&amp;biw=1545&amp;bih=722&amp;oq=linx+legal+5+stars+industry+pioneer%5C&amp;gs_lp=Egxnd3Mtd2l6LXNlcnAiJGxpbnggbGVnYWwgNSBzdGFycyBpbmR1c3RyeSBwaW9uZWVyXCoECAAYJzIEECMYJzIEECMYJzIHECMY8AUYJzIKEC4YxwEYrwEYJzIKEAAYgAQYigUYQzIKEAAYgAQYigUYQzIFEAAYgAQYigUYQzIFEAAYgARIwhJQAFi8EnABeAGQAQCYAVGgAZQBqgEBMrgBA8gBAPgBAZgCA6ACowHCAhMQLhiABBiKBRhDGMcBGK8BGI4FmAMAkgcBM6AHuxayBwEyuAefAcIHAzItM8gHCoAIAQ&amp;sclient=gws-wiz-serp" target="_blank"><b>Investigación a fondo de Linx Legal ↗</b><span>Búscanos en Google · 5 estrellas</span></a>
+    <a href="https://linxlegal.com/where-we-work-linx-legal/" target="_blank"><b>Dónde trabajamos ↗</b><span>Estados y resorts que atendemos</span></a>
+  </div>
+  <div class="qsec">3 · FALSOS PRETEXTOS — MARCA LO QUE LES DIJERON</div>
+  <div class="fpitem"><label><input type="checkbox" id="fp1" onchange="qFpSave()"><span><b>¿Firmó su contrato porque le dijeron que podía rentar o vender su tiempo compartido?</b><span class="cf">Si no le hubieran dicho esto antes de firmar, ¿habría firmado el contrato?</span></span></label></div>
+  <div class="fpitem"><label><input type="checkbox" id="fp2" onchange="qFpSave()"><span><b>¿Le revelaron la cláusula de perpetuidad: que las cuotas de mantenimiento son una obligación para siempre?</b><span class="cf">Si no le hubieran dicho esto antes de firmar, ¿habría firmado el contrato?</span></span></label></div>
+  <div class="fpitem"><label><input type="checkbox" id="fp3" onchange="qFpSave()"><span><b>¿Le dijeron cuál era la cuota de mantenimiento al momento de la compra, y que esas cuotas aumentarían año tras año?</b><span class="cf">Si no le hubieran dicho esto antes de firmar, ¿habría firmado el contrato?</span></span></label></div>
+  <div class="fpitem"><label><input type="checkbox" id="fp4" onchange="qFpSave()"><span><b>¿Le prometieron privilegio de prioridad al reservar, con mejor disponibilidad que el público en general?</b><span class="cf">Si no le hubieran dicho esto antes de firmar, ¿habría firmado el contrato?</span></span></label></div>
+  <div class="fpitem"><label><input type="checkbox" id="fp5" onchange="qFpSave()"><span><b>¿Le dijeron que reservar sus fechas era cuestión de solo días o semanas de anticipación?</b><span class="cf">Si no le hubieran dicho esto antes de firmar, ¿habría firmado el contrato?</span></span></label></div>
+  <div class="fpitem"><label><input type="checkbox" id="fp6" onchange="qFpSave()"><span><b>¿Le mostraron el verdadero costo total de ser propietario antes de firmar?</b><span class="cf">Si no le hubieran dicho esto antes de firmar, ¿habría firmado el contrato?</span></span></label></div>
+</div>
+
 
 <div class="stage" id="stage2">
-  <h2>STAGE 2 — HOW WE WIN <span class="t">15 MIN</span></h2>
-  <div class="clock">0:15–0:30 · let them talk <span class="tmin">(5 min)</span> → violations &amp; how we win <span class="tmin">(10 min)</span> <span class="stimer"><button id="sb2" onclick="toggleStage(2)">▶ 15:00</button> <button class="rs" onclick="resetStage(2)" title="Reset">↺</button></span></div>
-  <div class="plink">🔗 <a href="https://sebastianlinks.com/calc">sebastianlinks.com/calc</a> <span class="tmin">— cost of ownership calculator</span></div>
+  <h2>ETAPA 2 — CÓMO GANAMOS <span class="t">15 MIN</span></h2>
+  <div class="clock">0:15–0:30 · que ellos hablen <span class="tmin">(5 min)</span> → violaciones y cómo ganamos <span class="tmin">(10 min)</span> <span class="stimer"><button id="sb2" onclick="toggleStage(2)">▶ 15:00</button> <button class="rs" onclick="resetStage(2)" title="Reiniciar">↺</button></span></div>
+  <div class="plink">🔗 <a href="https://sebastianlinks.com/calc">sebastianlinks.com/calc</a> <span class="tmin">— calculadora del costo de propiedad</span></div>
   <ol class="liners">
     <li><span class="grp">Their story:</span>
       <ol>
@@ -348,14 +413,14 @@
         <li><i>Emotional impact:</i> "How did you feel when you found out <b>X</b> — or <b>Y</b>, or <b>Z</b> — turned out to be untrue?"</li>
       </ol>
     </li>
-    <li>"The most important part is the <b>letter of explanation</b> — then we can file a formal complaint with <b>________</b>. We will be filing in the state of <b>________</b> <span class="tmin">(residence)</span> and the state where you purchased it, and at that point we are issued what\u2019s called a <b>complaint number</b>. Ok? We spend a lot on <b>filing fees</b> in order to do that, so we ask that you get that letter back to us within <b>3 business days</b>. Can you <b>commit</b> to doing that?"</li>
+    <li>"The most important part is the <b>letter of explanation</b> — then we can file a formal complaint with <b>________</b>. We will be filing in the state of <b>________</b> <span class="tmin">(residence)</span> and the state where you purchased it, and at that point we are issued what’s called a <b>complaint number</b>. Ok? We spend a lot on <b>filing fees</b> in order to do that, so we ask that you get that letter back to us within <b>3 business days</b>. Can you <b>commit</b> to doing that?"</li>
   </ol>
 </div>
-<div class="trans">→ Violations documented. Now the approval process.</div>
+<div class="trans">→ Violaciones documentadas. Ahora, el proceso de aprobación.</div>
 
 <div class="stage" id="stage3">
-  <h2>STAGE 3 — THE APPROVAL PROCESS <span class="t">15 MIN</span></h2>
-  <div class="clock">0:30–0:45 · selectivity <span class="tmin">(5 min)</span> → case manager assignment <span class="tmin">(5 min)</span> → scarcity, waiting list &amp; YES <span class="tmin">(5 min)</span> <span class="stimer"><button id="sb3" onclick="toggleStage(3)">▶ 15:00</button> <button class="rs" onclick="resetStage(3)" title="Reset">↺</button></span></div>
+  <h2>ETAPA 3 — EL PROCESO DE APROBACIÓN <span class="t">15 MIN</span></h2>
+  <div class="clock">0:30–0:45 · selectividad <span class="tmin">(5 min)</span> → asignación del gerente de caso <span class="tmin">(5 min)</span> → escasez, lista de espera y el SÍ <span class="tmin">(5 min)</span> <span class="stimer"><button id="sb3" onclick="toggleStage(3)">▶ 15:00</button> <button class="rs" onclick="resetStage(3)" title="Reiniciar">↺</button></span></div>
   <ol class="liners">
     <li><span class="grp">Selectivity:</span>
       <ol>
@@ -373,11 +438,11 @@
     <li>"If the stars align and my assessment team decides we can take on your case, is there anything at all that would <b>prevent you from moving forward with us today?</b>"</li>
   </ol>
 </div>
-<div class="trans">→ YES secured. Move to payment.</div>
+<div class="trans">→ SÍ asegurado. Pasamos al pago.</div>
 
 <div class="stage" id="stage4">
-  <h2>STAGE 4 — FIND THE MONEY <span class="t">15 MIN</span></h2>
-  <div class="clock">0:45–1:00 · checking/savings <span class="tmin">(5 min)</span> → how far off exactly <span class="tmin">(5 min)</span> → credit cards <span class="tmin">(5 min)</span> <span class="stimer"><button id="sb4" onclick="toggleStage(4)">▶ 15:00</button> <button class="rs" onclick="resetStage(4)" title="Reset">↺</button></span></div>
+  <h2>ETAPA 4 — ENCONTRAR EL DINERO <span class="t">15 MIN</span></h2>
+  <div class="clock">0:45–1:00 · cuenta de cheques/ahorros <span class="tmin">(5 min)</span> → qué tan lejos exactamente <span class="tmin">(5 min)</span> → tarjetas de crédito <span class="tmin">(5 min)</span> <span class="stimer"><button id="sb4" onclick="toggleStage(4)">▶ 15:00</button> <button class="rs" onclick="resetStage(4)" title="Reiniciar">↺</button></span></div>
   <ol class="liners">
     <li><span class="grp">Checking / savings:</span>
       <ol>
@@ -395,12 +460,12 @@
     <li>"Okay, so the second way most people pay for our services is with <b>credit cards</b>."</li>
   </ol>
 </div>
-<div class="trans">→ Financing? Apply now. Cash/card? Collect DL + bank proof, skip to Stage 6.</div>
+<div class="trans">→ ¿Financiamiento? A solicitar ahora. ¿Efectivo/tarjeta? Recoge la licencia y la prueba bancaria y salta a la Etapa 6.</div>
 
 <div class="stage" id="stage5">
-  <h2>STAGE 5 — APPLY FOR CREDIT <span class="t">15 MIN</span></h2>
-  <div class="clock">1:00–1:15 · monthly payments <span class="tmin">(5 min)</span> → credit score &amp; down payment <span class="tmin">(5 min)</span> → application info <span class="tmin">(5 min)</span> <span class="stimer"><button id="sb5" onclick="toggleStage(5)">▶ 15:00</button> <button class="rs" onclick="resetStage(5)" title="Reset">↺</button></span></div>
-  <div class="plink">🔗 Financing: <a href="https://distributor.ucfs.net/">UCFS merchant portal</a> · <a href="https://agent.uportal360.com/dashboard">UGA (uPortal360)</a> · Equity Bank</div>
+  <h2>ETAPA 5 — SOLICITAR CRÉDITO <span class="t">15 MIN</span></h2>
+  <div class="clock">1:00–1:15 · pagos mensuales <span class="tmin">(5 min)</span> → puntaje de crédito y anticipo <span class="tmin">(5 min)</span> → datos de la solicitud <span class="tmin">(5 min)</span> <span class="stimer"><button id="sb5" onclick="toggleStage(5)">▶ 15:00</button> <button class="rs" onclick="resetStage(5)" title="Reiniciar">↺</button></span></div>
+  <div class="plink">🔗 Financiamiento: <a href="https://distributor.ucfs.net/">UCFS merchant portal</a> · <a href="https://agent.uportal360.com/dashboard">UGA (uPortal360)</a> · Equity Bank</div>
   <ol class="liners">
     <li><span class="grp">Financing:</span>
       <ol>
@@ -413,13 +478,13 @@
     <li>"Now, a couple things I'm going to need is can you guys send me pictures of your <b>driver's licenses?</b>"</li>
   </ol>
 </div>
-<div class="trans">✍️ <b>Before the hold:</b> have them write down 2 columns — <b>Years</b> | <b>Amount to pay the resort</b> — then ask: "Did they show you this?"</div>
-<div class="trans">→ Place them on hold — case goes to the approval team.</div>
+<div class="trans">✍️ <b>Antes de la espera:</b> que escriban 2 columnas — <b>Años</b> | <b>Monto a pagar al resort</b> — y pregunta: "¿Les mostraron esto?"</div>
+<div class="trans">→ Ponlos en espera — el caso va al equipo de aprobación.</div>
 
 <div class="stage" id="stage6">
-  <h2>STAGE 6 — SIGN DOCUMENTS <span class="t">15 MIN</span></h2>
-  <div class="clock">1:15–1:30 · post-hold good news <span class="tmin">(5 min)</span> → prepare the agreement <span class="tmin">(10 min)</span> <span class="stimer"><button id="sb6" onclick="toggleStage(6)">▶ 15:00</button> <button class="rs" onclick="resetStage(6)" title="Reset">↺</button></span></div>
-  <div class="plink">🔗 <a href="https://account.docusign.com">DocuSign</a> · <a href="https://youtu.be/UQqgr5Q0r1I">How to send a DocuSign (video)</a></div>
+  <h2>ETAPA 6 — FIRMAR DOCUMENTOS <span class="t">15 MIN</span></h2>
+  <div class="clock">1:15–1:30 · buenas noticias tras la espera <span class="tmin">(5 min)</span> → preparar el acuerdo <span class="tmin">(10 min)</span> <span class="stimer"><button id="sb6" onclick="toggleStage(6)">▶ 15:00</button> <button class="rs" onclick="resetStage(6)" title="Reiniciar">↺</button></span></div>
+  <div class="plink">🔗 <a href="https://account.docusign.com">DocuSign</a> · <a href="https://youtu.be/UQqgr5Q0r1I">Cómo enviar un DocuSign (video)</a></div>
   <ol class="liners">
     <li><span class="grp">The good news:</span>
       <ol>
@@ -443,8 +508,8 @@
 </div>
 
 <section class="coversheet" id="coversheet">
-  <h2>📋 Deal cover sheet <button onclick="window.print()" class="csprint">🖨 Print</button></h2>
-  <div id="cs_body"><span class="tmin">Select a client above to generate the cover sheet.</span></div>
+  <h2>📋 Hoja de cierre del deal <button onclick="window.print()" class="csprint">🖨 Imprimir</button></h2>
+  <div id="cs_body"><span class="tmin">Selecciona un cliente arriba para generar la hoja de cierre.</span></div>
 </section>
 
 <script>
@@ -470,7 +535,7 @@ function resetOverall(){ ov.e = 0; ov.run = false; render(); }
 function render(){
   for (var i = 1; i <= 6; i++) document.getElementById('sb' + i).textContent = (stages[i].run ? '\u23F8 ' : '\u25B6 ') + fmt(Math.max(0, 15*60 - nowS(stages[i])));
   document.getElementById('ot').textContent = fmtH(Math.max(0, 90*60 - nowS(ov)));
-  document.getElementById('obtn').textContent = ov.run ? '\u23F8 Pause' : '\u25B6 Start';
+  document.getElementById('obtn').textContent = ov.run ? '\u23F8 Pausa' : '\u25B6 Iniciar';
   document.getElementById('topbar').classList.toggle('over', nowS(ov) >= 90 * 60);
 }
 setInterval(render, 500);
@@ -498,13 +563,23 @@ function slClients(){ try { return JSON.parse(localStorage.getItem('sl_clients')
 function fmtD(n){ return '$' + Math.round(n).toLocaleString('en-US'); }
 function fmtC(n){ return '$' + Number(n).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
 function escH(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]; }); }
+var MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+function qPipeUrl(c){
+  var u = ((c && (c.pipelineUrl || c.crmlink)) || '').trim();
+  if (!u) return '';
+  return u.replace(/^(https?:\/\/)(www\.)?pipelinecrm\.com/i, '$1app.pipelinecrm.com');
+}
+function qNameLink(c){
+  var u = qPipeUrl(c), nm = escH(c && c.name ? c.name : '');
+  return u ? '<a href="' + escH(u) + '" target="_blank" rel="noopener">' + nm + '</a>' : nm;
+}
 function fillAll(sel, txt){ var els = document.querySelectorAll(sel); for (var i = 0; i < els.length; i++) els[i].textContent = txt; }
 function resetFills(){
   fillAll('[data-fill="down"]', '$________');
   fillAll('[data-fill="fee"]', '$________');
   fillAll('[data-fill="savings"]', '$________');
   fillAll('[data-fill="total10"]', '$________');
-  fillAll('[data-fill="ca"]', '[CA name]');
+  fillAll('[data-fill="ca"]', 'nuestro analista de casos');
   fillAll('[data-fill="resort"]', '_________');
 }
 function mfTot(mf, r, n){ if (n <= 0) return 0; if (r <= 0) return mf * n; return mf * ((Math.pow(1 + r, n) - 1) / r); }
@@ -542,18 +617,40 @@ function pickClient(id){
 }
 function renderBar(c, n){
   var bar = $('cbar');
-  var mmo = c.mmo || 0, mfmo = c.mf / 12, yrTot = mmo * 12 + c.mf;
-  var ph = [c.phone, c.phone2].filter(function(x){ return x; }).join(' · ');
+  var mmo = c.mmo || 0, mf = c.mf || 0;
+  var mfmo = Math.floor(mf / 12), totyr = mmo * 12 + mfmo * 12;
   var escR = (c.esc || 8) / 100;
-  var acum = c.mf > 0 ? '<br><span style="font-weight:700;">Acum. maintenance: 5-yr ' + fmtC(mfTot(c.mf, escR, 5)) + ' \u00b7 10-yr ' + fmtC(mfTot(c.mf, escR, 10)) + ' \u00b7 20-yr ' + fmtC(mfTot(c.mf, escR, 20)) + ' \u00b7 30-yr ' + fmtC(mfTot(c.mf, escR, 30)) + '</span>' : '';
-  var dbbanner = c.dtype === 'DB' ? '<div style="background:#b91c1c;color:#fff;font-size:1.9em;font-weight:800;text-align:center;padding:10px 6px;border-radius:6px;letter-spacing:1px;margin-bottom:6px;">\uD83D\uDD34 DEED-BACK \uD83D\uDD34</div>' : '';
-  bar.innerHTML = dbbanner + '<strong>' + escH(c.name) + '</strong>' +
-    (ph ? ' · 📞 ' + escH(ph) : '') + (c.resort ? ' · <strong>' + escH(c.resort) + '</strong>' : '') +
-    (c.ca ? ' · CA: <strong>' + escH(c.ca) + '</strong>' : '') +
-    (c.email ? ' · ✉️ ' + escH(c.email) : '') + (c.tz ? ' · ' + escH(c.tz) : '') + '<br>' +
-    (mmo > 0 ? 'Mtg ' + fmtC(mmo) + '/mo · ' : '') + 'MF ' + fmtC(c.mf) + '/yr (' + fmtC(mfmo) + '/mo)' +
-    (mmo > 0 ? ' · Yr total ' + fmtC(yrTot) : '') + ' · 5-yr ' + fmtC(n.t5) + ' · 10-yr ' + fmtC(n.t10) +
-    (n.feeKnown ? ' · Fee ' + fmtC(n.fee) + ' · 10-yr save ' + fmtC(n.s10) : '') + acum;
+  var term = c.term || 120, pyr = c.pyr || 0;
+  var remMo = pyr > 0 ? Math.max(0, term - Math.max(0, (new Date().getFullYear() - pyr) * 12)) : term;
+  function moY(y){ return Math.min(y * 12, remMo) * mmo; }
+  function mfY(y){ return mfTot(mf, escR, y); }
+  var yrs = [3, 5, 10, 20];
+  var grid = '<table class="ib-grid"><tr><th></th>' + yrs.map(function(y){ return '<th>' + y + ' años</th>'; }).join('') + '</tr>' +
+    '<tr><td>Hipoteca sola</td>' + yrs.map(function(y){ return '<td>' + fmtD(moY(y)) + '</td>'; }).join('') + '</tr>' +
+    '<tr><td>Cuotas solas</td>' + yrs.map(function(y){ return '<td>' + fmtD(mfY(y)) + '</td>'; }).join('') + '</tr>' +
+    '<tr class="ib-tot"><td>Ambas juntas</td>' + yrs.map(function(y){ return '<td>' + fmtD(moY(y) + mfY(y)) + '</td>'; }).join('') + '</tr></table>';
+  var nights = c.nights || 0;
+  var perNight = nights > 0 ? fmtC(totyr / nights) : '—';
+  var ph = [c.phone, c.phone2].filter(function(x){ return x; }).join(' · ');
+  var dbbanner = c.dtype === 'DB' ? '<div class="ib-db">🔴 DEED-BACK 🔴</div>' : '';
+  var bought = pyr > 0 ? '<div class="ib-line">Comprado: ' + (c.pmonth >= 1 && c.pmonth <= 12 ? MESES[c.pmonth - 1] + ' ' : '') + pyr + '</div>' : '';
+  var lk = [];
+  if (qPipeUrl(c)) lk.push('<a href="' + escH(qPipeUrl(c)) + '" target="_blank" rel="noopener">🔗 Pipeline</a>');
+  if (c.sheetUrl) lk.push('<a href="' + escH(c.sheetUrl) + '" target="_blank" rel="noopener">📋 Hoja PRE-CALL</a>');
+  if (c.docusignUrl) lk.push('<a href="' + escH(c.docusignUrl) + '" target="_blank" rel="noopener">✍️ DocuSign</a>');
+  var linksRow = lk.length ? '<div class="ib-links">' + lk.join('<span class="ib-sep">·</span>') + '</div>' : '';
+  bar.innerHTML = dbbanner + '<div class="ib-wrap">' +
+    '<div class="ib-col"><div class="ib-lab">Analista de casos</div><div class="ib-ca">' + escH(c.ca || '—') + '</div>' +
+      '<div class="ib-client">' + qNameLink(c) + '</div>' + (ph ? '<div class="ib-ph">📞 ' + escH(ph) + '</div>' : '') +
+      (c.email ? '<div class="ib-line">✉️ ' + escH(c.email) + '</div>' : '') + '</div>' +
+    '<div class="ib-col"><div class="ib-stats">' +
+      '<div><div class="ib-lab">Payoff</div><div class="ib-big">' + (c.payoff > 0 ? fmtC(c.payoff) : '—') + '</div></div>' +
+      '<div><div class="ib-lab">Total anual</div><div class="ib-big">' + fmtC(totyr) + '</div></div>' +
+      '<div><div class="ib-lab">Costo por noche</div><div class="ib-big">' + perNight + '</div></div></div>' + grid + '</div>' +
+    '<div class="ib-col"><div class="ib-resort">' + escH(c.resort || '—') + '</div>' +
+      (c.address ? '<div class="ib-line">📍 ' + escH(c.address) + '</div>' : '') + bought +
+      (c.contracts > 0 ? '<div class="ib-line">Contratos: ' + c.contracts + '</div>' : '') +
+      (n && n.feeKnown ? '<div class="ib-line">Tarifa: <b>' + fmtC(n.fee) + '</b> · Ahorro 10 años: <b>' + fmtC(n.s10) + '</b></div>' : '') + '</div></div>' + linksRow;
   bar.style.display = 'block';
 }
 function applyFills(c, n){
@@ -561,7 +658,7 @@ function applyFills(c, n){
   fillAll('[data-fill="fee"]', n.feeKnown ? fmtC(n.fee) : '$________');
   fillAll('[data-fill="savings"]', n.feeKnown ? fmtC(n.s10) : '$________');
   fillAll('[data-fill="total10"]', n.feeKnown ? fmtC(n.t10) : '$________');
-  fillAll('[data-fill="ca"]', c.ca || '[CA name]');
+  fillAll('[data-fill="ca"]', c.ca || 'nuestro analista de casos');
   fillAll('[data-fill="resort"]', c.resort || '_________');
 }
 function qNum(id){ var v = parseFloat($(id).value); return isNaN(v) ? 0 : v; }
@@ -569,11 +666,11 @@ function qIdn(c){
   var el = $('q_idn');
   if (!c){ el.innerHTML = ''; el.style.display = 'none'; return; }
   var ph = [c.phone, c.phone2].filter(function(x){ return x; }).join(' · ');
-  el.innerHTML = '<b>' + escH(c.name) + '</b>' +
+  el.innerHTML = '<b>' + qNameLink(c) + '</b>' +
     (c.resort ? '<br><b>' + escH(c.resort) + '</b>' : '') +
     (ph ? '<br>📞 ' + escH(ph) : '') +
-    (c.notes ? '<br><a href="javascript:void(0)" onclick="document.getElementById(\'q_notes_full\').style.display=document.getElementById(\'q_notes_full\').style.display===\'none\'?\'block\':\'none\'" style="font-size:0.85em;">📋 Client notes (tap to expand)</a><div id="q_notes_full" style="display:none;margin-top:6px;"><span class="tmin">' + escH(c.notes) + '</span></div>' : '') +
-    (c.crmlink ? '<br><a href="' + escH(c.crmlink) + '" target="_blank">CRM lead ↗</a>' : '');
+    (c.notes ? '<br><a href="javascript:void(0)" onclick="document.getElementById(\'q_notes_full\').style.display=document.getElementById(\'q_notes_full\').style.display===\'none\'?\'block\':\'none\'" style="font-size:0.85em;">📋 Notas del cliente (toca para expandir)</a><div id="q_notes_full" style="display:none;margin-top:6px;"><span class="tmin">' + escH(c.notes) + '</span></div>' : '') +
+    (qPipeUrl(c) ? '<br><a href="' + escH(qPipeUrl(c)) + '" target="_blank">Lead en Pipeline ↗</a>' : '');
   el.style.display = 'block';
 }
 function amortSched(pv, apr, pmt, months){
@@ -594,7 +691,7 @@ function qTaskSave(){
 }
 function qTaskLoad(){
   ['qt_email','qt_text','qt_ds','qt_crm','qt_id'].forEach(function(id){ $(id).checked = false; });
-  $('qt_tpl').value = 'Service Agreement';
+  $('qt_tpl').value = 'Acuerdo de servicio';
   var k = qTaskKey(); if (!k) return;
   try { var t = JSON.parse(localStorage.getItem(k) || 'null'); if (!t) return;
     $('qt_email').checked = !!t.email; $('qt_text').checked = !!t.text; $('qt_ds').checked = !!t.ds;
@@ -602,22 +699,38 @@ function qTaskLoad(){
     $('qt_crm').checked = !!t.crm; $('qt_id').checked = !!t.id;
   } catch(e){}
 }
-function qFirstName(){ return cur ? (cur.name || '').split(/[&/]/)[0].trim().split(' ')[0] || 'there' : 'there'; }
+function qFpKey(){ return cur ? 'sl_fp_' + cur.id : null; }
+function qFpSave(){
+  var k = qFpKey(); if (!k) return;
+  var o = {};
+  for (var i = 1; i <= 6; i++){ var el = $('fp' + i); o['fp' + i] = el ? el.checked : false; }
+  try { localStorage.setItem(k, JSON.stringify(o)); } catch(e){}
+}
+function qFpLoad(){
+  var i, el;
+  for (i = 1; i <= 6; i++){ el = $('fp' + i); if (el) el.checked = false; }
+  var k = qFpKey(); if (!k) return;
+  try { var o = JSON.parse(localStorage.getItem(k) || '{}');
+    for (i = 1; i <= 6; i++){ el = $('fp' + i); if (el) el.checked = !!o['fp' + i]; }
+  } catch(e){}
+}
+function qPipeSave(){ qRecalc(); if (cur) qIdn(cur); }
+function qFirstName(){ return cur ? (cur.name || '').split(/[&/]/)[0].trim().split(' ')[0] || 'cliente' : 'cliente'; }
 function qEmailHref(){
   if (!cur || !cur.email) return '#';
-  var subj = encodeURIComponent('Link for our call');
-  var body = encodeURIComponent('Hi ' + qFirstName() + ' — here is the link we will use on our call: https://sebastianlinks.com/linx\n\nSebastian');
+  var subj = encodeURIComponent('Enlace para nuestra llamada');
+  var body = encodeURIComponent('Hola ' + qFirstName() + ' — este es el enlace que usaremos en nuestra llamada: https://sebastianlinks.com/linx\n\nSebastian');
   return 'mailto:' + cur.email + '?subject=' + subj + '&body=' + body;
 }
-function qTextMsg(){ return 'Hi ' + qFirstName() + ', Sebastian Short here — here is the link for our call: https://sebastianlinks.com/linx'; }
+function qTextMsg(){ return 'Hola ' + qFirstName() + ', soy Sebastian Short — este es el enlace para nuestra llamada: https://sebastianlinks.com/linx'; }
 function qCopyText(){
   var t = qTextMsg();
-  function done(){ alert('Text copied — paste it into your messages app.'); }
+  function done(){ alert('Texto copiado — pégalo en tu app de mensajes.'); }
   if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, done);
   else { var ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch(e){} ta.remove(); done(); }
 }
 function qTaskSync(){
-  qTaskLoad();
+  qTaskLoad(); qFpLoad();
   $('qt_emailL').href = qEmailHref();
   var hasCrm = !!(cur && cur.crmlink);
   $('qt_crmL').href = hasCrm ? cur.crmlink : '#';
@@ -645,35 +758,35 @@ function qCoverSave(){
 }
 function qCover(){
   var body = $('cs_body');
-  if (!cur){ body.innerHTML = '<span class="tmin">Select a client above to generate the cover sheet.</span>'; return; }
+  if (!cur){ body.innerHTML = '<span class="tmin">Selecciona un cliente arriba para generar la hoja de cierre.</span>'; return; }
   var payLabels = {ach:'ACH', check:'CHECK', cc:'CC (+3%)', ucfs:'UCFS', equity:'EQUITY', uga:'UGA'};
   var paym = $('q_paym').value, sg = qSigners();
   function fdate2(s){ return s || '—'; }
   var html = '<div class="csgrid">' +
-    '<div><b>Client:</b> ' + escH(cur.name) + '</div>' +
+    '<div><b>Cliente:</b> ' + qNameLink(cur) + '</div>' +
     '<div><b>Resort:</b> ' + escH(cur.resort || '—') + '</div>' +
-    '<div><b>Phone:</b> ' + escH([cur.phone, cur.phone2].filter(Boolean).join(' · ') || '—') + '</div>' +
-    '<div><b>Email:</b> ' + escH(cur.email || '—') + '</div>' +
-    '<div><b>Total fee:</b> ' + $('q_ftot').textContent + '</div>' +
-    '<div><b>Pay via:</b> ' + (payLabels[paym] || paym) + '</div>' +
-    '<div><b>Down:</b> ' + fmtD(qNum('q_down')) + ' on ' + fdate2($('q_ddate').value) + '</div>' +
-    '<div><b>Pmt/mo:</b> ' + fmtD(qNum('q_pmt')) + ' from ' + fdate2($('q_pdate').value) + '</div>' +
-    '<div><b>Fin:</b> ' + ($('q_fmo').value || '—') + ' mo @ ' + ($('q_fapr').value || '—') + '%</div>' +
-    '<div><b>Commission:</b> ' + $('q_comm').textContent + ' (owed by ' + $('q_cdate').textContent + ')</div>' +
-    '<div><b>10-yr save:</b> ' + $('q_s10').textContent + '</div>' +
-    '<div><b>DocuSign tpl:</b> ' + escH($('qt_tpl').value) + '</div>' +
+    '<div><b>Teléfono:</b> ' + escH([cur.phone, cur.phone2].filter(Boolean).join(' · ') || '—') + '</div>' +
+    '<div><b>Correo:</b> ' + escH(cur.email || '—') + '</div>' +
+    '<div><b>Tarifa total:</b> ' + $('q_ftot').textContent + '</div>' +
+    '<div><b>Forma de pago:</b> ' + (payLabels[paym] || paym) + '</div>' +
+    '<div><b>Anticipo:</b> ' + fmtD(qNum('q_down')) + ' el ' + fdate2($('q_ddate').value) + '</div>' +
+    '<div><b>Pago/mes:</b> ' + fmtD(qNum('q_pmt')) + ' desde ' + fdate2($('q_pdate').value) + '</div>' +
+    '<div><b>Fin:</b> ' + ($('q_fmo').value || '—') + ' meses @ ' + ($('q_fapr').value || '—') + '%</div>' +
+    '<div><b>Comisión:</b> ' + $('q_comm').textContent + ' (lista el ' + $('q_cdate').textContent + ')</div>' +
+    '<div><b>Ahorro 10 años:</b> ' + $('q_s10').textContent + '</div>' +
+    '<div><b>Plantilla DocuSign:</b> ' + escH($('qt_tpl').value) + '</div>' +
     '</div>';
   var t = {};
   try { t = JSON.parse(localStorage.getItem(qTaskKey()) || '{}'); } catch(e){}
   function ck(v){ return v ? '☑' : '☐'; }
-  html += '<div class="cssec">Tasks</div><div class="cschecks"><span>' +
-    [ck(t.email) + ' Email', ck(t.text) + ' Text', ck(t.ds) + ' DocuSign', ck(t.crm) + ' CRM', ck(t.id) + ' ID'].join('</span> <span>') +
+  html += '<div class="cssec">Tareas</div><div class="cschecks"><span>' +
+    [ck(t.email) + ' Correo', ck(t.text) + ' Texto', ck(t.ds) + ' DocuSign', ck(t.crm) + ' CRM', ck(t.id) + ' ID'].join('</span> <span>') +
     '</span></div>';
-  html += '<div class="cssec">Uploads</div><div class="cschecks">' +
+  html += '<div class="cssec">Subidas</div><div class="cschecks">' +
     '<label><input type="checkbox" id="cs_up_id" onchange="qCoverSave()"> ID</label>' +
-    '<label><input type="checkbox" id="cs_up_pay" onchange="qCoverSave()"> Payment proof</label>' +
-    '<label><input type="checkbox" id="cs_up_agr" onchange="qCoverSave()"> Signed agreement</label></div>';
-  html += '<div class="cssec">Signatures</div><div class="cschecks">' +
+    '<label><input type="checkbox" id="cs_up_pay" onchange="qCoverSave()"> Comprobante de pago</label>' +
+    '<label><input type="checkbox" id="cs_up_agr" onchange="qCoverSave()"> Acuerdo firmado</label></div>';
+  html += '<div class="cssec">Firmas</div><div class="cschecks">' +
     sg.map(function(s, i){ return '<label><input type="checkbox" id="cs_sg' + i + '" onchange="qCoverSave()"> ' + escH(s) + '</label>'; }).join('') +
     '</div>';
   body.innerHTML = html;
@@ -694,7 +807,12 @@ function qSync(c){
   $('q_pmt').value = c ? (c.pmtmo || '') : '';
   $('q_downt').value = c ? (c.downt || 'dol') : 'dol';
   $('q_ddate').value = c ? (c.downdate || '') : ''; $('q_pdate').value = c ? (c.pmtdate || '') : '';
-  $('q_cli').textContent = c ? c.name : 'No client selected';
+  $('q_cli').innerHTML = c ? qNameLink(c) : 'Ningún cliente seleccionado';
+  $('q_pmonth').value = c && c.pmonth ? c.pmonth : '';
+  $('q_nights').value = c && c.nights ? c.nights : '';
+  $('q_pipe').value = c && (c.pipelineUrl || c.crmlink) ? (c.pipelineUrl || c.crmlink) : '';
+  $('q_sheet').value = c && c.sheetUrl ? c.sheetUrl : '';
+  $('q_dsurl').value = c && c.docusignUrl ? c.docusignUrl : '';
   qIdn(c);
   var r0 = (c && c.apr ? c.apr : 0) / 100 / 12, t0 = (c && c.term ? c.term : 120), m0 = (c && c.mmo ? c.mmo : 0);
   $('q_loan').value = (r0 > 0 && t0 > 0 && m0 > 0) ? Math.round(m0 * (1 - Math.pow(1 + r0, -t0)) / r0) : '';
@@ -707,7 +825,7 @@ function qDocKey(){ return cur && cur.id ? 'sl_docs_' + cur.id : null; }
 function qDocs(){ try { return JSON.parse(localStorage.getItem(qDocKey()) || '[]'); } catch(e){ return []; } }
 function qDocAdd(input){
   var files = input.files, k = qDocKey();
-  if (!files.length || !k) { if (!k) alert('Select a client first.'); input.value = ''; return; }
+  if (!files.length || !k) { if (!k) alert('Primero selecciona un cliente.'); input.value = ''; return; }
   var docs = qDocs(), pending = files.length;
   Array.prototype.forEach.call(files, function(f){
     var rd = new FileReader();
@@ -715,7 +833,7 @@ function qDocAdd(input){
       docs.push({name: f.name, size: f.size, type: f.type || '', data: rd.result, ts: Date.now()});
       if (--pending === 0){
         try { localStorage.setItem(k, JSON.stringify(docs)); }
-        catch(e){ alert('Browser storage is full \u2014 delete old docs first.'); }
+        catch(e){ alert('El almacenamiento del navegador está lleno \u2014 borra documentos viejos primero.'); }
         qDocRender();
       }
     };
@@ -727,8 +845,8 @@ function qDocRender(){
   var box = document.getElementById('q_docs'); if (!box) return;
   var docs = qDocKey() ? qDocs() : [];
   box.innerHTML = docs.length ? docs.map(function(d, i){
-    return '<div style="margin:4px 0;font-size:0.85em"><a href="' + d.data + '" download="' + escH(d.name) + '">' + escH(d.name) + '</a> <span class="tmin">' + Math.round(d.size / 1024) + 'KB</span> <button onclick="qDocDel(' + i + ')" title="Delete" style="margin-left:6px;background:#a31212;color:#fff;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-family:inherit">\u2715</button></div>';
-  }).join('') : '<span class="tmin">No documents yet.</span>';
+    return '<div style="margin:4px 0;font-size:0.85em"><a href="' + d.data + '" download="' + escH(d.name) + '">' + escH(d.name) + '</a> <span class="tmin">' + Math.round(d.size / 1024) + 'KB</span> <button onclick="qDocDel(' + i + ')" title="Borrar" style="margin-left:6px;background:#a31212;color:#fff;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;font-family:inherit">\u2715</button></div>';
+  }).join('') : '<span class="tmin">Aún no hay documentos.</span>';
 }
 function qDocDel(i){
   var k = qDocKey(); if (!k) return;
@@ -737,7 +855,7 @@ function qDocDel(i){
   qDocRender();
 }
 function qRecalc(){
-  if (!cur){ ['q_w30','q_w90','q_w6','q_t1','q_t3','q_t5','q_t10','q_t20','q_ftot','q_bal','q_s10','q_mo','q_mosn','q_t12','q_t24','q_t36','q_comm','q_cdate','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct','q_xmmo','q_xmfmo','q_xtotmo','q_xmoyr','q_xmfyr','q_xtotyr','q_xmo10','q_xmf10','q_xproj10'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— mo left'; return; }
+  if (!cur){ ['q_w30','q_w90','q_w6','q_t1','q_t3','q_t5','q_t10','q_t20','q_ftot','q_bal','q_s10','q_mo','q_mosn','q_t12','q_t24','q_t36','q_comm','q_cdate','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct','q_xmmo','q_xmfmo','q_xtotmo','q_xmoyr','q_xmfyr','q_xtotyr','q_xmo10','q_xmf10','q_xproj10'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— meses restantes'; return; }
   var mmo = qIsDB() ? 0 : qNum('q_mmo'), mf = qNum('q_mf'), esc = qNum('q_esc'), payoff = qNum('q_payoff');
   var pyrIn = parseInt(($('q_pyr').value || '').replace(/\D/g, ''), 10) || 0;
   var pyr = pyrIn > 0 ? pyrIn : 2023; // hidden default for math only — field stays blank
@@ -786,9 +904,9 @@ function qRecalc(){
   if (feeKnown && !pmtEl.value) pmtEl.value = ftot < 10000 ? 299 : 399;
   var qpmt = qNum('q_pmt'), mosn = '—';
   if (feeKnown && qpmt > 0 && bal > 0){
-    for (var qn = 1; qn <= 360; qn++){ if (amort(bal, fapr, qn) <= qpmt){ mosn = qn + ' mo'; break; } }
-    if (mosn === '—') mosn = '360+ mo';
-  } else if (feeKnown && bal <= 0) mosn = 'paid in full';
+    for (var qn = 1; qn <= 360; qn++){ if (amort(bal, fapr, qn) <= qpmt){ mosn = qn + ' meses'; break; } }
+    if (mosn === '—') mosn = '360+ meses';
+  } else if (feeKnown && bal <= 0) mosn = 'pagado por completo';
   $('q_mosn').textContent = mosn;
   var t12 = feeKnown ? fmtD(amort(bal, fapr, 12)) : '—', t24 = feeKnown ? fmtD(amort(bal, fapr, 24)) : '—', t36 = feeKnown ? fmtD(amort(bal, fapr, 36)) : '—';
   $('q_t12').textContent = t12; $('q_t24').textContent = t24; $('q_t36').textContent = t36;
@@ -799,7 +917,7 @@ function qRecalc(){
     var thresh = ftot * 0.25;
     var pdate = function(s){ return s ? new Date(s + 'T12:00:00') : null; };
     var fdate = function(d){ return (d.getMonth() + 1) + '/' + d.getDate() + '/' + d.getFullYear(); };
-    if (down >= thresh) cdate = $('q_ddate').value ? fdate(pdate($('q_ddate').value)) : 'now';
+    if (down >= thresh) cdate = $('q_ddate').value ? fdate(pdate($('q_ddate').value)) : 'ahora';
     else if (qpmt > 0){
       var cum = down, cdt = pdate($('q_pdate').value) || new Date(), guard = 0;
       while (cum < thresh && guard < 360){ cdt = new Date(cdt.getFullYear(), cdt.getMonth() + 1, cdt.getDate()); cum += qpmt; guard++; }
@@ -814,7 +932,7 @@ function qRecalc(){
   }
   var loan = qNum('q_loan'), aapr = laapr;
   var mos = Math.min(120, Math.max(0, Math.round(qNum('q_mos'))));
-  $('q_mleft').textContent = remMo + ' mo left on mtg';
+  $('q_mleft').textContent = remMo + ' meses restantes de hipoteca';
   if (loan > 0 && mos > 0 && mmo > 0){
     var s = amortSched(loan, aapr, mmo, mos);
     $('q_paid').textContent = fmtD(s.prin + s.inte);
@@ -832,6 +950,9 @@ function qRecalc(){
   var c2 = {}, k;
   for (k in cur) c2[k] = cur[k];
   c2.mf = mf; c2.mmo = mmo; c2.payoff = payoff; c2.down = down;
+  c2.esc = esc; c2.term = term; c2.pyr = pyr;
+  c2.pmonth = parseInt($('q_pmonth').value, 10) || (cur.pmonth || 0);
+  c2.nights = qNum('q_nights');
   renderBar(c2, n); applyFills(c2, n); qCover(); qAutoSave();
 }
 var qSaveT = null;
@@ -850,6 +971,9 @@ function qAutoSave(){
       c.fee = qNum('q_fee'); c.down = qNum('q_down'); c.downt = $('q_downt').value;
       c.paymethod = $('q_paym').value; c.fapr = qNum('q_fapr'); c.fmo = qNum('q_fmo');
       c.pmtmo = qNum('q_pmt'); c.downdate = $('q_ddate').value; c.pmtdate = $('q_pdate').value;
+      c.pmonth = parseInt($('q_pmonth').value, 10) || 0; c.nights = qNum('q_nights');
+      c.crmlink = $('q_pipe').value.trim(); c.pipelineUrl = c.crmlink;
+      c.sheetUrl = $('q_sheet').value.trim(); c.docusignUrl = $('q_dsurl').value.trim();
       localStorage.setItem('sl_clients', JSON.stringify(cs));
       if (cur && cur.id === cid) cur = c;
     } catch(e){}
@@ -871,9 +995,9 @@ function objFilter(){
 }
 function refreshClientSel(){
   var sel = document.getElementById('clientSel'), keep = sel.value, cs = slClients();
-  sel.innerHTML = '<option value="">— select client —</option>';
+  sel.innerHTML = '<option value="">— seleccionar cliente —</option>';
   cs.forEach(function(c){ var o = document.createElement('option'); o.value = c.id; o.textContent = c.name + (c.appt ? ' — ' + c.appt : ''); sel.appendChild(o); });
-  if (!cs.length){ var o = document.createElement('option'); o.textContent = 'No clients yet — import JSON above'; o.disabled = true; sel.appendChild(o); }
+  if (!cs.length){ var o = document.createElement('option'); o.textContent = 'Aún no hay clientes — importa el JSON arriba'; o.disabled = true; sel.appendChild(o); }
   if (keep) sel.value = keep;
 }
 function importScriptClients(input){
@@ -912,7 +1036,13 @@ function importScriptClients(input){
           down: qNum2(r.down), downt: r.downt || 'dol', paymethod: r.paymethod || 'ach',
           downdate: r.downdate || '', pmtmo: qNum2(r.pmtmo != null ? r.pmtmo : r.pmtmo), pmtdate: r.pmtdate || '',
           fapr: qNum2(r.fapr != null ? r.fapr : r.fapr), fmo: qNum2(r.fmo != null ? r.fmo : r.fmo),
-          fu: r.fu || '', crmlink: r.crmlink || ''
+          fu: r.fu || '', crmlink: r.crmlink || r.pipeline || r.pipeline_url || r.link || '',
+          pipelineUrl: r.pipelineUrl || r.pipeline || r.pipeline_url || r.link || r.crmlink || '',
+          sheetUrl: r.sheetUrl || '', docusignUrl: r.docusignUrl || '',
+          address: r.address || inp.address || '',
+          pmonth: qNum2(r.pmonth != null ? r.pmonth : inp.purchaseMonth),
+          nights: qNum2(r.nights != null ? r.nights : (r.nightsPerYear != null ? r.nightsPerYear : inp.nightsPerYear)),
+          contracts: qNum2(r.contracts != null ? r.contracts : (Array.isArray(inp.contracts) ? inp.contracts.length : inp.contracts))
         };
         if (ix >= 0){ cs[ix] = rec; updated++; } else { cs.push(rec); added++; }
       });
@@ -923,8 +1053,8 @@ function importScriptClients(input){
         for (var j = 0; j < cs3.length; j++) if (cs3[j].id === cur.id){ stillThere = true; break; }
         if (stillThere) pickClient(cur.id);
       }
-      alert('Imported: ' + added + ' new, ' + updated + ' updated.');
-    } catch(e){ alert('Could not read that file.'); }
+      alert('Importados: ' + added + ' nuevos, ' + updated + ' actualizados.');
+    } catch(e){ alert('No se pudo leer ese archivo.'); }
     input.value = '';
   };
   rd.readAsText(f);
@@ -933,7 +1063,7 @@ function qNum2(v){ var n = parseFloat(String(v == null ? '' : v).replace(/[$,]/g
 function notesKey(){ return 'sl_notes_' + (cur && cur.id ? cur.id : 'global'); }
 function notesGet(){ try { return localStorage.getItem(notesKey()) || ''; } catch(e){ return ''; } }
 function notesOpen(){
-  $('notesWho').textContent = (cur && cur.name ? cur.name : 'General') + ' — notes';
+  $('notesWho').textContent = (cur && cur.name ? cur.name : 'General') + ' — notas';
   $('notesArea').value = notesGet();
   $('notesModal').classList.add('open');
   setTimeout(function(){ $('notesArea').focus(); }, 50);
@@ -944,7 +1074,7 @@ function notesChanged(){ clearTimeout(notesT); notesT = setTimeout(function(){ t
 function notesBadge(){ var b = $('notesFab'); if (b) b.classList.toggle('has', notesGet().trim().length > 0); }
 function fmtC(n){ return '$' + Number(n).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
 var lcMode = 'a';
-var lcMon = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var lcMon = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 function lcOpen(){
   $('lcWho').textContent = (cur && cur.name) ? cur.name : 'General';
   var la = qNum('q_loan'), laa = qNum('q_aapr');
@@ -970,19 +1100,19 @@ function lcCalc(){
   var feeT = $('lc_oft').value, feeP = $('lc_ofp').value;
   var ins = parseFloat($('lc_ins').value) || 0;
   var res = $('lcRes'), body = $('lcBody');
-  if (!(amt > 0) || !(n > 0)){ res.innerHTML = '<span style="color:#888">Enter a loan amount and term.</span>'; body.innerHTML = ''; return; }
+  if (!(amt > 0) || !(n > 0)){ res.innerHTML = '<span style="color:#888">Ingresa un monto y un plazo.</span>'; body.innerHTML = ''; return; }
   var r = apr / 100 / 12;
   var base = r > 0 ? amt * r / (1 - Math.pow(1 + r, -n)) : amt / n;
   var mpay = base + ins, totPay = mpay * n, totInt = base * n - amt;
   var feeAmt = feeT === 'pct' ? amt * feeV / 100 : feeV;
   var endD = new Date(syr, smo - 1 + n, 1);
-  var h = '<span>Monthly pay: <b class="big">' + fmtC(mpay) + '</b></span>' +
-    '<span>Total of ' + n + ' payments: <b>' + fmtC(totPay) + '</b></span>' +
-    '<span>Total interest: <b>' + fmtC(totInt) + '</b></span>' +
-    '<span>Payoff date: <b>' + lcMon[endD.getMonth()] + '. ' + endD.getFullYear() + '</b></span>';
+  var h = '<span>Pago mensual: <b class="big">' + fmtC(mpay) + '</b></span>' +
+    '<span>Total de ' + n + ' pagos: <b>' + fmtC(totPay) + '</b></span>' +
+    '<span>Interés total: <b>' + fmtC(totInt) + '</b></span>' +
+    '<span>Fecha de payoff: <b>' + lcMon[endD.getMonth()] + '. ' + endD.getFullYear() + '</b></span>';
   if (feeAmt > 0) h += feeP === 'deduct'
-    ? '<span>Fee deducted — you receive <b>' + fmtC(amt - feeAmt) + '</b></span>'
-    : '<span>Fee paid upfront: <b>' + fmtC(feeAmt) + '</b></span>';
+    ? '<span>Cargo descontado — recibes <b>' + fmtC(amt - feeAmt) + '</b></span>'
+    : '<span>Cargo pagado por adelantado: <b>' + fmtC(feeAmt) + '</b></span>';
   res.innerHTML = h;
   var rows = [], bal = amt, m, d;
   for (m = 1; m <= n; m++){
@@ -998,15 +1128,15 @@ function lcCalc(){
     var rw = rows[made - 1];
     var totPd = mpay * made, prinPd = amt - rw.bal, intPd = totPd - prinPd - ins * made;
     res.innerHTML += '<div style="margin-top:8px;padding-top:8px;border-top:2px solid #2e7d32;">' +
-      '<span>Payoff today (after ' + made + ' payments): <b class="big" style="color:#2e7d32">' + fmtC(rw.bal) + '</b></span>' +
-      '<span>Total paid so far: <b>' + fmtC(totPd) + '</b></span>' +
-      '<span>Principal paid: <b>' + fmtC(prinPd) + '</b></span>' +
-      '<span>Interest paid: <b style="color:#c62828">' + fmtC(intPd) + '</b></span></div>';
+      '<span>Payoff hoy (tras ' + made + ' pagos): <b class="big" style="color:#2e7d32">' + fmtC(rw.bal) + '</b></span>' +
+      '<span>Total pagado hasta ahora: <b>' + fmtC(totPd) + '</b></span>' +
+      '<span>Capital pagado: <b>' + fmtC(prinPd) + '</b></span>' +
+      '<span>Interés pagado: <b style="color:#c62828">' + fmtC(intPd) + '</b></span></div>';
   }
   var md = function(x){ return (x.getMonth() + 1) + '/' + String(x.getFullYear()).slice(2); };
   var t2 = '';
   if (lcMode === 'a'){
-    t2 = '<table><thead><tr><th>Year</th><th>Date</th><th>Interest</th><th>Principal</th><th>Ending Balance</th></tr></thead><tbody>';
+    t2 = '<table><thead><tr><th>Año</th><th>Fecha</th><th>Interés</th><th>Capital</th><th>Saldo final</th></tr></thead><tbody>';
     var yrs = Math.ceil(n / 12), y, k;
     for (y = 1; y <= yrs; y++){
       var yi = 0, yp = 0, lb = 0, fD = null, lD = null;
@@ -1017,7 +1147,7 @@ function lcCalc(){
       t2 += '<tr><td>' + y + '</td><td>' + md(fD) + '-' + md(lD) + '</td><td>' + fmtC(yi) + '</td><td>' + fmtC(yp) + '</td><td>' + fmtC(lb) + '</td></tr>';
     }
   } else {
-    t2 = '<table><thead><tr><th>#</th><th>Date</th><th>Payment</th><th>Interest</th><th>Principal</th><th>Balance</th></tr></thead><tbody>';
+    t2 = '<table><thead><tr><th>#</th><th>Fecha</th><th>Pago</th><th>Interés</th><th>Capital</th><th>Saldo</th></tr></thead><tbody>';
     for (var j = 0; j < rows.length; j++){
       var rw = rows[j];
       t2 += '<tr><td>' + rw.m + '</td><td>' + lcMon[rw.d.getMonth()] + ' ' + rw.d.getFullYear() + '</td><td>' + fmtC(rw.pmt) + '</td><td>' + fmtC(rw.inte) + '</td><td>' + fmtC(rw.prin) + '</td><td>' + fmtC(rw.bal) + '</td></tr>';
@@ -1031,33 +1161,41 @@ document.addEventListener('keydown', function(e){ if (e.key === 'Escape'){ notes
   document.getElementById('clientSel').addEventListener('change', function(){ pickClient(this.value); });
   document.getElementById('notesModal').addEventListener('click', function(e){ if (e.target === this) notesClose(); });
   document.getElementById('lcModal').addEventListener('click', function(e){ if (e.target === this) lcClose(); });
+  try {
+    var dcid = new URLSearchParams(location.search).get('c');
+    if (dcid){
+      var cs9 = slClients(), found9 = false;
+      for (var z9 = 0; z9 < cs9.length; z9++) if (cs9[z9].id === dcid) found9 = true;
+      if (found9){ document.getElementById('clientSel').value = dcid; pickClient(dcid); }
+    }
+  } catch(e){}
   notesBadge();
 })();
 </script>
 
-<button id="notesFab" onclick="notesOpen()">📝 Notes</button>
+<button id="notesFab" onclick="notesOpen()">📝 Notas</button>
 <div id="notesModal">
   <div class="notesBox">
-    <div class="notesHead"><span>📝 <span id="notesWho">Notes</span></span><button onclick="notesClose()">✕ Close</button></div>
-    <textarea id="notesArea" placeholder="Type or paste notes here — they save automatically for the selected client." oninput="notesChanged()"></textarea>
-    <div class="notesFoot">Auto-saves in this browser, per client. Esc or click outside to close.</div>
+    <div class="notesHead"><span>📝 <span id="notesWho">Notas</span></span><button onclick="notesClose()">✕ Cerrar</button></div>
+    <textarea id="notesArea" placeholder="Escribe o pega notas aquí — se guardan automáticamente para el cliente seleccionado." oninput="notesChanged()"></textarea>
+    <div class="notesFoot">Se guarda automáticamente en este navegador, por cliente. Esc o clic afuera para cerrar.</div>
   </div>
 </div>
 <div id="lcModal">
   <div class="lcBox">
-    <div class="lcHead"><span>🏦 Loan calculator — <span id="lcWho">General</span></span><button onclick="lcClose()">✕ Close</button></div>
+    <div class="lcHead"><span>🏦 Calculadora de préstamo — <span id="lcWho">General</span></span><button onclick="lcClose()">✕ Cerrar</button></div>
     <div class="lcForm">
-      <label>Loan amount<input id="lc_amt" type="number" min="0" oninput="lcCalc()"></label>
-      <label>Interest rate %<input id="lc_apr" type="number" min="0" step="0.01" oninput="lcCalc()"></label>
-      <label>Loan term<span class="row2"><input id="lc_yrs" type="number" min="0" placeholder="yrs" oninput="lcCalc()"><input id="lc_mos" type="number" min="0" max="11" placeholder="mos" oninput="lcCalc()"></span></label>
-      <label>Start date<span class="row2"><select id="lc_smo" onchange="lcCalc()"><option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option><option value="4">Apr</option><option value="5">May</option><option value="6">Jun</option><option value="7">Jul</option><option value="8">Aug</option><option value="9">Sep</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option></select><input id="lc_syr" type="number" placeholder="year" oninput="lcCalc()"></span></label>
-      <label>Origination fee<span class="row2"><input id="lc_ofee" type="number" min="0" step="0.01" oninput="lcCalc()"><select id="lc_oft" onchange="lcCalc()"><option value="pct">%</option><option value="dol">$</option></select></span></label>
-      <label>Fee handling<select id="lc_ofp" onchange="lcCalc()"><option value="deduct">deducted from loan</option><option value="upfront">paid upfront</option></select></label>
-      <label>Insurance $/mo<input id="lc_ins" type="number" min="0" step="0.01" oninput="lcCalc()"></label>
-      <label style="grid-column:1/-1;border-top:1px solid #ddd;padding-top:8px;margin-top:4px;"><b>Payoff today</b> — payments made so far<input id="lc_made" type="number" min="0" placeholder="# of payments made" oninput="lcCalc()"></label>
+      <label>Monto del préstamo<input id="lc_amt" type="number" min="0" oninput="lcCalc()"></label>
+      <label>Tasa de interés %<input id="lc_apr" type="number" min="0" step="0.01" oninput="lcCalc()"></label>
+      <label>Plazo del préstamo<span class="row2"><input id="lc_yrs" type="number" min="0" placeholder="años" oninput="lcCalc()"><input id="lc_mos" type="number" min="0" max="11" placeholder="meses" oninput="lcCalc()"></span></label>
+      <label>Fecha de inicio<span class="row2"><select id="lc_smo" onchange="lcCalc()"><option value="1">Ene</option><option value="2">Feb</option><option value="3">Mar</option><option value="4">Abr</option><option value="5">May</option><option value="6">Jun</option><option value="7">Jul</option><option value="8">Ago</option><option value="9">Sep</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Dic</option></select><input id="lc_syr" type="number" placeholder="year" oninput="lcCalc()"></span></label>
+      <label>Cargo de originación<span class="row2"><input id="lc_ofee" type="number" min="0" step="0.01" oninput="lcCalc()"><select id="lc_oft" onchange="lcCalc()"><option value="pct">%</option><option value="dol">$</option></select></span></label>
+      <label>Manejo del cargo<select id="lc_ofp" onchange="lcCalc()"><option value="deduct">descontado del préstamo</option><option value="upfront">pagado por adelantado</option></select></label>
+      <label>Seguro $/mes<input id="lc_ins" type="number" min="0" step="0.01" oninput="lcCalc()"></label>
+      <label style="grid-column:1/-1;border-top:1px solid #ddd;padding-top:8px;margin-top:4px;"><b>Payoff hoy</b> — pagos hechos hasta ahora<input id="lc_made" type="number" min="0" placeholder="# de pagos hechos" oninput="lcCalc()"></label>
     </div>
     <div class="lcRes" id="lcRes"></div>
-    <div class="lcTabs"><button id="lcTabA" class="on" onclick="lcTab('a')">Annual schedule</button><button id="lcTabM" onclick="lcTab('m')">Monthly schedule</button></div>
+    <div class="lcTabs"><button id="lcTabA" class="on" onclick="lcTab('a')">Tabla anual</button><button id="lcTabM" onclick="lcTab('m')">Tabla mensual</button></div>
     <div id="lcBody"></div>
   </div>
 </div>
