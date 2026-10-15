@@ -297,6 +297,7 @@
     <label class="qf">Fee (desde la hoja PRE-CALL) <input id="q_sheetfee" type="number" min="0" oninput="qRecalc()"></label>
     <label class="qf">Anticipo (desde la hoja) <input id="q_sheetdown" type="number" min="0" oninput="qRecalc()"></label>
     <div class="qsm">En deed-back el fee sale de la hoja PRE-CALL, no de la fórmula del 47%. Editar estos valores corrige el fee y los pagos.</div>
+    <div id="q_paysched" class="qsm" style="display:none;margin-top:6px;font-weight:600;color:#7f1d1d"></div>
   </div>
   <label class="qf">Nuestra tarifa <input id="q_fee" type="number" min="0" oninput="qRecalc()"></label>
   <div class="qsm" id="q_feesug" style="margin:-2px 0 8px"></div>
@@ -738,6 +739,7 @@ function qIdn(c){
   var ph = [c.phone, c.phone2].filter(function(x){ return x; }).join(' · ');
   el.innerHTML = '<b>' + qNameLink(c) + '</b>' +
     (c.resort ? '<br><b>' + escH(c.resort) + '</b>' : '') +
+    (c.address ? '<br>📍 ' + escH(c.address) : '') +
     (ph ? '<br>📞 ' + escH(ph) : '') +
     (c.notes ? '<br><a href="javascript:void(0)" onclick="document.getElementById(\'q_notes_full\').style.display=document.getElementById(\'q_notes_full\').style.display===\'none\'?\'block\':\'none\'" style="font-size:0.85em;">📋 Notas del cliente (toca para expandir)</a><div id="q_notes_full" style="display:none;margin-top:6px;"><span class="tmin">' + escH(c.notes) + '</span></div>' : '') +
     (qPipeUrl(c) ? '<br><a href="' + escH(qPipeUrl(c)) + '" target="_blank">Lead en Pipeline ↗</a>' : '');
@@ -968,6 +970,7 @@ function qSync(c){
   $('q_folder').value = c && c.folderPath ? c.folderPath : '';
   $('q_loannote').value = c && c.loanNote ? c.loanNote : '';
   $('q_sheetfee').value = c && c.sheetFee ? c.sheetFee : ''; $('q_sheetdown').value = c && c.sheetDown ? c.sheetDown : '';
+  var psEl = $('q_paysched'); if (psEl){ if (c && c.paySchedule){ psEl.textContent = '🗓️ ' + c.paySchedule; psEl.style.display = ''; } else { psEl.textContent = ''; psEl.style.display = 'none'; } }
   qRenderContracts(c);
   qIdn(c);
   var r0 = (c && c.apr ? c.apr : 0) / 100 / 12, t0 = (c && c.term ? c.term : 120), m0 = (c && c.mmo ? c.mmo : 0);
@@ -1209,7 +1212,7 @@ function importScriptClients(input){
           fu: r.fu || '', crmlink: r.crmlink || r.pipeline || r.pipeline_url || r.link || '',
           pipelineUrl: r.pipelineUrl || r.pipeline || r.pipeline_url || r.link || r.crmlink || '',
           sheetUrl: r.sheetUrl || '', docusignUrl: r.docusignUrl || '',
-          folderPath: r.folderPath || '', loanNote: r.loanNote || '', sheetFee: qNum2(r.sheetFee), sheetDown: qNum2(r.sheetDown),
+          folderPath: r.folderPath || '', loanNote: r.loanNote || '', sheetFee: qNum2(r.sheetFee), sheetDown: qNum2(r.sheetDown), paySchedule: r.paySchedule || '',
           address: r.address || inp.address || '',
           pmonth: qNum2(r.pmonth != null ? r.pmonth : inp.purchaseMonth),
           nights: qNum2(r.nights != null ? r.nights : (r.nightsPerYear != null ? r.nightsPerYear : inp.nightsPerYear)),
