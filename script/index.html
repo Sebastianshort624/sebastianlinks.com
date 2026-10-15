@@ -166,6 +166,13 @@
   .notesHead { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #0b3d91; color: #fff; font-size: 1.05em; }
   .notesHead button { background: rgba(255,255,255,.2); color: #fff; border: none; border-radius: 5px; padding: 4px 12px; cursor: pointer; font-size: 1em; font-family: inherit; }
   #notesArea { flex: 1; border: none; padding: 14px; font-size: 1.05em; line-height: 1.55; font-family: inherit; resize: none; outline: none; }
+  #notesArea { flex: 0 0 108px; border-top: 2px solid #0b3d91; }
+  #notesList { flex: 1; overflow-y: auto; padding: 10px 14px; background: #fafafa; }
+  .noteItem { background: #fff; border: 1px solid #ddd; border-left: 4px solid #0b3d91; border-radius: 6px; padding: 8px 12px; margin-bottom: 8px; }
+  .noteStamp { font-size: 0.8em; font-weight: 700; color: #0b3d91; margin-bottom: 3px; }
+  .noteText { white-space: pre-wrap; font-size: 1em; line-height: 1.5; }
+  #notesAddBtn { margin: 0; border: none; background: #2e7d32; color: #fff; padding: 10px; font-size: 1em; cursor: pointer; font-family: inherit; }
+  #notesAddBtn:hover { background: #256528; }
   .notesFoot { padding: 8px 14px; color: #888; font-size: 0.82em; background: #f4f4f4; }
   @media print { #notesFab, #notesModal { display: none !important; } }
   #lcModal { position: fixed; inset: 0; z-index: 960; background: rgba(0,0,0,.55); display: none; align-items: center; justify-content: center; padding: 20px; }
@@ -1323,17 +1330,39 @@ function importScriptClients(input){
 }
 function qNum2(v){ var n = parseFloat(String(v == null ? '' : v).replace(/[$,]/g, '')); return isNaN(n) ? 0 : n; }
 function notesKey(){ return 'sl_notes_' + (cur && cur.id ? cur.id : 'global'); }
-function notesGet(){ try { return localStorage.getItem(notesKey()) || ''; } catch(e){ return ''; } }
+function notesLog(){
+  var raw = ''; try { raw = localStorage.getItem(notesKey()) || ''; } catch(e){}
+  if (!raw) return [];
+  try { var v = JSON.parse(raw); if (Array.isArray(v)) return v.filter(function(n){ return n && n.x; }); } catch(e){}
+  return [{ t: 0, x: raw }];
+}
+function notesSaveLog(log){ try { localStorage.setItem(notesKey(), JSON.stringify(log)); } catch(e){} }
+function notesStamp(t){
+  if (!t) return 'Nota anterior';
+  try { return new Date(t).toLocaleString('es', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' }); } catch(e){ return new Date(t).toLocaleString(); }
+}
+function notesRender(){
+  var log = notesLog(), box = $('notesList'); if (!box) return;
+  if (!log.length){ box.innerHTML = '<div style="color:#888;padding:6px 2px;">Sin notas todavía.</div>'; return; }
+  var h = '';
+  for (var i = log.length - 1; i >= 0; i--) h += '<div class="noteItem"><div class="noteStamp">\uD83D\uDCC5 ' + escH(notesStamp(log[i].t)) + '</div><div class="noteText">' + escH(log[i].x) + '</div></div>';
+  box.innerHTML = h;
+}
+function notesAdd(){
+  var ta = $('notesArea'); if (!ta) return false;
+  var txt = (ta.value || '').trim(); if (!txt) return false;
+  var log = notesLog(); log.push({ t: Date.now(), x: txt }); notesSaveLog(log);
+  ta.value = ''; notesRender(); notesBadge(); return true;
+}
 function notesOpen(){
   $('notesWho').textContent = (cur && cur.name ? cur.name : 'General') + ' — notas';
-  $('notesArea').value = notesGet();
+  $('notesArea').value = '';
+  notesRender();
   $('notesModal').classList.add('open');
   setTimeout(function(){ $('notesArea').focus(); }, 50);
 }
-function notesClose(){ $('notesModal').classList.remove('open'); notesBadge(); }
-var notesT = null;
-function notesChanged(){ clearTimeout(notesT); notesT = setTimeout(function(){ try { localStorage.setItem(notesKey(), $('notesArea').value); } catch(e){} }, 400); }
-function notesBadge(){ var b = $('notesFab'); if (b) b.classList.toggle('has', notesGet().trim().length > 0); }
+function notesClose(){ notesAdd(); $('notesModal').classList.remove('open'); notesBadge(); }
+function notesBadge(){ var b = $('notesFab'); if (b) b.classList.toggle('has', notesLog().length > 0); }
 function fmtC(n){ return '$' + Number(n).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
 var lcMode = 'a';
 var lcMon = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
@@ -1439,8 +1468,10 @@ document.addEventListener('keydown', function(e){ if (e.key === 'Escape'){ notes
 <div id="notesModal">
   <div class="notesBox">
     <div class="notesHead"><span>📝 <span id="notesWho">Notas</span></span><button onclick="notesClose()">✕ Cerrar</button></div>
-    <textarea id="notesArea" placeholder="Escribe o pega notas aquí — se guardan automáticamente para el cliente seleccionado." oninput="notesChanged()"></textarea>
-    <div class="notesFoot">Se guarda automáticamente en este navegador, por cliente. Esc o clic afuera para cerrar.</div>
+    <div id="notesList"></div>
+    <textarea id="notesArea" placeholder="Escribe una nota nueva y pulsa Agregar — queda guardada con la fecha y hora de hoy."></textarea>
+    <button id="notesAddBtn" onclick="notesAdd()">➕ Agregar nota con fecha</button>
+    <div class="notesFoot">Cada nota queda con su fecha y hora — el historial no se borra ni se edita. Si cierras con texto sin agregar, se agrega solo con la fecha de hoy. Se guarda en este navegador, por cliente.</div>
   </div>
 </div>
 <div id="lcModal">
