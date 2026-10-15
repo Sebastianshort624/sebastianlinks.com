@@ -705,7 +705,7 @@ function pickClient(id){
 function renderBar(c, n){
   var bar = $('cbar');
   var mmo = c.mmo || 0, mf = c.mf || 0;
-  var mfmo = Math.floor(mf / 12), totyr = mmo * 12 + mfmo * 12;
+  var mfmo = Math.floor(mf / 12), totyr = mmo * 12 + mf;
   var escR = (c.esc || 8) / 100;
   var term = c.term || 120, pyr = c.pyr || 0;
   var remMo = pyr > 0 ? Math.max(0, term - Math.max(0, (new Date().getFullYear() - pyr) * 12)) : term;
@@ -1074,8 +1074,8 @@ function qRecalc(){
   $('q_t5').textContent = fmtC(t5);
   $('q_t10').textContent = fmtC(t10);
   $('q_t20').textContent = fmtC(t20);
-  // Expense breakdown (matches his table: monthly MF floored, 10-yr MF escalated)
-  var mfmo = Math.floor(mf / 12), mfoyr = mfmo * 12, moyr = mmo * 12, totyr = moyr + mfoyr;
+  // Expense breakdown (monthly MF floored for display only; annual MF exact, 10-yr MF escalated)
+  var mfmo = Math.floor(mf / 12), mfoyr = mf, moyr = mmo * 12, totyr = moyr + mfoyr;
   var mo10 = moyr * 10, escR = (esc || 8) / 100;
   var mf10 = escR > 0 ? Math.round(mfoyr * (Math.pow(1 + escR, 10) - 1) / escR) : mfoyr * 10;
   $('q_xmmo').textContent = fmtD(mmo); $('q_xmfmo').textContent = fmtD(mfmo);
