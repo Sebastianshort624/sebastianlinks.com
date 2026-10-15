@@ -337,6 +337,43 @@
   </div>
 </aside>
 
+<div class="calcgrid"><div class="cpanel">
+<div class="qsec" style="margin-top:0">✔ SCRIPT STAGES — COVERED</div>
+<div class="fpitem"><label><input type="checkbox" id="st1" onchange="qStSave()"><span>confirm nights per year</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="st2" onchange="qStSave()"><span>price per night take to semana roja</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="st3" onchange="qStSave()"><span>investiganos.com</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="st4" onchange="qStSave()"><span>Research</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="st5" onchange="qStSave()"><span>le impida seguir adelante con nosotros hoy mismo? "</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="st6" onchange="qStSave()"><span>99%</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="st7" onchange="qStSave()"><span>Negotiatons</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="st8" onchange="qStSave()"><span>NAVIGATE</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="st9" onchange="qStSave()"><span>CHANGE LANG</span></label></div>
+</div>
+<div class="cpanel">
+<div class="qsec" style="margin-top:0">✔ PHYSICAL</div>
+<div class="fpitem"><label><input type="checkbox" id="ph1" onchange="qPhSave()"><span>PRE CALL</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph2" onchange="qPhSave()"><span>PRE CALL SHEET</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph3" onchange="qPhSave()"><span>/ SCRIPT and/or JSON</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph4" onchange="qPhSave()"><span>PREPARE DOCUSIGN</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph5" onchange="qPhSave()"><span>CHECK OFF SCRIPT STAGES</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph6" onchange="qPhSave()"><span>THE CLOSE</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph7" onchange="qPhSave()"><span>ASTRO-AUTO CALCULATES PRICE IF DEED BACK LINK TO THAT SPOT IN THE DEED BACK SHEET  AND IF MTG .47 + 299 =</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph8" onchange="qPhSave()"><span>AUTO CALCULATE PAYMENTS  DROPDOWN TERM AND 19.99% DEFAULT</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph9" onchange="qPhSave()"><span>UCFS Applied</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph10" onchange="qPhSave()"><span>Verific Call UCFS</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph11" onchange="qPhSave()"><span>Docusign</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph12" onchange="qPhSave()"><span>IMAGE ID</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph13" onchange="qPhSave()"><span>IMAGE CHECK</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph14" onchange="qPhSave()"><span>CRM UPDATE</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph15" onchange="qPhSave()"><span>REVIEW SIG DOC</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph16" onchange="qPhSave()"><span>REVIEW LOAN APP</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph17" onchange="qPhSave()"><span>POST SALE</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph18" onchange="qPhSave()"><span>REVIEW CRM</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph19" onchange="qPhSave()"><span>POST DEAL CHAT</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph20" onchange="qPhSave()"><span>REVIEW POST</span></label></div>
+</div>
+</div>
+
 <div class="sideboxes">
 <aside class="sprinkle">
   <h3>🎲 Frases sueltas — para cualquier momento</h3>
@@ -725,6 +762,36 @@ function qFpLoad(){
     for (i = 1; i <= 6; i++){ el = $('fp' + i); if (el) el.checked = !!o['fp' + i]; }
   } catch(e){}
 }
+function qStKey(){ return cur ? 'sl_stages_' + cur.id : null; }
+function qStSave(){
+  var k = qStKey(); if (!k) return;
+  var o = {};
+  for (var i = 1; i <= 9; i++){ var el = $('st' + i); o['st' + i] = el ? el.checked : false; }
+  try { localStorage.setItem(k, JSON.stringify(o)); } catch(e){}
+}
+function qStLoad(){
+  var i, el;
+  for (i = 1; i <= 9; i++){ el = $('st' + i); if (el) el.checked = false; }
+  var k = qStKey(); if (!k) return;
+  try { var o = JSON.parse(localStorage.getItem(k) || '{}');
+    for (i = 1; i <= 9; i++){ el = $('st' + i); if (el) el.checked = !!o['st' + i]; }
+  } catch(e){}
+}
+function qPhKey(){ return cur ? 'sl_phys_' + cur.id : null; }
+function qPhSave(){
+  var k = qPhKey(); if (!k) return;
+  var o = {};
+  for (var i = 1; i <= 20; i++){ var el = $('ph' + i); o['ph' + i] = el ? el.checked : false; }
+  try { localStorage.setItem(k, JSON.stringify(o)); } catch(e){}
+}
+function qPhLoad(){
+  var i, el;
+  for (i = 1; i <= 20; i++){ el = $('ph' + i); if (el) el.checked = false; }
+  var k = qPhKey(); if (!k) return;
+  try { var o = JSON.parse(localStorage.getItem(k) || '{}');
+    for (i = 1; i <= 20; i++){ el = $('ph' + i); if (el) el.checked = !!o['ph' + i]; }
+  } catch(e){}
+}
 function qPipeSave(){ qRecalc(); if (cur) qIdn(cur); }
 function qCopyInfo(kind, el){
   if (!cur) return;
@@ -754,7 +821,7 @@ function qCopyText(){
   else { var ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch(e){} ta.remove(); done(); }
 }
 function qTaskSync(){
-  qTaskLoad(); qFpLoad();
+  qTaskLoad(); qFpLoad(); qStLoad(); qPhLoad();
   $('qt_emailL').href = qEmailHref();
   var hasCrm = !!(cur && cur.crmlink);
   $('qt_crmL').href = hasCrm ? cur.crmlink : '#';
