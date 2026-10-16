@@ -1004,7 +1004,10 @@ function qIdn(c){
   var el = $('q_idn');
   if (!c){ el.innerHTML = ''; el.style.display = 'none'; return; }
   var ph = [c.phone, c.phone2].filter(function(x){ return x; }).map(fmtPhone).join(' · ');
-  el.innerHTML = '<b>' + qNameLink(c) + '</b>' +
+  var bChip = '';
+  if (c.behind === 0 || c.behind === '0') bChip = ' <span class="ib-chip ib-chip-current">✅ AL CORRIENTE</span>';
+  else if (c.behind) bChip = ' <span class="ib-chip ib-chip-behind">🔴 ATRASADO: ' + escH(String(c.behind)) + ' MESES</span>';
+  el.innerHTML = '<b>' + qNameLink(c) + '</b>' + bChip +
     (c.resort ? '<br><b>' + escH(c.resort) + '</b>' : '') +
     (c.address ? '<br>📍 ' + escH(c.address) : '') +
     (ph ? '<br>' + escH(ph) : '') +
