@@ -836,7 +836,7 @@ function amort(pv, apr, n){ var r = apr / 100 / 12; if (!(r > 0)) return n > 0 ?
     if (cur && (cur.dispo || cur.outcome)) return { manual: cur.manual || '', dispo: cur.dispo || '', status: cur.leadStatus || '', outcome: cur.outcome || '', futype: cur.fuType || '', fudate: cur.fuDate || '', futime: cur.fuTime || '', fuampm: cur.fuAmpm || '' };
     return { manual:'', dispo:'', status:'', outcome:'', futype:'', fudate:'', futime:'', fuampm:'' };
   }
-  function soldKey(){ return 'sl_sold_' + curId; }
+  function soldKey(){ return 'sl_sold_' + (cur ? cur.id : ''); }
 function soldGet(){ try { return JSON.parse(localStorage.getItem(soldKey()) || '{}'); } catch(e){ return {}; } }
 function soldSet(o){ try { localStorage.setItem(soldKey(), JSON.stringify(o)); } catch(e){} }
 function soldRender(){
