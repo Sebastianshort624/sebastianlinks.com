@@ -368,7 +368,7 @@
     <div class="qsm">En deed-back el fee sale de la hoja PRE-CALL, no de la fórmula del 47%. Editar estos valores corrige el fee y los pagos.</div>
     <div id="q_paysched" class="qsm" style="display:none;margin-top:6px;font-weight:600;color:#7f1d1d"></div>
   </div>
-  <label class="qf">Nuestra tarifa <input id="q_fee" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">Nuestra tarifa <select id="q_feepct" onchange="qFeePct()" style="padding:4px;font-size:0.95em;font-family:inherit;"><option value="30">30%</option><option value="35">35%</option><option value="40">40%</option><option value="45">45%</option><option value="46">46%</option><option value="47" selected>47%</option><option value="48">48%</option><option value="49">49%</option><option value="50">50%</option><option value="55">55%</option><option value="60">60%</option></select> <input id="q_fee" type="number" min="0" oninput="qRecalc()"></label>
   <div class="qsm" id="q_feesug" style="margin:-2px 0 8px"></div>
   <label class="qf">Forma de pago <select id="q_paym" onchange="qRecalc()">
     <option value="ach">ACH</option>
@@ -1080,6 +1080,16 @@ function qRenderContracts(c){
   h += '<div class="qsm" style="margin-bottom:8px">Los campos editables de abajo son los totales combinados; el precio se calcula sobre el payoff combinado.</div>';
   box.innerHTML = h; box.style.display = '';
 }
+function qAdminFor(fee){ if (!(fee > 0)) return 0; var s1 = fee - 299; if (s1 > 0 && s1 < 10000) return 299; var s2 = fee - 399; if (s2 >= 10000) return 399; return s1 >= 10000 ? 399 : 299; }
+function qFeeApply(){
+  if (!cur || qIsDB()) return false;
+  var payoff = qNum('q_payoff'); if (!(payoff > 0)) return false;
+  var pct = parseFloat(($('q_feepct') || {}).value || '47') || 47;
+  var svc = payoff * pct / 100, adm = svc < 10000 ? 299 : 399;
+  $('q_fee').value = Math.round(svc + adm);
+  return true;
+}
+function qFeePct(){ if (qFeeApply()) qRecalc(); }
 function qSync(c){
   qDtype = (c && c.dtype === 'DB') ? 'DB' : 'MTG'; qApplyDtype();
   $('q_mmo').value = c ? (c.mmo || '') : '';
@@ -1110,6 +1120,7 @@ function qSync(c){
   $('q_mos').value = (c && c.pyr) ? Math.min(t0, Math.max(0, (new Date().getFullYear() - c.pyr) * 12)) || '' : '';
   qTaskSync(); qDocRender();
   qUrlLinks();
+  if (!qIsDB() && !$('q_fee').value && c && c.payoff > 0) qFeeApply();
   qRecalc();
 }
 function qDocKey(){ return cur && cur.id ? 'sl_docs_' + cur.id : null; }
@@ -1186,7 +1197,7 @@ function qRecalc(){
   var sugEl = $('q_feesug');
   if (sugEl){
     if (qIsDB()) sugEl.innerHTML = sheetFeeActive ? 'Fee activo: el de la hoja PRE-CALL (deed-back).' : 'Deed-back: el fee sale de la hoja PRE-CALL \u2014 ingr\u00e9salo en el recuadro rojo.';
-    else if (payoff > 0){ var s47 = payoff * 0.47, adm = s47 < 10000 ? 299 : 399; var mcN = qMulti(cur) ? ' (payoff combinado de ' + cur.contractsList.length + ' contratos)' : ''; sugEl.innerHTML = 'F\u00f3rmula: payoff \u00d7 47% = ' + fmtD(s47) + ' + admin ' + fmtD(adm) + ' = <b>' + fmtD(s47 + adm) + '</b>' + mcN + ' <a href="#" onclick="document.getElementById(\'q_fee\').value=' + Math.round(s47 + adm) + ';qRecalc();return false;">Usar</a>'; }
+    else if (payoff > 0){ var pctS = parseFloat(($('q_feepct') || {}).value || '47') || 47; var s47 = payoff * pctS / 100, adm = s47 < 10000 ? 299 : 399; var mcN = qMulti(cur) ? ' (payoff combinado de ' + cur.contractsList.length + ' contratos)' : ''; sugEl.innerHTML = 'F\u00f3rmula: payoff \u00d7 ' + pctS + '% = ' + fmtD(s47) + ' + admin ' + fmtD(adm) + ' = <b>' + fmtD(s47 + adm) + '</b>' + mcN + ' <a href="#" onclick="document.getElementById(\'q_fee\').value=' + Math.round(s47 + adm) + ';qRecalc();return false;">Usar</a>'; }
     else sugEl.textContent = '';
   }
   var paym = $('q_paym').value;
@@ -1213,7 +1224,7 @@ function qRecalc(){
   $('q_mosn').textContent = mosn;
   var t12 = feeKnown ? fmtD(amort(bal, fapr, 12)) : '—', t24 = feeKnown ? fmtD(amort(bal, fapr, 24)) : '—', t36 = feeKnown ? fmtD(amort(bal, fapr, 36)) : '—';
   $('q_t12').textContent = t12; $('q_t24').textContent = t24; $('q_t36').textContent = t36;
-  var comm = feeKnown ? ftot * 0.10 : 0;
+  var comm = feeKnown ? Math.max(0, fee - qAdminFor(fee)) * 0.10 : 0;
   $('q_comm').textContent = feeKnown ? fmtD(comm) : '—';
   var cdate = '—';
   if (feeKnown){
