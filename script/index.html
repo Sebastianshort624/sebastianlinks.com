@@ -438,6 +438,11 @@
   <div class="notesTabs"><button id="notesTabClient" class="on" onclick="notesSetView('client')">Este cliente</button><button id="notesTabAll" onclick="notesSetView('all')">Todas</button></div>
   <div id="dispoBlock" style="border:1px solid #dbe4f0;border-radius:6px;padding:8px 10px;margin:0 0 10px;background:#f8fbff">
   <div class="qsec" style="margin-top:0">🎯 DISPOSICIÓN · ESTADO · RESULTADO <span class="tmin" id="dispoWho"></span></div>
+  <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:end;margin:2px 0 8px">
+    <label class="qf" style="margin:0">RESULTADO MANUAL <select id="d_manual" onchange="dispoSave()" style="font-weight:800"><option value="">Sin marcar</option><option value="NO GO">NO GO</option><option value="FU">FU</option><option value="QUOTED">QUOTED</option><option value="APT SET">APT SET</option><option value="SOLD">SOLD</option><option value="RS">RS</option><option value="NA">NA</option><option value="NQ">NQ</option></select></label>
+    <span class="qsm" id="d_lastapt" style="font-weight:700">ÚLTIMA CITA: —</span>
+    <span class="qsm" id="d_nextapt" style="font-weight:700">PRÓXIMA CITA: —</span>
+  </div>
   <label class="qf">DISPOSICIÓN <select id="d_dispo" onchange="dispoSave()"><option value="">Sin marcar</option><option value="activo">Activo</option><option value="en seguimiento">En seguimiento</option><option value="vendido">Vendido</option><option value="reprogramado">Reprogramado</option><option value="no interesado">No interesado</option><option value="no califica">No califica</option><option value="perdido">Perdido</option></select></label>
   <label class="qf">ESTADO DEL LEAD <select id="d_status" onchange="dispoSave()"><option value="">Sin marcar</option><option value="nuevo">Nuevo</option><option value="contactado">Contactado</option><option value="en seguimiento">En seguimiento</option><option value="cerrado">Cerrado</option><option value="perdido">Perdido</option></select></label>
   <label class="qf">RESULTADO DE LA LLAMADA <select id="d_outcome" onchange="dispoSave()"><option value="">Sin marcar</option><option value="SOLD">SOLD — Vendido</option><option value="FU">FU — Seguimiento</option><option value="RS">RS — Reprogramado</option><option value="NA">NA — No contestó</option><option value="NO">NO — No interesado</option><option value="NQ">NQ — No califica</option></select></label>
@@ -828,8 +833,8 @@ function amort(pv, apr, n){ var r = apr / 100 / 12; if (!(r > 0)) return n > 0 ?
   function dispoKey(){ return cur ? 'sl_dispo_' + cur.id : null; }
   function dispoRead(){
     try { var k = dispoKey(); var raw = k ? localStorage.getItem(k) : null; if (raw) return JSON.parse(raw); } catch(e){}
-    if (cur && (cur.dispo || cur.outcome)) return { dispo: cur.dispo || '', status: cur.leadStatus || '', outcome: cur.outcome || '', futype: cur.fuType || '', fudate: cur.fuDate || '', futime: cur.fuTime || '', fuampm: cur.fuAmpm || '' };
-    return { dispo:'', status:'', outcome:'', futype:'', fudate:'', futime:'', fuampm:'' };
+    if (cur && (cur.dispo || cur.outcome)) return { manual: cur.manual || '', dispo: cur.dispo || '', status: cur.leadStatus || '', outcome: cur.outcome || '', futype: cur.fuType || '', fudate: cur.fuDate || '', futime: cur.fuTime || '', fuampm: cur.fuAmpm || '' };
+    return { manual:'', dispo:'', status:'', outcome:'', futype:'', fudate:'', futime:'', fuampm:'' };
   }
   function soldKey(){ return 'sl_sold_' + curId; }
 function soldGet(){ try { return JSON.parse(localStorage.getItem(soldKey()) || '{}'); } catch(e){ return {}; } }
@@ -863,17 +868,18 @@ function soldDateChange(){
 }
 function dispoLoad(){
     var d = dispoRead();
+    var dm = $('d_manual'); if (dm) dm.value = d.manual || '';
     $('d_dispo').value = d.dispo || ''; $('d_status').value = d.status || ''; $('d_outcome').value = d.outcome || '';
     $('d_futype').value = d.futype || ''; $('d_fudate').value = d.fudate || '';
     $('d_futime').value = d.futime || ''; $('d_fuampm').value = d.fuampm || '';
     var w = $('dispoWho'); if (w) w.textContent = cur ? '— ' + (cur.name || '') : '';
-    dispoSummary();
+    dispoSummary(); dispoDates();
   }
   function dispoSave(){
     var k = dispoKey(); if (!k) return;
-    var d = { dispo: $('d_dispo').value, status: $('d_status').value, outcome: $('d_outcome').value, futype: $('d_futype').value, fudate: $('d_fudate').value, futime: $('d_futime').value, fuampm: $('d_fuampm').value, updated: new Date().toISOString() };
+    var d = { manual: ($('d_manual') || {}).value || '', dispo: $('d_dispo').value, status: $('d_status').value, outcome: $('d_outcome').value, futype: $('d_futype').value, fudate: $('d_fudate').value, futime: $('d_futime').value, fuampm: $('d_fuampm').value, updated: new Date().toISOString() };
     try { localStorage.setItem(k, JSON.stringify(d)); } catch(e){}
-    dispoSummary();
+    dispoSummary(); dispoDates();
   }
   function dispoSummary(){
     var el = $('d_summary'); if (!el) return;
@@ -890,6 +896,35 @@ function dispoLoad(){
       parts.push(flabel + ': ' + when + (t ? ' · ' + t : ''));
     }
     el.textContent = parts.length ? 'Registrado: ' + parts.join(' · ') : 'Marca el resultado al terminar la llamada — alimenta tu reporte nocturno de accountability.';
+  }
+
+  function dispoDates(){
+    var la = $('d_lastapt'), na = $('d_nextapt'); if (!la || !na) return;
+    if (!cur){ la.textContent = 'ÚLTIMA CITA: —'; na.textContent = 'PRÓXIMA CITA: —'; return; }
+    var nm = ''; try { nm = aptNorm(cur.name || ''); } catch(e){}
+    var lastTxt = cur.appt || '', nextTxt = '';
+    try {
+      if (aptData && aptData.days && nm){
+        var now = new Date(), bestLast = null, bestNext = null;
+        Object.keys(aptData.days).forEach(function(dk){
+          (aptData.days[dk] || []).forEach(function(a){
+            if (aptNorm(a.clientMatch || a.name || '') !== nm) return;
+            var dt = new Date(dk + 'T00:00:00'); var mins = aptMins(a.time); if (mins < 99999) dt.setMinutes(mins);
+            var lbl = dk + (a.time ? ' · ' + a.time : '');
+            if (dt <= now){ if (!bestLast || dt > bestLast.dt) bestLast = { dt: dt, label: lbl }; }
+            else { if (!bestNext || dt < bestNext.dt) bestNext = { dt: dt, label: lbl }; }
+          });
+        });
+        if (bestLast) lastTxt = bestLast.label;
+        if (bestNext) nextTxt = bestNext.label;
+      }
+    } catch(e){}
+    if (!nextTxt){
+      var fd = ($('d_fudate') || {}).value, ft = ($('d_futime') || {}).value, fa = ($('d_fuampm') || {}).value;
+      if (fd) nextTxt = fd + (ft ? ' · ' + ft : '') + (fa ? ' ' + fa : '') + ' (seguimiento)';
+    }
+    la.textContent = 'ÚLTIMA CITA: ' + (lastTxt || '—');
+    na.textContent = 'PRÓXIMA CITA: ' + (nextTxt || 'sin fijar');
   }
 
   /* ===== FILLS EDITABLES: el anticipo se escribe directo en el guión =====
@@ -2062,7 +2097,7 @@ function aptGo(el){
 function aptLoad(){
   if (typeof fetch !== 'function') return;
   var url = 'apts.json?h=' + Math.floor(Date.now() / 3600000);
-  fetch(url, { cache: 'no-store' }).then(function(r){ return r.json(); }).then(function(j){ aptData = j; aptRender(); aptLayout(); }).catch(function(){});
+  fetch(url, { cache: 'no-store' }).then(function(r){ return r.json(); }).then(function(j){ aptData = j; aptRender(); aptLayout(); if (typeof dispoDates === 'function') dispoDates(); }).catch(function(){});
 }
 if (window.addEventListener) window.addEventListener('resize', aptLayout);
 aptLoad();
