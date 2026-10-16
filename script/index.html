@@ -110,6 +110,8 @@
   .qf input { width: 110px; padding: 4px 6px; font-size: 1em; font-family: inherit; }
   .qf select { padding: 4px 6px; font-size: 0.95em; font-family: inherit; max-width: 150px; }
   .qf input[type="date"] { width: 140px; }
+  .cpanel select, .ib-ctl select { height: 30px; padding: 4px 6px; font-size: 0.95em; font-family: inherit; }
+  .fpitem input { flex: 0 0 auto; }
   .urlgo { color: #0000ee; text-decoration: underline; font-weight: 700; white-space: nowrap; margin-left: 10px; cursor: pointer; flex-shrink: 0; }
   .urlgo:visited { color: #0000ee; }
   .qout { margin-top: 10px; font-size: 0.9em; border-top: 1px solid #0b3d91; padding-top: 8px; }
@@ -274,9 +276,9 @@
       <div class="ib-col">
         <div id="ibR"></div>
         <div class="ib-ctl">
-          <label>Mes de compra <select id="b_pmonth" onchange="qBarCtl()"><option value="">—</option><option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option><option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option><option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option></select></label>
-          <label>Año de compra <input id="b_pyr" type="number" min="0" oninput="qBarCtl()"></label>
-          <label>Noches/año <input id="b_nights" type="number" min="0" oninput="qBarCtl()"></label>
+          <label>MES DE COMPRA <select id="b_pmonth" onchange="qBarCtl()"><option value="">—</option><option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option><option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option><option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option></select></label>
+          <label>AÑO DE COMPRA <input id="b_pyr" type="number" min="0" oninput="qBarCtl()"></label>
+          <label>NOCHES/AÑO <input id="b_nights" type="number" min="0" oninput="qBarCtl()"></label>
         </div>
       </div>
     </div>
@@ -302,7 +304,7 @@
 <aside class="calcside calcarea">
   <div class="cbox calc-head"><h3>🧮 Calculadora <button onclick="qSync(cur)" title="Restablecer al cliente">↺</button></h3>
     <div class="qidn" id="q_idn" style="display:none"></div>
-    <div class="urlgrid"><label class="qf urlf"><span class="qlab">Pipeline</span><span class="urow"><input id="q_pipe" type="text" placeholder="https://app.pipelinecrm.com/people/…" onchange="qPipeSave()" oninput="qUrlLinks()"><a id="q_pipe_go" class="urlgo" href="#" target="_blank" rel="noopener" style="display:none">↗ Abrir</a></span></label><label class="qf urlf"><span class="qlab">Hoja PRE-CALL</span><span class="urow"><input id="q_sheet" type="text" placeholder="https://docs.google.com/spreadsheets/…" onchange="qPipeSave()" oninput="qUrlLinks()"><a id="q_sheet_go" class="urlgo" href="#" target="_blank" rel="noopener" style="display:none">↗ Abrir</a></span></label><label class="qf urlf"><span class="qlab">DocuSign</span><span class="urow"><input id="q_dsurl" type="text" placeholder="https://app.docusign.com/documents/details/…" onchange="qPipeSave()" oninput="qUrlLinks()"><a id="q_dsurl_go" class="urlgo" href="#" target="_blank" rel="noopener" style="display:none">↗ Abrir</a></span></label><label class="qf urlf"><span class="qlab">Carpeta</span><span class="urow"><input id="q_folder" type="text" placeholder="~/Desktop/deals/…" onchange="qPipeSave()" oninput="qUrlLinks()"><a id="q_folder_go" class="urlgo" href="#" onclick="qCopyFolderPath(this);return false;" style="display:none">📋 Copiar</a></span></label><label class="qf urlf"><span class="qlab">Préstamo</span><span class="urow"><input id="q_loannote" type="text" placeholder="Ej.: contrato firmado en la carpeta" onchange="qPipeSave()"></span></label></div>
+    <div class="urlgrid"><label class="qf urlf"><span class="qlab">PIPELINE</span><span class="urow"><input id="q_pipe" type="text" placeholder="https://app.pipelinecrm.com/people/…" onchange="qPipeSave()" oninput="qUrlLinks()"><a id="q_pipe_go" class="urlgo" href="#" target="_blank" rel="noopener" style="display:none">↗ Abrir</a></span></label><label class="qf urlf"><span class="qlab">HOJA PRE-CALL</span><span class="urow"><input id="q_sheet" type="text" placeholder="https://docs.google.com/spreadsheets/…" onchange="qPipeSave()" oninput="qUrlLinks()"><a id="q_sheet_go" class="urlgo" href="#" target="_blank" rel="noopener" style="display:none">↗ Abrir</a></span></label><label class="qf urlf"><span class="qlab">DocuSign</span><span class="urow"><input id="q_dsurl" type="text" placeholder="https://app.docusign.com/documents/details/…" onchange="qPipeSave()" oninput="qUrlLinks()"><a id="q_dsurl_go" class="urlgo" href="#" target="_blank" rel="noopener" style="display:none">↗ Abrir</a></span></label><label class="qf urlf"><span class="qlab">CARPETA</span><span class="urow"><input id="q_folder" type="text" placeholder="~/Desktop/deals/…" onchange="qPipeSave()" oninput="qUrlLinks()"><a id="q_folder_go" class="urlgo" href="#" onclick="qCopyFolderPath(this);return false;" style="display:none">📋 Copiar</a></span></label><label class="qf urlf"><span class="qlab">PRÉSTAMO</span><span class="urow"><input id="q_loannote" type="text" placeholder="Ej.: contrato firmado en la carpeta" onchange="qPipeSave()"></span></label></div>
     <div class="tmin" id="q_cli" style="margin-bottom:8px">Ningún cliente seleccionado</div>
     <div id="q_dtypebar" style="display:flex;gap:6px;margin-bottom:10px">
     <button id="q_btn_mtg" onclick="qSetDtype('MTG')" style="flex:1;padding:9px 6px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:0.95em;background:#0b3d91;color:#fff">🏦 Hipoteca</button>
@@ -310,17 +312,17 @@
   </div>
   </div>
   <div class="calcgrid"><div class="cpanel cpanel-trap">
-  <div class="qsec" style="margin-top:0">🏨 Situación del resort — la trampa actual</div>
+  <div class="qsec" style="margin-top:0">🏨 SITUACIÓN DEL RESORT — LA TRAMPA ACTUAL</div>
   <div id="q_contracts" style="display:none"></div>
-  <label class="qf mtgOnly">Hipoteca mensual <input id="q_mmo" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf">MF/año <input id="q_mf" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf">Esc % <input id="q_esc" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf mtgOnly">Año de compra <input id="q_pyr" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf">Mes de compra <select id="q_pmonth" onchange="qRecalc()"><option value="">—</option><option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option><option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option><option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option></select></label>
-  <label class="qf">Noches/año <input id="q_nights" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf mtgOnly">Plazo (meses) <input id="q_term" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf mtgOnly">Payoff <input id="q_payoff" type="number" min="0" oninput="qRecalc()"></label>
-  <div class="qsec">📈 Proyección — la trampa</div>
+  <label class="qf mtgOnly">HIPOTECA MENSUAL <input id="q_mmo" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">MF/AÑO <input id="q_mf" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">ESC % <input id="q_esc" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf mtgOnly">AÑO DE COMPRA <input id="q_pyr" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">MES DE COMPRA <select id="q_pmonth" onchange="qRecalc()"><option value="">—</option><option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option><option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option><option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option></select></label>
+  <label class="qf">NOCHES/AÑO <input id="q_nights" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf mtgOnly">PLAZO (MESES) <input id="q_term" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf mtgOnly">PAYOFF <input id="q_payoff" type="number" min="0" oninput="qRecalc()"></label>
+  <div class="qsec">📈 PROYECCIÓN — LA TRAMPA</div>
   <div class="qout">
     <div class="qsm">Próximos 30 días <b id="q_w30">—</b></div>
     <div class="qsm">Próximos 90 días <b id="q_w90">—</b></div>
@@ -331,7 +333,7 @@
     <div>Próximos 10 años <b id="q_t10">—</b></div>
     <div>Próximos 20 años <b id="q_t20">—</b></div>
   </div>
-  <div class="qsec">📊 Desglose de gastos</div>
+  <div class="qsec">📊 DESGLOSE DE GASTOS</div>
   <div class="qout">
     <div class="mtgOnly">Hipoteca mensual <b id="q_xmmo">—</b></div>
     <div>Mantenimiento mensual <b id="q_xmfmo">—</b></div>
@@ -344,11 +346,11 @@
     <div>Mantenimiento 10 años (<span id="q_xescp">8</span>% esc) <b id="q_xmf10">—</b></div>
     <div>Proyección 10 años <b id="q_xproj10">—</b></div>
   </div>
-  <div class="qsec mtgOnly">Desglose del préstamo</div>
+  <div class="qsec mtgOnly">DESGLOSE DEL PRÉSTAMO</div>
   <div class="tmin mtgOnly" id="q_mleft" style="margin-bottom:6px">— meses restantes</div>
-  <label class="qf mtgOnly">Monto del préstamo <input id="q_loan" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf mtgOnly">MONTO DEL PRÉSTAMO <input id="q_loan" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf mtgOnly">APR % <input id="q_aapr" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf mtgOnly">Meses <input id="q_mos" type="number" min="1" max="120" oninput="qRecalc()"></label>
+  <label class="qf mtgOnly">MESES <input id="q_mos" type="number" min="1" max="120" oninput="qRecalc()"></label>
   <div class="qout mtgOnly">
     <div>Total pagado <b id="q_paid">—</b></div>
     <div>Capital <b id="q_prin">—</b></div>
@@ -360,33 +362,35 @@
   </div>
   </div>
     <div class="notesCol"><div class="cpanel cpanel-fee">
-  <div class="qsec" style="margin-top:0">💰 Mi fee y pagos</div>
+  <div class="qsec" style="margin-top:0">💰 MI FEE Y PAGOS</div>
   <div id="q_sheetfeebox" style="display:none;background:#fef2f2;border:1px solid #f0b4b4;border-radius:6px;padding:10px 12px;margin-bottom:10px">
-    <div class="qsec" style="margin-top:0;color:#b91c1c">🔴 Fee deed-back — desde la hoja PRE-CALL</div>
-    <label class="qf">Fee (desde la hoja PRE-CALL) <input id="q_sheetfee" type="number" min="0" oninput="qRecalc()"></label>
-    <label class="qf">Anticipo (desde la hoja) <input id="q_sheetdown" type="number" min="0" oninput="qRecalc()"></label>
+    <div class="qsec" style="margin-top:0;color:#b91c1c">🔴 FEE DEED-BACK — DESDE LA HOJA PRE-CALL</div>
+    <label class="qf">FEE (DESDE LA HOJA PRE-CALL) <input id="q_sheetfee" type="number" min="0" oninput="qRecalc()"></label>
+    <label class="qf">ANTICIPO (DESDE LA HOJA) <input id="q_sheetdown" type="number" min="0" oninput="qRecalc()"></label>
     <div class="qsm">En deed-back el fee sale de la hoja PRE-CALL, no de la fórmula del 47%. Editar estos valores corrige el fee y los pagos.</div>
     <div id="q_paysched" class="qsm" style="display:none;margin-top:6px;font-weight:600;color:#7f1d1d"></div>
   </div>
-  <label class="qf">Nuestra tarifa <select id="q_feepct" onchange="qFeePct()" style="padding:4px;font-size:0.95em;font-family:inherit;"><option value="30">30%</option><option value="35">35%</option><option value="40">40%</option><option value="45">45%</option><option value="46">46%</option><option value="47" selected>47%</option><option value="48">48%</option><option value="49">49%</option><option value="50">50%</option><option value="55">55%</option><option value="60">60%</option></select> <input id="q_fee" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">NUESTRA TARIFA <select id="q_feepct" onchange="qFeePct()" style="padding:4px;font-size:0.95em;font-family:inherit;"><option value="30">30%</option><option value="35">35%</option><option value="40">40%</option><option value="45">45%</option><option value="46">46%</option><option value="47" selected>47%</option><option value="48">48%</option><option value="49">49%</option><option value="50">50%</option><option value="55">55%</option><option value="60">60%</option></select> <input id="q_fee" type="number" min="0" oninput="qRecalc()"></label>
   <div class="qsm" id="q_feesug" style="margin:-2px 0 8px"></div>
-  <label class="qf">Forma de pago <select id="q_paym" onchange="qRecalc()">
+  <label class="qf">FORMA DE PAGO <select id="q_paym" onchange="qRecalc()">
     <option value="ach">ACH</option>
     <option value="check">CHECK</option>
     <option value="cc">CC (+3%)</option>
     <option value="ucfs">UCFS</option>
-    <option value="equity">EQUITY</option>
+    <option value="equity">Equity</option>
     <option value="uga">UGA</option>
   </select></label>
-  <label class="qf">Anticipo <span><select id="q_downt" onchange="qRecalc()" style="padding:4px;font-size:0.95em;font-family:inherit;"><option value="dol">$</option><option value="pct">%</option></select> <input id="q_down" type="number" min="0" oninput="qRecalc()" style="width:90px"></span></label>
-  <label class="qf">Pago/mes <input id="q_pmt" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf">APR financ. % <input id="q_fapr" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf">Meses financ. <input id="q_fmo" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">ANTICIPO <span><select id="q_downt" onchange="qRecalc()" style="padding:4px;font-size:0.95em;font-family:inherit;"><option value="dol">$</option><option value="pct">%</option></select> <input id="q_down" type="number" min="0" oninput="qRecalc()" style="width:90px"></span></label>
+  <label class="qf">PAGO/MES <input id="q_pmt" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">APR FINANC. % <input id="q_fapr" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">MESES FINANC. <select id="q_fmo" onchange="qRecalc()"><option value="6">6</option><option value="12">12</option><option value="18">18</option><option value="24">24</option><option value="30">30</option><option value="36" selected>36</option><option value="42">42</option><option value="48">48</option><option value="54">54</option><option value="60">60</option></select></label>
   <div class="qout">
     <div>Total <b id="q_ftot">—</b></div>
     <div>Saldo <b id="q_bal">—</b></div>
     <div>Ahorro 10 años <b id="q_s10">—</b></div>
     <div>Mensual <b id="q_mo">—</b></div>
+    <div>TOTAL DE PAGOS <b id="q_ftpay">—</b></div>
+    <div>INTERÉS TOTAL <b id="q_ftint">—</b></div>
     <div>Meses necesarios <b id="q_mosn">—</b></div>
     <div class="qterms">
       <div><span>12 meses</span><b id="q_t12">—</b></div>
@@ -396,14 +400,14 @@
     <div>Comisión <b id="q_comm">—</b></div>
   </div>
   <div id="q_dates" style="display:none;margin-top:10px">
-    <label class="qf">Fecha del anticipo <input id="q_ddate" type="date" onchange="qRecalc()"></label>
-    <label class="qf">Fecha 1er pago <input id="q_pdate" type="date" onchange="qRecalc()"></label>
+    <label class="qf">FECHA DEL ANTICIPO <input id="q_ddate" type="date" onchange="qRecalc()"></label>
+    <label class="qf">FECHA 1ER PAGO <input id="q_pdate" type="date" onchange="qRecalc()"></label>
     <div>Comisión lista el <b id="q_cdate">—</b></div>
   </div>
 
   </div>
   <div class="cpanel" id="notesSection">
-  <div class="qsec" style="margin-top:0">📝 Notas — historial <span class="tmin" id="notesWho"></span></div>
+  <div class="qsec" style="margin-top:0">📝 NOTAS — HISTORIAL <span class="tmin" id="notesWho"></span></div>
   <div class="notesTabs"><button id="notesTabClient" class="on" onclick="notesSetView('client')">Este cliente</button><button id="notesTabAll" onclick="notesSetView('all')">Todas</button></div>
   <textarea id="notesArea" placeholder="Escribe una nota nueva y pulsa Guardar nota — queda guardada con la fecha y hora de hoy."></textarea>
   <button id="notesAddBtn" onclick="notesAdd()">💾 Guardar nota</button>
@@ -414,7 +418,7 @@
   </div>
   </div>
   <div class="calcgrid"><div class="cpanel">
-  <div class="qsec" style="margin-top:0">Tareas del deal</div>
+  <div class="qsec" style="margin-top:0">TAREAS DEL DEAL</div>
   <div class="qtasks">
     <label><input type="checkbox" id="qt_email" onchange="qTaskSave()"> <a id="qt_emailL" href="#">Enviar correo</a></label>
     <label><input type="checkbox" id="qt_text" onchange="qTaskSave()"> <span id="qt_textT" onclick="qCopyText()" style="text-decoration:underline;cursor:pointer">Enviar texto (toca para copiar)</span></label>
@@ -430,7 +434,7 @@
   </div>
   </div>
     <div class="cpanel">
-  <div class="qsec" style="margin-top:0">📎 Documentos</div>
+  <div class="qsec" style="margin-top:0">📎 DOCUMENTOS</div>
   <div class="tmin" style="margin-bottom:6px">Se guardan solo en este navegador (unos pocos MB máximo).</div>
   <input type="file" id="q_docfile" multiple style="display:none" onchange="qDocAdd(this)">
   <div><button onclick="document.getElementById('q_docfile').click()" style="padding:6px 14px;font-size:0.9em;background:#0b3d91;color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Subir documentos</button></div>
@@ -441,38 +445,38 @@
 
 <div class="calcgrid"><div class="cpanel">
 <div class="qsec" style="margin-top:0">✔ SCRIPT STAGES — COVERED</div>
-<div class="fpitem"><label><input type="checkbox" id="st1" onchange="qStSave()"><span>confirm nights per year</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="st2" onchange="qStSave()"><span>price per night take to semana roja</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="st1" onchange="qStSave()"><span>Confirm Nights Per Year</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="st2" onchange="qStSave()"><span>Price Per Night → Semana Roja</span></label></div>
 <div class="fpitem"><label><input type="checkbox" id="st3" onchange="qStSave()"><span>investiganos.com</span></label></div>
 <div class="fpitem"><label><input type="checkbox" id="st4" onchange="qStSave()"><span>Research</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="st5" onchange="qStSave()"><span>le impida seguir adelante con nosotros hoy mismo? "</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="st5" onchange="qStSave()"><span>¿Le impide seguir adelante con nosotros hoy mismo?</span></label></div>
 <div class="fpitem"><label><input type="checkbox" id="st6" onchange="qStSave()"><span>99%</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="st7" onchange="qStSave()"><span>Negotiatons</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="st8" onchange="qStSave()"><span>NAVIGATE</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="st9" onchange="qStSave()"><span>CHANGE LANG</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="st7" onchange="qStSave()"><span>Negotiations</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="st8" onchange="qStSave()"><span>Navigate</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="st9" onchange="qStSave()"><span>Change Language</span></label></div>
 </div>
 <div class="cpanel">
 <div class="qsec" style="margin-top:0">✔ PHYSICAL</div>
-<div class="fpitem"><label><input type="checkbox" id="ph1" onchange="qPhSave()"><span>PRE CALL</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph2" onchange="qPhSave()"><span>PRE CALL SHEET</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph3" onchange="qPhSave()"><span>/ SCRIPT and/or JSON</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph4" onchange="qPhSave()"><span>PREPARE DOCUSIGN</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph5" onchange="qPhSave()"><span>CHECK OFF SCRIPT STAGES</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph6" onchange="qPhSave()"><span>THE CLOSE</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph7" onchange="qPhSave()"><span>ASTRO-AUTO CALCULATES PRICE IF DEED BACK LINK TO THAT SPOT IN THE DEED BACK SHEET  AND IF MTG .47 + 299 =</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph8" onchange="qPhSave()"><span>AUTO CALCULATE PAYMENTS  DROPDOWN TERM AND 19.99% DEFAULT</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph1" onchange="qPhSave()"><span>Pre-Call</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph2" onchange="qPhSave()"><span>Pre-Call Sheet</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph3" onchange="qPhSave()"><span>Script / JSON</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph4" onchange="qPhSave()"><span>Prepare DocuSign</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph5" onchange="qPhSave()"><span>Check Off Script Stages</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph6" onchange="qPhSave()"><span>The Close</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph7" onchange="qPhSave()"><span>Astro — Calculate Price</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph8" onchange="qPhSave()"><span>Auto-Calculate Payments</span></label></div>
 <div class="fpitem"><label><input type="checkbox" id="ph9" onchange="qPhSave()"><span>UCFS Applied</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph10" onchange="qPhSave()"><span>Verific Call UCFS</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph11" onchange="qPhSave()"><span>Docusign</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph12" onchange="qPhSave()"><span>IMAGE ID</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph13" onchange="qPhSave()"><span>IMAGE CHECK</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph14" onchange="qPhSave()"><span>CRM UPDATE</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph15" onchange="qPhSave()"><span>REVIEW SIG DOC</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph16" onchange="qPhSave()"><span>REVIEW LOAN APP</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph17" onchange="qPhSave()"><span>POST SALE</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph18" onchange="qPhSave()"><span>REVIEW CRM</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph19" onchange="qPhSave()"><span>POST DEAL CHAT</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph20" onchange="qPhSave()"><span>REVIEW POST</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph10" onchange="qPhSave()"><span>UCFS Verification Call</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph11" onchange="qPhSave()"><span>DocuSign</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph12" onchange="qPhSave()"><span>Image ID</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph13" onchange="qPhSave()"><span>Image Check</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph14" onchange="qPhSave()"><span>CRM Update</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph15" onchange="qPhSave()"><span>Review Signed Documents</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph16" onchange="qPhSave()"><span>Review Loan Application</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph17" onchange="qPhSave()"><span>Post-Sale</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph18" onchange="qPhSave()"><span>Review CRM</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph19" onchange="qPhSave()"><span>Post-Deal Chat</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph20" onchange="qPhSave()"><span>Review Post</span></label></div>
 </div>
 </div>
 
@@ -717,7 +721,7 @@ var BUILTIN_CLIENTS = [
 {"appt":"Fri Oct 16 9:00 PM","apr":0,"ca":"","email":"","esc":8,"fee":0,"folderPath":"~/Desktop/deals/Elvin Roman y Yanira Rivera/","id":"c-roman-1016","loc":"Davenport, FL","mf":0,"mmo":0,"name":"Elvin Roman / Yanira Rivera","notes":"Deuda en titulo CRM: $17K (sin verificar) \u00b7 Wyndham, Davenport FL \u00b7 cita Fri Oct 16 9:00-10:30 PM \u00b7 se cruza con Eduardo Martinez 7:30-10:00 PM","payoff":0,"phone":"17872098262","pipelineUrl":"https://app.pipelinecrm.com/people/1310403272","pyr":0,"resort":"Wyndham","term":0},
 {"appt":"Sat Oct 17 6:00 PM","apr":0,"ca":"Eli Flores","dtype":"DB","email":"","esc":8,"fee":0,"folderPath":"~/Desktop/deals/Gilberto Yciano y Maria Yciano/","id":"c-yciano-1017","loc":"Bronx, NY","mf":0,"mmo":0,"name":"Gilberto Yciano / Maria Yciano","notes":"DEED-BACK prioridad (CRM: DEED BACK APPOINTMENT, deuda $0) \u00b7 Westgate, Bronx NY \u00b7 CA Eli Flores \u00b7 cita Sat Oct 17 6:00-8:00 PM","payoff":0,"phone":"16465494938","phone2":"16462067938","pipelineUrl":"https://app.pipelinecrm.com/people/1310403497","pyr":0,"resort":"Westgate","term":0},
 {"appt":"Sat Oct 17 8:00 PM","apr":0,"ca":"","email":"","esc":8,"fee":0,"folderPath":"~/Desktop/deals/Crescencio Claro Dominguez Perez y Maria Teresa Sori/","id":"c-crescencio-1017","loc":"Hialeah, FL","mf":0,"mmo":0,"name":"Crescencio Claro Dominguez Perez y Maria Teresa Sori","notes":"Hialeah, FL \u00b7 cita Sat Oct 17 8:00-10:30 PM \u00b7 existe To-Do 'DeedBack y FU' en CRM \u2014 deed-back SIN verificar \u00b7 resort y cifras sin confirmar","payoff":0,"phone":"17863338454","pipelineUrl":"https://app.pipelinecrm.com/people/1310403860","pyr":0,"resort":"","term":0},
-{"appt":"Fri Oct 16 12:00 PM","apr":0,"ca":"","email":"","esc":8,"fee":0,"folderPath":"~/Desktop/deals/Dora I de los santos/","id":"c-dora-1016","loc":"Miami, FL","mf":0,"mmo":0,"name":"Dora I de los santos","notes":"Marriott, Miami FL \u00b7 cita Fri Oct 16 12:00 PM \u00b7 owner en CRM: Jesse Rivera \u00b7 el apellido se renderiza con variantes en CRM (de los Santos Feliz / Marin / Almanzar / Felicia Nunez) \u2014 confirmar nombre completo en la llamada \u00b7 cifras sin verificar","payoff":0,"phone":"13052832729","pyr":0,"resort":"Marriott","term":0},
+{"appt":"Fri Oct 16 12:00 PM","apr":0,"ca":"","email":"","esc":8,"fee":0,"folderPath":"~/Desktop/deals/Dora I de los santos/","id":"c-dora-1016","loc":"Miami, FL","mf":0,"mmo":0,"name":"Dora I De Los Santos","notes":"Marriott, Miami FL \u00b7 cita Fri Oct 16 12:00 PM \u00b7 owner en CRM: Jesse Rivera \u00b7 el apellido se renderiza con variantes en CRM (de los Santos Feliz / Marin / Almanzar / Felicia Nunez) \u2014 confirmar nombre completo en la llamada \u00b7 cifras sin verificar","payoff":0,"phone":"13052832729","pyr":0,"resort":"Marriott","term":0},
 {"appt":"Sat Oct 17 2:00 PM","apr":0,"ca":"Jesse Rivera","email":"","esc":8,"fee":0,"folderPath":"~/Desktop/deals/Edwin Arciniegas y Karen Molina/","id":"c-arciniegas-1017","loc":"San Jose, CA","mf":0,"mmo":0,"name":"Edwin Arciniegas / Karen Molina","notes":"Deuda en titulo CRM: $25,000 (sin verificar) \u00b7 Bluegreen, San Jose CA \u00b7 CA Jesse Rivera \u00b7 cita Sat Oct 17 2:00 PM","payoff":0,"phone":"16695886291","pyr":0,"resort":"Bluegreen","term":0},
 {"appt":"Sat Oct 17 4:30 PM","apr":0,"ca":"","email":"","esc":8,"fee":0,"folderPath":"~/Desktop/deals/Jose Romo y Diana Romo/","id":"c-romo-1017","loc":"Edinburg, TX","mf":0,"mmo":0,"name":"Jose Romo / Diana Romo","notes":"Deuda en titulo CRM: $15,000 (sin verificar) \u00b7 Westgate, Edinburg TX \u00b7 cita Sat Oct 17 4:30-7:00 PM","payoff":0,"phone":"19566810464","pyr":0,"resort":"Westgate","term":0},
 {"appt":"Sun Oct 18 1:00 PM","apr":0,"ca":"","email":"","esc":8,"fee":0,"folderPath":"~/Desktop/deals/Modesta Vega Dominguez/","id":"c-vega-1018","loc":"Elgin, IL","mf":0,"mmo":0,"name":"Modesta Vega Dominguez","notes":"Deuda en titulo CRM: $40,000 (sin verificar) \u00b7 Holiday Inn/Orange Lakes, Elgin IL \u00b7 cita Sun Oct 18 1:00-3:30 PM \u00b7 en renders del CRM tambien aparece Luis Vega","payoff":0,"phone":"18473131840","pyr":0,"resort":"Holiday Inn/Orange Lakes","term":0},
@@ -1099,6 +1103,7 @@ function qSync(c){
   $('q_fee').value = c && c.fee ? c.fee : ''; $('q_down').value = c ? (c.down || '') : '';
   $('q_paym').value = c ? (c.paymethod || 'ach') : 'ach';
   $('q_fapr').value = (c && c.fapr > 0) ? c.fapr : 19.99; $('q_fmo').value = (c && c.fmo > 0) ? c.fmo : 36;
+  if (!$('q_fmo').value) $('q_fmo').value = '36';
   $('q_pmt').value = c ? (c.pmtmo || '') : '';
   $('q_downt').value = c ? (c.downt || 'dol') : 'dol';
   $('q_ddate').value = c ? (c.downdate || '') : ''; $('q_pdate').value = c ? (c.pmtdate || '') : '';
@@ -1158,7 +1163,7 @@ function qDocDel(i){
 }
 function qRecalc(){
   var qdEl = $('q_dates'); if (qdEl) qdEl.style.display = ($('q_paym').value === 'uga') ? '' : 'none';
-  if (!cur){ ['q_w30','q_w90','q_w6','q_t1','q_t3','q_t5','q_t10','q_t20','q_ftot','q_bal','q_s10','q_mo','q_mosn','q_t12','q_t24','q_t36','q_comm','q_cdate','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct','q_xmmo','q_xmfmo','q_xtotmo','q_xmoyr','q_xmfyr','q_xtotyr','q_xmo10','q_xmf10','q_xproj10','q_xnight'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— meses restantes'; var fe0 = $('q_feesug'); if (fe0) fe0.textContent = ''; return; }
+  if (!cur){ ['q_w30','q_w90','q_w6','q_t1','q_t3','q_t5','q_t10','q_t20','q_ftot','q_bal','q_s10','q_mo','q_ftpay','q_ftint','q_mosn','q_t12','q_t24','q_t36','q_comm','q_cdate','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct','q_xmmo','q_xmfmo','q_xtotmo','q_xmoyr','q_xmfyr','q_xtotyr','q_xmo10','q_xmf10','q_xproj10','q_xnight'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— meses restantes'; var fe0 = $('q_feesug'); if (fe0) fe0.textContent = ''; return; }
   var mmo = qIsDB() ? 0 : qNum('q_mmo'), mf = qNum('q_mf'), esc = qNum('q_esc'), payoff = qNum('q_payoff');
   var pyrIn = parseInt(($('q_pyr').value || '').replace(/\D/g, ''), 10) || 0;
   var pyr = pyrIn > 0 ? pyrIn : 2023; // hidden default for math only — field stays blank
@@ -1214,6 +1219,9 @@ function qRecalc(){
   $('q_bal').textContent = feeKnown ? fmtD(bal) : '—';
   $('q_s10').textContent = feeKnown ? fmtD(s10) : '—';
   $('q_mo').textContent = (feeKnown && fmo > 0) ? fmtD(amort(bal, fapr, fmo)) + '/mo' : '—';
+  if (feeKnown && bal > 0 && fmo > 0){ var tpay = amort(bal, fapr, fmo) * fmo; $('q_ftpay').textContent = fmtC(tpay); $('q_ftint').textContent = fmtC(tpay - bal); }
+  else if (feeKnown && bal <= 0){ $('q_ftpay').textContent = fmtC(ftot); $('q_ftint').textContent = fmtC(0); }
+  else { $('q_ftpay').textContent = '—'; $('q_ftint').textContent = '—'; }
   var pmtEl = $('q_pmt');
   if (feeKnown && !pmtEl.value) pmtEl.value = ftot < 10000 ? 299 : 399;
   var qpmt = qNum('q_pmt'), mosn = '—';
@@ -1724,14 +1732,14 @@ document.addEventListener('keydown', function(e){ if (e.key === 'Escape'){ notes
   <div class="lcBox">
     <div class="lcHead"><span>🏦 Calculadora de préstamo — <span id="lcWho">General</span></span><button onclick="lcClose()">✕ Cerrar</button></div>
     <div class="lcForm">
-      <label>Monto del préstamo<input id="lc_amt" type="number" min="0" oninput="lcCalc()"></label>
-      <label>Tasa de interés %<input id="lc_apr" type="number" min="0" step="0.01" oninput="lcCalc()"></label>
-      <label>Plazo del préstamo<span class="row2"><input id="lc_yrs" type="number" min="0" placeholder="años" oninput="lcCalc()"><input id="lc_mos" type="number" min="0" max="11" placeholder="meses" oninput="lcCalc()"></span></label>
-      <label>Fecha de inicio<span class="row2"><select id="lc_smo" onchange="lcCalc()"><option value="1">Ene</option><option value="2">Feb</option><option value="3">Mar</option><option value="4">Abr</option><option value="5">May</option><option value="6">Jun</option><option value="7">Jul</option><option value="8">Ago</option><option value="9">Sep</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Dic</option></select><input id="lc_syr" type="number" placeholder="year" oninput="lcCalc()"></span></label>
-      <label>Cargo de originación<span class="row2"><input id="lc_ofee" type="number" min="0" step="0.01" oninput="lcCalc()"><select id="lc_oft" onchange="lcCalc()"><option value="pct">%</option><option value="dol">$</option></select></span></label>
-      <label>Manejo del cargo<select id="lc_ofp" onchange="lcCalc()"><option value="deduct">descontado del préstamo</option><option value="upfront">pagado por adelantado</option></select></label>
-      <label>Seguro $/mes<input id="lc_ins" type="number" min="0" step="0.01" oninput="lcCalc()"></label>
-      <label style="grid-column:1/-1;border-top:1px solid #ddd;padding-top:8px;margin-top:4px;"><b>Payoff hoy</b> — pagos hechos hasta ahora<input id="lc_made" type="number" min="0" placeholder="# de pagos hechos" oninput="lcCalc()"></label>
+      <label>MONTO DEL PRÉSTAMO<input id="lc_amt" type="number" min="0" oninput="lcCalc()"></label>
+      <label>TASA DE INTERÉS %<input id="lc_apr" type="number" min="0" step="0.01" oninput="lcCalc()"></label>
+      <label>PLAZO DEL PRÉSTAMO<span class="row2"><input id="lc_yrs" type="number" min="0" placeholder="años" oninput="lcCalc()"><input id="lc_mos" type="number" min="0" max="11" placeholder="meses" oninput="lcCalc()"></span></label>
+      <label>FECHA DE INICIO<span class="row2"><select id="lc_smo" onchange="lcCalc()"><option value="1">Ene</option><option value="2">Feb</option><option value="3">Mar</option><option value="4">Abr</option><option value="5">May</option><option value="6">Jun</option><option value="7">Jul</option><option value="8">Ago</option><option value="9">Sep</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Dic</option></select><input id="lc_syr" type="number" placeholder="year" oninput="lcCalc()"></span></label>
+      <label>CARGO DE ORIGINACIÓN<span class="row2"><input id="lc_ofee" type="number" min="0" step="0.01" oninput="lcCalc()"><select id="lc_oft" onchange="lcCalc()"><option value="pct">%</option><option value="dol">$</option></select></span></label>
+      <label>MANEJO DEL CARGO<select id="lc_ofp" onchange="lcCalc()"><option value="deduct">descontado del préstamo</option><option value="upfront">pagado por adelantado</option></select></label>
+      <label>SEGURO $/MES<input id="lc_ins" type="number" min="0" step="0.01" oninput="lcCalc()"></label>
+      <label style="grid-column:1/-1;border-top:1px solid #ddd;padding-top:8px;margin-top:4px;"><b>PAYOFF HOY</b> — pagos hechos hasta ahora<input id="lc_made" type="number" min="0" placeholder="# de pagos hechos" oninput="lcCalc()"></label>
     </div>
     <div class="lcRes" id="lcRes"></div>
     <div class="lcTabs"><button id="lcTabA" class="on" onclick="lcTab('a')">Tabla anual</button><button id="lcTabM" onclick="lcTab('m')">Tabla mensual</button></div>
