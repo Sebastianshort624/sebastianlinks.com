@@ -76,6 +76,9 @@
   .objsrch:focus { outline: 2px solid #0b3d91; border-color: #0b3d91; }
   /* Client fact highlighting: green=client facts, blue=calculated figures, yellow=missing */
   .hl-g { color: #0a7a2e; font-weight: bold; }
+  [data-fill] { background:#dcfce7; color:#14532d; font-weight:700; border-bottom:2px solid #22c55e; border-radius:3px; padding:0 3px; }
+  [data-fill="down"] { cursor:text; }
+  [data-fill="down"]:focus { outline:2px solid #22c55e; background:#bbf7d0; }
   .hl-b { color: #0b3d91; font-weight: bold; }
   .hl-m { background: #fff3cd; color: #856404; font-weight: bold; padding: 0 4px; border-radius: 3px; }
   .jumpline { background: #fff; padding: 10px 0; margin-bottom: 10px; border-bottom: 2px solid #0b3d91; }
@@ -657,6 +660,12 @@
   <div class="clock">1:15–1:30 · buenas noticias tras la espera <span class="tmin">(5 min)</span> → preparar el acuerdo <span class="tmin">(10 min)</span> <span class="stimer"><button id="sb6" onclick="toggleStage(6)">▶ 15:00</button> <button class="rs" onclick="resetStage(6)" title="Reiniciar">↺</button></span></div>
   <div class="plink">🔗 <a href="https://account.docusign.com">DocuSign</a> · <a href="https://youtu.be/UQqgr5Q0r1I">Cómo enviar un DocuSign (video)</a></div>
   <ol class="liners">
+    <li><span class="sline first"><span class="grp">Resumen financiero — al volver de la espera:</span></span><ol>
+        <li><span class="sline first">"Bueno, <span data-fill="name">_________</span>, ya revisé tu situación."</span></li>
+        <li><span class="sline first">"Tu tiempo compartido con <span data-fill="resort">_________</span> representa un costo proyectado de <b><span class="sumF" data-fill="total10">$________</span></b> durante los próximos diez años."</span></li>
+        <li><span class="sline first">"El costo total de nuestro servicio sería <b><span class="sumF" data-fill="fee">$________</span></b>."</span></li>
+        <li><span class="sline first">"Eso representa un ahorro neto proyectado de <b><span class="sumF" data-fill="savings">$________</span></b>, sujeto a que el caso se resuelva conforme a lo previsto."</span></li>
+      </ol></li>
     <li><span class="sline first"><span class="grp">The good news:</span></span><ol>
         <li><span class="sline first">"The approval team agrees with our assessment and has <b>agreed to take on your case</b>.</span><span class="sline cont">We do have a case manager that feels they can get <b>compensation</b> for the emotional and financial impact."</span></li>
         <li><span class="sline first">"Good news — there are two potential case managers that can take this case tomorrow.</span><span class="sline cont">One of them, she's <b>very experienced</b> at ___.</span><span class="sline cont">The other one, he's <b>amazing</b> at ___."</span></li>
@@ -761,6 +770,8 @@ function resetFills(){
   fillAll('[data-fill="total10"]', '$________');
   fillAll('[data-fill="ca"]', 'nuestro analista de casos');
   fillAll('[data-fill="resort"]', '_________');
+  fillAll('[data-fill="name"]', '_________');
+  sumPend();
 }
 function mfTot(mf, r, n){ if (n <= 0) return 0; if (r <= 0) return mf * n; return mf * ((Math.pow(1 + r, n) - 1) / r); }
 function $(id){ return document.getElementById(id); }
@@ -826,6 +837,32 @@ function amort(pv, apr, n){ var r = apr / 100 / 12; if (!(r > 0)) return n > 0 ?
     }
     el.textContent = parts.length ? 'Registrado: ' + parts.join(' · ') : 'Marca el resultado al terminar la llamada — alimenta tu reporte nocturno de accountability.';
   }
+
+  /* ===== FILLS EDITABLES: el anticipo se escribe directo en el guión =====
+     Clic en cualquier monto de anticipo del guión, escribe, y al salir se actualiza en
+     todo el guión, entra a la calculadora (q_down) y se guarda en el registro del cliente. */
+  function fillsInit(){
+    var els = document.querySelectorAll('[data-fill="down"]');
+    for (var i = 0; i < els.length; i++){ els[i].setAttribute('contenteditable', 'true'); els[i].setAttribute('spellcheck', 'false'); els[i].title = 'Clic y escribe el monto — se actualiza en todo el guión y se guarda para este cliente'; }
+    document.addEventListener('input', function(ev){
+      var t = ev.target; if (!t || !t.getAttribute || t.getAttribute('data-fill') !== 'down') return;
+      var all = document.querySelectorAll('[data-fill="down"]');
+      for (var j = 0; j < all.length; j++) if (all[j] !== t) all[j].textContent = t.textContent;
+    });
+    document.addEventListener('keydown', function(ev){
+      var t = ev.target; if (t && t.getAttribute && t.getAttribute('data-fill') === 'down' && ev.key === 'Enter'){ ev.preventDefault(); t.blur(); }
+    });
+    document.addEventListener('blur', function(ev){
+      var t = ev.target; if (!t || !t.getAttribute || t.getAttribute('data-fill') !== 'down') return;
+      var num = parseFloat(String(t.textContent).replace(/[^0-9.]/g, ''));
+      if (!isNaN(num) && num > 0){
+        var qd = $('q_down'), qt = $('q_downt');
+        if (qd){ if (qt && qt.value !== 'dol') qt.value = 'dol'; qd.value = num; }
+      }
+      qRecalc();
+    }, true);
+  }
+  fillsInit();
 
 function pickClient(id){
   var cs = slClients(), c = null;
@@ -896,6 +933,7 @@ function qBarCtlSync(){
   b = $('b_pyr'); if (b && a !== b) b.value = $('q_pyr').value;
   b = $('b_nights'); if (b && a !== b) b.value = $('q_nights').value;
 }
+function sumPend(){ var els = document.querySelectorAll('.sumF'); for (var i = 0; i < els.length; i++) if (els[i].textContent === '$________') els[i].textContent = 'PENDIENTE DE CÁLCULO'; }
 function applyFills(c, n){
   fillAll('[data-fill="down"]', c.down > 0 ? fmtC(c.down) : '$________');
   fillAll('[data-fill="fee"]', n.feeKnown ? fmtC(n.fee) : '$________');
@@ -903,6 +941,8 @@ function applyFills(c, n){
   fillAll('[data-fill="total10"]', n.feeKnown ? fmtC(n.t10) : '$________');
   fillAll('[data-fill="ca"]', c.ca || 'nuestro analista de casos');
   fillAll('[data-fill="resort"]', c.resort || '_________');
+  fillAll('[data-fill="name"]', c.name ? c.name.replace(' / ', ' y ') : '_________');
+  sumPend();
 }
 function qNum(id){ var v = parseFloat($(id).value); return isNaN(v) ? 0 : v; }
 function qIdn(c){
