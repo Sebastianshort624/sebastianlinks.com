@@ -292,6 +292,7 @@
     <a href="#price-anchor">💰 Precio</a>
     <a href="#coversheet">📝 Contrato</a>
     <button id="soldBtn" type="button" onclick="soldToggle()">🤝 SOLD</button>
+    <select id="soldWhen" onchange="soldWhenChange()" title="¿Cuándo se vendió?" style="padding:4px 6px;font-weight:700;font-family:inherit;border-radius:6px;border:1px solid #7f1d1d;background:#fff7ed"><option value="">¿Cuándo?</option><option value="ON APT">ON APT</option><option value="AFTER APT">AFTER APT</option></select>
     <button id="quoteBtn" type="button" onclick="qQuoteHtml()">📄 Cotización</button>
     <span class="nv-timer" id="topbar">⏱ <span id="ot">1:30:00</span> <a href="#" id="obtn" onclick="toggleOverall();return false;">▶ Iniciar</a></span>
   </div>
@@ -843,6 +844,7 @@ function soldGet(){ try { return JSON.parse(localStorage.getItem(soldKey()) || '
 function soldSet(o){ try { localStorage.setItem(soldKey(), JSON.stringify(o)); } catch(e){} }
 function soldRender(){
   var st = soldGet(), on = !!st.on;
+  var sw = document.getElementById('soldWhen'); if (sw) sw.value = st.when || '';
   var b = document.getElementById('soldBtn'), strip = document.getElementById('soldStrip');
   if (b){ b.classList.toggle('on', on); b.textContent = on ? '✅ SOLD' : '🤝 SOLD'; }
   if (strip) strip.classList.toggle('on', on);
@@ -862,6 +864,14 @@ function soldToggle(){
     soldSet({on: 1, d: st.d || iso});
   }
   soldRender();
+}
+function soldWhenChange(){
+  var sw = document.getElementById('soldWhen'); if (!sw) return;
+  var st = soldGet(); st.when = sw.value;
+  if (sw.value && !st.on){
+    var t2 = new Date(); st.on = 1; st.d = st.d || (t2.getFullYear() + '-' + String(t2.getMonth() + 1).padStart(2, '0') + '-' + String(t2.getDate()).padStart(2, '0'));
+  }
+  soldSet(st); soldRender();
 }
 function soldDateChange(){
   var st = soldGet(); var d = document.getElementById('soldDate');
