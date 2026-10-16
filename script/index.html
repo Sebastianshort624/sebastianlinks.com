@@ -409,6 +409,16 @@
   <div class="cpanel" id="notesSection">
   <div class="qsec" style="margin-top:0">📝 NOTAS — HISTORIAL <span class="tmin" id="notesWho"></span></div>
   <div class="notesTabs"><button id="notesTabClient" class="on" onclick="notesSetView('client')">Este cliente</button><button id="notesTabAll" onclick="notesSetView('all')">Todas</button></div>
+  <div id="dispoBlock" style="border:1px solid #dbe4f0;border-radius:6px;padding:8px 10px;margin:0 0 10px;background:#f8fbff">
+  <div class="qsec" style="margin-top:0">🎯 DISPOSICIÓN · ESTADO · RESULTADO <span class="tmin" id="dispoWho"></span></div>
+  <label class="qf">DISPOSICIÓN <select id="d_dispo" onchange="dispoSave()"><option value="">Sin marcar</option><option value="activo">Activo</option><option value="en seguimiento">En seguimiento</option><option value="vendido">Vendido</option><option value="reprogramado">Reprogramado</option><option value="no interesado">No interesado</option><option value="no califica">No califica</option><option value="perdido">Perdido</option></select></label>
+  <label class="qf">ESTADO DEL LEAD <select id="d_status" onchange="dispoSave()"><option value="">Sin marcar</option><option value="nuevo">Nuevo</option><option value="contactado">Contactado</option><option value="en seguimiento">En seguimiento</option><option value="cerrado">Cerrado</option><option value="perdido">Perdido</option></select></label>
+  <label class="qf">RESULTADO DE LA LLAMADA <select id="d_outcome" onchange="dispoSave()"><option value="">Sin marcar</option><option value="SOLD">SOLD — Vendido</option><option value="FU">FU — Seguimiento</option><option value="RS">RS — Reprogramado</option><option value="NA">NA — No contestó</option><option value="NO">NO — No interesado</option><option value="NQ">NQ — No califica</option></select></label>
+  <label class="qf">PRÓXIMO SEGUIMIENTO <select id="d_futype" onchange="dispoSave()"><option value="">Sin seguimiento</option><option value="evento">Evento de 15 minutos</option><option value="tarea">Tarea</option></select></label>
+  <label class="qf">FECHA DEL SEGUIMIENTO <input id="d_fudate" type="date" onchange="dispoSave()"></label>
+  <label class="qf">HORA <span><input id="d_futime" type="time" onchange="dispoSave()" style="width:125px"> <select id="d_fuampm" onchange="dispoSave()" style="padding:4px;font-size:0.95em;font-family:inherit;"><option value="">AM/PM</option><option value="AM">AM</option><option value="PM">PM</option></select></span></label>
+  <div class="qsm" id="d_summary"></div>
+  </div>
   <textarea id="notesArea" placeholder="Escribe una nota nueva y pulsa Guardar nota — queda guardada con la fecha y hora de hoy."></textarea>
   <button id="notesAddBtn" onclick="notesAdd()">💾 Guardar nota</button>
   <div class="notesTools"><input id="notesSearch" type="text" placeholder="🔎 Buscar en las notas…" oninput="notesRender()"><input id="notesDate" type="date" onchange="notesRender()"><button class="notesClearBtn" onclick="notesClearFilters()">Limpiar filtros</button></div>
@@ -796,12 +806,49 @@ function qSetDtype(t){
   qApplyDtype(); qRecalc();
 }
 function amort(pv, apr, n){ var r = apr / 100 / 12; if (!(r > 0)) return n > 0 ? pv / n : 0; return pv * r / (1 - Math.pow(1 + r, -n)); }
+  /* ===== DISPOSICIÓN / ESTADO DEL LEAD / RESULTADO / SEGUIMIENTO por cliente ===== */
+  function dispoKey(){ return cur ? 'sl_dispo_' + cur.id : null; }
+  function dispoRead(){
+    try { var k = dispoKey(); var raw = k ? localStorage.getItem(k) : null; if (raw) return JSON.parse(raw); } catch(e){}
+    if (cur && (cur.dispo || cur.outcome)) return { dispo: cur.dispo || '', status: cur.leadStatus || '', outcome: cur.outcome || '', futype: cur.fuType || '', fudate: cur.fuDate || '', futime: cur.fuTime || '', fuampm: cur.fuAmpm || '' };
+    return { dispo:'', status:'', outcome:'', futype:'', fudate:'', futime:'', fuampm:'' };
+  }
+  function dispoLoad(){
+    var d = dispoRead();
+    $('d_dispo').value = d.dispo || ''; $('d_status').value = d.status || ''; $('d_outcome').value = d.outcome || '';
+    $('d_futype').value = d.futype || ''; $('d_fudate').value = d.fudate || '';
+    $('d_futime').value = d.futime || ''; $('d_fuampm').value = d.fuampm || '';
+    var w = $('dispoWho'); if (w) w.textContent = cur ? '— ' + (cur.name || '') : '';
+    dispoSummary();
+  }
+  function dispoSave(){
+    var k = dispoKey(); if (!k) return;
+    var d = { dispo: $('d_dispo').value, status: $('d_status').value, outcome: $('d_outcome').value, futype: $('d_futype').value, fudate: $('d_fudate').value, futime: $('d_futime').value, fuampm: $('d_fuampm').value, updated: new Date().toISOString() };
+    try { localStorage.setItem(k, JSON.stringify(d)); } catch(e){}
+    dispoSummary();
+  }
+  function dispoSummary(){
+    var el = $('d_summary'); if (!el) return;
+    var outcome = $('d_outcome').value, futype = $('d_futype').value, fudate = $('d_fudate').value, futime = $('d_futime').value, fuampm = $('d_fuampm').value;
+    var parts = [];
+    if (outcome) parts.push('Resultado: ' + outcome);
+    if (futype && fudate) {
+      var when = fudate;
+      try { when = new Date(fudate + 'T12:00:00').toLocaleDateString('es', { weekday:'short', day:'numeric', month:'short' }); } catch(e){}
+      var t = '';
+      if (futime) { var hm = futime.split(':'); var h = parseInt(hm[0], 10); var ap = h >= 12 ? 'PM' : 'AM'; var h12 = h % 12; if (h12 === 0) h12 = 12; t = h12 + ':' + hm[1] + ' ' + ap; }
+      else if (fuampm) t = fuampm;
+      parts.push((futype === 'evento' ? 'Evento' : 'Tarea') + ': ' + when + (t ? ' · ' + t : ''));
+    }
+    el.textContent = parts.length ? 'Registrado: ' + parts.join(' · ') : 'Marca el resultado al terminar la llamada — alimenta tu reporte nocturno de accountability.';
+  }
+
 function pickClient(id){
   var cs = slClients(), c = null;
   for (var i = 0; i < cs.length; i++) if (cs[i].id === id || (cs[i].id == null && cs[i].name === id)) c = cs[i];
   cur = c;
   if (!c){ $('cbar').style.display = 'none'; resetFills(); qSync(null); notesBadge(); return; }
-  qSync(c); notesBadge();
+  qSync(c); notesBadge(); dispoLoad();
 }
 function renderBar(c, n){
   var bar = $('cbar');
