@@ -414,7 +414,7 @@
   <label class="qf">DISPOSICIÓN <select id="d_dispo" onchange="dispoSave()"><option value="">Sin marcar</option><option value="activo">Activo</option><option value="en seguimiento">En seguimiento</option><option value="vendido">Vendido</option><option value="reprogramado">Reprogramado</option><option value="no interesado">No interesado</option><option value="no califica">No califica</option><option value="perdido">Perdido</option></select></label>
   <label class="qf">ESTADO DEL LEAD <select id="d_status" onchange="dispoSave()"><option value="">Sin marcar</option><option value="nuevo">Nuevo</option><option value="contactado">Contactado</option><option value="en seguimiento">En seguimiento</option><option value="cerrado">Cerrado</option><option value="perdido">Perdido</option></select></label>
   <label class="qf">RESULTADO DE LA LLAMADA <select id="d_outcome" onchange="dispoSave()"><option value="">Sin marcar</option><option value="SOLD">SOLD — Vendido</option><option value="FU">FU — Seguimiento</option><option value="RS">RS — Reprogramado</option><option value="NA">NA — No contestó</option><option value="NO">NO — No interesado</option><option value="NQ">NQ — No califica</option></select></label>
-  <label class="qf">PRÓXIMO SEGUIMIENTO <select id="d_futype" onchange="dispoSave()"><option value="">Sin seguimiento</option><option value="evento">Evento de 15 minutos</option><option value="tarea">Tarea</option></select></label>
+  <label class="qf">PRÓXIMO SEGUIMIENTO <select id="d_futype" onchange="dispoSave()"><option value="">Sin seguimiento</option><option value="evento">Evento de 15 minutos</option><option value="tarea">Tarea</option><option value="ca">Revisar con el CA</option></select></label>
   <label class="qf">FECHA DEL SEGUIMIENTO <input id="d_fudate" type="date" onchange="dispoSave()"></label>
   <label class="qf">HORA <span><input id="d_futime" type="time" onchange="dispoSave()" style="width:125px"> <select id="d_fuampm" onchange="dispoSave()" style="padding:4px;font-size:0.95em;font-family:inherit;"><option value="">AM/PM</option><option value="AM">AM</option><option value="PM">PM</option></select></span></label>
   <div class="qsm" id="d_summary"></div>
@@ -838,7 +838,8 @@ function amort(pv, apr, n){ var r = apr / 100 / 12; if (!(r > 0)) return n > 0 ?
       var t = '';
       if (futime) { var hm = futime.split(':'); var h = parseInt(hm[0], 10); var ap = h >= 12 ? 'PM' : 'AM'; var h12 = h % 12; if (h12 === 0) h12 = 12; t = h12 + ':' + hm[1] + ' ' + ap; }
       else if (fuampm) t = fuampm;
-      parts.push((futype === 'evento' ? 'Evento' : 'Tarea') + ': ' + when + (t ? ' · ' + t : ''));
+      var flabel = futype === 'evento' ? 'Evento' : (futype === 'ca' ? 'Revisar con el CA' + (cur && cur.ca ? ' (' + cur.ca + ')' : '') : 'Tarea');
+      parts.push(flabel + ': ' + when + (t ? ' · ' + t : ''));
     }
     el.textContent = parts.length ? 'Registrado: ' + parts.join(' · ') : 'Marca el resultado al terminar la llamada — alimenta tu reporte nocturno de accountability.';
   }
