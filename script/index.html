@@ -961,7 +961,7 @@ function renderBar(c, n){
       '<div><div class="ib-lab">Total anual</div><div class="ib-big">' + fmtC(totyr) + '</div></div>' +
       '<div><div class="ib-lab">Costo por noche</div><div class="ib-big">' + perNight + '</div></div></div>' + grid +
       '<a class="pagolink" href="#pago-transicion" onclick="var e=document.getElementById(\'pago-transicion\');var b=document.getElementById(\'pegbar\');window.scrollTo({top:e.getBoundingClientRect().top+window.scrollY-(b?b.offsetHeight:0)-10,behavior:\'smooth\'});return false;">Ahora bien, si no tienes más preguntas sobre nuestro proceso, lo siguiente que puedo explicarte son las diferentes formas en que la mayoría de las personas pagan por nuestros servicios.</a>' + beLine;
-  var beLine = (n && n.feeKnown && totyr > 0) ? '<div class="ib-line" style="margin-top:5px">🔁 Break-even: <b>~' + Math.round(n.fee / (totyr / 12)) + ' meses</b></div>' : '';
+  var beLine = (n && n.feeKnown && totyr > 0) ? '<div class="ib-line" style="margin-top:5px">🔁 Meses necesarios: <b>~' + Math.round(n.fee / (totyr / 12)) + ' meses</b></div>' : '';
   var monNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
   var compLine = (c.pyr > 0 || (c.pmonth >= 1 && c.pmonth <= 12)) ? '<div class="ib-line">Comprado: ' + ((c.pmonth >= 1 && c.pmonth <= 12) ? monNames[c.pmonth - 1] + (c.pyr > 0 ? ' ' : '') : '') + (c.pyr > 0 ? c.pyr : '') + '</div>' : '';
   $('ibR').innerHTML = '<div style="float:right;text-align:right;margin-left:12px"><div class="ib-lab">Costo por noche</div><div class="ib-big">' + perNight + '</div></div>' + '<div class="ib-resort">' + escH(c.resort || '—') + '</div>' +
