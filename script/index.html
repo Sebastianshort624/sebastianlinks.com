@@ -152,6 +152,7 @@
   .qidn { font-size: 0.85em; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #0b3d91; line-height: 1.55; overflow-wrap: break-word; word-wrap: break-word; }
   #pegbar { position: sticky; top: 0; z-index: 60; margin: 0 -32px 16px; }
   #pegHideBtn { display: none; }
+  #quoteBtn { background: #0b3d91; color: #fff; border: none; border-radius: 6px; padding: 4px 10px; font-weight: 700; cursor: pointer; font-family: inherit; }
   #pegShowBtn { display: none; position: fixed; top: 8px; right: 8px; z-index: 70; background: #111827; color: #fff; border: 1px solid #374151; border-radius: 8px; padding: 8px 12px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.4); }
   body.peg-hidden #pegShowBtn { display: block; }
   @media (max-width: 820px) {
@@ -291,6 +292,7 @@
     <a href="#price-anchor">💰 Precio</a>
     <a href="#coversheet">📝 Contrato</a>
     <button id="soldBtn" type="button" onclick="soldToggle()">🤝 SOLD</button>
+    <button id="quoteBtn" type="button" onclick="qQuoteHtml()">📄 Cotización</button>
     <span class="nv-timer" id="topbar">⏱ <span id="ot">1:30:00</span> <a href="#" id="obtn" onclick="toggleOverall();return false;">▶ Iniciar</a></span>
   </div>
   <div id="soldStrip"><span>✅ SOLD</span><span>📄 DocuSign firmado: <input type="date" id="soldDate" onchange="soldDateChange()"></span><span>💰 Mi comisión: <span class="soldComm" id="soldComm">$0.00</span></span></div>
@@ -1114,6 +1116,67 @@ function qUrlLinks(){
     if (fv) out.push('<a class="urlchip" href="#" onclick="qCopyFolderPath(this);return false;">📁 Carpeta 📋</a>');
     ch.innerHTML = out.join('');
   }
+}
+function qQuoteHtml(){
+  if (!cur){ alert('Selecciona un cliente primero.'); return; }
+  var LEGAL = { 'Westgate': 'Westgate Resorts, Ltd.', 'Exploria': 'Club Exploria, LLC', 'Wyndham': 'Wyndham Vacation Resorts, Inc.', 'Marriott': 'Marriott Ownership Resorts, Inc.', 'Hilton': 'Hilton Grand Vacations', 'Bluegreen': 'Bluegreen Vacations Corporation', 'Diamond': 'Diamond Resorts' };
+  var rname = cur.resort || '';
+  var legal = LEGAL[rname] || rname;
+  var payoff = qNum('q_payoff'), mmo = qIsDB() ? 0 : qNum('q_mmo'), mf = qNum('q_mf'), esc = qNum('q_esc') || 8, escR = esc / 100;
+  var term = qNum('q_term') || 120, pyr = qNum('q_pyr'), pmonth = qNum('q_pmonth');
+  var nowY = new Date().getFullYear();
+  var remMo = pyr > 0 ? Math.max(0, term - Math.max(0, (nowY - pyr) * 12)) : term;
+  var fee = qNum('q_fee');
+  if (qIsDB() && $('q_sheetfee') && $('q_sheetfee').value !== '' && qNum('q_sheetfee') > 0) fee = qNum('q_sheetfee');
+  var down = qNum('q_down'), fmo = qNum('q_fmo');
+  var moTxt = ($('q_mo') || {}).textContent || '';
+  function moPart(y){ return mmo * Math.min(12 * y, remMo); }
+  function mfPart(y){ return mfTot(mf, escR, y); }
+  var t10 = moPart(10) + mfPart(10), t20 = moPart(20) + mfPart(20);
+  var s10 = t10 - fee, s20 = t20 - fee;
+  var nights = qNum('q_nights'), totyr = mmo * 12 + mf;
+  var perNight = nights > 0 ? fmtC(totyr / nights) : '';
+  var monNames = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  var bought = (pyr > 0) ? ((pmonth >= 1 && pmonth <= 12) ? monNames[pmonth - 1] + ' de ' : '') + pyr : '';
+  var today = new Date().toLocaleDateString('es-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  var bem = 0;
+  if (fee > 0 && (mmo > 0 || mf > 0)){ var cum = 0, bmf = mf / 12; while (cum < fee && bem < 600){ bem++; cum += mmo + bmf * Math.pow(1.08, Math.floor((bem - 1) / 12)); } }
+  var S = 'style="font-family:Arial,Helvetica,sans-serif;color:#111827;max-width:760px;margin:0 auto;padding:28px;line-height:1.45"';
+  var H2 = 'style="color:#0b3d91;border-bottom:3px solid #0b3d91;padding-bottom:4px;margin:26px 0 10px;font-size:20px"';
+  var ROW = 'style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #e5e7eb"';
+  var h = '<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><title>Cotización — ' + escH(cur.name) + '</title></head><body ' + S + '>';
+  h += '<div style="text-align:center"><div style="font-size:26px;font-weight:800;color:#0b3d91">Linx Legal</div><div style="font-size:15px;color:#374151">Cotización de servicios de cancelación de tiempo compartido</div><div style="font-size:13px;color:#6b7280">' + today + '</div></div>';
+  h += '<p style="margin-top:18px">Preparada para: <b>' + escH(cur.name) + '</b>' + (legal ? '<br>Resort: <b>' + escH(legal) + '</b>' : '') + (cur.loc ? '<br>' + escH(cur.loc) : '') + '</p>';
+  h += '<h2 ' + H2 + '>Cotización</h2>';
+  h += '<div ' + ROW + '><span>Tarifa total de nuestro servicio</span><b>' + fmtC(fee) + '</b></div>';
+  h += '<p style="font-size:14px;color:#374151">Este precio incluye todo, de principio a fin. Nunca pedimos otro dólar. Este precio elimina toda la deuda pasada, presente y futura, y tu nombre se retira de la escritura a nivel del condado.</p>';
+  h += '<div ' + ROW + '><span>Pago completo (cuenta de cheques o ahorros)</span><b>' + fmtC(fee) + '</b></div>';
+  h += '<div ' + ROW + '><span>Pago con tarjeta de crédito</span><b>' + fmtC(fee * 1.03) + '</b></div>';
+  if (fmo > 0 && moTxt && moTxt !== '—') h += '<div ' + ROW + '><span>Financiamiento: ' + (down > 0 ? fmtC(down) + ' de anticipo + ' : '') + 'pagos mensuales</span><b>' + escH(moTxt) + '/mes × ' + fmo + ' meses</b></div>';
+  h += '<h2 ' + H2 + '>Tu ahorro</h2>';
+  h += '<div ' + ROW + '><span>Costo de quedarte con el tiempo compartido — próximos 10 años</span><b>' + fmtC(t10) + '</b></div>';
+  h += '<div ' + ROW + '><span>Nuestra tarifa (una sola vez)</span><b>' + fmtC(fee) + '</b></div>';
+  h += '<div ' + ROW + '><span><b>Ahorro neto proyectado en 10 años</b></span><b style="color:#15803d">' + fmtC(s10) + '</b></div>';
+  h += '<div ' + ROW + '><span><b>Ahorro neto proyectado en 20 años</b></span><b style="color:#15803d">' + fmtC(s20) + '</b></div>';
+  if (bem > 0) h += '<p style="font-size:14px;color:#374151">En aproximadamente <b>' + bem + ' meses</b>, lo que habrías pagado al resort iguala nuestra tarifa completa.</p>';
+  h += '<h2 ' + H2 + '>Tu situación actual</h2>';
+  if (payoff > 0) h += '<div ' + ROW + '><span>Saldo de la hipoteca (payoff)</span><b>' + fmtC(payoff) + '</b></div>';
+  else h += '<div ' + ROW + '><span>Hipoteca</span><b>Sin hipoteca — propiedad pagada</b></div>';
+  if (mmo > 0) h += '<div ' + ROW + '><span>Pago mensual de hipoteca</span><b>' + fmtC(mmo) + '</b></div>';
+  h += '<div ' + ROW + '><span>Cuotas de mantenimiento</span><b>' + fmtC(mf) + '/año</b></div>';
+  h += '<div ' + ROW + '><span>Total mensual</span><b>' + fmtC(mmo + mf / 12) + '</b></div>';
+  if (perNight) h += '<div ' + ROW + '><span>Costo por noche (' + nights + ' noches/año)</span><b>' + perNight + '</b></div>';
+  if (bought) h += '<div ' + ROW + '><span>Comprado</span><b>' + bought + '</b></div>';
+  if (cur.contracts > 0) h += '<div ' + ROW + '><span>Contratos</span><b>' + cur.contracts + '</b></div>';
+  h += '<h3 style="color:#0b3d91;margin:18px 0 6px">Proyecciones — costo de quedarte</h3>';
+  h += '<table style="width:100%;border-collapse:collapse;font-size:15px"><tr style="background:#0b3d91;color:#fff"><th style="padding:6px;text-align:left"></th><th style="padding:6px;text-align:right">10 años</th><th style="padding:6px;text-align:right">20 años</th></tr>';
+  if (mmo > 0) h += '<tr><td style="padding:6px;border-bottom:1px solid #e5e7eb">Hipoteca</td><td style="padding:6px;text-align:right;border-bottom:1px solid #e5e7eb">' + fmtC(moPart(10)) + '</td><td style="padding:6px;text-align:right;border-bottom:1px solid #e5e7eb">' + fmtC(moPart(20)) + '</td></tr>';
+  h += '<tr><td style="padding:6px;border-bottom:1px solid #e5e7eb">Cuotas de mantenimiento (aumento ' + esc + '% anual)</td><td style="padding:6px;text-align:right;border-bottom:1px solid #e5e7eb">' + fmtC(mfPart(10)) + '</td><td style="padding:6px;text-align:right;border-bottom:1px solid #e5e7eb">' + fmtC(mfPart(20)) + '</td></tr>';
+  h += '<tr style="font-weight:800"><td style="padding:6px">Total</td><td style="padding:6px;text-align:right">' + fmtC(t10) + '</td><td style="padding:6px;text-align:right">' + fmtC(t20) + '</td></tr></table>';
+  h += '<p style="margin-top:26px;font-size:12px;color:#6b7280;text-align:center">Linx Legal · Las proyecciones de cuotas usan un aumento anual del ' + esc + '% y son estimados con fines ilustrativos.</p>';
+  h += '</body></html>';
+  var blob = new Blob([h], { type: 'text/html' });
+  window.open(URL.createObjectURL(blob), '_blank');
 }
 function urlToggleFn(){
   var g = $('urlGrid'), b = $('urlEditBtn'); if (!g) return;
