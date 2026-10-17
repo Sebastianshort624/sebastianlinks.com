@@ -393,6 +393,8 @@
   </div>
   <label class="qf">NUESTRA TARIFA <select id="q_feepct" onchange="qFeePct()" style="padding:4px;font-size:0.95em;font-family:inherit;"><option value="30">30%</option><option value="35">35%</option><option value="40">40%</option><option value="45">45%</option><option value="46">46%</option><option value="47" selected>47%</option><option value="48">48%</option><option value="49">49%</option><option value="50">50%</option><option value="55">55%</option><option value="60">60%</option></select> <input id="q_fee" type="number" min="0" oninput="qRecalc()"></label>
   <div class="qsm" id="q_feesug" style="margin:-2px 0 8px"></div>
+  <div id="q_minwarn" style="display:none;background:#fef2f2;border:2px solid #b91c1c;color:#b91c1c;font-weight:700;padding:8px 10px;margin:0 0 8px;border-radius:6px">PRECIO MÍNIMO LINX: $3,500 + $299 ADMIN = $3,799 — NUNCA OFRECER MENOS</div>
+  <div class="qsm" style="margin:-4px 0 8px">PRECIO MÍNIMO LINX: $3,500 + $299 ADMIN = <b>$3,799</b> — el precio más bajo que podemos ofrecer.</div>
   <label class="qf">FORMA DE PAGO <select id="q_paym" onchange="qRecalc()">
     <option value="ach">ACH</option>
     <option value="check">CHEQUE</option>
@@ -1338,7 +1340,7 @@ function qFeeApply(){
   if (!cur || qIsDB()) return false;
   var payoff = qNum('q_payoff'); if (!(payoff > 0)) return false;
   var pct = parseFloat(($('q_feepct') || {}).value || '47') || 47;
-  var svc = payoff * pct / 100, adm = svc < 10000 ? 299 : 399;
+  var svc = payoff * pct / 100; if (svc < 3500) svc = 3500; var adm = svc < 10000 ? 299 : 399;
   $('q_fee').value = Math.round(svc + adm);
   return true;
 }
@@ -1412,7 +1414,7 @@ function qDocDel(i){
 }
 function qRecalc(){
   var qdEl = $('q_dates'); if (qdEl) qdEl.style.display = ($('q_paym').value === 'uga') ? '' : 'none';
-  if (!cur){ ['q_w30','q_w90','q_w6','q_t1','q_t3','q_t5','q_t10','q_t20','q_ftot','q_bal','q_s10','q_mo','q_ftpay','q_ftint','q_mosn','q_t12','q_t24','q_t36','q_comm','q_cdate','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct','q_xmmo','q_xmfmo','q_xtotmo','q_xmoyr','q_xmfyr','q_xtotyr','q_xmo10','q_xmf10','q_xproj10','q_xnight'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— meses restantes'; var fe0 = $('q_feesug'); if (fe0) fe0.textContent = ''; return; }
+  if (!cur){ ['q_w30','q_w90','q_w6','q_t1','q_t3','q_t5','q_t10','q_t20','q_ftot','q_bal','q_s10','q_mo','q_ftpay','q_ftint','q_mosn','q_t12','q_t24','q_t36','q_comm','q_cdate','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct','q_xmmo','q_xmfmo','q_xtotmo','q_xmoyr','q_xmfyr','q_xtotyr','q_xmo10','q_xmf10','q_xproj10','q_xnight'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— meses restantes'; var fe0 = $('q_feesug'); if (fe0) fe0.textContent = ''; var mw0 = $('q_minwarn'); if (mw0) mw0.style.display = 'none'; return; }
   var mmo = qIsDB() ? 0 : qNum('q_mmo'), mf = qNum('q_mf'), esc = qNum('q_esc'), payoff = qNum('q_payoff');
   var pyrIn = parseInt(($('q_pyr').value || '').replace(/\D/g, ''), 10) || 0;
   var pyr = pyrIn > 0 ? pyrIn : 2023; // hidden default for math only — field stays blank
@@ -1451,12 +1453,13 @@ function qRecalc(){
   var sugEl = $('q_feesug');
   if (sugEl){
     if (qIsDB()) sugEl.innerHTML = sheetFeeActive ? 'Fee activo: el de la hoja PRE-CALL (deed-back).' : 'Deed-back: el fee sale de la hoja PRE-CALL \u2014 ingr\u00e9salo en el recuadro rojo.';
-    else if (payoff > 0){ var pctS = parseFloat(($('q_feepct') || {}).value || '47') || 47; var s47 = payoff * pctS / 100, adm = s47 < 10000 ? 299 : 399; var mcN = qMulti(cur) ? ' (payoff combinado de ' + cur.contractsList.length + ' contratos)' : ''; sugEl.innerHTML = 'F\u00f3rmula: payoff \u00d7 ' + pctS + '% = ' + fmtD(s47) + ' + admin ' + fmtD(adm) + ' = <b>' + fmtD(s47 + adm) + '</b>' + mcN + ' <a href="#" onclick="document.getElementById(\'q_fee\').value=' + Math.round(s47 + adm) + ';qRecalc();return false;">Usar</a>'; }
+    else if (payoff > 0){ var pctS = parseFloat(($('q_feepct') || {}).value || '47') || 47; var s47 = payoff * pctS / 100; if (s47 < 3500) s47 = 3500; var adm = s47 < 10000 ? 299 : 399; var mcN = qMulti(cur) ? ' (payoff combinado de ' + cur.contractsList.length + ' contratos)' : ''; sugEl.innerHTML = 'F\u00f3rmula: payoff \u00d7 ' + pctS + '% = ' + fmtD(s47) + ' + admin ' + fmtD(adm) + ' = <b>' + fmtD(s47 + adm) + '</b>' + mcN + ' <a href="#" onclick="document.getElementById(\'q_fee\').value=' + Math.round(s47 + adm) + ';qRecalc();return false;">Usar</a>'; }
     else sugEl.textContent = '';
   }
   var paym = $('q_paym').value;
   var isFin = paym === 'ucfs' || paym === 'equity' || paym === 'uga';
   var feeKnown = fee > 0;
+  var mwEl = $('q_minwarn'); if (mwEl) mwEl.style.display = (feeKnown && fee < 3799) ? '' : 'none';
   var ftot = feeKnown && paym === 'cc' ? fee * 1.03 : fee;
   var downRaw = qNum('q_down');
   var down = $('q_downt').value === 'pct' ? ftot * downRaw / 100 : downRaw;
