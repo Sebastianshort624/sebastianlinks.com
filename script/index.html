@@ -290,6 +290,21 @@
     <span class="nv-timer" id="topbar">⏱ <span id="ot">1:30:00</span> <a href="#" id="obtn" onclick="toggleOverall();return false;">▶ Iniciar</a></span>
   </div>
   <div id="soldStrip"><span>✅ VENDIDO</span><span>📄 DocuSign firmado: <input type="date" id="soldDate" onchange="soldDateChange()"></span><span>💰 Mi comisión: <span class="soldComm" id="soldComm">$0.00</span></span></div>
+  <div id="dispoBlock" style="border:1px solid #dbe4f0;border-radius:6px;padding:8px 10px;margin:0 0 10px;background:#f8fbff">
+  <div class="qsec" style="margin-top:0">🎯 DISPOSICIÓN · ESTADO · RESULTADO <span class="tmin" id="dispoWho"></span></div>
+  <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:end;margin:2px 0 8px">
+    <label class="qf" style="margin:0">RESULTADO MANUAL <select id="d_manual" onchange="dispoSave()" style="font-weight:800"><option value="">Sin marcar</option><option value="NO GO">NO GO — No va</option><option value="FU">FU — Seguimiento</option><option value="QUOTED">QUOTED — Cotizado</option><option value="APT SET">APT SET — Cita agendada</option><option value="SOLD">SOLD — Vendido</option><option value="RS">RS — Reprogramado</option><option value="NA">NA — No contestó</option><option value="NO">NO — No interesado</option><option value="NQ">NQ — No califica</option></select></label>
+    <span class="qsm" id="d_lastapt" style="font-weight:700">ÚLTIMA CITA: —</span>
+    <span class="qsm" id="d_nextapt" style="font-weight:700">PRÓXIMA CITA: —</span>
+  </div>
+  <label class="qf">DISPOSICIÓN <select id="d_dispo" onchange="dispoSave()"><option value="">Sin marcar</option><option value="activo">Activo</option><option value="en seguimiento">En seguimiento</option><option value="vendido">Vendido</option><option value="reprogramado">Reprogramado</option><option value="no interesado">No interesado</option><option value="no califica">No califica</option><option value="perdido">Perdido</option></select></label>
+  <label class="qf">ESTADO DEL LEAD <select id="d_status" onchange="dispoSave()"><option value="">Sin marcar</option><option value="nuevo">Nuevo</option><option value="contactado">Contactado</option><option value="en seguimiento">En seguimiento</option><option value="cerrado">Cerrado</option><option value="perdido">Perdido</option></select></label>
+  <label class="qf">RESULTADO DE LA LLAMADA <select id="d_outcome" onchange="dispoSave()"><option value="">Sin marcar</option><option value="SOLD">SOLD — Vendido</option><option value="FU">FU — Seguimiento</option><option value="RS">RS — Reprogramado</option><option value="NA">NA — No contestó</option><option value="NO">NO — No interesado</option><option value="NQ">NQ — No califica</option></select></label>
+  <label class="qf">PRÓXIMO SEGUIMIENTO <select id="d_futype" onchange="dispoSave()"><option value="">Sin seguimiento</option><option value="evento">Evento de 15 minutos</option><option value="tarea">Tarea</option><option value="ca">Revisar con el CA</option></select></label>
+  <label class="qf">FECHA DEL SEGUIMIENTO <input id="d_fudate" type="date" onchange="dispoSave()"></label>
+  <label class="qf">HORA <span><input id="d_futime" type="time" onchange="dispoSave()" style="width:125px"> <select id="d_fuampm" onchange="dispoSave()" style="padding:4px;font-size:0.95em;font-family:inherit;"><option value="">AM/PM</option><option value="AM">AM</option><option value="PM">PM</option></select></span></label>
+  <div class="qsm" id="d_summary"></div>
+  </div>
   <div class="cbar" id="cbar" style="display:none">
     <div class="ib-wrap">
       <div class="ib-col" id="ibL"></div>
@@ -432,22 +447,7 @@
   <div class="cpanel" id="notesSection">
   <div class="qsec" style="margin-top:0">📝 NOTAS — HISTORIAL <span class="tmin" id="notesWho"></span></div>
   <div class="notesTabs"><button id="notesTabClient" class="on" onclick="notesSetView('client')">Este cliente</button><button id="notesTabAll" onclick="notesSetView('all')">Todas</button></div>
-  <div id="dispoBlock" style="border:1px solid #dbe4f0;border-radius:6px;padding:8px 10px;margin:0 0 10px;background:#f8fbff">
-  <div class="qsec" style="margin-top:0">🎯 DISPOSICIÓN · ESTADO · RESULTADO <span class="tmin" id="dispoWho"></span></div>
-  <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:end;margin:2px 0 8px">
-    <label class="qf" style="margin:0">RESULTADO MANUAL <select id="d_manual" onchange="dispoSave()" style="font-weight:800"><option value="">Sin marcar</option><option value="NO GO">NO GO — No va</option><option value="FU">FU — Seguimiento</option><option value="QUOTED">QUOTED — Cotizado</option><option value="APT SET">APT SET — Cita agendada</option><option value="SOLD">SOLD — Vendido</option><option value="RS">RS — Reprogramado</option><option value="NA">NA — No contestó</option><option value="NQ">NQ — No califica</option></select></label>
-    <span class="qsm" id="d_lastapt" style="font-weight:700">ÚLTIMA CITA: —</span>
-    <span class="qsm" id="d_nextapt" style="font-weight:700">PRÓXIMA CITA: —</span>
-  </div>
-  <label class="qf">DISPOSICIÓN <select id="d_dispo" onchange="dispoSave()"><option value="">Sin marcar</option><option value="activo">Activo</option><option value="en seguimiento">En seguimiento</option><option value="vendido">Vendido</option><option value="reprogramado">Reprogramado</option><option value="no interesado">No interesado</option><option value="no califica">No califica</option><option value="perdido">Perdido</option></select></label>
-  <label class="qf">ESTADO DEL LEAD <select id="d_status" onchange="dispoSave()"><option value="">Sin marcar</option><option value="nuevo">Nuevo</option><option value="contactado">Contactado</option><option value="en seguimiento">En seguimiento</option><option value="cerrado">Cerrado</option><option value="perdido">Perdido</option></select></label>
-  <label class="qf">RESULTADO DE LA LLAMADA <select id="d_outcome" onchange="dispoSave()"><option value="">Sin marcar</option><option value="SOLD">SOLD — Vendido</option><option value="FU">FU — Seguimiento</option><option value="RS">RS — Reprogramado</option><option value="NA">NA — No contestó</option><option value="NO">NO — No interesado</option><option value="NQ">NQ — No califica</option></select></label>
-  <label class="qf">PRÓXIMO SEGUIMIENTO <select id="d_futype" onchange="dispoSave()"><option value="">Sin seguimiento</option><option value="evento">Evento de 15 minutos</option><option value="tarea">Tarea</option><option value="ca">Revisar con el CA</option></select></label>
-  <label class="qf">FECHA DEL SEGUIMIENTO <input id="d_fudate" type="date" onchange="dispoSave()"></label>
-  <label class="qf">HORA <span><input id="d_futime" type="time" onchange="dispoSave()" style="width:125px"> <select id="d_fuampm" onchange="dispoSave()" style="padding:4px;font-size:0.95em;font-family:inherit;"><option value="">AM/PM</option><option value="AM">AM</option><option value="PM">PM</option></select></span></label>
-  <div class="qsm" id="d_summary"></div>
-  </div>
-  <textarea id="notesArea" placeholder="Escribe una nota nueva y pulsa Guardar nota — queda guardada con la fecha y hora de hoy."></textarea>
+    <textarea id="notesArea" placeholder="Escribe una nota nueva y pulsa Guardar nota — queda guardada con la fecha y hora de hoy."></textarea>
   <button id="notesAddBtn" onclick="notesAdd()">💾 Guardar nota</button>
   <div class="notesTools"><input id="notesSearch" type="text" placeholder="🔎 Buscar en las notas…" oninput="notesRender()"><input id="notesDate" type="date" onchange="notesRender()"><button class="notesClearBtn" onclick="notesClearFilters()">Limpiar filtros</button></div>
   <div id="notesList"></div>
