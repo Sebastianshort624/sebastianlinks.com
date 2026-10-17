@@ -748,7 +748,7 @@ render();
 /* ---- password gate ---- */
 var SCRIPT_PASSWORD = "90%";
 function unlock(){
-  if (document.getElementById('pw').value === SCRIPT_PASSWORD){
+  if (document.getElementById('pw').value.replace(/\s+/g,'') === SCRIPT_PASSWORD){
     try { sessionStorage.setItem('sl_script_ok', '1'); } catch(e){}
     document.getElementById('lock').style.display = 'none';
   } else {
