@@ -271,6 +271,7 @@
 #soldStrip input[type=date]{font-size:15px;font-weight:700;padding:3px 8px;border-radius:8px;border:0}
 #soldStrip .soldComm{font-size:21px;background:#052e16;padding:3px 14px;border-radius:10px}
 </style>
+<link rel="stylesheet" href="/script/facts.css">
 </head>
 <body>
 
@@ -336,6 +337,7 @@
 <div class="client-line" style="margin:6px 0 10px">Cliente: <select id="clientSel"><option value="">— seleccionar cliente —</option></select>
 <button onclick="document.getElementById('s_impfile').click()" style="margin-left:8px;padding:6px 14px;font-size:0.9em;background:#0b3d91;color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Importar JSON</button>
 <input type="file" id="s_impfile" accept=".json,application/json" style="display:none" onchange="importScriptClients(this)"></div>
+<div id="factsLanding" aria-label="Resumen de los datos del cliente"></div>
 
 <aside class="calcside calcarea">
   <div class="cbox calc-head"><h3>🧮 Calculadora <button onclick="qSync(cur)" title="Restablecer al cliente">↺</button></h3>
@@ -347,7 +349,7 @@
     <button id="q_btn_db" onclick="qSetDtype('DB')" style="flex:1;padding:9px 6px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:0.95em;background:#e2e8f0;color:#334155">🔴 DEED-BACK</button>
   </div>
   </div>
-  <div class="calcgrid"><div class="cpanel cpanel-trap">
+  <div class="calcgrid"><details class="cpanel cpanel-trap sl-details"><summary>🧮 Ver / editar hipoteca, proyecciones y préstamo</summary><div class="sl-detail-content">
   <div class="qsec" style="margin-top:0">🏨 SITUACIÓN DEL RESORT — LA TRAMPA ACTUAL</div>
   <div id="q_contracts" style="display:none"></div>
   <label class="qf mtgOnly">HIPOTECA MENSUAL <input id="q_mmo" type="number" min="0" oninput="qRecalc()"></label>
@@ -396,7 +398,7 @@
     <div>% interés de lo pagado <b id="q_ipct">—</b></div>
     <button class="lcBtn" onclick="lcOpen()">🏦 Calculadora de préstamo</button>
   </div>
-  </div>
+  </div></details>
     <div class="notesCol"><div class="cpanel cpanel-fee">
   <div class="qsec" style="margin-top:0">💰 MI FEE Y PAGOS</div>
   <div id="q_sheetfeebox" style="display:none;background:#fef2f2;border:1px solid #f0b4b4;border-radius:6px;padding:10px 12px;margin-bottom:10px">
@@ -2109,6 +2111,7 @@ setInterval(function(){ if (aptData){ aptRender(); aptLayout(); } }, 60000);
   try{ if (localStorage.getItem('sl_urls_open') === '1' && typeof urlToggleFn === 'function'){ var g = document.getElementById('urlGrid'); if (g && g.style.display === 'none') urlToggleFn(); } }catch(e){}
 })();
 </script>
+<script src="/script/facts.js"></script>
 </body>
 </html>
 
