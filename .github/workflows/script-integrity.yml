@@ -1,0 +1,24 @@
+name: Script integrity — client loading, payoff and mortgage classification
+on:
+  push:
+    paths:
+      - 'script/index.html'
+      - 'script/tests/**'
+      - '.github/workflows/script-integrity.yml'
+  pull_request:
+    paths:
+      - 'script/index.html'
+      - 'script/tests/**'
+      - '.github/workflows/script-integrity.yml'
+permissions:
+  contents: read
+jobs:
+  regressions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test /script client data & financial invariants
+        run: node --test script/tests/*.test.mjs
