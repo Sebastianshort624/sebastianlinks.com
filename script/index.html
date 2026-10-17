@@ -755,8 +755,8 @@ function slClients(){
     if (!found) for (var i = 0; i < cs.length; i++) if (cs[i].name && b.name && String(cs[i].name).toLowerCase() === b.name.toLowerCase()){ found = cs[i]; break; }
     if (!found) cs.push(b);
     else { ['pipelineUrl','crmlink','sheetUrl','folderPath','docusignUrl','loanNote'].forEach(function(k){ if (!found[k] && b[k]) found[k] = b[k]; });
-      if (!+found.payoff && !+found.mmo && !+found.mf) ['payoff','mmo','mf','term','apr','pyr','pmonth','esc','fee','contracts','email','ca','resort','loc','address','phone','phone2','dtype','behind']
-      if (+b.payoff > 0 && found.dtype === 'DB') found.dtype = 'MTG';.forEach(function(k){ if (b[k] !== undefined && b[k] !== '' && b[k] !== 0) found[k] = b[k]; }); }
+      if (!+found.payoff && !+found.mmo && !+found.mf) ['payoff','mmo','mf','term','apr','pyr','pmonth','esc','fee','contracts','email','ca','resort','loc','address','phone','phone2','dtype','behind'].forEach(function(k){ if (b[k] !== undefined && b[k] !== '' && b[k] !== 0) found[k] = b[k]; });
+      if (+b.payoff > 0 && found.dtype === 'DB') found.dtype = 'MTG'; }
   });
   return cs;
 }
