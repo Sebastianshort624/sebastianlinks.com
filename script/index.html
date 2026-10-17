@@ -284,12 +284,12 @@
     <span class="snav"><a href="#stage1">1</a><a href="#stage2">2</a><a href="#stage3">3</a><a href="#stage4">4</a><a href="#stage5">5</a><a href="#stage6">6</a></span>
     <a href="#price-anchor">💰 Precio</a>
     <a href="#coversheet">📝 Contrato</a>
-    <button id="soldBtn" type="button" onclick="soldToggle()">🤝 SOLD</button>
-    <select id="soldWhen" onchange="soldWhenChange()" title="¿Cuándo se vendió?" style="padding:4px 6px;font-weight:700;font-family:inherit;border-radius:6px;border:1px solid #7f1d1d;background:#fff7ed"><option value="">¿Cuándo?</option><option value="ON APT">ON APT</option><option value="AFTER APT">AFTER APT</option></select>
+    <button id="soldBtn" type="button" onclick="soldToggle()">🤝 VENDIDO</button>
+    <select id="soldWhen" onchange="soldWhenChange()" title="¿Cuándo se vendió?" style="padding:4px 6px;font-weight:700;font-family:inherit;border-radius:6px;border:1px solid #7f1d1d;background:#fff7ed"><option value="">¿Cuándo?</option><option value="ON APT">EN LA CITA</option><option value="AFTER APT">DESPUÉS DE LA CITA</option></select>
     <button id="quoteBtn" type="button" onclick="qQuoteHtml()">📄 Cotización</button>
     <span class="nv-timer" id="topbar">⏱ <span id="ot">1:30:00</span> <a href="#" id="obtn" onclick="toggleOverall();return false;">▶ Iniciar</a></span>
   </div>
-  <div id="soldStrip"><span>✅ SOLD</span><span>📄 DocuSign firmado: <input type="date" id="soldDate" onchange="soldDateChange()"></span><span>💰 Mi comisión: <span class="soldComm" id="soldComm">$0.00</span></span></div>
+  <div id="soldStrip"><span>✅ VENDIDO</span><span>📄 DocuSign firmado: <input type="date" id="soldDate" onchange="soldDateChange()"></span><span>💰 Mi comisión: <span class="soldComm" id="soldComm">$0.00</span></span></div>
   <div class="cbar" id="cbar" style="display:none">
     <div class="ib-wrap">
       <div class="ib-col" id="ibL"></div>
@@ -342,7 +342,7 @@
   <label class="qf">MES DE COMPRA <select id="q_pmonth" onchange="qRecalc()"><option value="">—</option><option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option><option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option><option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option></select></label>
   <label class="qf">NOCHES/AÑO <input id="q_nights" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf mtgOnly">PLAZO (MESES) <input id="q_term" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf mtgOnly">PAYOFF <input id="q_payoff" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf mtgOnly">SALDO <input id="q_payoff" type="number" min="0" oninput="qRecalc()"></label>
   <div class="qsec">📈 PROYECCIÓN — LA TRAMPA</div>
   <div class="qout">
     <div class="qsm">Próximos 30 días <b id="q_w30">—</b></div>
@@ -376,7 +376,7 @@
     <div>Total pagado <b id="q_paid">—</b></div>
     <div>Capital <b id="q_prin">—</b></div>
     <div>Interés <b id="q_inte">—</b></div>
-    <div>Saldo (payoff) <b id="q_bal2">—</b></div>
+    <div>Saldo <b id="q_bal2">—</b></div>
     <div>Interés del plazo <b id="q_tint">—</b></div>
     <div>% interés de lo pagado <b id="q_ipct">—</b></div>
     <button class="lcBtn" onclick="lcOpen()">🏦 Calculadora de préstamo</button>
@@ -395,7 +395,7 @@
   <div class="qsm" id="q_feesug" style="margin:-2px 0 8px"></div>
   <label class="qf">FORMA DE PAGO <select id="q_paym" onchange="qRecalc()">
     <option value="ach">ACH</option>
-    <option value="check">CHECK</option>
+    <option value="check">CHEQUE</option>
     <option value="cc">CC (+3%)</option>
     <option value="ucfs">UCFS</option>
     <option value="equity">Equity</option>
@@ -433,7 +433,7 @@
   <div id="dispoBlock" style="border:1px solid #dbe4f0;border-radius:6px;padding:8px 10px;margin:0 0 10px;background:#f8fbff">
   <div class="qsec" style="margin-top:0">🎯 DISPOSICIÓN · ESTADO · RESULTADO <span class="tmin" id="dispoWho"></span></div>
   <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:end;margin:2px 0 8px">
-    <label class="qf" style="margin:0">RESULTADO MANUAL <select id="d_manual" onchange="dispoSave()" style="font-weight:800"><option value="">Sin marcar</option><option value="NO GO">NO GO</option><option value="FU">FU</option><option value="QUOTED">QUOTED</option><option value="APT SET">APT SET</option><option value="SOLD">SOLD</option><option value="RS">RS</option><option value="NA">NA</option><option value="NQ">NQ</option></select></label>
+    <label class="qf" style="margin:0">RESULTADO MANUAL <select id="d_manual" onchange="dispoSave()" style="font-weight:800"><option value="">Sin marcar</option><option value="NO GO">NO GO — No va</option><option value="FU">FU — Seguimiento</option><option value="QUOTED">QUOTED — Cotizado</option><option value="APT SET">APT SET — Cita agendada</option><option value="SOLD">SOLD — Vendido</option><option value="RS">RS — Reprogramado</option><option value="NA">NA — No contestó</option><option value="NQ">NQ — No califica</option></select></label>
     <span class="qsm" id="d_lastapt" style="font-weight:700">ÚLTIMA CITA: —</span>
     <span class="qsm" id="d_nextapt" style="font-weight:700">PRÓXIMA CITA: —</span>
   </div>
@@ -519,27 +519,27 @@
 <aside class="sprinkle">
   <h3>🎲 Frases sueltas — para cualquier momento</h3>
   <ul>
-    <li>"It's not meant to work — it's meant to keep you in a <b>perpetual payment</b>."</li>
-    <li>"Did they try to serve you <b>alcohol</b>, or were you on some sort of <b>medication</b>? 💊"</li>
-    <li>"Financially, <b>what did you guys understand</b> that you were agreeing to?"</li>
-    <li>"<b>Not making your timeshare payments is not a cancellation strategy.</b>"</li>
-    <li>"They're <b>good at being bad</b>."</li>
-    <li>"I can tell you this — if we can't save you a <b>ridiculous amount of money</b>, we're not going to even try to take your case."</li>
-    <li>"This is not simple interest — it's <b>compounded interest, just like a credit card</b>."</li>
-    <li>"So when we take this back to Wyndham — <b>they have to show us how that makes sense</b>."</li>
-    <li>"<b>They had to lie to you repeatedly</b> to get you into that contract."</li>
+    <li>"No está hecho para funcionar — está hecho para mantenerte en un <b>pago perpetuo</b>."</li>
+    <li>"¿Te trataron de dar <b>alcohol</b>, o estabas tomando algún tipo de <b>medicamento</b>? 💊"</li>
+    <li>"Financieramente, <b>¿qué entendieron</b> que estaban aceptando?"</li>
+    <li>"<b>No pagar tu tiempo compartido no es una estrategia de cancelación.</b>"</li>
+    <li>"Son <b>buenos para ser malos</b>."</li>
+    <li>"Te digo esto — si no podemos ahorrarte una <b>cantidad ridícula de dinero</b>, ni siquiera vamos a intentar tomar tu caso."</li>
+    <li>"Esto no es interés simple — es <b>interés compuesto, igual que una tarjeta de crédito</b>."</li>
+    <li>"Entonces cuando le llevamos esto de vuelta a Wyndham — <b>ellos tienen que mostrarnos cómo eso tiene sentido</b>."</li>
+    <li>"<b>Tuvieron que mentirte una y otra vez</b> para meterte en ese contrato."</li>
   </ul>
 </aside>
 <aside class="sprinkle" id="objbox">
   <h3>🛡️ Contraobjeciones</h3>
   <input class="objsrch" id="objq" placeholder="🔍 Buscar objeciones…" oninput="objFilter()">
   <ul>
-    <li data-keys="think thinking about it need time stall delay"><b>"I need to think about it."</b> → "Of course — think about what, specifically? The numbers won't change, but the case manager's availability might. <b>What part do you want to talk through?</b>"</li>
-    <li data-keys="spouse wife husband partner talk discuss family decide together"><b>"I need to talk to my spouse."</b> → "Absolutely — are they around right now? <b>Let's get them on</b>, because I'd rather answer their questions directly than have you re-explain all of this secondhand."</li>
-    <li data-keys="scam scammed burned ripped off trust skeptical"><b>"I've been scammed before."</b> → "That's exactly why we do it this way — <b>100% money-back guarantee</b>, A+ with the BBB, and you saw our reviews yourself. If we don't get you out, you get your money back. What did the last company guarantee you?"</li>
-    <li data-keys="credit score hurt damage report bureau bureaus"><b>"Will this hurt my credit?"</b> → "<b>We never pull your credit</b> and we don't report anything to the bureaus. What part worries you?"</li>
-    <li data-keys="expensive cost too much price afford can't afford money"><b>"It's too expensive."</b> → "Compared to what? Doing nothing costs you <b><span data-fill="total10">$________</span></b> over the next 10 years. This is <b><span data-fill="fee">$________</span></b> once — and then it's over forever."</li>
-    <li data-keys="different difference others other companies vs versus competitor"><b>"How are you different?"</b> → "Most companies get you out by having you pay the resort. We flip it — <b>the resort lets you out and pays you</b>. And nobody else backs it with a 100% money-back guarantee."</li>
+    <li data-keys="think thinking about it need time stall delay"><b>"Necesito pensarlo."</b> → "Claro — ¿pensar qué, específicamente? Los números no van a cambiar, pero la disponibilidad del gerente de caso sí podría. <b>¿Qué parte quieres que repasemos?</b>"</li>
+    <li data-keys="spouse wife husband partner talk discuss family decide together"><b>"Necesito hablarlo con mi esposo/a."</b> → "Claro que sí — ¿está por ahí ahora mismo? <b>Metámoslo/a a la llamada</b>, porque prefiero responderle sus preguntas directamente a que tengas que volver a explicarle todo esto de segunda mano."</li>
+    <li data-keys="scam scammed burned ripped off trust skeptical"><b>"Ya me estafaron antes."</b> → "Exactamente por eso lo hacemos de esta manera — <b>garantía de devolución del 100% de tu dinero</b>, A+ con el BBB, y tú mismo viste nuestras reseñas. Si no logramos sacarte, te devolvemos tu dinero. ¿Qué te garantizó la última compañía?"</li>
+    <li data-keys="credit score hurt damage report bureau bureaus"><b>"¿Esto va a afectar mi crédito?"</b> → "<b>Nunca revisamos tu crédito</b> y no reportamos nada a las centrales de riesgo. ¿Qué parte te preocupa?"</li>
+    <li data-keys="expensive cost too much price afford can't afford money"><b>"Es muy caro."</b> → "¿Comparado con qué? No hacer nada te cuesta <b><span data-fill="total10">$________</span></b> en los próximos 10 años. Esto es <b><span data-fill="fee">$________</span></b> una sola vez — y después se acabó para siempre."</li>
+    <li data-keys="different difference others other companies vs versus competitor"><b>"¿En qué se diferencian?"</b> → "La mayoría de compañías te sacan haciendo que le pagues al resort. Nosotros lo invertimos — <b>el resort te deja salir y te paga a ti</b>. Y nadie más lo respalda con una garantía de devolución del 100% de tu dinero."</li>
   </ul>
   <div id="objnone" class="tmin" style="display:none;padding:6px 4px">Sin resultados — prueba con otra palabra.</div>
 </aside>
@@ -549,17 +549,17 @@
   <h2>ETAPA 1 — INTRODUCCIÓN Y CREDIBILIDAD <span class="t">15 MIN</span></h2>
   <div class="clock">0:00–0:15 · charla inicial <span class="tmin">(5 min)</span> → investigamos la credibilidad juntos <span class="tmin">(10 min)</span> <span class="stimer"><button id="sb1" onclick="toggleStage(1)">▶ 15:00</button> <button class="rs" onclick="resetStage(1)" title="Reiniciar">↺</button></span></div>
   <ol class="liners">
-    <li><span class="sline first">"That timeshare contract you signed — it's impenetrable.</span><span class="sline cont">It was designed to lock you into a perpetual obligation — maintenance fees not just for your lifetime, but for generations.</span><span class="sline cont">I'm not trying to discredit the contract — your signature is on it multiple times.</span><span class="sline cont">What we're building is every reason why, had you not been lied to, you never would have signed it in the first place."</span></li>
-    <li><span class="sline first">"But first I'm going to confirm what you and <span class="hl-g" data-fill="ca">[CA name]</span> have documented thus far."</span></li>
-    <li><span class="sline first"><span class="grp">Credibility research:</span></span><ol>
-        <li><span class="sline first">"Did you get a chance to do some research on our company? <span class="hl-g" data-fill="ca">[CA name]</span> usually sends the links over — did you see we're <b>A+ rated and accredited</b> by the Better Business Bureau, and ranked the <b>number one timeshare cancellation company in the world</b> by Best Company?"</span></li>
-        <li><span class="sline first">"Best Company is a <b>third-party organization</b> — all they do is rank the top companies in the world.</span><span class="sline cont">Did you happen to see we're ranked <b>number one</b> in the timeshare cancellation industry — the industry we created?"</span></li>
-        <li><span class="sline first">Research together: <a href="https://investiganos.com/linx">investiganos.com/linx</a> — company credibility &amp; reviews.</span></li>
-        <li><span class="sline first">"OK great — so <b>no questions about our credibility</b>, or our ability to do what we say we'll do — is that correct?</span><span class="sline cont">Perfect."</span></li>
-        <li><span class="sline first">"¿<span class="hl-g" data-fill="ca">[CA name]</span> te habló de RedWeek y te ayudó a hacer tu propia investigación sobre nuestra compañía?"</span></li>
+    <li><span class="sline first">"Ese contrato de tiempo compartido que firmaste — es impenetrable.</span><span class="sline cont">Fue diseñado para encerrarte en una obligación perpetua — cuotas de mantenimiento no solo por el resto de tu vida, sino por generaciones.</span><span class="sline cont">No estoy tratando de desacreditar el contrato — tu firma está en él varias veces.</span><span class="sline cont">Lo que estamos construyendo es cada razón por la cual, si no te hubieran mentido, nunca lo habrías firmado en primer lugar."</span></li>
+    <li><span class="sline first">"Pero primero voy a confirmar lo que tú y <span class="hl-g" data-fill="ca">[nombre del CA]</span> han documentado hasta ahora."</span></li>
+    <li><span class="sline first"><span class="grp">Investigación de credibilidad:</span></span><ol>
+        <li><span class="sline first">"¿Tuviste la oportunidad de investigar un poco nuestra compañía? <span class="hl-g" data-fill="ca">[nombre del CA]</span> normalmente te envía los enlaces — ¿viste que estamos <b>calificados con A+ y acreditados</b> por el Better Business Bureau, y clasificados como la <b>compañía de cancelación de tiempos compartidos número uno del mundo</b> por Best Company?"</span></li>
+        <li><span class="sline first">"Best Company es una <b>organización independiente</b> — lo único que hacen es clasificar a las mejores compañías del mundo.</span><span class="sline cont">¿Alcanzaste a ver que estamos clasificados como el <b>número uno</b> en la industria de cancelación de tiempos compartidos — la industria que nosotros creamos?"</span></li>
+        <li><span class="sline first">Investiguen juntos: <a href="https://investiganos.com/linx">investiganos.com/linx</a> — credibilidad y reseñas de la compañía.</span></li>
+        <li><span class="sline first">"Perfecto — entonces, <b>sin preguntas sobre nuestra credibilidad</b>, ni sobre nuestra capacidad de hacer lo que decimos que vamos a hacer — ¿es correcto?</span><span class="sline cont">Perfecto."</span></li>
+        <li><span class="sline first">"¿<span class="hl-g" data-fill="ca">[nombre del CA]</span> te habló de RedWeek y te ayudó a hacer tu propia investigación sobre nuestra compañía?"</span></li>
         <li><span class="sline first">"Hazme un favor: en tu teléfono o en tu computadora, escribe este sitio web: <a href="https://investiganos.com" target="_blank"><b>investiganos.com</b></a>."</span></li>
         <li><span class="sline first">"Ahí ve a <a href="https://www.redweek.com/timeshare-resales" target="_blank"><b>RedWeek</b></a>.</span><span class="sline cont">¿Te dijeron que podías rentar tu tiempo compartido, o que podías venderlo?" <span class="tmin">— muéstrale también <a href="https://www.google.com/search?q=ebay+timeshares+for+sale+%241&rlz=1C1HKFL_enUS1213US1213&oq=ebay+timeshares+for+sale+%241&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIGCAEQRRhAMgYIAhBFGEAyBggDEEUYQNIBCDg0NTlqMGo3qAIIsAIB8QULbjRRxUndIg&sourceid=chrome&source=chrome.ob&ie=UTF-8" target="_blank">eBay: tiempos compartidos desde $1</a></span></span></li>
-        <li><span class="sline first">"<span class="hl-g" data-fill="ca">[CA name]</span> normalmente te envía unos enlaces para que hagas tu propia investigación.</span><span class="sline cont">Pero así como yo quiero sentir que tu caso es uno que vamos a ganar con un <b>100% de certeza</b>, quiero que sea <b>abrumadoramente obvio</b> que somos la compañía que va a lograrlo: basado en <b>17 años de testimonios</b> y en <b>agencias independientes de evaluación de compañías</b>."</span></li>
+        <li><span class="sline first">"<span class="hl-g" data-fill="ca">[nombre del CA]</span> normalmente te envía unos enlaces para que hagas tu propia investigación.</span><span class="sline cont">Pero así como yo quiero sentir que tu caso es uno que vamos a ganar con un <b>100% de certeza</b>, quiero que sea <b>abrumadoramente obvio</b> que somos la compañía que va a lograrlo: basado en <b>17 años de testimonios</b> y en <b>agencias independientes de evaluación de compañías</b>."</span></li>
       </ol></li>
     <li><span class="sline first"><span class="grp">CAPACIDAD DE CASOS Y LISTA DE ESPERA</span></span><ol>
         <li><span class="sline first">"La mayoría de los resorts les cobran a sus propietarios las cuotas anuales de mantenimiento entre diciembre y enero."</span></li>
@@ -601,25 +601,25 @@
   <div class="clock">0:15–0:30 · que ellos hablen <span class="tmin">(5 min)</span> → violaciones y cómo ganamos <span class="tmin">(10 min)</span> <span class="stimer"><button id="sb2" onclick="toggleStage(2)">▶ 15:00</button> <button class="rs" onclick="resetStage(2)" title="Reiniciar">↺</button></span></div>
   <div class="plink">🔗 <a href="https://investiganos.com/calc">investiganos.com/calc</a> <span class="tmin">— calculadora del costo de propiedad</span></div>
   <ol class="liners">
-    <li><span class="sline first"><span class="grp">Their story:</span></span><ol>
-        <li><span class="sline first">"Now that you've seen who we are and what our reviews say — <b>I want to hear your story</b>.</span><span class="sline cont">Tell me about your experience with your timeshare." <span class="tmin">— let them talk</span></span></li>
-        <li><span class="sline first">"<b>What exactly were you told that convinced you</b> to purchase?"</span></li>
+    <li><span class="sline first"><span class="grp">Su historia:</span></span><ol>
+        <li><span class="sline first">"Ahora que ya viste quiénes somos y lo que dicen nuestras reseñas — <b>quiero escuchar tu historia</b>.</span><span class="sline cont">Cuéntame tu experiencia con tu tiempo compartido." <span class="tmin">— déjalos hablar</span></span></li>
+        <li><span class="sline first">"<b>¿Qué exactamente te dijeron que te convenció</b> de comprar?"</span></li>
       </ol></li>
-    <li><span class="sline first">"In the first 10 years — between your mortgage payments and your maintenance payments — you signed agreeing to a total cost of <b><span data-fill="total10">$________</span></b> for this timeshare.</span><span class="sline cont">But <b>did they actually let you read that page before you signed?</b> 📝"</span><span class="sline cont">→ "That's exactly what we're trying to prove.</span><span class="sline cont">That contract is impenetrable — you can't just walk away from it.</span><span class="sline cont">What we do is <b>get it voided</b> — because <b>you should never have been in it in the first place</b>.</span><span class="sline cont">You were lied to."</span></li>
-    <li><span class="sline first">The main five, in plain talk:</span><ol>
-        <li><span class="sline first">"When you bought, did they make it sound like you could <b>always just sell it</b> if you wanted out?</span><span class="sline cont">These things are <b>listed on eBay for a dollar</b> — you can't even give them away."</span><span class="sline cont">→ "If they had followed the law and shown you what your total commitment was — just in the first 10 years — <b>would you have ever signed that contract?</b>"</span></li>
-        <li><span class="sline first">"Did they tell you the maintenance fees <b>never end</b> — that they go on forever and <b>get passed down to your kids?</b>"</span><span class="sline cont">→ "If they had followed the law and shown you what your total commitment was — just in the first 10 years — <b>would you have ever signed that contract?</b>"</span></li>
-        <li><span class="sline first">"What was the maintenance fee back when you bought?</span><span class="sline cont">And did they tell you it <b>goes up every single year</b> — around 8%?"</span><span class="sline cont">→ "If they had followed the law and shown you what your total commitment was — just in the first 10 years — <b>would you have ever signed that contract?</b>"</span></li>
-        <li><span class="sline first">"Did they make it sound like you had to be an owner to stay in these resorts — priority benefits, good availability, whatever you wanted whenever? <span class="hl-g" data-fill="ca">[CA name]</span> showed you that's not true — <b>you can rent the same rooms anytime for a fraction of the cost</b>.</span><span class="sline cont">Remember seeing rooms for like a hundred bucks a night?</span><span class="sline cont">A whole week for 700 bucks — while as an owner you're paying thousands a year and you're lucky to get a single week."</span><span class="sline cont">→ "If they had followed the law and shown you what your total commitment was — just in the first 10 years — <b>would you have ever signed that contract?</b>"</span></li>
-        <li><span class="sline first">"And did they tell you booking was easy — just call a few days or weeks ahead?</span><span class="sline cont"><b>What was it actually like when you tried?</b>"</span><span class="sline cont">→ "If they had followed the law and shown you what your total commitment was — just in the first 10 years — <b>would you have ever signed that contract?</b>"</span></li>
+    <li><span class="sline first">"En los primeros 10 años — entre tus pagos de hipoteca y tus pagos de mantenimiento — firmaste aceptando un costo total de <b><span data-fill="total10">$________</span></b> por este tiempo compartido.</span><span class="sline cont">Pero, <b>¿de verdad te dejaron leer esa página antes de firmar?</b> 📝"</span><span class="sline cont">→ "Eso es exactamente lo que estamos tratando de probar.</span><span class="sline cont">Ese contrato es impenetrable — no puedes simplemente alejarte de él.</span><span class="sline cont">Lo que hacemos es <b>lograr que lo anulen</b> — porque <b>nunca debiste haber estado en él en primer lugar</b>.</span><span class="sline cont">Te mintieron."</span></li>
+    <li><span class="sline first">Los cinco principales, en palabras simples:</span><ol>
+        <li><span class="sline first">"Cuando compraste, ¿te hicieron sonar como si <b>siempre pudieras simplemente venderlo</b> si querías salir?</span><span class="sline cont">Estas cosas están <b>publicadas en eBay por un dólar</b> — ni siquiera puedes regalarlas."</span><span class="sline cont">→ "Si hubieran seguido la ley y te hubieran mostrado cuál era tu compromiso total — solo en los primeros 10 años — <b>¿habrías firmado ese contrato alguna vez?</b>"</span></li>
+        <li><span class="sline first">"¿Te dijeron que las cuotas de mantenimiento <b>nunca terminan</b> — que siguen para siempre y <b>se heredan a tus hijos?</b>"</span><span class="sline cont">→ "Si hubieran seguido la ley y te hubieran mostrado cuál era tu compromiso total — solo en los primeros 10 años — <b>¿habrías firmado ese contrato alguna vez?</b>"</span></li>
+        <li><span class="sline first">"¿Cuánto era la cuota de mantenimiento cuando compraste?</span><span class="sline cont">¿Y te dijeron que <b>sube cada año</b> — alrededor del 8%?"</span><span class="sline cont">→ "Si hubieran seguido la ley y te hubieran mostrado cuál era tu compromiso total — solo en los primeros 10 años — <b>¿habrías firmado ese contrato alguna vez?</b>"</span></li>
+        <li><span class="sline first">"¿Te hicieron sonar como si tuvieras que ser propietario para hospedarte en estos resorts — beneficios de prioridad, buena disponibilidad, lo que quisieras cuando quisieras? <span class="hl-g" data-fill="ca">[nombre del CA]</span> te mostró que eso no es cierto — <b>puedes rentar las mismas habitaciones cuando quieras por una fracción del costo</b>.</span><span class="sline cont">¿Recuerdas haber visto habitaciones por como cien dólares la noche?</span><span class="sline cont">Una semana entera por 700 dólares — mientras que como propietario pagas miles al año y con suerte consigues una sola semana."</span><span class="sline cont">→ "Si hubieran seguido la ley y te hubieran mostrado cuál era tu compromiso total — solo en los primeros 10 años — <b>¿habrías firmado ese contrato alguna vez?</b>"</span></li>
+        <li><span class="sline first">"¿Y te dijeron que reservar era fácil — que solo había que llamar unos días o semanas antes?</span><span class="sline cont"><b>¿Cómo fue en realidad cuando lo intentaste?</b>"</span><span class="sline cont">→ "Si hubieran seguido la ley y te hubieran mostrado cuál era tu compromiso total — solo en los primeros 10 años — <b>¿habrías firmado ese contrato alguna vez?</b>"</span></li>
       </ol></li>
-    <li><span class="sline first"><span class="grp">How we win:</span></span><ol>
-        <li><span class="sline first">"We take all of this to the resort and lay out the <b>fines they're facing</b> — so they see it's <b>cheaper to let you out</b> than to risk paying those fines."</span></li>
-        <li><span class="sline first">"And we go after compensation for the emotional and financial impact this had on you.</span><span class="sline cont">Our competitors settle cases by getting the client to pay the resort — <b>we do the opposite</b>, and our reviews prove it."</span></li>
-        <li><span class="sline first">"We will never take on your case unless we can save you a <b>ridiculous amount of money</b>."</span></li>
-        <li><span class="sline first"><i>Emotional impact:</i> "How did you feel when you found out <b>X</b> — or <b>Y</b>, or <b>Z</b> — turned out to be untrue?"</span></li>
+    <li><span class="sline first"><span class="grp">Cómo ganamos:</span></span><ol>
+        <li><span class="sline first">"Llevamos todo esto al resort y les mostramos las <b>multas que enfrentan</b> — para que vean que les sale <b>más barato dejarte salir</b> que arriesgarse a pagar esas multas."</span></li>
+        <li><span class="sline first">"Y buscamos compensación por el impacto emocional y financiero que esto tuvo en ti.</span><span class="sline cont">Nuestros competidores resuelven los casos haciendo que el cliente le pague al resort — <b>nosotros hacemos lo contrario</b>, y nuestras reseñas lo prueban."</span></li>
+        <li><span class="sline first">"Nunca tomaremos tu caso a menos que podamos ahorrarte una <b>cantidad ridícula de dinero</b>."</span></li>
+        <li><span class="sline first"><i>Impacto emocional:</i> "¿Cómo te sentiste cuando descubriste que <b>X</b> — o <b>Y</b>, o <b>Z</b> — resultaron ser mentira?"</span></li>
       </ol></li>
-    <li><span class="sline first">"The most important part is the <b>letter of explanation</b> — then we can file a formal complaint with <b>________</b>.</span><span class="sline cont">We will be filing in the state of <b>________</b> <span class="tmin">(residence)</span> and the state where you purchased it, and at that point we are issued what’s called a <b>complaint number</b>.</span><span class="sline cont">Ok?</span><span class="sline cont">We spend a lot on <b>filing fees</b> in order to do that, so we ask that you get that letter back to us within <b>3 business days</b>.</span><span class="sline cont">Can you <b>commit</b> to doing that?"</span></li>
+    <li><span class="sline first">"La parte más importante es la <b>carta de explicación</b> — después podemos presentar una queja formal ante <b>________</b>.</span><span class="sline cont">Presentaremos en el estado de <b>________</b> <span class="tmin">(residencia)</span> y en el estado donde lo compraste, y en ese punto nos emiten lo que se llama un <b>número de queja</b>.</span><span class="sline cont">¿Ok?</span><span class="sline cont">Gastamos mucho en <b>costos de presentación</b> para hacer eso, así que te pedimos que nos devuelvas esa carta en un plazo de <b>3 días hábiles</b>.</span><span class="sline cont">¿Te puedes <b>comprometer</b> a hacerlo?"</span></li>
   </ol>
 </div>
 <div class="trans">→ Violaciones documentadas. Ahora, el proceso de aprobación.</div>
@@ -628,16 +628,16 @@
   <h2>ETAPA 3 — EL PROCESO DE APROBACIÓN <span class="t">15 MIN</span></h2>
   <div class="clock">0:30–0:45 · selectividad <span class="tmin">(5 min)</span> → asignación del gerente de caso <span class="tmin">(5 min)</span> → escasez, lista de espera y el SÍ <span class="tmin">(5 min)</span> <span class="stimer"><button id="sb3" onclick="toggleStage(3)">▶ 15:00</button> <button class="rs" onclick="resetStage(3)" title="Reiniciar">↺</button></span></div>
   <ol class="liners">
-    <li><span class="sline first"><span class="grp">Selectivity:</span></span><ol>
-        <li><span class="sline first">"We win <b>99%</b> of our cases by being <b>very selective</b> — we only take on cases we know we will win."</span></li>
-        <li><span class="sline first">"Is there anything that you still need to do on your end that would <b>prevent you from being assigned a case manager today?</b>"</span></li>
+    <li><span class="sline first"><span class="grp">Selectividad:</span></span><ol>
+        <li><span class="sline first">"Ganamos el <b>99%</b> de nuestros casos siendo <b>muy selectivos</b> — solo tomamos casos que sabemos que vamos a ganar."</span></li>
+        <li><span class="sline first">"¿Hay algo que todavía necesites hacer de tu parte que <b>te impida que te asignen un gerente de caso hoy?</b>"</span></li>
       </ol></li>
-    <li><span class="sline first"><span class="grp">How approval works:</span></span><ol>
-        <li><span class="sline first">"Approval is a combination of two things: the <b>strength of your case</b>, and whether a case manager is <b>willing to take it on</b>."</span></li>
-        <li><span class="sline first">"A case manager takes your case based on their opinion of the probability of getting the <b>resort to pay compensation</b> — that is what drives their availability."</span></li>
-        <li><span class="sline first">"If no case manager can take your case right now, we do have a <b>waiting list</b>."</span></li>
+    <li><span class="sline first"><span class="grp">Cómo funciona la aprobación:</span></span><ol>
+        <li><span class="sline first">"La aprobación es una combinación de dos cosas: la <b>fuerza de tu caso</b>, y si un gerente de caso está <b>dispuesto a tomarlo</b>."</span></li>
+        <li><span class="sline first">"Un gerente de caso toma tu caso según su opinión sobre la probabilidad de lograr que el <b>resort pague compensación</b> — eso es lo que determina su disponibilidad."</span></li>
+        <li><span class="sline first">"Si ningún gerente de caso puede tomar tu caso en este momento, sí tenemos una <b>lista de espera</b>."</span></li>
       </ol></li>
-    <li><span class="sline first">"If the stars align and my assessment team decides we can take on your case, is there anything at all that would <b>prevent you from moving forward with us today?</b>"</span></li>
+    <li><span class="sline first">"Si todo se alinea y mi equipo de evaluación decide que podemos tomar tu caso, ¿hay algo en absoluto que <b>te impida seguir adelante con nosotros hoy?</b>"</span></li>
   </ol>
 </div>
 <div class="trans">→ SÍ asegurado. Pasamos al pago.</div>
@@ -646,17 +646,17 @@
   <h2>ETAPA 4 — ENCONTRAR EL DINERO <span class="t">15 MIN</span></h2>
   <div class="clock">0:45–1:00 · cuenta de cheques/ahorros <span class="tmin">(5 min)</span> → qué tan lejos exactamente <span class="tmin">(5 min)</span> → tarjetas de crédito <span class="tmin">(5 min)</span> <span class="stimer"><button id="sb4" onclick="toggleStage(4)">▶ 15:00</button> <button class="rs" onclick="resetStage(4)" title="Reiniciar">↺</button></span></div>
   <ol class="liners">
-    <li><span class="sline first"><span class="grp">Checking / savings:</span></span><ol>
-        <li id="price-anchor"><span class="sline first">"Your total price is <b><span class="hl-b" data-fill="fee">$________</span></b> — and this includes all, beginning to end.</span><span class="sline cont">We never ask for another dollar.</span><span class="sline cont">This price eliminates all past, present and future debt, and your name is removed from the deed at the county level, so your estate is safe and your next of kin will never inherit this nightmare."</span></li>
+    <li><span class="sline first"><span class="grp">Cuenta de cheques / ahorros:</span></span><ol>
+        <li id="price-anchor"><span class="sline first">"Tu precio total es <b><span class="hl-b" data-fill="fee">$________</span></b> — y esto incluye todo, de principio a fin.</span><span class="sline cont">Nunca te pedimos otro dólar.</span><span class="sline cont">Este precio elimina toda la deuda pasada, presente y futura, y tu nombre se retira de la escritura a nivel del condado, para que tu patrimonio esté a salvo y tus herederos nunca hereden esta pesadilla."</span></li>
         <li id="pago-transicion"><span class="sline first">Ahora bien, si no tienes más preguntas sobre nuestro proceso, lo siguiente que puedo explicarte son las diferentes formas en que la mayoría de las personas pagan por nuestros servicios.</span></li>
-        <li><span class="sline first">"The fastest, easiest, and smartest way to do so financially is: if you can pay it out of any <b>checking or savings account</b>.</span><span class="sline cont">If you have the money, then well, pay it."</span></li>
-        <li><span class="sline first">"And again, I don't like to assume anything.</span><span class="sline cont">So I'll just ask you <b>straight up</b>: do you have it in your checking account, savings account, stocks, bonds, whatever, where you could get it into your checking account within a certain amount of days?"</span></li>
+        <li><span class="sline first">"La forma más rápida, fácil e inteligente de hacerlo financieramente es: si puedes pagarlo desde cualquier <b>cuenta de cheques o de ahorros</b>.</span><span class="sline cont">Si tienes el dinero, pues págalo."</span></li>
+        <li><span class="sline first">"Y de nuevo, no me gusta asumir nada.</span><span class="sline cont">Así que te pregunto <b>directamente</b>: ¿lo tienes en tu cuenta de cheques, cuenta de ahorros, acciones, bonos, lo que sea, de donde podrías pasarlo a tu cuenta de cheques en cierta cantidad de días?"</span></li>
       </ol></li>
-    <li><span class="sline first"><span class="grp">How far off:</span></span><ol>
-        <li><span class="sline first">"About <b>how far off</b> are you from that number, <b>exactly?</b>"</span></li>
-        <li><span class="sline first">"So what I'm hearing from you is that you have <b><span data-fill="down">$________</span></b> that you could put towards this.</span><span class="sline cont"><b>Is that what I'm hearing from you?</b>"</span></li>
+    <li><span class="sline first"><span class="grp">Qué tan lejos estás:</span></span><ol>
+        <li><span class="sline first">"¿Como a <b>qué tan lejos</b> estás de ese número, <b>exactamente?</b>"</span></li>
+        <li><span class="sline first">"Entonces lo que te estoy escuchando es que tienes <b><span data-fill="down">$________</span></b> que podrías aportar para esto.</span><span class="sline cont"><b>¿Es eso lo que te estoy escuchando?</b>"</span></li>
       </ol></li>
-    <li><span class="sline first">"Okay, so the second way most people pay for our services is with <b>credit cards</b>."</span></li>
+    <li><span class="sline first">"Bueno, la segunda forma en que la mayoría de personas pagan por nuestros servicios es con <b>tarjetas de crédito</b>."</span></li>
   </ol>
 </div>
 <div class="trans">→ ¿Financiamiento? A solicitar ahora. ¿Efectivo/tarjeta? Recoge la licencia y la prueba bancaria y salta a la Etapa 6.</div>
@@ -666,13 +666,13 @@
   <div class="clock">1:00–1:15 · pagos mensuales <span class="tmin">(5 min)</span> → puntaje de crédito y anticipo <span class="tmin">(5 min)</span> → datos de la solicitud <span class="tmin">(5 min)</span> <span class="stimer"><button id="sb5" onclick="toggleStage(5)">▶ 15:00</button> <button class="rs" onclick="resetStage(5)" title="Reiniciar">↺</button></span></div>
   <div class="plink">🔗 Financiamiento: <a href="https://distributor.ucfs.net/">UCFS merchant portal</a> · <a href="https://agent.uportal360.com/dashboard">UGA (uPortal360)</a> · Equity Bank</div>
   <ol class="liners">
-    <li><span class="sline first"><span class="grp">Financing:</span></span><ol>
-        <li><span class="sline first">"The third option is <b>financing</b> it and breaking it into <b>monthly payments</b>."</span></li>
-        <li><span class="sline first">"Do you have any idea what your <b>credit score</b> is?"</span></li>
-        <li><span class="sline first">"You said that you can put down <b><span data-fill="down">$________</span></b>.</span><span class="sline cont">So then we'd be looking at <b>breaking the remaining into monthly payments</b>."</span></li>
-        <li><span class="sline first">"Let's go ahead and see what we can get you <b>qualified</b> for."</span></li>
+    <li><span class="sline first"><span class="grp">Financiamiento:</span></span><ol>
+        <li><span class="sline first">"La tercera opción es <b>financiarlo</b> y dividirlo en <b>pagos mensuales</b>."</span></li>
+        <li><span class="sline first">"¿Tienes alguna idea de cuál es tu <b>puntaje de crédito</b>?"</span></li>
+        <li><span class="sline first">"Dijiste que puedes dar de anticipo <b><span data-fill="down">$________</span></b>.</span><span class="sline cont">Entonces estaríamos viendo <b>dividir el resto en pagos mensuales</b>."</span></li>
+        <li><span class="sline first">"Vamos a ver para qué podemos lograr que <b>califiques</b>."</span></li>
       </ol></li>
-    <li><span class="sline first">"Now, a couple things I'm going to need is can you guys send me pictures of your <b>driver's licenses?</b>"</span></li>
+    <li><span class="sline first">"Ahora, un par de cosas que voy a necesitar: ¿me pueden enviar fotos de sus <b>licencias de conducir?</b>"</span></li>
   </ol>
 </div>
 <div class="trans">✍️ <b>Antes de la espera:</b> que escriban 2 columnas — <b>Años</b> | <b>Monto a pagar al resort</b> — y pregunta: "¿Les mostraron esto?"</div>
@@ -689,17 +689,17 @@
         <li><span class="sline first">"El costo total de nuestro servicio sería <b><span class="sumF" data-fill="fee">$________</span></b>."</span></li>
         <li><span class="sline first">"Eso representa un ahorro neto proyectado de <b><span class="sumF" data-fill="savings">$________</span></b>, sujeto a que el caso se resuelva conforme a lo previsto."</span></li>
       </ol></li>
-    <li><span class="sline first"><span class="grp">The good news:</span></span><ol>
-        <li><span class="sline first">"The approval team agrees with our assessment and has <b>agreed to take on your case</b>.</span><span class="sline cont">We do have a case manager that feels they can get <b>compensation</b> for the emotional and financial impact."</span></li>
-        <li><span class="sline first">"Good news — there are two potential case managers that can take this case tomorrow.</span><span class="sline cont">One of them, she's <b>very experienced</b> at ___.</span><span class="sline cont">The other one, he's <b>amazing</b> at ___."</span></li>
+    <li><span class="sline first"><span class="grp">Las buenas noticias:</span></span><ol>
+        <li><span class="sline first">"El equipo de aprobación está de acuerdo con nuestra evaluación y ha <b>aceptado tomar tu caso</b>.</span><span class="sline cont">Sí tenemos un gerente de caso que siente que puede conseguir <b>compensación</b> por el impacto emocional y financiero."</span></li>
+        <li><span class="sline first">"Buenas noticias — hay dos gerentes de caso potenciales que pueden tomar este caso mañana.</span><span class="sline cont">Una de ellas tiene <b>mucha experiencia</b> en ___.</span><span class="sline cont">El otro es <b>increíble</b> en ___."</span></li>
       </ol></li>
-    <li><span class="sline first"><span class="grp">The price:</span></span><ol>
-        <li><span class="sline first">"Your TOTAL CONTRACTUAL OBLIGATION to <b><span data-fill="resort">_________</span></b> is <b>your total monthly times 120</b> — and the amount we are going to save you is <b><span data-fill="savings">$________</span></b> — so the total cost to get you out of this is <b><span data-fill="fee">$________</span></b>."</span></li>
-        <li><span class="sline first">"The total fee to cancel 100% of all past, present, and future debt is <b><span data-fill="fee">$________</span></b> — saving you <b><span data-fill="savings">$________</span></b> over the next 10 years.</span><span class="sline cont"><b>We will never ask you for another penny.</b>"</span></li>
+    <li><span class="sline first"><span class="grp">El precio:</span></span><ol>
+        <li><span class="sline first">"Tu OBLIGACIÓN CONTRACTUAL TOTAL con <b><span data-fill="resort">_________</span></b> es <b>tu total mensual por 120</b> — y la cantidad que te vamos a ahorrar es <b><span data-fill="savings">$________</span></b> — así que el costo total para sacarte de esto es <b><span data-fill="fee">$________</span></b>."</span></li>
+        <li><span class="sline first">"La tarifa total para cancelar el 100% de toda la deuda pasada, presente y futura es <b><span data-fill="fee">$________</span></b> — ahorrándote <b><span data-fill="savings">$________</span></b> en los próximos 10 años.</span><span class="sline cont"><b>Nunca te pediremos otro centavo.</b>"</span></li>
       </ol></li>
-    <li><span class="sline first"><span class="grp">Preparing the agreement:</span></span><ol>
-        <li><span class="sline first">"So what I'll need in order to move forward is: what I'm going to do next.</span><span class="sline cont">I'm going to work on preparing our <b>service agreement</b>, right?</span><span class="sline cont">It's going to take me about <b>10 minutes</b> to prepare."</span></li>
-        <li><span class="sline first">"Do you know how to <b>send pictures from your phone?</b>"</span></li>
+    <li><span class="sline first"><span class="grp">Preparando el acuerdo:</span></span><ol>
+        <li><span class="sline first">"Lo que voy a necesitar para seguir adelante es esto: lo que voy a hacer ahora.</span><span class="sline cont">Voy a trabajar en preparar nuestro <b>acuerdo de servicio</b>, ¿de acuerdo?</span><span class="sline cont">Me va a tomar unos <b>10 minutos</b> prepararlo."</span></li>
+        <li><span class="sline first">"¿Sabes cómo <b>enviar fotos desde tu teléfono?</b>"</span></li>
       </ol></li>
   </ol>
 </div>
@@ -826,7 +826,7 @@ function soldRender(){
   var st = soldGet(), on = !!st.on;
   var sw = document.getElementById('soldWhen'); if (sw) sw.value = st.when || '';
   var b = document.getElementById('soldBtn'), strip = document.getElementById('soldStrip');
-  if (b){ b.classList.toggle('on', on); b.textContent = on ? '✅ SOLD' : '🤝 SOLD'; }
+  if (b){ b.classList.toggle('on', on); b.textContent = on ? '✅ VENDIDO' : '🤝 VENDIDO'; }
   if (strip) strip.classList.toggle('on', on);
   if (on){
     var d = document.getElementById('soldDate');
@@ -838,7 +838,7 @@ function soldRender(){
 }
 function soldToggle(){
   var st = soldGet();
-  if (st.on){ if (!confirm('Quitar el SOLD de este cliente?')) return; soldSet({}); }
+  if (st.on){ if (!confirm('¿Quitar la marca de vendido de este cliente?')) return; soldSet({}); }
   else {
     var t = new Date(); var iso = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
     soldSet({on: 1, d: st.d || iso});
@@ -987,7 +987,7 @@ function renderBar(c, n){
       (c.email ? '<div class="ib-line">' + escH(c.email) + '</div>' : '') +
       (c.address ? '<div class="ib-line">📍 ' + escH(c.address) + '</div>' : '') + linksHtml;
   $('ibM').innerHTML = '<div class="ib-stats">' +
-      '<div><div class="ib-lab">Payoff</div><div class="ib-big">' + (c.payoff > 0 ? fmtC(c.payoff) : '—') + '</div></div>' +
+      '<div><div class="ib-lab">Saldo</div><div class="ib-big">' + (c.payoff > 0 ? fmtC(c.payoff) : '—') + '</div></div>' +
       '<div><div class="ib-lab">Total anual</div><div class="ib-big">' + fmtC(totyr) + '</div></div>' +
       '<div><div class="ib-lab">Costo por noche</div><div class="ib-big">' + perNight + '</div></div></div>' + grid +
       '<a class="pagolink" href="#pago-transicion" onclick="var e=document.getElementById(\'pago-transicion\');var b=document.getElementById(\'pegbar\');window.scrollTo({top:e.getBoundingClientRect().top+window.scrollY-(b?b.offsetHeight:0)-10,behavior:\'smooth\'});return false;">Ahora bien, si no tienes más preguntas sobre nuestro proceso, lo siguiente que puedo explicarte son las diferentes formas en que la mayoría de las personas pagan por nuestros servicios.</a>' + beLine;
@@ -1047,7 +1047,7 @@ function qIdn(c){
     (c.address ? '<br>📍 ' + escH(c.address) : '') +
     (ph ? '<br>' + escH(ph) : '') +
     (c.notes ? '<br><a href="javascript:void(0)" onclick="document.getElementById(\'q_notes_full\').style.display=document.getElementById(\'q_notes_full\').style.display===\'none\'?\'block\':\'none\'" style="font-size:0.85em;">📋 Notas del cliente (toca para expandir)</a><div id="q_notes_full" style="display:none;margin-top:6px;"><span class="tmin">' + escH(c.notes) + '</span></div>' : '') +
-    (qPipeUrl(c) ? '<br><a href="' + escH(qPipeUrl(c)) + '" target="_blank">Lead en Pipeline ↗</a>' : '');
+    (qPipeUrl(c) ? '<br><a href="' + escH(qPipeUrl(c)) + '" target="_blank">Registro en Pipeline ↗</a>' : '');
   el.style.display = 'block';
 }
 function amortSched(pv, apr, pmt, months){
@@ -1187,7 +1187,7 @@ function qQuoteHtml(){
   h += '<div ' + ROW + '><span><b>Ahorro neto proyectado en 20 años</b></span><b style="color:#15803d">' + fmtC(s20) + '</b></div>';
   if (bem > 0) h += '<p style="font-size:14px;color:#374151">En aproximadamente <b>' + bem + ' meses</b>, lo que habrías pagado al resort iguala nuestra tarifa completa.</p>';
   h += '<h2 ' + H2 + '>Tu situación actual</h2>';
-  if (payoff > 0) h += '<div ' + ROW + '><span>Saldo de la hipoteca (payoff)</span><b>' + fmtC(payoff) + '</b></div>';
+  if (payoff > 0) h += '<div ' + ROW + '><span>Saldo de la hipoteca</span><b>' + fmtC(payoff) + '</b></div>';
   else h += '<div ' + ROW + '><span>Hipoteca</span><b>Sin hipoteca — propiedad pagada</b></div>';
   if (mmo > 0) h += '<div ' + ROW + '><span>Pago mensual de hipoteca</span><b>' + fmtC(mmo) + '</b></div>';
   h += '<div ' + ROW + '><span>Cuotas de mantenimiento</span><b>' + fmtC(mf) + '/año</b></div>';
@@ -1276,7 +1276,7 @@ function qCoverSave(){
 function qCover(){
   var body = $('cs_body');
   if (!cur){ body.innerHTML = '<span class="tmin">Selecciona un cliente arriba para generar la hoja de cierre.</span>'; return; }
-  var payLabels = {ach:'ACH', check:'CHECK', cc:'CC (+3%)', ucfs:'UCFS', equity:'EQUITY', uga:'UGA'};
+  var payLabels = {ach:'ACH', check:'CHEQUE', cc:'CC (+3%)', ucfs:'UCFS', equity:'EQUITY', uga:'UGA'};
   var paym = $('q_paym').value, sg = qSigners();
   function fdate2(s){ return s || '—'; }
   var html = '<div class="csgrid">' +
@@ -1319,14 +1319,14 @@ function qRenderContracts(c){
   var h = '';
   c.contractsList.forEach(function(k, i){
     var figs = [];
-    figs.push('Payoff: ' + (k.payoff > 0 ? fmtD(k.payoff) : 'por verificar'));
+    figs.push('Saldo: ' + (k.payoff > 0 ? fmtD(k.payoff) : 'por verificar'));
     if (k.mmo > 0) figs.push(fmtD(k.mmo) + '/mes');
     if (k.mf > 0) figs.push('MF ' + fmtD(k.mf) + '/año');
     if (k.pyr > 0) figs.push('Compra ' + k.pyr);
     h += '<div class="qcontract"><div class="qch">Contrato ' + (i + 1) + ' — <b>' + escH(k.resort || '—') + '</b>' + (k.loc ? ' · ' + escH(k.loc) : '') + '</div><div class="qcfig">' + figs.join(' · ') + '</div></div>';
   });
   var tot = [];
-  tot.push('Payoff: ' + (c.payoff > 0 ? fmtD(c.payoff) : '—'));
+  tot.push('Saldo: ' + (c.payoff > 0 ? fmtD(c.payoff) : '—'));
   if (c.mmo > 0) tot.push(fmtD(c.mmo) + '/mes');
   if (c.mf > 0) tot.push('MF ' + fmtD(c.mf) + '/año');
   h += '<div class="qctot">TOTAL COMBINADO (' + c.contractsList.length + ' contratos): ' + tot.join(' · ') + '</div>';
@@ -1467,7 +1467,7 @@ function qRecalc(){
   $('q_ftot').textContent = feeKnown ? fmtD(ftot) + (paym === 'cc' ? ' (+3%)' : '') : '—';
   $('q_bal').textContent = feeKnown ? fmtD(bal) : '—';
   $('q_s10').textContent = feeKnown ? fmtD(s10) : '—';
-  $('q_mo').textContent = (feeKnown && fmo > 0) ? fmtD(amort(bal, fapr, fmo)) + '/mo' : '—';
+  $('q_mo').textContent = (feeKnown && fmo > 0) ? fmtD(amort(bal, fapr, fmo)) + '/mes' : '—';
   if (feeKnown && bal > 0 && fmo > 0){ var tpay = amort(bal, fapr, fmo) * fmo; $('q_ftpay').textContent = fmtC(tpay); $('q_ftint').textContent = fmtC(tpay - bal); }
   else if (feeKnown && bal <= 0){ $('q_ftpay').textContent = fmtC(ftot); $('q_ftint').textContent = fmtC(0); }
   else { $('q_ftpay').textContent = '—'; $('q_ftint').textContent = '—'; }
@@ -1492,7 +1492,7 @@ function qRecalc(){
     else if (qpmt > 0){
       var cum = down, cdt = pdate($('q_pdate').value) || new Date(), guard = 0;
       while (cum < thresh && guard < 360){ cdt = new Date(cdt.getFullYear(), cdt.getMonth() + 1, cdt.getDate()); cum += qpmt; guard++; }
-      cdate = cum >= thresh ? fdate(cdt) : '360+ mo';
+      cdate = cum >= thresh ? fdate(cdt) : '360+ meses';
     }
   }
   $('q_cdate').textContent = cdate;
@@ -1923,7 +1923,7 @@ function lcCalc(){
   var h = '<span>Pago mensual: <b class="big">' + fmtC(mpay) + '</b></span>' +
     '<span>Total de ' + n + ' pagos: <b>' + fmtC(totPay) + '</b></span>' +
     '<span>Interés total: <b>' + fmtC(totInt) + '</b></span>' +
-    '<span>Fecha de payoff: <b>' + lcMon[endD.getMonth()] + '. ' + endD.getFullYear() + '</b></span>';
+    '<span>Fecha de liquidación: <b>' + lcMon[endD.getMonth()] + '. ' + endD.getFullYear() + '</b></span>';
   if (feeAmt > 0) h += feeP === 'deduct'
     ? '<span>Cargo descontado — recibes <b>' + fmtC(amt - feeAmt) + '</b></span>'
     : '<span>Cargo pagado por adelantado: <b>' + fmtC(feeAmt) + '</b></span>';
@@ -1942,7 +1942,7 @@ function lcCalc(){
     var rw = rows[made - 1];
     var totPd = mpay * made, prinPd = amt - rw.bal, intPd = totPd - prinPd - ins * made;
     res.innerHTML += '<div style="margin-top:8px;padding-top:8px;border-top:2px solid #2e7d32;">' +
-      '<span>Payoff hoy (tras ' + made + ' pagos): <b class="big" style="color:#2e7d32">' + fmtC(rw.bal) + '</b></span>' +
+      '<span>Saldo hoy (tras ' + made + ' pagos): <b class="big" style="color:#2e7d32">' + fmtC(rw.bal) + '</b></span>' +
       '<span>Total pagado hasta ahora: <b>' + fmtC(totPd) + '</b></span>' +
       '<span>Capital pagado: <b>' + fmtC(prinPd) + '</b></span>' +
       '<span>Interés pagado: <b style="color:#c62828">' + fmtC(intPd) + '</b></span></div>';
@@ -1994,11 +1994,11 @@ document.addEventListener('keydown', function(e){ if (e.key === 'Escape'){ notes
       <label>MONTO DEL PRÉSTAMO<input id="lc_amt" type="number" min="0" oninput="lcCalc()"></label>
       <label>TASA DE INTERÉS %<input id="lc_apr" type="number" min="0" step="0.01" oninput="lcCalc()"></label>
       <label>PLAZO DEL PRÉSTAMO<span class="row2"><input id="lc_yrs" type="number" min="0" placeholder="años" oninput="lcCalc()"><input id="lc_mos" type="number" min="0" max="11" placeholder="meses" oninput="lcCalc()"></span></label>
-      <label>FECHA DE INICIO<span class="row2"><select id="lc_smo" onchange="lcCalc()"><option value="1">Ene</option><option value="2">Feb</option><option value="3">Mar</option><option value="4">Abr</option><option value="5">May</option><option value="6">Jun</option><option value="7">Jul</option><option value="8">Ago</option><option value="9">Sep</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Dic</option></select><input id="lc_syr" type="number" placeholder="year" oninput="lcCalc()"></span></label>
+      <label>FECHA DE INICIO<span class="row2"><select id="lc_smo" onchange="lcCalc()"><option value="1">Ene</option><option value="2">Feb</option><option value="3">Mar</option><option value="4">Abr</option><option value="5">May</option><option value="6">Jun</option><option value="7">Jul</option><option value="8">Ago</option><option value="9">Sep</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Dic</option></select><input id="lc_syr" type="number" placeholder="año" oninput="lcCalc()"></span></label>
       <label>CARGO DE ORIGINACIÓN<span class="row2"><input id="lc_ofee" type="number" min="0" step="0.01" oninput="lcCalc()"><select id="lc_oft" onchange="lcCalc()"><option value="pct">%</option><option value="dol">$</option></select></span></label>
       <label>MANEJO DEL CARGO<select id="lc_ofp" onchange="lcCalc()"><option value="deduct">descontado del préstamo</option><option value="upfront">pagado por adelantado</option></select></label>
       <label>SEGURO $/MES<input id="lc_ins" type="number" min="0" step="0.01" oninput="lcCalc()"></label>
-      <label style="grid-column:1/-1;border-top:1px solid #ddd;padding-top:8px;margin-top:4px;"><b>PAYOFF HOY</b> — pagos hechos hasta ahora<input id="lc_made" type="number" min="0" placeholder="# de pagos hechos" oninput="lcCalc()"></label>
+      <label style="grid-column:1/-1;border-top:1px solid #ddd;padding-top:8px;margin-top:4px;"><b>SALDO HOY</b> — pagos hechos hasta ahora<input id="lc_made" type="number" min="0" placeholder="# de pagos hechos" oninput="lcCalc()"></label>
     </div>
     <div class="lcRes" id="lcRes"></div>
     <div class="lcTabs"><button id="lcTabA" class="on" onclick="lcTab('a')">Tabla anual</button><button id="lcTabM" onclick="lcTab('m')">Tabla mensual</button></div>
@@ -2008,8 +2008,8 @@ document.addEventListener('keydown', function(e){ if (e.key === 'Escape'){ notes
 
 <script>
 /* ---- Today's appointments side rails — data from apts.json (regenerated by ~/workspace/gen_apts.py) ---- */
-var APT_DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-var APT_MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+var APT_DAYS = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
+var APT_MON = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
 var aptData = null;
 var aptHidden = { L: false, R: false };
 try { var ah0 = localStorage.getItem('sl_apthidden') || ''; aptHidden.L = ah0.indexOf('L') >= 0; aptHidden.R = ah0.indexOf('R') >= 0; } catch(e){}
