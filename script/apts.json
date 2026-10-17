@@ -1,47 +1,85 @@
 {
- "generated": "2026-10-15T14:00:41-04:00",
+ "generated": "2026-10-17T09:18:27-04:00",
  "days": {
-  "2026-10-15": [
+  "2026-10-17": [
    {
-    "time": "12:00 PM",
-    "name": "Jackeline Vera Ruiz",
-    "clientMatch": "Jackeline Vera Ruiz",
+    "time": "9:00 AM",
+    "name": "Javier Correa / Maria Correa",
+    "clientMatch": "Javier Correa / Maria Correa",
     "deedback": false,
     "lang": "es"
    },
    {
-    "time": "3:00 PM",
-    "name": "Mirna Castillo",
-    "clientMatch": "Mirna Castillo",
-    "deedback": false,
-    "lang": "es"
-   },
-   {
-    "time": "6:30 PM",
-    "name": "Thaylin Ormeno / Carlota Soriano",
-    "clientMatch": "Thaylin Ormeno / Carlota Soriano",
+    "time": "10:30 AM",
+    "name": "Rosa Isela Torres y Rafael Rodriguez",
+    "clientMatch": "Rosa Isela Torres y Rafael Rodriguez",
     "deedback": true,
     "lang": "es"
    },
    {
-    "time": "7:30 PM",
-    "name": "Rafael Estevez / Audrey Hernandez",
-    "clientMatch": "Rafael Estevez / Audrey Hernandez",
-    "deedback": false
-   }
-  ],
-  "2026-10-16": [
-   {
     "time": "12:00 PM",
-    "name": "Dora I de los santos",
-    "clientMatch": "Dora I de los santos",
-    "deedback": false
+    "name": "Yailin Linares Acosta",
+    "clientMatch": "Yailin Linares Acosta",
+    "deedback": false,
+    "lang": "es"
    },
    {
-    "time": "7:30 PM",
-    "name": "Eduardo Martinez / Geraldine Martinez",
-    "clientMatch": "Eduardo Martinez / Geraldine Martinez",
-    "deedback": false
+    "time": "2:00 PM",
+    "name": "Edwin Arciniegas / Karen Molina",
+    "clientMatch": "Edwin Arciniegas / Karen Molina",
+    "deedback": false,
+    "lang": "es"
+   },
+   {
+    "time": "4:30 PM",
+    "name": "Jose Romo / Diana Romo",
+    "clientMatch": "Jose Romo / Diana Romo",
+    "deedback": false,
+    "lang": "es"
+   },
+   {
+    "time": "6:00 PM",
+    "name": "Gilberto Yciano / Maria Yciano",
+    "clientMatch": "Gilberto Yciano / Maria Yciano",
+    "deedback": true,
+    "lang": "es"
+   },
+   {
+    "time": "8:00 PM",
+    "name": "Crescencio Claro Dominguez Perez y Maria Teresa Sori",
+    "clientMatch": "Crescencio Claro Dominguez Perez y Maria Teresa Sori",
+    "deedback": false,
+    "lang": "es"
+   },
+   {
+    "time": "9:00 PM",
+    "name": "Elvin Roman / Yanira Rivera",
+    "clientMatch": "Elvin Roman / Yanira Rivera",
+    "deedback": false,
+    "lang": "es"
+   }
+  ],
+  "2026-10-18": [
+   {
+    "time": "10:00 AM",
+    "name": "Alex Rivera y Marilyn Cubero",
+    "clientMatch": "Alex Rivera y Marilyn Cubero",
+    "deedback": false,
+    "lang": "es"
+   },
+   {
+    "time": "1:00 PM",
+    "name": "Modesta Vega Dominguez",
+    "clientMatch": "Modesta Vega Dominguez",
+    "deedback": false,
+    "lang": "es"
+   },
+   {
+    "time": "8:00 PM",
+    "name": "Carlos Reyes y Miriam Angeles",
+    "clientMatch": "Carlos Reyes y Miriam Angeles",
+    "deedback": false,
+    "lang": "es"
    }
   ]
  }
