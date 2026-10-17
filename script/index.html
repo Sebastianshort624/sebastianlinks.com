@@ -369,9 +369,9 @@
   </div>
   <div class="qsec mtgOnly">DESGLOSE DEL PRÉSTAMO</div>
   <div class="tmin mtgOnly" id="q_mleft" style="margin-bottom:6px">— meses restantes</div>
-  <label class="qf mtgOnly">MONTO DEL PRÉSTAMO <input id="q_loan" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf mtgOnly">MONTO DEL PRÉSTAMO <input id="q_loan" type="number" min="0" oninput="this.dataset.manual='1';qRecalc()"></label>
   <label class="qf mtgOnly">APR % <input id="q_aapr" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf mtgOnly">MESES <input id="q_mos" type="number" min="1" max="120" oninput="qRecalc()"></label>
+  <label class="qf mtgOnly">MESES PAGADOS <input id="q_mos" type="number" min="0" max="120" oninput="this.dataset.manual='1';qRecalc()"></label><div id="q_mos_source" class="tmin mtgOnly" style="margin-bottom:6px"></div>
   <div class="qout mtgOnly">
     <div>Total pagado <b id="q_paid">—</b></div>
     <div>Capital <b id="q_prin">—</b></div>
@@ -1371,9 +1371,15 @@ function qSync(c){
   qRenderContracts(c);
   qIdn(c);
   var r0 = (c && c.apr ? c.apr : 0) / 100 / 12, t0 = (c && c.term ? c.term : 120), m0 = (c && c.mmo ? c.mmo : 0);
-  $('q_loan').value = (r0 > 0 && t0 > 0 && m0 > 0) ? Math.round(m0 * (1 - Math.pow(1 + r0, -t0)) / r0) : '';
+  var loanOverride = c && Number(c.loanPrincipalManual) > 0;
+  $('q_loan').dataset.manual = loanOverride ? '1' : '0';
+  $('q_loan').value = loanOverride ? c.loanPrincipalManual : ((r0 > 0 && t0 > 0 && m0 > 0) ? (m0 * (1 - Math.pow(1 + r0, -t0)) / r0).toFixed(2) : '');
   $('q_aapr').value = c ? (c.apr || '') : '';
-  $('q_mos').value = (c && c.pyr) ? Math.min(t0, Math.max(0, (new Date().getFullYear() - c.pyr) * 12 + (c.pmonth ? (new Date().getMonth() + 1 - c.pmonth) : 0))) : '';
+  var monthsOverride = c && c.mosPaidManual !== undefined && c.mosPaidManual !== null && c.mosPaidManual !== '';
+  $('q_mos').dataset.manual = monthsOverride ? '1' : '0';
+  var monthsEstimate = c && c.pyr && c.pmonth ? Math.min(t0, Math.max(0, (new Date().getFullYear() - c.pyr) * 12 + new Date().getMonth() + 1 - c.pmonth)) : null;
+  $('q_mos').value = monthsOverride ? c.mosPaidManual : (monthsEstimate === null ? '' : monthsEstimate);
+  $('q_mos_source').textContent = monthsOverride ? 'Meses pagados ingresados manualmente; confirmar con estado de cuenta.' : (monthsEstimate === null ? 'Falta fecha completa de compra: ingresa pagos confirmados.' : 'ESCENARIO: ' + monthsEstimate + ' meses transcurridos desde compra. NO demuestra pagos realizados ni payoff verificado.');
   qTaskSync(); qDocRender();
   qUrlLinks();
   if (!qIsDB() && !$('q_fee').value && c && c.payoff > 0) qFeeApply();
@@ -1513,21 +1519,21 @@ function qRecalc(){
   }
   if (!qNum('q_loan') && mmo > 0 && laapr > 0 && lterm > 0){
     var lrr = laapr / 100 / 12;
-    $('q_loan').value = Math.round(mmo * (1 - Math.pow(1 + lrr, -lterm)) / lrr);
+    $('q_loan').value = (mmo * (1 - Math.pow(1 + lrr, -lterm)) / lrr).toFixed(2);
   }
   var loan = qNum('q_loan'), aapr = laapr;
   var mos = Math.min(120, Math.max(0, Math.round(qNum('q_mos'))));
-  $('q_mleft').textContent = remMo + ' meses restantes de hipoteca';
+  $('q_mleft').textContent = remMo + ' meses restantes ESTIMADOS por fecha de compra; verificar pagos y estado de cuenta';
   if (loan > 0 && mmo > 0 && $('q_mos').value !== ''){
     var s = amortSched(loan, aapr, mmo, mos);
-    $('q_paid').textContent = fmtD(s.prin + s.inte);
-    $('q_prin').textContent = fmtD(s.prin);
-    $('q_inte').textContent = fmtD(s.inte);
-    $('q_bal2').textContent = fmtD(s.bal);
+    $('q_paid').textContent = fmtC(s.prin + s.inte);
+    $('q_prin').textContent = fmtC(s.prin);
+    $('q_inte').textContent = fmtC(s.inte);
+    $('q_bal2').textContent = fmtC(s.bal);
     var st = amortSched(loan, aapr, mmo, term);
     var totPaid = st.prin + st.inte;
-    $('q_tint').textContent = fmtD(st.inte);
-    $('q_ipct').textContent = totPaid > 0 ? Math.round(st.inte / totPaid * 100) + '%' : '—';
+    $('q_tint').textContent = fmtC(st.inte);
+    $('q_ipct').textContent = totPaid > 0 ? (st.inte / totPaid * 100).toFixed(2) + '%' : '—';
   } else {
     ['q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct'].forEach(function(id){ $(id).textContent = '—'; });
   }
@@ -1561,6 +1567,10 @@ function qAutoSave(){
       c.sheetUrl = $('q_sheet').value.trim(); c.docusignUrl = $('q_dsurl').value.trim();
       c.folderPath = $('q_folder').value.trim(); c.loanNote = $('q_loannote').value.trim();
       c.sheetFee = qNum('q_sheetfee'); c.sheetDown = qNum('q_sheetdown');
+      if ($('q_mos').dataset.manual === '1' && $('q_mos').value !== '') c.mosPaidManual = Math.max(0, Math.round(qNum('q_mos')));
+      else delete c.mosPaidManual;
+      if ($('q_loan').dataset.manual === '1' && qNum('q_loan') > 0) c.loanPrincipalManual = qNum('q_loan');
+      else delete c.loanPrincipalManual;
       localStorage.setItem('sl_clients', JSON.stringify(cs));
       if (cur && cur.id === cid) cur = c;
     } catch(e){}
