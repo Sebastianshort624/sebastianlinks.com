@@ -291,6 +291,7 @@
     <button id="soldBtn" type="button" onclick="soldToggle()">🤝 VENDIDO</button>
     <select id="soldWhen" onchange="soldWhenChange()" title="¿Cuándo se vendió?" style="padding:4px 6px;font-weight:700;font-family:inherit;border-radius:6px;border:1px solid #7f1d1d;background:#fff7ed"><option value="">¿Cuándo?</option><option value="ON APT">EN LA CITA</option><option value="AFTER APT">DESPUÉS DE LA CITA</option></select>
     <button id="quoteBtn" type="button" onclick="qQuoteHtml()">📄 Cotización</button>
+    <button id="postCallBtn" type="button" onclick="qPostCallHtml()">🧾 POST CALL SHEET</button>
     <span class="nv-timer" id="topbar">⏱ <span id="ot">1:30:00</span> <a href="#" id="obtn" onclick="toggleOverall();return false;">▶ Iniciar</a></span>
   </div>
   <div id="soldStrip"><span>✅ VENDIDO</span><span>📄 DocuSign firmado: <input type="date" id="soldDate" onchange="soldDateChange()"></span><span>💰 Mi comisión: <span class="soldComm" id="soldComm">$0.00</span></span></div>
@@ -357,6 +358,7 @@
     <div>Próximos 5 años <b id="q_t5">—</b></div>
     <div>Próximos 10 años <b id="q_t10">—</b></div>
     <div>Próximos 20 años <b id="q_t20">—</b></div>
+    <div>Próximos 30 años <b id="q_t30">—</b></div>
   </div>
   <div class="qsec">📊 DESGLOSE DE GASTOS</div>
   <div class="qout">
@@ -600,6 +602,15 @@
   <div class="fpitem"><label><input type="checkbox" id="fp4" onchange="qFpSave()"><span><b>¿Te prometieron privilegio de prioridad al reservar, con mejor disponibilidad que el público en general?</b><span class="cf">Si no te hubieran dicho esto antes de firmar, ¿habrías firmado el contrato?</span></span></label></div>
   <div class="fpitem"><label><input type="checkbox" id="fp5" onchange="qFpSave()"><span><b>¿Te dijeron que reservar tus fechas era cuestión de solo días o semanas de anticipación?</b><span class="cf">Si no te hubieran dicho esto antes de firmar, ¿habrías firmado el contrato?</span></span></label></div>
   <div class="fpitem"><label><input type="checkbox" id="fp6" onchange="qFpSave()"><span><b>¿Te mostraron el verdadero costo total de ser propietario antes de firmar?</b><span class="cf">Si no te hubieran dicho esto antes de firmar, ¿habrías firmado el contrato?</span></span></label></div>
+  <div class="qsec">4 · POST CALL — LO QUE VIO EL CLIENTE</div>
+  <div class="fpitem"><label><input type="checkbox" id="pc1" onchange="qPcSave()"><span><b>BBB (A+ / Acreditado)</b></span></label></div>
+  <div class="fpitem"><label><input type="checkbox" id="pc2" onchange="qPcSave()"><span><b>Best Company</b></span></label></div>
+  <div class="fpitem"><label><input type="checkbox" id="pc3" onchange="qPcSave()"><span><b>Google Reviews</b></span></label></div>
+  <div class="fpitem"><label><input type="checkbox" id="pc4" onchange="qPcSave()"><span><b>Google Maps</b></span></label></div>
+  <div class="fpitem"><label><input type="checkbox" id="pc5" onchange="qPcSave()"><span><b>Perfil de la empresa — investiganos.com</b></span></label></div>
+  <div class="fpitem"><label><input type="checkbox" id="pc6" onchange="qPcSave()"><span><b>RedWeek (precios reales de su resort)</b></span></label></div>
+  <div class="fpitem"><label><input type="checkbox" id="pc7" onchange="qPcSave()"><span><b>eBay (timeshares por $1)</b></span></label></div>
+  <div class="fpitem"><label><input type="checkbox" id="pc8" onchange="qPcSave()"><span><b>Comparar: rentar sale más barato que ser dueño</b></span></label></div>
 </div>
 
 
@@ -1117,6 +1128,21 @@ function qFpLoad(){
     for (i = 1; i <= 6; i++){ el = $('fp' + i); if (el) el.checked = !!o['fp' + i]; }
   } catch(e){}
 }
+function qPcKey(){ return cur ? 'sl_pc_' + cur.id : null; }
+function qPcSave(){
+  var k = qPcKey(); if (!k) return;
+  var o = {};
+  for (var i = 1; i <= 8; i++){ var el = $('pc' + i); o['pc' + i] = el ? el.checked : false; }
+  try { localStorage.setItem(k, JSON.stringify(o)); } catch(e){}
+}
+function qPcLoad(){
+  var i, el;
+  for (i = 1; i <= 8; i++){ el = $('pc' + i); if (el) el.checked = false; }
+  var k = qPcKey(); if (!k) return;
+  try { var o = JSON.parse(localStorage.getItem(k) || '{}');
+    for (i = 1; i <= 8; i++){ el = $('pc' + i); if (el) el.checked = !!o['pc' + i]; }
+  } catch(e){}
+}
 function qStKey(){ return cur ? 'sl_stages_' + cur.id : null; }
 function qStSave(){
   var k = qStKey(); if (!k) return;
@@ -1224,7 +1250,7 @@ function qQuoteHtml(){
   var escP = gv('q_xescp');
   h += '<h2 ' + H2 + '>📊 Desglose de gastos</h2>';
   h += '<h3 style="color:#0b3d91;margin:14px 0 6px">📈 Proyección — la trampa</h3>';
-  [['Próximos 30 días','q_w30'],['Próximos 90 días','q_w90'],['Próximos 6 meses','q_w6'],['Próximo 1 año','q_t1'],['Próximos 3 años','q_t3'],['Próximos 5 años','q_t5'],['Próximos 10 años','q_t10'],['Próximos 20 años','q_t20']].forEach(function(r){ var v = gv(r[1]); if (v && v !== '—') h += '<div ' + ROW + '><span>' + r[0] + '</span><b>' + escH(v) + '</b></div>'; });
+  [['Próximos 30 días','q_w30'],['Próximos 90 días','q_w90'],['Próximos 6 meses','q_w6'],['Próximo 1 año','q_t1'],['Próximos 3 años','q_t3'],['Próximos 5 años','q_t5'],['Próximos 10 años','q_t10'],['Próximos 20 años','q_t20'],['Próximos 30 años','q_t30']].forEach(function(r){ var v = gv(r[1]); if (v && v !== '—') h += '<div ' + ROW + '><span>' + r[0] + '</span><b>' + escH(v) + '</b></div>'; });
   if (mmo > 0) h += '<div ' + ROW + '><span>Hipoteca mensual</span><b>' + escH(gv('q_xmmo')) + '</b></div>';
   h += '<div ' + ROW + '><span>Mantenimiento mensual</span><b>' + escH(gv('q_xmfmo')) + '</b></div>';
   h += '<div ' + ROW + '><span><b>Total mensual</b></span><b>' + escH(gv('q_xtotmo')) + '</b></div>';
@@ -1241,6 +1267,59 @@ function qQuoteHtml(){
   h += '<tr><td style="padding:6px;border-bottom:1px solid #e5e7eb">Cuotas de mantenimiento (aumento ' + esc + '% anual)</td><td style="padding:6px;text-align:right;border-bottom:1px solid #e5e7eb">' + fmtC(mfPart(10)) + '</td><td style="padding:6px;text-align:right;border-bottom:1px solid #e5e7eb">' + fmtC(mfPart(20)) + '</td></tr>';
   h += '<tr style="font-weight:800"><td style="padding:6px">Total</td><td style="padding:6px;text-align:right">' + fmtC(t10) + '</td><td style="padding:6px;text-align:right">' + fmtC(t20) + '</td></tr></table>';
   h += '<p style="margin-top:26px;font-size:12px;color:#6b7280;text-align:center">Linx Legal · Las proyecciones de cuotas usan un aumento anual del ' + esc + '% y son estimados con fines ilustrativos.</p>';
+  h += '</body></html>';
+  var blob = new Blob([h], { type: 'text/html' });
+  window.open(URL.createObjectURL(blob), '_blank');
+}
+function qPostCallHtml(){
+  if (!cur){ alert('Selecciona un cliente primero.'); return; }
+  var now = new Date();
+  var today = now.toLocaleDateString('es-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  var hora = now.toLocaleTimeString('es-US', { hour: 'numeric', minute: '2-digit' });
+  var S = 'style="font-family:Arial,Helvetica,sans-serif;color:#111827;max-width:760px;margin:0 auto;padding:28px;line-height:1.45"';
+  var H2 = 'style="color:#0b3d91;border-bottom:3px solid #0b3d91;padding-bottom:4px;margin:26px 0 10px;font-size:20px"';
+  var ROW = 'style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #e5e7eb"';
+  var payLabels = {ach:'ACH', check:'CHEQUE', cc:'CC (+3%)', ucfs:'UCFS', equity:'EQUITY', uga:'UGA'};
+  var paym = ($('q_paym') || {}).value || '';
+  var phones = [cur.phone, cur.phone2].filter(Boolean).map(fmtPhone).join(' · ');
+  var h = '<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><title>Hoja Post-Llamada — ' + escH(cur.name) + '</title></head><body ' + S + '>';
+  h += '<div style="text-align:center"><div style="font-size:26px;font-weight:800;color:#0b3d91">Linx Legal</div><div style="font-size:15px;color:#374151">Hoja Post-Llamada — para Case Management y Billing</div><div style="font-size:13px;color:#6b7280">' + today + ' · ' + hora + '</div></div>';
+  h += '<h2 ' + H2 + '>Cliente</h2>';
+  h += '<div ' + ROW + '><span>Nombre</span><b>' + escH(cur.name) + '</b></div>';
+  if (phones) h += '<div ' + ROW + '><span>Teléfonos</span><b>' + escH(phones) + '</b></div>';
+  if (cur.email) h += '<div ' + ROW + '><span>Correo</span><b>' + escH(cur.email) + '</b></div>';
+  if (cur.address) h += '<div ' + ROW + '><span>Dirección</span><b>' + escH(cur.address) + '</b></div>';
+  h += '<h2 ' + H2 + '>Caso</h2>';
+  if (cur.resort) h += '<div ' + ROW + '><span>Resort</span><b>' + escH(cur.resort) + '</b></div>';
+  if (cur.loc) h += '<div ' + ROW + '><span>Ubicación</span><b>' + escH(cur.loc) + '</b></div>';
+  if (cur.contracts > 0) h += '<div ' + ROW + '><span>Contratos</span><b>' + cur.contracts + '</b></div>';
+  h += '<div ' + ROW + '><span>Tipo de caso</span><b>' + (qIsDB() ? 'DEED-BACK' : 'HIPOTECA') + '</b></div>';
+  var po = qNum('q_payoff');
+  h += '<div ' + ROW + '><span>Payoff</span><b>' + (po > 0 ? fmtC(po) : '$0 — sin hipoteca') + '</b></div>';
+  if (cur.ca) h += '<div ' + ROW + '><span>Analista de casos (CA)</span><b>' + escH(cur.ca) + '</b></div>';
+  if (cur.appt) h += '<div ' + ROW + '><span>Cita</span><b>' + escH(cur.appt) + '</b></div>';
+  h += '<div ' + ROW + '><span>Case Builder (CB)</span><b>Sebastian Short</b></div>';
+  h += '<h2 ' + H2 + '>Pago — Billing</h2>';
+  var ftot = ($('q_ftot') || {}).textContent || '';
+  if (ftot && ftot !== '—') h += '<div ' + ROW + '><span>Tarifa total</span><b>' + escH(ftot) + '</b></div>';
+  if (paym) h += '<div ' + ROW + '><span>Forma de pago</span><b>' + (payLabels[paym] || escH(paym)) + '</b></div>';
+  var down = qNum('q_down'), ddate = ($('q_ddate') || {}).value || '';
+  if (down > 0) h += '<div ' + ROW + '><span>Anticipo</span><b>' + fmtC(down) + (ddate ? ' — ' + ddate : '') + '</b></div>';
+  var pmt = qNum('q_pmt'), pdate = ($('q_pdate') || {}).value || '', fmo = ($('q_fmo') || {}).value || '', fapr = ($('q_fapr') || {}).value || '';
+  if (pmt > 0) h += '<div ' + ROW + '><span>Pago mensual</span><b>' + fmtC(pmt) + (fmo ? ' × ' + fmo + ' meses' : '') + (fapr ? ' @ ' + fapr + '%' : '') + (pdate ? ' — primer pago ' + pdate : '') + '</b></div>';
+  var comm = ($('q_comm') || {}).textContent || '';
+  if (comm && comm !== '—') h += '<div ' + ROW + '><span>Comisión CB</span><b>' + escH(comm) + '</b></div>';
+  h += '<h2 ' + H2 + '>Preguntas de los videos</h2>';
+  var fpQ = ['¿Firmaste tu contrato porque te dijeron que podías rentar o vender tu tiempo compartido?','¿Te revelaron la cláusula de perpetuidad: que las cuotas de mantenimiento son una obligación para siempre?','¿Te dijeron cuál era la cuota de mantenimiento al momento de la compra, y que esas cuotas aumentarían año tras año?','¿Te prometieron privilegio de prioridad al reservar, con mejor disponibilidad que el público en general?','¿Te dijeron que reservar tus fechas era cuestión de solo días o semanas de anticipación?','¿Te mostraron el verdadero costo total de ser propietario antes de firmar?'];
+  var allYes = true, i, el;
+  for (i = 1; i <= 6; i++){ el = $('fp' + i); if (!el || !el.checked) allYes = false; }
+  if (allYes) h += '<p style="font-size:15px"><b>✅ El cliente respondió SÍ a todas las preguntas de los videos.</b></p>';
+  for (i = 1; i <= 6; i++){ el = $('fp' + i); var on = el ? el.checked : false; h += '<div ' + ROW + '><span>' + fpQ[i - 1] + '<br><span style="font-size:12px;color:#6b7280">Si no te hubieran dicho esto antes de firmar, ¿habrías firmado el contrato?</span></span><b>' + (on ? '✔ SÍ' : '✘ NO') + '</b></div>'; }
+  var pcL = ['BBB (A+ / Acreditado)','Best Company','Google Reviews','Google Maps','Perfil de la empresa — investiganos.com','RedWeek (precios reales de su resort)','eBay (timeshares por $1)','Comparar: rentar sale más barato que ser dueño'];
+  var vio = [];
+  for (i = 1; i <= 8; i++){ el = $('pc' + i); if (el && el.checked) vio.push(pcL[i - 1]); }
+  if (vio.length){ h += '<h2 ' + H2 + '>Lo que vio el cliente en la llamada</h2>'; vio.forEach(function(v){ h += '<div ' + ROW + '><span>' + v + '</span><b>✔ Mostrado</b></div>'; }); }
+  h += '<p style="margin-top:26px;font-size:12px;color:#6b7280;text-align:center">Linx Legal · Hoja post-llamada generada por Sebastian Short · ' + today + ' · ' + hora + '</p>';
   h += '</body></html>';
   var blob = new Blob([h], { type: 'text/html' });
   window.open(URL.createObjectURL(blob), '_blank');
@@ -1287,7 +1366,7 @@ function qCopyText(){
   else { var ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch(e){} ta.remove(); done(); }
 }
 function qTaskSync(){
-  qTaskLoad(); qFpLoad(); qStLoad(); qPhLoad();
+  qTaskLoad(); qFpLoad(); qPcLoad(); qStLoad(); qPhLoad();
   $('qt_emailL').href = qEmailHref();
   var hasCrm = !!(cur && cur.crmlink);
   $('qt_crmL').href = hasCrm ? cur.crmlink : '#';
@@ -1453,7 +1532,7 @@ function qDocDel(i){
 }
 function qRecalc(){
   var qdEl = $('q_dates'); if (qdEl) qdEl.style.display = ($('q_paym').value === 'uga') ? '' : 'none';
-  if (!cur){ ['q_w30','q_w90','q_w6','q_t1','q_t3','q_t5','q_t10','q_t20','q_ftot','q_bal','q_s10','q_mo','q_ftpay','q_ftint','q_mosn','q_t12','q_t24','q_t36','q_comm','q_cdate','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct','q_xmmo','q_xmfmo','q_xtotmo','q_xmoyr','q_xmfyr','q_xtotyr','q_xmo10','q_xmf10','q_xproj10','q_xnight'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— meses restantes'; var fe0 = $('q_feesug'); if (fe0) fe0.textContent = ''; var mw0 = $('q_minwarn'); if (mw0) mw0.style.display = 'none'; var cr0 = $('q_ccrow'); if (cr0) cr0.style.display = 'none'; var cb0 = $('q_commbase'); if (cb0) cb0.textContent = ''; return; }
+  if (!cur){ ['q_w30','q_w90','q_w6','q_t1','q_t3','q_t5','q_t10','q_t20','q_t30','q_ftot','q_bal','q_s10','q_mo','q_ftpay','q_ftint','q_mosn','q_t12','q_t24','q_t36','q_comm','q_cdate','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct','q_xmmo','q_xmfmo','q_xtotmo','q_xmoyr','q_xmfyr','q_xtotyr','q_xmo10','q_xmf10','q_xproj10','q_xnight'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— meses restantes'; var fe0 = $('q_feesug'); if (fe0) fe0.textContent = ''; var mw0 = $('q_minwarn'); if (mw0) mw0.style.display = 'none'; var cr0 = $('q_ccrow'); if (cr0) cr0.style.display = 'none'; var cb0 = $('q_commbase'); if (cb0) cb0.textContent = ''; return; }
   var mmo = qIsDB() ? 0 : qNum('q_mmo'), mf = qNum('q_mf'), esc = qNum('q_esc'), payoff = qNum('q_payoff');
   var pyrIn = parseInt(($('q_pyr').value || '').replace(/\D/g, ''), 10) || 0;
   var pyr = pyrIn > 0 ? pyrIn : 2023; // hidden default for math only — field stays blank
@@ -1465,7 +1544,7 @@ function qRecalc(){
   function win(y){ return Math.min(y * 12, remMo) * mmo + mfTot(mf, r, y); }
   function winMo(m){ return Math.min(m, remMo) * mmo + mf * m / 12; }
   var w30 = winMo(1), w90 = winMo(3), w6 = winMo(6);
-  var t1 = win(1), t3 = win(3), t5 = win(5), t10 = win(10), t20 = win(20);
+  var t1 = win(1), t3 = win(3), t5 = win(5), t10 = win(10), t20 = win(20), t30 = win(30);
   $('q_w30').textContent = fmtC(w30);
   $('q_w90').textContent = fmtC(w90);
   $('q_w6').textContent = fmtC(w6);
@@ -1474,6 +1553,7 @@ function qRecalc(){
   $('q_t5').textContent = fmtC(t5);
   $('q_t10').textContent = fmtC(t10);
   $('q_t20').textContent = fmtC(t20);
+  $('q_t30').textContent = fmtC(t30);
   // Expense breakdown (monthly MF floored for display only; annual MF exact, 10-yr MF escalated)
   var mfmo = Math.floor(mf / 12), mfoyr = mf, moyr = mmo * 12, totyr = moyr + mfoyr;
   var mo10 = moyr * 10, escR = (esc || 8) / 100;
