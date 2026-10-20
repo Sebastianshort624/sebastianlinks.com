@@ -1204,7 +1204,7 @@ function qQuoteHtml(){
   h += '<p style="font-size:14px;color:#374151">Este precio incluye todo, de principio a fin. Nunca pedimos otro dólar. Este precio elimina toda la deuda pasada, presente y futura, y tu nombre se retira de la escritura a nivel del condado.</p>';
   h += '<div ' + ROW + '><span>Pago completo (cuenta de cheques o ahorros)</span><b>' + fmtC(fee) + '</b></div>';
   h += '<div ' + ROW + '><span>Pago con tarjeta de crédito</span><b>' + fmtC(fee * 1.03) + '</b></div>';
-  if (fmo > 0 && moTxt && moTxt !== '—') h += '<div ' + ROW + '><span>Financiamiento: ' + (down > 0 ? fmtC(down) + ' de anticipo + ' : '') + 'pagos mensuales</span><b>' + escH(moTxt) + '/mes × ' + fmo + ' meses</b></div>';
+  if (fmo > 0 && moTxt && moTxt !== '—') h += '<div ' + ROW + '><span>Financiamiento: ' + (down > 0 ? fmtC(down) + ' de anticipo + ' : '') + 'pagos mensuales</span><b>' + escH(moTxt) + ' × ' + fmo + ' meses</b></div>';
   h += '<h2 ' + H2 + '>Tu ahorro</h2>';
   h += '<div ' + ROW + '><span>Costo de quedarte con el tiempo compartido — próximos 10 años</span><b>' + fmtC(t10) + '</b></div>';
   h += '<div ' + ROW + '><span>Nuestra tarifa (una sola vez)</span><b>' + fmtC(fee) + '</b></div>';
