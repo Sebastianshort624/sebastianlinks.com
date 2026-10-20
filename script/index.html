@@ -412,6 +412,7 @@
   <label class="qf">APR FINANC. % <input id="q_fapr" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">MESES FINANC. <select id="q_fmo" onchange="qRecalc()"><option value="6">6</option><option value="12">12</option><option value="18">18</option><option value="24">24</option><option value="30">30</option><option value="36" selected>36</option><option value="42">42</option><option value="48">48</option><option value="54">54</option><option value="60">60</option></select></label>
   <div class="qout">
+    <div id="q_ccrow" style="display:none">Cargo tarjeta (3%) <b id="q_ccfee">—</b></div>
     <div>Total <b id="q_ftot">—</b></div>
     <div>Saldo <b id="q_bal">—</b></div>
     <div>Ahorro 10 años <b id="q_s10">—</b></div>
@@ -424,7 +425,7 @@
       <div><span>24 meses</span><b id="q_t24">—</b></div>
       <div><span>36 meses</span><b id="q_t36">—</b></div>
     </div>
-    <div>Comisión <b id="q_comm">—</b></div>
+    <div>Comisión 10% <b id="q_comm">—</b> <span class="qsm" id="q_commbase"></span></div>
   </div>
   <div id="q_dates" style="display:none;margin-top:10px">
     <label class="qf">FECHA DEL ANTICIPO <input id="q_ddate" type="date" onchange="qRecalc()"></label>
@@ -1437,7 +1438,7 @@ function qDocDel(i){
 }
 function qRecalc(){
   var qdEl = $('q_dates'); if (qdEl) qdEl.style.display = ($('q_paym').value === 'uga') ? '' : 'none';
-  if (!cur){ ['q_w30','q_w90','q_w6','q_t1','q_t3','q_t5','q_t10','q_t20','q_ftot','q_bal','q_s10','q_mo','q_ftpay','q_ftint','q_mosn','q_t12','q_t24','q_t36','q_comm','q_cdate','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct','q_xmmo','q_xmfmo','q_xtotmo','q_xmoyr','q_xmfyr','q_xtotyr','q_xmo10','q_xmf10','q_xproj10','q_xnight'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— meses restantes'; var fe0 = $('q_feesug'); if (fe0) fe0.textContent = ''; var mw0 = $('q_minwarn'); if (mw0) mw0.style.display = 'none'; return; }
+  if (!cur){ ['q_w30','q_w90','q_w6','q_t1','q_t3','q_t5','q_t10','q_t20','q_ftot','q_bal','q_s10','q_mo','q_ftpay','q_ftint','q_mosn','q_t12','q_t24','q_t36','q_comm','q_cdate','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct','q_xmmo','q_xmfmo','q_xtotmo','q_xmoyr','q_xmfyr','q_xtotyr','q_xmo10','q_xmf10','q_xproj10','q_xnight'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— meses restantes'; var fe0 = $('q_feesug'); if (fe0) fe0.textContent = ''; var mw0 = $('q_minwarn'); if (mw0) mw0.style.display = 'none'; var cr0 = $('q_ccrow'); if (cr0) cr0.style.display = 'none'; var cb0 = $('q_commbase'); if (cb0) cb0.textContent = ''; return; }
   var mmo = qIsDB() ? 0 : qNum('q_mmo'), mf = qNum('q_mf'), esc = qNum('q_esc'), payoff = qNum('q_payoff');
   var pyrIn = parseInt(($('q_pyr').value || '').replace(/\D/g, ''), 10) || 0;
   var pyr = pyrIn > 0 ? pyrIn : 2023; // hidden default for math only — field stays blank
@@ -1477,7 +1478,7 @@ function qRecalc(){
   var sugEl = $('q_feesug');
   if (sugEl){
     if (qIsDB()) sugEl.innerHTML = sheetFeeActive ? 'Fee activo: el de la hoja PRE-CALL (deed-back).' : 'Deed-back: el fee sale de la hoja PRE-CALL \u2014 ingr\u00e9salo en el recuadro rojo.';
-    else if (payoff > 0){ var pctS = parseFloat(($('q_feepct') || {}).value || '47') || 47; var s47 = payoff * pctS / 100; if (s47 < 3500) s47 = 3500; var adm = s47 < 10000 ? 299 : 399; var mcN = qMulti(cur) ? ' (payoff combinado de ' + cur.contractsList.length + ' contratos)' : ''; sugEl.innerHTML = 'F\u00f3rmula: payoff \u00d7 ' + pctS + '% = ' + fmtD(s47) + ' + admin ' + fmtD(adm) + ' = <b>' + fmtD(s47 + adm) + '</b>' + mcN + ' <a href="#" onclick="document.getElementById(\'q_fee\').value=' + Math.round(s47 + adm) + ';qRecalc();return false;">Usar</a>'; }
+    else if (payoff > 0){ var pctS = parseFloat(($('q_feepct') || {}).value || '47') || 47; var s47 = payoff * pctS / 100; if (s47 < 3500) s47 = 3500; var adm = s47 < 10000 ? 299 : 399; var mcN = qMulti(cur) ? ' (payoff combinado de ' + cur.contractsList.length + ' contratos)' : ''; var ccN = ''; if (($('q_paym') || {}).value === 'cc'){ var ccS = (s47 + adm) * 0.03; ccN = ' + cargo CC 3% = ' + fmtD(ccS) + ' = <b>' + fmtD(s47 + adm + ccS) + '</b> con tarjeta'; } sugEl.innerHTML = 'F\u00f3rmula: payoff \u00d7 ' + pctS + '% = ' + fmtD(s47) + ' + admin ' + fmtD(adm) + ' = <b>' + fmtD(s47 + adm) + '</b>' + ccN + mcN + ' <a href="#" onclick="document.getElementById(\'q_fee\').value=' + Math.round(s47 + adm) + ';qRecalc();return false;">Usar</a>'; }
     else sugEl.textContent = '';
   }
   var paym = $('q_paym').value;
@@ -1492,6 +1493,7 @@ function qRecalc(){
   var bal = feeKnown ? Math.max(0, ftot - down) : 0;
   var s10 = feeKnown ? t10 - ftot : 0;
   $('q_ftot').textContent = feeKnown ? fmtD(ftot) + (paym === 'cc' ? ' (+3%)' : '') : '—';
+  var ccRow = $('q_ccrow'); if (ccRow){ var isCC = feeKnown && paym === 'cc'; ccRow.style.display = isCC ? '' : 'none'; if (isCC) $('q_ccfee').textContent = fmtD(ftot - fee); }
   $('q_bal').textContent = feeKnown ? fmtD(bal) : '—';
   $('q_s10').textContent = feeKnown ? fmtD(s10) : '—';
   $('q_mo').textContent = (feeKnown && fmo > 0) ? fmtD(amort(bal, fapr, fmo)) + '/mes' : '—';
@@ -1510,6 +1512,7 @@ function qRecalc(){
   $('q_t12').textContent = t12; $('q_t24').textContent = t24; $('q_t36').textContent = t36;
   var comm = feeKnown ? Math.max(0, fee - qAdminFor(fee)) * 0.10 : 0;
   $('q_comm').textContent = feeKnown ? fmtD(comm) : '—';
+  var cbEl = $('q_commbase'); if (cbEl) cbEl.textContent = feeKnown ? '(base ' + fmtD(Math.max(0, fee - qAdminFor(fee))) + ' — tarifa sin admin ni cargo CC, como en la hoja de comisi\u00f3n)' : '';
   var cdate = '—';
   if (feeKnown){
     var thresh = ftot * 0.25;
@@ -2134,7 +2137,6 @@ setInterval(function(){ if (aptData){ aptRender(); aptLayout(); } }, 60000);
 </script>
 </body>
 </html>
-
 
 
 
