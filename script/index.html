@@ -892,14 +892,25 @@ function qMortgage(){
     if (mmo <= 0) return { status: 'pending', months: 0, mmo: 0, payoff: payoff };
     var term = qNum('q_term') || 120;
     var lr = (apr || 0) / 100 / 12;
-    if (lr > 0 && mmo > payoff * lr) return { status: 'ok', months: Math.min(term, Math.ceil(-Math.log(1 - payoff * lr / mmo) / Math.log(1 + lr))), mmo: mmo, payoff: payoff };
+    if (lr > 0 && mmo > payoff * lr) return { status: 'ok', months: Math.min(term, Math.ceil(-Math.log(1 - payoff * lr / mmo) / Math.log(1 + lr))), mmo: mmo, payoff: payoff, apr: apr };
     return { status: 'pending', months: 0, mmo: mmo, payoff: payoff };
   }
   if (mmo > 0) return { status: 'pending', months: 0, mmo: mmo, payoff: 0 };
   return { status: 'pending', months: 0, mmo: 0, payoff: 0 };
 }
 // Mortgage $ over y years under the shared model; null = pending verification.
-function qMortOver(mg, y){ if (mg.status === 'paid') return 0; if (mg.status === 'ok') return Math.min(y * 12, mg.months) * mg.mmo; return null; }
+// TRUE amortized mortgage cash: the final payment is PARTIAL (remaining balance + that month's interest),
+// never a full payment. Flat mmo x months overstates every long window (Sebastian caught it 2026-10-20 on the
+// PRE-CITA template: Nelson 225 x 12 = $2,700 claimed $249.41 of interest; the true amortization totals
+// $2,634.95 — $184.36 of interest on the $2,450.59 saldo at 13.9%).
+function qMortTotal(mg){
+  var r = (mg.apr || 0) / 100 / 12;
+  if (!(r > 0) || !(mg.months > 0)) return mg.months * mg.mmo;
+  var bal = mg.payoff, tot = 0;
+  for (var k = 0; k < mg.months; k++){ var due = bal * (1 + r); var pay = Math.min(mg.mmo, due); tot += pay; bal = due - pay; if (bal <= 0.005) break; }
+  return tot;
+}
+function qMortOver(mg, y){ if (mg.status === 'paid') return 0; if (mg.status === 'ok'){ var H = y * 12; return H >= mg.months ? qMortTotal(mg) : mg.mmo * H; } return null; }
 var PEND_TXT = 'PENDIENTE DE VERIFICACIÓN';
 // ===== CONTRACTS TOOL (Sebastian, 2026-10-20): charge EACH contract separately, combine totals at top =====
 var qNC = 1; // active contract count
@@ -915,7 +926,7 @@ function qMortgageVals(payoff, mmo, apr, term){
   if (payoff <= 0) return { status: 'paid', months: 0, mmo: 0, payoff: 0 };
   if (mmo <= 0) return { status: 'pending', months: 0, mmo: 0, payoff: payoff };
   var lr = apr / 100 / 12;
-  if (lr > 0 && mmo > payoff * lr) return { status: 'ok', months: Math.min(term, Math.ceil(-Math.log(1 - payoff * lr / mmo) / Math.log(1 + lr))), mmo: mmo, payoff: payoff };
+  if (lr > 0 && mmo > payoff * lr) return { status: 'ok', months: Math.min(term, Math.ceil(-Math.log(1 - payoff * lr / mmo) / Math.log(1 + lr))), mmo: mmo, payoff: payoff, apr: apr };
   return { status: 'pending', months: 0, mmo: mmo, payoff: payoff };
 }
 // Per-contract price: service = payoff x pct (floored at the $3,500 Linx minimum) + admin ($299 < $10K service, else $399).
@@ -1417,52 +1428,63 @@ var QDOC_BAR = 'style="position:sticky;top:0;background:#0b3d91;color:#fff;paddi
 var QDOC_BTN = 'style="background:#fff;color:#0b3d91;border:none;border-radius:6px;padding:7px 13px;font-weight:800;cursor:pointer;font-family:inherit"';
 function qEmailHtml(){
   if (!cur){ alert('Selecciona un cliente primero.'); return; }
+  // Sebastian's own PRE-CITA design (uploaded 2026-10-20): teal financial-summary email — header band,
+  // COMPROMISO CONTRACTUAL ACTUAL cards, total bar, PROYECCION table, verification footnote, signature.
   var en = cur.lang === 'en';
   var F = qCaseFacts();
-  var legal = qLegalName();
-  var intro = en ?
-    ['We cannot dispute the fact that you signed the contract, but we do not need to.',
-     'One of your fundamental rights as a consumer is the right to be informed: to receive the essential information needed to make an informed decision before taking on a long-term financial commitment.',
-     'What we need to identify is the principal reason you signed the contract, and whether that decision was influenced by misleading information or by important facts that were withheld from you.'] :
-    ['No podemos disputar el hecho de que firmaste el contrato, pero tampoco necesitamos hacerlo.',
-     'Uno de tus derechos fundamentales como consumidor es el derecho a estar informado: recibir la información esencial para tomar una decisión informada antes de asumir un compromiso financiero a largo plazo.',
-     'Lo que necesitamos identificar es la razón principal por la que firmaste el contrato y si esa decisión estuvo influenciada por información engañosa o por datos importantes que te fueron ocultados.'];
-  var vids = [['intro', en ? 'Introduction' : 'Introducción'], ['redweek', 'RedWeek'], ['ebay', 'eBay'], ['cuota', en ? 'The monthly payment and the interest' : 'La cuota y los intereses'], ['tarifas', en ? 'Maintenance fees' : 'Tarifas de mantenimiento'], ['herederos', en ? 'Your heirs' : 'Tus herederos'], ['conoce', en ? 'Meet Linx Legal' : 'Conoce a Linx Legal']];
-  var subj = en ? 'Have your answers to the 5 questions ready' : 'Tengas preparadas tus respuestas a las 5 preguntas';
-  var e = '';
-  e += '<p>' + (en ? 'Hello ' : 'Hola ') + escH(cur.name) + ':</p>';
-  intro.forEach(function(p){ e += '<p>' + p + '</p>'; });
-  e += '<p><b>' + (en ? 'Your situation, according to your file:' : 'Tu situación, según tu expediente:') + '</b></p>';
-  e += '<table style="width:100%;border-collapse:collapse;font-size:15px">';
-  function erow(l, v){ e += '<tr><td style="padding:5px;border-bottom:1px solid #e5e7eb">' + l + '</td><td style="padding:5px;text-align:right;border-bottom:1px solid #e5e7eb"><b>' + v + '</b></td></tr>'; }
-  if (legal) erow('Resort', escH(legal) + (cur.loc ? ' — ' + escH(cur.loc) : ''));
-  if (cur.pyr > 0) erow(en ? 'Year purchased' : 'Año de compra', cur.pyr);
-  erow(en ? 'Contracts' : 'Contratos', (cur.contracts || 1));
-  if (F.isDB) erow(en ? 'Mortgage' : 'Hipoteca', en ? 'Paid off — no mortgage' : 'Pagada — sin hipoteca');
-  else { if (F.payoff > 0) erow(en ? 'Current balance (payoff)' : 'Saldo actual (payoff)', fmtC(F.payoff)); if (F.mmo > 0) erow(en ? 'Monthly mortgage payment' : 'Cuota mensual de hipoteca', fmtC(F.mmo)); }
-  erow(en ? 'Maintenance fees' : 'Tarifas de mantenimiento', fmtC(F.mf) + (en ? '/year' : '/año'));
-  if (F.MG.status === 'ok') erow(en ? 'Payments remaining on your current contract' : 'Pagos restantes de tu contrato actual', F.MG.months + (en ? ' months' : ' meses'));
-  if (F.multi){ var st = 0; F.multi.forEach(function(c){ st += c.payoff; }); erow(en ? 'Combined balance (' + F.multi.length + ' contracts)' : 'Saldo combinado (' + F.multi.length + ' contratos)', fmtC(st)); }
-  e += '</table>';
-  // PROYECCIÓN — LA TRAMPA: the panel's own window values (same source as QUOTE's desglose — always matches the screen)
+  var resortT = escH(cur.resort || '');
+  var nC = F.multi ? F.multi.length : (cur.contracts || 1);
+  var apr = qNum('q_aapr');
+  var mfMo = F.mf / 12;
+  var totMo = (F.isDB ? 0 : F.mmo) + mfMo;
   var gv2 = function(id){ var el = $(id); return el ? el.textContent : ''; };
   var prows = [['q_w30','Próximos 30 días','Next 30 days'],['q_w90','Próximos 90 días','Next 90 days'],['q_w6','Próximos 6 meses','Next 6 months'],['q_t1','Próximo 1 año','Next 1 year'],['q_t3','Próximos 3 años','Next 3 years'],['q_t5','Próximos 5 años','Next 5 years'],['q_t10','Próximos 10 años','Next 10 years'],['q_t20','Próximos 20 años','Next 20 years'],['q_t30','Próximos 30 años','Next 30 years']];
-  var phtml = '';
-  prows.forEach(function(r){ var v = gv2(r[0]); if (v && v !== '—') phtml += '<tr><td style="padding:5px;border-bottom:1px solid #e5e7eb">' + (en ? r[2] : r[1]) + '</td><td style="padding:5px;text-align:right;border-bottom:1px solid #e5e7eb"><b>' + escH(v) + '</b></td></tr>'; });
-  if (phtml) e += '<p style="margin-top:18px"><b>📈 ' + (en ? 'PROJECTION — THE TRAP' : 'PROYECCIÓN — LA TRAMPA') + '</b></p><table style="width:100%;border-collapse:collapse;font-size:15px">' + phtml + '</table>';
-  e += '<p style="margin-top:18px"><b>' + (en ? 'Before our appointment, please watch these short videos:' : 'Antes de nuestra cita, mira estos videos cortos:') + '</b></p><ol style="line-height:1.9">';
-  vids.forEach(function(v){ e += '<li><a href="https://investiganos.com/video/' + v[0] + '">' + v[1] + ' — investiganos.com/video/' + v[0] + '</a></li>'; });
-  e += '</ol>';
-  e += '<p>' + (en ? 'The first five videos each end with a question. Please have your answers to those <b>5 questions</b> ready for our call — your answers are how we identify the principal reason you signed.' : 'Los primeros cinco videos terminan con una pregunta. Ten preparadas tus respuestas a esas <b>5 preguntas</b> para nuestra llamada — con tus respuestas identificamos la razón principal por la que firmaste.') + '</p>';
-  e += '<p>' + (en ? 'If you have any questions before then, just reply to this email.' : 'Si tienes alguna pregunta antes, responde a este correo.') + '</p>';
-  e += '<p style="margin-top:20px">Sebastian Short<br>Senior Case Builder<br>Linx Legal Inc.<br>sebastian.short@linxlegal.com<br>investiganos.com<br>689-326-8754</p>';
-  var h = '<!DOCTYPE html><html lang="' + (en ? 'en' : 'es') + '"><head><meta charset="utf-8"><title>EMAIL PRE-CITA — ' + escH(cur.name) + '</title></head><body ' + QDOC_S + '>';
+  var prowHtml = '';
+  prows.forEach(function(r, i){
+    var v = gv2(r[0]); if (!v || v === '—') return;
+    var last = i === prows.length - 1;
+    if (last) prowHtml += '<tr><td style="padding:14px 12px;background:#eaf6f4;font-weight:700;color:#174b56;">' + (en ? r[2] : r[1]) + '</td><td align="right" style="padding:14px 12px;background:#eaf6f4;font-size:18px;font-weight:700;color:#174b56;">' + escH(v) + '</td></tr>';
+    else prowHtml += '<tr><td style="padding:11px 12px;border-bottom:1px solid #e7edef;">' + (en ? r[2] : r[1]) + '</td><td align="right" style="padding:11px 12px;border-bottom:1px solid #e7edef;font-weight:700;">' + escH(v) + '</td></tr>';
+  });
+  var note = '';
+  if (!F.isDB && F.payoff > 0){
+    note = (en ? 'Reported mortgage balance: ' : 'Saldo hipotecario reportado: ') + '<b>' + fmtC(F.payoff) + '</b>' +
+      (apr > 0 ? ' · ' + (en ? 'APR rate: ' : 'Tasa APR: ') + '<b>' + apr + '%</b>' : '') +
+      (F.MG.status === 'ok' ? ' · ' + (en ? 'Approximately ' : 'Aproximadamente ') + '<b>' + F.MG.months + (en ? ' months' : ' meses') + '</b>' + (en ? ' remaining' : ' restantes') : '') +
+      (en ? ', subject to verification.' : ', sujeto a verificación.');
+  } else if (F.isDB){
+    note = en ? 'No mortgage balance — property paid off.' : 'Sin saldo hipotecario — propiedad pagada.';
+  }
+  var foot = (en ? '* Illustrative projections: initial maintenance of ' : '* Proyecciones ilustrativas: mantenimiento inicial de ') + fmtC(F.mf) + (en ? '/year increasing ' : '/año con aumento del ') + F.esc + (en ? '% annually' : '% anual') +
+    (!F.isDB && F.mmo > 0 && F.MG.status === 'ok' ? (en ? ', plus ' : ', más ') + F.MG.months + (en ? ' estimated mortgage payments of ' : ' pagos hipotecarios estimados de ') + fmtC(F.mmo) : '') +
+    (en ? '. The final mortgage figure may vary based on actual amortization, payment dates, and the confirmed balance.' : '. La cifra hipotecaria final puede variar según amortización real, fecha de pago y saldo confirmado.') +
+    (!F.isDB && F.payoff > 0 ? (en ? ' The balance of ' : ' El saldo de ') + fmtC(F.payoff) + (en ? ' still requires verification.' : ' aún requiere verificación.') : '');
+  var compra = (cur.pyr > 0 ? (en ? 'Purchased: ' : 'Compra: ') + cur.pyr + ' &nbsp;·&nbsp; ' : '') + (en ? 'Contracts: ' : 'Contratos: ') + nC;
+  var e = '<style>@media screen and (max-width:620px){.outer{width:100%!important}.pad{padding:22px 18px!important}.big{font-size:25px!important}.metric{font-size:18px!important}}</style>';
+  e += '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse"><tr><td align="center">';
+  e += '<table class="outer" role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;max-width:600px;border-collapse:separate;border-spacing:0;background:#ffffff;border:1px solid #dfe7e9;border-radius:14px;overflow:hidden;">';
+  e += '<tr><td style="background:#1f7a8c;padding:24px 30px;color:#ffffff;"><div style="font-size:12px;font-weight:700;letter-spacing:2px;color:#ccf3f1;">' + (en ? 'PRE-APPOINTMENT · FINANCIAL SUMMARY' : 'PRE-CITA · RESUMEN FINANCIERO') + '</div><div class="big" style="font-size:29px;font-weight:700;line-height:1.2;margin-top:8px;">' + resortT + '</div><div style="font-size:14px;margin-top:11px;color:#e9f6f7;">' + compra + '</div></td></tr>';
+  e += '<tr><td class="pad" style="padding:27px 30px 18px;"><div style="font-size:13px;letter-spacing:1px;color:#4f6971;font-weight:700;margin-bottom:12px;">' + (en ? 'CURRENT CONTRACTUAL COMMITMENT' : 'COMPROMISO CONTRACTUAL ACTUAL') + '</div>';
+  e += '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;"><tr>';
+  e += '<td width="49%" valign="top" style="background:#f2f8f9;border-radius:10px;padding:15px 12px;"><div style="font-size:12px;color:#5c737c;">' + (en ? 'Monthly mortgage' : 'Hipoteca mensual') + '</div><div class="metric" style="font-size:21px;font-weight:700;color:#194f5b;margin-top:4px;">' + (F.isDB ? (en ? 'Paid off' : 'Pagada') : fmtC(F.mmo)) + '</div></td><td width="2%">&nbsp;</td>';
+  e += '<td width="49%" valign="top" style="background:#f2f8f9;border-radius:10px;padding:15px 12px;"><div style="font-size:12px;color:#5c737c;">' + (en ? 'Annual maintenance' : 'Mantenimiento anual') + '</div><div class="metric" style="font-size:21px;font-weight:700;color:#194f5b;margin-top:4px;">' + fmtC(F.mf) + '</div><div style="font-size:12px;color:#5c737c;margin-top:3px;">' + fmtC(mfMo) + (en ? ' per month' : ' al mes') + '</div></td>';
+  e += '</tr></table>';
+  e += '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin-top:12px;"><tr><td style="background:#e7f4f2;border-left:4px solid #39d0c8;border-radius:7px;padding:14px 16px;"><table role="presentation" cellpadding="0" cellspacing="0" width="100%"><tr><td style="font-size:15px;font-weight:bold;color:#25555e;">' + (en ? 'Estimated monthly total' : 'Total mensual estimado') + '</td><td align="right" style="font-size:23px;font-weight:700;color:#164a57;">' + fmtC(totMo) + '</td></tr></table></td></tr></table>';
+  if (note) e += '<div style="font-size:12px;color:#63757c;line-height:1.55;margin-top:12px;">' + note + '</div>';
+  e += '</td></tr>';
+  e += '<tr><td class="pad" style="padding:8px 30px 28px;"><div style="font-size:21px;color:#1a5968;font-weight:700;margin:0 0 6px;">📈 ' + (en ? 'PROJECTION — THE TRAP' : 'PROYECCIÓN — LA TRAMPA') + '</div><div style="font-size:13px;color:#697b82;margin-bottom:14px;">' + (en ? 'Estimated cost of keeping the timeshare' : 'Costo estimado de conservar el tiempo compartido') + '</div>';
+  e += '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;font-size:14px;"><tr><td style="padding:11px 12px;background:#edf5f6;font-weight:700;color:#355761;">' + (en ? 'Period' : 'Período') + '</td><td align="right" style="padding:11px 12px;background:#edf5f6;font-weight:700;color:#355761;">' + (en ? 'Projected cost' : 'Costo proyectado') + '</td></tr>' + prowHtml + '</table>';
+  e += '<div style="font-size:11px;line-height:1.6;color:#6c7d84;margin-top:15px;">' + foot + '</div></td></tr>';
+  e += '<tr><td style="padding:19px 30px;background:#f7f9fa;border-top:1px solid #e5ebed;font-size:13px;color:#536a72;line-height:1.55;">Sebastian Short<br><b>Senior Case Builder · Linx Legal Inc.</b><br><a href="mailto:sebastian.short@linxlegal.com" style="color:#1f7a8c;">sebastian.short@linxlegal.com</a> &nbsp;·&nbsp; (689) 326-8754<br><a href="https://investiganos.com/" style="color:#1f7a8c;">investiganos.com</a></td></tr>';
+  e += '</table></td></tr></table>';
+  var subj = (en ? 'PRE-APPOINTMENT · Financial summary — ' : 'PRE-CITA · Resumen financiero — ') + (cur.resort || '');
+  var h = '<!DOCTYPE html><html lang="' + (en ? 'en' : 'es') + '"><head><meta charset="utf-8"><title>EMAIL PRE-CITA — ' + escH(cur.name) + '</title></head><body style="margin:0;padding:20px 8px;background:#f2f5f6;font-family:Arial,Helvetica,sans-serif;color:#23323b;">';
   h += '<div ' + QDOC_BAR + '><b>📧 EMAIL PRE-CITA</b><span style="font-size:13px">Para: <input id="emTo" value="' + escH(cur.email || '') + '" style="padding:5px;border-radius:4px;border:none;min-width:210px"> Asunto: <input id="emSubj" value="' + escH(subj) + '" style="padding:5px;border-radius:4px;border:none;min-width:300px"></span>' +
     '<button ' + QDOC_BTN + ' onclick="emCopy(this)">📋 COPY FORMATTED EMAIL</button>' +
     '<button ' + QDOC_BTN + ' onclick="emGmail()">✉️ OPEN IN GMAIL</button>' +
     '<span style="font-size:12px;opacity:.85">Gmail abre en texto plano; para conservar el formato usa COPY y pega en el correo. Nada se envía automáticamente — revisa antes de enviar.</span></div>';
-  h += '<div id="eml" contenteditable="true" style="border:1px solid #d1d5db;border-radius:8px;padding:22px;background:#fff">' + e + '</div>';
-  h += '<scr' + 'ipt>function emCopy(b){var n=document.getElementById("eml");try{navigator.clipboard.write([new ClipboardItem({"text/html":new Blob([n.outerHTML],{type:"text/html"}),"text/plain":new Blob([n.innerText],{type:"text/plain"})})]).then(function(){b.textContent="✅ COPIADO";});}catch(err){var r=document.createRange();r.selectNode(n);var s=getSelection();s.removeAllRanges();s.addRange(r);document.execCommand("copy");b.textContent="✅ COPIADO";}}' +
+  h += '<div id="eml" contenteditable="true">' + e + '</div>';
+  h += '<scr' + 'ipt>function emCopy(b){var n=document.getElementById("eml");try{navigator.clipboard.write([new ClipboardItem({"text/html":new Blob([n.innerHTML],{type:"text/html"}),"text/plain":new Blob([n.innerText],{type:"text/plain"})})]).then(function(){b.textContent="✅ COPIADO";});}catch(err){var r=document.createRange();r.selectNode(n);var s=getSelection();s.removeAllRanges();s.addRange(r);document.execCommand("copy");b.textContent="✅ COPIADO";}}' +
     'function emGmail(){var to=document.getElementById("emTo").value,su=document.getElementById("emSubj").value,tx=document.getElementById("eml").innerText;window.open("https://mail.google.com/mail/?view=cm&fs=1&to="+encodeURIComponent(to)+"&su="+encodeURIComponent(su)+"&body="+encodeURIComponent(tx),"_blank");}</scr' + 'ipt>';
   h += '</body></html>';
   qDocOpen(h);
@@ -1851,7 +1873,7 @@ function qRecalc(){
   var MG = qMortgage(); // shared model (SAI 2026-10-20): projections never restart or erase a mortgage
   var COMBO = qComboCalc(); // contracts tool: per-contract calcs (each charged separately)
   function win(y){ var mo = qMortOver(MG, y); return mo === null ? null : mo + mfTot(mf, r, y); }
-  function winMo(m){ var mo = MG.status === 'paid' ? 0 : (MG.status === 'ok' ? Math.min(m, MG.months) : m) * MG.mmo; return mo + mf * m / 12; }
+  function winMo(m){ var mo = MG.status === 'paid' ? 0 : (MG.status === 'ok' ? (m < MG.months ? m * MG.mmo : qMortTotal(MG)) : m * MG.mmo); return mo + mf * m / 12; }
   var w30 = winMo(1), w90 = winMo(3), w6 = winMo(6);
   var t1 = win(1), t3 = win(3), t5 = win(5), t10 = win(10), t20 = win(20), t30 = win(30);
   $('q_w30').textContent = fmtC(w30);
