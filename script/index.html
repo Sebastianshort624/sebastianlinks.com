@@ -833,12 +833,12 @@ function qSetDtype(t){
 function amort(pv, apr, n){ var r = apr / 100 / 12; if (!(r > 0)) return n > 0 ? pv / n : 0; return pv * r / (1 - Math.pow(1 + r, -n)); }
 // SHARED MORTGAGE MODEL (SAI 2026-10-20) — the ONLY mortgage math every section consumes.
 // status 'paid': no mortgage owed (deed-back / payoff $0) -> mortgage component is $0, legitimately.
-// status 'ok': the loan's OWN schedule is still running (purchase date + original term put maturity in the
-//   future); remaining months = that contractual remainder, tightened by the APR amortization when an APR
-//   is entered. The loan is always its stated term (10 yr = 120 mo) — never restarted, never extended by math.
-// status 'pending': a balance is owed but no schedule is proven — ABOVE ALL when the original term has
-//   ALREADY matured yet a saldo still stands (schedule unknowable from these fields) -> projections must
-//   show PENDIENTE DE VERIFICACIÓN, never $0 and never an invented month count. Balance > $0 ALWAYS = MTG.
+// status 'ok': remaining months proven by amortizing the CURRENT saldo at the CURRENT payment with the
+//   entered APR, capped at the contract term (a 10-yr loan never has more than 120 months left).
+// status 'pending': a balance is owed but the schedule is not proven (no APR) -> projections show
+//   PENDIENTE DE VERIFICACIÓN, never $0 and never a restarted term. Balance > $0 ALWAYS classifies MTG.
+// PURCHASE-YEAR RULE (Sebastian, 2026-10-20): the year on file is the FIRST year the client ever bought —
+//   upgrades mean the CURRENT loan is a newer 10-year contract. NEVER maturity-test a loan off that year.
 function qMortgage(){
   var payoff = qNum('q_payoff'), mmo = qNum('q_mmo'), apr = qNum('q_aapr');
   var payoffSet = ((($('q_payoff') || {}).value || '') + '') !== '';
@@ -846,15 +846,9 @@ function qMortgage(){
   if (payoffSet && payoff <= 0) return { status: 'paid', months: 0, mmo: 0, payoff: 0 };
   if (payoff > 0){
     if (mmo <= 0) return { status: 'pending', months: 0, mmo: 0, payoff: payoff };
-    var pyr = qNum('q_pyr'), term = qNum('q_term') || 120;
-    var pmEl = ($('q_pmonth') || {}).value, pmN = parseInt(pmEl, 10) || 0;
-    var termRem = null;
-    if (pyr > 0){ var now = new Date(); var elapsed = (now.getFullYear() - pyr) * 12 + (pmN ? (now.getMonth() + 1 - pmN) : 0); termRem = term - Math.max(0, elapsed); }
-    if (termRem !== null && termRem <= 0) return { status: 'pending', months: 0, mmo: mmo, payoff: payoff }; // matured loan, balance stands
-    var lr = (apr || 0) / 100 / 12, amortMo = null;
-    if (lr > 0 && mmo > payoff * lr) amortMo = Math.ceil(-Math.log(1 - payoff * lr / mmo) / Math.log(1 + lr));
-    if (termRem !== null && termRem > 0) return { status: 'ok', months: amortMo !== null ? Math.min(amortMo, termRem) : termRem, mmo: mmo, payoff: payoff };
-    if (amortMo !== null) return { status: 'ok', months: amortMo, mmo: mmo, payoff: payoff };
+    var term = qNum('q_term') || 120;
+    var lr = (apr || 0) / 100 / 12;
+    if (lr > 0 && mmo > payoff * lr) return { status: 'ok', months: Math.min(term, Math.ceil(-Math.log(1 - payoff * lr / mmo) / Math.log(1 + lr))), mmo: mmo, payoff: payoff };
     return { status: 'pending', months: 0, mmo: mmo, payoff: payoff };
   }
   if (mmo > 0) return { status: 'pending', months: 0, mmo: mmo, payoff: 0 };
