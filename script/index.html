@@ -359,6 +359,9 @@
   <label class="qf">ESC % <input id="q_esc" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf mtgOnly">AÑO DE COMPRA <input id="q_pyr" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">MES DE COMPRA <select id="q_pmonth" onchange="qRecalc()"><option value="">—</option><option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option><option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option><option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option></select></label>
+  <label class="qf mtgOnly">AÑO CONTRATO ACTUAL <input id="q_cyr" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf mtgOnly">MES CONTRATO ACTUAL <select id="q_cmonth" onchange="qRecalc()"><option value="">—</option><option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option><option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option><option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option></select></label>
+  <div class="qsm mtgOnly">Contrato vigente (upgrade / refinanciamiento) — SOLO si está verificado; es distinto a la compra original. La amortización restante NUNCA se deriva del año de compra.</div>
   <label class="qf">NOCHES/AÑO <input id="q_nights" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf mtgOnly">PLAZO (MESES) <input id="q_term" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf mtgOnly">SALDO <input id="q_payoff" type="number" min="0" oninput="qRecalc()"></label>
@@ -423,6 +426,9 @@
   <label class="qf mtgOnly">APR % <input id="q_aapr" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf mtgOnly">MESES <input id="q_mos" type="number" min="1" max="120" oninput="qRecalc()"></label>
   <div class="qout mtgOnly">
+    <div>Préstamo original (financiado) <b id="q_ofin">—</b></div>
+    <div>Total programado (pago × plazo) <b id="q_osch">—</b></div>
+    <div>Interés total (programado) <b id="q_oint">—</b></div>
     <div>Total pagado <b id="q_paid">—</b></div>
     <div>Capital <b id="q_prin">—</b></div>
     <div>Interés <b id="q_inte">—</b></div>
@@ -888,6 +894,8 @@ function qMortgage(){
   var payoffSet = ((($('q_payoff') || {}).value || '') + '') !== '';
   if (qIsDB() && !(payoffSet && payoff > 0)) return { status: 'paid', months: 0, mmo: 0, payoff: 0 };
   if (payoffSet && payoff <= 0) return { status: 'paid', months: 0, mmo: 0, payoff: 0 };
+  // REMAINING from a verified contract start (MATEO spec) when the saldo alone cannot prove it.
+  if (!(payoff > 0) || (typeof cur !== 'undefined' && cur && cur.poffUnverified)){ var sr = qSchedRemaining(); if (sr) return sr; }
   if (payoff > 0){
     // MATEO RULING (Sebastian, 2026-10-20): an UNVERIFIED balance with an UNKNOWN current-loan start date
     // gets NO mortgage projections — the monthly obligation and the maintenance projections show separately,
@@ -916,6 +924,43 @@ function qMortTotal(mg){
   return tot;
 }
 function qMortOver(mg, y){ if (mg.status === 'paid') return 0; if (mg.status === 'ok'){ var H = y * 12; return H >= mg.months ? qMortTotal(mg) : mg.mmo * H; } return null; }
+// ===== MATEO SPEC (Sebastian, 2026-10-20): BOTH amortizations, always =====
+// (1) ORIGINAL loan amortization from the financed amount, APR, monthly payment and term. The total
+//     scheduled (pago x plazo, e.g. 225 x 120 = $27,000) is a fact of the ORIGINAL loan — it is NOT
+//     necessarily the remaining obligation.
+// (2) REMAINING amortization from the latest VERIFIED loan information: a verified saldo, or a verified
+//     contract start + complete original terms (schedule position). NEVER from an unverified payoff and
+//     NEVER from the original purchase year.
+function qOrigLoan(){
+  var loan = qNum('q_loan'), mmo = qNum('q_mmo'), apr = qNum('q_aapr'), term = qNum('q_term') || 120;
+  if (!(loan > 0 && mmo > 0 && apr > 0)) return null;
+  var tot = mmo * term;
+  return { financed: loan, totalScheduled: tot, totalInterest: tot - loan, apr: apr, term: term, mmo: mmo };
+}
+function qSchedRemaining(){
+  if (typeof cur === 'undefined' || !cur) return null;
+  var cyr = qNum('q_cyr') || (cur.cyr || 0), cmonth = qNum('q_cmonth') || (cur.cmonth || 1);
+  if (!(cyr > 0)) return null;
+  var mmo = qNum('q_mmo'), apr = qNum('q_aapr'), term = qNum('q_term') || 120;
+  if (!(mmo > 0 && apr > 0)) return null;
+  var loan = qNum('q_loan');
+  if (!(loan > 0)){ var rr = apr / 100 / 12; loan = mmo * (1 - Math.pow(1 + rr, -term)) / rr; }
+  var now = new Date();
+  var elapsed = (now.getFullYear() - cyr) * 12 + (now.getMonth() + 1 - cmonth);
+  elapsed = Math.max(0, Math.min(term, elapsed));
+  if (elapsed >= term) return { status: 'paid', months: 0, mmo: 0, payoff: 0 };
+  var s = amortSched(loan, apr, mmo, elapsed);
+  if (!(s.bal > 0)) return { status: 'paid', months: 0, mmo: 0, payoff: 0 };
+  return { status: 'ok', months: term - elapsed, mmo: mmo, payoff: Math.round(s.bal * 100) / 100, apr: apr, derived: 'schedule' };
+}
+function qMissingLoan(){
+  var miss = [];
+  var payoff = qNum('q_payoff');
+  if (!(payoff > 0) || (typeof cur !== 'undefined' && cur && cur.poffUnverified)) miss.push('saldo verificado');
+  if (!(qNum('q_aapr') > 0)) miss.push('APR');
+  if (!(qNum('q_cyr') > 0 || (typeof cur !== 'undefined' && cur && cur.cyr > 0))) miss.push('fecha de inicio del contrato vigente');
+  return miss;
+}
 var PEND_TXT = 'PENDIENTE DE VERIFICACIÓN';
 // ===== CONTRACTS TOOL (Sebastian, 2026-10-20): charge EACH contract separately, combine totals at top =====
 var qNC = 1; // active contract count
@@ -1476,6 +1521,9 @@ function qEmailHtml(){
   e += '</tr></table>';
   e += '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin-top:12px;"><tr><td style="background:#e7f4f2;border-left:4px solid #39d0c8;border-radius:7px;padding:14px 16px;"><table role="presentation" cellpadding="0" cellspacing="0" width="100%"><tr><td style="font-size:15px;font-weight:bold;color:#25555e;">' + (en ? 'Estimated monthly total' : 'Total mensual estimado') + '</td><td align="right" style="font-size:23px;font-weight:700;color:#164a57;">' + fmtC(totMo) + '</td></tr></table></td></tr></table>';
   if (note) e += '<div style="font-size:12px;color:#63757c;line-height:1.55;margin-top:12px;">' + note + '</div>';
+  var OL2 = (typeof qOrigLoan === 'function') ? qOrigLoan() : null;
+  if (OL2) e += '<div style="font-size:12px;color:#63757c;line-height:1.55;margin-top:6px;">' + (en ? 'Original loan: ' : 'Préstamo original: ') + '<b>' + fmtC(OL2.financed) + '</b> ' + (en ? 'financed' : 'financiados') + ' · ' + fmtC(OL2.mmo) + ' × ' + OL2.term + (en ? ' payments = ' : ' pagos = ') + '<b>' + fmtC(OL2.totalScheduled) + '</b>' + (en ? ' total scheduled (interest ' : ' total programado (interés ') + fmtC(OL2.totalInterest) + ')</div>';
+  if (F.MG.status === 'pending' && !F.isDB){ var miss = qMissingLoan(); if (miss.length) e += '<div style="font-size:12px;color:#b45309;line-height:1.55;margin-top:6px;"><b>' + (en ? 'Remaining amortization pending — missing: ' : 'Amortización restante pendiente — falta: ') + miss.join(', ') + '.</b></div>'; }
   e += '</td></tr>';
   e += '<tr><td class="pad" style="padding:8px 30px 28px;"><div style="font-size:21px;color:#1a5968;font-weight:700;margin:0 0 6px;">📈 ' + (en ? 'PROJECTION — THE TRAP' : 'PROYECCIÓN — LA TRAMPA') + '</div><div style="font-size:13px;color:#697b82;margin-bottom:14px;">' + (en ? 'Estimated cost of keeping the timeshare' : 'Costo estimado de conservar el tiempo compartido') + '</div>';
   e += '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;font-size:14px;"><tr><td style="padding:11px 12px;background:#edf5f6;font-weight:700;color:#355761;">' + (en ? 'Period' : 'Período') + '</td><td align="right" style="padding:11px 12px;background:#edf5f6;font-weight:700;color:#355761;">' + (en ? 'Projected cost' : 'Costo proyectado') + '</td></tr>' + prowHtml + '</table>';
@@ -1811,9 +1859,11 @@ function qSync(c){
   qRenderContracts(c);
   qIdn(c);
   var r0 = (c && c.apr ? c.apr : 0) / 100 / 12, t0 = (c && c.term ? c.term : 120), m0 = (c && c.mmo ? c.mmo : 0);
-  $('q_loan').value = (r0 > 0 && t0 > 0 && m0 > 0) ? Math.round(m0 * (1 - Math.pow(1 + r0, -t0)) / r0) : '';
+  $('q_loan').value = (c && c.cfin > 0) ? c.cfin : ((r0 > 0 && t0 > 0 && m0 > 0) ? Math.round(m0 * (1 - Math.pow(1 + r0, -t0)) / r0) : '');
   $('q_aapr').value = c ? (c.apr || '') : '';
-  $('q_mos').value = (c && c.pyr) ? Math.min(t0, Math.max(0, (new Date().getFullYear() - c.pyr) * 12 + (c.pmonth ? (new Date().getMonth() + 1 - c.pmonth) : 0))) : '';
+  $('q_cyr').value = c && c.cyr ? c.cyr : ''; $('q_cmonth').value = c && c.cmonth ? c.cmonth : '';
+  // MESES elapsed counts from the VERIFIED CONTRACT START only (MATEO spec) — never the purchase year.
+  $('q_mos').value = (c && c.cyr) ? Math.min(t0, Math.max(0, (new Date().getFullYear() - c.cyr) * 12 + (new Date().getMonth() + 1 - (c.cmonth || 1)))) : '';
   qTaskSync(); qDocRender();
   qUrlLinks();
   if (!qIsDB() && !$('q_fee').value && c && c.payoff > 0) qFeeApply();
@@ -1972,8 +2022,12 @@ function qRecalc(){
     $('q_loan').value = Math.round(mmo * (1 - Math.pow(1 + lrr, -lterm)) / lrr);
   }
   var loan = qNum('q_loan'), aapr = laapr;
+  var OL = qOrigLoan();
+  $('q_ofin').textContent = OL ? fmtD(OL.financed) : '—';
+  $('q_osch').textContent = OL ? fmtD(OL.totalScheduled) : '—';
+  $('q_oint').textContent = OL ? fmtD(OL.totalInterest) : '—';
   var mos = Math.min(120, Math.max(0, Math.round(qNum('q_mos'))));
-  $('q_mleft').textContent = MG.status === 'paid' ? 'Sin hipoteca — pagada' : (MG.status === 'ok' ? MG.months + ' meses restantes de hipoteca' : PEND_TXT + ' — saldo pendiente, falta APR/calendario');
+  $('q_mleft').textContent = MG.status === 'paid' ? 'Sin hipoteca — pagada' : (MG.status === 'ok' ? MG.months + ' meses restantes de hipoteca' + (MG.derived === 'schedule' ? ' — según cronograma del contrato vigente' : ' — según saldo verificado') : PEND_TXT + ' — falta: ' + qMissingLoan().join(', '));
   if (loan > 0 && mmo > 0 && $('q_mos').value !== ''){
     var s = amortSched(loan, aapr, mmo, mos);
     $('q_paid').textContent = fmtD(s.prin + s.inte);
@@ -2010,6 +2064,7 @@ function qAutoSave(){
       var c = cs[ix];
       c.mmo = qNum('q_mmo'); c.mf = qNum('q_mf'); c.esc = qNum('q_esc');
       c.pyr = qNum2($('q_pyr').value); c.term = qNum('q_term'); c.payoff = qNum('q_payoff');
+      c.cyr = qNum('q_cyr'); c.cmonth = qNum('q_cmonth'); c.cfin = qNum('q_loan');
       c.fee = qNum('q_fee'); c.down = qNum('q_down'); c.downt = $('q_downt').value;
       c.paymethod = $('q_paym').value; c.fapr = qNum('q_fapr'); c.fmo = qNum('q_fmo');
       c.pmtmo = qNum('q_pmt'); c.downdate = $('q_ddate').value; c.pmtdate = $('q_pdate').value;
