@@ -831,6 +831,28 @@ function qSetDtype(t){
   qApplyDtype(); qRecalc();
 }
 function amort(pv, apr, n){ var r = apr / 100 / 12; if (!(r > 0)) return n > 0 ? pv / n : 0; return pv * r / (1 - Math.pow(1 + r, -n)); }
+// SHARED MORTGAGE MODEL (SAI 2026-10-20) — the ONLY mortgage math every section consumes.
+// status 'paid': no mortgage owed (deed-back / payoff $0) -> mortgage component is $0, legitimately.
+// status 'ok': remaining months proven by amortizing the entered SALDO at the entered payment with the entered APR.
+// status 'pending': a balance is owed but the remaining schedule is NOT proven (no APR) -> projections
+//   must show PENDIENTE DE VERIFICACIÓN, never $0 and never a restarted term. Balance > $0 ALWAYS classifies MTG.
+function qMortgage(){
+  var payoff = qNum('q_payoff'), mmo = qNum('q_mmo'), apr = qNum('q_aapr');
+  var payoffSet = ((($('q_payoff') || {}).value || '') + '') !== '';
+  if (qIsDB() && !(payoffSet && payoff > 0)) return { status: 'paid', months: 0, mmo: 0, payoff: 0 };
+  if (payoffSet && payoff <= 0) return { status: 'paid', months: 0, mmo: 0, payoff: 0 };
+  if (payoff > 0){
+    if (mmo <= 0) return { status: 'pending', months: 0, mmo: 0, payoff: payoff };
+    var lr = (apr || 0) / 100 / 12;
+    if (lr > 0 && mmo > payoff * lr) return { status: 'ok', months: Math.ceil(-Math.log(1 - payoff * lr / mmo) / Math.log(1 + lr)), mmo: mmo, payoff: payoff };
+    return { status: 'pending', months: 0, mmo: mmo, payoff: payoff };
+  }
+  if (mmo > 0) return { status: 'pending', months: 0, mmo: mmo, payoff: 0 };
+  return { status: 'pending', months: 0, mmo: 0, payoff: 0 };
+}
+// Mortgage $ over y years under the shared model; null = pending verification.
+function qMortOver(mg, y){ if (mg.status === 'paid') return 0; if (mg.status === 'ok') return Math.min(y * 12, mg.months) * mg.mmo; return null; }
+var PEND_TXT = 'PENDIENTE DE VERIFICACIÓN';
   /* ===== DISPOSICIÓN / ESTADO DEL LEAD / RESULTADO / SEGUIMIENTO por cliente ===== */
   function dispoKey(){ return cur ? 'sl_dispo_' + cur.id : null; }
   function dispoRead(){
@@ -994,9 +1016,7 @@ function renderBar(c, n){
   var mfmo = Math.floor(mf / 12), totyr = mmo * 12 + mf;
   var escR = (c.esc || 8) / 100;
   var term = c.term || 120, pyr = c.pyr || 0;
-  var remMo = pyr > 0 ? Math.max(0, term - Math.max(0, (new Date().getFullYear() - pyr) * 12)) : term;
-  function moY(y){ return Math.min(y * 12, remMo) * mmo; }
-  function mfY(y){ return mfTot(mf, escR, y); }
+  // (Removed a third, private mortgage formula here 2026-10-20 — all projections use the shared qMortgage model.)
   var nights = c.nights || 0;
   var perNight = nights > 0 ? fmtC(totyr / nights) : '—';
   var ph = [c.phone, c.phone2].filter(function(x){ return x; }).map(fmtPhone).join(' · ');
@@ -1043,7 +1063,7 @@ function renderBar(c, n){
       '<div class="ib-line">MTG: <b>' + fmtD(mmo) + '/mes</b></div>' +
       '<div class="ib-line">MF: <b>' + fmtD(mf) + '/año</b> (' + fmtD(mfmo) + '/mes)</div>' +
       '<div class="ib-line">Total mensual: <b>' + fmtD(mmo + mfmo) + '</b></div>' +
-      (n && n.feeKnown ? '<div class="ib-line">Tarifa: <b>' + fmtC(n.fee) + '</b> · Ahorro 10 años: <b>' + fmtC(n.s10) + '</b></div>' : '');
+      (n && n.feeKnown ? '<div class="ib-line">Tarifa: <b>' + fmtC(n.fee) + '</b> · Ahorro 10 años: <b>' + (n.s10 === null ? PEND_TXT : fmtC(n.s10)) + '</b></div>' : '');
   bar.style.display = 'block';
   qBarCtlSync();
 }
@@ -1064,8 +1084,8 @@ function sumPend(){ var els = document.querySelectorAll('.sumF'); for (var i = 0
 function applyFills(c, n){
   fillAll('[data-fill="down"]', c.down > 0 ? fmtC(c.down) : '$________');
   fillAll('[data-fill="fee"]', n.feeKnown ? fmtC(n.fee) : '$________');
-  fillAll('[data-fill="savings"]', n.feeKnown ? fmtC(n.s10) : '$________');
-  fillAll('[data-fill="total10"]', n.feeKnown ? fmtC(n.t10) : '$________');
+  fillAll('[data-fill="savings"]', n.feeKnown && n.s10 !== null ? fmtC(n.s10) : '$________');
+  fillAll('[data-fill="total10"]', n.feeKnown && n.t10 !== null ? fmtC(n.t10) : '$________');
   fillAll('[data-fill="ca"]', c.ca || 'nuestro analista de casos');
   fillAll('[data-fill="resort"]', c.resort || '_________');
   fillAll('[data-fill="name"]', c.name ? c.name.replace(' / ', ' y ') : '_________');
@@ -1201,24 +1221,19 @@ function qQuoteHtml(){
   var LEGAL = { 'Westgate': 'Westgate Resorts, Ltd.', 'Exploria': 'Club Exploria, LLC', 'Wyndham': 'Wyndham Vacation Resorts, Inc.', 'Marriott': 'Marriott Ownership Resorts, Inc.', 'Hilton': 'Hilton Grand Vacations', 'Bluegreen': 'Bluegreen Vacations Corporation', 'Diamond': 'Diamond Resorts', 'The Villas Club (Villa Group)': 'Universal Vacation Club International', 'Villa Group': 'Universal Vacation Club International', 'Villas Club': 'Universal Vacation Club International' };
   var rname = cur.resort || '';
   var legal = LEGAL[rname] || rname;
-  var payoff = qNum('q_payoff'), mmo = qIsDB() ? 0 : qNum('q_mmo'), mf = qNum('q_mf'), esc = qNum('q_esc') || 8, escR = esc / 100;
+  var payoff = qNum('q_payoff'), mmo = (qIsDB() && !(qNum('q_payoff') > 0)) ? 0 : qNum('q_mmo'), mf = qNum('q_mf'), esc = qNum('q_esc') || 8, escR = esc / 100;
   var term = qNum('q_term') || 120, pyr = qNum('q_pyr'), pmonth = qNum('q_pmonth');
-  var nowY = new Date().getFullYear();
-  var remMo = pyr > 0 ? Math.max(0, term - Math.max(0, (nowY - pyr) * 12)) : term;
-  // Balance governs remaining mortgage life when a payoff is still owed (same rule as qRecalc, fix 2026-10-20).
-  if (payoff > 0 && mmo > 0){
-    var lr2 = (qNum('q_aapr') || 0) / 100 / 12, remBal2;
-    if (lr2 > 0 && mmo > payoff * lr2){ remBal2 = Math.ceil(-Math.log(1 - payoff * lr2 / mmo) / Math.log(1 + lr2)); remMo = remBal2; }
-    else { remBal2 = Math.ceil(payoff / mmo); if (remBal2 > remMo) remMo = remBal2; }
-  }
+  var MG = qMortgage(); // shared model (SAI 2026-10-20) — same outputs as the panel, no private formula
   var fee = qNum('q_fee');
   if (qIsDB() && $('q_sheetfee') && $('q_sheetfee').value !== '' && qNum('q_sheetfee') > 0) fee = qNum('q_sheetfee');
   var down = qNum('q_down'), fmo = qNum('q_fmo');
   var moTxt = ($('q_mo') || {}).textContent || '';
-  function moPart(y){ return mmo * Math.min(12 * y, remMo); }
+  function moPart(y){ return qMortOver(MG, y); }
   function mfPart(y){ return mfTot(mf, escR, y); }
-  var t10 = moPart(10) + mfPart(10), t20 = moPart(20) + mfPart(20);
-  var s10 = t10 - fee, s20 = t20 - fee;
+  var mp10 = moPart(10), mp20 = moPart(20);
+  var t10 = mp10 === null ? null : mp10 + mfPart(10), t20 = mp20 === null ? null : mp20 + mfPart(20);
+  var s10 = t10 === null ? null : t10 - fee, s20 = t20 === null ? null : t20 - fee;
+  function fmtP(v){ return v === null ? PEND_TXT : fmtC(v); }
   var nights = qNum('q_nights'), totyr = mmo * 12 + mf;
   var perNight = nights > 0 ? fmtC(totyr / nights) : '';
   var monNames = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
@@ -1239,10 +1254,10 @@ function qQuoteHtml(){
   h += '<div ' + ROW + '><span>Pago con tarjeta de crédito</span><b>' + fmtC(fee * 1.03) + '</b></div>';
   if (fmo > 0 && moTxt && moTxt !== '—') h += '<div ' + ROW + '><span>Financiamiento: ' + (down > 0 ? fmtC(down) + ' de anticipo + ' : '') + 'pagos mensuales</span><b>' + escH(moTxt) + ' × ' + fmo + ' meses</b></div>';
   h += '<h2 ' + H2 + '>Tu ahorro</h2>';
-  h += '<div ' + ROW + '><span>Costo de quedarte con el tiempo compartido — próximos 10 años</span><b>' + fmtC(t10) + '</b></div>';
+  h += '<div ' + ROW + '><span>Costo de quedarte con el tiempo compartido — próximos 10 años</span><b>' + fmtP(t10) + '</b></div>';
   h += '<div ' + ROW + '><span>Nuestra tarifa (una sola vez)</span><b>' + fmtC(fee) + '</b></div>';
-  h += '<div ' + ROW + '><span><b>Ahorro neto proyectado en 10 años</b></span><b style="color:#15803d">' + fmtC(s10) + '</b></div>';
-  h += '<div ' + ROW + '><span><b>Ahorro neto proyectado en 20 años</b></span><b style="color:#15803d">' + fmtC(s20) + '</b></div>';
+  h += '<div ' + ROW + '><span><b>Ahorro neto proyectado en 10 años</b></span><b style="color:#15803d">' + fmtP(s10) + '</b></div>';
+  h += '<div ' + ROW + '><span><b>Ahorro neto proyectado en 20 años</b></span><b style="color:#15803d">' + fmtP(s20) + '</b></div>';
   if (bem > 0) h += '<p style="font-size:14px;color:#374151">En aproximadamente <b>' + bem + ' meses</b>, lo que habrías pagado al resort iguala nuestra tarifa completa.</p>';
   h += '<h2 ' + H2 + '>Tu situación actual</h2>';
   if (payoff > 0) h += '<div ' + ROW + '><span>Saldo de la hipoteca</span><b>' + fmtC(payoff) + '</b></div>';
@@ -1269,9 +1284,9 @@ function qQuoteHtml(){
   h += '<div ' + ROW + '><span><b>Proyección 10 años</b></span><b>' + escH(gv('q_xproj10')) + '</b></div>';
   h += '<h3 style="color:#0b3d91;margin:18px 0 6px">Proyecciones — costo de quedarte</h3>';
   h += '<table style="width:100%;border-collapse:collapse;font-size:15px"><tr style="background:#0b3d91;color:#fff"><th style="padding:6px;text-align:left"></th><th style="padding:6px;text-align:right">10 años</th><th style="padding:6px;text-align:right">20 años</th></tr>';
-  if (mmo > 0) h += '<tr><td style="padding:6px;border-bottom:1px solid #e5e7eb">Hipoteca</td><td style="padding:6px;text-align:right;border-bottom:1px solid #e5e7eb">' + fmtC(moPart(10)) + '</td><td style="padding:6px;text-align:right;border-bottom:1px solid #e5e7eb">' + fmtC(moPart(20)) + '</td></tr>';
+  if (mmo > 0) h += '<tr><td style="padding:6px;border-bottom:1px solid #e5e7eb">Hipoteca</td><td style="padding:6px;text-align:right;border-bottom:1px solid #e5e7eb">' + fmtP(mp10) + '</td><td style="padding:6px;text-align:right;border-bottom:1px solid #e5e7eb">' + fmtP(mp20) + '</td></tr>';
   h += '<tr><td style="padding:6px;border-bottom:1px solid #e5e7eb">Cuotas de mantenimiento (aumento ' + esc + '% anual)</td><td style="padding:6px;text-align:right;border-bottom:1px solid #e5e7eb">' + fmtC(mfPart(10)) + '</td><td style="padding:6px;text-align:right;border-bottom:1px solid #e5e7eb">' + fmtC(mfPart(20)) + '</td></tr>';
-  h += '<tr style="font-weight:800"><td style="padding:6px">Total</td><td style="padding:6px;text-align:right">' + fmtC(t10) + '</td><td style="padding:6px;text-align:right">' + fmtC(t20) + '</td></tr></table>';
+  h += '<tr style="font-weight:800"><td style="padding:6px">Total</td><td style="padding:6px;text-align:right">' + fmtP(t10) + '</td><td style="padding:6px;text-align:right">' + fmtP(t20) + '</td></tr></table>';
   h += '<p style="margin-top:26px;font-size:12px;color:#6b7280;text-align:center">Linx Legal · Las proyecciones de cuotas usan un aumento anual del ' + esc + '% y son estimados con fines ilustrativos.</p>';
   h += '</body></html>';
   var blob = new Blob([h], { type: 'text/html' });
@@ -1539,39 +1554,26 @@ function qDocDel(i){
 function qRecalc(){
   var qdEl = $('q_dates'); if (qdEl) qdEl.style.display = ($('q_paym').value === 'uga') ? '' : 'none';
   if (!cur){ ['q_w30','q_w90','q_w6','q_t1','q_t3','q_t5','q_t10','q_t20','q_t30','q_ftot','q_bal','q_s10','q_mo','q_ftpay','q_ftint','q_mosn','q_t12','q_t24','q_t36','q_comm','q_cdate','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct','q_xmmo','q_xmfmo','q_xtotmo','q_xmoyr','q_xmfyr','q_xtotyr','q_xmo10','q_xmf10','q_xproj10','q_xnight'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— meses restantes'; var fe0 = $('q_feesug'); if (fe0) fe0.textContent = ''; var mw0 = $('q_minwarn'); if (mw0) mw0.style.display = 'none'; var cr0 = $('q_ccrow'); if (cr0) cr0.style.display = 'none'; var cb0 = $('q_commbase'); if (cb0) cb0.textContent = ''; return; }
-  var mmo = qIsDB() ? 0 : qNum('q_mmo'), mf = qNum('q_mf'), esc = qNum('q_esc'), payoff = qNum('q_payoff');
+  var mmo = (qIsDB() && !(qNum('q_payoff') > 0)) ? 0 : qNum('q_mmo'), mf = qNum('q_mf'), esc = qNum('q_esc'), payoff = qNum('q_payoff');
   var pyrIn = parseInt(($('q_pyr').value || '').replace(/\D/g, ''), 10) || 0;
   var pyr = pyrIn > 0 ? pyrIn : 2023; // hidden default for math only — field stays blank
   var term = qNum('q_term') || 120;
   var r = (esc || 8) / 100;
   var nowY = new Date().getFullYear();
   var pmN = parseInt(($('q_pmonth') || {}).value, 10) || (cur && cur.pmonth) || 0;
-  var remMo = Math.max(0, term - Math.max(0, (nowY - pyr) * 12 + (pmN ? (new Date().getMonth() + 1 - pmN) : 0)));
-  // If a balance is still owed, the BALANCE governs the remaining mortgage life:
-  // months left = amortize the payoff at the monthly payment (loan APR when known).
-  // (Fix 2026-10-20: term-from-purchase-date alone zeroed Nelson Rivero's mortgage —
-  // bought 2011/120mo read as "loan over" while he still owes $2,450.59 at $225/mo.)
-  if (payoff > 0 && mmo > 0){
-    var lr = (qNum('q_aapr') || 0) / 100 / 12, remBal;
-    if (lr > 0 && mmo > payoff * lr){ remBal = Math.ceil(-Math.log(1 - payoff * lr / mmo) / Math.log(1 + lr)); remMo = remBal; }
-    else { remBal = Math.ceil(payoff / mmo); if (remBal > remMo) remMo = remBal; }
-  }
-  function win(y){ return Math.min(y * 12, remMo) * mmo + mfTot(mf, r, y); }
-  function winMo(m){ return Math.min(m, remMo) * mmo + mf * m / 12; }
+  var MG = qMortgage(); // shared model (SAI 2026-10-20): projections never restart or erase a mortgage
+  function win(y){ var mo = qMortOver(MG, y); return mo === null ? null : mo + mfTot(mf, r, y); }
+  function winMo(m){ var mo = MG.status === 'paid' ? 0 : (MG.status === 'ok' ? Math.min(m, MG.months) : m) * MG.mmo; return mo + mf * m / 12; }
   var w30 = winMo(1), w90 = winMo(3), w6 = winMo(6);
   var t1 = win(1), t3 = win(3), t5 = win(5), t10 = win(10), t20 = win(20), t30 = win(30);
   $('q_w30').textContent = fmtC(w30);
   $('q_w90').textContent = fmtC(w90);
   $('q_w6').textContent = fmtC(w6);
-  $('q_t1').textContent = fmtC(t1);
-  $('q_t3').textContent = fmtC(t3);
-  $('q_t5').textContent = fmtC(t5);
-  $('q_t10').textContent = fmtC(t10);
-  $('q_t20').textContent = fmtC(t20);
-  $('q_t30').textContent = fmtC(t30);
+  function setT(id, v){ $(id).textContent = v === null ? PEND_TXT : fmtC(v); }
+  setT('q_t1', t1); setT('q_t3', t3); setT('q_t5', t5); setT('q_t10', t10); setT('q_t20', t20); setT('q_t30', t30);
   // Expense breakdown (monthly MF floored for display only; annual MF exact, 10-yr MF escalated)
   var mfmo = Math.floor(mf / 12), mfoyr = mf, moyr = mmo * 12, totyr = moyr + mfoyr;
-  var mo10 = Math.min(120, remMo) * mmo, escR = (esc || 8) / 100;
+  var mo10 = qMortOver(MG, 10), escR = (esc || 8) / 100;
   var mf10 = escR > 0 ? Math.round(mfoyr * (Math.pow(1 + escR, 10) - 1) / escR) : mfoyr * 10;
   $('q_xmmo').textContent = fmtD(mmo); $('q_xmfmo').textContent = fmtD(mfmo);
   $('q_xtotmo').textContent = fmtD(mmo + mfmo);
@@ -1579,9 +1581,9 @@ function qRecalc(){
   $('q_xtotyr').textContent = fmtD(totyr);
   var nightsV = qNum('q_nights');
   $('q_xnight').textContent = nightsV > 0 ? fmtC(totyr / nightsV) : '—';
-  $('q_xmo10').textContent = fmtD(mo10);
+  $('q_xmo10').textContent = mo10 === null ? PEND_TXT : fmtD(mo10);
   $('q_xescp').textContent = (esc || 8); $('q_xmf10').textContent = fmtD(mf10);
-  $('q_xproj10').textContent = fmtD(mo10 + mf10);
+  $('q_xproj10').textContent = mo10 === null ? PEND_TXT : fmtD(mo10 + mf10);
   var fee = qNum('q_fee'), fapr = qNum('q_fapr'), fmo = qNum('q_fmo');
   var sheetFeeActive = qIsDB() && $('q_sheetfee').value !== '' && qNum('q_sheetfee') > 0;
   if (sheetFeeActive) fee = qNum('q_sheetfee');
@@ -1602,11 +1604,11 @@ function qRecalc(){
   if (qIsDB() && $('q_sheetdown').value !== '' && qNum('q_sheetdown') > 0) down = qNum('q_sheetdown');
   $('q_down').style.border = (isFin && feeKnown && !downRaw) ? '2px solid #d99a17' : '';
   var bal = feeKnown ? Math.max(0, ftot - down) : 0;
-  var s10 = feeKnown ? t10 - ftot : 0;
+  var s10 = feeKnown && t10 !== null ? t10 - ftot : 0;
   $('q_ftot').textContent = feeKnown ? fmtD(ftot) + (paym === 'cc' ? ' (+3%)' : '') : '—';
   var ccRow = $('q_ccrow'); if (ccRow){ var isCC = feeKnown && paym === 'cc'; ccRow.style.display = isCC ? '' : 'none'; if (isCC) $('q_ccfee').textContent = fmtD(ftot - fee); }
   $('q_bal').textContent = feeKnown ? fmtD(bal) : '—';
-  $('q_s10').textContent = feeKnown ? fmtD(s10) : '—';
+  $('q_s10').textContent = feeKnown && t10 !== null ? fmtD(s10) : '—';
   $('q_mo').textContent = (feeKnown && fmo > 0) ? fmtD(amort(bal, fapr, fmo)) + '/mes' : '—';
   if (feeKnown && bal > 0 && fmo > 0){ var tpay = amort(bal, fapr, fmo) * fmo; $('q_ftpay').textContent = fmtC(tpay); $('q_ftint').textContent = fmtC(tpay - bal); }
   else if (feeKnown && bal <= 0){ $('q_ftpay').textContent = fmtC(ftot); $('q_ftint').textContent = fmtC(0); }
@@ -1638,7 +1640,7 @@ function qRecalc(){
   }
   $('q_cdate').textContent = cdate;
   var laapr = qNum('q_aapr'), lterm = qNum('q_term') || 120;
-  if (!(laapr > 0) && payoff > 0 && mmo > 0 && remMo > 0 && remMo < lterm && mmo * remMo > payoff){
+  if (false){ // implied-APR inference DISABLED 2026-10-20 (SAI): never invent an APR from purchase-date math
     var lo = 1e-7, hi = 0.05, mid = 0, pv = 0;
     for (var bi = 0; bi < 80; bi++){
       mid = (lo + hi) / 2;
@@ -1654,7 +1656,7 @@ function qRecalc(){
   }
   var loan = qNum('q_loan'), aapr = laapr;
   var mos = Math.min(120, Math.max(0, Math.round(qNum('q_mos'))));
-  $('q_mleft').textContent = remMo + ' meses restantes de hipoteca';
+  $('q_mleft').textContent = MG.status === 'paid' ? 'Sin hipoteca — pagada' : (MG.status === 'ok' ? MG.months + ' meses restantes de hipoteca' : PEND_TXT + ' — saldo pendiente, falta APR/calendario');
   if (loan > 0 && mmo > 0 && $('q_mos').value !== ''){
     var s = amortSched(loan, aapr, mmo, mos);
     $('q_paid').textContent = fmtD(s.prin + s.inte);
@@ -1668,7 +1670,7 @@ function qRecalc(){
   } else {
     ['q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct'].forEach(function(id){ $(id).textContent = '—'; });
   }
-  var n = {fee: fee, feeKnown: feeKnown, t5: t5, t10: t10, s10: s10};
+  var n = {fee: fee, feeKnown: feeKnown, t5: t5, t10: t10, s10: t10 === null ? null : s10};
   var c2 = {}, k;
   for (k in cur) c2[k] = cur[k];
   c2.mf = mf; c2.mmo = mmo; c2.payoff = payoff; c2.down = down;
