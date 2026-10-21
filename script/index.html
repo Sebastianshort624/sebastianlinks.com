@@ -291,6 +291,9 @@
     <button id="soldBtn" type="button" onclick="soldToggle()">🤝 VENDIDO</button>
     <select id="soldWhen" onchange="soldWhenChange()" title="¿Cuándo se vendió?" style="padding:4px 6px;font-weight:700;font-family:inherit;border-radius:6px;border:1px solid #7f1d1d;background:#fff7ed"><option value="">¿Cuándo?</option><option value="ON APT">EN LA CITA</option><option value="AFTER APT">DESPUÉS DE LA CITA</option></select>
     <button id="quoteBtn" type="button" onclick="qQuoteHtml()">📄 Cotización</button>
+    <button id="emailBtn" type="button" onclick="qEmailHtml()">📧 EMAIL PRE-CITA</button>
+    <button id="caBtn" type="button" onclick="qCaHtml()">📋 CA DISCOVERY</button>
+    <button id="cbBtn" type="button" onclick="qCbHtml()">📝 CB DISCOVERY</button>
     <button id="postCallBtn" type="button" onclick="qPostCallHtml()">🧾 POST CALL SHEET</button>
     <span class="nv-timer" id="topbar">⏱ <span id="ot">1:30:00</span> <a href="#" id="obtn" onclick="toggleOverall();return false;">▶ Iniciar</a></span>
   </div>
@@ -1389,6 +1392,174 @@ function qQuoteHtml(){
   h += '</body></html>';
   var blob = new Blob([h], { type: 'text/html' });
   window.open(URL.createObjectURL(blob), '_blank');
+}
+// ===== CLIENT WORKFLOW BUTTONS (SAI Sebastian, 2026-10-20): EMAIL PRE-CITA / CA DISCOVERY / CB DISCOVERY =====
+// Shared by all three: verified record facts + the shared qMortgage() model (MATEO). CA evidence is read-only and
+// is NEVER overwritten by CB interpretations (ALMA). Nothing here sends anything — every action is copy/open only.
+var QLEGAL = { 'Westgate': 'Westgate Resorts, Ltd.', 'Exploria': 'Club Exploria, LLC', 'Wyndham': 'Wyndham Vacation Resorts, Inc.', 'Marriott': 'Marriott Ownership Resorts, Inc.', 'Hilton': 'Hilton Grand Vacations', 'Bluegreen': 'Bluegreen Vacations Corporation', 'Diamond': 'Diamond Resorts', 'The Villas Club (Villa Group)': 'Universal Vacation Club International', 'Villa Group': 'Universal Vacation Club International', 'Villas Club': 'Universal Vacation Club International' };
+function qLegalName(){ var r = cur.resort || ''; return QLEGAL[r] || r; }
+function qCaseFacts(){
+  var payoff = qNum('q_payoff'), isDB = qIsDB() && !(payoff > 0);
+  var mmo = isDB ? 0 : qNum('q_mmo'), mf = qNum('q_mf'), esc = qNum('q_esc') || 8;
+  var MG = qMortgage(); // current-contract amortization model — never the original purchase year
+  var mo10 = qMortOver(MG, 10), mo20 = qMortOver(MG, 20);
+  var t10 = mo10 === null ? null : mo10 + mfTot(mf, esc / 100, 10);
+  var t20 = mo20 === null ? null : mo20 + mfTot(mf, esc / 100, 20);
+  var combo = (typeof qComboCalc === 'function') ? qComboCalc() : null;
+  var multi = combo ? combo.filter(function(c){ return c.active; }) : [];
+  return { payoff: payoff, isDB: isDB, mmo: mmo, mf: mf, esc: esc, MG: MG, t10: t10, t20: t20, multi: multi.length > 1 ? multi : null };
+}
+function qDocOpen(h){ var blob = new Blob([h], { type: 'text/html' }); window.open(URL.createObjectURL(blob), '_blank'); }
+var QDOC_S = 'style="font-family:Arial,Helvetica,sans-serif;color:#111827;max-width:820px;margin:0 auto;padding:28px;line-height:1.5"';
+var QDOC_H2 = 'style="color:#0b3d91;border-bottom:3px solid #0b3d91;padding-bottom:4px;margin:26px 0 10px;font-size:20px"';
+var QDOC_ROW = 'style="display:flex;justify-content:space-between;gap:14px;padding:5px 0;border-bottom:1px solid #e5e7eb"';
+var QDOC_BAR = 'style="position:sticky;top:0;background:#0b3d91;color:#fff;padding:10px 14px;border-radius:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:18px;z-index:5"';
+var QDOC_BTN = 'style="background:#fff;color:#0b3d91;border:none;border-radius:6px;padding:7px 13px;font-weight:800;cursor:pointer;font-family:inherit"';
+function qEmailHtml(){
+  if (!cur){ alert('Selecciona un cliente primero.'); return; }
+  var en = cur.lang === 'en';
+  var F = qCaseFacts();
+  var legal = qLegalName();
+  var intro = en ?
+    ['We cannot dispute the fact that you signed the contract, but we do not need to.',
+     'One of your fundamental rights as a consumer is the right to be informed: to receive the essential information needed to make an informed decision before taking on a long-term financial commitment.',
+     'What we need to identify is the principal reason you signed the contract, and whether that decision was influenced by misleading information or by important facts that were withheld from you.'] :
+    ['No podemos disputar el hecho de que firmaste el contrato, pero tampoco necesitamos hacerlo.',
+     'Uno de tus derechos fundamentales como consumidor es el derecho a estar informado: recibir la información esencial para tomar una decisión informada antes de asumir un compromiso financiero a largo plazo.',
+     'Lo que necesitamos identificar es la razón principal por la que firmaste el contrato y si esa decisión estuvo influenciada por información engañosa o por datos importantes que te fueron ocultados.'];
+  var vids = [['intro', en ? 'Introduction' : 'Introducción'], ['redweek', 'RedWeek'], ['ebay', 'eBay'], ['cuota', en ? 'The monthly payment and the interest' : 'La cuota y los intereses'], ['tarifas', en ? 'Maintenance fees' : 'Tarifas de mantenimiento'], ['herederos', en ? 'Your heirs' : 'Tus herederos'], ['conoce', en ? 'Meet Linx Legal' : 'Conoce a Linx Legal']];
+  var subj = en ? 'Have your answers to the 5 questions ready' : 'Tengas preparadas tus respuestas a las 5 preguntas';
+  var e = '';
+  e += '<p>' + (en ? 'Hello ' : 'Hola ') + escH(cur.name) + ':</p>';
+  intro.forEach(function(p){ e += '<p>' + p + '</p>'; });
+  e += '<p><b>' + (en ? 'Your situation, according to your file:' : 'Tu situación, según tu expediente:') + '</b></p>';
+  e += '<table style="width:100%;border-collapse:collapse;font-size:15px">';
+  function erow(l, v){ e += '<tr><td style="padding:5px;border-bottom:1px solid #e5e7eb">' + l + '</td><td style="padding:5px;text-align:right;border-bottom:1px solid #e5e7eb"><b>' + v + '</b></td></tr>'; }
+  if (legal) erow('Resort', escH(legal) + (cur.loc ? ' — ' + escH(cur.loc) : ''));
+  if (cur.pyr > 0) erow(en ? 'Year purchased' : 'Año de compra', cur.pyr);
+  erow(en ? 'Contracts' : 'Contratos', (cur.contracts || 1));
+  if (F.isDB) erow(en ? 'Mortgage' : 'Hipoteca', en ? 'Paid off — no mortgage' : 'Pagada — sin hipoteca');
+  else { if (F.payoff > 0) erow(en ? 'Current balance (payoff)' : 'Saldo actual (payoff)', fmtC(F.payoff)); if (F.mmo > 0) erow(en ? 'Monthly mortgage payment' : 'Cuota mensual de hipoteca', fmtC(F.mmo)); }
+  erow(en ? 'Maintenance fees' : 'Tarifas de mantenimiento', fmtC(F.mf) + (en ? '/year' : '/año'));
+  if (F.MG.status === 'ok') erow(en ? 'Payments remaining on your current contract' : 'Pagos restantes de tu contrato actual', F.MG.months + (en ? ' months' : ' meses'));
+  erow(en ? 'Projected cost of keeping it — 10 years' : 'Costo proyectado de quedarte con él — 10 años', F.t10 === null ? PEND_TXT : fmtC(F.t10));
+  if (F.multi){ var st = 0; F.multi.forEach(function(c){ st += c.payoff; }); erow(en ? 'Combined balance (' + F.multi.length + ' contracts)' : 'Saldo combinado (' + F.multi.length + ' contratos)', fmtC(st)); }
+  e += '</table>';
+  e += '<p style="margin-top:18px"><b>' + (en ? 'Before our appointment, please watch these short videos:' : 'Antes de nuestra cita, mira estos videos cortos:') + '</b></p><ol style="line-height:1.9">';
+  vids.forEach(function(v){ e += '<li><a href="https://investiganos.com/video/' + v[0] + '">' + v[1] + ' — investiganos.com/video/' + v[0] + '</a></li>'; });
+  e += '</ol>';
+  e += '<p>' + (en ? 'The first five videos each end with a question. Please have your answers to those <b>5 questions</b> ready for our call — your answers are how we identify the principal reason you signed.' : 'Los primeros cinco videos terminan con una pregunta. Ten preparadas tus respuestas a esas <b>5 preguntas</b> para nuestra llamada — con tus respuestas identificamos la razón principal por la que firmaste.') + '</p>';
+  e += '<p>' + (en ? 'If you have any questions before then, just reply to this email.' : 'Si tienes alguna pregunta antes, responde a este correo.') + '</p>';
+  e += '<p style="margin-top:20px">Sebastian Short<br>Senior Case Builder<br>Linx Legal Inc.<br>sebastian.short@linxlegal.com<br>investiganos.com<br>689-326-8754</p>';
+  var h = '<!DOCTYPE html><html lang="' + (en ? 'en' : 'es') + '"><head><meta charset="utf-8"><title>EMAIL PRE-CITA — ' + escH(cur.name) + '</title></head><body ' + QDOC_S + '>';
+  h += '<div ' + QDOC_BAR + '><b>📧 EMAIL PRE-CITA</b><span style="font-size:13px">Para: <input id="emTo" value="' + escH(cur.email || '') + '" style="padding:5px;border-radius:4px;border:none;min-width:210px"> Asunto: <input id="emSubj" value="' + escH(subj) + '" style="padding:5px;border-radius:4px;border:none;min-width:300px"></span>' +
+    '<button ' + QDOC_BTN + ' onclick="emCopy(this)">📋 COPY FORMATTED EMAIL</button>' +
+    '<button ' + QDOC_BTN + ' onclick="emGmail()">✉️ OPEN IN GMAIL</button>' +
+    '<span style="font-size:12px;opacity:.85">Gmail abre en texto plano; para conservar el formato usa COPY y pega en el correo. Nada se envía automáticamente — revisa antes de enviar.</span></div>';
+  h += '<div id="eml" contenteditable="true" style="border:1px solid #d1d5db;border-radius:8px;padding:22px;background:#fff">' + e + '</div>';
+  h += '<scr' + 'ipt>function emCopy(b){var n=document.getElementById("eml");try{navigator.clipboard.write([new ClipboardItem({"text/html":new Blob([n.outerHTML],{type:"text/html"}),"text/plain":new Blob([n.innerText],{type:"text/plain"})})]).then(function(){b.textContent="✅ COPIADO";});}catch(err){var r=document.createRange();r.selectNode(n);var s=getSelection();s.removeAllRanges();s.addRange(r);document.execCommand("copy");b.textContent="✅ COPIADO";}}' +
+    'function emGmail(){var to=document.getElementById("emTo").value,su=document.getElementById("emSubj").value,tx=document.getElementById("eml").innerText;window.open("https://mail.google.com/mail/?view=cm&fs=1&to="+encodeURIComponent(to)+"&su="+encodeURIComponent(su)+"&body="+encodeURIComponent(tx),"_blank");}</scr' + 'ipt>';
+  h += '</body></html>';
+  qDocOpen(h);
+}
+function qCaSourceHtml(){ // ALMA: documented case data + verbatim CA/CRM notes — read-only source evidence
+  var F = qCaseFacts();
+  var legal = qLegalName();
+  var h = '';
+  function row(l, v){ h += '<div ' + QDOC_ROW + '><span>' + l + '</span><b>' + v + '</b></div>'; }
+  h += '<h2 ' + QDOC_H2 + '>DATOS DEL CASO — HECHOS VERIFICADOS DEL EXPEDIENTE</h2>';
+  row('Cliente', escH(cur.name));
+  if (legal) row('Resort', escH(legal) + (cur.loc ? ' — ' + escH(cur.loc) : ''));
+  row('Case Analyst', escH(cur.ca || '—'));
+  if (cur.appt) row('Cita', escH(cur.appt));
+  row('Idioma', cur.lang === 'en' ? 'English' : 'Español');
+  row('Contratos', cur.contracts || 1);
+  if (cur.pyr > 0) row('Año de compra', cur.pyr);
+  row('Tipo', F.isDB ? 'DEED-BACK — sin hipoteca' : 'CON HIPOTECA');
+  if (F.payoff > 0) row('Saldo / Payoff', fmtC(F.payoff));
+  if (F.mmo > 0) row('Hipoteca mensual', fmtC(F.mmo));
+  row('Tarifas de mantenimiento', fmtC(F.mf) + '/año');
+  if (cur.apr > 0) row('APR registrado', cur.apr + '%');
+  if (F.MG.status === 'ok') row('Meses restantes (contrato actual)', F.MG.months);
+  h += '<h2 ' + QDOC_H2 + '>NOTAS DOCUMENTADAS — ENTREVISTA DEL CA / CRM (TEXTO ÍNTEGRO)</h2>';
+  if (cur.notes){ h += '<div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:14px;white-space:pre-wrap;font-size:14px">' + escH(cur.notes) + '</div><p style="font-size:12px;color:#6b7280">Las declaraciones del cliente citadas en estas notas son CLIENT STATEMENT — QUESTION NOT DOCUMENTED: la pregunta exacta del CA no está registrada en el expediente.</p>'; }
+  else h += '<p><b>NOT DOCUMENTED</b> — el expediente no contiene notas de la entrevista del CA.</p>';
+  return h;
+}
+function qCaHtml(){
+  if (!cur){ alert('Selecciona un cliente primero.'); return; }
+  var h = '<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><title>CA DISCOVERY — ' + escH(cur.name) + '</title></head><body ' + QDOC_S + '>';
+  h += '<div ' + QDOC_BAR + '><b>📋 CA DISCOVERY</b><span style="font-size:13px">Solo lo que el Case Analyst documentó. Nada de la entrevista del CB va aquí.</span><button ' + QDOC_BTN + ' onclick="caCopy(this)">📋 COPIAR REPORTE</button></div>';
+  h += '<div id="caDoc"><h1 style="color:#0b3d91;font-size:24px;margin:4px 0">CA DISCOVERY — ' + escH(cur.name) + '</h1>';
+  h += '<p style="font-size:13px;color:#6b7280">Fuente: expediente del cliente (CRM / entrevista del Case Analyst). Las preguntas originales del CA no están registradas como pregunta-y-respuesta en el expediente — no se inventan preguntas ni respuestas. Lo que falta se marca NOT DOCUMENTED.</p>';
+  h += qCaSourceHtml();
+  ['PURCHASE EXPERIENCE','SALES REPRESENTATIONS','FINANCIAL OBLIGATIONS','OWNERSHIP EXPERIENCE','REASONS FOR WANTING OUT'].forEach(function(t){
+    h += '<h2 ' + QDOC_H2 + '>' + t + '</h2>';
+    if (t === 'FINANCIAL OBLIGATIONS') h += '<p>Las obligaciones documentadas constan arriba en DATOS DEL CASO (saldo, cuota mensual, tarifas, APR, meses restantes). Preguntas exactas del CA: <b>NOT DOCUMENTED</b>.</p>';
+    else h += '<p><b>NOT DOCUMENTED</b> como pregunta y respuesta — ver NOTAS DOCUMENTADAS (texto íntegro) arriba.</p>';
+  });
+  h += '</div>';
+  h += '<scr' + 'ipt>function caCopy(b){var tx=document.getElementById("caDoc").innerText;try{navigator.clipboard.writeText(tx).then(function(){b.textContent="✅ COPIADO";});}catch(e){}}</scr' + 'ipt>';
+  h += '</body></html>';
+  qDocOpen(h);
+}
+function qCbHtml(){
+  if (!cur){ alert('Selecciona un cliente primero.'); return; }
+  var F = qCaseFacts();
+  var legal = qLegalName();
+  var saved = {}; try { saved = JSON.parse(localStorage.getItem('sl_cb_' + cur.id) || '{}'); } catch(e){}
+  function fld(id, label, pre){ return '<div style="margin:12px 0"><div style="font-weight:800;color:#0b3d91">' + label + '</div><div id="' + id + '" contenteditable="true" style="border:1px solid #d1d5db;border-radius:6px;padding:10px;min-height:38px;background:#fff">' + (saved[id] ? escH(saved[id]) : (pre || '')) + '</div></div>'; }
+  var finImpact = (F.isDB ? 'Sin hipoteca. ' : (F.payoff > 0 ? 'Saldo: ' + fmtC(F.payoff) + (F.mmo > 0 ? ' · cuota ' + fmtC(F.mmo) + '/mes' : '') + '. ' : '')) + 'Tarifas de mantenimiento: ' + fmtC(F.mf) + '/año' + (F.t10 !== null ? ' · costo proyectado a 10 años de quedarse: ' + fmtC(F.t10) : ' · proyección a 10 años: ' + PEND_TXT) + '.';
+  var h = '<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><title>CB DISCOVERY — ' + escH(cur.name) + '</title></head><body ' + QDOC_S + '>';
+  h += '<div ' + QDOC_BAR + '><b>📝 CB DISCOVERY</b><span style="font-size:13px">El trabajo se guarda automáticamente en este navegador. Nada se envía sin tu aprobación.</span>' +
+    '<button ' + QDOC_BTN + ' onclick="cbLetter()">🔄 ACTUALIZAR CARTA</button>' +
+    '<button ' + QDOC_BTN + ' onclick="cbCopy(this)">📋 COPY LETTER</button>' +
+    '<button ' + QDOC_BTN + ' onclick="cbDl()">⬇️ DOWNLOAD</button>' +
+    '<button ' + QDOC_BTN + ' onclick="cbMail()">✉️ PREPARE EMAIL TO CASE MANAGER</button></div>';
+  h += '<h1 style="color:#0b3d91;font-size:24px;margin:4px 0">CB DISCOVERY — ' + escH(cur.name) + '</h1>';
+  h += '<h2 ' + QDOC_H2 + '>A. HALLAZGOS DEL CA (IMPORTADOS — SOLO LECTURA)</h2>';
+  h += '<div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:12px">' + qCaSourceHtml() + '</div>';
+  h += '<h2 ' + QDOC_H2 + '>B. ENTREVISTA DEL CB — COMPLETAR CON EL CLIENTE</h2>';
+  h += '<p style="font-size:13px;color:#6b7280">Usa solo declaraciones documentadas y lo que el cliente confirme en esta entrevista. Distingue siempre la alegación del cliente del hecho verificado.</p>';
+  h += fld('f_circum', 'Circunstancias de la presentación');
+  h += fld('f_principal', 'Razón principal por la que firmó');
+  h += fld('f_represent', 'Representaciones hechas por empleados del resort');
+  h += fld('f_omitted', 'Información material presuntamente omitida');
+  h += fld('f_evidence', 'Evidencia de respaldo');
+  h += fld('f_experience', 'Experiencia posterior como propietario');
+  h += fld('f_attempts', 'Intentos de resolver la situación');
+  h += fld('f_impact', 'Impacto financiero y personal', escH(finImpact));
+  h += fld('f_resolution', 'Resolución solicitada', escH('Cancelación del contrato y liberación total de las obligaciones presentes y futuras del tiempo compartido.'));
+  h += '<h2 ' + QDOC_H2 + '>C. CLIENT EXPLANATION LETTER (BORRADOR)</h2>';
+  h += '<p style="font-size:12px;color:#b91c1c;font-weight:700">BORRADOR — la carta debe ser revisada y aprobada por el cliente antes de enviarse a Case Management. No se envía automáticamente.</p>';
+  h += '<div id="letter" style="border:2px solid #0b3d91;border-radius:8px;padding:20px;background:#fff;white-space:pre-wrap;font-size:14.5px"></div>';
+  var key = 'sl_cb_' + cur.id;
+  var nm = String(cur.name || '').replace(/["\\]/g, '');
+  var rs = (legal + (cur.loc ? ' — ' + cur.loc : '')).replace(/["\\]/g, '');
+  h += '<scr' + 'ipt>' +
+    'var KEY="' + key + '", NM="' + nm + '", RS="' + rs + '", PYR="' + (cur.pyr || '') + '", NC="' + (cur.contracts || 1) + '";' +
+    'var FIELDS=["f_circum","f_principal","f_represent","f_omitted","f_evidence","f_experience","f_attempts","f_impact","f_resolution"];' +
+    'function gv(id){var e=document.getElementById(id);return e?e.innerText.trim():"";}' +
+    'function sec(t,v){return "\\n" + t + "\\n" + (v || "[PENDIENTE — completar en la entrevista]") + "\\n";}' +
+    'function cbLetter(){var L="CLIENT EXPLANATION LETTER\\n\\nCliente: " + NM + "\\nResort: " + RS + (PYR ? "\\nAño de compra: " + PYR : "") + "\\nContratos: " + NC + "\\n";' +
+    'L+=sec("PURCHASE AND UPGRADE HISTORY", ((PYR ? "Compra en " + PYR + " · " + NC + " contrato(s)" : "") + (gv("f_circum") ? " — " + gv("f_circum") : "")).trim());' +
+    'L+=sec("PRINCIPAL REASONS FOR SIGNING", gv("f_principal"));' +
+    'L+=sec("REPRESENTATIONS MADE BY RESORT EMPLOYEES (client allegations)", gv("f_represent"));' +
+    'L+=sec("MATERIAL INFORMATION ALLEGEDLY OMITTED (client allegations)", gv("f_omitted"));' +
+    'L+=sec("SUPPORTING EVIDENCE", gv("f_evidence"));' +
+    'L+=sec("SUBSEQUENT OWNERSHIP EXPERIENCE", gv("f_experience"));' +
+    'L+=sec("ATTEMPTS TO RESOLVE THE SITUATION", gv("f_attempts"));' +
+    'L+=sec("FINANCIAL AND PERSONAL IMPACT", gv("f_impact"));' +
+    'L+=sec("REQUESTED RESOLUTION", gv("f_resolution"));' +
+    'document.getElementById("letter").textContent=L;return L;}' +
+    'function cbSave(){var o={};FIELDS.forEach(function(id){o[id]=gv(id);});try{localStorage.setItem(KEY,JSON.stringify(o));}catch(e){}}' +
+    'FIELDS.forEach(function(id){var e=document.getElementById(id);if(e)e.addEventListener("input",function(){cbSave();});});' +
+    'function cbCopy(b){var L=cbLetter();try{navigator.clipboard.writeText(L).then(function(){b.textContent="✅ COPIADO";});}catch(e){}}' +
+    'function cbDl(){var L=cbLetter();var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([L],{type:"text/plain"}));a.download="Client-Explanation-Letter-" + NM.replace(/[^A-Za-z0-9]+/g,"-") + ".txt";a.click();}' +
+    'function cbMail(){var L=cbLetter();window.open("https://mail.google.com/mail/?view=cm&fs=1&su="+encodeURIComponent("Client Explanation Letter — " + NM)+"&body="+encodeURIComponent(L),"_blank");}' +
+    'cbLetter();</scr' + 'ipt>';
+  h += '</body></html>';
+  qDocOpen(h);
 }
 function qPostCallHtml(){
   if (!cur){ alert('Selecciona un cliente primero.'); return; }
