@@ -1442,9 +1442,14 @@ function qEmailHtml(){
   else { if (F.payoff > 0) erow(en ? 'Current balance (payoff)' : 'Saldo actual (payoff)', fmtC(F.payoff)); if (F.mmo > 0) erow(en ? 'Monthly mortgage payment' : 'Cuota mensual de hipoteca', fmtC(F.mmo)); }
   erow(en ? 'Maintenance fees' : 'Tarifas de mantenimiento', fmtC(F.mf) + (en ? '/year' : '/año'));
   if (F.MG.status === 'ok') erow(en ? 'Payments remaining on your current contract' : 'Pagos restantes de tu contrato actual', F.MG.months + (en ? ' months' : ' meses'));
-  erow(en ? 'Projected cost of keeping it — 10 years' : 'Costo proyectado de quedarte con él — 10 años', F.t10 === null ? PEND_TXT : fmtC(F.t10));
   if (F.multi){ var st = 0; F.multi.forEach(function(c){ st += c.payoff; }); erow(en ? 'Combined balance (' + F.multi.length + ' contracts)' : 'Saldo combinado (' + F.multi.length + ' contratos)', fmtC(st)); }
   e += '</table>';
+  // PROYECCIÓN — LA TRAMPA: the panel's own window values (same source as QUOTE's desglose — always matches the screen)
+  var gv2 = function(id){ var el = $(id); return el ? el.textContent : ''; };
+  var prows = [['q_w30','Próximos 30 días','Next 30 days'],['q_w90','Próximos 90 días','Next 90 days'],['q_w6','Próximos 6 meses','Next 6 months'],['q_t1','Próximo 1 año','Next 1 year'],['q_t3','Próximos 3 años','Next 3 years'],['q_t5','Próximos 5 años','Next 5 years'],['q_t10','Próximos 10 años','Next 10 years'],['q_t20','Próximos 20 años','Next 20 years'],['q_t30','Próximos 30 años','Next 30 years']];
+  var phtml = '';
+  prows.forEach(function(r){ var v = gv2(r[0]); if (v && v !== '—') phtml += '<tr><td style="padding:5px;border-bottom:1px solid #e5e7eb">' + (en ? r[2] : r[1]) + '</td><td style="padding:5px;text-align:right;border-bottom:1px solid #e5e7eb"><b>' + escH(v) + '</b></td></tr>'; });
+  if (phtml) e += '<p style="margin-top:18px"><b>📈 ' + (en ? 'PROJECTION — THE TRAP' : 'PROYECCIÓN — LA TRAMPA') + '</b></p><table style="width:100%;border-collapse:collapse;font-size:15px">' + phtml + '</table>';
   e += '<p style="margin-top:18px"><b>' + (en ? 'Before our appointment, please watch these short videos:' : 'Antes de nuestra cita, mira estos videos cortos:') + '</b></p><ol style="line-height:1.9">';
   vids.forEach(function(v){ e += '<li><a href="https://investiganos.com/video/' + v[0] + '">' + v[1] + ' — investiganos.com/video/' + v[0] + '</a></li>'; });
   e += '</ol>';
