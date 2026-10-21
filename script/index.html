@@ -340,6 +340,17 @@
   <div class="calcgrid"><div class="cpanel cpanel-trap">
   <div class="qsec" style="margin-top:0">🏨 SITUACIÓN DEL RESORT — LA TRAMPA ACTUAL</div>
   <div id="q_contracts" style="display:none"></div>
+  <div id="q_ncrow" style="display:flex;gap:6px;align-items:center;margin:8px 0">
+    <span style="font-weight:800">NÚMERO DE CONTRATOS:</span>
+    <button type="button" id="q_nc1" onclick="qSetNC(1)" style="padding:6px 16px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;background:#0b3d91;color:#fff">1</button>
+    <button type="button" id="q_nc2" onclick="qSetNC(2)" style="padding:6px 16px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;background:#e2e8f0;color:#334155">2</button>
+    <button type="button" id="q_nc3" onclick="qSetNC(3)" style="padding:6px 16px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;background:#e2e8f0;color:#334155">3</button>
+    <span class="qsm">Cada contrato se cobra por separado.</span>
+  </div>
+  <div id="q_combo" style="display:none;background:#0b3d91;color:#fff;border-radius:8px;padding:10px 12px;margin-bottom:10px">
+    <div style="font-weight:800;font-size:1.05em">🧮 TOTALES COMBINADOS — <span id="q_combo_n">1</span> CONTRATOS</div>
+    <div id="q_combo_lines" style="font-size:.97em;line-height:1.55"></div>
+  </div>
   <label class="qf mtgOnly">HIPOTECA MENSUAL <input id="q_mmo" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">MF/AÑO <input id="q_mf" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">ESC % <input id="q_esc" type="number" min="0" oninput="qRecalc()"></label>
@@ -372,6 +383,36 @@
     <div class="mtgOnly">Hipoteca 10 años <b id="q_xmo10">—</b></div>
     <div>Mantenimiento 10 años (<span id="q_xescp">8</span>% esc) <b id="q_xmf10">—</b></div>
     <div>Proyección 10 años <b id="q_xproj10">—</b></div>
+  </div>
+  <div id="q_c2box" style="display:none;border-top:3px solid #0b3d91;margin-top:14px;padding-top:8px">
+    <div class="qsec" style="margin-top:0">📄 CONTRATO 2</div>
+    <label class="qf">SALDO <input id="q2_payoff" type="number" min="0" oninput="qRecalc()"></label>
+    <label class="qf">HIPOTECA MENSUAL <input id="q2_mmo" type="number" min="0" oninput="qRecalc()"></label>
+    <label class="qf">MF/AÑO <input id="q2_mf" type="number" min="0" oninput="qRecalc()"></label>
+    <label class="qf">ESC % <input id="q2_esc" type="number" min="0" oninput="qRecalc()"></label>
+    <label class="qf">APR % <input id="q2_apr" type="number" min="0" oninput="qRecalc()"></label>
+    <label class="qf">PLAZO (MESES) <input id="q2_term" type="number" min="0" oninput="qRecalc()"></label>
+    <label class="qf">PRECIO MANUAL (deed-back / hoja) <input id="q2_fee" type="number" min="0" oninput="qRecalc()"></label>
+    <div class="qout">
+      <div>Meses restantes <b id="q2_mleft">—</b></div>
+      <div>Proyección 10 años <b id="q2_t10">—</b></div>
+      <div>PRECIO CONTRATO 2 <b id="q2_price">—</b></div>
+    </div>
+  </div>
+  <div id="q_c3box" style="display:none;border-top:3px solid #0b3d91;margin-top:14px;padding-top:8px">
+    <div class="qsec" style="margin-top:0">📄 CONTRATO 3</div>
+    <label class="qf">SALDO <input id="q3_payoff" type="number" min="0" oninput="qRecalc()"></label>
+    <label class="qf">HIPOTECA MENSUAL <input id="q3_mmo" type="number" min="0" oninput="qRecalc()"></label>
+    <label class="qf">MF/AÑO <input id="q3_mf" type="number" min="0" oninput="qRecalc()"></label>
+    <label class="qf">ESC % <input id="q3_esc" type="number" min="0" oninput="qRecalc()"></label>
+    <label class="qf">APR % <input id="q3_apr" type="number" min="0" oninput="qRecalc()"></label>
+    <label class="qf">PLAZO (MESES) <input id="q3_term" type="number" min="0" oninput="qRecalc()"></label>
+    <label class="qf">PRECIO MANUAL (deed-back / hoja) <input id="q3_fee" type="number" min="0" oninput="qRecalc()"></label>
+    <div class="qout">
+      <div>Meses restantes <b id="q3_mleft">—</b></div>
+      <div>Proyección 10 años <b id="q3_t10">—</b></div>
+      <div>PRECIO CONTRATO 3 <b id="q3_price">—</b></div>
+    </div>
   </div>
   <div class="qsec mtgOnly">DESGLOSE DEL PRÉSTAMO</div>
   <div class="tmin mtgOnly" id="q_mleft" style="margin-bottom:6px">— meses restantes</div>
@@ -857,6 +898,59 @@ function qMortgage(){
 // Mortgage $ over y years under the shared model; null = pending verification.
 function qMortOver(mg, y){ if (mg.status === 'paid') return 0; if (mg.status === 'ok') return Math.min(y * 12, mg.months) * mg.mmo; return null; }
 var PEND_TXT = 'PENDIENTE DE VERIFICACIÓN';
+// ===== CONTRACTS TOOL (Sebastian, 2026-10-20): charge EACH contract separately, combine totals at top =====
+var qNC = 1; // active contract count
+function qSetNC(n){ qNC = n; qNCButtons(); qRecalc(); }
+function qNCButtons(){
+  for (var i = 1; i <= 3; i++){ var b = $('q_nc' + i); if (b){ b.style.background = i === qNC ? '#0b3d91' : '#e2e8f0'; b.style.color = i === qNC ? '#fff' : '#334155'; } }
+  var b2 = $('q_c2box'); if (b2) b2.style.display = qNC >= 2 ? '' : 'none';
+  var b3 = $('q_c3box'); if (b3) b3.style.display = qNC >= 3 ? '' : 'none';
+}
+// Values-based twin of qMortgage for contratos 2/3 (same rules: saldo+APR amortization, cap = term, no APR = pending).
+function qMortgageVals(payoff, mmo, apr, term){
+  payoff = payoff || 0; mmo = mmo || 0; apr = apr || 0; term = term || 120;
+  if (payoff <= 0) return { status: 'paid', months: 0, mmo: 0, payoff: 0 };
+  if (mmo <= 0) return { status: 'pending', months: 0, mmo: 0, payoff: payoff };
+  var lr = apr / 100 / 12;
+  if (lr > 0 && mmo > payoff * lr) return { status: 'ok', months: Math.min(term, Math.ceil(-Math.log(1 - payoff * lr / mmo) / Math.log(1 + lr))), mmo: mmo, payoff: payoff };
+  return { status: 'pending', months: 0, mmo: mmo, payoff: payoff };
+}
+// Per-contract price: service = payoff x pct (floored at the $3,500 Linx minimum) + admin ($299 < $10K service, else $399).
+function qPriceVals(payoff, pct){ var s = Math.max((payoff || 0) * pct / 100, 3500); var adm = s < 10000 ? 299 : 399; return { service: s, admin: adm, total: s + adm, manual: false }; }
+function qContractCalc(which){ // which: 1, 2, 3
+  var px = which === 1 ? 'q_' : 'q' + which + '_';
+  var payoff = qNum(px + 'payoff'), mf = qNum(px + 'mf'), esc = qNum(px + 'esc') || 8;
+  var manFee = which === 1 ? 0 : qNum(px + 'fee');
+  var mg = which === 1 ? qMortgage() : qMortgageVals(payoff, qNum(px + 'mmo'), qNum(px + 'apr'), qNum(px + 'term') || 120);
+  var pct = parseFloat(($('q_feepct') || {}).value || '47') || 47;
+  var price = manFee > 0 ? { service: manFee, admin: 0, total: manFee, manual: true } : (payoff > 0 ? qPriceVals(payoff, pct) : { service: 0, admin: 0, total: 0, manual: false });
+  if (which === 1 && qIsDB()){ var sf = qNum('q_sheetfee'); if (sf > 0) price = { service: sf, admin: 0, total: sf, manual: true }; }
+  var active = which === 1 ? true : (payoff > 0 || qNum(px + 'mmo') > 0 || mf > 0 || manFee > 0);
+  return { payoff: payoff, mmo: mg.mmo, mf: mf, esc: esc, mg: mg, price: price, active: active };
+}
+function qComboCalc(){ var list = [qContractCalc(1)]; if (qNC >= 2) list.push(qContractCalc(2)); if (qNC >= 3) list.push(qContractCalc(3)); return list; }
+function qRenderCombo(list){
+  [2, 3].forEach(function(n){
+    var c = list[n - 1]; if (!c) return;
+    var ml = $('q' + n + '_mleft'), t10 = $('q' + n + '_t10'), pr = $('q' + n + '_price'); if (!ml || !t10 || !pr) return;
+    ml.textContent = !c.active ? '—' : (c.mg.status === 'paid' ? 'Sin hipoteca — pagada' : (c.mg.status === 'ok' ? c.mg.months + ' meses' : PEND_TXT));
+    var mo10 = qMortOver(c.mg, 10);
+    t10.textContent = !c.active ? '—' : (mo10 === null ? PEND_TXT : fmtC(mo10 + mfTot(c.mf, (c.esc || 8) / 100, 10)));
+    pr.textContent = c.price.total > 0 ? fmtD(c.price.total) + (c.price.manual ? ' (manual)' : ' (' + fmtD(c.price.service) + ' + ' + fmtD(c.price.admin) + ' admin)') : '—';
+  });
+  var bar = $('q_combo'); if (!bar) return;
+  var act = list.filter(function(c){ return c.active; });
+  if (qNC <= 1 || act.length <= 1){ bar.style.display = 'none'; return; }
+  bar.style.display = '';
+  $('q_combo_n').textContent = act.length;
+  var saldo = 0, mensual = 0, anual = 0, precio = 0, pend = false, mo10sum = 0, mf10sum = 0;
+  act.forEach(function(c){ saldo += c.payoff; mensual += c.mmo + c.mf / 12; anual += c.mmo * 12 + c.mf; precio += c.price.total; var mo = qMortOver(c.mg, 10); if (mo === null) pend = true; else mo10sum += mo; mf10sum += mfTot(c.mf, (c.esc || 8) / 100, 10); });
+  var pl = list.map(function(c, i){ return 'C' + (i + 1) + ': ' + (c.price.total > 0 ? fmtD(c.price.total) : '—'); }).join(' · ');
+  $('q_combo_lines').innerHTML =
+    '<div>Saldo total: <b>' + fmtD(saldo) + '</b> · Total mensual: <b>' + fmtC(mensual) + '</b> · Total anual: <b>' + fmtD(anual) + '</b></div>' +
+    '<div>Proyección 10 años combinada: <b>' + (pend ? PEND_TXT : fmtC(mo10sum + mf10sum)) + '</b></div>' +
+    '<div style="font-size:1.15em">PRECIO TOTAL: <b>' + fmtD(precio) + '</b> <span style="font-weight:400;font-size:.85em">(' + pl + ')</span></div>';
+}
   /* ===== DISPOSICIÓN / ESTADO DEL LEAD / RESULTADO / SEGUIMIENTO por cliente ===== */
   function dispoKey(){ return cur ? 'sl_dispo_' + cur.id : null; }
   function dispoRead(){
@@ -1474,7 +1568,7 @@ function qRenderContracts(c){
   if (c.mmo > 0) tot.push(fmtD(c.mmo) + '/mes');
   if (c.mf > 0) tot.push('MF ' + fmtD(c.mf) + '/año');
   h += '<div class="qctot">TOTAL COMBINADO (' + c.contractsList.length + ' contratos): ' + tot.join(' · ') + '</div>';
-  h += '<div class="qsm" style="margin-bottom:8px">Los campos editables de abajo son los totales combinados; el precio se calcula sobre el payoff combinado.</div>';
+  h += '<div class="qsm" style="margin-bottom:8px">Cada contrato se cobra POR SEPARADO: los campos de abajo son el Contrato 1; carga los demás en las secciones CONTRATO 2/3 y el PRECIO TOTAL es la suma de cada contrato.</div>';
   box.innerHTML = h; box.style.display = '';
 }
 function qAdminFor(fee){ if (!(fee > 0)) return 0; var s1 = fee - 299; if (s1 > 0 && s1 < 10000) return 299; var s2 = fee - 399; if (s2 >= 10000) return 399; return s1 >= 10000 ? 399 : 299; }
@@ -1520,6 +1614,19 @@ function qSync(c){
   qTaskSync(); qDocRender();
   qUrlLinks();
   if (!qIsDB() && !$('q_fee').value && c && c.payoff > 0) qFeeApply();
+  // Contracts tool sync (2026-10-20): count + contratos 2/3 (record c2/c3, or seed from contractsList)
+  qNC = 1;
+  var seed2 = null, seed3 = null;
+  if (c){
+    if (c.ncontracts) qNC = Math.min(3, Math.max(1, c.ncontracts));
+    else if (c.contractsList && c.contractsList.length >= 2) qNC = Math.min(3, c.contractsList.length);
+    else if (c.contracts && c.contracts > 1) qNC = Math.min(3, c.contracts);
+    seed2 = c.c2 || (c.contractsList && c.contractsList[1]) || null;
+    seed3 = c.c3 || (c.contractsList && c.contractsList[2]) || null;
+  }
+  function qFillCx(px, o){ ['payoff','mmo','mf','esc','apr','term','fee'].forEach(function(f){ var el = $(px + f); if (el) el.value = o && o[f] ? o[f] : ''; }); var es2 = $(px + 'esc'); if (es2 && !(o && o.esc)) es2.value = 8; }
+  qFillCx('q2_', seed2); qFillCx('q3_', seed3);
+  qNCButtons();
   qRecalc();
 }
 function qDocKey(){ return cur && cur.id ? 'sl_docs_' + cur.id : null; }
@@ -1566,6 +1673,7 @@ function qRecalc(){
   var nowY = new Date().getFullYear();
   var pmN = parseInt(($('q_pmonth') || {}).value, 10) || (cur && cur.pmonth) || 0;
   var MG = qMortgage(); // shared model (SAI 2026-10-20): projections never restart or erase a mortgage
+  var COMBO = qComboCalc(); // contracts tool: per-contract calcs (each charged separately)
   function win(y){ var mo = qMortOver(MG, y); return mo === null ? null : mo + mfTot(mf, r, y); }
   function winMo(m){ var mo = MG.status === 'paid' ? 0 : (MG.status === 'ok' ? Math.min(m, MG.months) : m) * MG.mmo; return mo + mf * m / 12; }
   var w30 = winMo(1), w90 = winMo(3), w6 = winMo(6);
@@ -1594,8 +1702,9 @@ function qRecalc(){
   var sugEl = $('q_feesug');
   if (sugEl){
     if (qIsDB()) sugEl.innerHTML = sheetFeeActive ? 'Fee activo: el de la hoja PRE-CALL (deed-back).' : 'Deed-back: el fee sale de la hoja PRE-CALL \u2014 ingr\u00e9salo en el recuadro rojo.';
-    else if (payoff > 0){ var pctS = parseFloat(($('q_feepct') || {}).value || '47') || 47; var s47 = payoff * pctS / 100; if (s47 < 3500) s47 = 3500; var adm = s47 < 10000 ? 299 : 399; var mcN = qMulti(cur) ? ' (payoff combinado de ' + cur.contractsList.length + ' contratos)' : ''; var ccN = ''; if (($('q_paym') || {}).value === 'cc'){ var ccS = (s47 + adm) * 0.03; ccN = ' + cargo CC 3% = ' + fmtD(ccS) + ' = <b>' + fmtD(s47 + adm + ccS) + '</b> con tarjeta'; } sugEl.innerHTML = 'F\u00f3rmula: payoff \u00d7 ' + pctS + '% = ' + fmtD(s47) + ' + admin ' + fmtD(adm) + ' = <b>' + fmtD(s47 + adm) + '</b>' + ccN + mcN + ' <a href="#" onclick="document.getElementById(\'q_fee\').value=' + Math.round(s47 + adm) + ';qRecalc();return false;">Usar</a>'; }
+    else if (payoff > 0){ var pctS = parseFloat(($('q_feepct') || {}).value || '47') || 47; var s47 = payoff * pctS / 100; if (s47 < 3500) s47 = 3500; var adm = s47 < 10000 ? 299 : 399; var mcN = ''; var ccN = ''; if (($('q_paym') || {}).value === 'cc'){ var ccS = (s47 + adm) * 0.03; ccN = ' + cargo CC 3% = ' + fmtD(ccS) + ' = <b>' + fmtD(s47 + adm + ccS) + '</b> con tarjeta'; } sugEl.innerHTML = 'F\u00f3rmula: payoff \u00d7 ' + pctS + '% = ' + fmtD(s47) + ' + admin ' + fmtD(adm) + ' = <b>' + fmtD(s47 + adm) + '</b>' + ccN + mcN + ' <a href="#" onclick="document.getElementById(\'q_fee\').value=' + Math.round(s47 + adm) + ';qRecalc();return false;">Usar</a>'; }
     else sugEl.textContent = '';
+    if (COMBO){ var cAct2 = COMBO.filter(function(cc){ return cc.active; }); if (cAct2.length > 1){ var cTot2 = 0; COMBO.forEach(function(cc){ cTot2 += cc.price.total; }); sugEl.innerHTML += '<br><b>PRECIO COMBINADO (' + cAct2.length + ' contratos, cada uno cobrado por separado): ' + fmtD(cTot2) + '</b> <a href="#" onclick="document.getElementById(\'q_fee\').value=' + Math.round(cTot2) + ';qRecalc();return false;">Usar precio combinado</a>'; } }
   }
   var paym = $('q_paym').value;
   var cpS = $('q_commpay'); if (cpS) cpS.value = (paym === 'check' || paym === 'equity') ? 'ach' : paym;
@@ -1628,6 +1737,7 @@ function qRecalc(){
   var t12 = feeKnown ? fmtD(amort(bal, fapr, 12)) : '—', t24 = feeKnown ? fmtD(amort(bal, fapr, 24)) : '—', t36 = feeKnown ? fmtD(amort(bal, fapr, 36)) : '—';
   $('q_t12').textContent = t12; $('q_t24').textContent = t24; $('q_t36').textContent = t36;
   var comm = feeKnown ? Math.max(0, fee - qAdminFor(fee)) * 0.10 : 0;
+  if (COMBO && feeKnown){ var cTot3 = 0, cSvc3 = 0, cAct3 = 0; COMBO.forEach(function(cc){ if (cc.active){ cAct3++; cTot3 += cc.price.total; cSvc3 += cc.price.service; } }); if (cAct3 > 1 && Math.abs(fee - cTot3) < 1) comm = cSvc3 * 0.10; }
   $('q_comm').textContent = feeKnown ? fmtD(comm) : '—';
   var cbEl = $('q_commbase'); if (cbEl) cbEl.textContent = feeKnown ? '(base ' + fmtD(Math.max(0, fee - qAdminFor(fee))) + ' — tarifa sin admin ni cargo CC, como en la hoja de comisi\u00f3n)' : '';
   var cdate = '—';
@@ -1681,6 +1791,7 @@ function qRecalc(){
   c2.esc = esc; c2.term = term; c2.pyr = pyr;
   c2.pmonth = parseInt($('q_pmonth').value, 10) || (cur.pmonth || 0);
   c2.nights = qNum('q_nights');
+  qRenderCombo(COMBO);
   renderBar(c2, n); applyFills(c2, n); soldRender(); qCover(); qAutoSave();
 }
 var qSaveT = null;
@@ -1704,6 +1815,9 @@ function qAutoSave(){
       c.sheetUrl = $('q_sheet').value.trim(); c.docusignUrl = $('q_dsurl').value.trim();
       c.folderPath = $('q_folder').value.trim(); c.loanNote = $('q_loannote').value.trim();
       c.sheetFee = qNum('q_sheetfee'); c.sheetDown = qNum('q_sheetdown');
+      c.ncontracts = qNC;
+      c.c2 = { payoff: qNum('q2_payoff'), mmo: qNum('q2_mmo'), mf: qNum('q2_mf'), esc: qNum('q2_esc'), apr: qNum('q2_apr'), term: qNum('q2_term'), fee: qNum('q2_fee') };
+      c.c3 = { payoff: qNum('q3_payoff'), mmo: qNum('q3_mmo'), mf: qNum('q3_mf'), esc: qNum('q3_esc'), apr: qNum('q3_apr'), term: qNum('q3_term'), fee: qNum('q3_fee') };
       localStorage.setItem('sl_clients', JSON.stringify(cs));
       if (cur && cur.id === cid) cur = c;
     } catch(e){}
