@@ -348,7 +348,7 @@
   <label class="qf">NOCHES/AÑO <input id="q_nights" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf mtgOnly">PLAZO (MESES) <input id="q_term" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf mtgOnly">SALDO <input id="q_payoff" type="number" min="0" oninput="qRecalc()"></label>
-  <div class="qsec">📈 PROYECCIÓN — LA TRAMPA</div>
+  <div class="qsec">Compromiso Contractual Actual</div>
   <div class="qout">
     <div class="qsm">Próximos 30 días <b id="q_w30">—</b></div>
     <div class="qsm">Próximos 90 días <b id="q_w90">—</b></div>
@@ -1270,7 +1270,7 @@ function qQuoteHtml(){
   var gv = function(id){ var el = $(id); return el ? el.textContent : '—'; };
   var escP = gv('q_xescp');
   h += '<h2 ' + H2 + '>📊 Desglose de gastos</h2>';
-  h += '<h3 style="color:#0b3d91;margin:14px 0 6px">📈 Proyección — la trampa</h3>';
+  h += '<h3 style="color:#0b3d91;margin:14px 0 6px">Compromiso Contractual Actual</h3>';
   [['Próximos 30 días','q_w30'],['Próximos 90 días','q_w90'],['Próximos 6 meses','q_w6'],['Próximo 1 año','q_t1'],['Próximos 3 años','q_t3'],['Próximos 5 años','q_t5'],['Próximos 10 años','q_t10'],['Próximos 20 años','q_t20'],['Próximos 30 años','q_t30']].forEach(function(r){ var v = gv(r[1]); if (v && v !== '—') h += '<div ' + ROW + '><span>' + r[0] + '</span><b>' + escH(v) + '</b></div>'; });
   if (mmo > 0) h += '<div ' + ROW + '><span>Hipoteca mensual</span><b>' + escH(gv('q_xmmo')) + '</b></div>';
   h += '<div ' + ROW + '><span>Mantenimiento mensual</span><b>' + escH(gv('q_xmfmo')) + '</b></div>';
