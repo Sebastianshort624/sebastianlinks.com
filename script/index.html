@@ -366,6 +366,7 @@
   <label class="qf mtgOnly">PLAZO (MESES) <input id="q_term" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf mtgOnly">SALDO <input id="q_payoff" type="number" min="0" oninput="qRecalc()"></label>
   <div class="qsec">Compromiso Contractual Actual</div>
+  <div id="q_calcstatus" style="font-size:.92em;line-height:1.5;margin:0 0 8px"></div>
   <div class="qout">
     <div class="qsm">Próximos 30 días <b id="q_w30">—</b></div>
     <div class="qsm">Próximos 90 días <b id="q_w90">—</b></div>
@@ -426,7 +427,7 @@
   <label class="qf mtgOnly">APR % <input id="q_aapr" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf mtgOnly">MESES <input id="q_mos" type="number" min="1" max="120" oninput="qRecalc()"></label>
   <div class="qout mtgOnly">
-    <div>Préstamo original (financiado) <b id="q_ofin">—</b></div>
+    <div>Préstamo original (financiado) <span id="q_ofin_tag"></span> <b id="q_ofin">—</b></div>
     <div>Total programado (pago × plazo) <b id="q_osch">—</b></div>
     <div>Interés total (programado) <b id="q_oint">—</b></div>
     <div>Total pagado <b id="q_paid">—</b></div>
@@ -894,22 +895,22 @@ function qMortgage(){
   var payoffSet = ((($('q_payoff') || {}).value || '') + '') !== '';
   if (qIsDB() && !(payoffSet && payoff > 0)) return { status: 'paid', months: 0, mmo: 0, payoff: 0 };
   if (payoffSet && payoff <= 0) return { status: 'paid', months: 0, mmo: 0, payoff: 0 };
-  // REMAINING from a verified contract start (MATEO spec) when the saldo alone cannot prove it.
-  if (!(payoff > 0) || (typeof cur !== 'undefined' && cur && cur.poffUnverified)){ var sr = qSchedRemaining(); if (sr) return sr; }
+  // MATEO FINAL SAFEGUARD (Sebastian, 2026-10-20): three statuses — VERIFICADO / ESTIMADO / PENDIENTE.
+  // A record flagged with an UNVERIFIED/conflicting balance picture stays PENDIENTE on every path until the
+  // current loan information is verified; a contract start date alone never verifies a remaining balance,
+  // and no loan is assumed unmodified. An upgrade may create a new loan but does NOT necessarily restart a term.
+  if (typeof cur !== 'undefined' && cur && cur.poffUnverified) return { status: 'pending', months: 0, mmo: mmo, payoff: payoff, level: 'pendiente' };
+  // REMAINING from a verified contract schedule when no lender balance is on file.
+  if (!(payoff > 0)){ var sr = qSchedRemaining(); if (sr) return sr; }
   if (payoff > 0){
-    // MATEO RULING (Sebastian, 2026-10-20): an UNVERIFIED balance with an UNKNOWN current-loan start date
-    // gets NO mortgage projections — the monthly obligation and the maintenance projections show separately,
-    // combined long-term totals stay PENDIENTE. An upgrade may create a new loan but does NOT necessarily
-    // restart a 120-month term, so never amortize a suspected balance over a fresh term.
-    if (typeof cur !== 'undefined' && cur && cur.poffUnverified) return { status: 'pending', months: 0, mmo: mmo, payoff: payoff };
-    if (mmo <= 0) return { status: 'pending', months: 0, mmo: 0, payoff: payoff };
+    if (mmo <= 0) return { status: 'pending', months: 0, mmo: 0, payoff: payoff, level: 'pendiente' };
     var term = qNum('q_term') || 120;
     var lr = (apr || 0) / 100 / 12;
-    if (lr > 0 && mmo > payoff * lr) return { status: 'ok', months: Math.min(term, Math.ceil(-Math.log(1 - payoff * lr / mmo) / Math.log(1 + lr))), mmo: mmo, payoff: payoff, apr: apr };
-    return { status: 'pending', months: 0, mmo: mmo, payoff: payoff };
+    if (lr > 0 && mmo > payoff * lr) return { status: 'ok', months: Math.min(term, Math.ceil(-Math.log(1 - payoff * lr / mmo) / Math.log(1 + lr))), mmo: mmo, payoff: payoff, apr: apr, level: 'verificado' };
+    return { status: 'pending', months: 0, mmo: mmo, payoff: payoff, level: 'pendiente' };
   }
-  if (mmo > 0) return { status: 'pending', months: 0, mmo: mmo, payoff: 0 };
-  return { status: 'pending', months: 0, mmo: 0, payoff: 0 };
+  if (mmo > 0) return { status: 'pending', months: 0, mmo: mmo, payoff: 0, level: 'pendiente' };
+  return { status: 'pending', months: 0, mmo: 0, payoff: 0, level: 'pendiente' };
 }
 // Mortgage $ over y years under the shared model; null = pending verification.
 // TRUE amortized mortgage cash: the final payment is PARTIAL (remaining balance + that month's interest),
@@ -935,7 +936,9 @@ function qOrigLoan(){
   var loan = qNum('q_loan'), mmo = qNum('q_mmo'), apr = qNum('q_aapr'), term = qNum('q_term') || 120;
   if (!(loan > 0 && mmo > 0 && apr > 0)) return null;
   var tot = mmo * term;
-  return { financed: loan, totalScheduled: tot, totalInterest: tot - loan, apr: apr, term: term, mmo: mmo };
+  // Principal RECORDED on the file (cfin) vs INFERRED from payment/APR/term (estimate only, MATEO final safeguard).
+  var inferred = !(typeof cur !== 'undefined' && cur && cur.cfin > 0);
+  return { financed: loan, totalScheduled: tot, totalInterest: tot - loan, apr: apr, term: term, mmo: mmo, inferred: inferred };
 }
 function qSchedRemaining(){
   if (typeof cur === 'undefined' || !cur) return null;
@@ -951,7 +954,10 @@ function qSchedRemaining(){
   if (elapsed >= term) return { status: 'paid', months: 0, mmo: 0, payoff: 0 };
   var s = amortSched(loan, apr, mmo, elapsed);
   if (!(s.bal > 0)) return { status: 'paid', months: 0, mmo: 0, payoff: 0 };
-  return { status: 'ok', months: term - elapsed, mmo: mmo, payoff: Math.round(s.bal * 100) / 100, apr: apr, derived: 'schedule' };
+  // THREE STATUSES (MATEO FINAL SAFEGUARD): schedule remaining is VERIFICADO only with the financed amount
+  // RECORDED (complete verified terms); an INFERRED principal makes it ESTIMADO, assumptions displayed.
+  var inferred = !(typeof cur !== 'undefined' && cur && cur.cfin > 0);
+  return { status: 'ok', months: term - elapsed, mmo: mmo, payoff: Math.round(s.bal * 100) / 100, apr: apr, derived: 'schedule', level: inferred ? 'estimado' : 'verificado', inferredLoan: inferred ? Math.round(loan) : 0 };
 }
 function qMissingLoan(){
   var miss = [];
@@ -1523,7 +1529,9 @@ function qEmailHtml(){
   if (note) e += '<div style="font-size:12px;color:#63757c;line-height:1.55;margin-top:12px;">' + note + '</div>';
   var OL2 = (typeof qOrigLoan === 'function') ? qOrigLoan() : null;
   if (OL2) e += '<div style="font-size:12px;color:#63757c;line-height:1.55;margin-top:6px;">' + (en ? 'Original loan: ' : 'Préstamo original: ') + '<b>' + fmtC(OL2.financed) + '</b> ' + (en ? 'financed' : 'financiados') + ' · ' + fmtC(OL2.mmo) + ' × ' + OL2.term + (en ? ' payments = ' : ' pagos = ') + '<b>' + fmtC(OL2.totalScheduled) + '</b>' + (en ? ' total scheduled (interest ' : ' total programado (interés ') + fmtC(OL2.totalInterest) + ')</div>';
-  if (F.MG.status === 'pending' && !F.isDB){ var miss = qMissingLoan(); if (miss.length) e += '<div style="font-size:12px;color:#b45309;line-height:1.55;margin-top:6px;"><b>' + (en ? 'Remaining amortization pending — missing: ' : 'Amortización restante pendiente — falta: ') + miss.join(', ') + '.</b></div>'; }
+  if (F.MG.status === 'pending' && !F.isDB){ var miss = qMissingLoan(); if (miss.length) e += '<div style="font-size:12px;color:#b45309;line-height:1.55;margin-top:6px;"><b>' + (en ? '🔴 PENDING — missing: ' : '🔴 PENDIENTE — falta: ') + miss.join(', ') + '.</b></div>'; }
+  if (!F.isDB && F.MG.status === 'ok' && F.MG.level === 'verificado') e += '<div style="font-size:12px;color:#2f7d32;line-height:1.55;margin-top:6px;"><b>✅ ' + (en ? 'VERIFIED' : 'VERIFICADO') + '</b> — ' + (en ? 'remaining amortization from verified loan information.' : 'amortización restante con información del préstamo verificada.') + '</div>';
+  if (!F.isDB && F.MG.status === 'ok' && F.MG.level === 'estimado') e += '<div style="font-size:12px;color:#b45309;line-height:1.55;margin-top:6px;"><b>🟡 ' + (en ? 'ESTIMATE' : 'ESTIMADO') + '</b> — ' + (en ? 'mathematical model; original principal inferred from payment, APR and term (standard fully amortizing loan, no additional fees or balloon payment). Not a lender-confirmed payoff.' : 'modelo matemático; principal original inferido del pago, el APR y el plazo (préstamo estándar totalmente amortizable, sin cargos adicionales ni pago globo). No es un payoff confirmado por el prestamista.') + '</div>';
   e += '</td></tr>';
   e += '<tr><td class="pad" style="padding:8px 30px 28px;"><div style="font-size:21px;color:#1a5968;font-weight:700;margin:0 0 6px;">📈 ' + (en ? 'PROJECTION — THE TRAP' : 'PROYECCIÓN — LA TRAMPA') + '</div><div style="font-size:13px;color:#697b82;margin-bottom:14px;">' + (en ? 'Estimated cost of keeping the timeshare' : 'Costo estimado de conservar el tiempo compartido') + '</div>';
   e += '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;font-size:14px;"><tr><td style="padding:11px 12px;background:#edf5f6;font-weight:700;color:#355761;">' + (en ? 'Period' : 'Período') + '</td><td align="right" style="padding:11px 12px;background:#edf5f6;font-weight:700;color:#355761;">' + (en ? 'Projected cost' : 'Costo proyectado') + '</td></tr>' + prowHtml + '</table>';
@@ -2026,8 +2034,16 @@ function qRecalc(){
   $('q_ofin').textContent = OL ? fmtD(OL.financed) : '—';
   $('q_osch').textContent = OL ? fmtD(OL.totalScheduled) : '—';
   $('q_oint').textContent = OL ? fmtD(OL.totalInterest) : '—';
+  $('q_ofin_tag').textContent = OL ? (OL.inferred ? '🟡 inferido' : '✅ registrado') : '';
   var mos = Math.min(120, Math.max(0, Math.round(qNum('q_mos'))));
-  $('q_mleft').textContent = MG.status === 'paid' ? 'Sin hipoteca — pagada' : (MG.status === 'ok' ? MG.months + ' meses restantes de hipoteca' + (MG.derived === 'schedule' ? ' — según cronograma del contrato vigente' : ' — según saldo verificado') : PEND_TXT + ' — falta: ' + qMissingLoan().join(', '));
+  $('q_mleft').textContent = MG.status === 'paid' ? 'Sin hipoteca — pagada' : (MG.status === 'ok' ? (MG.level === 'estimado' ? '🟡 ESTIMADO · ' : '✅ VERIFICADO · ') + MG.months + ' meses restantes de hipoteca' + (MG.derived === 'schedule' ? ' — según cronograma del contrato vigente' : ' — según saldo verificado') : '🔴 ' + PEND_TXT + ' — falta: ' + qMissingLoan().join(', '));
+  var CS = $('q_calcstatus');
+  if (CS){
+    if (MG.status === 'ok' && MG.level === 'verificado') CS.innerHTML = '✅ <b>VERIFICADO</b> — ' + (MG.derived === 'schedule' ? 'términos completos del contrato vigente verificados' : 'saldo confirmado del prestamista');
+    else if (MG.status === 'ok') CS.innerHTML = '🟡 <b>ESTIMADO</b> — modelo matemático' + (MG.inferredLoan ? '; principal original inferido: ' + fmtD(MG.inferredLoan) : '') + '. Supuestos: préstamo estándar totalmente amortizable, sin cargos adicionales ni pago globo. <b>NO es un payoff confirmado por el prestamista.</b>';
+    else if (MG.status === 'paid') CS.innerHTML = '✅ <b>SIN HIPOTECA</b> — préstamo pagado / deed-back';
+    else CS.innerHTML = '🔴 <b>PENDIENTE</b> — información insuficiente o en conflicto. Falta: ' + qMissingLoan().join(', ');
+  }
   if (loan > 0 && mmo > 0 && $('q_mos').value !== ''){
     var s = amortSched(loan, aapr, mmo, mos);
     $('q_paid').textContent = fmtD(s.prin + s.inte);
