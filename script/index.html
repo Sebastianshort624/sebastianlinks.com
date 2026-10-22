@@ -295,6 +295,7 @@
     <button id="caBtn" type="button" onclick="qCaHtml()">📋 CA DISCOVERY</button>
     <button id="cbBtn" type="button" onclick="qCbHtml()">📝 CB DISCOVERY</button>
     <button id="postCallBtn" type="button" onclick="qPostCallHtml()">🧾 POST CALL SHEET</button>
+    <button id="calcBtn" type="button" onclick="qGoCalc()">🧮 CALCULATOR</button>
     <span class="nv-timer" id="topbar">⏱ <span id="ot">1:30:00</span> <a href="#" id="obtn" onclick="toggleOverall();return false;">▶ Iniciar</a></span>
   </div>
   <div id="soldStrip"><span>✅ VENDIDO</span><span>📄 DocuSign firmado: <input type="date" id="soldDate" onchange="soldDateChange()"></span><span>💰 Mi comisión: <span class="soldComm" id="soldComm">$0.00</span></span></div>
@@ -330,7 +331,7 @@
 <button onclick="document.getElementById('s_impfile').click()" style="margin-left:8px;padding:6px 14px;font-size:0.9em;background:#0b3d91;color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Importar JSON</button>
 <input type="file" id="s_impfile" accept=".json,application/json" style="display:none" onchange="importScriptClients(this)"></div>
 
-<aside class="calcside calcarea">
+<aside class="calcside calcarea" id="calc-anchor">
   <div class="cbox calc-head"><h3>🧮 Calculadora <button onclick="qSync(cur)" title="Restablecer al cliente">↺</button></h3>
     <div class="qidn" id="q_idn" style="display:none"></div>
     <div id="urlChips" style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0"></div><button id="urlEditBtn" type="button" onclick="urlToggleFn()" style="background:#374151;color:#fff;border:none;border-radius:6px;padding:5px 12px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.85em;margin-bottom:6px">✏️ Editar enlaces</button><div class="urlgrid" id="urlGrid" style="display:none"><label class="qf urlf"><span class="qlab">PIPELINE</span><span class="urow"><input id="q_pipe" type="text" placeholder="https://app.pipelinecrm.com/people/…" onchange="qPipeSave()" oninput="qUrlLinks()"><a id="q_pipe_go" class="urlgo" href="#" target="_blank" rel="noopener" style="display:none">↗ Abrir</a></span></label><label class="qf urlf"><span class="qlab">HOJA PRE-CALL</span><span class="urow"><input id="q_sheet" type="text" placeholder="https://docs.google.com/spreadsheets/…" onchange="qPipeSave()" oninput="qUrlLinks()"><a id="q_sheet_go" class="urlgo" href="#" target="_blank" rel="noopener" style="display:none">↗ Abrir</a></span></label><label class="qf urlf"><span class="qlab">DocuSign</span><span class="urow"><input id="q_dsurl" type="text" placeholder="https://app.docusign.com/documents/details/…" onchange="qPipeSave()" oninput="qUrlLinks()"><a id="q_dsurl_go" class="urlgo" href="#" target="_blank" rel="noopener" style="display:none">↗ Abrir</a></span></label><label class="qf urlf"><span class="qlab">CARPETA</span><span class="urow"><input id="q_folder" type="text" placeholder="~/Desktop/deals/…" onchange="qPipeSave()" oninput="qUrlLinks()"><a id="q_folder_go" class="urlgo" href="#" onclick="qCopyFolderPath(this);return false;" style="display:none">📋 Copiar</a></span></label><label class="qf urlf"><span class="qlab">PRÉSTAMO</span><span class="urow"><input id="q_loannote" type="text" placeholder="Ej.: contrato firmado en la carpeta" onchange="qPipeSave()"></span></label></div>
@@ -354,21 +355,22 @@
     <button type="button" id="q_nc3" onclick="qSetNC(3)" style="padding:6px 16px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;background:#e2e8f0;color:#334155">3</button>
     <span class="qsm">Cada contrato se cobra por separado.</span>
   </div>
+  <button type="button" id="q_addc" onclick="qAddContract()" style="display:none;margin:2px 0 8px;padding:6px 14px;border:2px dashed #0b3d91;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;background:#eef4ff;color:#0b3d91">➕ Agregar contrato</button>
   <div id="q_combo" style="display:none;background:#0b3d91;color:#fff;border-radius:8px;padding:10px 12px;margin-bottom:10px">
     <div style="font-weight:800;font-size:1.05em">🧮 TOTALES COMBINADOS — <span id="q_combo_n">1</span> CONTRATOS</div>
     <div id="q_combo_lines" style="font-size:.97em;line-height:1.55"></div>
   </div>
-  <label class="qf mtgOnly">HIPOTECA MENSUAL <input id="q_mmo" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf">MF/AÑO <input id="q_mf" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf">ESC % <input id="q_esc" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf mtgOnly">AÑO DE COMPRA <input id="q_pyr" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">MES DE COMPRA <select id="q_pmonth" onchange="qRecalc()"><option value="">—</option><option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option><option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option><option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option></select></label>
+  <label class="qf mtgOnly">HIPOTECA MENSUAL <input id="q_mmo" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">MF/AÑO <input id="q_mf" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf mtgOnly">AÑO CONTRATO ACTUAL <input id="q_cyr" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf mtgOnly">MES CONTRATO ACTUAL <select id="q_cmonth" onchange="qRecalc()"><option value="">—</option><option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option><option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option><option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option></select></label>
   <div class="qsm mtgOnly">Contrato vigente (upgrade / refinanciamiento) — SOLO si está verificado; es distinto a la compra original. La amortización restante NUNCA se deriva del año de compra.</div>
   <label class="qf">NOCHES/AÑO <input id="q_nights" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf mtgOnly">PLAZO (MESES) <input id="q_term" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf mtgOnly">SALDO <input id="q_payoff" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">ELEVACIÓN ANUAL % <input id="q_esc" type="number" min="0" oninput="qRecalc()"></label>
   <div class="qsec">Compromiso Contractual Actual</div>
   <div id="q_calcstatus" style="font-size:.92em;line-height:1.5;margin:0 0 8px"></div>
   <div id="q_conflict" style="display:none;background:#fdecea;border:2px solid #c62828;color:#7f1d1d;border-radius:8px;padding:8px 10px;font-size:.92em;line-height:1.5;margin:0 0 8px"></div>
@@ -1015,11 +1017,25 @@ function qConsistency(){
 var qLoanAuto = false; // true while q_loan holds the AUTO-INFERRED principal (PV of pago/APR/plazo). An inferred principal must NEVER be persisted as a recorded cfin — before this flag (fixed 2026-10-21) the autosave silently converted every inferred principal into a "recorded" one, inflating ESTIMADO schedule records to VERIFICADO on the next load.
 // ===== CONTRACTS TOOL (Sebastian, 2026-10-20): charge EACH contract separately, combine totals at top =====
 var qNC = 1; // active contract count
-function qSetNC(n){ qNC = n; qNCButtons(); qRecalc(); }
+function qGoCalc(){
+  var e = document.getElementById('calc-anchor'); if (!e) return;
+  var b = document.getElementById('pegbar');
+  window.scrollTo({ top: e.getBoundingClientRect().top + window.scrollY - (b ? b.offsetHeight : 0) - 10, behavior: 'smooth' });
+}
+// Contratos 2/3 (regla Sebastian 2026-10-22): OCULTOS salvo que (a) el contrato traiga datos
+// (agregado desde CA DISCOVERY / registro) o (b) Sebastian lo agregue con el botón "+ Agregar contrato".
+var qAdded = {};
+function qAddedKey(){ return (typeof cur !== 'undefined' && cur && cur.id) ? 'sl_added_' + cur.id : null; }
+function qAddedLoad(){ qAdded = {}; var k = qAddedKey(); if (!k) return; try { (JSON.parse(localStorage.getItem(k) || '[]')).forEach(function(n){ qAdded[n] = true; }); } catch(e){} }
+function qAddedSave(){ var k = qAddedKey(); if (!k) return; try { localStorage.setItem(k, JSON.stringify(Object.keys(qAdded).map(Number))); } catch(e){} }
+function qCxHasData(o){ return !!(o && ((+o.payoff || 0) > 0 || (+o.mmo || 0) > 0 || (+o.mf || 0) > 0 || (+o.apr || 0) > 0 || (+o.term || 0) > 0 || (+o.fee || 0) > 0 || (o.pdate && String(o.pdate).trim()) || o.mfShared)); }
+function qAddContract(){ if (qNC >= 3) return; qNC++; qAdded[qNC] = true; qAddedSave(); qNCButtons(); qRecalc(); }
+function qSetNC(n){ qNC = n; if (n >= 2){ for (var m = 2; m <= n; m++) qAdded[m] = true; qAddedSave(); } qNCButtons(); qRecalc(); }
 function qNCButtons(){
   for (var i = 1; i <= 3; i++){ var b = $('q_nc' + i); if (b){ b.style.background = i === qNC ? '#0b3d91' : '#e2e8f0'; b.style.color = i === qNC ? '#fff' : '#334155'; } }
   var b2 = $('q_c2box'); if (b2) b2.style.display = qNC >= 2 ? '' : 'none';
   var b3 = $('q_c3box'); if (b3) b3.style.display = qNC >= 3 ? '' : 'none';
+  var ab = $('q_addc'); if (ab) ab.style.display = qNC < 3 ? '' : 'none';
 }
 // Values-based twin of qMortgage for contratos 2/3 (same rules: saldo+APR amortization, cap = term, no APR = pending).
 function qMortgageVals(payoff, mmo, apr, term, verified){
@@ -2004,16 +2020,17 @@ function qSync(c){
   qTaskSync(); qDocRender();
   qUrlLinks();
   if (!qIsDB() && !$('q_fee').value && c && c.payoff > 0) qFeeApply();
-  // Contracts tool sync (2026-10-20): count + contratos 2/3 (record c2/c3, or seed from contractsList)
+  // Contracts tool sync: contratos 2/3 SOLO aparecen si traen datos (CA DISCOVERY / registro)
+  // o si Sebastian los agregó con "+ Agregar contrato" — el conteo del registro ya no abre paneles vacíos.
   qNC = 1;
   var seed2 = null, seed3 = null;
   if (c){
-    if (c.ncontracts) qNC = Math.min(3, Math.max(1, c.ncontracts));
-    else if (c.contractsList && c.contractsList.length >= 2) qNC = Math.min(3, c.contractsList.length);
-    else if (c.contracts && c.contracts > 1) qNC = Math.min(3, c.contracts);
     seed2 = c.c2 || (c.contractsList && c.contractsList[1]) || null;
     seed3 = c.c3 || (c.contractsList && c.contractsList[2]) || null;
   }
+  qAddedLoad();
+  if (qCxHasData(seed3) || qAdded[3]) qNC = 3;
+  else if (qCxHasData(seed2) || qAdded[2]) qNC = 2;
   function qFillCx(px, o){ ['payoff','mmo','mf','esc','apr','term','fee','pdate'].forEach(function(f){ var el = $(px + f); if (el) el.value = o && o[f] ? o[f] : ''; }); var es2 = $(px + 'esc'); if (es2 && !(o && o.esc)) es2.value = 8; }
   qFillCx('q2_', seed2); qFillCx('q3_', seed3);
   var ms2 = $('q2_mfshared'); if (ms2) ms2.checked = !!(seed2 && seed2.mfShared);
