@@ -351,8 +351,8 @@
   <div id="q_ncrow" style="display:flex;gap:6px;align-items:center;margin:8px 0">
     <span style="font-weight:800">NÚMERO DE CONTRATOS:</span>
     <button type="button" id="q_nc1" onclick="qSetNC(1)" style="padding:6px 16px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;background:#0b3d91;color:#fff">1</button>
-    <button type="button" id="q_nc2" onclick="qSetNC(2)" style="padding:6px 16px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;background:#e2e8f0;color:#334155">2</button>
-    <button type="button" id="q_nc3" onclick="qSetNC(3)" style="padding:6px 16px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;background:#e2e8f0;color:#334155">3</button>
+    <button type="button" id="q_nc2" onclick="qSetNC(2)" style="display:none;padding:6px 16px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;background:#e2e8f0;color:#334155">2</button>
+    <button type="button" id="q_nc3" onclick="qSetNC(3)" style="display:none;padding:6px 16px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;background:#e2e8f0;color:#334155">3</button>
     <span class="qsm">Cada contrato se cobra por separado.</span>
   </div>
   <button type="button" id="q_addc" onclick="qAddContract()" style="display:none;margin:2px 0 8px;padding:6px 14px;border:2px dashed #0b3d91;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;background:#eef4ff;color:#0b3d91">➕ Agregar contrato</button>
@@ -1032,7 +1032,8 @@ function qCxHasData(o){ return !!(o && ((+o.payoff || 0) > 0 || (+o.mmo || 0) > 
 function qAddContract(){ if (qNC >= 3) return; qNC++; qAdded[qNC] = true; qAddedSave(); qNCButtons(); qRecalc(); }
 function qSetNC(n){ qNC = n; if (n >= 2){ for (var m = 2; m <= n; m++) qAdded[m] = true; qAddedSave(); } qNCButtons(); qRecalc(); }
 function qNCButtons(){
-  for (var i = 1; i <= 3; i++){ var b = $('q_nc' + i); if (b){ b.style.background = i === qNC ? '#0b3d91' : '#e2e8f0'; b.style.color = i === qNC ? '#fff' : '#334155'; } }
+  // Los números 2 y 3 SOLO se muestran si ese contrato existe (datos o agregado) — regla Sebastian 2026-10-22.
+  for (var i = 1; i <= 3; i++){ var b = $('q_nc' + i); if (b){ b.style.background = i === qNC ? '#0b3d91' : '#e2e8f0'; b.style.color = i === qNC ? '#fff' : '#334155'; if (i >= 2) b.style.display = qNC >= i ? '' : 'none'; } }
   var b2 = $('q_c2box'); if (b2) b2.style.display = qNC >= 2 ? '' : 'none';
   var b3 = $('q_c3box'); if (b3) b3.style.display = qNC >= 3 ? '' : 'none';
   var ab = $('q_addc'); if (ab) ab.style.display = qNC < 3 ? '' : 'none';
