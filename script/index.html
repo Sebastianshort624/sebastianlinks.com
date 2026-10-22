@@ -1357,9 +1357,16 @@ function qFpSave(){
 }
 function qFpLoad(){
   var i, el;
-  for (i = 1; i <= 6; i++){ el = $('fp' + i); if (el) el.checked = false; }
-  var k = qFpKey(); if (!k) return;
-  try { var o = JSON.parse(localStorage.getItem(k) || '{}');
+  var k = qFpKey();
+  if (!k){ for (i = 1; i <= 6; i++){ el = $('fp' + i); if (el) el.checked = false; } return; }
+  var raw = null;
+  try { raw = localStorage.getItem(k); } catch(e){}
+  if (raw === null){
+    // Sin respuestas guardadas para este cliente: por defecto SÍ a las seis preguntas de los videos (regla Sebastian 2026-10-22 — el POST CALL sale SÍ salvo que se desmarque en la llamada)
+    for (i = 1; i <= 6; i++){ el = $('fp' + i); if (el) el.checked = true; }
+    return;
+  }
+  try { var o = JSON.parse(raw || '{}');
     for (i = 1; i <= 6; i++){ el = $('fp' + i); if (el) el.checked = !!o['fp' + i]; }
   } catch(e){}
 }
