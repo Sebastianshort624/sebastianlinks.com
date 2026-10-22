@@ -836,7 +836,12 @@ function slClients(){
     if (!found) for (var i = 0; i < cs.length; i++) if (cs[i].name && b.name && String(cs[i].name).toLowerCase() === b.name.toLowerCase()){ found = cs[i]; break; }
     if (!found) cs.push(b);
     else { ['pipelineUrl','crmlink','sheetUrl','folderPath','docusignUrl','loanNote'].forEach(function(k){ if (!found[k] && b[k]) found[k] = b[k]; });
-      if (!+found.payoff && !+found.mmo && !+found.mf) ['payoff','mmo','mf','term','apr','pyr','pmonth','esc','fee','contracts','email','ca','resort','loc','address','phone','phone2','dtype','behind'].forEach(function(k){ if (b[k] !== undefined && b[k] !== '' && b[k] !== 0) found[k] = b[k]; });
+      // Relleno por campo (regla 2026-10-22): si la copia local tiene un campo VACÍO y el registro
+      // integrado (fuente verificada CRM) lo trae, se rellena — nunca se sobrescribe un valor ya puesto.
+      // Antes esto solo pasaba si payoff+mmo+mf locales eran TODOS cero; con saldo cargado, teléfonos,
+      // email, contratos y fecha de compra nuevos nunca llegaban a pantalla (caso Ruben De Paz).
+      ['payoff','mmo','mf','term','apr','pyr','pmonth','esc','fee','contracts','cyr','cmonth'].forEach(function(k){ if ((found[k] === undefined || found[k] === '' || found[k] === null || +found[k] === 0) && b[k] !== undefined && b[k] !== '' && b[k] !== 0) found[k] = b[k]; });
+      ['email','ca','resort','loc','address','phone','phone2','dtype','behind'].forEach(function(k){ if ((found[k] === undefined || found[k] === '' || found[k] === null) && b[k] !== undefined && b[k] !== '' && b[k] !== null) found[k] = b[k]; });
       if (+b.payoff > 0 && found.dtype === 'DB') found.dtype = 'MTG'; }
   });
   return cs;
