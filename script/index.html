@@ -1718,29 +1718,230 @@ function qEmailHtml(){
   h += '</body></html>';
   qDocOpen(h);
 }
-function qCaSourceHtml(L){ // ALMA: documented case data + verbatim CA/CRM notes — read-only source evidence
+// ===== CA NOTES ORGANIZER (Sebastian, 2026-10-23): cur.notes holds a raw CA/CRM dump — it is NEVER printed
+// verbatim again (he called the old full-text dump "garbage" twice). The dump is parsed into CONTACTOS +
+// HECHOS DEL CASO (structured fields) + labeled detail rows + themed bullets (NOTAS DEL CASE BUILDER /
+// PUNTOS CLAVE / HISTORIA / ENFOQUE DEL CA / PRECIO). CRM field codes (>5, >17, DB13, SCA2, CB42, M16...)
+// are internal shorthand: they are stripped in cleaning and NEVER appear in the output.
+function qCaSplitNotes(notes){ // split on ' - ' / ' · ' / ' — ' only OUTSIDE parentheses
+  var parts = [], buf = '', depth = 0, s = String(notes == null ? '' : notes).replace(/\s*\n+\s*/g, ' ');
+  for (var i = 0; i < s.length; i++){
+    var ch = s.charAt(i);
+    if (ch === '(') depth++;
+    else if (ch === ')') depth = Math.max(0, depth - 1);
+    if (depth === 0 && (s.substr(i, 3) === ' - ' || s.substr(i, 3) === ' · ' || s.substr(i, 3) === ' — ')){ parts.push(buf); buf = ''; i += 2; continue; }
+    buf += ch;
+  }
+  if (buf.trim()) parts.push(buf);
+  return parts;
+}
+function qCaCleanTxt(s, en){ // strip CRM codes + shouting-empty markers; keep the facts
+  var NC = en ? 'not in file' : 'no consta';
+  var t = String(s == null ? '' : s);
+  t = t.replace(/>\s?\d+(\.\d+)?/g, ' ');              // >5 >17 >34 ...
+  t = t.replace(/\bDB\d+\b/g, ' ');                    // DB2 DB12 DB13 DB21
+  t = t.replace(/\bSCA\d+(\.\d+)?\b/g, ' ');           // SCA2 SCA5 SCA11.1 SCA33 SCA34
+  t = t.replace(/\bCB\d+[a-z]?\b/g, ' ');               // CB42 CB2a
+  t = t.replace(/\bM\d{1,2}\b/g, ' ');                  // M16 (paid-off quiz code)
+  t = t.replace(/\b(campo|field)\b/gi, ' ');
+  t = t.replace(/\bVAC[IÍ]A(S)?\b/gi, NC).replace(/\bVAC[IÍ]O(S)?\b/gi, NC);
+  t = t.replace(/\bBLANK\b/gi, NC).replace(/\bNone\b/g, NC);
+  if (en) t = t.replace(/\bSIN VERIFICAR\b/gi, 'UNVERIFIED');
+  t = t.replace(/\(\s*(\$[\d,.]+)\s*\)/g, '$1');        // ($8,600) -> $8,600
+  t = t.replace(/\(\s*(no consta|not in file)\s*\)/gi, ' ');
+  t = t.replace(/\(\s*[;,]\s*/g, '(').replace(/\s*[;,]\s*\)/g, ')');
+  t = t.replace(/\s*[+&]\s*\)/g, ')').replace(/\(\s*[+&]\s*/g, '(');
+  t = t.replace(/\(\s*\)/g, ' ');
+  t = t.replace(/\s+([,.;:\)])/g, '$1');
+  t = t.replace(/\(\s+/g, '(');
+  t = t.replace(/\s{2,}/g, ' ');
+  t = t.replace(/^[\s;:,.\u2014=\-]+/, '').replace(/[\s;]+$/, '');
+  if (/^[a-záéíóúñü]/.test(t)) t = t.charAt(0).toUpperCase() + t.slice(1);
+  return t;
+}
+function qCaParseNotes(notes, en){
+  var NC = en ? 'not in file' : 'no consta';
+  var out = { rows: [], cb: [], hot: [], hist: [], enfoque: [], precio: [], langNote: '', noCa: false };
+  if (!notes) return out;
+  var nmLow = String((typeof cur !== 'undefined' && cur && cur.name) || '').toLowerCase();
+  var phoneDigits = [cur && cur.phone, cur && cur.phone2].filter(Boolean).map(function(p){ return String(p).replace(/\D/g, '').replace(/^1(?=\d{10}$)/, ''); });
+  function clean(s){ return qCaCleanTxt(s, en); }
+  function pushRow(l, v){ v = clean(v); if (!v) return; if (v.toLowerCase() === NC) v = '— ' + NC; for (var i = 0; i < out.rows.length; i++){ if (out.rows[i][0] === l && out.rows[i][1] === v) return; } out.rows.push([l, v]); }
+  function isNameOnly(s){
+    var bare = s.replace(/\(.*?\)/g, '').toLowerCase().replace(/[^a-záéíóúñü ]/gi, ' ');
+    var words = bare.split(/\s+/).filter(Boolean);
+    if (!words.length || /\d/.test(bare)) return false;
+    var nm = nmLow.replace(/[^a-záéíóúñü ]/gi, ' ').split(/\s+/);
+    return words.every(function(w){ return nm.indexOf(w) >= 0 || w === 'y' || w === 'e'; });
+  }
+  var KW = { deed: /deed-?back/i, poEst: /payoff/i, poVer: /verificado|verified/i, po: /payoff/i, mmo: /pago mensual|monthly payment|\bmtg\b|hipoteca/i, mf: /\bmf\b/i, tot: /total anual/i, apr: /tasa|\bapr\b/i, term: /plazo/i, buy: /fecha de compra|\bcompras?\b/i, deeds: /deeds?|escrituras/i, contracts: /contratos?/i, curr: /al corriente|atrasad/i, use: /usado|\buso\b/i, origPrice: /precio original|original price|compra original/i, down: /down payment/i };
+  var LBL = { deed: ['Deed-back', 'Deed-back'], poEst: ['Payoff estimado', 'Estimated payoff'], poVer: ['Payoff verificado', 'Verified payoff'], po: ['Payoff', 'Payoff'], mmo: ['Pago mensual', 'Monthly payment'], mf: ['Tarifas (MF)', 'Maintenance fees (MF)'], tot: ['Total anual', 'Yearly total'], apr: ['Tasa (APR)', 'Rate (APR)'], term: ['Plazo', 'Term'], buy: ['Fecha de compra', 'Purchase date'], deeds: ['Escrituras (deeds)', 'Deeds'], contracts: ['Contratos', 'Contracts'], curr: ['Al corriente', 'Current on payments'], use: ['Uso', 'Use'], origPrice: ['Precio original', 'Original price'], down: ['Down payment', 'Down payment'] };
+  function classify(f){
+    var l = ' ' + f.toLowerCase() + ' ';
+    if (/deed-?back|deedback/.test(l) && !/fee/.test(l)) return 'deed';
+    if (/payoff/.test(l) && /estimado|estimated/.test(l)) return 'poEst';
+    if (/verificado|verified/.test(l)) return 'poVer';
+    if (/payoff/.test(l)) return 'po';
+    if (/pago mensual|monthly payment|\bmtg\b|hipoteca\s+\$/.test(l)) return 'mmo';
+    if (/total anual/.test(l)) return 'tot';
+    if (/^\s*mf\b|\bmf\s+\$/.test(l)) return 'mf';
+    if (/tasa|\bapr\b/.test(l)) return 'apr';
+    if (/plazo/.test(l)) return 'term';
+    if (/fecha de compra|\bcompras?\b/.test(l)) return 'buy';
+    if (/precio original|original price|compra original/.test(l)) return 'origPrice';
+    if (/deeds?|escrituras/.test(l)) return 'deeds';
+    if (/contratos?/.test(l) && (f.length < 90 || /^\s*(\d+\s+)?contratos?\b/i.test(f))) return 'contracts';
+    if (/al corriente|atrasad/.test(l)) return 'curr';
+    if (/down payment/.test(l)) return 'down';
+    if (/usado|\buso\b/.test(l)) return 'use';
+    return null;
+  }
+  function fragValue(f, key){
+    var v = String(f), m = v.match(KW[key]);
+    if (m && m.index <= 3) v = v.slice(m.index + m[0].length);
+    v = v.replace(/^[\s:=]+/, '').replace(/^(estimado|estimated|verificado|verified|confirmado|confirmed)\s*[:=]?\s*/i, '').replace(/^[\s:=]+/, '');
+    v = v.replace(/^\s*(pero|but|y|and)\s+/i, '').replace(/^[\s:=]+/, '');
+    v = clean(v);
+    if (!v || (!/\d/.test(v) && v.length < 22 && /^\s*\d+/.test(f))){ var dm = String(f).match(/^\s*(\d+)/); if (dm) v = dm[1]; }
+    return v;
+  }
+  function tryCluster(seg){
+    var frags = seg.split(/[;,]\s+/), items = [], pending = '', classified = 0, i, f, k, val;
+    for (i = 0; i < frags.length; i++){
+      f = frags[i];
+      if (clean(f) === NC || clean(f) === '') continue; // field-empty noise (e.g. leftover ">6 vacio")
+      k = classify(f);
+      if (k){ classified++; val = fragValue(f, k); if (pending){ val = pending + ', ' + val; pending = ''; } items.push([LBL[k][en ? 1 : 0], val, k]); }
+      else if (items.length) items[items.length - 1][1] += ', ' + clean(f);
+      else pending = pending ? pending + ', ' + clean(f) : clean(f);
+    }
+    if (!classified) return false;
+    if (classified === 1 && seg.length > 220) return false;
+    items.forEach(function(it){ var v = it[1]; if (it[2] === 'curr' && !v) v = en ? 'Yes (per notes)' : 'Sí (según notas)'; pushRow(it[0], v); });
+    return true;
+  }
+  qCaSplitNotes(notes).forEach(function(rawSeg){
+    var seg = rawSeg.trim(); if (!seg) return;
+    var low = seg.toLowerCase(), cl = clean(seg);
+    if (!cl || cl === NC) return;
+    if (/^sin verificar$|^unverified$/i.test(seg) || /^no mortgage$/i.test(seg) || /^sin hipoteca$/i.test(seg)) return;
+    if (/^crm verificado/i.test(seg) || /^ca\s*:/i.test(seg)) return; // meta preface / CA already in structured facts
+    if (cur && cur.resort && cl.toLowerCase() === String(cur.resort).toLowerCase()) return;
+    if (cur && cur.resort && seg.indexOf(cur.resort) === 0 && seg.length < 40 && !/\d{3}/.test(seg)) return;
+    if (isNameOnly(seg)){
+      var pm = seg.match(/\(([^)]*(due[nñ]|contrato)[^)]*)\)/i);
+      if (pm) pushRow(en ? 'Contract owners' : 'Dueños en el contrato', pm[1]);
+      return;
+    }
+    // Language nuance (assumed / not stated / confirm on the call)
+    if (/^(solo\s+)?(espanol|español|english|ingl[eé]s|idioma|language|cb en)/i.test(seg) && /idioma|language|espanol|español|english|preferred/i.test(low)){ out.langNote = out.langNote ? out.langNote + ' — ' + cl : cl; return; }
+    // Owner / precall — also carries the "sin CA nombrado" flag (structured CA row shows "no consta")
+    if (/sin ca\b|sin case analyst|no case analyst/i.test(low)) out.noCa = true;
+    if (/due[nñ]o del registro|record owner/i.test(seg)){
+      var rest = seg.split(';').filter(function(p){ return /due[nñ]o del registro|record owner|precall/i.test(p); }).join('; ') || seg;
+      rest = rest.replace(/^\s*sin ca[^;]*;\s*/i, '').replace(/^\s*due[nñ]o del registro\s*(\/\s*precall)?\s*:?\s*/i, '');
+      pushRow(en ? 'Record owner / precall' : 'Dueño del registro / precall', rest);
+      return;
+    }
+    if (/processing fee/i.test(seg)){ out.precio.push(cl); return; }
+    if (/^historia\b/i.test(seg) || /^entro por\b/i.test(seg)){ out.hist.push(clean(seg.replace(/^.*?historia\s*(\(resumen[^)]*\))?\s*:?\s*/i, ''))); return; }
+    if (/^hot buttons?\s*:?/i.test(seg)){ out.hot.push(clean(seg.replace(/^hot buttons?\s*:?\s*/i, ''))); return; }
+    if (/^motivos?\b/i.test(seg)){ out.hot.push(clean(seg.replace(/^motivos?[^:]*:\s*/i, ''))); return; }
+    if (/^precio\b/i.test(seg) || /^fee\s*:/i.test(seg) || /47\s?%/.test(seg) || /no cotizar/i.test(seg) || /lista de precios deed/i.test(seg) || /^comisi/i.test(seg)){ out.precio.push(cl); return; }
+    if (/conflicto/i.test(seg) && seg.length < 500){ out.cb.push('⚠ ' + cl); return; }
+    if (/^fuente\b/i.test(seg)){ pushRow(en ? 'Source' : 'Fuente', seg.replace(/^fuente\s*:?\s*/i, '')); return; }
+    if (/nos conoci/i.test(seg)){ pushRow(en ? 'Source' : 'Fuente', seg); return; }
+    if (/^cita\b/i.test(seg)){ pushRow(en ? 'Appointment (notes)' : 'Cita (según notas)', seg.replace(/^cita\s*:?\s*/i, '')); return; }
+    if (/^enfoque\b/i.test(seg) || /debe centrarse/i.test(seg)){ out.enfoque.push(clean(seg.replace(/^enfoque[^:]*:\s*/i, ''))); return; }
+    if (/^telefonos?\b/i.test(seg)){
+      var nums = (seg.match(/\d[\d\- ]{7,}\d/g) || []).map(function(x){ return x.replace(/\D/g, '').replace(/^1(?=\d{10}$)/, ''); });
+      var allKnown = nums.length && nums.every(function(x){ return phoneDigits.indexOf(x) >= 0; });
+      if (!(allKnown && seg.length <= 60)) pushRow(en ? 'Phones (notes)' : 'Teléfonos (según notas)', seg.replace(/^telefonos?\s*:?\s*/i, ''));
+      return;
+    }
+    if (/^emails?\b/i.test(seg)){
+      var ems = seg.match(/[\w.+-]+@[\w-]+\.[\w.]+/g) || [];
+      var allSame = ems.length && ems.every(function(x){ return cur && x.toLowerCase() === String(cur.email || '').toLowerCase(); });
+      if (!allSame) pushRow(en ? 'Emails (notes)' : 'Correos (según notas)', seg.replace(/^emails?\s*:?\s*/i, ''));
+      return;
+    }
+    if (/^direccion\b/i.test(seg) || /^home address/i.test(seg) || (/home address/i.test(seg) && seg.length < 120)){
+      var zip = (cur && cur.address || '').match(/\b\d{5}\b/);
+      if (!(zip && seg.indexOf(zip[0]) >= 0)) pushRow(en ? 'Address (notes)' : 'Dirección (según notas)', seg.replace(/^direccion\s*:?\s*/i, ''));
+      return;
+    }
+    if (/engañ|misleading|mintieron|mentiras/i.test(seg) && seg.length < 300){ out.hot.push(cl); return; }
+    if (/ciudad de compra|purchase city/i.test(seg)){ out.cb.push(cl); return; }
+    if (tryCluster(seg)) return;
+    out.cb.push(cl);
+  });
+  return out;
+}
+function qCaUndocumented(P, notes, en){
+  var raw = String(notes || '').toLowerCase(), miss = [];
+  if (!P.hist.length && !/presentaci|compraron|compro |compró |\bfirm/.test(raw)) miss.push(en ? 'purchase experience' : 'experiencia de compra');
+  if (!/represent|engañ|misleading|mintieron|promet|le dijeron/.test(raw)) miss.push(en ? 'sales representations' : 'representaciones de venta');
+  if (!P.hot.length && !/motivo|razon|razón|quiere salir|quieren salir/.test(raw)) miss.push(en ? 'reasons for wanting out' : 'motivos para salir');
+  if (!/usad|ha usado|nunca (ha|lo) us|experiencia/.test(raw)) miss.push(en ? 'ownership experience' : 'experiencia como propietario');
+  miss.push(en ? "the CA's exact questions (question-and-answer format)" : 'las preguntas exactas del CA (formato pregunta y respuesta)');
+  return miss;
+}
+function qCaSourceHtml(L){ // ALMA: ORGANIZED source evidence — contacts, structured case facts, parsed notes. Never a raw dump.
   var en = (L === 'en');
   var F = qCaseFacts();
   var legal = qLegalName();
   var h = '';
   function row(l, v){ h += '<div ' + QDOC_ROW + '><span>' + l + '</span><b>' + v + '</b></div>'; }
-  h += '<h2 ' + QDOC_H2 + '>' + (en ? 'CASE DATA — VERIFIED FACTS FROM THE FILE' : 'DATOS DEL CASO — HECHOS VERIFICADOS DEL EXPEDIENTE') + '</h2>';
+  function sub(t){ h += '<h3 style="color:#0b3d91;margin:18px 0 6px;font-size:16px">' + t + '</h3>'; }
+  function bullets(arr){ h += '<ul style="margin:4px 0 4px 18px;padding:0">'; arr.forEach(function(x){ h += '<li style="margin:3px 0">' + escH(x) + '</li>'; }); h += '</ul>'; }
+  // 1) CONTACTOS — phones on top, then email
+  h += '<h2 ' + QDOC_H2 + '>' + (en ? 'CONTACTS' : 'CONTACTOS') + '</h2>';
+  var phs = [cur.phone, cur.phone2].filter(Boolean).map(fmtPhone);
+  if (phs.length) row(en ? 'Phone' : 'Teléfono', escH(phs.join(' · ')));
+  if (cur.email) row(en ? 'Email' : 'Correo', escH(cur.email));
+  if (cur.address) row(en ? 'Address' : 'Dirección', escH(cur.address));
+  if (!phs.length && !cur.email && !cur.address) h += '<p>' + (en ? 'No contact data in the file.' : 'Sin datos de contacto en el expediente.') + '</p>';
+  // 2) HECHOS DEL CASO — structured record fields first
+  h += '<h2 ' + QDOC_H2 + '>' + (en ? 'CASE FACTS — VERIFIED FACTS FROM THE FILE' : 'HECHOS DEL CASO — HECHOS VERIFICADOS DEL EXPEDIENTE') + '</h2>';
   row(en ? 'Client' : 'Cliente', escH(cur.name));
   if (legal) row('Resort', escH(legal) + (cur.loc ? ' — ' + escH(cur.loc) : ''));
-  row('Case Analyst', escH(cur.ca || '—'));
+  row('Case Analyst', cur.ca ? escH(cur.ca) : '— ' + (en ? 'not named in the file' : 'no consta en el expediente'));
   if (cur.appt) row(en ? 'Appointment' : 'Cita', escH(cur.appt));
   row(en ? 'Language' : 'Idioma', cur.lang === 'en' ? 'English' : (en ? 'Spanish' : 'Español'));
-  row(en ? 'Contracts' : 'Contratos', cur.contracts || 1);
-  if (cur.pyr > 0) row(en ? 'Purchase year' : 'Año de compra', cur.pyr);
   row(en ? 'Type' : 'Tipo', F.isDB ? (en ? 'DEED-BACK — no mortgage' : 'DEED-BACK — sin hipoteca') : (en ? 'WITH MORTGAGE' : 'CON HIPOTECA'));
-  if (F.payoff > 0) row('Saldo / Payoff', fmtC(F.payoff));
+  row(en ? 'Contracts' : 'Contratos', cur.contracts || 1);
+  if (cur.pyr > 0){ var MON = en ? ['January','February','March','April','May','June','July','August','September','October','November','December'] : ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre']; row(en ? 'Purchase' : 'Compra', ((cur.pmonth >= 1 && cur.pmonth <= 12) ? MON[cur.pmonth - 1] + ' ' : '') + cur.pyr); }
+  if (F.payoff > 0) row('Saldo / Payoff', fmtC(F.payoff) + (cur.poffVerified ? (en ? ' (verified)' : ' (verificado)') : ''));
+  else if (F.isDB) row('Saldo / Payoff', '$0 — ' + (en ? 'paid off (deed-back)' : 'pagado (deed-back)'));
   if (F.mmo > 0) row(en ? 'Monthly mortgage' : 'Hipoteca mensual', fmtC(F.mmo));
   row(en ? 'Maintenance fees' : 'Tarifas de mantenimiento', fmtC(F.mf) + (en ? '/year' : '/año'));
   if (cur.apr > 0) row(en ? 'Recorded APR' : 'APR registrado', cur.apr + '%');
+  if (cur.term > 0) row(en ? 'Term' : 'Plazo', cur.term + (en ? ' months' : ' meses'));
   if (F.MG.status === 'ok') row(en ? 'Months remaining (current contract)' : 'Meses restantes (contrato actual)', F.MG.months);
-  h += '<h2 ' + QDOC_H2 + '>' + (en ? 'DOCUMENTED NOTES — CA INTERVIEW / CRM (FULL TEXT)' : 'NOTAS DOCUMENTADAS — ENTREVISTA DEL CA / CRM (TEXTO ÍNTEGRO)') + '</h2>';
-  if (cur.notes){ h += '<div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:14px;white-space:pre-wrap;font-size:14px">' + escH(cur.notes) + '</div><p style="font-size:12px;color:#6b7280">' + (en ? 'Client statements quoted in these notes are CLIENT STATEMENT — QUESTION NOT DOCUMENTED: the CA\'s exact question is not recorded in the file.' : 'Las declaraciones del cliente citadas en estas notas son CLIENT STATEMENT — QUESTION NOT DOCUMENTED: la pregunta exacta del CA no está registrada en el expediente.') + '</p>'; }
-  else h += '<p><b>NOT DOCUMENTED</b> — ' + (en ? 'the file contains no CA interview notes.' : 'el expediente no contiene notas de la entrevista del CA.') + '</p>';
+  if (cur.fee > 0) row(en ? 'Linx fee on file' : 'Tarifa Linx registrada', fmtC(cur.fee));
+  if (cur.tz) row(en ? 'Time zone' : 'Zona horaria', escH(cur.tz));
+  // 3) NOTAS DOCUMENTADAS — parsed + organized, never the raw dump
+  var P = qCaParseNotes(cur.notes, en);
+  var hasParsed = P.rows.length || P.cb.length || P.hot.length || P.hist.length || P.enfoque.length || P.precio.length || P.langNote;
+  h += '<h2 ' + QDOC_H2 + '>' + (en ? 'DOCUMENTED NOTES — ORGANIZED (CA INTERVIEW / CRM)' : 'NOTAS DOCUMENTADAS — ORGANIZADAS (ENTREVISTA DEL CA / CRM)') + '</h2>';
+  if (cur.notes && hasParsed){
+    if (P.langNote) row(en ? 'Language — per notes' : 'Idioma — según notas', escH(P.langNote));
+    P.rows.forEach(function(r){ row(escH(r[0]), escH(r[1])); });
+    if (P.cb.length){ sub(en ? 'CASE BUILDER NOTES' : 'NOTAS DEL CASE BUILDER'); bullets(P.cb); }
+    if (P.hot.length){ sub(en ? 'KEY POINTS — HOT BUTTONS' : 'PUNTOS CLAVE — HOT BUTTONS'); bullets(P.hot); }
+    if (P.hist.length){ sub(en ? 'HISTORY' : 'HISTORIA'); bullets(P.hist); }
+    if (P.enfoque.length){ sub(en ? 'CA APPROACH' : 'ENFOQUE DEL CA'); bullets(P.enfoque); }
+    if (P.precio.length){ sub(en ? 'PRICE' : 'PRECIO'); bullets(P.precio); }
+  } else if (cur.notes){
+    h += '<p>' + (en ? 'The file has notes, but no extractable case data.' : 'El expediente tiene notas, pero sin datos extraíbles.') + '</p>';
+  } else {
+    h += '<p><b>' + (en ? 'NOT DOCUMENTED' : 'NO DOCUMENTADO') + '</b> — ' + (en ? 'the file contains no CA interview notes.' : 'el expediente no contiene notas de la entrevista del CA.') + '</p>';
+  }
+  // 4) ONE compact line for what is undocumented (replaces the five old "NOT DOCUMENTED as Q&A" sections)
+  if (cur.notes){
+    var miss = qCaUndocumented(P, cur.notes, en);
+    if (miss.length) h += '<p style="font-size:12.5px;color:#6b7280;margin-top:16px"><b>' + (en ? 'Not documented in the file: ' : 'Sin documentar en el expediente: ') + '</b>' + escH(miss.join(', ')) + '.</p>';
+  }
   return h;
 }
 function qCaHtml(){
@@ -1752,13 +1953,9 @@ function qCaBuild(L){
   var h = '<!DOCTYPE html><html lang="' + (en ? 'en' : 'es') + '"><head><meta charset="utf-8"><title>CA DISCOVERY — ' + escH(cur.name) + '</title></head><body ' + QDOC_S + '>';
   h += '<div ' + QDOC_BAR + '><b>📋 CA DISCOVERY</b><span style="font-size:13px">' + (en ? 'Only what the Case Analyst documented. Nothing from the CB interview goes here.' : 'Solo lo que el Case Analyst documentó. Nada de la entrevista del CB va aquí.') + '</span>' + qDocToggleBtn('ca', en) + '<button ' + QDOC_BTN + ' onclick="caCopy(this)">' + (en ? '📋 COPY REPORT' : '📋 COPIAR REPORTE') + '</button></div>';
   h += '<div id="caDoc"><h1 style="color:#0b3d91;font-size:24px;margin:4px 0">CA DISCOVERY — ' + escH(cur.name) + '</h1>';
-  h += '<p style="font-size:13px;color:#6b7280">' + (en ? 'Source: client file (CRM / Case Analyst interview). The CA\'s original questions are not recorded as question-and-answer in the file — no questions or answers are invented. Anything missing is marked NOT DOCUMENTED.' : 'Fuente: expediente del cliente (CRM / entrevista del Case Analyst). Las preguntas originales del CA no están registradas como pregunta-y-respuesta en el expediente — no se inventan preguntas ni respuestas. Lo que falta se marca NOT DOCUMENTED.') + '</p>';
+  h += '<p style="font-size:13px;color:#6b7280">' + (en ? 'Source: client file (CRM / Case Analyst interview). The CA\'s original questions are not recorded as question-and-answer in the file — no questions or answers are invented. Anything missing is listed in one line at the end.' : 'Fuente: expediente del cliente (CRM / entrevista del Case Analyst). Las preguntas originales del CA no están registradas como pregunta-y-respuesta en el expediente — no se inventan preguntas ni respuestas. Lo que falta se lista en una sola línea al final.') + '</p>';
   h += qCaSourceHtml(L);
-  ['PURCHASE EXPERIENCE','SALES REPRESENTATIONS','FINANCIAL OBLIGATIONS','OWNERSHIP EXPERIENCE','REASONS FOR WANTING OUT'].forEach(function(t){
-    h += '<h2 ' + QDOC_H2 + '>' + t + '</h2>';
-    if (t === 'FINANCIAL OBLIGATIONS') h += '<p>' + (en ? 'The documented obligations appear above in CASE DATA (balance, monthly payment, maintenance fees, APR, months remaining). The CA\'s exact questions: <b>NOT DOCUMENTED</b>.' : 'Las obligaciones documentadas constan arriba en DATOS DEL CASO (saldo, cuota mensual, tarifas, APR, meses restantes). Preguntas exactas del CA: <b>NOT DOCUMENTED</b>.') + '</p>';
-    else h += '<p>' + (en ? '<b>NOT DOCUMENTED</b> as question and answer — see DOCUMENTED NOTES (full text) above.' : '<b>NOT DOCUMENTED</b> como pregunta y respuesta — ver NOTAS DOCUMENTADAS (texto íntegro) arriba.') + '</p>';
-  });
+  // Undocumented topics now render as ONE compact line at the end of qCaSourceHtml (2026-10-23 reformat).
   h += '</div>';
   h += '<scr' + 'ipt>function caCopy(b){var tx=document.getElementById("caDoc").innerText;try{navigator.clipboard.writeText(tx).then(function(){b.textContent="' + (en ? '✅ COPIED' : '✅ COPIADO') + '";});}catch(e){}}</scr' + 'ipt>';
   h += qDocToggleJs(en);
