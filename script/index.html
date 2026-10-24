@@ -364,9 +364,6 @@
   <label class="qf">MES DE COMPRA <select id="q_pmonth" onchange="qRecalc()"><option value="">—</option><option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option><option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option><option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option></select></label>
   <label class="qf mtgOnly">HIPOTECA MENSUAL <input id="q_mmo" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">MF/AÑO <input id="q_mf" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf mtgOnly">AÑO DE INICIO DEL CONTRATO <input id="q_cyr" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf mtgOnly">MES DE INICIO DEL CONTRATO <select id="q_cmonth" onchange="qRecalc()"><option value="">—</option><option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option><option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option><option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option></select></label>
-  <div class="qsm mtgOnly">Contrato vigente (upgrade / refinanciamiento) — SOLO si está verificado; es distinto a la compra original. La amortización restante NUNCA se deriva del año de compra.</div>
   <label class="qf">NOCHES/AÑO <input id="q_nights" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf mtgOnly">PLAZO (MESES) <input id="q_term" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf mtgOnly">SALDO (PAYOFF) <input id="q_payoff" type="number" min="0" oninput="qRecalc()"></label>
@@ -446,7 +443,7 @@
     <div>Total pagado <b id="q_paid">—</b></div>
     <div>Capital <b id="q_prin">—</b></div>
     <div>Interés <b id="q_inte">—</b></div>
-    <div>Saldo según amortización (estimado) <b id="q_bal2">—</b></div>
+    <div style="font-size:1.12em">PAYOFF EXACTO SEGÚN AMORTIZACIÓN <b id="q_bal2">—</b></div>
     <div id="q_schtag" class="tmin" style="display:none;margin:2px 0"></div>
     <div id="q_bal2flag" style="display:none;background:#fdecea;border:2px solid #c62828;color:#7f1d1d;border-radius:8px;padding:6px 8px;font-size:.92em;line-height:1.45;margin:4px 0"></div>
     <div>Interés del plazo <b id="q_tint">—</b></div>
@@ -986,12 +983,13 @@ function qUpgradeIndicated(c){
   return /upgrade|actualizaci|renovaci|refinanc|nuevo contrato|nueva hipoteca|segundo pr[ée]stamo|segunda hipoteca|volvi[óo] a firmar/i.test(n);
 }
 var qStartSrc = null; // 'contract' | 'purchase' | null — how the active client's contract start resolved (set in qSync)
-// CONTRACT START RESOLUTION: (1) the contract start on file (form/record cyr+cmonth) wins; (2) FALLBACK:
+// CONTRACT START RESOLUTION: (1) the contract start on file in the RECORD (cyr+cmonth — data only,
+// no panel fields since 2026-10-24, Sebastian: "delete these from /script") wins; (2) FALLBACK:
 // no contract start on file AND nothing in the record indicates an upgrade -> the current contract IS
 // the purchase contract, so use the documented purchase month/year (BOTH must be on file — a year alone
 // is not a start date); (3) an indicated upgrade with an unknown date (Nelson) resolves to NO start.
 function qContractStart(c){
-  var cy = qNum('q_cyr') || (c && c.cyr) || 0, cm = qNum('q_cmonth') || (c && c.cmonth) || 0;
+  var cy = (c && c.cyr) || 0, cm = (c && c.cmonth) || 0;
   if (cy > 0) return { y: cy, m: (cm >= 1 && cm <= 12) ? cm : 1, src: 'contract' };
   if (!c || qUpgradeIndicated(c)) return null;
   var py = (c.pyr || 0) || qNum('q_pyr') || 0, pm = c.pmonth || 0;
@@ -2332,7 +2330,6 @@ function qSync(c){
   else if (r0 > 0 && t0 > 0 && m0 > 0){ $('q_loan').value = Math.round(m0 * (1 - Math.pow(1 + r0, -t0)) / r0); qLoanAuto = true; }
   else { $('q_loan').value = ''; qLoanAuto = false; }
   $('q_aapr').value = c ? (c.apr || '') : '';
-  $('q_cyr').value = c && c.cyr ? c.cyr : ''; $('q_cmonth').value = c && c.cmonth ? c.cmonth : '';
   // MESES elapsed counts from the CONTRACT START as resolved by qContractStart: the contract start on
   // file when the record has one; the documented PURCHASE date only when no upgrade/refinance is
   // documented anywhere in the record (PAYOFF INTEGRITY 2026-10-23). An indicated-but-undated upgrade
@@ -2561,7 +2558,7 @@ function qRecalc(){
   qRenderCombo(COMBO);
   renderBar(c2, n); applyFills(c2, n); soldRender(); qCover(); qAutoSave();
 }
-var QFIN_LABELS = { q_payoff: 'Saldo (payoff)', q_mmo: 'Pago mensual hipoteca', q_mf: 'Mantenimiento anual', q_esc: 'Escalación MF %', q_aapr: 'APR hipoteca', q_term: 'Plazo (meses)', q_loan: 'Monto financiado', q_pyr: 'Año de compra', q_cyr: 'Año inicio contrato', q_cmonth: 'Mes inicio contrato', q_fee: 'Tarifa Linx (fee)', q_down: 'Down payment', q_fapr: 'APR financiamiento Linx', q_fmo: 'Meses financiamiento Linx', q_sheetfee: 'Tarifa hoja (deed-back)', q_sheetdown: 'Down hoja', q2_payoff: 'C2 Saldo', q2_mmo: 'C2 Pago mensual', q2_mf: 'C2 Mantenimiento', q2_apr: 'C2 APR', q2_term: 'C2 Plazo', q2_fee: 'C2 Tarifa', q3_payoff: 'C3 Saldo', q3_mmo: 'C3 Pago mensual', q3_mf: 'C3 Mantenimiento', q3_apr: 'C3 APR', q3_term: 'C3 Plazo', q3_fee: 'C3 Tarifa' };
+var QFIN_LABELS = { q_payoff: 'Saldo (payoff)', q_mmo: 'Pago mensual hipoteca', q_mf: 'Mantenimiento anual', q_esc: 'Escalación MF %', q_aapr: 'APR hipoteca', q_term: 'Plazo (meses)', q_loan: 'Monto financiado', q_pyr: 'Año de compra', q_fee: 'Tarifa Linx (fee)', q_down: 'Down payment', q_fapr: 'APR financiamiento Linx', q_fmo: 'Meses financiamiento Linx', q_sheetfee: 'Tarifa hoja (deed-back)', q_sheetdown: 'Down hoja', q2_payoff: 'C2 Saldo', q2_mmo: 'C2 Pago mensual', q2_mf: 'C2 Mantenimiento', q2_apr: 'C2 APR', q2_term: 'C2 Plazo', q2_fee: 'C2 Tarifa', q3_payoff: 'C3 Saldo', q3_mmo: 'C3 Pago mensual', q3_mf: 'C3 Mantenimiento', q3_apr: 'C3 APR', q3_term: 'C3 Plazo', q3_fee: 'C3 Tarifa' };
 var qFinSnap = {};
 function qFinCapture(){ var sn = {}; for (var id in QFIN_LABELS){ var el = $(id); if (el) sn[id] = String(el.value); } return sn; }
 function qAuditLog(field, from, to){
@@ -2599,7 +2596,7 @@ function qAutoSave(){
       qFinSnap = snapNow;
       c.mmo = qNum('q_mmo'); c.mf = qNum('q_mf'); c.esc = qNum('q_esc');
       c.pyr = qNum2($('q_pyr').value); c.term = qNum('q_term'); c.payoff = qNum('q_payoff');
-      c.cyr = qNum('q_cyr'); c.cmonth = qNum('q_cmonth'); c.cfin = qLoanAuto ? (c.cfin || 0) : qNum('q_loan'); // MATEO: never persist an auto-inferred principal as a recorded cfin
+      c.cfin = qLoanAuto ? (c.cfin || 0) : qNum('q_loan'); // MATEO: never persist an auto-inferred principal as a recorded cfin
       c.fee = qNum('q_fee'); c.down = qNum('q_down'); c.downt = $('q_downt').value;
       c.paymethod = $('q_paym').value; c.fapr = qNum('q_fapr'); c.fmo = qNum('q_fmo');
       c.pmtmo = qNum('q_pmt'); c.downdate = $('q_ddate').value; c.pmtdate = $('q_pdate').value;
@@ -3185,10 +3182,6 @@ setInterval(function(){ if (aptData){ aptRender(); aptLayout(); } }, 60000);
 </script>
 </body>
 </html>
-
-
-
-
 
 
 
