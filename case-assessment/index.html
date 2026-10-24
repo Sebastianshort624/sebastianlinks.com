@@ -6,7 +6,7 @@
 <title>Case Assessment — Client Protection Group</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
-<script src="https://alphafiles.net/vitals/assets/case-engine.js"></script>
+<script src="/AlphaFiles/vitals/assets/case-engine.js"></script>
 <style>
 :root{
   --cpg-blue:#0C5AB1; --cpg-blue-dark:#1F5093; --cpg-blue-pale:#E9EFF7;
@@ -365,7 +365,7 @@ window.CASE_PDF_URL='/case-assessment/assets/cancellation-agreement.pdf';
 // LocalCaseParser — fully local CRM raw-data detector.
 //
 // This replaces the CRM-parsing half of the old window.CaseEngine dependency
-// (https://alphafiles.net/vitals/assets/case-engine.js), which lives outside
+// (/AlphaFiles/vitals/assets/case-engine.js), which lives outside
 // this repository and can't be inspected, diffed, or edited from here.
 // generateCancellationPDF() below still uses window.CaseEngine — this only
 // takes over runPopulateFromCRM's job, so raw-data detection is no longer at

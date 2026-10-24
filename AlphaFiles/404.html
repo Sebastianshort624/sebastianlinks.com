@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="robots" content="noindex, nofollow"><meta charset="UTF-8">
+<title>Redirecting...</title>
+<script>
+// Redirect any URL to its lowercase equivalent
+var path = window.location.pathname.toLowerCase();
+var search = window.location.search;
+var hash = window.location.hash;
+if(window.location.pathname !== path){
+  window.location.replace(path + search + hash);
+} else {
+  // Actual 404 - redirect home
+  window.location.replace('/home/');
+}
+</script>
+</head><body></body></html>
