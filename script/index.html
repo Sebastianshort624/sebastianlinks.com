@@ -1461,24 +1461,25 @@ function qUrlLinks(){
   }
 }
 function qQualityCheck(){
-  // PUERTA DE CALIDAD (SAI Fase 4): COTIZACIÓN y EMAIL PRE-CITA no salen con datos
-  // inconsistentes. Devuelve la lista de fallas; lista vacía = pasa.
+  // PUERTA DE CALIDAD (revisada 2026-10-23, orden directa de Sebastian: "i need my quotes to work"):
+  // la puerta SOLO bloquea cuando NO HAY PRECIO que cotizar — sin saldo utilizable, sin tarifa de
+  // hoja (deed-back) y sin tarifa cargada. Con un saldo en el registro la cotización SIEMPRE sale:
+  // el precio se calcula (saldo x % + admin, con los pisos de siempre) y el saldo lleva su etiqueta
+  // honesta (VERIFICADO / REPORTADO / ESTIMADO / PENDIENTE). Las proyecciones ya NO bloquean: se
+  // omiten del documento con una nota cuando faltan APR / inicio del contrato vigente — nunca se
+  // fabrican de datos PENDIENTES. Un saldo marcado poffUnverified NO es una cifra utilizable
+  // (sigue PENDIENTE en todo el modelo): bloquea nombrando el único dato que falta.
+  // Devuelve la lista de fallas; lista vacía = pasa.
   var fails = [];
   if (typeof cur === 'undefined' || !cur || !cur.name){ fails.push('No hay un cliente activo seleccionado.'); return fails; }
-  var MG = qMortgage(), db = qIsDB(), pv = qNum('q_payoff');
-  if (db && pv > 0) fails.push('Clasificación en conflicto: DEED-BACK con saldo de hipoteca de ' + fmtC(pv) + ' (deed-back requiere saldo $0 verificado).');
-  if (qClassWarn) fails.push(qClassWarn);
-  var COMBO = qComboCalc();
-  COMBO.forEach(function(c, i){ if (i > 0 && !c.active) fails.push('PENDIENTE — INFORMACIÓN DEL CONTRATO ' + (i + 1) + ': el contrato está seleccionado pero no tiene datos documentados propios.'); });
-  if (!db && MG.status === 'pending') fails.push('Hipoteca PENDIENTE — falta: ' + qMissingLoan().join(', ') + '. Sin saldo verificado no hay proyecciones cotizables.');
-  var CCB = qConsistency();
-  if (CCB && CCB.conflicts.length) fails.push('CONFLICTO DE AMORTIZACIÓN sin resolver: ' + CCB.conflicts.join(' · '));
-  if ((($('q_esc') || {}).value || '') === '') fails.push('Falta la escalación anual de mantenimiento (ESC %).');
-  if (COMBO.length > 1 && COMBO.some(function(c){ return c.active && c.mg.status === 'pending'; })) fails.push('La suma de contratos no es verificable: un contrato activo está PENDIENTE.');
-  var fee = (db && qNum('q_sheetfee') > 0) ? qNum('q_sheetfee') : qNum('q_fee');
-  if (COMBO.length > 1){ var pf = 0; COMBO.forEach(function(c){ pf += c.price.total; }); if (pf > 0) fee = pf; }
-  if (!(fee > 0)) fails.push('Falta la tarifa (fee): no hay precio que cotizar.');
-  else if (fee < 3799) fails.push('La tarifa de ' + fmtC(fee) + ' está bajo el PRECIO MÍNIMO LINX ($3,799).');
+  var db = qIsDB(), pv = qNum('q_payoff');
+  var unv = !!(typeof cur !== 'undefined' && cur && cur.poffUnverified);
+  var sheetFee = (db && $('q_sheetfee')) ? qNum('q_sheetfee') : 0;
+  var feeField = unv ? 0 : qNum('q_fee'); // con saldo SIN VERIFICAR la tarifa del campo es la fórmula automática de ese mismo saldo: no cuenta como precio
+  var comboTot = 0; qComboCalc().forEach(function(c){ comboTot += c.price.total; });
+  var hasPrice = (pv > 0 && !unv) || sheetFee > 0 || feeField > 0 || (comboTot > 0 && !unv);
+  if (!hasPrice)
+    fails.push(db ? 'Falta la tarifa de la hoja PRE-CALL (deed-back): es el único dato que falta para cotizar.' : 'Falta el saldo (payoff): es el único dato que falta para calcular el precio.');
   return fails;
 }
 // ===== DOC LANGUAGE TOGGLE (Sebastian, 2026-10-22): COTIZACIÓN / CA DISCOVERY / CB DISCOVERY open in the
@@ -1517,6 +1518,15 @@ function qQuoteBuild(L){
   var MG = qMortgage(); // shared model (SAI 2026-10-20) — same outputs as the panel, no private formula
   var fee = qNum('q_fee');
   if (qIsDB() && $('q_sheetfee') && $('q_sheetfee').value !== '' && qNum('q_sheetfee') > 0) fee = qNum('q_sheetfee');
+  if (!(fee > 0)){ // sin tarifa tecleada: el precio se calcula del saldo en el registro (la cotización sale siempre que haya saldo)
+    var CT = 0; qComboCalc().forEach(function(c){ CT += c.price.total; });
+    if (CT > 0) fee = CT;
+  }
+  // PROYECCIONES (2026-10-23): solo se incluyen si el modelo las puede calcular (status != pending).
+  // Si faltan APR / inicio del contrato vigente, se OMITEN con esta nota — nunca bloquean la cotización.
+  var projOk = MG.status !== 'pending';
+  var missLoan = projOk ? [] : qMissingLoan();
+  var projNote = projOk ? '' : '<p style="font-size:14px;color:#b45309;border:1px solid #f59e0b;background:#fffbeb;border-radius:8px;padding:10px 12px"><b>' + (en ? '🔴 Savings projections pending — missing: ' : '🔴 Proyecciones de ahorro pendientes — falta: ') + missLoan.join(', ') + (en ? '. They will be added once the current loan information is verified; the price above is quotable with the balance on file.' : '. Se agregan cuando se verifique la información del préstamo vigente; el precio de arriba sí es cotizable con el saldo registrado.') + '</b></p>';
   var down = qNum('q_down'), fmo = qNum('q_fmo');
   var moTxt = ($('q_mo') || {}).textContent || '';
   function moPart(y){ return qMortOver(MG, y); }
@@ -1542,16 +1552,25 @@ function qQuoteBuild(L){
   h += '<p style="margin-top:18px">' + (en ? 'Prepared for: ' : 'Preparada para: ') + '<b>' + escH(cur.name) + '</b>' + (legal ? '<br>Resort: <b>' + escH(legal) + '</b>' : '') + (cur.loc ? '<br>' + escH(cur.loc) : '') + '</p>';
   h += '<h2 ' + H2 + '>' + (en ? 'Quote' : 'Cotización') + '</h2>';
   h += '<div ' + ROW + '><span>' + (en ? 'Total fee for our service' : 'Tarifa total de nuestro servicio') + '</span><b>' + fmtC(fee) + '</b></div>';
+  if (payoff > 0 && !qIsDB()){ // descomposición del precio: (saldo x %) + admin, con el piso de servicio
+    var pctD = parseFloat(($('q_feepct') || {}).value || '47') || 47;
+    var pvDec = qPriceVals(payoff, pctD);
+    if (Math.abs(fee - pvDec.total) < 1){
+      var rawD = payoff * pctD / 100;
+      h += '<div ' + ROW + '><span>' + (en ? 'How the price is calculated' : 'Cómo se calcula el precio') + '</span><span>' + fmtC(payoff) + ' × ' + pctD + '% = ' + fmtC(rawD) + (rawD < 3500 ? (en ? ' → service minimum ' : ' → servicio mínimo ') + fmtC(3500) : '') + ' + ' + fmtC(pvDec.admin) + ' admin</span></div>';
+    }
+  }
   h += '<p style="font-size:14px;color:#374151">' + (en ? fmtC(fee) + ' — and this includes all, beginning to end. We never ask for another dollar. This price eliminates all past, present and future debt, and your name is removed from the deed at the county level, so your estate is safe and your next of kin will never inherit this nightmare.' : 'Este precio incluye todo, de principio a fin. Nunca pedimos otro dólar. Este precio elimina toda la deuda pasada, presente y futura, y tu nombre se retira de la escritura a nivel del condado.') + '</p>';
   h += '<div ' + ROW + '><span>' + (en ? 'Paid in full (checking or savings account)' : 'Pago completo (cuenta de cheques o ahorros)') + '</span><b>' + fmtC(fee) + '</b></div>';
   h += '<div ' + ROW + '><span>' + (en ? 'Credit card payment' : 'Pago con tarjeta de crédito') + '</span><b>' + fmtC(fee * 1.03) + '</b></div>';
   if (fmo > 0 && moTxt && moTxt !== '—') h += '<div ' + ROW + '><span>' + (en ? 'Financing: ' : 'Financiamiento: ') + (down > 0 ? fmtC(down) + (en ? ' down payment + ' : ' de anticipo + ') : '') + (en ? 'monthly payments' : 'pagos mensuales') + '</span><b>' + escH(moTxt) + ' × ' + fmo + (en ? ' months' : ' meses') + '</b></div>';
-  h += '<h2 ' + H2 + '>' + (en ? 'Your savings' : 'Tu ahorro') + '</h2>';
+  if (projOk){ h += '<h2 ' + H2 + '>' + (en ? 'Your savings' : 'Tu ahorro') + '</h2>';
   h += '<div ' + ROW + '><span>' + (en ? 'Cost of keeping the timeshare — next 10 years' : 'Costo de quedarte con el tiempo compartido — próximos 10 años') + '</span><b>' + fmtP(t10) + '</b></div>';
   h += '<div ' + ROW + '><span>' + (en ? 'Our fee (one time)' : 'Nuestra tarifa (una sola vez)') + '</span><b>' + fmtC(fee) + '</b></div>';
   h += '<div ' + ROW + '><span><b>' + (en ? 'Projected net savings over 10 years' : 'Ahorro neto proyectado en 10 años') + '</b></span><b style="color:#15803d">' + fmtP(s10) + '</b></div>';
   h += '<div ' + ROW + '><span><b>' + (en ? 'Projected net savings over 20 years' : 'Ahorro neto proyectado en 20 años') + '</b></span><b style="color:#15803d">' + fmtP(s20) + '</b></div>';
   if (bem > 0) h += '<p style="font-size:14px;color:#374151">' + (en ? 'In approximately <b>' + bem + ' months</b>, what you would have paid the resort equals our full fee.' : 'En aproximadamente <b>' + bem + ' meses</b>, lo que habrías pagado al resort iguala nuestra tarifa completa.') + '</p>';
+  } else { h += projNote; }
   h += '<h2 ' + H2 + '>' + (en ? 'Your current situation' : 'Tu situación actual') + '</h2>';
   if (payoff > 0) h += '<div ' + ROW + '><span>' + (en ? 'Mortgage balance' : 'Saldo de la hipoteca') + '</span><b>' + fmtC(payoff) + '</b></div>';
   if (payoff > 0) h += '<div ' + ROW + '><span>' + (en ? 'Balance status' : 'Estado del saldo') + '</span><b>' + (MG.level === 'verificado' ? (en ? '✅ VERIFIED — confirmed from the lender' : '✅ VERIFICADO — confirmado del prestamista') : MG.level === 'reportado' ? (en ? '🟠 REPORTED — reported by the client/intake, unverified' : '🟠 REPORTADO — reportado por el cliente/intake, sin verificar') : MG.level === 'estimado' ? (en ? '🟡 ESTIMATED — mathematical model' : '🟡 ESTIMADO — modelo matemático') : (en ? '🔴 PENDING VERIFICATION' : '🔴 PENDIENTE DE VERIFICACIÓN')) + '</b></div>';
@@ -1565,7 +1584,7 @@ function qQuoteBuild(L){
   var escP = gv('q_xescp');
   h += '<h2 ' + H2 + '>' + (en ? '📊 Expense breakdown' : '📊 Desglose de gastos') + '</h2>';
   h += '<h3 style="color:#0b3d91;margin:14px 0 6px">' + (en ? 'Current Contractual Commitment' : 'Compromiso Contractual Actual') + '</h3>';
-  [['Próximos 30 días','Next 30 days','q_w30'],['Próximos 90 días','Next 90 days','q_w90'],['Próximos 6 meses','Next 6 months','q_w6'],['Próximo 1 año','Next 1 year','q_t1'],['Próximos 3 años','Next 3 years','q_t3'],['Próximos 5 años','Next 5 years','q_t5'],['Próximos 10 años','Next 10 years','q_t10'],['Próximos 20 años','Next 20 years','q_t20'],['Próximos 30 años','Next 30 years','q_t30']].forEach(function(r){ var v = gv(r[2]); if (v && v !== '—') h += '<div ' + ROW + '><span>' + (en ? r[1] : r[0]) + '</span><b>' + escH(v) + '</b></div>'; });
+  [['Próximos 30 días','Next 30 days','q_w30'],['Próximos 90 días','Next 90 days','q_w90'],['Próximos 6 meses','Next 6 months','q_w6'],['Próximo 1 año','Next 1 year','q_t1'],['Próximos 3 años','Next 3 years','q_t3'],['Próximos 5 años','Next 5 years','q_t5'],['Próximos 10 años','Next 10 years','q_t10'],['Próximos 20 años','Next 20 years','q_t20'],['Próximos 30 años','Next 30 years','q_t30']].forEach(function(r){ var v = gv(r[2]); if (projOk && v && v !== '—') h += '<div ' + ROW + '><span>' + (en ? r[1] : r[0]) + '</span><b>' + escH(v) + '</b></div>'; });
   if (mmo > 0) h += '<div ' + ROW + '><span>' + (en ? 'Monthly mortgage' : 'Hipoteca mensual') + '</span><b>' + escH(gv('q_xmmo')) + '</b></div>';
   h += '<div ' + ROW + '><span>' + (en ? 'Monthly maintenance' : 'Mantenimiento mensual') + '</span><b>' + escH(gv('q_xmfmo')) + '</b></div>';
   h += '<div ' + ROW + '><span><b>' + (en ? 'Monthly total' : 'Total mensual') + '</b></span><b>' + escH(gv('q_xtotmo')) + '</b></div>';
@@ -1573,14 +1592,15 @@ function qQuoteBuild(L){
   h += '<div ' + ROW + '><span>' + (en ? 'Annual maintenance' : 'Mantenimiento anual') + '</span><b>' + escH(gv('q_xmfyr')) + '</b></div>';
   h += '<div ' + ROW + '><span><b>' + (en ? 'Annual total' : 'Total anual') + '</b></span><b>' + escH(gv('q_xtotyr')) + '</b></div>';
   h += '<div ' + ROW + '><span>' + (en ? 'Cost per night' : 'Costo por noche') + (nights > 0 ? ' (' + nights + (en ? ' nights/year' : ' noches/año') + ')' : '') + '</span><b>' + (perNight || '—') + '</b></div>';
-  if (mmo > 0) h += '<div ' + ROW + '><span>' + (en ? 'Mortgage (10 years)' : 'Hipoteca 10 años') + '</span><b>' + escH(gv('q_xmo10')) + '</b></div>';
+  if (projOk && mmo > 0) h += '<div ' + ROW + '><span>' + (en ? 'Mortgage (10 years)' : 'Hipoteca 10 años') + '</span><b>' + escH(gv('q_xmo10')) + '</b></div>';
   h += '<div ' + ROW + '><span>' + (en ? 'Maintenance (10 years) (' : 'Mantenimiento 10 años (') + escP + '% esc)</span><b>' + escH(gv('q_xmf10')) + '</b></div>';
-  h += '<div ' + ROW + '><span><b>' + (en ? '10-year projection' : 'Proyección 10 años') + '</b></span><b>' + escH(gv('q_xproj10')) + '</b></div>';
-  h += '<h3 style="color:#0b3d91;margin:18px 0 6px">' + (en ? 'Projections — the cost of keeping it' : 'Proyecciones — costo de quedarte') + '</h3>';
+  if (projOk) h += '<div ' + ROW + '><span><b>' + (en ? '10-year projection' : 'Proyección 10 años') + '</b></span><b>' + escH(gv('q_xproj10')) + '</b></div>';
+  if (projOk){ h += '<h3 style="color:#0b3d91;margin:18px 0 6px">' + (en ? 'Projections — the cost of keeping it' : 'Proyecciones — costo de quedarte') + '</h3>';
   h += '<table style="width:100%;border-collapse:collapse;font-size:15px"><tr style="background:#0b3d91;color:#fff"><th style="padding:6px;text-align:left"></th><th style="padding:6px;text-align:right">' + (en ? '10 years' : '10 años') + '</th><th style="padding:6px;text-align:right">' + (en ? '20 years' : '20 años') + '</th></tr>';
   if (mmo > 0) h += '<tr><td style="padding:6px;border-bottom:1px solid #e5e7eb">' + (en ? 'Mortgage' : 'Hipoteca') + '</td><td style="padding:6px;text-align:right;border-bottom:1px solid #e5e7eb">' + fmtP(mp10) + '</td><td style="padding:6px;text-align:right;border-bottom:1px solid #e5e7eb">' + fmtP(mp20) + '</td></tr>';
   h += '<tr><td style="padding:6px;border-bottom:1px solid #e5e7eb">' + (en ? 'Maintenance fees (' + esc + '% annual increase)' : 'Cuotas de mantenimiento (aumento ' + esc + '% anual)') + '</td><td style="padding:6px;text-align:right;border-bottom:1px solid #e5e7eb">' + fmtC(mfPart(10)) + '</td><td style="padding:6px;text-align:right;border-bottom:1px solid #e5e7eb">' + fmtC(mfPart(20)) + '</td></tr>';
   h += '<tr style="font-weight:800"><td style="padding:6px">Total</td><td style="padding:6px;text-align:right">' + fmtP(t10) + '</td><td style="padding:6px;text-align:right">' + fmtP(t20) + '</td></tr></table>';
+  }
   h += '<p style="margin-top:26px;font-size:12px;color:#6b7280;text-align:center">' + (en ? 'Linx Legal · Maintenance projections use an annual increase of ' + esc + '% and are estimates for illustrative purposes.' : 'Linx Legal · Las proyecciones de cuotas usan un aumento anual del ' + esc + '% y son estimados con fines ilustrativos.') + '</p>';
   h += '</div>';
   h += '<scr' + 'ipt>function qCopy(b){var tx=document.getElementById("qDocBody").innerText;try{navigator.clipboard.writeText(tx).then(function(){b.textContent="✅";});}catch(e){}}</scr' + 'ipt>';
@@ -1650,11 +1670,14 @@ function qEmailHtml(){
   prows.forEach(function(r, i){
     var v = gv2(r[0]);
     if (comboOk){ var cv = eWin(prowMonths[i]); if (cv !== null) v = fmtC(cv); }
-    if (!v || v === '—') return;
+    if (!v || v === '—' || v === PEND_TXT) return; // proyección no computable: se omite, nunca se imprime como dato
     var last = i === prows.length - 1;
     if (last) prowHtml += '<tr><td style="padding:14px 12px;background:#eaf6f4;font-weight:700;color:#174b56;">' + (en ? r[2] : r[1]) + '</td><td align="right" style="padding:14px 12px;background:#eaf6f4;font-size:18px;font-weight:700;color:#174b56;">' + escH(v) + '</td></tr>';
     else prowHtml += '<tr><td style="padding:11px 12px;border-bottom:1px solid #e7edef;">' + (en ? r[2] : r[1]) + '</td><td align="right" style="padding:11px 12px;border-bottom:1px solid #e7edef;font-weight:700;">' + escH(v) + '</td></tr>';
   });
+  if (!prowHtml && !F.isDB && F.MG.status === 'pending'){ // sin proyecciones computables: nota dentro de la tabla, no bloqueo
+    prowHtml = '<tr><td colspan="2" style="padding:11px 12px;color:#b45309;"><b>' + (en ? '🔴 Projections pending — missing: ' : '🔴 Proyecciones pendientes — falta: ') + qMissingLoan().join(', ') + '.</b></td></tr>';
+  }
   var note = '';
   if (!F.isDB && F.payoff > 0){
     note = (F.MG.level === 'verificado' ? (en ? 'Verified mortgage balance: ' : 'Saldo hipotecario verificado: ') : (en ? 'Reported mortgage balance: ' : 'Saldo hipotecario reportado: ')) + '<b>' + fmtC(F.payoff) + '</b>' +
