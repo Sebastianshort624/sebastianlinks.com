@@ -97,6 +97,7 @@
     <label class="f">Cuota de mantenimiento anual ($) <input id="in_mf" type="number" value="1500" min="0"></label>
     <label class="f">Aumento anual (%) <input id="in_rate" type="number" value="8" step="0.1" min="0"></label>
     <label class="f">Saldo a liquidar / deuda ($) <input id="in_payoff" type="number" value="0" min="0"></label>
+    <label class="f">Pago mensual hipoteca ($) <input id="in_mmo" type="number" value="0" min="0"></label>
     <label class="f">APR del préstamo (%) <input id="in_apr" type="number" step="0.1" min="0" value="0"></label>
     <label class="f">Plazo del préstamo (meses) <input id="in_term" type="number" min="0" value="0"></label>
     <label class="f">Tarifa de Linx ($) <span class="tmin">en blanco = 47% del saldo</span><input id="in_fee" type="number" min="0"></label>
@@ -130,18 +131,18 @@
 
 <h3>Proyecciones</h3>
 <table id="mtable" style="display:none">
-  <thead><tr><th></th><th>5 años</th><th>10 años</th><th>20 años</th></tr></thead>
+  <thead><tr><th></th><th>1 año</th><th>3 años</th><th>5 años</th><th>10 años</th><th>20 años</th><th>30 años</th></tr></thead>
   <tbody>
-    <tr><td>Cuotas de mantenimiento</td><td id="m5">$0</td><td id="m10">$0</td><td id="m20">$0</td></tr>
-    <tr><td>Costo total (saldo + cuotas)</td><td id="t5">$0</td><td id="t10">$0</td><td id="t20">$0</td></tr>
-    <tr class="hl"><td>Ahorro vs. tarifa de Linx</td><td id="s5">$0</td><td id="s10">$0</td><td id="s20">$0</td></tr>
+    <tr><td>Cuotas de mantenimiento</td><td id="m1">$0</td><td id="m3">$0</td><td id="m5">$0</td><td id="m10">$0</td><td id="m20">$0</td><td id="m30">$0</td></tr>
+    <tr><td>Costo total (saldo + cuotas)</td><td id="t1">$0</td><td id="t3">$0</td><td id="t5">$0</td><td id="t10">$0</td><td id="t20">$0</td><td id="t30">$0</td></tr>
+    <tr class="hl"><td>Ahorro vs. tarifa de Linx</td><td id="s1">$0</td><td id="s3">$0</td><td id="s5">$0</td><td id="s10">$0</td><td id="s20">$0</td><td id="s30">$0</td></tr>
   </tbody>
 </table>
 
 <h3>Precio y pagos</h3>
 <table id="ptable" style="display:none">
   <tbody>
-    <tr><td>Tarifa de Linx (47% del saldo)</td><td id="p_fee">$0</td></tr>
+    <tr><td>Tarifa de Linx (47% del saldo + admin)</td><td id="p_fee">$0</td></tr>
     <tr><td>Cuota inicial</td><td id="p_down">$0</td></tr>
     <tr><td>Saldo</td><td id="p_bal">$0</td></tr>
     <tr><td>Mensual (<span id="p_terms">—</span>)</td><td id="p_mo">—</td></tr>
@@ -161,6 +162,36 @@ function getClients(){ try { return JSON.parse(localStorage.getItem('sl_clients'
 function saveClients(c){ localStorage.setItem('sl_clients', JSON.stringify(c)); }
 function amort(P, aprPct, n){ var r = aprPct / 100 / 12; if (n <= 0) return 0; if (r <= 0) return P / n; return P * r / (1 - Math.pow(1 + r, -n)); }
 function mfTotal(mf, r, n){ if (n <= 0) return 0; if (r <= 0) return mf * n; return mf * ((Math.pow(1 + r, n) - 1) / r); }
+function isDBType(t){ return t === 'DB' || t === 'deedback'; }
+/* Shared engine — same rules as /script: remaining months are derived from the
+   CURRENT balance at the client's ACTUAL monthly payment and contract APR
+   (never a restarted term), and the final payment is partial. A balance that
+   cannot be amortized from verified inputs is PENDIENTE, never invented. */
+function mortState(payoff, mmo, apr, term){
+  if (!(payoff > 0)) return { status: 'paid', months: 0, total: 0 };
+  if (!(mmo > 0) || !(apr > 0)) return { status: 'pending' };
+  var lr = apr / 100 / 12;
+  if (mmo <= payoff * lr) return { status: 'pending' };
+  var cap = term > 0 ? term : 600;
+  var n = Math.ceil(-Math.log(1 - payoff * lr / mmo) / Math.log(1 + lr));
+  if (!(n > 0) || n > cap) n = cap;
+  var bal = payoff, tot = 0;
+  for (var i = 0; i < n; i++){ var it = bal * lr, pr = mmo - it; if (pr > bal) pr = bal; tot += pr + it; bal -= pr; if (bal <= 0.005) break; }
+  return { status: 'ok', months: n, total: tot };
+}
+function mortOver(MS, mmo, years){
+  if (MS.status === 'pending') return null;
+  if (MS.status === 'paid') return 0;
+  return years * 12 >= MS.months ? MS.total : mmo * years * 12;
+}
+/* Linx fee — same rule as /script: 47% of payoff, $3,500 service floor,
+   + $299 admin (service < $10,000) or $399 admin. */
+function priceVals(payoff){
+  var fee = Math.round(payoff * 47) / 100;
+  if (fee < 3500) fee = 3500;
+  var admin = fee < 10000 ? 299 : 399;
+  return { fee: fee, admin: admin, total: fee + admin };
+}
 
 var editingId = null;
 
@@ -184,7 +215,7 @@ function showForm(edit){
   $('f_appt').value = c ? (c.appt || '') : '';
   $('f_email').value = c ? c.email : ''; $('f_ca').value = c ? c.ca : ''; $('f_tz').value = c ? (c.tz || '') : ''; $('f_notes').value = c ? (c.notes || '') : '';
   $('f_resort').value = c ? c.resort : '';
-  $('f_dtype').value = c ? (c.dtype || 'standard') : 'standard'; $('f_mf').value = c ? c.mf : '';
+  $('f_dtype').value = c ? (isDBType(c.dtype) ? 'deedback' : 'standard') : 'standard'; $('f_mf').value = c ? c.mf : '';
   $('f_esc').value = c ? c.esc : 8; $('f_payoff').value = c ? c.payoff : '';
   $('f_apr').value = c ? c.apr : ''; $('f_term').value = c ? c.term : ''; $('f_pyr').value = c ? (c.pyr || '') : ''; $('f_mmo').value = c ? (c.mmo || '') : '';
   $('f_fee').value = c && c.fee ? c.fee : ''; $('f_down').value = c ? c.down : ''; $('f_downt').value = c ? (c.downt || 'dol') : 'dol';
@@ -205,7 +236,7 @@ function saveForm(){
     phone2: $('f_phone2').value.trim(), notes: $('f_notes').value.trim(),
     tz: $('f_tz').value.trim(),
     appt: $('f_appt').value.trim(),
-    dtype: $('f_dtype').value,
+    dtype: $('f_dtype').value === 'deedback' ? 'DB' : 'MTG',
     ca: $('f_ca').value.trim(), resort: $('f_resort').value.trim(),
     mf: num($('f_mf').value), esc: num($('f_esc').value) || 8, payoff: num($('f_payoff').value),
     apr: num($('f_apr').value), term: num($('f_term').value), pyr: num($('f_pyr').value), mmo: num($('f_mmo').value), fee: num($('f_fee').value),
@@ -255,14 +286,14 @@ function importClients(input){
           name: r.name, phone: r.phone || '', email: r.email || '', ca: r.ca || '',
           appt: r.appt || '', resort: r.resort || '',
           tz: r.tz || '', phone2: r.phone2 || '', notes: r.notes || '',
-          dtype: r.dtype || 'standard',
+          dtype: isDBType(r.dtype) ? 'DB' : 'MTG',
           mf: num(r.mf), esc: num(r.esc) || 8, payoff: num(r.payoff),
           apr: num(r.apr), term: num(r.term), pyr: num(r.pyr), mmo: num(r.mmo), fee: num(r.fee),
           down: num(r.down), downt: r.downt || 'dol', paymethod: r.paymethod || 'ach',
           downdate: r.downdate || '', pmtmo: num(r.pmtmo), pmtdate: r.pmtdate || '',
           fapr: num(r.fapr), fmo: num(r.fmo), fu: r.fu || '', crmlink: r.crmlink || ''
         };
-        if (ix >= 0){ cs[ix] = rec; updated++; } else { cs.push(rec); added++; }
+        if (ix >= 0){ var merged = {}; for (var k in cs[ix]) merged[k] = cs[ix][k]; for (var k2 in rec) merged[k2] = rec[k2]; merged.id = cs[ix].id; cs[ix] = merged; updated++; } else { cs.push(rec); added++; }
       });
       saveClients(cs); refreshSelect();
       alert('Importados: ' + added + ' nuevos, ' + updated + ' actualizados.');
@@ -284,12 +315,13 @@ function onSelect(){
     d.innerHTML = '<b>' + esc(c.name) + '</b>' +
       (c.appt ? ' · ' + esc(c.appt) : '') +
       (c.resort ? ' · ' + esc(c.resort) : '') +
-      (c.dtype === 'deedback' ? ' · Deed-back' : '') +
+      (isDBType(c.dtype) ? ' · Deed-back' : '') +
       (c.phone ? '<br>📞 ' + esc(c.phone) : '') +
       (c.email ? ' · ✉️ ' + esc(c.email) : '') +
       (c.ca ? '<br>CA: ' + esc(c.ca) : '');
     d.style.display = 'block';
     $('in_mf').value = c.mf; $('in_rate').value = c.esc; $('in_payoff').value = c.payoff;
+    $('in_mmo').value = c.mmo || 0;
     $('in_apr').value = c.apr; $('in_term').value = c.term; $('in_fee').value = c.fee || '';
     $('in_down').value = c.down; $('in_fapr').value = c.fapr; $('in_fmo').value = c.fmo;
   } else {
@@ -301,32 +333,39 @@ function onSelect(){
 
 function calc(){
   var mf = num($('in_mf').value), r = num($('in_rate').value) / 100,
-      payoff = num($('in_payoff').value), apr = num($('in_apr').value), term = num($('in_term').value),
+      payoff = num($('in_payoff').value), mmo = num($('in_mmo').value),
+      apr = num($('in_apr').value), term = num($('in_term').value),
       feeIn = num($('in_fee').value), down = num($('in_down').value),
       fapr = num($('in_fapr').value), fmo = num($('in_fmo').value);
-  var fee = feeIn > 0 ? feeIn : (selDtype === 'deedback' ? 0 : payoff * 0.47);
+  var db = isDBType(selDtype);
+  var pv = priceVals(payoff);
+  var fee = feeIn > 0 ? feeIn : (db ? 0 : (payoff > 0 ? pv.total : 0));
   var feeKnown = fee > 0;
+  var MS = mortState(payoff, mmo, apr, term);
 
-  function tot(n){ return payoff + mfTotal(mf, r, n); }
-  function sav(n){ return tot(n) - fee; }
+  function tot(n){ var mo = mortOver(MS, mmo, n); return mo == null ? null : mo + mfTotal(mf, r, n); }
+  function sav(n){ var t = tot(n); return t == null ? null : t - fee; }
 
   $('r_fee').textContent = feeKnown ? fmt(fee) : '—';
-  $('r_sav').textContent = feeKnown ? fmt(sav(10)) : '—';
-  if (apr > 0 && term > 0){
-    var mo = amort(payoff, apr, term);
-    $('r_pi').textContent = fmt(payoff) + ' / ' + fmt(mo * term - payoff);
+  $('r_sav').textContent = MS.status === 'pending' ? 'PENDIENTE' : (feeKnown ? fmt(sav(10)) : '—');
+  if (MS.status === 'ok'){
+    $('r_pi').textContent = fmt(payoff) + ' / ' + fmt(MS.total - payoff);
+  } else if (MS.status === 'pending') {
+    $('r_pi').textContent = fmt(payoff) + ' / PENDIENTE';
   } else {
-    $('r_pi').textContent = payoff > 0 ? fmt(payoff) + ' / —' : '—';
+    $('r_pi').textContent = '—';
   }
 
-  [5, 10, 20].forEach(function(n){
+  [1, 3, 5, 10, 20, 30].forEach(function(n){
     $('m' + n).textContent = fmt(mfTotal(mf, r, n));
-    $('t' + n).textContent = fmt(tot(n));
-    $('s' + n).textContent = feeKnown ? fmt(sav(n)) : '—';
+    var t = tot(n);
+    $('t' + n).textContent = t == null ? 'PENDIENTE' : fmt(t);
+    var s = feeKnown ? sav(n) : null;
+    $('s' + n).textContent = !feeKnown ? '—' : (s == null ? 'PENDIENTE' : fmt(s));
   });
 
   var bal = Math.max(0, fee - down);
-  $('p_fee').textContent = feeKnown ? fmt(fee) + (feeIn > 0 ? '' : ' (47%)') : '—';
+  $('p_fee').textContent = feeKnown ? fmt(fee) + (feeIn > 0 || db ? '' : ' (47% + $' + pv.admin + ' admin)') : '—';
   $('p_down').textContent = fmt(down);
   $('p_bal').textContent = feeKnown ? fmt(bal) : '—';
   if (feeKnown && fapr > 0 && fmo > 0){
@@ -460,7 +499,7 @@ function applyDeedPrice(ix, cyc){
   if (!id){ alert('Primero seleccione un cliente.'); return; }
   var price = r.price + (cyc || 0) * deedMF();
   var cs = getClients();
-  for (var i = 0; i < cs.length; i++) if (cs[i].id === id){ cs[i].fee = price; cs[i].dtype = 'deedback'; }
+  for (var i = 0; i < cs.length; i++) if (cs[i].id === id){ cs[i].fee = price; cs[i].dtype = 'DB'; }
   saveClients(cs); onSelect();
   alert('Precio deed-back de ' + fmt(price) + ' aplicado al cliente.');
 }
