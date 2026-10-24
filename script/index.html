@@ -369,7 +369,7 @@
   <div class="qsm mtgOnly">Contrato vigente (upgrade / refinanciamiento) — SOLO si está verificado; es distinto a la compra original. La amortización restante NUNCA se deriva del año de compra.</div>
   <label class="qf">NOCHES/AÑO <input id="q_nights" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf mtgOnly">PLAZO (MESES) <input id="q_term" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf mtgOnly">SALDO <input id="q_payoff" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf mtgOnly">SALDO (PAYOFF) <input id="q_payoff" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">ELEVACIÓN ANUAL % <input id="q_esc" type="number" min="0" oninput="qRecalc()"></label>
   <div class="qsec">Compromiso Contractual Actual</div>
   <div id="q_calcstatus" style="font-size:.92em;line-height:1.5;margin:0 0 8px"></div>
@@ -446,7 +446,9 @@
     <div>Total pagado <b id="q_paid">—</b></div>
     <div>Capital <b id="q_prin">—</b></div>
     <div>Interés <b id="q_inte">—</b></div>
-    <div>Saldo <b id="q_bal2">—</b></div>
+    <div>Saldo según amortización (estimado) <b id="q_bal2">—</b></div>
+    <div id="q_schtag" class="tmin" style="display:none;margin:2px 0"></div>
+    <div id="q_bal2flag" style="display:none;background:#fdecea;border:2px solid #c62828;color:#7f1d1d;border-radius:8px;padding:6px 8px;font-size:.92em;line-height:1.45;margin:4px 0"></div>
     <div>Interés del plazo <b id="q_tint">—</b></div>
     <div>% interés de lo pagado <b id="q_ipct">—</b></div>
     <button class="lcBtn" onclick="lcOpen()">🏦 Calculadora de préstamo</button>
@@ -928,11 +930,15 @@ function qMortgage(){
   // REMAINING from a verified contract schedule when no lender balance is on file.
   if (!(payoff > 0)){ var sr = qSchedRemaining(); if (sr) return sr; }
   if (payoff > 0){
-    if (mmo <= 0) return { status: 'pending', months: 0, mmo: 0, payoff: payoff, level: 'pendiente' };
+    // PAYOFF INTEGRITY (2026-10-23): even when the SCHEDULE is pending (no APR / no payment), a
+    // lender-verified balance keeps its VERIFICADO label — the balance status and the schedule
+    // status are different facts; a verified $8,600 with no APR on file is NOT "pending verification".
+    var lvPend = (typeof cur !== 'undefined' && cur && cur.poffVerified === true) ? 'verificado' : 'pendiente';
+    if (mmo <= 0) return { status: 'pending', months: 0, mmo: 0, payoff: payoff, level: lvPend };
     var term = qNum('q_term') || 120;
     var lr = (apr || 0) / 100 / 12;
     if (lr > 0 && mmo > payoff * lr) return { status: 'ok', months: Math.min(term, Math.ceil(-Math.log(1 - payoff * lr / mmo) / Math.log(1 + lr))), mmo: mmo, payoff: payoff, apr: apr, level: (typeof cur !== 'undefined' && cur && cur.poffVerified === true) ? 'verificado' : 'reportado' };
-    return { status: 'pending', months: 0, mmo: mmo, payoff: payoff, level: 'pendiente' };
+    return { status: 'pending', months: 0, mmo: mmo, payoff: payoff, level: lvPend };
   }
   if (mmo > 0) return { status: 'pending', months: 0, mmo: mmo, payoff: 0, level: 'pendiente' };
   return { status: 'pending', months: 0, mmo: 0, payoff: 0, level: 'pendiente' };
@@ -965,31 +971,79 @@ function qOrigLoan(){
   var inferred = !(typeof cur !== 'undefined' && cur && cur.cfin > 0);
   return { financed: loan, totalScheduled: tot, totalInterest: tot - loan, apr: apr, term: term, mmo: mmo, inferred: inferred };
 }
+// ===== PAYOFF INTEGRITY (Sebastian, 2026-10-23: "i care about pay off which is never right") =====
+// ONE payoff of record per contract: the record's payoff field (the SALDO (PAYOFF) input), carrying its
+// status (VERIFICADO / REPORTADO / ESTIMADO). Pricing, quotes and emails read ONLY that number. A balance
+// derived from the amortization schedule is a CROSS-CHECK: labeled "(estimado)", never "Saldo (payoff)",
+// and it never replaces the payoff of record anywhere.
+// UPGRADE INDICATION: an upgrade / refinance / new contract is "indicated" when the record says so —
+// an explicit upgrade flag or the record's notes. Only then is the purchase date known NOT to start
+// the current loan.
+function qUpgradeIndicated(c){
+  if (!c) return false;
+  if (c.upgrade) return true;
+  var n = String(c.notes || '');
+  return /upgrade|actualizaci|renovaci|refinanc|nuevo contrato|nueva hipoteca|segundo pr[ée]stamo|segunda hipoteca|volvi[óo] a firmar/i.test(n);
+}
+var qStartSrc = null; // 'contract' | 'purchase' | null — how the active client's contract start resolved (set in qSync)
+// CONTRACT START RESOLUTION: (1) the contract start on file (form/record cyr+cmonth) wins; (2) FALLBACK:
+// no contract start on file AND nothing in the record indicates an upgrade -> the current contract IS
+// the purchase contract, so use the documented purchase month/year (BOTH must be on file — a year alone
+// is not a start date); (3) an indicated upgrade with an unknown date (Nelson) resolves to NO start.
+function qContractStart(c){
+  var cy = qNum('q_cyr') || (c && c.cyr) || 0, cm = qNum('q_cmonth') || (c && c.cmonth) || 0;
+  if (cy > 0) return { y: cy, m: (cm >= 1 && cm <= 12) ? cm : 1, src: 'contract' };
+  if (!c || qUpgradeIndicated(c)) return null;
+  var py = (c.pyr || 0) || qNum('q_pyr') || 0, pm = c.pmonth || 0;
+  if (py > 0 && pm >= 1 && pm <= 12) return { y: py, m: pm, src: 'purchase' };
+  return null;
+}
+// SCHEDULE CROSS-CHECK: the current balance the loan terms imply today (recorded or inferred principal
+// amortized from the contract start). null when it cannot be computed honestly — including for
+// poffUnverified records, where NO schedule figure may stand next to the balance (MATEO safeguard).
+function qSchedCrossCheck(){
+  if (typeof cur === 'undefined' || !cur || cur.poffUnverified) return null;
+  var payoff = qNum('q_payoff'); if (!(payoff > 0)) return null;
+  var mmo = qNum('q_mmo'), apr = qNum('q_aapr'), term = qNum('q_term') || 120;
+  if (!(mmo > 0 && apr > 0)) return null;
+  var st = qContractStart(cur); if (!st) return null;
+  var now = new Date();
+  var elapsed = (now.getFullYear() - st.y) * 12 + (now.getMonth() + 1 - st.m);
+  if (elapsed < 0 || elapsed >= term) return null;
+  var loan = qNum('q_loan');
+  if (!(loan > 0)){ var rr = apr / 100 / 12; loan = mmo * (1 - Math.pow(1 + rr, -term)) / rr; }
+  var s = amortSched(loan, apr, mmo, elapsed);
+  if (!(s.bal > 0)) return null;
+  var bal = Math.round(s.bal * 100) / 100, diff = Math.abs(bal - payoff) / payoff;
+  return { bal: bal, payoff: payoff, elapsed: elapsed, src: st.src, conflict: diff > 0.02, diffPct: Math.round(diff * 1000) / 10 };
+}
 function qSchedRemaining(){
   if (typeof cur === 'undefined' || !cur) return null;
-  var cyr = qNum('q_cyr') || (cur.cyr || 0), cmonth = qNum('q_cmonth') || (cur.cmonth || 1);
-  if (!(cyr > 0)) return null;
+  var st = qContractStart(cur);
+  if (!st) return null;
   var mmo = qNum('q_mmo'), apr = qNum('q_aapr'), term = qNum('q_term') || 120;
   if (!(mmo > 0 && apr > 0)) return null;
   var loan = qNum('q_loan');
   if (!(loan > 0)){ var rr = apr / 100 / 12; loan = mmo * (1 - Math.pow(1 + rr, -term)) / rr; }
   var now = new Date();
-  var elapsed = (now.getFullYear() - cyr) * 12 + (now.getMonth() + 1 - cmonth);
+  var elapsed = (now.getFullYear() - st.y) * 12 + (now.getMonth() + 1 - st.m);
   elapsed = Math.max(0, Math.min(term, elapsed));
   if (elapsed >= term) return { status: 'paid', months: 0, mmo: 0, payoff: 0 };
   var s = amortSched(loan, apr, mmo, elapsed);
   if (!(s.bal > 0)) return { status: 'paid', months: 0, mmo: 0, payoff: 0 };
   // THREE STATUSES (MATEO FINAL SAFEGUARD): schedule remaining is VERIFICADO only with the financed amount
-  // RECORDED (complete verified terms); an INFERRED principal makes it ESTIMADO, assumptions displayed.
+  // RECORDED (complete verified terms) AND a contract start on file; an INFERRED principal — or a start
+  // ASSUMED from the purchase date (fallback) — makes it ESTIMADO, assumptions displayed.
   var inferred = !(typeof cur !== 'undefined' && cur && cur.cfin > 0);
-  return { status: 'ok', months: term - elapsed, mmo: mmo, payoff: Math.round(s.bal * 100) / 100, apr: apr, derived: 'schedule', level: inferred ? 'estimado' : 'verificado', inferredLoan: inferred ? Math.round(loan) : 0 };
+  var assumed = st.src === 'purchase';
+  return { status: 'ok', months: term - elapsed, mmo: mmo, payoff: Math.round(s.bal * 100) / 100, apr: apr, derived: 'schedule', assumedStart: assumed ? 'purchase' : null, level: (inferred || assumed) ? 'estimado' : 'verificado', inferredLoan: inferred ? Math.round(loan) : 0 };
 }
 function qMissingLoan(){
   var miss = [];
   var payoff = qNum('q_payoff');
   if (!(payoff > 0) || (typeof cur !== 'undefined' && cur && cur.poffUnverified)) miss.push('saldo verificado');
   if (!(qNum('q_aapr') > 0)) miss.push('APR');
-  if (!(qNum('q_cyr') > 0 || (typeof cur !== 'undefined' && cur && cur.cyr > 0))) miss.push('fecha de inicio del contrato vigente');
+  if (!qContractStart(typeof cur !== 'undefined' ? cur : null)) miss.push('fecha de inicio del contrato vigente');
   return miss;
 }
 var PEND_TXT = 'PENDIENTE DE VERIFICACIÓN';
@@ -1574,7 +1628,8 @@ function qQuoteBuild(L){
   h += '<h2 ' + H2 + '>' + (en ? 'Your current situation' : 'Tu situación actual') + '</h2>';
   if (payoff > 0) h += '<div ' + ROW + '><span>' + (en ? 'Mortgage balance' : 'Saldo de la hipoteca') + '</span><b>' + fmtC(payoff) + '</b></div>';
   if (payoff > 0) h += '<div ' + ROW + '><span>' + (en ? 'Balance status' : 'Estado del saldo') + '</span><b>' + (MG.level === 'verificado' ? (en ? '✅ VERIFIED — confirmed from the lender' : '✅ VERIFICADO — confirmado del prestamista') : MG.level === 'reportado' ? (en ? '🟠 REPORTED — reported by the client/intake, unverified' : '🟠 REPORTADO — reportado por el cliente/intake, sin verificar') : MG.level === 'estimado' ? (en ? '🟡 ESTIMATED — mathematical model' : '🟡 ESTIMADO — modelo matemático') : (en ? '🔴 PENDING VERIFICATION' : '🔴 PENDIENTE DE VERIFICACIÓN')) + '</b></div>';
-  else h += '<div ' + ROW + '><span>' + (en ? 'Mortgage' : 'Hipoteca') + '</span><b>' + (en ? 'No mortgage — property paid off' : 'Sin hipoteca — propiedad pagada') + '</b></div>';
+  else if (MG.status === 'paid') h += '<div ' + ROW + '><span>' + (en ? 'Mortgage' : 'Hipoteca') + '</span><b>' + (en ? 'No mortgage — property paid off' : 'Sin hipoteca — propiedad pagada') + '</b></div>';
+  else h += '<div ' + ROW + '><span>' + (en ? 'Mortgage balance' : 'Saldo de la hipoteca') + '</span><b>' + qDocPend(en) + '</b></div>';
   if (mmo > 0) h += '<div ' + ROW + '><span>' + (en ? 'Monthly mortgage payment' : 'Pago mensual de hipoteca') + '</span><b>' + fmtC(mmo) + '</b></div>';
   h += '<div ' + ROW + '><span>' + (en ? 'Maintenance fees' : 'Cuotas de mantenimiento') + '</span><b>' + fmtC(mf) + (en ? '/year' : '/año') + '</b></div>';
   h += '<div ' + ROW + '><span>' + (en ? 'Monthly total' : 'Total mensual') + '</span><b>' + fmtC(mmo + mf / 12) + '</b></div>';
@@ -1690,7 +1745,7 @@ function qEmailHtml(){
   var foot = (en ? '* Illustrative projections: initial maintenance of ' : '* Proyecciones ilustrativas: mantenimiento inicial de ') + fmtC(F.mf) + (en ? '/year increasing ' : '/año con aumento del ') + F.esc + (en ? '% annually' : '% anual') +
     (!F.isDB && F.mmo > 0 && F.MG.status === 'ok' ? (en ? ', plus ' : ', más ') + F.MG.months + (en ? ' estimated mortgage payments of ' : ' pagos hipotecarios estimados de ') + fmtC(F.mmo) : '') +
     (en ? '. The final mortgage figure may vary based on actual amortization, payment dates, and the confirmed balance.' : '. La cifra hipotecaria final puede variar según amortización real, fecha de pago y saldo confirmado.') +
-    (!F.isDB && F.payoff > 0 ? (en ? ' The balance of ' : ' El saldo de ') + fmtC(F.payoff) + (en ? ' still requires verification.' : ' aún requiere verificación.') : '');
+    (!F.isDB && F.payoff > 0 && F.MG.level !== 'verificado' ? (en ? ' The balance of ' : ' El saldo de ') + fmtC(F.payoff) + (en ? ' still requires verification.' : ' aún requiere verificación.') : '');
   var compra = (cur.pyr > 0 ? (en ? 'Purchased: ' : 'Compra: ') + cur.pyr + ' &nbsp;·&nbsp; ' : '') + (en ? 'Contracts: ' : 'Contratos: ') + nC;
   var e = '<style>@media screen and (max-width:620px){.outer{width:100%!important}.pad{padding:22px 18px!important}.big{font-size:25px!important}.metric{font-size:18px!important}}</style>';
   e += '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse"><tr><td align="center">';
@@ -2278,8 +2333,13 @@ function qSync(c){
   else { $('q_loan').value = ''; qLoanAuto = false; }
   $('q_aapr').value = c ? (c.apr || '') : '';
   $('q_cyr').value = c && c.cyr ? c.cyr : ''; $('q_cmonth').value = c && c.cmonth ? c.cmonth : '';
-  // MESES elapsed counts from the VERIFIED CONTRACT START only (MATEO spec) — never the purchase year.
-  $('q_mos').value = (c && c.cyr) ? Math.min(t0, Math.max(0, (new Date().getFullYear() - c.cyr) * 12 + (new Date().getMonth() + 1 - (c.cmonth || 1)))) : '';
+  // MESES elapsed counts from the CONTRACT START as resolved by qContractStart: the contract start on
+  // file when the record has one; the documented PURCHASE date only when no upgrade/refinance is
+  // documented anywhere in the record (PAYOFF INTEGRITY 2026-10-23). An indicated-but-undated upgrade
+  // (Nelson) gets NO fallback and stays PENDIENTE.
+  var qst0 = qContractStart(c);
+  qStartSrc = qst0 ? qst0.src : null;
+  $('q_mos').value = qst0 ? Math.min(t0, Math.max(0, (new Date().getFullYear() - qst0.y) * 12 + (new Date().getMonth() + 1 - qst0.m))) : '';
   qTaskSync(); qDocRender();
   qUrlLinks();
   if (!qIsDB() && !$('q_fee').value && c && c.payoff > 0) qFeeApply();
@@ -2339,7 +2399,7 @@ function qDocDel(i){
 }
 function qRecalc(){
   var qdEl = $('q_dates'); if (qdEl) qdEl.style.display = ($('q_paym').value === 'uga') ? '' : 'none';
-  if (!cur){ ['q_w30','q_w90','q_w6','q_t1','q_t3','q_t5','q_t10','q_t20','q_t30','q_ftot','q_bal','q_s10','q_mo','q_ftpay','q_ftint','q_mosn','q_t12','q_t24','q_t36','q_comm','q_cdate','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct','q_xmmo','q_xmfmo','q_xtotmo','q_xmoyr','q_xmfyr','q_xtotyr','q_xmo10','q_xmf10','q_xproj10','q_xnight'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— meses restantes'; var fe0 = $('q_feesug'); if (fe0) fe0.textContent = ''; var mw0 = $('q_minwarn'); if (mw0) mw0.style.display = 'none'; var cr0 = $('q_ccrow'); if (cr0) cr0.style.display = 'none'; var cb0 = $('q_commbase'); if (cb0) cb0.textContent = ''; return; }
+  if (!cur){ ['q_w30','q_w90','q_w6','q_t1','q_t3','q_t5','q_t10','q_t20','q_t30','q_ftot','q_bal','q_s10','q_mo','q_ftpay','q_ftint','q_mosn','q_t12','q_t24','q_t36','q_comm','q_cdate','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct','q_xmmo','q_xmfmo','q_xtotmo','q_xmoyr','q_xmfyr','q_xtotyr','q_xmo10','q_xmf10','q_xproj10','q_xnight'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— meses restantes'; var fe0 = $('q_feesug'); if (fe0) fe0.textContent = ''; var mw0 = $('q_minwarn'); if (mw0) mw0.style.display = 'none'; var cr0 = $('q_ccrow'); if (cr0) cr0.style.display = 'none'; var cb0 = $('q_commbase'); if (cb0) cb0.textContent = ''; var xf0 = $('q_bal2flag'); if (xf0) xf0.style.display = 'none'; var xt0 = $('q_schtag'); if (xt0) xt0.style.display = 'none'; return; }
   var mmo = (qIsDB() && !(qNum('q_payoff') > 0)) ? 0 : qNum('q_mmo'), mf = qNum('q_mf'), esc = qNum('q_esc'), payoff = qNum('q_payoff');
   var pyrIn = parseInt(($('q_pyr').value || '').replace(/\D/g, ''), 10) || 0;
   var pyr = pyrIn; // SAI Fase 2: sin año de compra NO se inventa uno (antes un default oculto 2023 fabricaba la fecha)
@@ -2454,12 +2514,14 @@ function qRecalc(){
   $('q_oint').textContent = OL ? fmtD(OL.totalInterest) : '—';
   $('q_ofin_tag').textContent = OL ? (OL.inferred ? '🟡 inferido' : '✅ registrado') + (qLastCons && qLastCons.conflicts.length ? ' · ⚠️ CONFLICTO' : '') : '';
   var mos = Math.min(120, Math.max(0, Math.round(qNum('q_mos'))));
-  $('q_mleft').textContent = MG.status === 'paid' ? 'Sin hipoteca — pagada' : (MG.status === 'ok' ? (MG.level === 'estimado' ? '🟡 ESTIMADO · ' : MG.level === 'reportado' ? '🟠 REPORTADO · ' : '✅ VERIFICADO · ') + MG.months + ' meses restantes de hipoteca' + (MG.derived === 'schedule' ? ' — según cronograma del contrato vigente' : ' — según saldo verificado') : '🔴 ' + PEND_TXT + ' — falta: ' + qMissingLoan().join(', '));
+  var mgSuf = MG.derived === 'schedule' ? ' — según cronograma del contrato vigente' : (MG.level === 'verificado' ? ' — según saldo verificado' : ' — según saldo reportado');
+  if (MG.assumedStart === 'purchase') mgSuf += ' · inicio asumido desde la compra (sin upgrade documentado)';
+  $('q_mleft').textContent = MG.status === 'paid' ? 'Sin hipoteca — pagada' : (MG.status === 'ok' ? (MG.level === 'estimado' ? '🟡 ESTIMADO · ' : MG.level === 'reportado' ? '🟠 REPORTADO · ' : '✅ VERIFICADO · ') + MG.months + ' meses restantes de hipoteca' + mgSuf : '🔴 ' + PEND_TXT + ' — falta: ' + qMissingLoan().join(', '));
   var CS = $('q_calcstatus');
   if (CS){
     if (MG.status === 'ok' && MG.level === 'verificado') CS.innerHTML = '✅ <b>VERIFICADO</b> — ' + (MG.derived === 'schedule' ? 'términos completos del contrato vigente verificados' : 'saldo confirmado del prestamista');
     else if (MG.status === 'ok' && MG.level === 'reportado') CS.innerHTML = '🟠 <b>REPORTADO</b> — saldo reportado por el cliente o el intake, SIN verificación del prestamista. Las proyecciones se calculan con ese saldo reportado; escribir un número en la calculadora nunca lo convierte en verificado.';
-    else if (MG.status === 'ok') CS.innerHTML = '🟡 <b>ESTIMADO</b> — modelo matemático' + (MG.inferredLoan ? '; principal original inferido: ' + fmtD(MG.inferredLoan) : '') + '. Supuestos: préstamo estándar totalmente amortizable, sin cargos adicionales ni pago globo. <b>NO es un payoff confirmado por el prestamista.</b>';
+    else if (MG.status === 'ok') CS.innerHTML = '🟡 <b>ESTIMADO</b> — modelo matemático' + (MG.inferredLoan ? '; principal original inferido: ' + fmtD(MG.inferredLoan) : '') + (MG.assumedStart === 'purchase' ? '. Inicio del contrato ASUMIDO desde la fecha de compra: el registro no documenta upgrade ni refinanciamiento.' : '') + '. Supuestos: préstamo estándar totalmente amortizable, sin cargos adicionales ni pago globo. <b>NO es un payoff confirmado por el prestamista.</b>';
     else if (MG.status === 'paid') CS.innerHTML = '✅ <b>SIN HIPOTECA</b> — préstamo pagado / deed-back';
     else CS.innerHTML = '🔴 <b>PENDIENTE</b> — información insuficiente o en conflicto. Falta: ' + qMissingLoan().join(', ');
     if (qClassWarn) CS.innerHTML += '<div style="margin-top:4px">⚠️ ' + qClassWarn + '</div>';
@@ -2482,6 +2544,13 @@ function qRecalc(){
     // start date alone never verifies a remaining balance, and a poffUnverified record stays PENDIENTE.
     if (MG.status === 'pending' && $('q_mos').value !== '') $('q_bal2').textContent = PEND_TXT;
   }
+  // PAYOFF INTEGRITY (2026-10-23): the schedule balance above is a CROSS-CHECK, never the payoff. When
+  // it disagrees with the SALDO REGISTRADO by more than 2%, flag the conflict naming BOTH figures —
+  // flag, don't force: no field is adjusted, and price/projections keep using the payoff of record.
+  var XC = qSchedCrossCheck();
+  var XF = $('q_bal2flag'), XT = $('q_schtag');
+  if (XF){ if (XC && XC.conflict){ XF.style.display = ''; XF.innerHTML = '⚠️ <b>CONFLICTO DE SALDO</b> — la amortización estima un saldo de ' + fmtC(XC.bal) + ', pero el SALDO REGISTRADO es ' + fmtC(XC.payoff) + ' (diferencia ' + XC.diffPct + '%). Manda el saldo registrado: el precio y las proyecciones se calculan con él. Verifica el saldo real con el prestamista — ningún campo fue ajustado automáticamente.'; } else XF.style.display = 'none'; }
+  if (XT){ var xtMsg = ''; if (XC && !XC.conflict) xtMsg = '✓ La amortización cuadra con el saldo registrado (diferencia menor al 2%).'; else if (MG.assumedStart === 'purchase' || (XC && XC.src === 'purchase')) xtMsg = '🟡 Posición calculada desde la fecha de COMPRA: el registro no documenta upgrade ni refinanciamiento. Si lo hubo, la posición real difiere.'; if (xtMsg){ XT.style.display = ''; XT.textContent = xtMsg; } else XT.style.display = 'none'; }
   var n = {fee: fee, feeKnown: feeKnown, t5: t5, t10: t10, s10: t10 === null ? null : s10};
   var c2 = {}, k;
   for (k in cur) c2[k] = cur[k];
