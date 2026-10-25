@@ -372,15 +372,13 @@
   <div id="q_calcstatus" style="font-size:.92em;line-height:1.5;margin:0 0 8px"></div>
   <div id="q_conflict" style="display:none;background:#fdecea;border:2px solid #c62828;color:#7f1d1d;border-radius:8px;padding:8px 10px;font-size:.92em;line-height:1.5;margin:0 0 8px"></div>
   <div class="qout">
-    <div class="qsm">Próximos 30 días <b id="q_w30">—</b></div>
-    <div class="qsm">Próximos 90 días <b id="q_w90">—</b></div>
-    <div class="qsm">Próximos 6 meses <b id="q_w6">—</b></div>
-    <div>Próximo 1 año <b id="q_t1">—</b></div>
-    <div>Próximos 3 años <b id="q_t3">—</b></div>
-    <div>Próximos 5 años <b id="q_t5">—</b></div>
-    <div>Próximos 10 años <b id="q_t10">—</b></div>
-    <div>Próximos 20 años <b id="q_t20">—</b></div>
-    <div>Próximos 30 años <b id="q_t30">—</b></div>
+    <div class="qsm"><span class="qhl" data-es="Próximos 30 días" data-en="Next 30 days">Próximos 30 días</span> <b id="q_w30">—</b></div>
+    <div class="qsm"><span class="qhl" data-es="Próximos 90 días" data-en="Next 90 days">Próximos 90 días</span> <b id="q_w90">—</b></div>
+    <div><span class="qhl" data-es="Próximo 1 año" data-en="Next 1 year">Próximo 1 año</span> <b id="q_t1">—</b></div>
+    <div><span class="qhl" data-es="Próximos 3 años" data-en="Next 3 years">Próximos 3 años</span> <b id="q_t3">—</b></div>
+    <div><span class="qhl" data-es="Próximos 10 años" data-en="Next 10 years">Próximos 10 años</span> <b id="q_t10">—</b></div>
+    <div><span class="qhl" data-es="Próximos 20 años" data-en="Next 20 years">Próximos 20 años</span> <b id="q_t20">—</b></div>
+    <div><span class="qhl" data-es="Próximos 30 años" data-en="Next 30 years">Próximos 30 años</span> <b id="q_t30">—</b></div>
   </div>
   <div class="qsec">📊 DESGLOSE DE GASTOS</div>
   <div class="qout">
@@ -1637,7 +1635,7 @@ function qQuoteBuild(L){
   var escP = gv('q_xescp');
   h += '<h2 ' + H2 + '>' + (en ? '📊 Expense breakdown' : '📊 Desglose de gastos') + '</h2>';
   h += '<h3 style="color:#0b3d91;margin:14px 0 6px">' + (en ? 'Current Contractual Commitment' : 'Compromiso Contractual Actual') + '</h3>';
-  [['Próximos 30 días','Next 30 days','q_w30'],['Próximos 90 días','Next 90 days','q_w90'],['Próximos 6 meses','Next 6 months','q_w6'],['Próximo 1 año','Next 1 year','q_t1'],['Próximos 3 años','Next 3 years','q_t3'],['Próximos 5 años','Next 5 years','q_t5'],['Próximos 10 años','Next 10 years','q_t10'],['Próximos 20 años','Next 20 years','q_t20'],['Próximos 30 años','Next 30 years','q_t30']].forEach(function(r){ var v = gv(r[2]); if (projOk && v && v !== '—') h += '<div ' + ROW + '><span>' + (en ? r[1] : r[0]) + '</span><b>' + escH(v) + '</b></div>'; });
+  [['Próximos 30 días','Next 30 days','q_w30'],['Próximos 90 días','Next 90 days','q_w90'],['Próximo 1 año','Next 1 year','q_t1'],['Próximos 3 años','Next 3 years','q_t3'],['Próximos 10 años','Next 10 years','q_t10'],['Próximos 20 años','Next 20 years','q_t20'],['Próximos 30 años','Next 30 years','q_t30']].forEach(function(r){ var v = gv(r[2]); if (projOk && v && v !== '—') h += '<div ' + ROW + '><span>' + (en ? r[1] : r[0]) + '</span><b>' + escH(v) + '</b></div>'; });
   if (mmo > 0) h += '<div ' + ROW + '><span>' + (en ? 'Monthly mortgage' : 'Hipoteca mensual') + '</span><b>' + escH(gv('q_xmmo')) + '</b></div>';
   h += '<div ' + ROW + '><span>' + (en ? 'Monthly maintenance' : 'Mantenimiento mensual') + '</span><b>' + escH(gv('q_xmfmo')) + '</b></div>';
   h += '<div ' + ROW + '><span><b>' + (en ? 'Monthly total' : 'Total mensual') + '</b></span><b>' + escH(gv('q_xtotmo')) + '</b></div>';
@@ -1717,9 +1715,9 @@ function qEmailHtml(){
   var totMo = (F.isDB ? 0 : F.mmo) + mfMo;
   if (comboOk) totMo = comboList.reduce(function(s, c){ return s + c.mmo + (c.mfEff != null ? c.mfEff : c.mf) / 12; }, 0);
   var gv2 = function(id){ var el = $(id); return el ? el.textContent : ''; };
-  var prows = [['q_w30','Próximos 30 días','Next 30 days'],['q_w90','Próximos 90 días','Next 90 days'],['q_w6','Próximos 6 meses','Next 6 months'],['q_t1','Próximo 1 año','Next 1 year'],['q_t3','Próximos 3 años','Next 3 years'],['q_t5','Próximos 5 años','Next 5 years'],['q_t10','Próximos 10 años','Next 10 years'],['q_t20','Próximos 20 años','Next 20 years'],['q_t30','Próximos 30 años','Next 30 years']];
+  var prows = [['q_w30','Próximos 30 días','Next 30 days'],['q_w90','Próximos 90 días','Next 90 days'],['q_t1','Próximo 1 año','Next 1 year'],['q_t3','Próximos 3 años','Next 3 years'],['q_t10','Próximos 10 años','Next 10 years'],['q_t20','Próximos 20 años','Next 20 years'],['q_t30','Próximos 30 años','Next 30 years']];
   var prowHtml = '';
-  var prowMonths = [1, 3, 6, 12, 36, 60, 120, 240, 360];
+  var prowMonths = [1, 3, 12, 36, 120, 240, 360];
   prows.forEach(function(r, i){
     var v = gv2(r[0]);
     if (comboOk){ var cv = eWin(prowMonths[i]); if (cv !== null) v = fmtC(cv); }
@@ -2394,7 +2392,9 @@ function qDocDel(i){
   try { localStorage.setItem(k, JSON.stringify(docs)); } catch(e){}
   qDocRender();
 }
+function qPanelLang(){ var en = (typeof cur !== "undefined" && cur && cur.lang === "en"); document.querySelectorAll(".qhl").forEach(function(el){ el.textContent = en ? el.getAttribute("data-en") : el.getAttribute("data-es"); }); }
 function qRecalc(){
+  qPanelLang();
   var qdEl = $('q_dates'); if (qdEl) qdEl.style.display = ($('q_paym').value === 'uga') ? '' : 'none';
   if (!cur){ ['q_w30','q_w90','q_w6','q_t1','q_t3','q_t5','q_t10','q_t20','q_t30','q_ftot','q_bal','q_s10','q_mo','q_ftpay','q_ftint','q_mosn','q_t12','q_t24','q_t36','q_comm','q_cdate','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct','q_xmmo','q_xmfmo','q_xtotmo','q_xmoyr','q_xmfyr','q_xtotyr','q_xmo10','q_xmf10','q_xproj10','q_xnight'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— meses restantes'; var fe0 = $('q_feesug'); if (fe0) fe0.textContent = ''; var mw0 = $('q_minwarn'); if (mw0) mw0.style.display = 'none'; var cr0 = $('q_ccrow'); if (cr0) cr0.style.display = 'none'; var cb0 = $('q_commbase'); if (cb0) cb0.textContent = ''; var xf0 = $('q_bal2flag'); if (xf0) xf0.style.display = 'none'; var xt0 = $('q_schtag'); if (xt0) xt0.style.display = 'none'; return; }
   var mmo = (qIsDB() && !(qNum('q_payoff') > 0)) ? 0 : qNum('q_mmo'), mf = qNum('q_mf'), esc = qNum('q_esc'), payoff = qNum('q_payoff');
@@ -2413,10 +2413,10 @@ function qRecalc(){
   function winMo(m){ if (MG.status === 'pending') return null; var mo = MG.status === 'paid' ? 0 : (m < MG.months ? m * MG.mmo : qMortTotal(MG)); return mo + mf * m / 12; }
   var w30 = winMo(1), w90 = winMo(3), w6 = winMo(6);
   var t1 = win(1), t3 = win(3), t5 = win(5), t10 = win(10), t20 = win(20), t30 = win(30);
-  function setW(id, v){ $(id).textContent = v === null ? PEND_TXT : fmtC(v); }
-  setW('q_w30', w30); setW('q_w90', w90); setW('q_w6', w6);
-  function setT(id, v){ $(id).textContent = v === null ? PEND_TXT : fmtC(v); }
-  setT('q_t1', t1); setT('q_t3', t3); setT('q_t5', t5); setT('q_t10', t10); setT('q_t20', t20); setT('q_t30', t30);
+  function setW(id, v){ var e = $(id); if (e) e.textContent = v === null ? PEND_TXT : fmtC(v); }
+  setW('q_w30', w30); setW('q_w90', w90);
+  function setT(id, v){ var e = $(id); if (e) e.textContent = v === null ? PEND_TXT : fmtC(v); }
+  setT('q_t1', t1); setT('q_t3', t3); setT('q_t10', t10); setT('q_t20', t20); setT('q_t30', t30);
   // Expense breakdown (monthly MF floored for display only; annual MF exact, 10-yr MF escalated)
   var mfmo = Math.floor(mf / 12), mfoyr = mf, moyr = mmo * 12, totyr = moyr + mfoyr;
   var mo10 = qMortOver(MG, 10), escR = (esc || 8) / 100;
