@@ -384,14 +384,14 @@
   <div class="qout">
     <div class="mtgOnly">Hipoteca mensual <b id="q_xmmo">—</b></div>
     <div>Mantenimiento mensual <b id="q_xmfmo">—</b></div>
-    <div>Total mensual <b id="q_xtotmo">—</b></div>
+    <div style="border-bottom:2px solid #64748b;padding-bottom:5px;margin-bottom:5px">Total mensual <b id="q_xtotmo">—</b></div>
     <div class="mtgOnly">Hipoteca anual <b id="q_xmoyr">—</b></div>
     <div>Mantenimiento anual <b id="q_xmfyr">—</b></div>
-    <div>Total anual <b id="q_xtotyr">—</b></div>
+    <div style="border-bottom:2px solid #64748b;padding-bottom:5px;margin-bottom:5px">Total anual <b id="q_xtotyr">—</b></div>
     <div>Costo por noche <b id="q_xnight">—</b></div>
     <div class="mtgOnly">Hipoteca 10 años <b id="q_xmo10">—</b></div>
     <div>Mantenimiento 10 años (<span id="q_xescp">8</span>% esc) <b id="q_xmf10">—</b></div>
-    <div>Proyección 10 años <b id="q_xproj10">—</b></div>
+    <div style="border-bottom:2px solid #64748b;padding-bottom:5px;margin-bottom:5px">Proyección 10 años <b id="q_xproj10">—</b></div>
   </div>
   <div id="q_c2box" style="display:none;border-top:3px solid #0b3d91;margin-top:14px;padding-top:8px">
     <div class="qsec" style="margin-top:0">📄 CONTRATO 2</div>
@@ -1596,6 +1596,7 @@ function qQuoteBuild(L){
   var S = 'style="font-family:Arial,Helvetica,sans-serif;color:#111827;max-width:760px;margin:0 auto;padding:28px;line-height:1.45"';
   var H2 = 'style="color:#0b3d91;border-bottom:3px solid #0b3d91;padding-bottom:4px;margin:26px 0 10px;font-size:20px"';
   var ROW = 'style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #e5e7eb"';
+  var ROWB = 'style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:2px solid #0b3d91"';
   var h = '<!DOCTYPE html><html lang="' + (en ? 'en' : 'es') + '"><head><meta charset="utf-8"><title>' + (en ? 'Quote — ' : 'Cotización — ') + escH(cur.name) + '</title></head><body ' + S + '>';
   h += '<div ' + QDOC_BAR + '><b>' + (en ? '📄 QUOTE' : '📄 COTIZACIÓN') + '</b>' + qDocToggleBtn('quote', en) + '<button ' + QDOC_BTN + ' onclick="qCopy(this)">' + (en ? '📋 COPY' : '📋 COPIAR') + '</button></div>';
   h += '<div id="qDocBody">';
@@ -1642,14 +1643,14 @@ function qQuoteBuild(L){
   [['Próximos 30 días','Next 30 days','q_w30'],['Próximos 90 días','Next 90 days','q_w90'],['Próximo 1 año','Next 1 year','q_t1'],['Próximos 3 años','Next 3 years','q_t3'],['Próximos 10 años','Next 10 years','q_t10'],['Próximos 20 años','Next 20 years','q_t20'],['Próximos 30 años','Next 30 years','q_t30']].forEach(function(r){ var v = gv(r[2]); if (projOk && v && v !== '—') h += '<div ' + ROW + '><span>' + (en ? r[1] : r[0]) + '</span><b>' + escH(v) + '</b></div>'; });
   if (mmo > 0) h += '<div ' + ROW + '><span>' + (en ? 'Monthly mortgage' : 'Hipoteca mensual') + '</span><b>' + escH(gv('q_xmmo')) + '</b></div>';
   h += '<div ' + ROW + '><span>' + (en ? 'Monthly maintenance' : 'Mantenimiento mensual') + '</span><b>' + escH(gv('q_xmfmo')) + '</b></div>';
-  h += '<div ' + ROW + '><span><b>' + (en ? 'Monthly total' : 'Total mensual') + '</b></span><b>' + escH(gv('q_xtotmo')) + '</b></div>';
+  h += '<div ' + ROWB + '><span><b>' + (en ? 'Monthly total' : 'Total mensual') + '</b></span><b>' + escH(gv('q_xtotmo')) + '</b></div>';
   if (mmo > 0) h += '<div ' + ROW + '><span>' + (en ? 'Annual mortgage' : 'Hipoteca anual') + '</span><b>' + escH(gv('q_xmoyr')) + '</b></div>';
   h += '<div ' + ROW + '><span>' + (en ? 'Annual maintenance' : 'Mantenimiento anual') + '</span><b>' + escH(gv('q_xmfyr')) + '</b></div>';
-  h += '<div ' + ROW + '><span><b>' + (en ? 'Annual total' : 'Total anual') + '</b></span><b>' + escH(gv('q_xtotyr')) + '</b></div>';
+  h += '<div ' + ROWB + '><span><b>' + (en ? 'Annual total' : 'Total anual') + '</b></span><b>' + escH(gv('q_xtotyr')) + '</b></div>';
   h += '<div ' + ROW + '><span>' + (en ? 'Cost per night' : 'Costo por noche') + (nights > 0 ? ' (' + nights + (en ? ' nights/year' : ' noches/año') + ')' : '') + '</span><b>' + (perNight || '—') + '</b></div>';
   if (projOk && mmo > 0) h += '<div ' + ROW + '><span>' + (en ? 'Mortgage (10 years)' : 'Hipoteca 10 años') + '</span><b>' + escH(gv('q_xmo10')) + '</b></div>';
   h += '<div ' + ROW + '><span>' + (en ? 'Maintenance (10 years) (' : 'Mantenimiento 10 años (') + escP + '% esc)</span><b>' + escH(gv('q_xmf10')) + '</b></div>';
-  if (projOk) h += '<div ' + ROW + '><span><b>' + (en ? '10-year projection' : 'Proyección 10 años') + '</b></span><b>' + escH(gv('q_xproj10')) + '</b></div>';
+  if (projOk) h += '<div ' + ROWB + '><span><b>' + (en ? '10-year projection' : 'Proyección 10 años') + '</b></span><b>' + escH(gv('q_xproj10')) + '</b></div>';
   if (projOk){ h += '<h3 style="color:#0b3d91;margin:18px 0 6px">' + (en ? 'Projections — the cost of keeping it' : 'Proyecciones — costo de quedarte') + '</h3>';
   h += '<table style="width:100%;border-collapse:collapse;font-size:15px"><tr style="background:#0b3d91;color:#fff"><th style="padding:6px;text-align:left"></th><th style="padding:6px;text-align:right">' + (en ? '10 years' : '10 años') + '</th><th style="padding:6px;text-align:right">' + (en ? '20 years' : '20 años') + '</th></tr>';
   if (mmo > 0) h += '<tr><td style="padding:6px;border-bottom:1px solid #e5e7eb">' + (en ? 'Mortgage' : 'Hipoteca') + '</td><td style="padding:6px;text-align:right;border-bottom:1px solid #e5e7eb">' + fmtP(mp10) + '</td><td style="padding:6px;text-align:right;border-bottom:1px solid #e5e7eb">' + fmtP(mp20) + '</td></tr>';
