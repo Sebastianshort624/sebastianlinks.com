@@ -861,6 +861,7 @@ function qNameLink(c){
   return u ? '<a href="' + escH(u) + '" target="_blank" rel="noopener">' + nm + '</a>' : nm;
 }
 function fillAll(sel, txt){ var els = document.querySelectorAll(sel); for (var i = 0; i < els.length; i++) els[i].textContent = txt; }
+function caScriptName(ca){ ca = String(ca == null ? '' : ca).trim(); if (!ca || /sin ca/i.test(ca) || /owner\/precall/i.test(ca)) return 'nuestro analista de casos'; return ca; }
 function resetFills(){
   fillAll('[data-fill="down"]', '$________');
   fillAll('[data-fill="fee"]', '$________');
@@ -1374,7 +1375,7 @@ function applyFills(c, n){
   fillAll('[data-fill="fee"]', n.feeKnown ? fmtC(n.fee) : '$________');
   fillAll('[data-fill="savings"]', n.feeKnown && n.s10 !== null ? fmtC(n.s10) : '$________');
   fillAll('[data-fill="total10"]', n.feeKnown && n.t10 !== null ? fmtC(n.t10) : '$________');
-  fillAll('[data-fill="ca"]', c.ca || 'nuestro analista de casos');
+  fillAll('[data-fill="ca"]', caScriptName(c.ca));
   fillAll('[data-fill="resort"]', c.resort || '_________');
   fillAll('[data-fill="name"]', c.name ? c.name.replace(' / ', ' y ') : '_________');
   sumPend();
