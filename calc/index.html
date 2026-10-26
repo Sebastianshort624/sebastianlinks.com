@@ -470,6 +470,17 @@ function deedMF(){
   for (var i = 0; i < cs.length; i++) if (cs[i].id === id) return num(cs[i].mf) || 0;
   return 0;
 }
+function deedEsc(){
+  var id = $('csel').value, cs = getClients();
+  for (var i = 0; i < cs.length; i++) if (cs[i].id === id) return num(cs[i].esc) || 8;
+  return 8;
+}
+function deedCycMF(cyc){
+  var mf = deedMF(); if (!(mf > 0) || !(cyc > 0)) return 0;
+  var e = deedEsc() / 100, s = 0;
+  for (var y = 0; y < cyc; y++) s += mf * Math.pow(1 + e, y);
+  return s;
+}
 function renderDeedResults(){
   var d = getDeed(), q = ($('deedq').value || '').toLowerCase().trim();
   var box = $('deedresults');
@@ -482,7 +493,7 @@ function renderDeedResults(){
   if (!hits.length){ box.innerHTML = '<span class="tmin">Sin resultados.</span>'; return; }
   var mf = deedMF();
   box.innerHTML = hits.map(function(h){
-    var base = h.r.price, c1 = base + mf, c2 = base + 2 * mf;
+    var base = h.r.price, c1 = base + deedCycMF(1), c2 = base + deedCycMF(2);
     return '<div class="rrow"><span>' + esc(h.r.dev) + (h.r.state ? ' · ' + esc(h.r.state) : '') +
       (h.r.contract ? ' · <b>' + esc(h.r.contract) + '</b>' : '') +
       (h.r.info ? ' <span class="tmin">' + esc(h.r.info) + '</span>' : '') + '<br>' +
@@ -497,7 +508,7 @@ function applyDeedPrice(ix, cyc){
   var d = getDeed(), r = d.rows[ix]; if (!r) return;
   var id = $('csel').value;
   if (!id){ alert('Primero seleccione un cliente.'); return; }
-  var price = r.price + (cyc || 0) * deedMF();
+  var price = r.price + deedCycMF(cyc || 0);
   var cs = getClients();
   for (var i = 0; i < cs.length; i++) if (cs[i].id === id){ cs[i].fee = price; cs[i].dtype = 'DB'; }
   saveClients(cs); onSelect();
