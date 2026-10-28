@@ -366,7 +366,7 @@
   <label class="qf">MF/AÑO <input id="q_mf" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">NOCHES/AÑO <input id="q_nights" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf mtgOnly">PLAZO (MESES) <input id="q_term" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf mtgOnly">SALDO (PAYOFF) <input id="q_payoff" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf mtgOnly" style="color:#c62828;font-weight:700">SALDO (PAYOFF) <input id="q_payoff" type="number" min="0" oninput="qRecalc()" style="border:2px solid #c62828;color:#c62828;font-weight:700"></label>
   <label class="qf">ELEVACIÓN ANUAL % <input id="q_esc" type="number" min="0" oninput="qRecalc()"></label>
   <div class="qsec">Compromiso Contractual Actual</div>
   <div id="q_calcstatus" style="font-size:.92em;line-height:1.5;margin:0 0 8px"></div>
@@ -3197,8 +3197,6 @@ setInterval(function(){ if (aptData){ aptRender(); aptLayout(); } }, 60000);
 </script>
 </body>
 </html>
-
-
 
 
 
