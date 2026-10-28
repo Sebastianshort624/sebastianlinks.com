@@ -433,7 +433,7 @@
   <div class="tmin mtgOnly" id="q_mleft" style="margin-bottom:6px">— meses restantes</div>
   <label class="qf mtgOnly">MONTO DEL PRÉSTAMO <input id="q_loan" type="number" min="0" oninput="qLoanAuto=false;qRecalc()"></label>
   <label class="qf mtgOnly">APR % <input id="q_aapr" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf mtgOnly">MESES <input id="q_mos" type="number" min="1" max="120" oninput="qRecalc()"></label>
+  <label class="qf mtgOnly">MESES <input id="q_mos" type="number" min="1" max="360" oninput="qRecalc()"></label>
   <div class="qout mtgOnly">
     <div>Préstamo original (financiado) <span id="q_ofin_tag"></span> <b id="q_ofin">—</b></div>
     <div>Total programado (pago × plazo) <b id="q_osch">—</b></div>
@@ -934,7 +934,7 @@ function qMortgage(){
     if (mmo <= 0) return { status: 'pending', months: 0, mmo: 0, payoff: payoff, level: lvPend };
     var term = qNum('q_term') || 120;
     var lr = (apr || 0) / 100 / 12;
-    if (lr > 0 && mmo > payoff * lr) return { status: 'ok', months: Math.min(term, Math.ceil(-Math.log(1 - payoff * lr / mmo) / Math.log(1 + lr))), mmo: mmo, payoff: payoff, apr: apr, level: (typeof cur !== 'undefined' && cur && cur.poffVerified === true) ? 'verificado' : 'reportado' };
+    if (lr > 0 && mmo > payoff * lr) return { status: 'ok', months: Math.min(term, Math.ceil(-Math.log(1 - payoff * lr / mmo) / Math.log(1 + lr))), mmo: mmo, payoff: payoff, apr: apr, level: (typeof cur !== 'undefined' && cur && cur.poffVerified === true) ? 'verificado' : (qAprImplied ? 'estimado' : 'reportado') };
     return { status: 'pending', months: 0, mmo: mmo, payoff: payoff, level: lvPend };
   }
   if (mmo > 0) return { status: 'pending', months: 0, mmo: mmo, payoff: 0, level: 'pendiente' };
@@ -1067,6 +1067,7 @@ function qConsistency(){
   return { ok: conflicts.length === 0, fin: fin, apr: apr, pmt: pmt, term: term, pv: pv, sched: pmt * term, impApr: impApr, conflicts: conflicts };
 }
 var qLoanAuto = false; // true while q_loan holds the AUTO-INFERRED principal (PV of pago/APR/plazo). An inferred principal must NEVER be persisted as a recorded cfin — before this flag (fixed 2026-10-21) the autosave silently converted every inferred principal into a "recorded" one, inflating ESTIMADO schedule records to VERIFICADO on the next load.
+var qAprImplied = false, qAprImpliedVal = 0; // true while q_aapr holds the solver's IMPLIED APR (from saldo/pago/meses restantes). Like qLoanAuto: an implied rate is an ESTIMATE — qAutoSave never persists q_aapr, so it can never harden into a "recorded" APR on the next load.
 // ===== CONTRACTS TOOL (Sebastian, 2026-10-20): charge EACH contract separately, combine totals at top =====
 var qNC = 1; // active contract count
 function qGoCalc(){
@@ -2334,6 +2335,7 @@ function qSync(c){
   else if (r0 > 0 && t0 > 0 && m0 > 0){ $('q_loan').value = Math.round(m0 * (1 - Math.pow(1 + r0, -t0)) / r0); qLoanAuto = true; }
   else { $('q_loan').value = ''; qLoanAuto = false; }
   $('q_aapr').value = c ? (c.apr || '') : '';
+  qAprImplied = false; qAprImpliedVal = 0; // a fresh record starts clean: the solver may fill a blank APR in qRecalc, a recorded APR always governs
   // MESES elapsed counts from the CONTRACT START as resolved by qContractStart: the contract start on
   // file when the record has one; the documented PURCHASE date only when no upgrade/refinance is
   // documented anywhere in the record (PAYOFF INTEGRITY 2026-10-23). An indicated-but-undated upgrade
@@ -2410,6 +2412,30 @@ function qRecalc(){
   var r = (esc || 8) / 100;
   var nowY = new Date().getFullYear();
   var pmN = parseInt(($('q_pmonth') || {}).value, 10) || (cur && cur.pmonth) || 0;
+  // IMPLIED-APR SOLVER (Sebastian, 2026-10-27: fix the whole payoff capability, not one client): when the
+  // APR box is blank — or still holds OUR implied value — solve the rate the client's own numbers imply:
+  // PV(pago mensual, r, meses restantes) = SALDO, meses restantes = plazo − meses transcurridos (desde el
+  // inicio del contrato vigente, ya resuelto en q_mos por qSync). The solved rate goes into the box so the
+  // amortization, PAYOFF EXACTO and every projection compute instead of showing dashes. It stays an
+  // ESTIMATE: qAutoSave never persists q_aapr, the record keeps apr blank, and the status reads ESTIMADO.
+  (function(){
+    var box = $('q_aapr'); if (!box) return;
+    var curApr = qNum('q_aapr');
+    if (qAprImplied && curApr > 0 && Math.abs(curApr - qAprImpliedVal) > 0.001) qAprImplied = false; // Sebastian typed his own APR over ours — his governs
+    if (curApr > 0 && !qAprImplied) return; // a recorded or typed APR always governs
+    function fail(){ if (qAprImplied) box.value = ''; qAprImplied = false; qAprImpliedVal = 0; }
+    if (typeof cur !== 'undefined' && cur && cur.poffUnverified) return fail(); // MATEO safeguard: an unverified balance stays PENDIENTE — no implied rate next to it
+    var elapsed = parseInt((($('q_mos') || {}).value || ''), 10);
+    var remMo = term - elapsed;
+    if (!(payoff > 0) || !(mmo > 0) || !isFinite(elapsed) || elapsed < 0 || !(remMo >= 1)) return fail();
+    if (payoff >= mmo * remMo) return fail(); // the remaining payments don't even cover the saldo: inputs inconsistent, no honest rate exists
+    var lo = 1e-7, hi = 0.05, mid = 0, pv = mmo * (1 - Math.pow(1 + hi, -remMo)) / hi;
+    if (pv > payoff) return fail(); // even 60%/yr cannot reconcile pago + saldo + meses restantes
+    for (var bi = 0; bi < 80; bi++){ mid = (lo + hi) / 2; pv = mmo * (1 - Math.pow(1 + mid, -remMo)) / mid; if (pv > payoff) lo = mid; else hi = mid; }
+    var imp = Math.round(mid * 12 * 10000) / 100;
+    if (!(imp > 0) || imp > 21) return fail(); // Sebastian's gate: no timeshare APR in this industry exceeds 21% — above that, another input is wrong, so stay PENDIENTE instead of inventing
+    box.value = imp; qAprImplied = true; qAprImpliedVal = imp;
+  })();
   var MG = qMortgage(); // shared model (SAI 2026-10-20): projections never restart or erase a mortgage
   var COMBO = qComboCalc(); // contracts tool: per-contract calcs (each charged separately)
   function win(y){ var mo = qMortOver(MG, y); return mo === null ? null : mo + mfTot(mf, r, y); }
@@ -2503,16 +2529,9 @@ function qRecalc(){
   }
   $('q_cdate').textContent = cdate;
   var laapr = qNum('q_aapr'), lterm = qNum('q_term') || 120;
-  if (false){ // implied-APR inference DISABLED 2026-10-20 (SAI): never invent an APR from purchase-date math
-    var lo = 1e-7, hi = 0.05, mid = 0, pv = 0;
-    for (var bi = 0; bi < 80; bi++){
-      mid = (lo + hi) / 2;
-      pv = mmo * (1 - Math.pow(1 + mid, -remMo)) / mid;
-      if (pv > payoff) lo = mid; else hi = mid;
-    }
-    laapr = Math.round(mid * 12 * 10000) / 100;
-    $('q_aapr').value = laapr;
-  }
+  // (The old implied-APR block that lived here was disabled 2026-10-20 and referenced an undefined remMo.
+  // The solver now runs at the TOP of qRecalc — before qMortgage() — so laapr already carries the solved
+  // rate whenever the box started blank. Sebastian, 2026-10-27.)
   if (!qNum('q_loan') && mmo > 0 && laapr > 0 && lterm > 0){
     var lrr = laapr / 100 / 12;
     $('q_loan').value = Math.round(mmo * (1 - Math.pow(1 + lrr, -lterm)) / lrr);
@@ -2525,7 +2544,7 @@ function qRecalc(){
   $('q_osch').textContent = OL ? fmtD(OL.totalScheduled) : '—';
   $('q_oint').textContent = OL ? fmtD(OL.totalInterest) : '—';
   $('q_ofin_tag').textContent = OL ? (OL.inferred ? '🟡 inferido' : '✅ registrado') + (qLastCons && qLastCons.conflicts.length ? ' · ⚠️ CONFLICTO' : '') : '';
-  var mos = Math.min(120, Math.max(0, Math.round(qNum('q_mos'))));
+  var mos = Math.min(term, Math.max(0, Math.round(qNum('q_mos')))); // cap at the contract's own term, not a hardcoded 120 (2026-10-27)
   var mgSuf = MG.derived === 'schedule' ? ' — según cronograma del contrato vigente' : (MG.level === 'verificado' ? ' — según saldo verificado' : ' — según saldo reportado');
   if (MG.assumedStart === 'purchase') mgSuf += ' · inicio asumido desde la compra (sin upgrade documentado)';
   $('q_mleft').textContent = MG.status === 'paid' ? 'Sin hipoteca — pagada' : (MG.status === 'ok' ? (MG.level === 'estimado' ? '🟡 ESTIMADO · ' : MG.level === 'reportado' ? '🟠 REPORTADO · ' : '✅ VERIFICADO · ') + MG.months + ' meses restantes de hipoteca' + mgSuf : '🔴 ' + PEND_TXT + ' — falta: ' + qMissingLoan().join(', '));
@@ -2533,7 +2552,7 @@ function qRecalc(){
   if (CS){
     if (MG.status === 'ok' && MG.level === 'verificado') CS.innerHTML = '✅ <b>VERIFICADO</b> — ' + (MG.derived === 'schedule' ? 'términos completos del contrato vigente verificados' : 'saldo confirmado del prestamista');
     else if (MG.status === 'ok' && MG.level === 'reportado') CS.innerHTML = '🟠 <b>REPORTADO</b> — saldo reportado por el cliente o el intake, SIN verificación del prestamista. Las proyecciones se calculan con ese saldo reportado; escribir un número en la calculadora nunca lo convierte en verificado.';
-    else if (MG.status === 'ok') CS.innerHTML = '🟡 <b>ESTIMADO</b> — modelo matemático' + (MG.inferredLoan ? '; principal original inferido: ' + fmtD(MG.inferredLoan) : '') + (MG.assumedStart === 'purchase' ? '. Inicio del contrato ASUMIDO desde la fecha de compra: el registro no documenta upgrade ni refinanciamiento.' : '') + '. Supuestos: préstamo estándar totalmente amortizable, sin cargos adicionales ni pago globo. <b>NO es un payoff confirmado por el prestamista.</b>';
+    else if (MG.status === 'ok') CS.innerHTML = '🟡 <b>ESTIMADO</b> — modelo matemático' + (MG.inferredLoan ? '; principal original inferido: ' + fmtD(MG.inferredLoan) : '') + (qAprImplied ? '; APR implícita: ' + qAprImpliedVal + '% (calculada del saldo, el pago y los meses restantes — el registro no trae APR)' : '') + (MG.assumedStart === 'purchase' ? '. Inicio del contrato ASUMIDO desde la fecha de compra: el registro no documenta upgrade ni refinanciamiento.' : '') + '. Supuestos: préstamo estándar totalmente amortizable, sin cargos adicionales ni pago globo. <b>NO es un payoff confirmado por el prestamista.</b>';
     else if (MG.status === 'paid') CS.innerHTML = '✅ <b>SIN HIPOTECA</b> — préstamo pagado / deed-back';
     else CS.innerHTML = '🔴 <b>PENDIENTE</b> — información insuficiente o en conflicto. Falta: ' + qMissingLoan().join(', ');
     if (qClassWarn) CS.innerHTML += '<div style="margin-top:4px">⚠️ ' + qClassWarn + '</div>';
