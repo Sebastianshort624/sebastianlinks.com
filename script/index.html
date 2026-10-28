@@ -156,6 +156,8 @@
   #pegShowBtn { display: none; position: fixed; top: 8px; right: 8px; z-index: 70; background: #111827; color: #fff; border: 1px solid #374151; border-radius: 8px; padding: 8px 12px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.4); }
   body.peg-hidden #pegShowBtn { display: block; }
   @media (max-width: 820px) {
+    #pegbar { position: static; }
+    .stage, #pago-transicion { scroll-margin-top: 12px; }
     #pegHideBtn { display: inline-block; background: #b91c1c; color: #fff; border: none; border-radius: 6px; padding: 4px 10px; font-weight: 700; font-size: .85em; cursor: pointer; margin: 4px 0; }
     body.peg-hidden #pegbar { display: none; }
   }
@@ -3216,7 +3218,6 @@ setInterval(function(){ if (aptData){ aptRender(); aptLayout(); } }, 60000);
 </script>
 </body>
 </html>
-
 
 
 
