@@ -2321,13 +2321,13 @@ function qFeeApply(){
   return true;
 }
 function qFeePct(){ if (qFeeApply()) qRecalc(); }
-function qCommPay(){ var cp = $('q_commpay'); if (!cp) return; var pm = $('q_paym'); if (pm) pm.value = cp.value; qDownManual = false; qDownAutoVal = null; qRecalc(); }
+function qCommPay(){ var cp = $('q_commpay'); if (!cp) return; var pm = $('q_paym'); if (pm) pm.value = cp.value; qDownManual = false; qRecalc(); }
 // DEED-BACK PRICING + DOWN RULES (Sebastian, 2026-10-29): DB price = lista + $299 admin + PAD; the pad is
 // TWICE the commission extra he picks (q_padcomm = $ extra a su comision; comision DB = $300 + 1/2 pad).
 // Down payments: UCFS = $0 requerido (opcional); UGA = 25% requerido; IN-HOUSE a 48 meses = 30% requerido.
 var qDownManual = false, qDownAutoVal = null, qDbFeeKey = null, qDbFeeVal = null;
 function qDbPad(){ return (qNum('q_padcomm') || 0) * 2; }
-function qPaymChange(){ qDownManual = false; qDownAutoVal = null; var pm = $('q_paym'); if (pm && pm.value === 'inhouse'){ var fa = $('q_fapr'); if (fa) fa.value = 19.99; } qRecalc(); }
+function qPaymChange(){ qDownManual = false; var pm = $('q_paym'); if (pm && pm.value === 'inhouse'){ var fa = $('q_fapr'); if (fa) fa.value = 19.99; } qRecalc(); }
 function qSync(c){
   qDtype = (c && c.dtype === 'DB') ? 'DB' : 'MTG';
   qClassWarn = '';
