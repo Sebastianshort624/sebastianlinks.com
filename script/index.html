@@ -485,7 +485,7 @@
   <div class="qsm" id="q_downpct" style="font-weight:700;color:#0b3d91"></div>
   <label class="qf">PAGO/MES <input id="q_pmt" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">APR FINANC. % <input id="q_fapr" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf">MESES FINANC. <select id="q_fmo" onchange="qRecalc()"><option value="6">6</option><option value="12">12</option><option value="18">18</option><option value="24">24</option><option value="30">30</option><option value="36" selected>36</option><option value="42">42</option><option value="48">48</option><option value="54">54</option><option value="60">60</option></select></label>
+  <label class="qf"><span id="q_fmolab">MESES FINANC.</span> <select id="q_fmo" onchange="qRecalc()"><option value="6">6</option><option value="12">12</option><option value="18">18</option><option value="24">24</option><option value="30">30</option><option value="36" selected>36</option><option value="42">42</option><option value="48">48</option><option value="54">54</option><option value="60">60</option></select></label>
   <div class="qout">
     <div id="q_ccrow" style="display:none">Cargo tarjeta (3%) <b id="q_ccfee">—</b></div>
     <div>Total <b id="q_ftot">—</b></div>
@@ -515,7 +515,7 @@
     <label class="qf">PORCIÓN 4 <span><input type="date" id="q_dp4d" onchange="qRecalc();qAutoSave()"> <input type="number" id="q_dp4a" min="0" oninput="qRecalc();qAutoSave()" style="width:90px"></span></label>
     <label class="qf">PORCIÓN 5 <span><input type="date" id="q_dp5d" onchange="qRecalc();qAutoSave()"> <input type="number" id="q_dp5a" min="0" oninput="qRecalc();qAutoSave()" style="width:90px"></span></label>
     <label class="qf">PORCIÓN 6 <span><input type="date" id="q_dp6d" onchange="qRecalc();qAutoSave()"> <input type="number" id="q_dp6a" min="0" oninput="qRecalc();qAutoSave()" style="width:90px"></span></label>
-    <div class="qsm" style="margin:6px 0">Ejemplo rápido: <select id="q_depN"><option value="2">2</option><option value="3">3</option><option value="4" selected>4</option><option value="5">5</option><option value="6">6</option></select> cuotas en total (la 1ª es el anticipo) <button type="button" onclick="qDepSample()">Llenar ejemplo</button> — te pregunto las semanas y el resto se reparte parejo después del anticipo (máx 24 semanas); edita montos y fechas a mano.</div>
+    <div class="qsm" style="margin:6px 0">Ejemplo rápido: <select id="q_depN"><option value="2">2</option><option value="3">3</option><option value="4" selected>4</option><option value="5">5</option><option value="6">6</option></select> cuotas en total (la 1ª es el anticipo) <button type="button" onclick="qDepSample()">Llenar ejemplo</button> — te pregunto las semanas y el resto se reparte parejo después del anticipo (máx 24 semanas); edita montos y fechas a mano. Las cuotas son al 0% de interés: la suma es el total exacto.</div>
     <div class="qsm" id="q_deptot" style="font-weight:700"></div>
   </div>
 
@@ -526,7 +526,7 @@
   <div style="font-size:.92em;line-height:1.5">
     <p style="margin:4px 0"><b>LA FÓRMULA (toda la hoja es esto):</b><br>COMISIONABLE = TOTAL − FEES − $299 admin.<br>FEES = 3% del total si paga con tarjeta · $199 fijo en todo lo demás.<br>Tu % se aplica sobre el comisionable, nunca sobre el total cobrado.</p>
     <p style="margin:4px 0"><b>CC / ACH — 10%</b> ← tu mejor tasa<br>Dinero directo a Linx: tarjeta, ACH o cheque pagado completo (aunque el depósito venga en porciones).</p>
-    <p style="margin:4px 0"><b>UCFS — 8%</b><br>Financiera externa. Sin anticipo requerido ($0 down, opcional).</p>
+    <p style="margin:4px 0"><b>UCFS — 8%</b><br>Financiera externa. Sin anticipo requerido ($0 down, opcional). Término en SEMANAS, máx 35, al 19.99%.</p>
     <p style="margin:4px 0"><b>UGA / IN-HOUSE — 4%</b> ← la misma cubeta en la hoja<br>UGA = financiera externa, exige <b>25% de anticipo</b>. In-house = Linx financia al 19.99%; a 48 meses exige <b>30% de anticipo</b>. El mismo deal paga la MITAD que por UCFS.</p>
     <p style="margin:4px 0"><b>DEED-BACK — $300 + ½ PAD</b><br>Sin porcentaje. El pad es tu aumento: cada +$100 que quieres de comisión = +$200 al precio final (selector en el recuadro rojo).</p>
     <p style="margin:4px 0"><b>CUÁNDO TE PAGAN</b><br>Firmado días 1–15 → cobras el día 6 · firmado 16–fin de mes → cobras el día 20 (del mes siguiente). La comisión se debe cuando ya se cobró el 25% del total.</p>
@@ -1644,7 +1644,7 @@ function qQuoteBuild(L){
   var projOk = MG.status !== 'pending';
   var missLoan = projOk ? [] : qMissingLoan();
   var projNote = projOk ? '' : '<p style="font-size:14px;color:#b45309;border:1px solid #f59e0b;background:#fffbeb;border-radius:8px;padding:10px 12px"><b>' + (en ? '🔴 Savings projections pending — missing: ' : '🔴 Proyecciones de ahorro pendientes — falta: ') + missLoan.join(', ') + (en ? '. They will be added once the current loan information is verified; the price above is quotable with the balance on file.' : '. Se agregan cuando se verifique la información del préstamo vigente; el precio de arriba sí es cotizable con el saldo registrado.') + '</b></p>';
-  var down = qNum('q_down'), fmo = qNum('q_fmo');
+  var down = qNum('q_down'), fmo = qNum('q_fmo'), paymQ = ($('q_paym') || {}).value || '';
   var moTxt = ($('q_mo') || {}).textContent || '';
   function moPart(y){ return qMortOver(MG, y); }
   function mfPart(y){ return mfTot(mf, escR, y); }
@@ -1672,7 +1672,7 @@ function qQuoteBuild(L){
   var BIGL = 'style="font-size:13px;font-weight:700;letter-spacing:1.5px;color:#374151"';
   h += '<div style="text-align:center;padding:22px 10px;background:#eff6ff;border:2px solid #0b3d91;border-radius:12px;margin:20px 0"><div ' + BIGL + '>' + (en ? 'TOTAL PRICE' : 'PRECIO TOTAL') + '</div><div style="font-size:46px;font-weight:800;color:#0b3d91;line-height:1.1">' + fmtC(fee) + '</div></div>';
   h += '<p style="font-size:15px;color:#374151;text-align:center">' + (en ? fmtC(fee) + ' — and this includes all, beginning to end. We never ask for another dollar. This price eliminates all past, present and future debt, and your name is removed from the deed at the county level, so your estate is safe and your next of kin will never inherit this nightmare.' : 'Este precio incluye todo, de principio a fin. Nunca pedimos otro dólar. Este precio elimina toda la deuda pasada, presente y futura, y tu nombre se retira de la escritura a nivel del condado.') + '</p>';
-  if (fmo > 0 && moTxt && moTxt !== '—') h += '<p style="text-align:center;font-size:20px;margin:14px 0"><b>' + (en ? 'Or in payments: ' : 'O en pagos: ') + escH(moTxt) + (en ? '/month × ' : '/mes × ') + fmo + (en ? ' months' : ' meses') + (down > 0 ? (en ? ' (' + fmtC(down) + ' down payment)' : ' (' + fmtC(down) + ' de anticipo)') : '') + '</b></p>';
+  if (fmo > 0 && moTxt && moTxt !== '—') h += '<p style="text-align:center;font-size:20px;margin:14px 0"><b>' + (en ? 'Or in payments: ' : 'O en pagos: ') + escH(moTxt.replace(/\/(mes|sem)$/, '')) + (paymQ === 'ucfs' ? (en ? '/week × ' : '/semana × ') + fmo + (en ? ' weeks' : ' semanas') : (en ? '/month × ' : '/mes × ') + fmo + (en ? ' months' : ' meses')) + (down > 0 ? (en ? ' (' + fmtC(down) + ' down payment)' : ' (' + fmtC(down) + ' de anticipo)') : '') + '</b></p>';
   if (projOk){
     h += '<div style="display:flex;gap:14px;margin:22px 0">';
     h += '<div style="flex:1;text-align:center;padding:18px 8px;background:#fef2f2;border:2px solid #b91c1c;border-radius:12px"><div ' + BIGL + '>' + (en ? 'COST OF KEEPING IT — 10 YEARS' : 'COSTO DE QUEDARTE — 10 AÑOS') + '</div><div style="font-size:36px;font-weight:800;color:#b91c1c;line-height:1.15">' + fmtP(t10) + '</div></div>';
@@ -2167,7 +2167,7 @@ function qPostCallHtml(){
   var down = qNum('q_down'), ddate = ($('q_ddate') || {}).value || '';
   if (down > 0) h += '<div ' + ROW + '><span>Anticipo</span><b>' + fmtC(down) + (ddate ? ' — ' + ddate : '') + '</b></div>';
   var pmt = qNum('q_pmt'), pdate = ($('q_pdate') || {}).value || '', fmo = ($('q_fmo') || {}).value || '', fapr = ($('q_fapr') || {}).value || '';
-  if (pmt > 0) h += '<div ' + ROW + '><span>Pago mensual</span><b>' + fmtC(pmt) + (fmo ? ' × ' + fmo + ' meses' : '') + (fapr ? ' @ ' + fapr + '%' : '') + (pdate ? ' — primer pago ' + pdate : '') + '</b></div>';
+  if (pmt > 0) h += '<div ' + ROW + '><span>Pago mensual</span><b>' + fmtC(pmt) + (fmo ? ' × ' + fmo + ((($('q_paym') || {}).value === 'ucfs') ? ' semanas' : ' meses') : '') + (fapr ? ' @ ' + fapr + '%' : '') + (pdate ? ' — primer pago ' + pdate : '') + '</b></div>';
   var comm = ($('q_comm') || {}).textContent || '';
   if (comm && comm !== '—') h += '<div ' + ROW + '><span>Comisión CB</span><b>' + escH(comm) + '</b></div>';
   h += '<h2 ' + H2 + '>Preguntas de los videos</h2>';
@@ -2268,7 +2268,7 @@ function qCover(){
     '<div><b>Forma de pago:</b> ' + (payLabels[paym] || paym) + '</div>' +
     '<div><b>Anticipo:</b> ' + fmtD(qNum('q_down')) + ' el ' + fdate2($('q_ddate').value) + '</div>' +
     '<div><b>Pago/mes:</b> ' + fmtD(qNum('q_pmt')) + ' desde ' + fdate2($('q_pdate').value) + '</div>' +
-    '<div><b>Fin:</b> ' + ($('q_fmo').value || '—') + ' meses @ ' + ($('q_fapr').value || '—') + '%</div>' +
+    '<div><b>Fin:</b> ' + ($('q_fmo').value || '—') + (($('q_paym').value === 'ucfs') ? ' semanas @ ' : ' meses @ ') + ($('q_fapr').value || '—') + '%</div>' +
     '<div><b>Comisión:</b> ' + $('q_comm').textContent + ' (lista el ' + $('q_cdate').textContent + ')</div>' +
     '<div><b>Ahorro 10 años:</b> ' + $('q_s10').textContent + '</div>' +
     '<div><b>Plantilla DocuSign:</b> ' + escH($('qt_tpl').value) + '</div>' +
@@ -2331,7 +2331,21 @@ var qDownManual = false, qDownAutoVal = null, qDbFeeKey = null, qDbFeeVal = null
 function qDbPad(){ return (qNum('q_padcomm') || 0) * 2; }
 function qDbCycN(){ return Math.max(0, Math.round(qNum('q_dbcyc') || 0)); }
 function qDbCycAmt(){ var n = qDbCycN(); if (!n) return 0; var mf = qNum('q_mf'), esc = qNum('q_esc') || 8, s = 0; for (var k = 0; k < n; k++) s += mf * Math.pow(1 + esc / 100, k); return Math.round(s); }
-function qPaymChange(){ qDownManual = false; var pm = $('q_paym'); if (pm && pm.value === 'inhouse'){ var fa = $('q_fapr'); if (fa) fa.value = 19.99; } qRecalc(); }
+function qFmoMode(){
+  var pm = $('q_paym'), fm = $('q_fmo'); if (!pm || !fm) return;
+  var ucfs = pm.value === 'ucfs';
+  var lab = $('q_fmolab'); if (lab) lab.textContent = ucfs ? 'SEMANAS FINANC.' : 'MESES FINANC.';
+  var mode = ucfs ? 'w' : 'm';
+  if (fm.getAttribute('data-mode') === mode) return;
+  var curV = parseInt(fm.value || '0', 10);
+  var opts = ucfs ? [5, 10, 15, 20, 25, 30, 35] : [6, 12, 18, 24, 30, 36, 42, 48, 54, 60];
+  var h = '';
+  for (var i = 0; i < opts.length; i++) h += '<option value="' + opts[i] + '">' + opts[i] + '</option>';
+  fm.innerHTML = h;
+  fm.value = opts.indexOf(curV) >= 0 ? String(curV) : (ucfs ? '35' : '36');
+  fm.setAttribute('data-mode', mode);
+}
+function qPaymChange(){ qDownManual = false; var pm = $('q_paym'); if (pm && (pm.value === 'inhouse' || pm.value === 'ucfs')){ var fa = $('q_fapr'); if (fa) fa.value = 19.99; } qFmoMode(); qRecalc(); }
 function qSync(c){
   qDtype = (c && c.dtype === 'DB') ? 'DB' : 'MTG';
   qClassWarn = '';
@@ -2344,8 +2358,9 @@ function qSync(c){
   $('q_payoff').value = c ? c.payoff : '';
   $('q_fee').value = c && c.fee ? c.fee : ''; $('q_down').value = c ? (c.down || '') : '';
   $('q_paym').value = c ? (c.paymethod || 'ach') : 'ach';
-  $('q_fapr').value = (c && c.fapr > 0) ? c.fapr : 19.99; $('q_fmo').value = (c && c.fmo > 0) ? c.fmo : 36;
-  if (!$('q_fmo').value) $('q_fmo').value = '36';
+  qFmoMode();
+  $('q_fapr').value = (c && c.fapr > 0) ? c.fapr : 19.99; $('q_fmo').value = (c && c.fmo > 0) ? c.fmo : ($('q_paym').value === 'ucfs' ? 35 : 36);
+  if (!$('q_fmo').value) $('q_fmo').value = ($('q_paym').value === 'ucfs') ? '35' : '36';
   $('q_pmt').value = c ? (c.pmtmo || '') : '';
   $('q_downt').value = c ? (c.downt || 'dol') : 'dol';
   $('q_ddate').value = c ? (c.downdate || '') : ''; $('q_pdate').value = c ? (c.pmtdate || '') : '';
@@ -2498,6 +2513,7 @@ function qRecalc(){
   $('q_xmo10').textContent = mo10 === null ? PEND_TXT : fmtD(mo10);
   $('q_xescp').textContent = (esc || 8); $('q_xmf10').textContent = fmtD(mf10); $('q_xof10').textContent = fmtD(of10);
   $('q_xproj10').textContent = mo10 === null ? PEND_TXT : fmtD(mo10 + mf10 + of10);
+  qFmoMode();
   var fee = qNum('q_fee'), fapr = qNum('q_fapr'), fmo = qNum('q_fmo');
   var padCommDb = qNum('q_padcomm'), padDb = padCommDb * 2, cycDbN = qDbCycN(), cycDbAmt = qDbCycAmt();
   var sheetFeeActive = qIsDB() && $('q_sheetfee').value !== '' && qNum('q_sheetfee') > 0;
@@ -2557,8 +2573,10 @@ function qRecalc(){
   var ccRow = $('q_ccrow'); if (ccRow){ var isCC = feeKnown && paym === 'cc'; ccRow.style.display = isCC ? '' : 'none'; if (isCC) $('q_ccfee').textContent = fmtD(ftot - fee); }
   $('q_bal').textContent = feeKnown ? fmtD(bal) : '—';
   $('q_s10').textContent = feeKnown && t10 !== null ? fmtD(s10) : '—';
-  $('q_mo').textContent = (feeKnown && fmo > 0) ? fmtD(amort(bal, fapr, fmo)) + '/mes' : '—';
-  if (feeKnown && bal > 0 && fmo > 0){ var tpay = amort(bal, fapr, fmo) * fmo; $('q_ftpay').textContent = fmtC(tpay); $('q_ftint').textContent = fmtC(tpay - bal); }
+  var wkF = (paym === 'ucfs');
+  var pmtF = wkF ? amort(bal, fapr * 12 / 52, fmo) : amort(bal, fapr, fmo);
+  $('q_mo').textContent = (feeKnown && fmo > 0) ? fmtD(pmtF) + (wkF ? '/sem' : '/mes') : '—';
+  if (feeKnown && bal > 0 && fmo > 0){ var tpay = pmtF * fmo; $('q_ftpay').textContent = fmtC(tpay); $('q_ftint').textContent = fmtC(tpay - bal); }
   else if (feeKnown && bal <= 0){ $('q_ftpay').textContent = fmtC(ftot); $('q_ftint').textContent = fmtC(0); }
   else { $('q_ftpay').textContent = '—'; $('q_ftint').textContent = '—'; }
   var pmtEl = $('q_pmt');
