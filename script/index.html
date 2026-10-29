@@ -482,6 +482,7 @@
     <option value="inhouse">IN-HOUSE (Linx)</option>
   </select></label>
   <label class="qf">ANTICIPO <span><select id="q_downt" onchange="qRecalc()" style="padding:4px;font-size:0.95em;font-family:inherit;"><option value="dol">$</option><option value="pct">%</option></select> <input id="q_down" type="number" min="0" oninput="qDownManual=true;qRecalc()" style="width:90px"></span></label>
+  <div class="qsm" id="q_downpct" style="font-weight:700;color:#0b3d91"></div>
   <label class="qf">PAGO/MES <input id="q_pmt" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">APR FINANC. % <input id="q_fapr" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">MESES FINANC. <select id="q_fmo" onchange="qRecalc()"><option value="6">6</option><option value="12">12</option><option value="18">18</option><option value="24">24</option><option value="30">30</option><option value="36" selected>36</option><option value="42">42</option><option value="48">48</option><option value="54">54</option><option value="60">60</option></select></label>
@@ -2536,6 +2537,7 @@ function qRecalc(){
   var depSum = 0, depCum = 0, dep25Date = '', depLastDate = '';
   for (var dpi3 = 1; dpi3 <= 6; dpi3++){ var da3 = qNum('q_dp' + dpi3 + 'a'); var dd3 = ($('q_dp' + dpi3 + 'd') || {}).value || ''; if (da3 > 0){ depSum += da3; depCum += da3; if (dd3){ if (!depLastDate || dd3 > depLastDate) depLastDate = dd3; if (!dep25Date && feeKnown && depCum >= ftot * 0.25) dep25Date = dd3; } } }
   var depBox = $('q_depbox'); if (depBox) depBox.style.display = (paym === 'ach' || paym === 'cc' || paym === 'check') ? '' : 'none';
+  var dpctEl = $('q_downpct'); if (dpctEl) dpctEl.textContent = feeKnown ? ('Anticipo: 25% = ' + fmtD(Math.round(ftot * 0.25)) + ' · 30% = ' + fmtD(Math.round(ftot * 0.30))) : '';
   var depTotEl = $('q_deptot');
   if (depTotEl){ if (depSum > 0 && feeKnown){ var depFmt = function(s){ var pp = s.split('-'); return pp.length === 3 ? (parseInt(pp[1], 10) + '/' + parseInt(pp[2], 10) + '/' + pp[0]) : s; }; var depMsg = depSum >= ftot ? ('✅ PAGADO COMPLETO: porciones ' + fmtD(depSum) + ' de ' + fmtD(ftot) + (depLastDate ? ' — última porción el ' + depFmt(depLastDate) : '')) : ('Porciones: ' + fmtD(depSum) + ' de ' + fmtD(ftot) + ' · faltan ' + fmtD(ftot - depSum)); if (depLastDate){ var dw = (new Date(depLastDate + 'T12:00:00') - new Date()) / 604800000; if (dw > 24.3) depMsg += ' · ⚠️ la última cuota pasa de 24 semanas'; } depTotEl.textContent = depMsg; } else depTotEl.textContent = ''; }
   var downRaw = qNum('q_down');
