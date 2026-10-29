@@ -507,13 +507,14 @@
     <div>Comisión lista el <b id="q_cdate">—</b></div>
   </div>
   <div id="q_depbox" style="display:none;margin-top:10px">
-    <div class="qsec" style="margin-top:0">DEPÓSITO EN PORCIONES — PAGADO COMPLETO</div>
-    <label class="qf">PORCIÓN 1 <span><input type="date" id="q_dp1d" onchange="qRecalc()"> <input type="number" id="q_dp1a" min="0" oninput="qRecalc()" style="width:90px"></span></label>
-    <label class="qf">PORCIÓN 2 <span><input type="date" id="q_dp2d" onchange="qRecalc()"> <input type="number" id="q_dp2a" min="0" oninput="qRecalc()" style="width:90px"></span></label>
-    <label class="qf">PORCIÓN 3 <span><input type="date" id="q_dp3d" onchange="qRecalc()"> <input type="number" id="q_dp3a" min="0" oninput="qRecalc()" style="width:90px"></span></label>
-    <label class="qf">PORCIÓN 4 <span><input type="date" id="q_dp4d" onchange="qRecalc()"> <input type="number" id="q_dp4a" min="0" oninput="qRecalc()" style="width:90px"></span></label>
-    <label class="qf">PORCIÓN 5 <span><input type="date" id="q_dp5d" onchange="qRecalc()"> <input type="number" id="q_dp5a" min="0" oninput="qRecalc()" style="width:90px"></span></label>
-    <label class="qf">PORCIÓN 6 <span><input type="date" id="q_dp6d" onchange="qRecalc()"> <input type="number" id="q_dp6a" min="0" oninput="qRecalc()" style="width:90px"></span></label>
+    <div class="qsec" style="margin-top:0">PLAN PAGADO COMPLETO — CUOTAS EN EFECTIVO</div>
+    <label class="qf">PORCIÓN 1 <span><input type="date" id="q_dp1d" onchange="qRecalc();qAutoSave()"> <input type="number" id="q_dp1a" min="0" oninput="qRecalc();qAutoSave()" style="width:90px"></span></label>
+    <label class="qf">PORCIÓN 2 <span><input type="date" id="q_dp2d" onchange="qRecalc();qAutoSave()"> <input type="number" id="q_dp2a" min="0" oninput="qRecalc();qAutoSave()" style="width:90px"></span></label>
+    <label class="qf">PORCIÓN 3 <span><input type="date" id="q_dp3d" onchange="qRecalc();qAutoSave()"> <input type="number" id="q_dp3a" min="0" oninput="qRecalc();qAutoSave()" style="width:90px"></span></label>
+    <label class="qf">PORCIÓN 4 <span><input type="date" id="q_dp4d" onchange="qRecalc();qAutoSave()"> <input type="number" id="q_dp4a" min="0" oninput="qRecalc();qAutoSave()" style="width:90px"></span></label>
+    <label class="qf">PORCIÓN 5 <span><input type="date" id="q_dp5d" onchange="qRecalc();qAutoSave()"> <input type="number" id="q_dp5a" min="0" oninput="qRecalc();qAutoSave()" style="width:90px"></span></label>
+    <label class="qf">PORCIÓN 6 <span><input type="date" id="q_dp6d" onchange="qRecalc();qAutoSave()"> <input type="number" id="q_dp6a" min="0" oninput="qRecalc();qAutoSave()" style="width:90px"></span></label>
+    <div class="qsm" style="margin:6px 0">Ejemplo rápido: <select id="q_depN"><option value="2">2</option><option value="3">3</option><option value="4" selected>4</option><option value="5">5</option><option value="6">6</option></select> cuotas en <select id="q_depW"><option value="4">4</option><option value="8">8</option><option value="12">12</option><option value="24" selected>24</option></select> semanas <button type="button" onclick="qDepSample()">Llenar ejemplo</button> — máx 24 semanas; edita montos y fechas a mano.</div>
     <div class="qsm" id="q_deptot" style="font-weight:700"></div>
   </div>
 
@@ -879,6 +880,24 @@ function slClients(){
   });
   return cs;
 }
+function qDepSample(){
+  var nS = parseInt(($('q_depN') || {}).value || '4', 10);
+  var wS = parseInt(($('q_depW') || {}).value || '24', 10);
+  var feeS = qNum('q_fee'); if (!feeS) return;
+  var totS = ($('q_paym').value === 'cc') ? Math.round(feeS * 1.03) : feeS;
+  var baseS = Math.floor(totS / nS * 100) / 100, accS = 0;
+  var t0S = new Date(); t0S.setHours(0, 0, 0, 0);
+  for (var iS = 1; iS <= 6; iS++){
+    var aS = $('q_dp' + iS + 'a'), dS = $('q_dp' + iS + 'd');
+    if (iS <= nS){
+      var amtS = (iS === nS) ? Math.round((totS - accS) * 100) / 100 : baseS; accS += amtS;
+      var ddS = new Date(t0S.getTime() + Math.round(wS * 7 * (iS - 1) / Math.max(1, nS - 1)) * 86400000);
+      var isoS = ddS.getFullYear() + '-' + ('0' + (ddS.getMonth() + 1)).slice(-2) + '-' + ('0' + ddS.getDate()).slice(-2);
+      if (aS) aS.value = amtS; if (dS) dS.value = isoS;
+    } else { if (aS) aS.value = ''; if (dS) dS.value = ''; }
+  }
+  qRecalc(); qAutoSave();
+}
 function fmtD(n){ return '$' + Math.round(n).toLocaleString('en-US'); }
 function fmtPhone(v){ var s = String(v == null ? '' : v), d = s.replace(/\D/g, ''); if (d.length === 11 && d.charAt(0) === '1') d = d.slice(1); if (d.length === 10) return d.slice(0,3) + '-' + d.slice(3,6) + '-' + d.slice(6); if (d.length === 11 && d.slice(0,2) === '51') return '51 ' + d.slice(2,5) + '-' + d.slice(5,8) + '-' + d.slice(8); return s.replace(/^\+/, ''); }
 function fmtC(n){ return '$' + Number(n).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
@@ -923,6 +942,8 @@ function qApplyDtype(){
   var fp = $('q_feepct'); if (fp) fp.style.display = db ? 'none' : '';
   var cl = $('q_commlab'); if (cl) cl.textContent = db ? 'Comisión deed-back' : 'Comisión 10%';
   var dn = $('q_dbnote'); if (dn) dn.style.display = db ? '' : 'none';
+  var pm2 = $('q_paym');
+  if (pm2){ for (var oi = 0; oi < pm2.options.length; oi++){ var op2 = pm2.options[oi]; var ban2 = (op2.value === 'uga' || op2.value === 'inhouse' || op2.value === 'equity'); op2.hidden = db ? ban2 : false; op2.disabled = db ? ban2 : false; } if (db && (pm2.value === 'uga' || pm2.value === 'inhouse' || pm2.value === 'equity')){ pm2.value = 'ach'; } }
 }
 function qSetDtype(t){
   if (t === 'DB'){
@@ -2566,7 +2587,7 @@ function qRecalc(){
   for (var dpi3 = 1; dpi3 <= 6; dpi3++){ var da3 = qNum('q_dp' + dpi3 + 'a'); var dd3 = ($('q_dp' + dpi3 + 'd') || {}).value || ''; if (da3 > 0){ depSum += da3; depCum += da3; if (dd3){ if (!depLastDate || dd3 > depLastDate) depLastDate = dd3; if (!dep25Date && feeKnown && depCum >= ftot * 0.25) dep25Date = dd3; } } }
   var depBox = $('q_depbox'); if (depBox) depBox.style.display = (paym === 'ach' || paym === 'cc' || paym === 'check') ? '' : 'none';
   var depTotEl = $('q_deptot');
-  if (depTotEl){ if (depSum > 0 && feeKnown){ var depFmt = function(s){ var pp = s.split('-'); return pp.length === 3 ? (parseInt(pp[1], 10) + '/' + parseInt(pp[2], 10) + '/' + pp[0]) : s; }; depTotEl.textContent = depSum >= ftot ? ('✅ PAGADO COMPLETO: porciones ' + fmtD(depSum) + ' de ' + fmtD(ftot) + (depLastDate ? ' — última porción el ' + depFmt(depLastDate) : '')) : ('Porciones: ' + fmtD(depSum) + ' de ' + fmtD(ftot) + ' · faltan ' + fmtD(ftot - depSum)); } else depTotEl.textContent = ''; }
+  if (depTotEl){ if (depSum > 0 && feeKnown){ var depFmt = function(s){ var pp = s.split('-'); return pp.length === 3 ? (parseInt(pp[1], 10) + '/' + parseInt(pp[2], 10) + '/' + pp[0]) : s; }; var depMsg = depSum >= ftot ? ('✅ PAGADO COMPLETO: porciones ' + fmtD(depSum) + ' de ' + fmtD(ftot) + (depLastDate ? ' — última porción el ' + depFmt(depLastDate) : '')) : ('Porciones: ' + fmtD(depSum) + ' de ' + fmtD(ftot) + ' · faltan ' + fmtD(ftot - depSum)); if (depLastDate){ var dw = (new Date(depLastDate + 'T12:00:00') - new Date()) / 604800000; if (dw > 24.3) depMsg += ' · ⚠️ la última cuota pasa de 24 semanas'; } depTotEl.textContent = depMsg; } else depTotEl.textContent = ''; }
   var downRaw = qNum('q_down');
   var down = $('q_downt').value === 'pct' ? ftot * downRaw / 100 : downRaw;
   if (depSum > 0) down = Math.min(depSum, ftot); // las porciones SON el depósito (pagado completo directo, nunca UGA)
