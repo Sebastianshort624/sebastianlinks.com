@@ -2673,7 +2673,11 @@ function qRecalc(){
   else if (feeKnown && bal <= 0){ $('q_ftpay').textContent = fmtC(ftot); $('q_ftint').textContent = fmtC(0); }
   else { $('q_ftpay').textContent = '—'; $('q_ftint').textContent = '—'; }
   var pmtEl = $('q_pmt');
-  if (feeKnown && !pmtEl.value) pmtEl.value = ftot < 10000 ? 299 : 399;
+  var finNow = (paym === 'ucfs' || paym === 'uga' || paym === 'inhouse' || paym === 'equity');
+  if (feeKnown && finNow && bal > 0 && fmo > 0){
+    var realP = Math.round(pmtF), curP = qNum('q_pmt');
+    if (!pmtEl.value || curP === 299 || curP === 399 || (window.__qPmtMir && curP === window.__qPmtMir)){ pmtEl.value = realP; window.__qPmtMir = realP; }
+  } else if (feeKnown && !pmtEl.value) pmtEl.value = ftot < 10000 ? 299 : 399;
   var qpmt = qNum('q_pmt'), mosn = '—';
   if (feeKnown && qpmt > 0 && bal > 0){
     for (var qn = 1; qn <= 360; qn++){ if (amort(bal, fapr, qn) <= qpmt){ mosn = qn + ' meses'; break; } }
