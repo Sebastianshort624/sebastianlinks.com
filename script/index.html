@@ -463,6 +463,7 @@
     <div class="qsec" style="margin-top:0;color:#b91c1c">🔴 FEE DEED-BACK — DESDE LA HOJA PRE-CALL</div>
     <label class="qf">PRECIO DE LA LISTA (MÍN) <input id="q_sheetfee" type="number" min="0" oninput="qRecalc()"></label>
     <label class="qf">ANTICIPO (DESDE LA HOJA) <input id="q_sheetdown" type="number" min="0" oninput="qRecalc()"></label>
+    <label class="qf">PAD — EXTRA A MI COMISIÓN <select id="q_padcomm" onchange="qRecalc()" style="padding:4px;font-size:0.95em;font-family:inherit;"><option value="0">+$0 comisión (pad $0)</option><option value="50">+$50 comisión (pad $100)</option><option value="100">+$100 comisión (pad $200)</option><option value="150">+$150 comisión (pad $300)</option><option value="200">+$200 comisión (pad $400)</option><option value="250">+$250 comisión (pad $500)</option><option value="300">+$300 comisión (pad $600)</option><option value="400">+$400 comisión (pad $800)</option><option value="500">+$500 comisión (pad $1,000)</option></select></label>
     <div class="qsm">En deed-back el fee es el precio de la lista de precios + $299 admin (+3% si paga con tarjeta). Nada de 47%.</div>
     <div id="q_dbbreak" class="qsm" style="display:none;margin-top:6px;font-weight:700;color:#7f1d1d"></div>
     <div id="q_paysched" class="qsm" style="display:none;margin-top:6px;font-weight:600;color:#7f1d1d"></div>
@@ -471,15 +472,16 @@
   <div class="qsm" id="q_feesug" style="margin:-2px 0 8px"></div>
   <div id="q_minwarn" style="display:none;background:#fef2f2;border:2px solid #b91c1c;color:#b91c1c;font-weight:700;padding:8px 10px;margin:0 0 8px;border-radius:6px">PRECIO MÍNIMO LINX: $3,500 + $299 ADMIN = $3,799 — NUNCA OFRECER MENOS</div>
   <div class="qsm" style="margin:-4px 0 8px">PRECIO MÍNIMO LINX: $3,500 + $299 ADMIN = <b>$3,799</b> — el precio más bajo que podemos ofrecer.</div>
-  <label class="qf">FORMA DE PAGO <select id="q_paym" onchange="qRecalc()">
+  <label class="qf">FORMA DE PAGO <select id="q_paym" onchange="qPaymChange()">
     <option value="ach">ACH</option>
     <option value="check">CHEQUE</option>
     <option value="cc">CC (+3%)</option>
     <option value="ucfs">UCFS</option>
     <option value="equity">Equity</option>
     <option value="uga">UGA</option>
+    <option value="inhouse">IN-HOUSE (Linx)</option>
   </select></label>
-  <label class="qf">ANTICIPO <span><select id="q_downt" onchange="qRecalc()" style="padding:4px;font-size:0.95em;font-family:inherit;"><option value="dol">$</option><option value="pct">%</option></select> <input id="q_down" type="number" min="0" oninput="qRecalc()" style="width:90px"></span></label>
+  <label class="qf">ANTICIPO <span><select id="q_downt" onchange="qRecalc()" style="padding:4px;font-size:0.95em;font-family:inherit;"><option value="dol">$</option><option value="pct">%</option></select> <input id="q_down" type="number" min="0" oninput="qDownManual=true;qRecalc()" style="width:90px"></span></label>
   <label class="qf">PAGO/MES <input id="q_pmt" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">APR FINANC. % <input id="q_fapr" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">MESES FINANC. <select id="q_fmo" onchange="qRecalc()"><option value="6">6</option><option value="12">12</option><option value="18">18</option><option value="24">24</option><option value="30">30</option><option value="36" selected>36</option><option value="42">42</option><option value="48">48</option><option value="54">54</option><option value="60">60</option></select></label>
@@ -497,7 +499,7 @@
       <div><span>24 meses</span><b id="q_t24">—</b></div>
       <div><span>36 meses</span><b id="q_t36">—</b></div>
     </div>
-    <div>Comisión 10% <select id="q_commpay" onchange="qCommPay()" style="padding:2px 4px;font-size:0.92em;font-family:inherit;"><option value="ucfs">UCFS</option><option value="uga">UGA</option><option value="cc">CC</option><option value="ach">ACH</option></select> <b id="q_comm">—</b> <span class="qsm" id="q_commbase"></span></div>
+    <div><span id="q_commlab">Comisión 10%</span> <select id="q_commpay" onchange="qCommPay()" style="padding:2px 4px;font-size:0.92em;font-family:inherit;"><option value="ucfs">UCFS</option><option value="uga">UGA</option><option value="cc">CC</option><option value="ach">ACH</option></select> <b id="q_comm">—</b> <span class="qsm" id="q_commbase"></span></div>
   </div>
   <div id="q_dates" style="display:none;margin-top:10px">
     <label class="qf">FECHA DEL ANTICIPO <input id="q_ddate" type="date" onchange="qRecalc()"></label>
@@ -895,6 +897,8 @@ function qApplyDtype(){
     bd.style.background = db ? '#b91c1c' : '#e2e8f0'; bd.style.color = db ? '#fff' : '#334155';
   }
   var sfb = $('q_sheetfeebox'); if (sfb) sfb.style.display = db ? '' : 'none';
+  var fp = $('q_feepct'); if (fp) fp.style.display = db ? 'none' : '';
+  var cl = $('q_commlab'); if (cl) cl.textContent = db ? 'Comisión deed-back' : 'Comisión 10%';
   var dn = $('q_dbnote'); if (dn) dn.style.display = db ? '' : 'none';
 }
 function qSetDtype(t){
@@ -1117,7 +1121,7 @@ function qContractCalc(which){ // which: 1, 2, 3
   var mg = which === 1 ? qMortgage() : qMortgageVals(payoff, qNum(px + 'mmo'), qNum(px + 'apr'), qNum(px + 'term') || 120, !!(typeof cur !== 'undefined' && cur && cur['c' + which] && cur['c' + which].poffVerified === true));
   var pct = parseFloat(($('q_feepct') || {}).value || '47') || 47;
   var price = manFee > 0 ? { service: manFee, admin: 0, total: manFee, manual: true } : (payoff > 0 ? qPriceVals(payoff, pct) : { service: 0, admin: 0, total: 0, manual: false });
-  if (which === 1 && qIsDB()){ var sf = qNum('q_sheetfee'); if (sf > 0) price = { service: sf, admin: 299, total: sf + 299, manual: true }; }
+  if (which === 1 && qIsDB()){ var sf = qNum('q_sheetfee'); if (sf > 0) price = { service: sf + qDbPad(), admin: 299, total: sf + 299 + qDbPad(), manual: true }; }
   var active = which === 1 ? true : (payoff > 0 || qNum(px + 'mmo') > 0 || mf > 0 || manFee > 0);
   var mfSh = which > 1 && $(px + 'mfshared') && $(px + 'mfshared').checked;
   return { payoff: payoff, mmo: mg.mmo, mf: mf, mfEff: mfSh ? 0 : mf, mfShared: !!mfSh, esc: esc, mg: mg, price: price, active: active };
@@ -1578,7 +1582,7 @@ function qQuoteBuild(L){
   var term = qNum('q_term') || 120, pyr = qNum('q_pyr'), pmonth = qNum('q_pmonth');
   var MG = qMortgage(); // shared model (SAI 2026-10-20) — same outputs as the panel, no private formula
   var fee = qNum('q_fee');
-  if (qIsDB() && $('q_sheetfee') && $('q_sheetfee').value !== '' && qNum('q_sheetfee') > 0) fee = qNum('q_sheetfee') + 299;
+  if (qIsDB() && $('q_sheetfee') && $('q_sheetfee').value !== '' && qNum('q_sheetfee') > 0) fee = qNum('q_sheetfee') + 299 + qDbPad();
   if (!(fee > 0)){ // sin tarifa tecleada: el precio se calcula del saldo en el registro (la cotización sale siempre que haya saldo)
     var CT = 0; qComboCalc().forEach(function(c){ CT += c.price.total; });
     if (CT > 0) fee = CT;
@@ -1615,8 +1619,8 @@ function qQuoteBuild(L){
   h += '<p style="margin-top:18px">' + (en ? 'Prepared for: ' : 'Preparada para: ') + '<b>' + escH(cur.name) + '</b>' + (legal ? '<br>Resort: <b>' + escH(legal) + '</b>' : '') + (cur.loc ? '<br>' + escH(cur.loc) : '') + '</p>';
   h += '<h2 ' + H2 + '>' + (en ? 'Quote' : 'Cotización') + '</h2>';
   h += '<div ' + ROW + '><span>' + (en ? 'Total fee for our service' : 'Tarifa total de nuestro servicio') + '</span><b>' + fmtC(fee) + '</b></div>';
-  if (qIsDB() && qNum('q_sheetfee') > 0){ // deed-back: precio de lista + $299 admin (nunca 47%)
-    h += '<div ' + ROW + '><span>' + (en ? 'How the price is calculated' : 'Cómo se calcula el precio') + '</span><span>' + (en ? 'Price list ' : 'Precio de lista ') + fmtC(qNum('q_sheetfee')) + ' + ' + fmtC(299) + ' admin</span></div>';
+  if (qIsDB() && qNum('q_sheetfee') > 0){ // deed-back: precio de lista + $299 admin + pad (nunca 47%)
+    h += '<div ' + ROW + '><span>' + (en ? 'How the price is calculated' : 'Cómo se calcula el precio') + '</span><span>' + (en ? 'Price list ' : 'Precio de lista ') + fmtC(qNum('q_sheetfee')) + ' + ' + fmtC(299) + ' admin' + (qDbPad() > 0 ? ' + ' + fmtC(qDbPad()) + ' pad' : '') + '</span></div>';
   }
   if (payoff > 0 && !qIsDB()){ // descomposición del precio: (saldo x %) + admin, con el piso de servicio
     var pctD = parseFloat(($('q_feepct') || {}).value || '47') || 47;
@@ -2317,7 +2321,13 @@ function qFeeApply(){
   return true;
 }
 function qFeePct(){ if (qFeeApply()) qRecalc(); }
-function qCommPay(){ var cp = $('q_commpay'); if (!cp) return; var pm = $('q_paym'); if (pm) pm.value = cp.value; qRecalc(); }
+function qCommPay(){ var cp = $('q_commpay'); if (!cp) return; var pm = $('q_paym'); if (pm) pm.value = cp.value; qDownManual = false; qDownAutoVal = null; qRecalc(); }
+// DEED-BACK PRICING + DOWN RULES (Sebastian, 2026-10-29): DB price = lista + $299 admin + PAD; the pad is
+// TWICE the commission extra he picks (q_padcomm = $ extra a su comision; comision DB = $300 + 1/2 pad).
+// Down payments: UCFS = $0 requerido (opcional); UGA = 25% requerido; IN-HOUSE a 48 meses = 30% requerido.
+var qDownManual = false, qDownAutoVal = null, qDbFeeKey = null, qDbFeeVal = null;
+function qDbPad(){ return (qNum('q_padcomm') || 0) * 2; }
+function qPaymChange(){ qDownManual = false; qDownAutoVal = null; var pm = $('q_paym'); if (pm && pm.value === 'inhouse'){ var fa = $('q_fapr'); if (fa) fa.value = 19.99; } qRecalc(); }
 function qSync(c){
   qDtype = (c && c.dtype === 'DB') ? 'DB' : 'MTG';
   qClassWarn = '';
@@ -2344,6 +2354,7 @@ function qSync(c){
   $('q_folder').value = c && c.folderPath ? c.folderPath : '';
   $('q_loannote').value = c && c.loanNote ? c.loanNote : '';
   $('q_sheetfee').value = c && c.sheetFee ? c.sheetFee : ''; $('q_sheetdown').value = c && c.sheetDown ? c.sheetDown : '';
+  $('q_padcomm').value = c && c.padComm ? c.padComm : 0; qDownManual = false; qDownAutoVal = null; qDbFeeKey = null; qDbFeeVal = null;
   var psEl = $('q_paysched'); if (psEl){ if (c && c.paySchedule){ psEl.textContent = '🗓️ ' + c.paySchedule; psEl.style.display = ''; } else { psEl.textContent = ''; psEl.style.display = 'none'; } }
   qRenderContracts(c);
   qIdn(c);
@@ -2483,34 +2494,52 @@ function qRecalc(){
   $('q_xescp').textContent = (esc || 8); $('q_xmf10').textContent = fmtD(mf10); $('q_xof10').textContent = fmtD(of10);
   $('q_xproj10').textContent = mo10 === null ? PEND_TXT : fmtD(mo10 + mf10 + of10);
   var fee = qNum('q_fee'), fapr = qNum('q_fapr'), fmo = qNum('q_fmo');
+  var padCommDb = qNum('q_padcomm'), padDb = padCommDb * 2;
   var sheetFeeActive = qIsDB() && $('q_sheetfee').value !== '' && qNum('q_sheetfee') > 0;
-  if (sheetFeeActive) fee = qNum('q_sheetfee') + 299;
+  if (sheetFeeActive){
+    fee = qNum('q_sheetfee') + 299 + padDb;
+    // Auto-populate NUESTRA TARIFA with the final DB price (lista + admin + pad). Guard: never stomp a
+    // manual edit of q_fee unless the lista/pad inputs changed since the last auto-write.
+    var feeEl = $('q_fee'), dbKey = qNum('q_sheetfee') + '|' + padCommDb;
+    var feeCur = feeEl.value === '' ? null : parseFloat(feeEl.value);
+    if (dbKey !== qDbFeeKey || feeCur === null || feeCur === qDbFeeVal){ feeEl.value = fee; qDbFeeKey = dbKey; qDbFeeVal = fee; }
+  }
   var dbb = $('q_dbbreak');
   if (dbb){
     if (sheetFeeActive){
-      var sfv = qNum('q_sheetfee'), tot299 = sfv + 299;
-      var dbt = 'Lista ' + fmtD(sfv) + ' + $299 admin = ' + fmtD(tot299);
-      if (($('q_paym') || {}).value === 'cc') dbt += ' \u00b7 Tarjeta +3%: ' + fmtD(tot299 * 0.03) + ' \u2192 total con tarjeta ' + fmtD(tot299 * 1.03);
+      var sfv = qNum('q_sheetfee');
+      var dbt = 'Lista ' + fmtD(sfv) + ' + $299 admin' + (padDb > 0 ? ' + pad ' + fmtD(padDb) : '') + ' = PRECIO FINAL ' + fmtD(fee) + ' (ya está en NUESTRA TARIFA)';
+      dbt += ' \u00b7 Comisión deed-back: $300 + \u00bd pad = ' + fmtD(300 + padCommDb);
+      if (($('q_paym') || {}).value === 'cc') dbt += ' \u00b7 Tarjeta +3%: ' + fmtD(fee * 0.03) + ' \u2192 total con tarjeta ' + fmtD(fee * 1.03);
       dbb.textContent = dbt; dbb.style.display = '';
     } else { dbb.textContent = ''; dbb.style.display = 'none'; }
   }
   var sugEl = $('q_feesug');
   if (sugEl){
-    if (qIsDB()) sugEl.innerHTML = sheetFeeActive ? 'Fee activo (deed-back): precio de lista + $299 admin.' : 'Deed-back: el fee sale de la hoja PRE-CALL \u2014 ingr\u00e9salo en el recuadro rojo.';
+    if (qIsDB()) sugEl.innerHTML = sheetFeeActive ? 'Fee activo (deed-back): lista + $299 admin + pad = precio final (automático).' : 'Deed-back: el fee sale de la hoja PRE-CALL \u2014 ingr\u00e9salo en el recuadro rojo.';
     else if (payoff > 0){ var pctS = parseFloat(($('q_feepct') || {}).value || '47') || 47; var s47 = payoff * pctS / 100; if (s47 < 3500) s47 = 3500; var adm = s47 < 10000 ? 299 : 399; var mcN = ''; var ccN = ''; if (($('q_paym') || {}).value === 'cc'){ var ccS = (s47 + adm) * 0.03; ccN = ' + cargo CC 3% = ' + fmtD(ccS) + ' = <b>' + fmtD(s47 + adm + ccS) + '</b> con tarjeta'; } sugEl.innerHTML = 'F\u00f3rmula: payoff \u00d7 ' + pctS + '% = ' + fmtD(s47) + ' + admin ' + fmtD(adm) + ' = <b>' + fmtD(s47 + adm) + '</b>' + ccN + mcN + ' <a href="#" onclick="document.getElementById(\'q_fee\').value=' + Math.round(s47 + adm) + ';qRecalc();return false;">Usar</a>'; }
     else sugEl.textContent = '';
     if (COMBO){ var cAct2 = COMBO.filter(function(cc){ return cc.active; }); if (cAct2.length > 1){ var cTot2 = 0; COMBO.forEach(function(cc){ cTot2 += cc.price.total; }); sugEl.innerHTML += '<br><b>PRECIO COMBINADO (' + cAct2.length + ' contratos, cada uno cobrado por separado): ' + fmtD(cTot2) + '</b> <a href="#" onclick="document.getElementById(\'q_fee\').value=' + Math.round(cTot2) + ';qRecalc();return false;">Usar precio combinado</a>'; } }
   }
   var paym = $('q_paym').value;
-  var cpS = $('q_commpay'); if (cpS) cpS.value = (paym === 'check' || paym === 'equity') ? 'ach' : paym;
-  var isFin = paym === 'ucfs' || paym === 'equity' || paym === 'uga';
+  var cpS = $('q_commpay'); if (cpS) cpS.value = (paym === 'check' || paym === 'equity' || paym === 'inhouse') ? 'ach' : paym;
+  var isFin = paym === 'ucfs' || paym === 'equity' || paym === 'uga' || paym === 'inhouse';
   var feeKnown = fee > 0;
   var mwEl = $('q_minwarn'); if (mwEl) mwEl.style.display = (feeKnown && fee < 3799) ? '' : 'none';
   var ftot = feeKnown && paym === 'cc' ? fee * 1.03 : fee;
+  // ANTICIPO REQUERIDO por forma de pago (Sebastian 2026-10-29): UCFS $0 (opcional) / UGA 25% / IN-HOUSE 48 meses 30%.
+  // Se auto-calcula en el campo ANTICIPO salvo que Sebastian lo haya tecleado el mismo.
+  var downReq = null;
+  if (feeKnown){ if (paym === 'uga') downReq = Math.round(ftot * 0.25); else if (paym === 'inhouse' && fmo === 48) downReq = Math.round(ftot * 0.30); }
+  if (!qDownManual){
+    var dEl = $('q_down');
+    if (downReq !== null){ if (qNum('q_down') !== downReq || $('q_downt').value !== 'dol'){ dEl.value = downReq; $('q_downt').value = 'dol'; } qDownAutoVal = downReq; }
+    else if (qDownAutoVal !== null){ dEl.value = ''; qDownAutoVal = null; }
+  }
   var downRaw = qNum('q_down');
   var down = $('q_downt').value === 'pct' ? ftot * downRaw / 100 : downRaw;
   if (qIsDB() && $('q_sheetdown').value !== '' && qNum('q_sheetdown') > 0) down = qNum('q_sheetdown');
-  $('q_down').style.border = (isFin && feeKnown && !downRaw) ? '2px solid #d99a17' : '';
+  $('q_down').style.border = (downReq !== null && feeKnown && !downRaw) ? '2px solid #d99a17' : '';
   var bal = feeKnown ? Math.max(0, ftot - down) : 0;
   var s10 = feeKnown && t10 !== null ? t10 - ftot : 0;
   $('q_ftot').textContent = feeKnown ? fmtD(ftot) + (paym === 'cc' ? ' (+3%)' : '') : '—';
@@ -2533,8 +2562,10 @@ function qRecalc(){
   $('q_t12').textContent = t12; $('q_t24').textContent = t24; $('q_t36').textContent = t36;
   var comm = feeKnown ? Math.max(0, fee - qAdminFor(fee)) * 0.10 : 0;
   if (COMBO && feeKnown){ var cTot3 = 0, cSvc3 = 0, cAct3 = 0; COMBO.forEach(function(cc){ if (cc.active){ cAct3++; cTot3 += cc.price.total; cSvc3 += cc.price.service; } }); if (cAct3 > 1 && Math.abs(fee - cTot3) < 1) comm = cSvc3 * 0.10; }
+  var commBaseTxt = feeKnown ? '(base ' + fmtD(Math.max(0, fee - qAdminFor(fee))) + ' — tarifa sin admin ni cargo CC, como en la hoja de comisi\u00f3n)' : '';
+  if (qIsDB() && sheetFeeActive && feeKnown){ comm = 300 + padCommDb; commBaseTxt = '(deed-back: $300 fijo + \u00bd del pad de ' + fmtD(padDb) + ' = ' + fmtD(comm) + ')'; }
   $('q_comm').textContent = feeKnown ? fmtD(comm) : '—';
-  var cbEl = $('q_commbase'); if (cbEl) cbEl.textContent = feeKnown ? '(base ' + fmtD(Math.max(0, fee - qAdminFor(fee))) + ' — tarifa sin admin ni cargo CC, como en la hoja de comisi\u00f3n)' : '';
+  var cbEl = $('q_commbase'); if (cbEl) cbEl.textContent = commBaseTxt;
   var cdate = '—';
   if (feeKnown){
     var thresh = ftot * 0.25;
@@ -2612,7 +2643,7 @@ function qRecalc(){
   qRenderCombo(COMBO);
   renderBar(c2, n); applyFills(c2, n); soldRender(); qCover(); qAutoSave();
 }
-var QFIN_LABELS = { q_payoff: 'Saldo (payoff)', q_mmo: 'Pago mensual hipoteca', q_mf: 'Mantenimiento anual', q_ofees: 'Otros gastos anuales', q_pnight: '$ por noche', q_esc: 'Escalación MF %', q_aapr: 'APR hipoteca', q_term: 'Plazo (meses)', q_loan: 'Monto financiado', q_pyr: 'Año de compra', q_fee: 'Tarifa Linx (fee)', q_down: 'Down payment', q_fapr: 'APR financiamiento Linx', q_fmo: 'Meses financiamiento Linx', q_sheetfee: 'Tarifa hoja (deed-back)', q_sheetdown: 'Down hoja', q2_payoff: 'C2 Saldo', q2_mmo: 'C2 Pago mensual', q2_mf: 'C2 Mantenimiento', q2_apr: 'C2 APR', q2_term: 'C2 Plazo', q2_fee: 'C2 Tarifa', q3_payoff: 'C3 Saldo', q3_mmo: 'C3 Pago mensual', q3_mf: 'C3 Mantenimiento', q3_apr: 'C3 APR', q3_term: 'C3 Plazo', q3_fee: 'C3 Tarifa' };
+var QFIN_LABELS = { q_payoff: 'Saldo (payoff)', q_mmo: 'Pago mensual hipoteca', q_mf: 'Mantenimiento anual', q_ofees: 'Otros gastos anuales', q_pnight: '$ por noche', q_esc: 'Escalación MF %', q_aapr: 'APR hipoteca', q_term: 'Plazo (meses)', q_loan: 'Monto financiado', q_pyr: 'Año de compra', q_fee: 'Tarifa Linx (fee)', q_down: 'Down payment', q_fapr: 'APR financiamiento Linx', q_fmo: 'Meses financiamiento Linx', q_sheetfee: 'Tarifa hoja (deed-back)', q_padcomm: 'Pad DB ($ extra a comision)', q_sheetdown: 'Down hoja', q2_payoff: 'C2 Saldo', q2_mmo: 'C2 Pago mensual', q2_mf: 'C2 Mantenimiento', q2_apr: 'C2 APR', q2_term: 'C2 Plazo', q2_fee: 'C2 Tarifa', q3_payoff: 'C3 Saldo', q3_mmo: 'C3 Pago mensual', q3_mf: 'C3 Mantenimiento', q3_apr: 'C3 APR', q3_term: 'C3 Plazo', q3_fee: 'C3 Tarifa' };
 var qFinSnap = {};
 function qFinCapture(){ var sn = {}; for (var id in QFIN_LABELS){ var el = $(id); if (el) sn[id] = String(el.value); } return sn; }
 function qAuditLog(field, from, to){
@@ -2658,7 +2689,7 @@ function qAutoSave(){
       c.crmlink = $('q_pipe').value.trim(); c.pipelineUrl = c.crmlink;
       c.sheetUrl = $('q_sheet').value.trim(); c.docusignUrl = $('q_dsurl').value.trim();
       c.folderPath = $('q_folder').value.trim(); c.loanNote = $('q_loannote').value.trim();
-      c.sheetFee = qNum('q_sheetfee'); c.sheetDown = qNum('q_sheetdown');
+      c.sheetFee = qNum('q_sheetfee'); c.sheetDown = qNum('q_sheetdown'); c.padComm = qNum('q_padcomm');
       c.ncontracts = qNC;
       c.c2 = { payoff: qNum('q2_payoff'), mmo: qNum('q2_mmo'), mf: qNum('q2_mf'), esc: qNum('q2_esc'), apr: qNum('q2_apr'), term: qNum('q2_term'), fee: qNum('q2_fee'), pdate: ($('q2_pdate').value || '').trim(), mfShared: !!($('q2_mfshared') && $('q2_mfshared').checked) };
       if (cs[ix].c2 && cs[ix].c2.poffVerified !== undefined) c.c2.poffVerified = cs[ix].c2.poffVerified;
@@ -2735,7 +2766,7 @@ function importScriptClients(input){
           tz: r.tz || '', phone2: r.phone2 || '', notes: r.notes || '',
           dtype: r.dtype || 'standard',
           mf: qNum2(r.mf != null ? r.mf : (inp.annualMF != null ? inp.annualMF : ans.mfAmount)),
-          ofees: qNum2(r.ofees), pnight: qNum2(r.pnight),
+          ofees: qNum2(r.ofees), pnight: qNum2(r.pnight), padComm: qNum2(r.padComm),
           esc: qNum2(r.esc) || 8,
           payoff: qNum2(r.payoff != null ? r.payoff : inp.loanBalance),
           apr: qNum2(r.apr != null ? r.apr : inp.interestRate),
@@ -2758,7 +2789,7 @@ function importScriptClients(input){
           c2: r.c2 || null, c3: r.c3 || null, cfin: qNum2(r.cfin), cyr: qNum2(r.cyr), cmonth: qNum2(r.cmonth),
           poffUnverified: !!r.poffUnverified, poffVerified: !!r.poffVerified, _upd: r._upd || 0
         };
-        if (ix >= 0){ var oldR = cs[ix]; if (oldR && oldR._upd && rec._upd && rec._upd < oldR._upd){ ['payoff','mmo','mf','ofees','pnight','esc','apr','term','pyr','pmonth','cfin','fee','down','fapr','fmo','ncontracts','dtype','poffUnverified','poffVerified','cyr','cmonth','c2','c3','_upd'].forEach(function(k){ if (oldR[k] !== undefined) rec[k] = oldR[k]; }); } cs[ix] = rec; updated++; } else { cs.push(rec); added++; }
+        if (ix >= 0){ var oldR = cs[ix]; if (oldR && oldR._upd && rec._upd && rec._upd < oldR._upd){ ['payoff','mmo','mf','ofees','pnight','padComm','esc','apr','term','pyr','pmonth','cfin','fee','down','fapr','fmo','ncontracts','dtype','poffUnverified','poffVerified','cyr','cmonth','c2','c3','_upd'].forEach(function(k){ if (oldR[k] !== undefined) rec[k] = oldR[k]; }); } cs[ix] = rec; updated++; } else { cs.push(rec); added++; }
       });
       localStorage.setItem('sl_clients', JSON.stringify(cs));
       refreshClientSel();
