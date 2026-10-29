@@ -1853,6 +1853,13 @@ function qWalkHtml(){
   if (!cur){ alert('Selecciona un cliente primero.'); return; }
   qDocOpen(qWalkBuild(qDocDefLang()));
 }
+window.__qWalkLog = function(via, vids){
+  if (!cur) return null;
+  cur.walkLog = Array.isArray(cur.walkLog) ? cur.walkLog : [];
+  cur.walkLog.push({ ts: Date.now(), via: via, vids: vids || [] });
+  try { var cs = slClients(); for (var i = 0; i < cs.length; i++) if (cs[i].id === cur.id) cs[i].walkLog = cur.walkLog; localStorage.setItem('sl_clients', JSON.stringify(cs)); } catch(e){}
+  return cur.walkLog;
+};
 function qWalkBuild(L){
   var en = (L === 'en');
   var first = qWalkFirst();
@@ -1883,6 +1890,15 @@ function qWalkBuild(L){
     panel += '<label style="display:block;padding:3px 0;font-size:14px;color:#23323b;cursor:pointer"><input type="checkbox" class="wkcb" value="' + v.id + '"' + (isOn(v) ? ' checked' : '') + ' onchange="wkRender()"> ' + escH(en ? v.en : v.es) + '</label>';
   });
   panel += '</div>';
+  var wlog = (cur && Array.isArray(cur.walkLog)) ? cur.walkLog : [];
+  var vTitle = {}; WALK_VIDEOS.forEach(function(v){ vTitle[v.id] = en ? v.en : v.es; });
+  var logRows = '';
+  wlog.forEach(function(le){
+    var when = new Date(le.ts).toLocaleString(en ? 'en-US' : 'es-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+    var vids = (le.vids || []).map(function(id){ return vTitle[id] || id; });
+    logRows += '<div style="padding:3px 0;font-size:13.5px;color:#23323b;">🕒 <b>' + escH(when) + '</b> — ' + (le.via === 'gmail' ? (en ? 'Opened in Gmail' : 'Abierto en Gmail') : (en ? 'Copied to paste into Gmail' : 'Copiado para pegar en Gmail')) + ' — ' + vids.length + ' videos: ' + escH(vids.join(' · ')) + '</div>';
+  });
+  var logPanel = '<div style="max-width:820px;margin:0 auto 14px;background:#eef6f8;border:2px solid #1a5968;border-radius:10px;padding:14px 18px;font-family:Arial,Helvetica,sans-serif"><div style="font-weight:800;color:#1a5968;margin-bottom:6px;font-size:15px">📋 ' + (en ? 'SEND LOG — this client' : 'REGISTRO DE ENVÍOS — este cliente') + '</div><div id="wkLogList">' + (logRows || '<div style="font-size:13.5px;color:#5b6d74;">' + (en ? 'No sends logged yet. Every COPY or OPEN IN GMAIL stamps an entry here automatically.' : 'Todavía no hay envíos registrados. Cada COPIAR o ABRIR EN GMAIL deja una entrada aquí automáticamente.') + '</div>') + '</div></div>';
   var e = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f2f5f6;"><tr><td align="center" style="padding:24px 8px;"><table role="presentation" width="640" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:14px;overflow:hidden;box-shadow:0 8px 24px rgba(20,50,60,.10);font-family:Arial,Helvetica,sans-serif;">';
   e += '<tr><td style="background:#1a5968;padding:22px 30px;"><div style="font-size:25px;font-weight:800;color:#ffffff;">Linx Legal</div><div style="font-size:13px;color:#bfe3ea;">' + (en ? 'Timeshare cancellation' : 'Cancelación de tiempos compartidos') + '</div></td></tr>';
   e += '<tr><td style="padding:26px 30px 8px;font-size:15px;color:#23323b;line-height:1.6;"><p style="margin:0 0 12px;">' + T.greet + ' <b>' + escH(first) + '</b>,</p>';
@@ -1906,13 +1922,17 @@ function qWalkBuild(L){
     '<button ' + QDOC_BTN + ' onclick="wkLangT(\'' + (en ? 'es' : 'en') + '\')">' + (en ? '&#127760; ESPAÑOL' : '&#127760; ENGLISH') + '</button>' +
     '<span style="font-size:12px;opacity:.85">' + T.note + '</span></div>';
   h += panel;
+  h += logPanel;
   h += '<div id="eml" contenteditable="true">' + e + '</div>';
-  h += '<scr' + 'ipt>var WKV = ' + JSON.stringify(wkData) + '; var WK_INTRO = ' + JSON.stringify(T.vintro) + '; var WK_WATCH = ' + JSON.stringify(T.watch) + ';' +
+  h += '<scr' + 'ipt>var WKV = ' + JSON.stringify(wkData) + '; var WKLOG = ' + JSON.stringify(wlog) + '; var WKVT = ' + JSON.stringify(vTitle) + '; var WKLOC = ' + JSON.stringify(en ? 'en-US' : 'es-US') + '; var WKVIA = ' + JSON.stringify(en ? { copy: 'Copied to paste into Gmail', gmail: 'Opened in Gmail' } : { copy: 'Copiado para pegar en Gmail', gmail: 'Abierto en Gmail' }) + '; var WK_INTRO = ' + JSON.stringify(T.vintro) + '; var WK_WATCH = ' + JSON.stringify(T.watch) + ';' +
     'function wkSel(){ var on = []; var bs = document.querySelectorAll(".wkcb"); for (var i = 0; i < bs.length; i++){ if (bs[i].checked) on.push(bs[i].value); } return on; }' +
     'function wkRender(){ var on = wkSel(); var hh = ""; if (on.length){ hh += \'<p style="font-weight:700;color:#1a5968;font-size:16px;margin:18px 0 10px;">&#127916; \' + WK_INTRO + \'</p>\'; WKV.forEach(function(v){ if (on.indexOf(v.id) < 0) return; hh += \'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:10px;"><tr><td style="background:#edf5f6;border:1px solid #cfe0e3;border-radius:10px;padding:14px 16px;"><div style="font-size:16px;font-weight:700;color:#1a5968;">\' + v.t + \'</div><div style="font-size:13px;color:#536a72;margin:4px 0 11px;">\' + v.s + \'</div><a href="\' + v.url + \'" style="display:inline-block;background:#1a5968;color:#ffffff;text-decoration:none;font-weight:700;padding:9px 18px;border-radius:6px;font-size:14px;">\' + WK_WATCH + \'</a></td></tr></table>\'; }); } document.getElementById("wkVidWrap").innerHTML = hh; }' +
-    'function wkCopy(b){ var n = document.getElementById("eml"); try { navigator.clipboard.write([new ClipboardItem({ "text/html": new Blob([n.innerHTML], { type: "text/html" }), "text/plain": new Blob([n.innerText], { type: "text/plain" }) })]).then(function(){ b.textContent = "✅ COPIADO"; }); } catch (err){ var r = document.createRange(); r.selectNode(n); var s = getSelection(); s.removeAllRanges(); s.addRange(r); document.execCommand("copy"); b.textContent = "✅ COPIADO"; } }' +
-    'function wkGmail(){ var to = document.getElementById("emTo").value, su = document.getElementById("emSubj").value, tx = document.getElementById("eml").innerText; window.open("https://mail.google.com/mail/?view=cm&fs=1&to=" + encodeURIComponent(to) + "&su=" + encodeURIComponent(su) + "&body=" + encodeURIComponent(tx), "_blank"); }' +
+    'function wkCopy(b){ wkLog("copy"); var n = document.getElementById("eml"); try { navigator.clipboard.write([new ClipboardItem({ "text/html": new Blob([n.innerHTML], { type: "text/html" }), "text/plain": new Blob([n.innerText], { type: "text/plain" }) })]).then(function(){ b.textContent = "✅ COPIADO"; }); } catch (err){ var r = document.createRange(); r.selectNode(n); var s = getSelection(); s.removeAllRanges(); s.addRange(r); document.execCommand("copy"); b.textContent = "✅ COPIADO"; } }' +
+    'function wkGmail(){ wkLog("gmail"); var to = document.getElementById("emTo").value, su = document.getElementById("emSubj").value, tx = document.getElementById("eml").innerText; window.open("https://mail.google.com/mail/?view=cm&fs=1&to=" + encodeURIComponent(to) + "&su=" + encodeURIComponent(su) + "&body=" + encodeURIComponent(tx), "_blank"); }' +
     'function wkLangT(l){ try { if (window.opener && !window.opener.closed && window.opener.__qDocRender){ window.opener.__qWalkSel = wkSel(); var hh = window.opener.__qDocRender("walk", l); if (hh){ document.open(); document.write(hh); document.close(); return; } } } catch (e){} alert("No se pudo cambiar el idioma — vuelve a abrir el documento desde la página principal."); }' +
+    'function wkLogRow(le){ var when = new Date(le.ts).toLocaleString(WKLOC, { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" }); var vids = (le.vids || []).map(function(id){ return WKVT[id] || id; }); return "<div style=\\"padding:3px 0;font-size:13.5px;color:#23323b;\\">🕒 <b>" + when + "</b> — " + (le.via === "gmail" ? WKVIA.gmail : WKVIA.copy) + " — " + vids.length + " videos: " + vids.join(" · ") + "</div>"; }' +
+    'function wkLogRender(){ var el = document.getElementById("wkLogList"); if (el && WKLOG.length) el.innerHTML = WKLOG.map(wkLogRow).join(""); }' +
+    'function wkLog(via){ try { if (window.opener && !window.opener.closed && window.opener.__qWalkLog){ var nl = window.opener.__qWalkLog(via, wkSel()); if (nl){ WKLOG = nl; wkLogRender(); } } } catch(e){} }' +
     'wkRender();</scr' + 'ipt>';
   h += '</body></html>';
   return h;
@@ -2894,7 +2914,7 @@ function importScriptClients(input){
           tz: r.tz || '', phone2: r.phone2 || '', notes: r.notes || '',
           dtype: r.dtype || 'standard',
           mf: qNum2(r.mf != null ? r.mf : (inp.annualMF != null ? inp.annualMF : ans.mfAmount)),
-          ofees: qNum2(r.ofees), pnight: qNum2(r.pnight), padComm: qNum2(r.padComm), depPlan: Array.isArray(r.depPlan) ? r.depPlan : [],
+          ofees: qNum2(r.ofees), pnight: qNum2(r.pnight), padComm: qNum2(r.padComm), depPlan: Array.isArray(r.depPlan) ? r.depPlan : [], walkLog: Array.isArray(r.walkLog) ? r.walkLog : (ix >= 0 ? (cs[ix].walkLog || []) : []),
           esc: qNum2(r.esc) || 8,
           payoff: qNum2(r.payoff != null ? r.payoff : inp.loanBalance),
           apr: qNum2(r.apr != null ? r.apr : inp.interestRate),
