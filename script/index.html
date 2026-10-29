@@ -294,6 +294,7 @@
     <select id="soldWhen" onchange="soldWhenChange()" title="¿Cuándo se vendió?" style="padding:4px 6px;font-weight:700;font-family:inherit;border-radius:6px;border:1px solid #7f1d1d;background:#fff7ed"><option value="">¿Cuándo?</option><option value="ON APT">EN LA CITA</option><option value="AFTER APT">DESPUÉS DE LA CITA</option></select>
     <button id="quoteBtn" type="button" onclick="qQuoteHtml()">📄 Cotización</button>
     <button id="emailBtn" type="button" onclick="qEmailHtml()">📧 EMAIL PRE-CITA</button>
+    <button id="walkBtn" type="button" onclick="qWalkHtml()">✉️ EMAIL NO PUEDES SALIR</button>
     <button id="caBtn" type="button" onclick="qCaHtml()">📋 CA DISCOVERY</button>
     <button id="cbBtn" type="button" onclick="qCbHtml()">📝 CB DISCOVERY</button>
     <button id="postCallBtn" type="button" onclick="qPostCallHtml()">🧾 POST CALL SHEET</button>
@@ -1610,6 +1611,7 @@ window.__qDocRender = function(kind, L){
   if (kind === 'quote') return qQuoteBuild(L);
   if (kind === 'ca') return qCaBuild(L);
   if (kind === 'cb') return qCbBuild(L);
+  if (kind === 'walk') return qWalkBuild(L);
   return null;
 };
 function qDocToggleBtn(kind, en){
@@ -1820,6 +1822,95 @@ function qEmailHtml(){
     'function emGmail(){var to=document.getElementById("emTo").value,su=document.getElementById("emSubj").value,tx=document.getElementById("eml").innerText;window.open("https://mail.google.com/mail/?view=cm&fs=1&to="+encodeURIComponent(to)+"&su="+encodeURIComponent(su)+"&body="+encodeURIComponent(tx),"_blank");}</scr' + 'ipt>';
   h += '</body></html>';
   qDocOpen(h);
+}
+// ===== WALK-AWAY EMAIL (Sebastian, 2026-10-29): HTML email that opens with WHY YOU CANT WALK AWAY,
+// then the client videos (each one includable/excludable from the checkbox panel in the doc toolbar)
+// and the verification links. Built to be copied formatted and pasted into his Gmail
+// (sebastian.short@linxlegal.com) — nothing is ever sent from here. No quality gate: this is a
+// save/education email, usable before or after a sale.
+var WALK_VIDEOS = [
+  { id: 'cartoon', url: 'https://www.nofirmaria.com/cartoon-video.mp4', es: 'Si dejas de pagar — qué pasa, paso a paso', en: 'If you stop paying — what happens, step by step', ses: 'La escalación completa si dejas de pagar, en un video corto.', sen: 'The full escalation if you stop paying, in one short video.', def: 1 },
+  { id: 'intro', url: 'https://investiganos.com/intro-video.mp4', es: 'Tu contrato: lo que no te dijeron', en: 'Your contract: what they did not tell you', ses: 'Lo que el resort no te dijo antes de firmar.', sen: 'What the resort did not tell you before you signed.', def: 1 },
+  { id: 'redweek', url: 'https://investiganos.com/redweek-video.mp4', es: 'RedWeek — precios por noche', en: 'RedWeek — nightly prices', ses: 'Precios reales por noche: rentar sale más barato que ser dueño.', sen: 'Real nightly prices: renting is cheaper than owning.', def: 1 },
+  { id: 'ebay', url: 'https://investiganos.com/ebay-video.mp4', es: 'eBay — tiempos compartidos a $1', en: 'eBay — timeshares for $1', ses: 'El valor real de reventa de un tiempo compartido.', sen: 'The real resale value of a timeshare.', def: 1 },
+  { id: 'interest', url: 'https://investiganos.com/interest-video.mp4', es: 'La cuota: el interés que duplica el precio', en: 'The payment: interest that doubles the price', ses: 'Cómo el interés duplica lo que pagas por tu contrato.', sen: 'How interest doubles what you pay for your contract.', def: 1 },
+  { id: 'fees', url: 'https://investiganos.com/fees-video.mp4', es: 'Las tarifas de mantenimiento que nunca terminan', en: 'Maintenance fees that never end', ses: 'Suben cada año, para siempre — y pasan a tu familia.', sen: 'They rise every year, forever — and they pass to your family.', def: 1 },
+  { id: 'heirs', url: 'https://investiganos.com/heirs-video.mp4', es: 'Tus herederos lo heredan, quieran o no', en: 'Your heirs inherit it, whether they want it or not', ses: 'Un tiempo compartido es propiedad real: alguien siempre tiene que ser el dueño.', sen: 'A timeshare is real property: someone always has to be the owner.', def: 1 },
+  { id: 'bestco', url: 'https://investiganos.com/best-company-video.mp4', es: 'Best Company — #1 en cancelación de tiempos compartidos', en: 'Best Company — #1 in timeshare cancellation', ses: 'La empresa #1 en cancelación de tiempos compartidos, con un score de 9.5 de 10.', sen: 'The #1 timeshare cancellation company, with a score of 9.5 out of 10.', def: 1 },
+  { id: 'bbb', url: 'https://investiganos.com/bbb-video.mp4', es: 'Better Business Bureau — calificación A+', en: 'Better Business Bureau — A+ rating', ses: 'Acreditados ante el BBB con calificación A+ desde 2017.', sen: 'BBB accredited with an A+ rating since 2017.', def: 1 },
+  { id: 'google', url: 'https://investiganos.com/google-video.mp4', es: 'Reseñas de Google', en: 'Google reviews', ses: 'Lo que dicen nuestros clientes, sin editar.', sen: 'What our clients say, unedited.', def: 1 },
+  { id: 'about', url: 'https://investiganos.com/about-video.mp4', es: 'Conoce a Linx Legal', en: 'Meet Linx Legal', ses: 'Quiénes somos y cómo trabajamos tu caso.', sen: 'Who we are and how we work your case.', def: 1 },
+  { id: 'full', url: 'https://investiganos.com/homepage-proof-video.mp4', es: 'VIDEO COMPLETO — todo en un solo video', en: 'FULL VIDEO — everything in one video', ses: 'Todos los videos en uno solo.', sen: 'All the videos in one.', def: 0 },
+  { id: 'sebastian', url: 'https://investiganos.com/sebastian-video.mp4', es: 'Sebastian Short · Tu asesor', en: 'Sebastian Short · Your advisor', ses: 'Conoce a tu asesor.', sen: 'Meet your advisor.', def: 0 }
+];
+function qWalkFirst(){ var n = String((cur && cur.name) || '').split(/[\/&]/)[0].trim(); return n.split(/\s+/)[0] || n; }
+function qWalkHtml(){
+  if (!cur){ alert('Selecciona un cliente primero.'); return; }
+  qDocOpen(qWalkBuild(qDocDefLang()));
+}
+function qWalkBuild(L){
+  var en = (L === 'en');
+  var first = qWalkFirst();
+  var sel = null;
+  try { if (window.__qWalkSel){ sel = window.__qWalkSel; window.__qWalkSel = null; } } catch (e){}
+  function isOn(v){ return sel ? (sel.indexOf(v.id) >= 0) : !!v.def; }
+  var T = en ? {
+    greet: 'Hi', p1: 'Before you make any decision, I want you to know the truth about what happens if you simply stop paying your timeshare, because nobody is going to explain it this clearly:',
+    p2: 'Your contract does not disappear because you stop paying. The debt keeps growing: first come the late charges, then your account goes to collections, then the resort forecloses on your deed, your credit is damaged for years, and the case can end in a lawsuit with a court judgment against you for the full balance, plus interest and legal costs. And meanwhile, the maintenance fees keep piling up every year — and that debt passes to your heirs.',
+    p3: 'Walking away does not set you free. It leaves you alone against the resort, in the worst possible position and with no protection.',
+    vintro: 'Watch these short videos and verify it yourself:', watch: '&#9654; WATCH VIDEO',
+    lhead: 'And here are the links, so you can check everything on your own:',
+    links: [['Why I would not sign again', 'https://nofirmaria.com'], ['Investigate us — who we are and our credentials', 'https://investiganos.com'], ['Better Business Bureau (A+, accredited)', 'https://www.bbb.org/search?find_text=Linx+Legal'], ['Our Google reviews', 'https://www.google.com/maps/search/Linx+Legal'], ['RedWeek — the real resale value', 'https://www.redweek.com/search'], ['eBay — timeshares selling for $1', 'https://www.ebay.com']],
+    close: 'Getting out of this contract IS possible — but it has to be done the right way: legally, with your name removed from the deed at the county level and your credit protected. Call me and we will talk it through calmly. I am on your side.',
+    subj: 'This is what happens if you stop paying your timeshare', panel: 'EMAIL VIDEOS — check the ones to INCLUDE (unchecked stay out). The email below updates itself.', note: 'Copy the formatted email and paste it into your Gmail (sebastian.short@linxlegal.com). Nothing is sent automatically — review before sending.'
+  } : {
+    greet: 'Hola', p1: 'Antes de tomar cualquier decisión, quiero que sepas la verdad sobre lo que pasa si simplemente dejas de pagar tu tiempo compartido, porque nadie te lo va a explicar así de claro:',
+    p2: 'Tu contrato no desaparece porque dejas de pagar. La deuda sigue creciendo: primero llegan los cargos por mora, después tu cuenta pasa a colecciones, luego el resort ejecuta la hipoteca sobre tu escritura, tu crédito queda dañado por años, y el caso puede terminar en una demanda con un fallo judicial en tu contra por todo el saldo, más intereses y costos legales. Y mientras tanto, las tarifas de mantenimiento se siguen acumulando cada año — y esa deuda pasa a tus herederos.',
+    p3: 'Dejar de pagar no te libera. Te deja solo frente al resort, en la peor posición posible y sin ninguna protección.',
+    vintro: 'Mira estos videos cortos y verifícalo tú mismo:', watch: '&#9654; VER VIDEO',
+    lhead: 'Y aquí tienes los enlaces, para que lo compruebes por tu cuenta:',
+    links: [['Por qué no firmaría de nuevo', 'https://nofirmaria.com'], ['Investíganos — quiénes somos y nuestras credenciales', 'https://investiganos.com'], ['Better Business Bureau (A+, acreditados)', 'https://www.bbb.org/search?find_text=Linx+Legal'], ['Nuestras reseñas en Google', 'https://www.google.com/maps/search/Linx+Legal'], ['RedWeek — el valor real de reventa', 'https://www.redweek.com/search'], ['eBay — tiempos compartidos vendiéndose por $1', 'https://www.ebay.com']],
+    close: 'Salir de este contrato SÍ es posible — pero se hace de la forma correcta: legalmente, con tu nombre removido de la escritura a nivel del condado y tu crédito protegido. Llámame y lo hablamos con calma. Estoy de tu lado.',
+    subj: 'Esto es lo que pasa si dejas de pagar tu tiempo compartido', panel: 'VIDEOS DEL CORREO — marca los que quieres INCLUIR (los desmarcados quedan fuera). El correo de abajo se actualiza solo.', note: 'Copia el correo con formato y pégalo en tu Gmail (sebastian.short@linxlegal.com). Nada se envía automáticamente — revisa antes de enviar.'
+  };
+  var panel = '<div style="max-width:820px;margin:0 auto 14px;background:#fff7ed;border:2px solid #d97706;border-radius:10px;padding:14px 18px;font-family:Arial,Helvetica,sans-serif"><div style="font-weight:800;color:#92400e;margin-bottom:8px;font-size:15px">&#127916; ' + T.panel + '</div>';
+  WALK_VIDEOS.forEach(function(v){
+    panel += '<label style="display:block;padding:3px 0;font-size:14px;color:#23323b;cursor:pointer"><input type="checkbox" class="wkcb" value="' + v.id + '"' + (isOn(v) ? ' checked' : '') + ' onchange="wkRender()"> ' + escH(en ? v.en : v.es) + '</label>';
+  });
+  panel += '</div>';
+  var e = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f2f5f6;"><tr><td align="center" style="padding:24px 8px;"><table role="presentation" width="640" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:14px;overflow:hidden;box-shadow:0 8px 24px rgba(20,50,60,.10);font-family:Arial,Helvetica,sans-serif;">';
+  e += '<tr><td style="background:#1a5968;padding:22px 30px;"><div style="font-size:25px;font-weight:800;color:#ffffff;">Linx Legal</div><div style="font-size:13px;color:#bfe3ea;">' + (en ? 'Timeshare cancellation' : 'Cancelación de tiempos compartidos') + '</div></td></tr>';
+  e += '<tr><td style="padding:26px 30px 8px;font-size:15px;color:#23323b;line-height:1.6;"><p style="margin:0 0 12px;">' + T.greet + ' <b>' + escH(first) + '</b>,</p>';
+  e += '<p style="margin:0 0 12px;">' + T.p1 + '</p>';
+  e += '<p style="margin:0 0 12px;">' + T.p2 + '</p>';
+  e += '<div style="background:#fef2f2;border:2px solid #b91c1c;border-radius:10px;padding:13px 16px;margin:16px 0;"><b style="color:#b91c1c;font-size:16px;">' + T.p3 + '</b></div>';
+  e += '<div id="wkVidWrap"></div>';
+  e += '<div style="font-size:16px;font-weight:700;color:#1a5968;margin:20px 0 8px;">&#128279; ' + T.lhead + '</div>';
+  T.links.forEach(function(lk){
+    e += '<p style="margin:7px 0;font-size:14px;"><a href="' + lk[1] + '" style="color:#1f7a8c;font-weight:700;">' + escH(lk[0]) + '</a><br><span style="color:#6c7d84;font-size:12px;">' + lk[1] + '</span></p>';
+  });
+  e += '<p style="margin:18px 0 4px;">' + T.close + '</p>';
+  e += '</td></tr>';
+  e += '<tr><td style="padding:19px 30px;background:#f7f9fa;border-top:1px solid #e5ebed;font-size:13px;color:#536a72;line-height:1.55;">Sebastian Short<br><b>Senior Case Builder · Linx Legal Inc.</b><br><a href="mailto:sebastian.short@linxlegal.com" style="color:#1f7a8c;">sebastian.short@linxlegal.com</a> &nbsp;·&nbsp; (689) 326-8754<br><a href="https://investiganos.com/" style="color:#1f7a8c;">investiganos.com</a></td></tr>';
+  e += '</table></td></tr></table>';
+  var wkData = WALK_VIDEOS.map(function(v){ return { id: v.id, url: v.url, t: en ? v.en : v.es, s: en ? v.sen : v.ses }; });
+  var h = '<!DOCTYPE html><html lang="' + (en ? 'en' : 'es') + '"><head><meta charset="utf-8"><title>' + (en ? 'WALK-AWAY EMAIL — ' : 'EMAIL NO PUEDES SALIR — ') + escH(cur.name) + '</title></head><body style="margin:0;padding:20px 8px;background:#f2f5f6;font-family:Arial,Helvetica,sans-serif;color:#23323b;">';
+  h += '<div ' + QDOC_BAR + '><b>' + (en ? '&#9993;&#65039; WALK-AWAY EMAIL' : '&#9993;&#65039; EMAIL — NO PUEDES SALIR') + '</b><span style="font-size:13px">' + (en ? 'To: ' : 'Para: ') + '<input id="emTo" value="' + escH(cur.email || '') + '" style="padding:5px;border-radius:4px;border:none;min-width:210px"> ' + (en ? 'Subject: ' : 'Asunto: ') + '<input id="emSubj" value="' + escH(T.subj) + '" style="padding:5px;border-radius:4px;border:none;min-width:300px"></span>' +
+    '<button ' + QDOC_BTN + ' onclick="wkCopy(this)">&#128203; COPY FORMATTED EMAIL</button>' +
+    '<button ' + QDOC_BTN + ' onclick="wkGmail()">&#9993;&#65039; OPEN IN GMAIL</button>' +
+    '<button ' + QDOC_BTN + ' onclick="wkLangT(\'' + (en ? 'es' : 'en') + '\')">' + (en ? '&#127760; ESPAÑOL' : '&#127760; ENGLISH') + '</button>' +
+    '<span style="font-size:12px;opacity:.85">' + T.note + '</span></div>';
+  h += panel;
+  h += '<div id="eml" contenteditable="true">' + e + '</div>';
+  h += '<scr' + 'ipt>var WKV = ' + JSON.stringify(wkData) + '; var WK_INTRO = ' + JSON.stringify(T.vintro) + '; var WK_WATCH = ' + JSON.stringify(T.watch) + ';' +
+    'function wkSel(){ var on = []; var bs = document.querySelectorAll(".wkcb"); for (var i = 0; i < bs.length; i++){ if (bs[i].checked) on.push(bs[i].value); } return on; }' +
+    'function wkRender(){ var on = wkSel(); var hh = ""; if (on.length){ hh += \'<p style="font-weight:700;color:#1a5968;font-size:16px;margin:18px 0 10px;">&#127916; \' + WK_INTRO + \'</p>\'; WKV.forEach(function(v){ if (on.indexOf(v.id) < 0) return; hh += \'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:10px;"><tr><td style="background:#edf5f6;border:1px solid #cfe0e3;border-radius:10px;padding:14px 16px;"><div style="font-size:16px;font-weight:700;color:#1a5968;">\' + v.t + \'</div><div style="font-size:13px;color:#536a72;margin:4px 0 11px;">\' + v.s + \'</div><a href="\' + v.url + \'" style="display:inline-block;background:#1a5968;color:#ffffff;text-decoration:none;font-weight:700;padding:9px 18px;border-radius:6px;font-size:14px;">\' + WK_WATCH + \'</a></td></tr></table>\'; }); } document.getElementById("wkVidWrap").innerHTML = hh; }' +
+    'function wkCopy(b){ var n = document.getElementById("eml"); try { navigator.clipboard.write([new ClipboardItem({ "text/html": new Blob([n.innerHTML], { type: "text/html" }), "text/plain": new Blob([n.innerText], { type: "text/plain" }) })]).then(function(){ b.textContent = "✅ COPIADO"; }); } catch (err){ var r = document.createRange(); r.selectNode(n); var s = getSelection(); s.removeAllRanges(); s.addRange(r); document.execCommand("copy"); b.textContent = "✅ COPIADO"; } }' +
+    'function wkGmail(){ var to = document.getElementById("emTo").value, su = document.getElementById("emSubj").value, tx = document.getElementById("eml").innerText; window.open("https://mail.google.com/mail/?view=cm&fs=1&to=" + encodeURIComponent(to) + "&su=" + encodeURIComponent(su) + "&body=" + encodeURIComponent(tx), "_blank"); }' +
+    'function wkLangT(l){ try { if (window.opener && !window.opener.closed && window.opener.__qDocRender){ window.opener.__qWalkSel = wkSel(); var hh = window.opener.__qDocRender("walk", l); if (hh){ document.open(); document.write(hh); document.close(); return; } } } catch (e){} alert("No se pudo cambiar el idioma — vuelve a abrir el documento desde la página principal."); }' +
+    'wkRender();</scr' + 'ipt>';
+  h += '</body></html>';
+  return h;
 }
 // ===== CA NOTES ORGANIZER (Sebastian, 2026-10-23): cur.notes holds a raw CA/CRM dump — it is NEVER printed
 // verbatim again (he called the old full-text dump "garbage" twice). The dump is parsed into CONTACTOS +
@@ -3299,7 +3390,6 @@ setInterval(function(){ if (aptData){ aptRender(); aptLayout(); } }, 60000);
 </script>
 </body>
 </html>
-
 
 
 
