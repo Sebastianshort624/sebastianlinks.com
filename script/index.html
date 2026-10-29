@@ -366,7 +366,9 @@
   <label class="qf">MES DE COMPRA <select id="q_pmonth" onchange="qRecalc()"><option value="">—</option><option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option><option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option><option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option></select></label>
   <label class="qf mtgOnly">HIPOTECA MENSUAL <input id="q_mmo" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">MF/AÑO <input id="q_mf" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">OTROS GASTOS/AÑO <input id="q_ofees" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">NOCHES/AÑO <input id="q_nights" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">$ POR NOCHE <input id="q_pnight" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf mtgOnly">PLAZO (MESES) <input id="q_term" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf mtgOnly" style="color:#c62828;font-weight:700">SALDO (PAYOFF) <input id="q_payoff" type="number" min="0" oninput="qRecalc()" style="border:2px solid #c62828;color:#c62828;font-weight:700"></label>
   <label class="qf">ELEVACIÓN ANUAL % <input id="q_esc" type="number" min="0" oninput="qRecalc()"></label>
@@ -386,13 +388,17 @@
   <div class="qout">
     <div class="mtgOnly">Hipoteca mensual <b id="q_xmmo">—</b></div>
     <div>Mantenimiento mensual <b id="q_xmfmo">—</b></div>
+    <div>Otros gastos mensual <b id="q_xofmo">—</b></div>
     <div style="border-bottom:2px solid #64748b;padding-bottom:5px;margin-bottom:5px">Total mensual <b id="q_xtotmo">—</b></div>
     <div class="mtgOnly">Hipoteca anual <b id="q_xmoyr">—</b></div>
     <div>Mantenimiento anual <b id="q_xmfyr">—</b></div>
+    <div>Otros gastos anual <b id="q_xofyr">—</b></div>
     <div style="border-bottom:2px solid #64748b;padding-bottom:5px;margin-bottom:5px">Total anual <b id="q_xtotyr">—</b></div>
     <div>Costo por noche <b id="q_xnight">—</b></div>
+    <div>Hospedaje/año ($ × noches) <b id="q_xpnightyr">—</b></div>
     <div class="mtgOnly">Hipoteca 10 años <b id="q_xmo10">—</b></div>
     <div>Mantenimiento 10 años (<span id="q_xescp">8</span>% esc) <b id="q_xmf10">—</b></div>
+    <div>Otros gastos 10 años <b id="q_xof10">—</b></div>
     <div style="border-bottom:2px solid #64748b;padding-bottom:5px;margin-bottom:5px">Proyección 10 años <b id="q_xproj10">—</b></div>
   </div>
   <div id="q_c2box" style="display:none;border-top:3px solid #0b3d91;margin-top:14px;padding-top:8px">
@@ -1568,7 +1574,7 @@ function qQuoteBuild(L){
   var LEGAL = { 'Westgate': 'Westgate Resorts, Ltd.', 'Exploria': 'Club Exploria, LLC', 'Wyndham': 'Wyndham Vacation Resorts, Inc.', 'Marriott': 'Marriott Ownership Resorts, Inc.', 'Hilton': 'Hilton Grand Vacations', 'Bluegreen': 'Bluegreen Vacations Corporation', 'Diamond': 'Diamond Resorts', 'The Villas Club (Villa Group)': 'Universal Vacation Club International', 'Villa Group': 'Universal Vacation Club International', 'Villas Club': 'Universal Vacation Club International' };
   var rname = cur.resort || '';
   var legal = LEGAL[rname] || rname;
-  var payoff = qNum('q_payoff'), mmo = (qIsDB() && !(qNum('q_payoff') > 0)) ? 0 : qNum('q_mmo'), mf = qNum('q_mf'), esc = qNum('q_esc') || 8, escR = esc / 100;
+  var payoff = qNum('q_payoff'), mmo = (qIsDB() && !(qNum('q_payoff') > 0)) ? 0 : qNum('q_mmo'), mf = qNum('q_mf'), esc = qNum('q_esc') || 8, escR = esc / 100, ofees = qNum('q_ofees'), pnight = qNum('q_pnight');
   var term = qNum('q_term') || 120, pyr = qNum('q_pyr'), pmonth = qNum('q_pmonth');
   var MG = qMortgage(); // shared model (SAI 2026-10-20) — same outputs as the panel, no private formula
   var fee = qNum('q_fee');
@@ -1586,17 +1592,18 @@ function qQuoteBuild(L){
   var moTxt = ($('q_mo') || {}).textContent || '';
   function moPart(y){ return qMortOver(MG, y); }
   function mfPart(y){ return mfTot(mf, escR, y); }
+  function ofPart(y){ return mfTot(ofees, escR, y); }
   var mp10 = moPart(10), mp20 = moPart(20);
-  var t10 = mp10 === null ? null : mp10 + mfPart(10), t20 = mp20 === null ? null : mp20 + mfPart(20);
+  var t10 = mp10 === null ? null : mp10 + mfPart(10) + ofPart(10), t20 = mp20 === null ? null : mp20 + mfPart(20) + ofPart(20);
   var s10 = t10 === null ? null : t10 - fee, s20 = t20 === null ? null : t20 - fee;
   function fmtP(v){ return v === null ? qDocPend(en) : fmtC(v); }
-  var nights = qNum('q_nights'), totyr = mmo * 12 + mf;
+  var nights = qNum('q_nights'), totyr = mmo * 12 + mf + ofees;
   var perNight = nights > 0 ? fmtC(totyr / nights) : '';
   var monNames = en ? ['January','February','March','April','May','June','July','August','September','October','November','December'] : ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
   var bought = (pyr > 0) ? ((pmonth >= 1 && pmonth <= 12) ? monNames[pmonth - 1] + (en ? ' ' : ' de ') : '') + pyr : '';
   var today = new Date().toLocaleDateString(en ? 'en-US' : 'es-US', { year: 'numeric', month: 'long', day: 'numeric' });
   var bem = 0;
-  if (fee > 0 && (mmo > 0 || mf > 0)){ var cum = 0, bmf = mf / 12; while (cum < fee && bem < 600){ bem++; cum += mmo + bmf * Math.pow(1 + escR, Math.floor((bem - 1) / 12)); } }
+  if (fee > 0 && (mmo > 0 || mf > 0)){ var cum = 0, bmf = (mf + ofees) / 12; while (cum < fee && bem < 600){ bem++; cum += mmo + bmf * Math.pow(1 + escR, Math.floor((bem - 1) / 12)); } }
   var S = 'style="font-family:Arial,Helvetica,sans-serif;color:#111827;max-width:760px;margin:0 auto;padding:28px;line-height:1.45"';
   var H2 = 'style="color:#0b3d91;border-bottom:3px solid #0b3d91;padding-bottom:4px;margin:26px 0 10px;font-size:20px"';
   var ROW = 'style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #e5e7eb"';
@@ -1637,7 +1644,8 @@ function qQuoteBuild(L){
   else h += '<div ' + ROW + '><span>' + (en ? 'Mortgage balance' : 'Saldo de la hipoteca') + '</span><b>' + qDocPend(en) + '</b></div>';
   if (mmo > 0) h += '<div ' + ROW + '><span>' + (en ? 'Monthly mortgage payment' : 'Pago mensual de hipoteca') + '</span><b>' + fmtC(mmo) + '</b></div>';
   h += '<div ' + ROW + '><span>' + (en ? 'Maintenance fees' : 'Cuotas de mantenimiento') + '</span><b>' + fmtC(mf) + (en ? '/year' : '/año') + '</b></div>';
-  h += '<div ' + ROW + '><span>' + (en ? 'Monthly total' : 'Total mensual') + '</span><b>' + fmtC(mmo + mf / 12) + '</b></div>';
+  if (ofees > 0) h += '<div ' + ROW + '><span>' + (en ? 'Other yearly fees' : 'Otros gastos anuales') + '</span><b>' + fmtC(ofees) + (en ? '/year' : '/año') + '</b></div>';
+  h += '<div ' + ROW + '><span>' + (en ? 'Monthly total' : 'Total mensual') + '</span><b>' + fmtC(mmo + (mf + ofees) / 12) + '</b></div>';
   if (bought) h += '<div ' + ROW + '><span>' + (en ? 'Purchased' : 'Comprado') + '</span><b>' + bought + '</b></div>';
   if (cur.contracts > 0) h += '<div ' + ROW + '><span>' + (en ? 'Contracts' : 'Contratos') + '</span><b>' + cur.contracts + '</b></div>';
   var gv = function(id){ var el = $(id); var v = el ? el.textContent : '—'; return (en && v === PEND_TXT) ? 'PENDING VERIFICATION' : v; };
@@ -1647,18 +1655,23 @@ function qQuoteBuild(L){
   [['Próximos 30 días','Next 30 days','q_w30'],['Próximos 90 días','Next 90 days','q_w90'],['Próximo 1 año','Next 1 year','q_t1'],['Próximos 3 años','Next 3 years','q_t3'],['Próximos 10 años','Next 10 years','q_t10'],['Próximos 20 años','Next 20 years','q_t20'],['Próximos 30 años','Next 30 years','q_t30']].forEach(function(r){ var v = gv(r[2]); if (projOk && v && v !== '—') h += '<div ' + ROW + '><span>' + (en ? r[1] : r[0]) + '</span><b>' + escH(v) + '</b></div>'; });
   if (mmo > 0) h += '<div ' + ROW + '><span>' + (en ? 'Monthly mortgage' : 'Hipoteca mensual') + '</span><b>' + escH(gv('q_xmmo')) + '</b></div>';
   h += '<div ' + ROW + '><span>' + (en ? 'Monthly maintenance' : 'Mantenimiento mensual') + '</span><b>' + escH(gv('q_xmfmo')) + '</b></div>';
+  if (ofees > 0) h += '<div ' + ROW + '><span>' + (en ? 'Other fees (monthly)' : 'Otros gastos mensual') + '</span><b>' + escH(gv('q_xofmo')) + '</b></div>';
   h += '<div ' + ROWB + '><span><b>' + (en ? 'Monthly total' : 'Total mensual') + '</b></span><b>' + escH(gv('q_xtotmo')) + '</b></div>';
   if (mmo > 0) h += '<div ' + ROW + '><span>' + (en ? 'Annual mortgage' : 'Hipoteca anual') + '</span><b>' + escH(gv('q_xmoyr')) + '</b></div>';
   h += '<div ' + ROW + '><span>' + (en ? 'Annual maintenance' : 'Mantenimiento anual') + '</span><b>' + escH(gv('q_xmfyr')) + '</b></div>';
+  if (ofees > 0) h += '<div ' + ROW + '><span>' + (en ? 'Other fees (annual)' : 'Otros gastos anual') + '</span><b>' + escH(gv('q_xofyr')) + '</b></div>';
   h += '<div ' + ROWB + '><span><b>' + (en ? 'Annual total' : 'Total anual') + '</b></span><b>' + escH(gv('q_xtotyr')) + '</b></div>';
   h += '<div ' + ROW + '><span>' + (en ? 'Cost per night' : 'Costo por noche') + (nights > 0 ? ' (' + nights + (en ? ' nights/year' : ' noches/año') + ')' : '') + '</span><b>' + (perNight || '—') + '</b></div>';
+  if (pnight > 0 && nights > 0) h += '<div ' + ROW + '><span>' + (en ? 'Lodging value per year ($/night x nights)' : 'Hospedaje/año ($ por noche x noches)') + '</span><b>' + fmtC(pnight * nights) + '</b></div>';
   if (projOk && mmo > 0) h += '<div ' + ROW + '><span>' + (en ? 'Mortgage (10 years)' : 'Hipoteca 10 años') + '</span><b>' + escH(gv('q_xmo10')) + '</b></div>';
   h += '<div ' + ROW + '><span>' + (en ? 'Maintenance (10 years) (' : 'Mantenimiento 10 años (') + escP + '% esc)</span><b>' + escH(gv('q_xmf10')) + '</b></div>';
+  if (ofees > 0) h += '<div ' + ROW + '><span>' + (en ? 'Other fees (10 years)' : 'Otros gastos 10 años') + '</span><b>' + escH(gv('q_xof10')) + '</b></div>';
   if (projOk) h += '<div ' + ROWB + '><span><b>' + (en ? '10-year projection' : 'Proyección 10 años') + '</b></span><b>' + escH(gv('q_xproj10')) + '</b></div>';
   if (projOk){ h += '<h3 style="color:#0b3d91;margin:18px 0 6px">' + (en ? 'Projections — the cost of keeping it' : 'Proyecciones — costo de quedarte') + '</h3>';
   h += '<table style="width:100%;border-collapse:collapse;font-size:15px"><tr style="background:#0b3d91;color:#fff"><th style="padding:6px;text-align:left"></th><th style="padding:6px;text-align:right">' + (en ? '10 years' : '10 años') + '</th><th style="padding:6px;text-align:right">' + (en ? '20 years' : '20 años') + '</th></tr>';
   if (mmo > 0) h += '<tr><td style="padding:6px;border-bottom:1px solid #e5e7eb">' + (en ? 'Mortgage' : 'Hipoteca') + '</td><td style="padding:6px;text-align:right;border-bottom:1px solid #e5e7eb">' + fmtP(mp10) + '</td><td style="padding:6px;text-align:right;border-bottom:1px solid #e5e7eb">' + fmtP(mp20) + '</td></tr>';
   h += '<tr><td style="padding:6px;border-bottom:1px solid #e5e7eb">' + (en ? 'Maintenance fees (' + esc + '% annual increase)' : 'Cuotas de mantenimiento (aumento ' + esc + '% anual)') + '</td><td style="padding:6px;text-align:right;border-bottom:1px solid #e5e7eb">' + fmtC(mfPart(10)) + '</td><td style="padding:6px;text-align:right;border-bottom:1px solid #e5e7eb">' + fmtC(mfPart(20)) + '</td></tr>';
+  if (ofees > 0) h += '<tr><td style="padding:6px;border-bottom:1px solid #e5e7eb">' + (en ? 'Other yearly fees (' + esc + '% annual increase)' : 'Otros gastos anuales (aumento ' + esc + '% anual)') + '</td><td style="padding:6px;text-align:right;border-bottom:1px solid #e5e7eb">' + fmtC(ofPart(10)) + '</td><td style="padding:6px;text-align:right;border-bottom:1px solid #e5e7eb">' + fmtC(ofPart(20)) + '</td></tr>';
   h += '<tr style="font-weight:800"><td style="padding:6px">Total</td><td style="padding:6px;text-align:right">' + fmtP(t10) + '</td><td style="padding:6px;text-align:right">' + fmtP(t20) + '</td></tr></table>';
   }
   h += '<p style="margin-top:26px;font-size:12px;color:#6b7280;text-align:center">' + (en ? 'Linx Legal · Maintenance projections use an annual increase of ' + esc + '% and are estimates for illustrative purposes.' : 'Linx Legal · Las proyecciones de cuotas usan un aumento anual del ' + esc + '% y son estimados con fines ilustrativos.') + '</p>';
@@ -1678,8 +1691,9 @@ function qCaseFacts(){
   var mmo = isDB ? 0 : qNum('q_mmo'), mf = qNum('q_mf'), esc = qNum('q_esc') || 8;
   var MG = qMortgage(); // current-contract amortization model — never the original purchase year
   var mo10 = qMortOver(MG, 10), mo20 = qMortOver(MG, 20);
-  var t10 = mo10 === null ? null : mo10 + mfTot(mf, esc / 100, 10);
-  var t20 = mo20 === null ? null : mo20 + mfTot(mf, esc / 100, 20);
+  var ofeesF = qNum('q_ofees');
+  var t10 = mo10 === null ? null : mo10 + mfTot(mf + ofeesF, esc / 100, 10);
+  var t20 = mo20 === null ? null : mo20 + mfTot(mf + ofeesF, esc / 100, 20);
   var combo = (typeof qComboCalc === 'function') ? qComboCalc() : null;
   var multi = combo ? combo.filter(function(c){ return c.active; }) : [];
   return { payoff: payoff, isDB: isDB, mmo: mmo, mf: mf, esc: esc, MG: MG, t10: t10, t20: t20, multi: multi.length > 1 ? multi : null };
@@ -2311,6 +2325,7 @@ function qSync(c){
   qApplyDtype();
   $('q_mmo').value = c ? (c.mmo || '') : '';
   $('q_mf').value = c ? c.mf : ''; $('q_esc').value = c ? (c.esc || 8) : '';
+  $('q_ofees').value = c ? (c.ofees || '') : ''; $('q_pnight').value = c ? (c.pnight || '') : '';
   $('q_pyr').value = c ? (c.pyr || '') : ''; $('q_term').value = c ? (c.term || '') : '';
   $('q_payoff').value = c ? c.payoff : '';
   $('q_fee').value = c && c.fee ? c.fee : ''; $('q_down').value = c ? (c.down || '') : '';
@@ -2406,8 +2421,8 @@ function qPanelLang(){ var en = (typeof cur !== "undefined" && cur && cur.lang =
 function qRecalc(){
   qPanelLang();
   var qdEl = $('q_dates'); if (qdEl) qdEl.style.display = ($('q_paym').value === 'uga') ? '' : 'none';
-  if (!cur){ ['q_w30','q_w90','q_w6','q_t1','q_t3','q_t5','q_t10','q_t20','q_t30','q_ftot','q_bal','q_s10','q_mo','q_ftpay','q_ftint','q_mosn','q_t12','q_t24','q_t36','q_comm','q_cdate','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct','q_xmmo','q_xmfmo','q_xtotmo','q_xmoyr','q_xmfyr','q_xtotyr','q_xmo10','q_xmf10','q_xproj10','q_xnight'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— meses restantes'; var fe0 = $('q_feesug'); if (fe0) fe0.textContent = ''; var mw0 = $('q_minwarn'); if (mw0) mw0.style.display = 'none'; var cr0 = $('q_ccrow'); if (cr0) cr0.style.display = 'none'; var cb0 = $('q_commbase'); if (cb0) cb0.textContent = ''; var xf0 = $('q_bal2flag'); if (xf0) xf0.style.display = 'none'; var xt0 = $('q_schtag'); if (xt0) xt0.style.display = 'none'; return; }
-  var mmo = (qIsDB() && !(qNum('q_payoff') > 0)) ? 0 : qNum('q_mmo'), mf = qNum('q_mf'), esc = qNum('q_esc'), payoff = qNum('q_payoff');
+  if (!cur){ ['q_w30','q_w90','q_w6','q_t1','q_t3','q_t5','q_t10','q_t20','q_t30','q_ftot','q_bal','q_s10','q_mo','q_ftpay','q_ftint','q_mosn','q_t12','q_t24','q_t36','q_comm','q_cdate','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct','q_xmmo','q_xmfmo','q_xtotmo','q_xmoyr','q_xmfyr','q_xtotyr','q_xmo10','q_xmf10','q_xproj10','q_xnight','q_xofmo','q_xofyr','q_xof10','q_xpnightyr'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— meses restantes'; var fe0 = $('q_feesug'); if (fe0) fe0.textContent = ''; var mw0 = $('q_minwarn'); if (mw0) mw0.style.display = 'none'; var cr0 = $('q_ccrow'); if (cr0) cr0.style.display = 'none'; var cb0 = $('q_commbase'); if (cb0) cb0.textContent = ''; var xf0 = $('q_bal2flag'); if (xf0) xf0.style.display = 'none'; var xt0 = $('q_schtag'); if (xt0) xt0.style.display = 'none'; return; }
+  var mmo = (qIsDB() && !(qNum('q_payoff') > 0)) ? 0 : qNum('q_mmo'), mf = qNum('q_mf'), esc = qNum('q_esc'), payoff = qNum('q_payoff'), ofees = qNum('q_ofees'), pnight = qNum('q_pnight');
   var pyrIn = parseInt(($('q_pyr').value || '').replace(/\D/g, ''), 10) || 0;
   var pyr = pyrIn; // SAI Fase 2: sin año de compra NO se inventa uno (antes un default oculto 2023 fabricaba la fecha)
   var term = qNum('q_term') || 120;
@@ -2440,11 +2455,11 @@ function qRecalc(){
   })();
   var MG = qMortgage(); // shared model (SAI 2026-10-20): projections never restart or erase a mortgage
   var COMBO = qComboCalc(); // contracts tool: per-contract calcs (each charged separately)
-  function win(y){ var mo = qMortOver(MG, y); return mo === null ? null : mo + mfTot(mf, r, y); }
+  function win(y){ var mo = qMortOver(MG, y); return mo === null ? null : mo + mfTot(mf + ofees, r, y); }
   // MATEO HARD BLOCK (2026-10-21): while the mortgage status is PENDIENTE the short windows print NO
   // numeric combined total either — the old fallthrough charged flat mmo x months for a pending loan
   // (one of the paths that put a wrong combined figure in front of a client). PENDIENTE = PEND_TXT.
-  function winMo(m){ if (MG.status === 'pending') return null; var mo = MG.status === 'paid' ? 0 : (m < MG.months ? m * MG.mmo : qMortTotal(MG)); return mo + mf * m / 12; }
+  function winMo(m){ if (MG.status === 'pending') return null; var mo = MG.status === 'paid' ? 0 : (m < MG.months ? m * MG.mmo : qMortTotal(MG)); return mo + (mf + ofees) * m / 12; }
   var w30 = winMo(1), w90 = winMo(3), w6 = winMo(6);
   var t1 = win(1), t3 = win(3), t5 = win(5), t10 = win(10), t20 = win(20), t30 = win(30);
   function setW(id, v){ var e = $(id); if (e) e.textContent = v === null ? PEND_TXT : fmtC(v); }
@@ -2452,18 +2467,21 @@ function qRecalc(){
   function setT(id, v){ var e = $(id); if (e) e.textContent = v === null ? PEND_TXT : fmtC(v); }
   setT('q_t1', t1); setT('q_t3', t3); setT('q_t10', t10); setT('q_t20', t20); setT('q_t30', t30);
   // Expense breakdown (monthly MF floored for display only; annual MF exact, 10-yr MF escalated)
-  var mfmo = Math.floor(mf / 12), mfoyr = mf, moyr = mmo * 12, totyr = moyr + mfoyr;
+  var mfmo = Math.floor(mf / 12), mfoyr = mf, moyr = mmo * 12, totyr = moyr + mfoyr + ofees;
+  var ofmo = Math.floor(ofees / 12);
   var mo10 = qMortOver(MG, 10), escR = (esc || 8) / 100;
   var mf10 = escR > 0 ? Math.round(mfoyr * (Math.pow(1 + escR, 10) - 1) / escR) : mfoyr * 10;
-  $('q_xmmo').textContent = fmtD(mmo); $('q_xmfmo').textContent = fmtD(mfmo);
-  $('q_xtotmo').textContent = fmtD(mmo + mfmo);
-  $('q_xmoyr').textContent = fmtD(moyr); $('q_xmfyr').textContent = fmtD(mfoyr);
+  var of10 = Math.round(mfTot(ofees, escR, 10));
+  $('q_xmmo').textContent = fmtD(mmo); $('q_xmfmo').textContent = fmtD(mfmo); $('q_xofmo').textContent = fmtD(ofmo);
+  $('q_xtotmo').textContent = fmtD(mmo + mfmo + ofmo);
+  $('q_xmoyr').textContent = fmtD(moyr); $('q_xmfyr').textContent = fmtD(mfoyr); $('q_xofyr').textContent = fmtD(ofees);
   $('q_xtotyr').textContent = fmtD(totyr);
   var nightsV = qNum('q_nights');
   $('q_xnight').textContent = nightsV > 0 ? fmtC(totyr / nightsV) : '—';
+  $('q_xpnightyr').textContent = (pnight > 0 && nightsV > 0) ? fmtC(pnight * nightsV) : '—';
   $('q_xmo10').textContent = mo10 === null ? PEND_TXT : fmtD(mo10);
-  $('q_xescp').textContent = (esc || 8); $('q_xmf10').textContent = fmtD(mf10);
-  $('q_xproj10').textContent = mo10 === null ? PEND_TXT : fmtD(mo10 + mf10);
+  $('q_xescp').textContent = (esc || 8); $('q_xmf10').textContent = fmtD(mf10); $('q_xof10').textContent = fmtD(of10);
+  $('q_xproj10').textContent = mo10 === null ? PEND_TXT : fmtD(mo10 + mf10 + of10);
   var fee = qNum('q_fee'), fapr = qNum('q_fapr'), fmo = qNum('q_fmo');
   var sheetFeeActive = qIsDB() && $('q_sheetfee').value !== '' && qNum('q_sheetfee') > 0;
   if (sheetFeeActive) fee = qNum('q_sheetfee') + 299;
@@ -2594,7 +2612,7 @@ function qRecalc(){
   qRenderCombo(COMBO);
   renderBar(c2, n); applyFills(c2, n); soldRender(); qCover(); qAutoSave();
 }
-var QFIN_LABELS = { q_payoff: 'Saldo (payoff)', q_mmo: 'Pago mensual hipoteca', q_mf: 'Mantenimiento anual', q_esc: 'Escalación MF %', q_aapr: 'APR hipoteca', q_term: 'Plazo (meses)', q_loan: 'Monto financiado', q_pyr: 'Año de compra', q_fee: 'Tarifa Linx (fee)', q_down: 'Down payment', q_fapr: 'APR financiamiento Linx', q_fmo: 'Meses financiamiento Linx', q_sheetfee: 'Tarifa hoja (deed-back)', q_sheetdown: 'Down hoja', q2_payoff: 'C2 Saldo', q2_mmo: 'C2 Pago mensual', q2_mf: 'C2 Mantenimiento', q2_apr: 'C2 APR', q2_term: 'C2 Plazo', q2_fee: 'C2 Tarifa', q3_payoff: 'C3 Saldo', q3_mmo: 'C3 Pago mensual', q3_mf: 'C3 Mantenimiento', q3_apr: 'C3 APR', q3_term: 'C3 Plazo', q3_fee: 'C3 Tarifa' };
+var QFIN_LABELS = { q_payoff: 'Saldo (payoff)', q_mmo: 'Pago mensual hipoteca', q_mf: 'Mantenimiento anual', q_ofees: 'Otros gastos anuales', q_pnight: '$ por noche', q_esc: 'Escalación MF %', q_aapr: 'APR hipoteca', q_term: 'Plazo (meses)', q_loan: 'Monto financiado', q_pyr: 'Año de compra', q_fee: 'Tarifa Linx (fee)', q_down: 'Down payment', q_fapr: 'APR financiamiento Linx', q_fmo: 'Meses financiamiento Linx', q_sheetfee: 'Tarifa hoja (deed-back)', q_sheetdown: 'Down hoja', q2_payoff: 'C2 Saldo', q2_mmo: 'C2 Pago mensual', q2_mf: 'C2 Mantenimiento', q2_apr: 'C2 APR', q2_term: 'C2 Plazo', q2_fee: 'C2 Tarifa', q3_payoff: 'C3 Saldo', q3_mmo: 'C3 Pago mensual', q3_mf: 'C3 Mantenimiento', q3_apr: 'C3 APR', q3_term: 'C3 Plazo', q3_fee: 'C3 Tarifa' };
 var qFinSnap = {};
 function qFinCapture(){ var sn = {}; for (var id in QFIN_LABELS){ var el = $(id); if (el) sn[id] = String(el.value); } return sn; }
 function qAuditLog(field, from, to){
@@ -2630,7 +2648,7 @@ function qAutoSave(){
       var snapNow = qFinCapture();
       for (var fid in QFIN_LABELS){ if (qFinSnap[fid] !== undefined && snapNow[fid] !== undefined && qFinSnap[fid] !== snapNow[fid]) qAuditLog(QFIN_LABELS[fid], qFinSnap[fid], snapNow[fid]); }
       qFinSnap = snapNow;
-      c.mmo = qNum('q_mmo'); c.mf = qNum('q_mf'); c.esc = qNum('q_esc');
+      c.mmo = qNum('q_mmo'); c.mf = qNum('q_mf'); c.esc = qNum('q_esc'); c.ofees = qNum('q_ofees'); c.pnight = qNum('q_pnight');
       c.pyr = qNum2($('q_pyr').value); c.term = qNum('q_term'); c.payoff = qNum('q_payoff');
       c.cfin = qLoanAuto ? (c.cfin || 0) : qNum('q_loan'); // MATEO: never persist an auto-inferred principal as a recorded cfin
       c.fee = qNum('q_fee'); c.down = qNum('q_down'); c.downt = $('q_downt').value;
@@ -2717,6 +2735,7 @@ function importScriptClients(input){
           tz: r.tz || '', phone2: r.phone2 || '', notes: r.notes || '',
           dtype: r.dtype || 'standard',
           mf: qNum2(r.mf != null ? r.mf : (inp.annualMF != null ? inp.annualMF : ans.mfAmount)),
+          ofees: qNum2(r.ofees), pnight: qNum2(r.pnight),
           esc: qNum2(r.esc) || 8,
           payoff: qNum2(r.payoff != null ? r.payoff : inp.loanBalance),
           apr: qNum2(r.apr != null ? r.apr : inp.interestRate),
@@ -2739,7 +2758,7 @@ function importScriptClients(input){
           c2: r.c2 || null, c3: r.c3 || null, cfin: qNum2(r.cfin), cyr: qNum2(r.cyr), cmonth: qNum2(r.cmonth),
           poffUnverified: !!r.poffUnverified, poffVerified: !!r.poffVerified, _upd: r._upd || 0
         };
-        if (ix >= 0){ var oldR = cs[ix]; if (oldR && oldR._upd && rec._upd && rec._upd < oldR._upd){ ['payoff','mmo','mf','esc','apr','term','pyr','pmonth','cfin','fee','down','fapr','fmo','ncontracts','dtype','poffUnverified','poffVerified','cyr','cmonth','c2','c3','_upd'].forEach(function(k){ if (oldR[k] !== undefined) rec[k] = oldR[k]; }); } cs[ix] = rec; updated++; } else { cs.push(rec); added++; }
+        if (ix >= 0){ var oldR = cs[ix]; if (oldR && oldR._upd && rec._upd && rec._upd < oldR._upd){ ['payoff','mmo','mf','ofees','pnight','esc','apr','term','pyr','pmonth','cfin','fee','down','fapr','fmo','ncontracts','dtype','poffUnverified','poffVerified','cyr','cmonth','c2','c3','_upd'].forEach(function(k){ if (oldR[k] !== undefined) rec[k] = oldR[k]; }); } cs[ix] = rec; updated++; } else { cs.push(rec); added++; }
       });
       localStorage.setItem('sl_clients', JSON.stringify(cs));
       refreshClientSel();
