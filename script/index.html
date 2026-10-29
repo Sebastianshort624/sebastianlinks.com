@@ -1311,7 +1311,7 @@ function pickClient(id){
 function renderBar(c, n){
   var bar = $('cbar');
   var mmo = c.mmo || 0, mf = c.mf || 0;
-  var mfmo = Math.floor(mf / 12), totyr = mmo * 12 + mf;
+  var mfmo = Math.floor(mf / 12), totyr = mmo * 12 + mf + (c.ofees || 0);
   var escR = (c.esc || 8) / 100;
   var term = c.term || 120, pyr = c.pyr || 0;
   // (Removed a third, private mortgage formula here 2026-10-20 — all projections use the shared qMortgage model.)
@@ -1347,7 +1347,7 @@ function renderBar(c, n){
       '<a class="pagolink" href="#pago-transicion" onclick="var e=document.getElementById(\'pago-transicion\');var b=document.getElementById(\'pegbar\');window.scrollTo({top:e.getBoundingClientRect().top+window.scrollY-(b?b.offsetHeight:0)-10,behavior:\'smooth\'});return false;">Ahora bien, si no tienes más preguntas sobre nuestro proceso, lo siguiente que puedo explicarte son las diferentes formas en que la mayoría de las personas pagan por nuestros servicios.</a>';
   var beLine = '';
   if (n && n.feeKnown && (mmo > 0 || mf > 0)){
-    var becum = 0, bem = 0, bemf = mf / 12;
+    var becum = 0, bem = 0, bemf = (mf + (c.ofees || 0)) / 12;
     while (becum < n.fee && bem < 600){ bem++; becum += mmo + bemf * Math.pow(1 + escR, Math.floor((bem - 1) / 12)); }
     beLine = '<div class="ib-line" style="margin-top:5px">🔁 Meses necesarios: <b>~' + bem + ' meses</b></div>';
   }
@@ -1696,7 +1696,7 @@ function qCaseFacts(){
   var t20 = mo20 === null ? null : mo20 + mfTot(mf + ofeesF, esc / 100, 20);
   var combo = (typeof qComboCalc === 'function') ? qComboCalc() : null;
   var multi = combo ? combo.filter(function(c){ return c.active; }) : [];
-  return { payoff: payoff, isDB: isDB, mmo: mmo, mf: mf, esc: esc, MG: MG, t10: t10, t20: t20, multi: multi.length > 1 ? multi : null };
+  return { payoff: payoff, isDB: isDB, mmo: mmo, mf: mf, ofees: ofeesF, esc: esc, MG: MG, t10: t10, t20: t20, multi: multi.length > 1 ? multi : null };
 }
 function qDocOpen(h){ var blob = new Blob([h], { type: 'text/html' }); window.open(URL.createObjectURL(blob), '_blank'); }
 var QDOC_S = 'style="font-family:Arial,Helvetica,sans-serif;color:#111827;max-width:820px;margin:0 auto;padding:28px;line-height:1.5"';
@@ -1716,7 +1716,7 @@ function qEmailHtml(){
   var resortT = escH(cur.resort || '');
   var nC = F.multi ? F.multi.length : (cur.contracts || 1);
   var apr = qNum('q_aapr');
-  var mfMo = F.mf / 12;
+  var mfMo = (F.mf + (F.ofees || 0)) / 12;
   // CONTRATOS 2/3 (SAI 2026-10-20): combined only when EVERY contract is documented and calculable —
   // otherwise the email keeps Contrato 1 figures and flags the rest PENDIENTE, never inventing amounts.
   var NCx = (typeof qNC !== 'undefined' && qNC) ? qNC : 1;
@@ -2608,7 +2608,7 @@ function qRecalc(){
   c2.mf = mf; c2.mmo = mmo; c2.payoff = payoff; c2.down = down;
   c2.esc = esc; c2.term = term; c2.pyr = pyr;
   c2.pmonth = parseInt($('q_pmonth').value, 10) || (cur.pmonth || 0);
-  c2.nights = qNum('q_nights');
+  c2.nights = qNum('q_nights'); c2.ofees = ofees; c2.pnight = pnight;
   qRenderCombo(COMBO);
   renderBar(c2, n); applyFills(c2, n); soldRender(); qCover(); qAutoSave();
 }
