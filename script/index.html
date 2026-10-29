@@ -99,6 +99,10 @@
   .urlgrid .urlgo { margin-left: 0; }
   .calc-head #q_cli { overflow-wrap: anywhere; }
   .calcgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; align-items: start; }
+  .calcgrid.g3 { grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .cpanel-mid { border-top: 5px solid #0b3d91; }
+  @media (max-width: 1200px){ .calcgrid.g3 { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 720px){ .calcgrid.g3 { grid-template-columns: 1fr; } }
   .cpanel { background: #fff; border: 1px solid #c9dcf7; border-radius: 10px; padding: 16px 18px; }
   .cpanel-trap { border-top: 5px solid #0b3d91; }
   .cpanel-fee { border: 2px solid #0b3d91; background: #f0f6ff; box-shadow: 0 1px 5px rgba(11,61,145,.14); }
@@ -348,7 +352,7 @@
   </div>
     <div id="q_dbnote" class="tmin" style="display:none;margin-bottom:8px">DEED-BACK = hipoteca pagada por completo (saldo $0). Un saldo en $0 NO prueba que la escritura ya se haya transferido: la transferencia de la escritura es parte del proceso.</div>
   </div>
-  <div class="calcgrid"><div class="cpanel cpanel-trap">
+  <div class="calcgrid g3"><div class="cpanel cpanel-trap">
   <div class="qsec" style="margin-top:0">🏨 SITUACIÓN DEL RESORT — LA TRAMPA ACTUAL</div>
   <div id="q_contracts" style="display:none"></div>
   <div id="q_ncrow" style="display:flex;gap:6px;align-items:center;margin:8px 0">
@@ -373,6 +377,7 @@
   <label class="qf mtgOnly">PLAZO (MESES) <input id="q_term" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf mtgOnly" style="color:#c62828;font-weight:700">SALDO (PAYOFF) <input id="q_payoff" type="number" min="0" oninput="qRecalc()" style="border:2px solid #c62828;color:#c62828;font-weight:700"></label>
   <label class="qf">ELEVACIÓN ANUAL % <input id="q_esc" type="number" min="0" oninput="qRecalc()"></label>
+  </div><div class="cpanel cpanel-mid">
   <div class="qsec">Compromiso Contractual Actual</div>
   <div id="q_calcstatus" style="font-size:.92em;line-height:1.5;margin:0 0 8px"></div>
   <div id="q_conflict" style="display:none;background:#fdecea;border:2px solid #c62828;color:#7f1d1d;border-radius:8px;padding:8px 10px;font-size:.92em;line-height:1.5;margin:0 0 8px"></div>
