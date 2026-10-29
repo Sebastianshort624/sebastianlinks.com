@@ -892,7 +892,7 @@ function qDepSample(){
     var aS = $('q_dp' + iS + 'a'), dS = $('q_dp' + iS + 'd');
     if (iS <= nS){
       var amtS = (iS === nS) ? Math.round((totS - accS) * 100) / 100 : baseS; accS += amtS;
-      var ddS = new Date(t0S.getTime() + Math.round(wS * 7 * (iS - 1) / Math.max(1, nS - 1)) * 86400000);
+      var ddS = new Date(t0S.getFullYear(), t0S.getMonth(), t0S.getDate() + Math.round(wS * 7 * (iS - 1) / Math.max(1, nS - 1)));
       var isoS = ddS.getFullYear() + '-' + ('0' + (ddS.getMonth() + 1)).slice(-2) + '-' + ('0' + ddS.getDate()).slice(-2);
       if (aS) aS.value = amtS; if (dS) dS.value = isoS;
     } else { if (aS) aS.value = ''; if (dS) dS.value = ''; }
