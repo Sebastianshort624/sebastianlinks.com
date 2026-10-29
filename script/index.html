@@ -298,6 +298,7 @@
     <select id="soldWhen" onchange="soldWhenChange()" title="¿Cuándo se vendió?" style="padding:4px 6px;font-weight:700;font-family:inherit;border-radius:6px;border:1px solid #7f1d1d;background:#fff7ed"><option value="">¿Cuándo?</option><option value="ON APT">EN LA CITA</option><option value="AFTER APT">DESPUÉS DE LA CITA</option></select>
     <button id="quoteBtn" type="button" onclick="qQuoteHtml()">📄 Cotización</button>
     <button id="emailBtn" type="button" onclick="qEmailHtml()">📧 EMAIL PRE-CITA</button>
+    <button id="comboBtn" type="button" onclick="qComboHtml()">🧾 EMAIL COMPLETO</button>
     <button id="walkBtn" type="button" onclick="qWalkHtml()">✉️ EMAIL NO PUEDES SALIR</button>
     <button id="bcBtn" type="button" onclick="qBcHtml()">📞 GUION BARCLAYS</button>
     <button id="caBtn" type="button" onclick="qCaHtml()">📋 CA DISCOVERY</button>
@@ -1619,6 +1620,7 @@ window.__qDocRender = function(kind, L){
   if (kind === 'cb') return qCbBuild(L);
   if (kind === 'walk') return qWalkBuild(L);
   if (kind === 'barclays') return qBcBuild(L);
+  if (kind === 'combo') return qComboBuild(L);
   return null;
 };
 function qDocToggleBtn(kind, en){
@@ -1858,6 +1860,53 @@ function qBcBuild(L){
     '<span style="font-size:12px;opacity:.85">' + (en ? 'Read-off sheet — nothing is sent from here.' : 'Hoja para leer en la llamada — nada se envía desde aquí.') + '</span></div>';
   h += '<div id="eml" contenteditable="true">' + e + '</div>';
   h += '<scr' + 'ipt>function bcCopy(b){var n=document.getElementById("eml");try{navigator.clipboard.write([new ClipboardItem({"text/html":new Blob([n.innerHTML],{type:"text/html"}),"text/plain":new Blob([n.innerText],{type:"text/plain"})})]).then(function(){b.textContent="COPIADO";});}catch(err){var r=document.createRange();r.selectNode(n);var s=getSelection();s.removeAllRanges();s.addRange(r);document.execCommand("copy");b.textContent="COPIADO";}}</scr' + 'ipt>';
+  h += qDocToggleJs(en);
+  h += '</body></html>';
+  return h;
+}
+// ===== COMBO EMAIL (Sebastian, 2026-10-29): ONE formatted email that combines the PRE-CITA email
+// (the client's CURRENT SITUATION: contractual commitment + the trap projections) with the QUOTE
+// (total price + cost of keeping it + 10-year savings). Built by running both existing builders and
+// joining their bodies — the numbers always come from the same engines, nothing is duplicated.
+function qComboHtml(){
+  if (!cur){ alert('Selecciona un cliente primero.'); return; }
+  var qf = qQualityCheck();
+  if (qf.length){ alert('CONTROL DE CALIDAD — el correo combinado NO se generó:\n• ' + qf.join('\n• ') + '\n\nCorrige estos puntos y vuelve a intentarlo.'); return; }
+  qDocOpen(qComboBuild(qDocDefLang()));
+}
+function qComboSlice(doc, startMark, endMark){
+  var a = doc.indexOf(startMark); if (a < 0) return '';
+  a += startMark.length;
+  var b = doc.indexOf(endMark, a); if (b < 0) return '';
+  return doc.slice(a, b);
+}
+function qComboBuild(L){
+  var en = (L === 'en');
+  var e1 = qComboSlice(qEmailBuild(L), '<div id="eml" contenteditable="true">', '</div><script>function emCopy');
+  var e2 = qComboSlice(qQuoteBuild(L), '<div id="qDocBody">', '</div><script>function qCopy');
+  if (!e1 || !e2){ alert('No se pudo armar el correo combinado.'); return qQuoteBuild(L); }
+  // strip the signature row out of the situation email — the combo carries ONE signature at the end
+  var si = e1.indexOf('Senior Case Builder');
+  if (si > 0){
+    var trS = e1.lastIndexOf('<tr>', si);
+    var trE = e1.indexOf('</tr>', si);
+    if (trS >= 0 && trE > trS) e1 = e1.slice(0, trS) + e1.slice(trE + 5);
+  }
+  var sig = '<div style="max-width:640px;margin:18px auto 0;background:#f7f9fa;border:1px solid #e5ebed;border-radius:10px;padding:16px 22px;font-size:13px;color:#536a72;line-height:1.55;font-family:Arial,Helvetica,sans-serif;">Sebastian Short<br><b>Senior Case Builder · Linx Legal Inc.</b><br><a href="mailto:sebastian.short@linxlegal.com" style="color:#1f7a8c;">sebastian.short@linxlegal.com</a> &nbsp;·&nbsp; (689) 326-8754<br><a href="https://investiganos.com/" style="color:#1f7a8c;">investiganos.com</a></div>';
+  var e = e1 +
+    '<div style="max-width:640px;margin:28px auto 4px;border-top:3px solid #1a5968;"></div>' +
+    '<div style="max-width:640px;margin:0 auto;background:#ffffff;border-radius:14px;box-shadow:0 8px 24px rgba(20,50,60,.10);padding:26px 30px;font-family:Arial,Helvetica,sans-serif;">' + e2 + '</div>' +
+    sig;
+  var subj = (en ? 'Your current situation and your quote — ' : 'Tu situación actual y tu cotización — ') + (cur.resort || '');
+  var h = '<!DOCTYPE html><html lang="' + (en ? 'en' : 'es') + '"><head><meta charset="utf-8"><title>' + (en ? 'COMBO EMAIL — ' : 'EMAIL COMPLETO — ') + escH(cur.name) + '</title></head><body style="margin:0;padding:20px 8px;background:#f2f5f6;font-family:Arial,Helvetica,sans-serif;color:#23323b;">';
+  h += '<div ' + QDOC_BAR + '><b>' + (en ? '🧾 COMBO EMAIL — SITUATION + QUOTE' : '🧾 EMAIL COMPLETO — SITUACIÓN + COTIZACIÓN') + '</b><span style="font-size:13px">' + (en ? 'To: ' : 'Para: ') + '<input id="emTo" value="' + escH(cur.email || '') + '" style="padding:5px;border-radius:4px;border:none;min-width:210px"> ' + (en ? 'Subject: ' : 'Asunto: ') + '<input id="emSubj" value="' + escH(subj) + '" style="padding:5px;border-radius:4px;border:none;min-width:300px"></span>' +
+    '<button ' + QDOC_BTN + ' onclick="cbCopyE(this)">📋 COPY FORMATTED EMAIL</button>' +
+    '<button ' + QDOC_BTN + ' onclick="cbGmailE()">✉️ OPEN IN GMAIL</button>' +
+    qDocToggleBtn('combo', en) +
+    '<span style="font-size:12px;opacity:.85">' + (en ? 'One email: current situation first, then the quote and the savings. Nothing is sent automatically.' : 'Un solo correo: primero la situación actual, después la cotización y el ahorro. Nada se envía automáticamente.') + '</span></div>';
+  h += '<div id="eml" contenteditable="true">' + e + '</div>';
+  h += '<scr' + 'ipt>function cbCopyE(b){var n=document.getElementById("eml");try{navigator.clipboard.write([new ClipboardItem({"text/html":new Blob([n.innerHTML],{type:"text/html"}),"text/plain":new Blob([n.innerText],{type:"text/plain"})})]).then(function(){b.textContent="✅ COPIADO";});}catch(err){var r=document.createRange();r.selectNode(n);var s=getSelection();s.removeAllRanges();s.addRange(r);document.execCommand("copy");b.textContent="✅ COPIADO";}}' +
+    'function cbGmailE(){var to=document.getElementById("emTo").value,su=document.getElementById("emSubj").value,tx=document.getElementById("eml").innerText;window.open("https://mail.google.com/mail/?view=cm&fs=1&to="+encodeURIComponent(to)+"&su="+encodeURIComponent(su)+"&body="+encodeURIComponent(tx),"_blank");}</scr' + 'ipt>';
   h += qDocToggleJs(en);
   h += '</body></html>';
   return h;
