@@ -456,6 +456,7 @@
     <div>Costo por noche <b id="q_xnight">—</b></div>
     <div>Hospedaje/año ($ × noches) <b id="q_xpnightyr">—</b></div>
     <div class="mtgOnly">Hipoteca 10 años <b id="q_xmo10">—</b></div>
+    <div class="mtgOnly">Hipoteca programada (pago × plazo) <b id="q_xsch">—</b></div>
     <div>Mantenimiento 10 años (<span id="q_xescp">8</span>% esc) <b id="q_xmf10">—</b></div>
     <div>Otros gastos 10 años <b id="q_xof10">—</b></div>
     <div style="border-bottom:2px solid #64748b;padding-bottom:5px;margin-bottom:5px">Proyección 10 años <b id="q_xproj10">—</b></div>
@@ -2798,7 +2799,7 @@ function qPanelLang(){ var en = (typeof cur !== "undefined" && cur && cur.lang =
 function qRecalc(){
   qPanelLang();
   var qdEl = $('q_dates'); if (qdEl) qdEl.style.display = ($('q_paym').value === 'uga') ? '' : 'none';
-  if (!cur){ ['q_w30','q_w90','q_w6','q_t1','q_t3','q_t5','q_t10','q_t20','q_t30','q_ftot','q_bal','q_s10','q_mo','q_ftpay','q_ftint','q_mosn','q_t12','q_t24','q_t36','q_comm','q_cdate','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct','q_xmmo','q_xmfmo','q_xtotmo','q_xmoyr','q_xmfyr','q_xtotyr','q_xmo10','q_xmf10','q_xproj10','q_xnight','q_xofmo','q_xofyr','q_xof10','q_xpnightyr'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— meses restantes'; var fe0 = $('q_feesug'); if (fe0) fe0.textContent = ''; var mw0 = $('q_minwarn'); if (mw0) mw0.style.display = 'none'; var cr0 = $('q_ccrow'); if (cr0) cr0.style.display = 'none'; var cb0 = $('q_commbase'); if (cb0) cb0.textContent = ''; var xf0 = $('q_bal2flag'); if (xf0) xf0.style.display = 'none'; var xt0 = $('q_schtag'); if (xt0) xt0.style.display = 'none'; return; }
+  if (!cur){ ['q_w30','q_w90','q_w6','q_t1','q_t3','q_t5','q_t10','q_t20','q_t30','q_ftot','q_bal','q_s10','q_mo','q_ftpay','q_ftint','q_mosn','q_t12','q_t24','q_t36','q_comm','q_cdate','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct','q_xmmo','q_xmfmo','q_xtotmo','q_xmoyr','q_xmfyr','q_xtotyr','q_xmo10','q_xsch','q_xmf10','q_xproj10','q_xnight','q_xofmo','q_xofyr','q_xof10','q_xpnightyr'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— meses restantes'; var fe0 = $('q_feesug'); if (fe0) fe0.textContent = ''; var mw0 = $('q_minwarn'); if (mw0) mw0.style.display = 'none'; var cr0 = $('q_ccrow'); if (cr0) cr0.style.display = 'none'; var cb0 = $('q_commbase'); if (cb0) cb0.textContent = ''; var xf0 = $('q_bal2flag'); if (xf0) xf0.style.display = 'none'; var xt0 = $('q_schtag'); if (xt0) xt0.style.display = 'none'; return; }
   var mmo = (qIsDB() && !(qNum('q_payoff') > 0)) ? 0 : qNum('q_mmo'), mf = qNum('q_mf'), esc = qNum('q_esc'), payoff = qNum('q_payoff'), ofees = qNum('q_ofees'), pnight = qNum('q_pnight');
   var pyrIn = parseInt(($('q_pyr').value || '').replace(/\D/g, ''), 10) || 0;
   var pyr = pyrIn; // SAI Fase 2: sin año de compra NO se inventa uno (antes un default oculto 2023 fabricaba la fecha)
@@ -2898,6 +2899,7 @@ function qRecalc(){
   $('q_xnight').textContent = nightsV > 0 ? fmtC(totyr / nightsV) : '—';
   $('q_xpnightyr').textContent = (pnight > 0 && nightsV > 0) ? fmtC(pnight * nightsV) : '—';
   $('q_xmo10').textContent = mo10 === null ? PEND_TXT : fmtD(mo10);
+  var xsEl = $('q_xsch'); if (xsEl) xsEl.textContent = mmo > 0 ? fmtD(mmo) + ' × ' + term + ' meses = ' + fmtD(mmo * term) : '—';
   $('q_xescp').textContent = (esc || 8); $('q_xmf10').textContent = fmtD(mf10); $('q_xof10').textContent = fmtD(of10);
   $('q_xproj10').textContent = mo10 === null ? PEND_TXT : fmtD(mo10 + mf10 + of10);
   qFmoMode();
