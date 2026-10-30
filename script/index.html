@@ -581,7 +581,7 @@
     <label class="qf">PORCIÓN 4 <span><input type="date" id="q_dp4d" onchange="qRecalc();qAutoSave()"> <input type="number" id="q_dp4a" min="0" oninput="qRecalc();qAutoSave()" style="width:90px"></span></label>
     <label class="qf">PORCIÓN 5 <span><input type="date" id="q_dp5d" onchange="qRecalc();qAutoSave()"> <input type="number" id="q_dp5a" min="0" oninput="qRecalc();qAutoSave()" style="width:90px"></span></label>
     <label class="qf">PORCIÓN 6 <span><input type="date" id="q_dp6d" onchange="qRecalc();qAutoSave()"> <input type="number" id="q_dp6a" min="0" oninput="qRecalc();qAutoSave()" style="width:90px"></span></label>
-    <div class="qsm" style="margin:6px 0">Ejemplo rápido: <select id="q_depN"><option value="2">2</option><option value="3">3</option><option value="4" selected>4</option><option value="5">5</option><option value="6">6</option></select> cuotas en total (la 1ª es el anticipo) <button type="button" onclick="qDepSample()">Llenar ejemplo</button> — te pregunto los meses (máx 6) o las semanas (máx 24) y el resto se reparte parejo después del anticipo; edita montos y fechas a mano. Las cuotas son al 0% de interés: la suma es el total exacto.</div>
+    <div class="qsm" style="margin:6px 0">Ejemplo rápido: <select id="q_depN"><option value="2">2</option><option value="3">3</option><option value="4" selected>4</option><option value="5">5</option><option value="6">6</option></select> cuotas en total (la 1ª es el anticipo) · Anticipo <select id="q_depPct"><option value="">el puesto</option><option value="0">parejo (sin anticipo)</option><option value="25">25%</option><option value="30">30%</option><option value="50">50%</option></select> <button type="button" onclick="qDepSample()">Llenar ejemplo</button> — te pregunto los meses (máx 6) o las semanas (máx 24) y el resto se reparte parejo después del anticipo; edita montos y fechas a mano. Las cuotas son al 0% de interés: la suma es el total exacto.</div>
     <div class="qsm" id="q_deptot" style="font-weight:700"></div>
   </div>
 
@@ -968,6 +968,8 @@ function qDepSample(){
   var totS = ($('q_paym').value === 'cc') ? Math.round(feeS * 1.03) : feeS;
   var dRawS = qNum('q_down');
   var dnS = ($('q_downt').value === 'pct') ? Math.round(totS * dRawS / 100) : dRawS;
+  var pctSel = ($('q_depPct') || {}).value || '';
+  if (pctSel !== ''){ var pvS = parseInt(pctSel, 10); dnS = pvS > 0 ? Math.round(totS * pvS / 100) : 0; }
   var t0S = new Date(); t0S.setHours(0, 0, 0, 0);
   var isoOf = function(off){ var d = new Date(t0S.getFullYear(), t0S.getMonth(), t0S.getDate() + off); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); };
   var isoMo = function(moff){ var d = new Date(t0S.getFullYear(), t0S.getMonth() + moff, t0S.getDate()); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); };
@@ -2968,7 +2970,7 @@ function qRecalc(){
   }
   var depSum = 0, depCum = 0, dep25Date = '', depLastDate = '';
   for (var dpi3 = 1; dpi3 <= 6; dpi3++){ var da3 = qNum('q_dp' + dpi3 + 'a'); var dd3 = ($('q_dp' + dpi3 + 'd') || {}).value || ''; if (da3 > 0){ depSum += da3; depCum += da3; if (dd3){ if (!depLastDate || dd3 > depLastDate) depLastDate = dd3; if (!dep25Date && feeKnown && depCum >= ftot * 0.25) dep25Date = dd3; } } }
-  var depBox = $('q_depbox'); if (depBox) depBox.style.display = (paym === 'ach' || paym === 'cc' || paym === 'check') ? '' : 'none';
+  var depBox = $('q_depbox'); if (depBox) depBox.style.display = ''; // Plan de cuotas visible SIEMPRE (MTG y deed-back; sirve para el anticipo y para pago completo) — Sebastian 2026-10-30
   var dpctEl = $('q_downpct'); if (dpctEl) dpctEl.textContent = feeKnown ? ('Anticipo: 25% = ' + fmtD(Math.round(ftot * 0.25)) + ' · 30% = ' + fmtD(Math.round(ftot * 0.30))) : '';
   var depTotEl = $('q_deptot');
   if (depTotEl){ if (depSum > 0 && feeKnown){ var depFmt = function(s){ var pp = s.split('-'); return pp.length === 3 ? (parseInt(pp[1], 10) + '/' + parseInt(pp[2], 10) + '/' + pp[0]) : s; }; var depMsg = depSum >= ftot ? ('✅ PAGADO COMPLETO: porciones ' + fmtD(depSum) + ' de ' + fmtD(ftot) + (depLastDate ? ' — última porción el ' + depFmt(depLastDate) : '')) : ('Porciones: ' + fmtD(depSum) + ' de ' + fmtD(ftot) + ' · faltan ' + fmtD(ftot - depSum)); if (depLastDate){ var dw = (new Date(depLastDate + 'T12:00:00') - new Date()) / 604800000; if (dw > 24.3) depMsg += ' · ⚠️ la última cuota pasa de 24 semanas'; } depTotEl.textContent = depMsg; } else depTotEl.textContent = ''; }
