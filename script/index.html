@@ -1292,6 +1292,7 @@ function hlRender(){
   box.innerHTML = items.map(function(o){ var it=o.it;
     return '<div class="hl-item'+(it.done?' done':'')+'"><button type="button" class="hl-x" title="Remove" onclick="hlDel('+o.i+')">&#10005;</button>'
     + '<label style="display:flex;gap:6px;align-items:flex-start;cursor:pointer"><input type="checkbox" '+(it.done?'checked':'')+' onchange="hlDone('+o.i+',this.checked)" style="margin-top:3px"><span class="hl-name">'+hlNameHtml(it)+'</span></label>'
+    + ((it.note||'').trim()? '<div class="hl-note">'+hlEsc(it.note)+'</div>' : '')
     + '<input type="datetime-local" class="hl-when" value="'+hlEsc(it.when||'')+'" onchange="hlWhen('+o.i+',this.value)"></div>'; }).join('');
   var open = HL.filter(function(x){return !x.done;}).length;
   var c=document.getElementById('hlCount'); if(c) c.textContent = open? (open+' OPEN') : '';
@@ -1313,6 +1314,7 @@ function hlAdd(){ var inp=document.getElementById('hlNew'); var name=(inp.value|
   var m=hlMatch(name); if(m){ it.sid=m.id||''; it.pipe=m.pipelineUrl||''; if(m.name) it.name=m.name; }
   HL.push(it); hlSave(); inp.value=''; hlRender(); }
 hlRender();
+(function(){ try{ var flag='sl_hl_add_yciano_20261030'; if(!localStorage.getItem(flag)){ var exists=HL.some(function(x){return (x.name||'').toLowerCase().indexOf('yciano')>=0;}); if(!exists){ HL.push({name:'Gilberto Yciano / Maria Yciano', sid:'c-yciano-1017', pipe:'https://app.pipelinecrm.com/people/1310403497', note:'Spoke with Gilberto - he wants to finance instead of CC. Updating terms, will have new payment info today.', when:'', done:false}); hlSave(); hlRender(); } localStorage.setItem(flag,'1'); } }catch(e){} })();
 var AL_KEY='sl_adminlist_v1';
 function alLoad(){ try{ var v=JSON.parse(localStorage.getItem(AL_KEY)||'null'); if(Array.isArray(v)) return v; }catch(e){}
   return [ {name:'Mariana Mendez y Yetien Garcia', sid:'c-mendez-1014', pipe:'https://app.pipelinecrm.com/people/1310381103', amt:'$18,000', note:'Sent the corrected Financial Auth via DocuSign and resent UCFS agreement for signature. Called clients and left message requesting call back.', when:'', done:false} ]; }
