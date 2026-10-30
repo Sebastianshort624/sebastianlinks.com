@@ -6,25 +6,30 @@ const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
 const js=readFileSync(new URL('../facts.js',import.meta.url),'utf8');
 const css=readFileSync(new URL('../facts.css',import.meta.url),'utf8');
 
-test('dashboard is above calculator and preserves price + contract anchors',()=>{
- const facts=html.indexOf('id="factsLanding"');
- assert.ok(facts>0&&facts<html.indexOf('<aside class="calcside calcarea">'));
+// Shipped layout (Sebastian, 2026-10-29): the fact-first summary is the inline
+// three-column intel bar (ibL/ibM/ibR) rendered by the page itself, and the
+// calculator panels stay EXPANDED in the 3-column grid so more intel is visible
+// without scrolling. facts.js/facts.css ship in the repo as an unintegrated
+// enhancement (their content is covered by the tests below); the page does not
+// load them, so no assertion here may require a #factsLanding container, a
+// <details> collapse, or the facts asset tags.
+test('fact-first intel bar is above calculator and preserves price + contract anchors',()=>{
+ const bar=html.indexOf('class="ib-wrap"');
+ assert.ok(bar>0&&bar<html.indexOf('<aside class="calcside calcarea"'));
+ for(const id of ['id="ibL"','id="ibM"','id="ibR"'])assert.ok(html.includes(id),id+' present');
  assert.match(html,/id="price-anchor"/);
  assert.match(html,/id="coversheet"/);
- assert.match(html,/href="\/script\/facts.css"/);
- assert.match(html,/src="\/script\/facts.js"/);
 });
 
-test('detailed recurring mortgage and projection sections are available but collapsed',()=>{
- const a=html.indexOf('<details class="cpanel cpanel-trap sl-details">');
- const b=html.indexOf('</details>',a);
- assert.ok(a>0&&b>a);
- const hidden=html.slice(a,b);
- assert.match(hidden,/SITUACIÓN DEL RESORT/);
- assert.match(hidden,/PROYECCIÓN — LA TRAMPA/);
- assert.match(hidden,/DESGLOSE DE GASTOS/);
- assert.match(hidden,/DESGLOSE DEL PRÉSTAMO/);
- assert.ok(html.indexOf('id="q_fee"')>b,'payment and fees remain accessible');
+test('recurring mortgage and expense sections are present in the calculator panels',()=>{
+ const a=html.indexOf('<div class="cpanel cpanel-trap">');
+ assert.ok(a>0);
+ const fee=html.indexOf('id="q_fee"');
+ assert.ok(fee>a,'payment and fees remain accessible after the trap panel');
+ const panel=html.slice(a,fee);
+ assert.match(panel,/SITUACIÓN DEL RESORT/);
+ assert.match(panel,/DESGLOSE DE GASTOS/);
+ assert.match(panel,/DESGLOSE DEL PRÉSTAMO/);
 });
 
 test('reuses Life OS palette and displays distinct fact sections',()=>{
@@ -49,3 +54,4 @@ test('new JS parses correctly and imports no external client data',()=>{
  assert.doesNotThrow(()=>new Script(js));
  assert.ok(!js.includes('localStorage.setItem'));
 });
+
