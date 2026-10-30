@@ -280,6 +280,9 @@
 .dtop .dlab{font-size:11px;font-weight:800;letter-spacing:.05em;color:#7f1d1d;white-space:nowrap}
 .dtop select,.dtop input{font-family:inherit;font-weight:700;font-size:13px;padding:3px 5px;border-radius:6px;border:1px solid #b6c2d2;background:#fff}
 #ibDispo{display:flex;flex-wrap:wrap;gap:5px 16px;align-items:center;margin:2px 0 4px}
+
+.eodbtn{font-size:20px;font-weight:800;padding:14px 20px;border-radius:10px;border:3px solid rgba(0,0,0,.25);cursor:pointer;letter-spacing:.5px;opacity:.55}
+.eodbtn.on{opacity:1;border-color:#111;outline:4px solid #111;transform:scale(1.07);box-shadow:0 4px 14px rgba(0,0,0,.35)}
 </style>
 </head>
 <body>
@@ -543,6 +546,27 @@
   <div class="cpanel" id="notesSection">
   <div class="qsec" style="margin-top:0">📝 NOTAS — HISTORIAL <span class="tmin" id="notesWho"></span></div>
   <div class="notesTabs"><button id="notesTabClient" class="on" onclick="notesSetView('client')">Este cliente</button><button id="notesTabAll" onclick="notesSetView('all')">Todas</button></div>
+  <div id="eodBar" style="border:2px solid #111827;border-radius:10px;padding:10px 12px;margin:0 0 10px;background:#fffbeb">
+  <div class="qsec" style="margin-top:0">&#127919; MARCA LA CITA DE HOY <span class="tmin" id="eodWho"></span></div>
+  <div style="font-weight:800;font-size:13px;margin:2px 0 4px;color:#374151">TIPO DE CITA:</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <button type="button" class="eodbtn" data-kind="apt" data-tag="NEW APT" style="background:#facc15;color:#111" onclick="eodSet('apt','NEW APT')">NEW APT</button>
+    <button type="button" class="eodbtn" data-kind="apt" data-tag="RESCH" style="background:#2563eb;color:#fff" onclick="eodSet('apt','RESCH')">RESCH</button>
+    <button type="button" class="eodbtn" data-kind="apt" data-tag="FU APT" style="background:#7c3aed;color:#fff" onclick="eodSet('apt','FU APT')">FU APT</button>
+  </div>
+  <div style="font-weight:800;font-size:13px;margin:10px 0 4px;color:#374151">RESULTADO:</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <button type="button" class="eodbtn" data-kind="out" data-tag="SOLD" style="background:#16a34a;color:#fff" onclick="eodSet('out','SOLD')">SOLD</button>
+    <button type="button" class="eodbtn" data-kind="out" data-tag="RS" style="background:#38bdf8;color:#111" onclick="eodSet('out','RS')">RS</button>
+    <button type="button" class="eodbtn" data-kind="out" data-tag="FU" style="background:#9333ea;color:#fff" onclick="eodSet('out','FU')">FU</button>
+    <button type="button" class="eodbtn" data-kind="out" data-tag="FUH" style="background:#db2777;color:#fff" onclick="eodSet('out','FUH')">FUH</button>
+    <button type="button" class="eodbtn" data-kind="out" data-tag="NA" style="background:#6b7280;color:#fff" onclick="eodSet('out','NA')">NA</button>
+    <button type="button" class="eodbtn" data-kind="out" data-tag="NO" style="background:#dc2626;color:#fff" onclick="eodSet('out','NO')">NO</button>
+    <button type="button" class="eodbtn" data-kind="out" data-tag="NG" style="background:#92400e;color:#fff" onclick="eodSet('out','NG')">NG</button>
+    <button type="button" class="eodbtn" data-kind="out" data-tag="NQ" style="background:#111827;color:#fff" onclick="eodSet('out','NQ')">NQ</button>
+  </div>
+  <div class="qsm" id="eodSummary" style="margin-top:8px;font-weight:700"></div>
+  </div>
   <div id="dispoBlock" style="border:1px solid #dbe4f0;border-radius:6px;padding:8px 10px;margin:0 0 10px;background:#f8fbff">
   <div class="qsec" style="margin-top:0">🎯 DISPOSICIÓN · ESTADO · RESULTADO <span class="tmin" id="dispoWho"></span></div>
   <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:end;margin:2px 0 8px">
@@ -1215,6 +1239,36 @@ function qRenderCombo(list){
     '<div>Proyección 10 años combinada: <b>' + (pend ? PEND_TXT : fmtC(mo10sum + mf10sum)) + '</b></div>' +
     '<div style="font-size:1.15em">PRECIO TOTAL: <b>' + fmtD(precio) + '</b> <span style="font-weight:400;font-size:.85em">(' + pl + ')</span></div>';
 }
+  /* ===== MARCA DE CITA / RESULTADO DEL DIA (botones grandes EOD) ===== */
+  function eodToday(){ var t = new Date(); return t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0'); }
+  function eodSet(kind, tag){
+    if (!cur) return;
+    var today = eodToday();
+    if (kind === 'apt'){ cur.aptTag = (cur.aptTag === tag && cur.aptDate === today) ? '' : tag; cur.aptDate = today; }
+    else { cur.outTag = (cur.outTag === tag && cur.outDate === today) ? '' : tag; cur.outDate = today; }
+    cur._upd = Date.now();
+    try { var cs = slClients(); for (var i = 0; i < cs.length; i++) if (cs[i].id === cur.id){ cs[i] = cur; break; } localStorage.setItem('sl_clients', JSON.stringify(cs)); } catch(e){}
+    try { syncPushRecord(cur, true); } catch(e){}
+    eodBarRender();
+  }
+  function eodBarRender(){
+    var bar = document.getElementById('eodBar'); if (!bar || !cur) return;
+    var today = eodToday();
+    var w = document.getElementById('eodWho'); if (w) w.textContent = '\u2014 ' + (cur.name || '');
+    var btns = bar.querySelectorAll('.eodbtn');
+    for (var i = 0; i < btns.length; i++){
+      var b = btns[i], kind = b.getAttribute('data-kind'), tag = b.getAttribute('data-tag');
+      var on = (kind === 'apt') ? (cur.aptTag === tag && cur.aptDate === today) : (cur.outTag === tag && cur.outDate === today);
+      b.classList.toggle('on', !!on);
+    }
+    var sm = document.getElementById('eodSummary');
+    if (sm){
+      var parts = [];
+      if (cur.aptTag && cur.aptDate === today) parts.push('Cita de hoy: ' + cur.aptTag);
+      if (cur.outTag && cur.outDate === today) parts.push('Resultado: ' + cur.outTag);
+      sm.textContent = parts.length ? parts.join(' \u00b7 ') + ' \u2014 alimenta tu post de fin de dia.' : 'Sin marcar hoy \u2014 toca un boton al terminar la llamada.';
+    }
+  }
   /* ===== DISPOSICIÓN / ESTADO DEL LEAD / RESULTADO / SEGUIMIENTO por cliente ===== */
   function dispoKey(){ return cur ? 'sl_dispo_' + cur.id : null; }
   function dispoRead(){
@@ -1268,7 +1322,7 @@ function dispoLoad(){
     $('d_futype').value = d.futype || ''; $('d_fudate').value = d.fudate || '';
     $('d_futime').value = d.futime || ''; $('d_fuampm').value = d.fuampm || '';
     var w = $('dispoWho'); if (w) w.textContent = cur ? '— ' + (cur.name || '') : '';
-    dispoSummary(); dispoDates(); dispoTopSync();
+    dispoSummary(); dispoDates(); dispoTopSync(); try { eodBarRender(); } catch(e){}
   }
 
   function dispoTopSync(){
