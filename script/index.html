@@ -974,6 +974,7 @@ function qSetDtype(t){
     for (var i = 0; i < cs.length; i++) if (cs[i].id === cur.id) cs[i].dtype = qDtype;
     try { localStorage.setItem('sl_clients', JSON.stringify(cs)); } catch(e){}
   }
+  try { var csD = slClients(); for (var di = 0; di < csD.length; di++) if (cur && csD[di].id === cur.id) syncPushRecord(csD[di], true); } catch(e){}
   qApplyDtype(); qRecalc();
 }
 function amort(pv, apr, n){ var r = apr / 100 / 12; if (!(r > 0)) return n > 0 ? pv / n : 0; return pv * r / (1 - Math.pow(1 + r, -n)); }
@@ -2895,6 +2896,7 @@ function qAutoSave(){
       c._upd = Date.now();
       localStorage.setItem('sl_clients', JSON.stringify(cs));
       if (cur && cur.id === cid) cur = c;
+      syncPushRecord(c);
       qSaveState('💾 Guardado local · ' + new Date().toLocaleTimeString('es') + ' — solo en este navegador; NO sincroniza con Pipeline CRM.');
       qAuditRender();
     } catch(e){}
@@ -2989,6 +2991,7 @@ function importScriptClients(input){
         if (ix >= 0){ var oldR = cs[ix]; if (oldR && oldR._upd && rec._upd && rec._upd < oldR._upd){ ['payoff','mmo','mf','ofees','pnight','padComm','dbCyc','depPlan','esc','apr','term','pyr','pmonth','cfin','fee','down','fapr','fmo','ncontracts','dtype','poffUnverified','poffVerified','cyr','cmonth','c2','c3','_upd'].forEach(function(k){ if (oldR[k] !== undefined) rec[k] = oldR[k]; }); } cs[ix] = rec; updated++; } else { cs.push(rec); added++; }
       });
       localStorage.setItem('sl_clients', JSON.stringify(cs));
+      try { cs.forEach(function(r){ syncPushRecord(r, true); }); } catch(e){}
       refreshClientSel();
       if (cur && cur.id){
         var stillThere = false, cs3 = slClients();
@@ -3008,7 +3011,7 @@ function notesKey(){ return 'sl_notes_' + (cur && cur.id ? cur.id : 'global'); }
 // permanentes en la tabla script_notes (ver script-notes-migration.sql).
 // Sin configurar, corre en MODO LOCAL (localStorage) con la misma experiencia:
 // notas por cliente, fechadas, agrupadas por dia, con historial de ediciones.
-var NOTES_DB = { url: '', key: '' };
+var NOTES_DB = { url: 'https://onyrfjftvtvuwtxozgcc.supabase.co', key: 'sb_publishable_0Rl80iGMOWJHINvcCYKU_w_9aTg89Jz' };
 function notesDbOn(){ return !!(NOTES_DB.url && NOTES_DB.key); }
 var notesView = 'client';        // 'client' | 'all'
 var notesCache = [];             // notas normalizadas de la vista actual (mas nuevas primero)
@@ -3066,6 +3069,50 @@ function notesDbReq(path, opts){
     if (!r.ok) throw new Error('Error ' + r.status);
     return r.status === 204 ? null : r.json();
   });
+}
+// ===== SINCRONIZACION DE REGISTROS (script_clients) — misma base que las notas =====
+// Cada guardado local sube el registro a la base; al abrir la pagina se descargan
+// los registros y manda el _upd mas nuevo por cliente. Asi la pantalla de
+// Sebastian y el servidor dejan de divergir.
+function syncDbOn(){ return notesDbOn(); }
+function syncDbReq(path, opts){
+  var o = opts || {};
+  var h = { 'apikey': NOTES_DB.key, 'Authorization': 'Bearer ' + NOTES_DB.key, 'Content-Type': 'application/json' };
+  if (o.headers) for (var k in o.headers) h[k] = o.headers[k];
+  o.headers = h;
+  return fetch(NOTES_DB.url.replace(/\/+$/, '') + '/rest/v1/script_clients' + path, o).then(function(r){
+    if (!r.ok) throw new Error('Error ' + r.status);
+    return r.status === 204 ? null : r.json();
+  });
+}
+function syncPushRecord(c, quiet){
+  if (!syncDbOn() || !c || !c.id) return;
+  var body = [{ client_id: c.id, data: c, updated_at: new Date(c._upd || Date.now()).toISOString() }];
+  syncDbReq('?on_conflict=client_id', { method: 'POST', headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' }, body: JSON.stringify(body) })
+    .then(function(){ if (!quiet){ try { qSaveState('\u2601\uFE0F Sincronizado \u00B7 ' + new Date().toLocaleTimeString('es')); } catch(e){} } })
+    .catch(function(){ if (!quiet){ try { qSaveState('\uD83D\uDCBE Guardado local \u00B7 ' + new Date().toLocaleTimeString('es') + ' \u2014 sin conexion con la base; se sincroniza al abrir de nuevo.'); } catch(e){} } });
+}
+var syncPulled = false;
+function syncPullAll(){
+  if (!syncDbOn() || syncPulled) return;
+  syncPulled = true;
+  syncDbReq('?select=client_id,data,updated_at', { method: 'GET' }).then(function(rows){
+    if (!Array.isArray(rows)) return;
+    if (!rows.length){ try { slClients().forEach(function(c){ syncPushRecord(c, true); }); } catch(e){} return; }
+    var cs = slClients(), changed = false;
+    rows.forEach(function(row){
+      var rec = row && row.data; if (!rec || !rec.id) return;
+      var ix = -1;
+      for (var i = 0; i < cs.length; i++) if (cs[i].id === rec.id){ ix = i; break; }
+      if (ix < 0){ cs.push(rec); changed = true; }
+      else if ((rec._upd || 0) > (cs[ix]._upd || 0)){ cs[ix] = rec; changed = true; }
+    });
+    if (changed){
+      try { localStorage.setItem('sl_clients', JSON.stringify(cs)); } catch(e){}
+      refreshClientSel();
+      if (cur && cur.id) pickClient(cur.id);
+    }
+  }).catch(function(){});
 }
 function notesNormDb(row){
   return { dbid: row.id || '', cid: row.client_id || 'global', cname: row.client_name || '', t: row.created_at ? Date.parse(row.created_at) : 0,
@@ -3330,6 +3377,7 @@ function lcCalc(){
 document.addEventListener('keydown', function(e){ if (e.key === 'Escape'){ notesClose(); lcClose(); } });
 (function initClientSel(){
   refreshClientSel();
+  syncPullAll();
   document.getElementById('clientSel').addEventListener('change', function(){ pickClient(this.value); });
   document.getElementById('lcModal').addEventListener('click', function(e){ if (e.target === this) lcClose(); });
   try {
