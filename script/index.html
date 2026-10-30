@@ -300,6 +300,13 @@
   .hl-add button{background:#0b3d91;color:#fff;border:none;border-radius:6px;padding:5px 10px;cursor:pointer;font-family:inherit}
   @media (max-width:1099px){#hitlist{display:none}}
   @media print{#hitlist{display:none}}
+  /* sl_sidebars_hide_v1 */
+  .hl-hide{background:none;border:1px solid #d8d2c4;border-radius:5px;color:#6b7280;cursor:pointer;font-size:11px;padding:1px 6px;font-family:inherit;margin-left:6px}
+  .sidetab{position:fixed;top:12px;padding:6px 9px;background:#fffdf8;color:#6b7280;border:1px solid #ddd6c9;border-radius:8px;cursor:pointer;z-index:56;font-size:11px;font-weight:700;letter-spacing:.08em;font-family:inherit;display:none}
+  #tabAdmin{left:6px}
+  #tabHit{right:6px}
+  @media (max-width:1099px){.sidetab{display:none!important}}
+  @media print{.sidetab{display:none!important}}
   .eodbtn{font-size:13px;font-weight:600;padding:9px 18px;border-radius:999px;border:1px solid rgba(0,0,0,.22);cursor:pointer;letter-spacing:.08em;opacity:.72;font-family:inherit;transition:all .15s ease}
 .eodbtn:hover{opacity:.92}
 .eodbtn.on{opacity:1;box-shadow:0 0 0 2px #fffdf8,0 0 0 4px #111827}
@@ -355,15 +362,24 @@
   <div id="railRList"></div>
 </div>
 <div id="adminlist">
-  <div class="hl-head"><span>ADMIN HIT LIST</span><span id="alCount"></span></div>
+  <div class="hl-head"><span>ADMIN HIT LIST</span><span><span id="alCount"></span><button type="button" class="hl-hide" onclick="sideToggle('A',false)" title="Ocultar">✕</button></span></div>
   <div id="alItems"></div>
   <div class="hl-add"><input id="alNew" type="text" placeholder="Add admin task&hellip;" onkeydown="if(event.key==='Enter')alAdd()"><button type="button" onclick="alAdd()">+</button></div>
 </div>
 <div id="hitlist">
-  <div class="hl-head"><span>&#127919; HIT LIST</span><span id="hlCount"></span></div>
+  <div class="hl-head"><span>&#127919; HIT LIST</span><span><span id="hlCount"></span><button type="button" class="hl-hide" onclick="sideToggle('H',false)" title="Ocultar">✕</button></span></div>
   <div id="hlItems"></div>
   <div class="hl-add"><input id="hlNew" type="text" placeholder="Add a name&hellip;" onkeydown="if(event.key==='Enter')hlAdd()"><button type="button" onclick="hlAdd()">+</button></div>
 </div>
+<button class="sidetab" id="tabAdmin" onclick="sideToggle('A',true)" title="Mostrar Admin Hit List">ADMIN ▶</button>
+<button class="sidetab" id="tabHit" onclick="sideToggle('H',true)" title="Mostrar Hit List">◀ HIT LIST</button>
+<script>
+var slSideHidden={A:false,H:false};
+try{var sv1=localStorage.getItem('sl_sidebar_hidden')||'';slSideHidden.A=sv1.indexOf('A')>=0;slSideHidden.H=sv1.indexOf('H')>=0;}catch(e){}
+function sideApply(){var a=document.getElementById('adminlist'),h=document.getElementById('hitlist'),ta=document.getElementById('tabAdmin'),th=document.getElementById('tabHit');if(a)a.style.display=slSideHidden.A?'none':'';if(h)h.style.display=slSideHidden.H?'none':'';if(ta)ta.style.display=slSideHidden.A?'block':'none';if(th)th.style.display=slSideHidden.H?'block':'none';}
+function sideToggle(w,show){slSideHidden[w]=!show;try{localStorage.setItem('sl_sidebar_hidden',(slSideHidden.A?'A':'')+(slSideHidden.H?'H':''));}catch(e){}sideApply();}
+sideApply();
+</script>
 <button class="apttab" id="tabL" onclick="aptToggle('L',true)" title="Mostrar citas de hoy">🗓</button>
 <button class="apttab" id="tabR" onclick="aptToggle('R',true)" title="Mostrar citas de hoy">🗓</button>
 
