@@ -948,7 +948,11 @@ function slClients(){
   return cs;
 }
 function qDepSample(){
-  var nS = parseInt(($('q_depN') || {}).value || '4', 10);
+  var nIn = prompt('¿En cuántas cuotas en total? (2 a 6 — la 1ª es el anticipo)', ($('q_depN') || {}).value || '4');
+  if (nIn === null) return;
+  var nS = parseInt(nIn, 10);
+  if (!(nS >= 2 && nS <= 6)){ alert('Cuotas inválidas — usa de 2 a 6.'); return; }
+  var ndEl = $('q_depN'); if (ndEl) ndEl.value = String(nS);
   var modeIn = prompt('¿El resto se paga en MESES o en SEMANAS? Escribe M o S', 'M');
   if (modeIn === null) return;
   var useMo = String(modeIn).trim().toUpperCase().charAt(0) !== 'S';
