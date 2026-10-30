@@ -1854,11 +1854,6 @@ function qQuoteBuild(L){
   var hasFinQ = fmo > 0 && moTxt && moTxt !== '—' && ourMoQ > 0;
   if (totMoQ > 0){
     h += '<div style="display:flex;gap:14px;margin:22px 0">';
-    h += '<div style="flex:1;text-align:center;padding:18px 12px;background:#fef2f2;border:2px solid #b91c1c;border-radius:12px"><div ' + BIGL + '>' + (en ? 'WHAT YOU PAY TODAY — PER MONTH' : 'LO QUE PAGAS HOY — AL MES') + '</div>';
-    if (mmo > 0) h += '<div style="font-size:16px;color:#374151;padding:3px 0">' + (en ? 'Mortgage ' : 'Hipoteca ') + fmtC(mmo) + '</div>';
-    if (mfMoQ > 0) h += '<div style="font-size:16px;color:#374151;padding:3px 0">' + (en ? 'Maintenance ' : 'Mantenimiento ') + fmtC(mfMoQ) + '</div>';
-    if (ofMoQ > 0) h += '<div style="font-size:16px;color:#374151;padding:3px 0">' + (en ? 'Other expenses ' : 'Otros gastos ') + fmtC(ofMoQ) + '</div>';
-    h += '<div style="font-size:40px;font-weight:800;color:#b91c1c;line-height:1.15">' + fmtC(totMoQ) + (en ? '/month' : '/mes') + '</div></div>';
     h += '<div style="flex:1;text-align:center;padding:18px 12px;background:#f0fdf4;border:2px solid #15803d;border-radius:12px"><div ' + BIGL + '>' + (en ? 'WHAT YOU PAY WITH US — PER MONTH' : 'LO QUE PAGAS CON NOSOTROS — AL MES') + '</div>';
     if (hasFinQ){
       h += '<div style="font-size:16px;color:#374151;padding:3px 0">' + (en ? 'One monthly payment — everything included' : 'Un solo pago mensual — todo incluido') + '</div>';
@@ -1868,6 +1863,11 @@ function qQuoteBuild(L){
       h += '<div style="font-size:16px;color:#374151;padding:3px 0">' + (en ? 'One single payment — everything included' : 'Un solo pago — todo incluido') + '</div>';
       h += '<div style="font-size:40px;font-weight:800;color:#15803d;line-height:1.15">' + fmtC(fee) + '</div>';
     }
+    h += '<div style="flex:1;text-align:center;padding:18px 12px;background:#fef2f2;border:2px solid #b91c1c;border-radius:12px"><div ' + BIGL + '>' + (en ? 'WHAT YOU PAY TODAY — PER MONTH' : 'LO QUE PAGAS HOY — AL MES') + '</div>';
+    if (mmo > 0) h += '<div style="font-size:16px;color:#374151;padding:3px 0">' + (en ? 'Mortgage ' : 'Hipoteca ') + fmtC(mmo) + '</div>';
+    if (mfMoQ > 0) h += '<div style="font-size:16px;color:#374151;padding:3px 0">' + (en ? 'Maintenance ' : 'Mantenimiento ') + fmtC(mfMoQ) + '</div>';
+    if (ofMoQ > 0) h += '<div style="font-size:16px;color:#374151;padding:3px 0">' + (en ? 'Other expenses ' : 'Otros gastos ') + fmtC(ofMoQ) + '</div>';
+    h += '<div style="font-size:40px;font-weight:800;color:#b91c1c;line-height:1.15">' + fmtC(totMoQ) + (en ? '/month' : '/mes') + '</div></div>';
     h += '</div></div>';
     if (hasFinQ && totMoQ > ourMoQ) h += '<p style="font-size:17px;color:#374151;text-align:center"><b>' + (en ? 'That is ' + fmtC(totMoQ - ourMoQ) + ' less per month.' : 'Son ' + fmtC(totMoQ - ourMoQ) + ' menos al mes.') + '</b></p>';
     if (bem > 0) h += '<p style="font-size:15px;color:#374151;text-align:center">' + (en ? 'In approximately <b>' + bem + ' months</b>, what you would have paid the resort equals our full fee.' : 'En aproximadamente <b>' + bem + ' meses</b>, lo que habrías pagado al resort iguala nuestra tarifa completa.') + '</p>';
