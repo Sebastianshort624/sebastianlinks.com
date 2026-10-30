@@ -281,8 +281,9 @@
 .dtop select,.dtop input{font-family:inherit;font-weight:700;font-size:13px;padding:3px 5px;border-radius:6px;border:1px solid #b6c2d2;background:#fff}
 #ibDispo{display:flex;flex-wrap:wrap;gap:5px 16px;align-items:center;margin:2px 0 4px}
 
-.eodbtn{font-size:20px;font-weight:800;padding:14px 20px;border-radius:10px;border:3px solid rgba(0,0,0,.25);cursor:pointer;letter-spacing:.5px;opacity:.55}
-.eodbtn.on{opacity:1;border-color:#111;outline:4px solid #111;transform:scale(1.07);box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.eodbtn{font-size:13px;font-weight:600;padding:9px 18px;border-radius:999px;border:1px solid rgba(0,0,0,.22);cursor:pointer;letter-spacing:.08em;opacity:.72;font-family:inherit;transition:all .15s ease}
+.eodbtn:hover{opacity:.92}
+.eodbtn.on{opacity:1;box-shadow:0 0 0 2px #fffdf8,0 0 0 4px #111827}
 </style>
 </head>
 <body>
@@ -342,6 +343,26 @@
 <button onclick="document.getElementById('s_impfile').click()" style="margin-left:8px;padding:6px 14px;font-size:0.9em;background:#0b3d91;color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Importar JSON</button>
 <input type="file" id="s_impfile" accept=".json,application/json" style="display:none" onchange="importScriptClients(this)"></div>
 
+  <div id="eodBar" style="border:1px solid #ddd6c9;border-radius:12px;padding:14px 18px;margin:0 0 16px;background:#fffdf8;box-shadow:0 1px 3px rgba(0,0,0,.05)">
+  <div style="font-size:.78em;letter-spacing:.18em;color:#6b7280;font-weight:700;margin-bottom:8px">MARCA LA CITA DE HOY <span class="tmin" id="eodWho" style="letter-spacing:normal"></span></div>
+  <div style="font-weight:600;font-size:11px;letter-spacing:.14em;margin:2px 0 6px;color:#9ca3af">TIPO DE CITA</div>
+  <div style="display:flex;gap:7px;flex-wrap:wrap">
+    <button type="button" class="eodbtn" data-kind="apt" data-tag="NEW APT" style="background:#facc15;color:#111" onclick="eodSet('apt','NEW APT')">NEW APT</button>
+    <button type="button" class="eodbtn" data-kind="apt" data-tag="RESCH" style="background:#38bdf8;color:#111" onclick="eodSet('apt','RESCH')">RESCH</button>
+    <button type="button" class="eodbtn" data-kind="apt" data-tag="FU APT" style="background:#7c3aed;color:#fff" onclick="eodSet('apt','FU APT')">FU APT</button>
+  </div>
+  <div style="font-weight:600;font-size:11px;letter-spacing:.14em;margin:12px 0 6px;color:#9ca3af">RESULTADO</div>
+  <div style="display:flex;gap:7px;flex-wrap:wrap">
+    <button type="button" class="eodbtn" data-kind="out" data-tag="SOLD" style="background:#16a34a;color:#fff" onclick="eodSet('out','SOLD')">SOLD</button>
+    <button type="button" class="eodbtn" data-kind="out" data-tag="RS" style="background:#dc2626;color:#fff" onclick="eodSet('out','RS')">RS</button>
+    <button type="button" class="eodbtn" data-kind="out" data-tag="FU" style="background:#2563eb;color:#fff" onclick="eodSet('out','FU')">FU</button>
+    <button type="button" class="eodbtn" data-kind="out" data-tag="FUH" style="background:#f97316;color:#fff" onclick="eodSet('out','FUH')">FUH</button>
+    <button type="button" class="eodbtn" data-kind="out" data-tag="NA" style="background:#6b7280;color:#fff" onclick="eodSet('out','NA')">NA</button>
+    <button type="button" class="eodbtn" data-kind="out" data-tag="NO" style="background:#7f1d1d;color:#fff" onclick="eodSet('out','NO')">NO · NG</button>
+    <button type="button" class="eodbtn" data-kind="out" data-tag="NQ" style="background:#111827;color:#fff" onclick="eodSet('out','NQ')">NQ</button>
+  </div>
+  <div class="qsm" id="eodSummary" style="margin-top:10px;font-weight:400;color:#6b7280"></div>
+  </div>
 <aside class="calcside calcarea" id="calc-anchor">
   <div class="cbox calc-head"><h3>🧮 Calculadora <button onclick="qSync(cur)" title="Restablecer al cliente">↺</button></h3>
     <div class="qidn" id="q_idn" style="display:none"></div>
@@ -546,26 +567,6 @@
   <div class="cpanel" id="notesSection">
   <div class="qsec" style="margin-top:0">📝 NOTAS — HISTORIAL <span class="tmin" id="notesWho"></span></div>
   <div class="notesTabs"><button id="notesTabClient" class="on" onclick="notesSetView('client')">Este cliente</button><button id="notesTabAll" onclick="notesSetView('all')">Todas</button></div>
-  <div id="eodBar" style="border:2px solid #111827;border-radius:10px;padding:10px 12px;margin:0 0 10px;background:#fffbeb">
-  <div class="qsec" style="margin-top:0">&#127919; MARCA LA CITA DE HOY <span class="tmin" id="eodWho"></span></div>
-  <div style="font-weight:800;font-size:13px;margin:2px 0 4px;color:#374151">TIPO DE CITA:</div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap">
-    <button type="button" class="eodbtn" data-kind="apt" data-tag="NEW APT" style="background:#facc15;color:#111" onclick="eodSet('apt','NEW APT')">NEW APT</button>
-    <button type="button" class="eodbtn" data-kind="apt" data-tag="RESCH" style="background:#38bdf8;color:#111" onclick="eodSet('apt','RESCH')">RESCH</button>
-    <button type="button" class="eodbtn" data-kind="apt" data-tag="FU APT" style="background:#7c3aed;color:#fff" onclick="eodSet('apt','FU APT')">FU APT</button>
-  </div>
-  <div style="font-weight:800;font-size:13px;margin:10px 0 4px;color:#374151">RESULTADO:</div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap">
-    <button type="button" class="eodbtn" data-kind="out" data-tag="SOLD" style="background:#16a34a;color:#fff" onclick="eodSet('out','SOLD')">SOLD</button>
-    <button type="button" class="eodbtn" data-kind="out" data-tag="RS" style="background:#dc2626;color:#fff" onclick="eodSet('out','RS')">RS</button>
-    <button type="button" class="eodbtn" data-kind="out" data-tag="FU" style="background:#2563eb;color:#fff" onclick="eodSet('out','FU')">FU</button>
-    <button type="button" class="eodbtn" data-kind="out" data-tag="FUH" style="background:#f97316;color:#fff" onclick="eodSet('out','FUH')">FUH</button>
-    <button type="button" class="eodbtn" data-kind="out" data-tag="NA" style="background:#6b7280;color:#fff" onclick="eodSet('out','NA')">NA</button>
-    <button type="button" class="eodbtn" data-kind="out" data-tag="NO" style="background:#7f1d1d;color:#fff" onclick="eodSet('out','NO')">NO · NG</button>
-    <button type="button" class="eodbtn" data-kind="out" data-tag="NQ" style="background:#111827;color:#fff" onclick="eodSet('out','NQ')">NQ</button>
-  </div>
-  <div class="qsm" id="eodSummary" style="margin-top:8px;font-weight:700"></div>
-  </div>
   <div id="dispoBlock" style="border:1px solid #dbe4f0;border-radius:6px;padding:8px 10px;margin:0 0 10px;background:#f8fbff">
   <div class="qsec" style="margin-top:0">🎯 DISPOSICIÓN · ESTADO · RESULTADO <span class="tmin" id="dispoWho"></span></div>
   <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:end;margin:2px 0 8px">
