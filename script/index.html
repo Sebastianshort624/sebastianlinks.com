@@ -2810,12 +2810,53 @@ function qRecalc(){
     box.value = imp; qAprImplied = true; qAprImpliedVal = imp;
   })();
   var MG = qMortgage(); // shared model (SAI 2026-10-20): projections never restart or erase a mortgage
+  // PROJECTION FALLBACK (Sebastian, 2026-10-30: the Compromiso panel must populate in EVERY deal, the
+  // way Jorge Beltran's does): when the strict model is PENDIENTE only because no APR is documented
+  // (the solver could not run, or its implied rate broke the 21% gate), project the mortgage by
+  // amortizing the RECORDED saldo at the industry's maximum rate (21%) inside the months the documented
+  // term has left — bounded by the saldo itself, so it can never restart a term or outlive the contract.
+  // DISPLAY ONLY for the Compromiso / desglose windows: MG itself stays PENDIENTE, so PAYOFF EXACTO,
+  // pricing, the Cotización and the emails keep their gates. Never when a real APR is on file (a conflict
+  // there is the record's own), never without a documented contract start (no start = no honest remaining
+  // term), and never when the saldo cannot amortize at 21% inside the remaining term (inputs conflict).
+  var MGP = MG;
+  if (MG.status === 'pending' && payoff > 0 && mmo > 0 && qNum('q_aapr') > 0 && typeof cur !== 'undefined' && cur && cur.poffUnverified){
+    // (a0) A recorded APR exists and amortizes the saldo — the ONLY blocker is the poffUnverified flag.
+    // Project with that recorded rate, months derived exactly like the strict model's ok-branch.
+    var lrP = qNum('q_aapr') / 100 / 12;
+    if (mmo > payoff * lrP){
+      var mAP = Math.min(term, Math.ceil(-Math.log(1 - payoff * lrP / mmo) / Math.log(1 + lrP)));
+      MGP = { status: 'ok', months: mAP, mmo: mmo, payoff: payoff, apr: qNum('q_aapr'), level: MG.level, projEst: true, projNote: 'APR registrada: ' + qNum('q_aapr') + '% — proyección con el saldo registrado (SIN VERIFICAR)' };
+    }
+  }
+  if (!MGP.projEst && MG.status === 'pending' && payoff > 0 && mmo > 0 && !(qNum('q_aapr') > 0)){
+    var elP = parseInt((($('q_mos') || {}).value || ''), 10);
+    var remP = term - elP;
+    if (isFinite(elP) && elP >= 0 && remP >= 1 && payoff < mmo * remP){
+      // (a) Implied rate, solved exactly like the APR solver but DISPLAY-ONLY: it also covers records
+      // whose poffUnverified flag blocks the solver itself, when their own numbers imply a legal rate.
+      var loP = 1e-7, hiP = 0.05, midP = 0, pvP = mmo * (1 - Math.pow(1 + hiP, -remP)) / hiP;
+      if (!(pvP > payoff)){
+        for (var biP = 0; biP < 80; biP++){ midP = (loP + hiP) / 2; pvP = mmo * (1 - Math.pow(1 + midP, -remP)) / midP; if (pvP > payoff) loP = midP; else hiP = midP; }
+        var impP = Math.round(midP * 12 * 10000) / 100;
+        if (impP > 0 && impP <= 21) MGP = { status: 'ok', months: remP, mmo: mmo, payoff: payoff, apr: impP, level: MG.level, projEst: true, projNote: 'APR implícita: ' + impP + '% (calculada del saldo, el pago y los meses restantes — el registro no trae APR)' };
+      }
+      // (b) The implied rate broke the 21% gate (near-paid-off loans): amortize the saldo at the cap.
+      if (!MGP.projEst){
+        var r21 = 0.21 / 12;
+        if (mmo > payoff * r21){
+          var m21 = Math.ceil(-Math.log(1 - payoff * r21 / mmo) / Math.log(1 + r21));
+          if (m21 >= 1 && m21 <= remP) MGP = { status: 'ok', months: m21, mmo: mmo, payoff: payoff, apr: 21, level: MG.level, projEst: true, projNote: 'APR no documentada: la hipoteca se amortiza a la tasa máxima de la industria (21%) dentro de los meses que quedan del plazo' };
+        }
+      }
+    }
+  }
   var COMBO = qComboCalc(); // contracts tool: per-contract calcs (each charged separately)
-  function win(y){ var mo = qMortOver(MG, y); return mo === null ? null : mo + mfTot(mf + ofees, r, y); }
+  function win(y){ var mo = qMortOver(MGP, y); return mo === null ? null : mo + mfTot(mf + ofees, r, y); }
   // MATEO HARD BLOCK (2026-10-21): while the mortgage status is PENDIENTE the short windows print NO
   // numeric combined total either — the old fallthrough charged flat mmo x months for a pending loan
   // (one of the paths that put a wrong combined figure in front of a client). PENDIENTE = PEND_TXT.
-  function winMo(m){ if (MG.status === 'pending') return null; var mo = MG.status === 'paid' ? 0 : (m < MG.months ? m * MG.mmo : qMortTotal(MG)); return mo + (mf + ofees) * m / 12; }
+  function winMo(m){ if (MGP.status === 'pending') return null; var mo = MGP.status === 'paid' ? 0 : (m < MGP.months ? m * MGP.mmo : qMortTotal(MGP)); return mo + (mf + ofees) * m / 12; }
   var w30 = winMo(1), w90 = winMo(3), w6 = winMo(6);
   var t1 = win(1), t3 = win(3), t5 = win(5), t10 = win(10), t20 = win(20), t30 = win(30);
   function setW(id, v){ var e = $(id); if (e) e.textContent = v === null ? PEND_TXT : fmtC(v); }
@@ -2825,7 +2866,7 @@ function qRecalc(){
   // Expense breakdown (monthly MF floored for display only; annual MF exact, 10-yr MF escalated)
   var mfmo = Math.floor(mf / 12), mfoyr = mf, moyr = mmo * 12, totyr = moyr + mfoyr + ofees;
   var ofmo = Math.floor(ofees / 12);
-  var mo10 = qMortOver(MG, 10), escR = (esc || 8) / 100;
+  var mo10 = qMortOver(MGP, 10), escR = (esc || 8) / 100;
   var mf10 = escR > 0 ? Math.round(mfoyr * (Math.pow(1 + escR, 10) - 1) / escR) : mfoyr * 10;
   var of10 = Math.round(mfTot(ofees, escR, 10));
   $('q_xmmo').textContent = fmtD(mmo); $('q_xmfmo').textContent = fmtD(mfmo); $('q_xofmo').textContent = fmtD(ofmo);
@@ -2956,13 +2997,14 @@ function qRecalc(){
   var mos = Math.min(term, Math.max(0, Math.round(qNum('q_mos')))); // cap at the contract's own term, not a hardcoded 120 (2026-10-27)
   var mgSuf = MG.derived === 'schedule' ? ' — según cronograma del contrato vigente' : (MG.level === 'verificado' ? ' — según saldo verificado' : ' — según saldo reportado');
   if (MG.assumedStart === 'purchase') mgSuf += ' · inicio asumido desde la compra (sin upgrade documentado)';
-  $('q_mleft').textContent = MG.status === 'paid' ? 'Sin hipoteca — pagada' : (MG.status === 'ok' ? (MG.level === 'estimado' ? '🟡 ESTIMADO · ' : MG.level === 'reportado' ? '🟠 REPORTADO · ' : '✅ VERIFICADO · ') + MG.months + ' meses restantes de hipoteca' + mgSuf : '🔴 ' + PEND_TXT + ' — falta: ' + qMissingLoan().join(', '));
+  $('q_mleft').textContent = MG.status === 'paid' ? 'Sin hipoteca — pagada' : (MG.status === 'ok' ? (MG.level === 'estimado' ? '🟡 ESTIMADO · ' : MG.level === 'reportado' ? '🟠 REPORTADO · ' : '✅ VERIFICADO · ') + MG.months + ' meses restantes de hipoteca' + mgSuf : (MGP.projEst ? '🟡 ESTIMADO · ' + MGP.months + ' meses restantes de hipoteca — proyección con el saldo registrado (' + MGP.projNote + ')' : '🔴 ' + PEND_TXT + ' — falta: ' + qMissingLoan().join(', ')));
   var CS = $('q_calcstatus');
   if (CS){
     if (MG.status === 'ok' && MG.level === 'verificado') CS.innerHTML = '✅ <b>VERIFICADO</b> — ' + (MG.derived === 'schedule' ? 'términos completos del contrato vigente verificados' : 'saldo confirmado del prestamista');
     else if (MG.status === 'ok' && MG.level === 'reportado') CS.innerHTML = '🟠 <b>REPORTADO</b> — saldo reportado por el cliente o el intake, SIN verificación del prestamista. Las proyecciones se calculan con ese saldo reportado; escribir un número en la calculadora nunca lo convierte en verificado.';
     else if (MG.status === 'ok') CS.innerHTML = '🟡 <b>ESTIMADO</b> — modelo matemático' + (MG.inferredLoan ? '; principal original inferido: ' + fmtD(MG.inferredLoan) : '') + (qAprImplied ? '; APR implícita: ' + qAprImpliedVal + '% (calculada del saldo, el pago y los meses restantes — el registro no trae APR)' : '') + (MG.assumedStart === 'purchase' ? '. Inicio del contrato ASUMIDO desde la fecha de compra: el registro no documenta upgrade ni refinanciamiento.' : '') + '. Supuestos: préstamo estándar totalmente amortizable, sin cargos adicionales ni pago globo. <b>NO es un payoff confirmado por el prestamista.</b>';
     else if (MG.status === 'paid') CS.innerHTML = '✅ <b>SIN HIPOTECA</b> — préstamo pagado / deed-back';
+    else if (MGP.projEst) CS.innerHTML = '🟡 <b>ESTIMADO</b> — las proyecciones se calculan con el saldo registrado' + ((typeof cur !== 'undefined' && cur && cur.poffUnverified) ? ' (SIN VERIFICAR)' : '') + '. ' + MGP.projNote + '. <b>NO es un payoff confirmado por el prestamista.</b>';
     else CS.innerHTML = '🔴 <b>PENDIENTE</b> — información insuficiente o en conflicto. Falta: ' + qMissingLoan().join(', ');
     if (qClassWarn) CS.innerHTML += '<div style="margin-top:4px">⚠️ ' + qClassWarn + '</div>';
     if (qLastCons && qLastCons.conflicts.length) CS.innerHTML += '<div style="margin-top:4px">⚠️ <b>CONFLICTO DE AMORTIZACIÓN</b> — ' + qLastCons.conflicts.join(' · ') + ' Ningún campo fue ajustado automáticamente.</div>';
