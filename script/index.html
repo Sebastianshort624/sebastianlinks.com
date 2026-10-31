@@ -300,6 +300,16 @@
   .hl-add button{background:#0b3d91;color:#fff;border:none;border-radius:6px;padding:5px 10px;cursor:pointer;font-family:inherit}
   @media (max-width:1099px){#hitlist{display:none}}
   @media print{#hitlist{display:none}}
+  #histlist{position:fixed;bottom:12px;left:6px;width:234px;max-height:44vh;overflow-y:auto;background:#fffdf8;border:1px solid #ddd6c9;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.08);z-index:56;font-size:13px;padding:10px 12px}
+  #histAddBtn{width:100%;background:#0b3d91;color:#fff;border:none;border-radius:6px;padding:7px 8px;cursor:pointer;font-family:inherit;font-weight:700;font-size:12px;margin:2px 0 6px}
+  .hist-day{font-size:.74em;letter-spacing:.12em;color:#6b7280;font-weight:700;margin:9px 0 2px;border-top:1px solid #eee7d8;padding-top:7px}
+  .hist-row{padding:3px 0;line-height:1.35}
+  .hist-row a{color:#0b3d91;text-decoration:none;font-weight:600}
+  .hist-row a:hover{text-decoration:underline}
+  .hist-tag{font-size:10px;font-weight:700;letter-spacing:.06em;padding:1px 5px;border-radius:4px;background:#e0e7ff;color:#3730a3;white-space:nowrap}
+  .hist-tag.first{background:#dcfce7;color:#166534}
+  @media (max-width:1099px){#histlist{display:none}}
+  @media print{#histlist{display:none}}
   /* sl_sidebars_hide_v1 */
   .hl-hide{background:none;border:1px solid #d8d2c4;border-radius:5px;color:#6b7280;cursor:pointer;font-size:11px;padding:1px 6px;font-family:inherit;margin-left:6px}
   .sidetab{position:fixed;top:12px;padding:6px 9px;background:#fffdf8;color:#6b7280;border:1px solid #ddd6c9;border-radius:8px;cursor:pointer;z-index:56;font-size:11px;font-weight:700;letter-spacing:.08em;font-family:inherit;display:none}
@@ -373,6 +383,12 @@
 </div>
 <button class="sidetab" id="tabAdmin" onclick="sideToggle('A',true)" title="Mostrar Admin Hit List">ADMIN ▶</button>
 <button class="sidetab" id="tabHit" onclick="sideToggle('H',true)" title="Mostrar Hit List">◀ HIT LIST</button>
+<div id="histlist">
+  <div class="hl-head"><span>&#128337; HISTORY</span><span><button type="button" class="hl-hide" onclick="histToggle(false)" title="Ocultar">&#10005;</button></span></div>
+  <button type="button" id="histAddBtn" onclick="histAddCurrent()">&#10133; ADD THIS DEAL TO HISTORY</button>
+  <div id="histItems"></div>
+</div>
+<button class="sidetab" id="tabHist" onclick="histToggle(true)" title="Mostrar History" style="left:6px;top:auto;bottom:12px">HISTORY &#9654;</button>
 <script>
 var slSideHidden={A:false,H:false};
 try{var sv1=localStorage.getItem('sl_sidebar_hidden')||'';slSideHidden.A=sv1.indexOf('A')>=0;slSideHidden.H=sv1.indexOf('H')>=0;}catch(e){}
@@ -1556,6 +1572,31 @@ function alAdd(){ var inp=document.getElementById('alNew'); var name=(inp.value|
   var m=hlMatch(name); if(m){ it.sid=m.id||''; it.pipe=m.pipelineUrl||''; if(m.name) it.name=m.name; }
   AL.push(it); alSave(); inp.value=''; alRender(); }
 alRender();
+/* ===== HISTORY (Sebastian, 2026-10-31): tracks FIRST time each client is opened + manual adds; menu by day/time, left panel ===== */
+var HIST_KEY='sl_history_v1', OPEN_KEY='sl_opened_v1';
+function histLoad(){ try{ var v=JSON.parse(localStorage.getItem(HIST_KEY)||'[]'); if(Array.isArray(v)) return v; }catch(e){} return []; }
+function histSave(){ try{ localStorage.setItem(HIST_KEY, JSON.stringify(HIST.slice(-800))); }catch(e){} }
+var HIST=histLoad();
+function histOpenedLoad(){ try{ var v=JSON.parse(localStorage.getItem(OPEN_KEY)||'{}'); if(v && typeof v==='object' && !Array.isArray(v)) return v; }catch(e){} return {}; }
+function histDayKey(ts){ var d=new Date(ts); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function histTime(ts){ return new Date(ts).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}); }
+function histTrackOpen(c){ if(!c) return; var k=c.id||c.name; if(!k) return; var op=histOpenedLoad(); if(op[k]) return; var ts=Date.now(); op[k]=ts; try{ localStorage.setItem(OPEN_KEY, JSON.stringify(op)); }catch(e){} HIST.push({ts:ts, type:'first', id:c.id||'', name:c.name||''}); histSave(); histRender(); }
+function histAddCurrent(){ if(!cur) return; HIST.push({ts:Date.now(), type:'add', id:cur.id||'', name:cur.name||''}); histSave(); histRender(); }
+function histRender(){
+  var box=document.getElementById('histItems'); if(!box) return;
+  if(!HIST.length){ box.innerHTML='<div class="hl-note">Nothing yet \u2014 first opens and adds land here.</div>'; return; }
+  var days={}, order=[];
+  HIST.slice().sort(function(a,b){ return b.ts-a.ts; }).forEach(function(e){ var k=histDayKey(e.ts); if(!days[k]){ days[k]=[]; order.push(k); } days[k].push(e); });
+  box.innerHTML = order.map(function(k){
+    var head=new Date(days[k][0].ts).toLocaleDateString('en-US',{weekday:'long', month:'long', day:'numeric', year:'numeric'});
+    var rows=days[k].map(function(e){ var nm=e.id? '<a href="?c='+encodeURIComponent(e.id)+'">'+hlEsc(e.name)+'</a>' : hlEsc(e.name);
+      return '<div class="hist-row"><span class="hist-tag'+(e.type==='first'?' first':'')+'">'+(e.type==='first'?'FIRST OPEN':'ADDED')+'</span> '+histTime(e.ts)+' \u2014 '+nm+'</div>'; }).join('');
+    return '<div class="hist-day">'+hlEsc(head.toUpperCase())+'</div>'+rows;
+  }).join('');
+}
+function histToggle(show){ var p=document.getElementById('histlist'), t=document.getElementById('tabHist'); if(p) p.style.display=show?'':'none'; if(t) t.style.display=show?'none':'block'; try{ localStorage.setItem('sl_hist_hidden', show?'':'1'); }catch(e){} }
+histRender();
+(function(){ try{ if(localStorage.getItem('sl_hist_hidden')) histToggle(false); }catch(e){} })();
 function eodToday(){ var t = new Date(); return t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0'); }
   function eodSet(kind, tag){
     if (!cur) return;
@@ -1740,7 +1781,7 @@ function pickClient(id){
   for (var i = 0; i < cs.length; i++) if (cs[i].id === id || (cs[i].id == null && cs[i].name === id)) c = cs[i];
   cur = c;
   if (!c){ $('cbar').style.display = 'none'; resetFills(); qSync(null); notesBadge(); return; }
-  qSync(c); notesBadge(); dispoLoad(); soldRender();
+  qSync(c); notesBadge(); dispoLoad(); soldRender(); try{ histTrackOpen(c); }catch(e){}
 }
 function renderBar(c, n){
   var bar = $('cbar');
