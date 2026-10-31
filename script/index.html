@@ -620,18 +620,7 @@ sideApply();
 
 
   </div>
-  <div class="cpanel" id="commSection">
-  <div class="qsec" style="margin-top:0">💵 COMISIÓN — LA HOJA, EXPLICADA</div>
-  <div style="font-size:.92em;line-height:1.5">
-    <p style="margin:4px 0"><b>LA FÓRMULA (toda la hoja es esto):</b><br>COMISIONABLE = TOTAL − FEES − $299 admin.<br>FEES = 3% del total si paga con tarjeta · $199 fijo en todo lo demás.<br>Tu % se aplica sobre el comisionable, nunca sobre el total cobrado.</p>
-    <p style="margin:4px 0"><b>CC / ACH — 10%</b> ← tu mejor tasa<br>Dinero directo a Linx: tarjeta, ACH o cheque pagado completo (aunque el depósito venga en porciones).</p>
-    <p style="margin:4px 0"><b>UCFS — 8%</b><br>Financiera externa. Sin anticipo requerido ($0 down, opcional). Término en MESES, al 19.99%.</p>
-    <p style="margin:4px 0"><b>UGA / IN-HOUSE — 4%</b> ← la misma cubeta en la hoja<br>UGA = financiera externa, exige <b>25% de anticipo</b>. In-house = Linx financia al 19.99%; a 48 meses exige <b>30% de anticipo</b>. El mismo deal paga la MITAD que por UCFS.</p>
-    <p style="margin:4px 0"><b>DEED-BACK — $300 + ½ PAD</b><br>Sin porcentaje. El pad es tu aumento: cada +$100 que quieres de comisión = +$200 al precio final (selector en el recuadro rojo).</p>
-    <p style="margin:4px 0"><b>CUÁNDO TE PAGAN</b><br>Firmado días 1–15 → cobras el día 6 · firmado 16–fin de mes → cobras el día 20 (del mes siguiente). La comisión se debe cuando ya se cobró el 25% del total.</p>
-    <p style="margin:4px 0"><b>CÓMO MAXIMIZAR — EVITAR LA COMISIÓN BAJA</b><br>1. Primero ofrece PAGADO COMPLETO por tarjeta / ACH / cheque (10%). Si no pueden de una sola vez, reparte el DEPÓSITO en porciones directo a Linx: sigue siendo full-down, no UGA.<br>2. Si necesitan financiera: UCFS (8%, $0 down) siempre antes que UGA (4%).<br>3. UGA / in-house solo de último recurso: 4% = la mitad de UCFS y menos de la mitad de directo.<br>4. En deed-back, sube el pad con el selector — es tu única palanca de comisión en esos deals.<br>5. El cargo de tarjeta (3%) lo paga el cliente y se excluye de tu comisionable: cobrar con tarjeta no te baja la tasa.</p>
-  </div>
-  </div>
+  
   <div class="cpanel" id="notesSection">
   <div class="qsec" style="margin-top:0">📝 NOTAS — HISTORIAL <span class="tmin" id="notesWho"></span></div>
   <div class="notesTabs"><button id="notesTabClient" class="on" onclick="notesSetView('client')">Este cliente</button><button id="notesTabAll" onclick="notesSetView('all')">Todas</button></div>
@@ -658,67 +647,10 @@ sideApply();
   </div>
   </div>
   </div>
-  <div class="calcgrid"><div class="cpanel">
-  <div class="qsec" style="margin-top:0">TAREAS DEL DEAL</div>
-  <div class="qtasks">
-    <label><input type="checkbox" id="qt_email" onchange="qTaskSave()"> <a id="qt_emailL" href="#">Enviar correo</a></label>
-    <label><input type="checkbox" id="qt_text" onchange="qTaskSave()"> <span id="qt_textT" onclick="qCopyText()" style="text-decoration:underline;cursor:pointer">Enviar texto (toca para copiar)</span></label>
-    <label><input type="checkbox" id="qt_ds" onchange="qTaskSave()"> Crear DocuSign<br>
-      <select id="qt_tpl" onchange="qTaskSave()">
-        <option>Acuerdo de servicio</option>
-        <option>Acuerdo de servicio + Aut. financiera</option>
-        <option>Acuerdo deed-back</option>
-        <option>Solo aut. financiera</option>
-      </select></label>
-    <label><input type="checkbox" id="qt_crm" onchange="qTaskSave()"> Actualizar CRM <a id="qt_crmL" href="#" target="_blank" style="display:none">abrir lead ↗</a></label>
-    <label><input type="checkbox" id="qt_id" onchange="qTaskSave()"> Subir ID</label>
-  </div>
-  </div>
-    <div class="cpanel">
-  <div class="qsec" style="margin-top:0">📎 DOCUMENTOS</div>
-  <div class="tmin" style="margin-bottom:6px">Se guardan solo en este navegador (unos pocos MB máximo).</div>
-  <input type="file" id="q_docfile" multiple style="display:none" onchange="qDocAdd(this)">
-  <div><button onclick="document.getElementById('q_docfile').click()" style="padding:6px 14px;font-size:0.9em;background:#0b3d91;color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Subir documentos</button></div>
-  <div id="q_docs" style="margin-top:6px"></div>
-  </div>
-  </div>
+  
 </aside>
 
-<div class="calcgrid"><div class="cpanel">
-<div class="qsec" style="margin-top:0">✔ ETAPAS DEL GUIÓN — CUBIERTAS</div>
-<div class="fpitem"><label><input type="checkbox" id="st1" onchange="qStSave()"><span>Confirmar Noches Por Año</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="st2" onchange="qStSave()"><span>Precio Por Noche → RedWeek</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="st3" onchange="qStSave()"><span>investiganos.com</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="st4" onchange="qStSave()"><span>Investigación</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="st5" onchange="qStSave()"><span>¿Le impide seguir adelante con nosotros hoy mismo?</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="st6" onchange="qStSave()"><span>99%</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="st7" onchange="qStSave()"><span>Negociaciones</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="st8" onchange="qStSave()"><span>Navegar</span></label></div>
-</div>
-<div class="cpanel">
-<div class="qsec" style="margin-top:0">✔ FÍSICO</div>
-<div class="fpitem"><label><input type="checkbox" id="ph1" onchange="qPhSave()"><span>Pre-Llamada</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph2" onchange="qPhSave()"><span>Hoja Pre-Call</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph3" onchange="qPhSave()"><span>Script / JSON</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph4" onchange="qPhSave()"><span>Preparar DocuSign</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph5" onchange="qPhSave()"><span>Marcar Etapas Del Guión</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph6" onchange="qPhSave()"><span>El Cierre</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph7" onchange="qPhSave()"><span>Astro — Calcular Precio</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph8" onchange="qPhSave()"><span>Cálculo Automático De Pagos</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph9" onchange="qPhSave()"><span>UCFS Aplicado</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph10" onchange="qPhSave()"><span>Llamada De Verificación UCFS</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph11" onchange="qPhSave()"><span>DocuSign</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph12" onchange="qPhSave()"><span>Foto De Identificación</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph13" onchange="qPhSave()"><span>Revisión De Imágenes</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph14" onchange="qPhSave()"><span>Actualizar CRM</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph15" onchange="qPhSave()"><span>Revisar Documentos Firmados</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph16" onchange="qPhSave()"><span>Revisar Solicitud De Préstamo</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph17" onchange="qPhSave()"><span>Posventa</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph18" onchange="qPhSave()"><span>Revisar CRM</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph19" onchange="qPhSave()"><span>Chat Posventa</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="ph20" onchange="qPhSave()"><span>Revisar Publicación</span></label></div>
-</div>
-</div>
+
 
 <div class="sideboxes">
 <aside class="sprinkle">
@@ -3894,6 +3826,79 @@ document.addEventListener('keydown', function(e){ if (e.key === 'Escape'){ notes
 })();
 </script>
 
+
+<!-- bottom_panels_v1 (Sebastian 2026-10-31): COMISION + TAREAS + DOCUMENTOS + ETAPAS + FISICO moved to the bottom, in this order -->
+<div class="cpanel" id="commSection">
+  <div class="qsec" style="margin-top:0">💵 COMISIÓN — LA HOJA, EXPLICADA</div>
+  <div style="font-size:.92em;line-height:1.5">
+    <p style="margin:4px 0"><b>LA FÓRMULA (toda la hoja es esto):</b><br>COMISIONABLE = TOTAL − FEES − $299 admin.<br>FEES = 3% del total si paga con tarjeta · $199 fijo en todo lo demás.<br>Tu % se aplica sobre el comisionable, nunca sobre el total cobrado.</p>
+    <p style="margin:4px 0"><b>CC / ACH — 10%</b> ← tu mejor tasa<br>Dinero directo a Linx: tarjeta, ACH o cheque pagado completo (aunque el depósito venga en porciones).</p>
+    <p style="margin:4px 0"><b>UCFS — 8%</b><br>Financiera externa. Sin anticipo requerido ($0 down, opcional). Término en MESES, al 19.99%.</p>
+    <p style="margin:4px 0"><b>UGA / IN-HOUSE — 4%</b> ← la misma cubeta en la hoja<br>UGA = financiera externa, exige <b>25% de anticipo</b>. In-house = Linx financia al 19.99%; a 48 meses exige <b>30% de anticipo</b>. El mismo deal paga la MITAD que por UCFS.</p>
+    <p style="margin:4px 0"><b>DEED-BACK — $300 + ½ PAD</b><br>Sin porcentaje. El pad es tu aumento: cada +$100 que quieres de comisión = +$200 al precio final (selector en el recuadro rojo).</p>
+    <p style="margin:4px 0"><b>CUÁNDO TE PAGAN</b><br>Firmado días 1–15 → cobras el día 6 · firmado 16–fin de mes → cobras el día 20 (del mes siguiente). La comisión se debe cuando ya se cobró el 25% del total.</p>
+    <p style="margin:4px 0"><b>CÓMO MAXIMIZAR — EVITAR LA COMISIÓN BAJA</b><br>1. Primero ofrece PAGADO COMPLETO por tarjeta / ACH / cheque (10%). Si no pueden de una sola vez, reparte el DEPÓSITO en porciones directo a Linx: sigue siendo full-down, no UGA.<br>2. Si necesitan financiera: UCFS (8%, $0 down) siempre antes que UGA (4%).<br>3. UGA / in-house solo de último recurso: 4% = la mitad de UCFS y menos de la mitad de directo.<br>4. En deed-back, sube el pad con el selector — es tu única palanca de comisión en esos deals.<br>5. El cargo de tarjeta (3%) lo paga el cliente y se excluye de tu comisionable: cobrar con tarjeta no te baja la tasa.</p>
+  </div>
+  </div>
+<div class="calcgrid"><div class="cpanel">
+  <div class="qsec" style="margin-top:0">TAREAS DEL DEAL</div>
+  <div class="qtasks">
+    <label><input type="checkbox" id="qt_email" onchange="qTaskSave()"> <a id="qt_emailL" href="#">Enviar correo</a></label>
+    <label><input type="checkbox" id="qt_text" onchange="qTaskSave()"> <span id="qt_textT" onclick="qCopyText()" style="text-decoration:underline;cursor:pointer">Enviar texto (toca para copiar)</span></label>
+    <label><input type="checkbox" id="qt_ds" onchange="qTaskSave()"> Crear DocuSign<br>
+      <select id="qt_tpl" onchange="qTaskSave()">
+        <option>Acuerdo de servicio</option>
+        <option>Acuerdo de servicio + Aut. financiera</option>
+        <option>Acuerdo deed-back</option>
+        <option>Solo aut. financiera</option>
+      </select></label>
+    <label><input type="checkbox" id="qt_crm" onchange="qTaskSave()"> Actualizar CRM <a id="qt_crmL" href="#" target="_blank" style="display:none">abrir lead ↗</a></label>
+    <label><input type="checkbox" id="qt_id" onchange="qTaskSave()"> Subir ID</label>
+  </div>
+  </div>
+    <div class="cpanel">
+  <div class="qsec" style="margin-top:0">📎 DOCUMENTOS</div>
+  <div class="tmin" style="margin-bottom:6px">Se guardan solo en este navegador (unos pocos MB máximo).</div>
+  <input type="file" id="q_docfile" multiple style="display:none" onchange="qDocAdd(this)">
+  <div><button onclick="document.getElementById('q_docfile').click()" style="padding:6px 14px;font-size:0.9em;background:#0b3d91;color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Subir documentos</button></div>
+  <div id="q_docs" style="margin-top:6px"></div>
+  </div>
+  </div>
+<div class="calcgrid"><div class="cpanel">
+<div class="qsec" style="margin-top:0">✔ ETAPAS DEL GUIÓN — CUBIERTAS</div>
+<div class="fpitem"><label><input type="checkbox" id="st1" onchange="qStSave()"><span>Confirmar Noches Por Año</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="st2" onchange="qStSave()"><span>Precio Por Noche → RedWeek</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="st3" onchange="qStSave()"><span>investiganos.com</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="st4" onchange="qStSave()"><span>Investigación</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="st5" onchange="qStSave()"><span>¿Le impide seguir adelante con nosotros hoy mismo?</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="st6" onchange="qStSave()"><span>99%</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="st7" onchange="qStSave()"><span>Negociaciones</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="st8" onchange="qStSave()"><span>Navegar</span></label></div>
+</div>
+<div class="cpanel">
+<div class="qsec" style="margin-top:0">✔ FÍSICO</div>
+<div class="fpitem"><label><input type="checkbox" id="ph1" onchange="qPhSave()"><span>Pre-Llamada</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph2" onchange="qPhSave()"><span>Hoja Pre-Call</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph3" onchange="qPhSave()"><span>Script / JSON</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph4" onchange="qPhSave()"><span>Preparar DocuSign</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph5" onchange="qPhSave()"><span>Marcar Etapas Del Guión</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph6" onchange="qPhSave()"><span>El Cierre</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph7" onchange="qPhSave()"><span>Astro — Calcular Precio</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph8" onchange="qPhSave()"><span>Cálculo Automático De Pagos</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph9" onchange="qPhSave()"><span>UCFS Aplicado</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph10" onchange="qPhSave()"><span>Llamada De Verificación UCFS</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph11" onchange="qPhSave()"><span>DocuSign</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph12" onchange="qPhSave()"><span>Foto De Identificación</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph13" onchange="qPhSave()"><span>Revisión De Imágenes</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph14" onchange="qPhSave()"><span>Actualizar CRM</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph15" onchange="qPhSave()"><span>Revisar Documentos Firmados</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph16" onchange="qPhSave()"><span>Revisar Solicitud De Préstamo</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph17" onchange="qPhSave()"><span>Posventa</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph18" onchange="qPhSave()"><span>Revisar CRM</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph19" onchange="qPhSave()"><span>Chat Posventa</span></label></div>
+<div class="fpitem"><label><input type="checkbox" id="ph20" onchange="qPhSave()"><span>Revisar Publicación</span></label></div>
+</div>
+</div>
 <button id="notesFab" onclick="notesJump()">📝 Notas</button>
 <div id="lcModal">
   <div class="lcBox">
