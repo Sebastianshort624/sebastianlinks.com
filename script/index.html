@@ -554,7 +554,7 @@ sideApply();
   <label class="qf">NUESTRA TARIFA <select id="q_feepct" onchange="qFeePct()" style="padding:4px;font-size:0.95em;font-family:inherit;"><option value="30">30%</option><option value="35">35%</option><option value="40">40%</option><option value="45">45%</option><option value="46">46%</option><option value="47" selected>47%</option><option value="48">48%</option><option value="49">49%</option><option value="50">50%</option><option value="55">55%</option><option value="60">60%</option></select> <input id="q_fee" type="number" min="0" oninput="qRecalc()"></label>
   <div class="qsm" id="q_feesug" style="margin:-2px 0 8px"></div>
   <div id="q_minwarn" style="display:none;background:#fef2f2;border:2px solid #b91c1c;color:#b91c1c;font-weight:700;padding:8px 10px;margin:0 0 8px;border-radius:6px">PRECIO MÍNIMO LINX: $3,500 + $299 ADMIN = $3,799 — NUNCA OFRECER MENOS</div>
-  <div class="qsm" style="margin:-4px 0 8px">PRECIO MÍNIMO LINX: $3,500 + $299 ADMIN = <b>$3,799</b> — el precio más bajo que podemos ofrecer.</div>
+  <div class="qsm" id="q_minline" style="margin:-4px 0 8px">PRECIO MÍNIMO LINX: $3,500 + $299 ADMIN = <b>$3,799</b> — el precio más bajo que podemos ofrecer.</div>
   <label class="qf">FORMA DE PAGO <select id="q_paym" onchange="qPaymChange()">
     <option value="ach">ACH</option>
     <option value="check">CHEQUE</option>
@@ -3141,7 +3141,17 @@ function qRecalc(){
   var cpS = $('q_commpay'); if (cpS) cpS.value = (paym === 'check' || paym === 'equity' || paym === 'inhouse') ? 'ach' : paym;
   var isFin = paym === 'ucfs' || paym === 'equity' || paym === 'uga' || paym === 'inhouse';
   var feeKnown = fee > 0;
-  var mwEl = $('q_minwarn'); if (mwEl) mwEl.style.display = (feeKnown && fee < 3799) ? '' : 'none';
+  var mwEl = $('q_minwarn');
+  var mlEl = $('q_minline');
+  if (qIsDB()){
+    var sfMin = qNum('q_sheetfee');
+    var dbMin = sfMin > 0 ? sfMin + 299 : 0;
+    if (mlEl) mlEl.innerHTML = 'PRECIO M\u00cdNIMO DEED-BACK: EL PRECIO DE LA LISTA' + (sfMin > 0 ? ' <b>' + fmtD(sfMin) + '</b>' : '') + ' + $299 ADMIN' + (dbMin > 0 ? ' = <b>' + fmtD(dbMin) + '</b>' : '') + ' \u2014 nunca menos que la lista.';
+    if (mwEl){ if (feeKnown && dbMin > 0 && fee < dbMin){ mwEl.textContent = 'PRECIO M\u00cdNIMO DEED-BACK: LISTA ' + fmtD(sfMin) + ' + $299 ADMIN = ' + fmtD(dbMin) + ' \u2014 NUNCA OFRECER MENOS'; mwEl.style.display = ''; } else { mwEl.style.display = 'none'; } }
+  } else {
+    if (mlEl) mlEl.innerHTML = 'PRECIO M\u00cdNIMO LINX: $3,500 + $299 ADMIN = <b>$3,799</b> \u2014 el precio m\u00e1s bajo que podemos ofrecer.';
+    if (mwEl){ mwEl.textContent = 'PRECIO M\u00cdNIMO LINX: $3,500 + $299 ADMIN = $3,799 \u2014 NUNCA OFRECER MENOS'; mwEl.style.display = (feeKnown && fee < 3799) ? '' : 'none'; }
+  }
   var ftot = feeKnown && paym === 'cc' ? fee * 1.03 : fee;
   // ANTICIPO REQUERIDO por forma de pago (Sebastian 2026-10-29): UCFS $0 (opcional) / UGA 25% / IN-HOUSE 48 meses 30%.
   // Se auto-calcula en el campo ANTICIPO salvo que Sebastian lo haya tecleado el mismo.
