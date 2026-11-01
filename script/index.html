@@ -462,7 +462,7 @@ sideApply();
   <label class="qf mtgOnly">AÑO DE COMPRA <input id="q_pyr" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">MES DE COMPRA <select id="q_pmonth" onchange="qRecalc()"><option value="">—</option><option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option><option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option><option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option></select></label>
   <label class="qf mtgOnly">HIPOTECA MENSUAL <input id="q_mmo" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf">MF/AÑO <input id="q_mf" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">MF <input id="q_mf" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">OTROS GASTOS/AÑO <input id="q_ofees" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">NOCHES/AÑO <input id="q_nights" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">$ POR NOCHE <input id="q_pnight" type="number" min="0" oninput="qRecalc()"></label>
@@ -506,7 +506,7 @@ sideApply();
     <div id="q2_status" style="font-size:.92em;line-height:1.5;margin:0 0 8px"></div>
     <label class="qf">SALDO <input id="q2_payoff" type="number" min="0" oninput="qRecalc()"></label>
     <label class="qf">HIPOTECA MENSUAL <input id="q2_mmo" type="number" min="0" oninput="qRecalc()"></label>
-    <label class="qf">MF/AÑO <input id="q2_mf" type="number" min="0" oninput="qRecalc()"></label>
+    <label class="qf">MF <input id="q2_mf" type="number" min="0" oninput="qRecalc()"></label>
     <label class="qf">ESC % <input id="q2_esc" type="number" min="0" oninput="qRecalc()"></label>
     <label class="qf">APR % <input id="q2_apr" type="number" min="0" oninput="qRecalc()"></label>
     <label class="qf">PLAZO (MESES) <input id="q2_term" type="number" min="0" oninput="qRecalc()"></label>
@@ -524,7 +524,7 @@ sideApply();
     <div id="q3_status" style="font-size:.92em;line-height:1.5;margin:0 0 8px"></div>
     <label class="qf">SALDO <input id="q3_payoff" type="number" min="0" oninput="qRecalc()"></label>
     <label class="qf">HIPOTECA MENSUAL <input id="q3_mmo" type="number" min="0" oninput="qRecalc()"></label>
-    <label class="qf">MF/AÑO <input id="q3_mf" type="number" min="0" oninput="qRecalc()"></label>
+    <label class="qf">MF <input id="q3_mf" type="number" min="0" oninput="qRecalc()"></label>
     <label class="qf">ESC % <input id="q3_esc" type="number" min="0" oninput="qRecalc()"></label>
     <label class="qf">APR % <input id="q3_apr" type="number" min="0" oninput="qRecalc()"></label>
     <label class="qf">PLAZO (MESES) <input id="q3_term" type="number" min="0" oninput="qRecalc()"></label>
@@ -1766,7 +1766,7 @@ function renderBar(c, n){
       compLine +
       '<div class="ib-line">Contratos: ' + (c.contracts > 0 ? c.contracts : '—') + '</div>' +
       '<div class="ib-line">MTG: <b>' + fmtD(mmo) + '/mes</b></div>' +
-      '<div class="ib-line">MF: <b>' + fmtD(mf) + '/año</b> (' + fmtD(mfmo) + '/mes)</div>' +
+      '<div class="ib-line">MF: <b>' + fmtD(mf) + '</b> (' + fmtD(mfmo) + '/mes)</div>' +
       '<div class="ib-line">Total mensual: <b>' + fmtD(mmo + mfmo) + '</b></div>' +
       (n && n.feeKnown ? '<div class="ib-line">Tarifa: <b>' + fmtC(n.fee) + '</b> · Ahorro 10 años: <b>' + (n.s10 === null ? PEND_TXT : fmtC(n.s10)) + '</b></div>' : '');
   bar.style.display = 'block';
