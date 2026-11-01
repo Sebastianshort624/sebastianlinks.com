@@ -465,7 +465,7 @@ sideApply();
   <label class="qf">MF <input id="q_mf" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">OTROS GASTOS <input id="q_ofees" type="number" min="0" value="0" oninput="qRecalc()"></label>
   <label class="qf">NOCHES <input id="q_nights" type="number" min="0" value="5" oninput="qNightsDef=false;qRecalc()"></label>
-  <label class="qf">$ POR NOCHE <input id="q_pnight" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">$ POR NOCHE <input id="q_pnight" type="number" min="0" value="0" oninput="qRecalc()"></label>
   <label class="qf mtgOnly">PLAZO (MESES) <input id="q_term" type="number" min="0" value="120" oninput="qTermDef=false;qRecalc()"></label>
   <label class="qf mtgOnly" style="color:#c62828;font-weight:700">SALDO (PAYOFF) <input id="q_payoff" type="number" min="0" oninput="qRecalc()" style="border:2px solid #c62828;color:#c62828;font-weight:700"></label>
   <label class="qf">ELEVACIÓN ANUAL % <input id="q_esc" type="number" min="0" oninput="qRecalc()"></label>
@@ -2876,7 +2876,7 @@ function qSync(c){
   qApplyDtype();
   $('q_mmo').value = c ? (c.mmo || '') : '';
   $('q_mf').value = c ? c.mf : ''; $('q_esc').value = c ? (c.esc || 8) : '';
-  $('q_ofees').value = c ? (c.ofees || 0) : ''; $('q_pnight').value = c ? (c.pnight || '') : '';
+  $('q_ofees').value = c ? (c.ofees || 0) : ''; $('q_pnight').value = c ? (c.pnight || 0) : '';
   $('q_pyr').value = c ? (c.pyr || '') : ''; $('q_term').value = c ? (c.term || 120) : 120; qTermDef = !(c && c.term);
   $('q_payoff').value = c ? c.payoff : '';
   $('q_fee').value = c && c.fee ? c.fee : ''; $('q_down').value = c ? (c.down || '') : '';
