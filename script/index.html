@@ -2281,33 +2281,19 @@ function qWalkBuild(L){
   try { if (window.__qWalkSel){ sel = window.__qWalkSel; window.__qWalkSel = null; } } catch (e){}
   function isOn(v){ return sel ? (sel.indexOf(v.id) >= 0) : !!v.def; }
   var T = en ? {
-    greet: 'Hi', p1: 'Before you make any decision, I want you to know the truth about paying to get out of or paying to stay in your timeshare, because nobody is going to explain it this clearly:',
-    hStay: 'IF YOU STAY, YOU KEEP PAYING — WHAT STAYING REALLY COSTS',
-    stayHtml: '<p style="margin:0 0 10px;"><b>The loan payment:</b> if you still carry a balance, the interest means you pay back more than double the price. A $20,000 loan at 18% over 10 years is $360 a month — $43,244 in total. That is rarely explained when you sign.</p><p style="margin:0 0 10px;"><b>Maintenance fees:</b> they never end. Your contract obliges you to pay them for life, whether you use the property or not, and they rise between 8% and 12% every year — in 10 years the yearly fee is more than double what it is today.</p><p style="margin:0 0 10px;"><b>Your heirs inherit it, whether they want it or not:</b> a timeshare is real property, and every property must always have an owner. If you do not resolve it yourself, the debt and the fees pass to your family.</p><p style="margin:0 0 4px;"><b>You cannot sell it:</b> there is no real resale market. Timeshares are listed on eBay for $1 and still do not sell, and renting the same weeks on RedWeek is cheaper than owning.</p>',
-    hStop: 'AND STOPPING PAYING ON YOUR OWN IS NOT THE WAY OUT',
-    hOut: 'THE RIGHT WAY OUT',
-    pOut: 'The third option is to get out once and for all, through a legal process done the right way: one decision today, instead of payments that never end. Your family is freed from this burden, and you get your peace of mind.',
-    p2: 'Your contract does not disappear because you stop paying. The debt keeps growing: first come the late charges, then your account goes to collections, then the resort forecloses on your deed, your credit is damaged for years, and the case can end in a lawsuit with a court judgment against you for the full balance, plus interest and legal costs. And meanwhile, the maintenance fees keep piling up every year — and that debt passes to your heirs.',
-    p3: 'Walking away does not set you free. It leaves you alone against the resort, in the worst possible position and with no protection.',
+    greet: 'Hi', p1: 'I am sharing this information because I want you to have everything you need to make an informed decision. There is no rush: go through it calmly, and if any question comes up, call me and we will talk it through.',
     vintro: 'Here are some short videos, so you can verify every point yourself:', watch: '&#9654; WATCH VIDEO',
     lhead: 'And here are the links, so you can check everything on your own:',
     links: [['Why I would not sign again', 'https://nofirmaria.com'], ['Investigate us — who we are and our credentials', 'https://investiganos.com'], ['Better Business Bureau (A+, accredited)', 'https://www.bbb.org/search?find_text=Linx+Legal'], ['Our Google reviews', 'https://www.google.com/maps/search/Linx+Legal'], ['RedWeek — the real resale value', 'https://www.redweek.com/search'], ['eBay — timeshares selling for $1', 'https://www.ebay.com']],
     close: 'Getting out of this contract IS possible — but it has to be done the right way: legally, with your name removed from the deed at the county level and your credit protected. Call me and we will talk it through calmly. I am on your side.',
-    subj: 'The truth about your timeshare: paying to get out or paying to stay in', panel: 'EMAIL VIDEOS — check the ones to INCLUDE (unchecked stay out). The email below updates itself.', note: 'Copy the formatted email and paste it into your Gmail (sebastian.short@linxlegal.com). Nothing is sent automatically — review before sending.'
+    subj: 'Information so you can decide with everything clear', panel: 'EMAIL VIDEOS — check the ones to INCLUDE (unchecked stay out). The email below updates itself.', note: 'Copy the formatted email and paste it into your Gmail (sebastian.short@linxlegal.com). Nothing is sent automatically — review before sending.'
   } : {
-    greet: 'Hola', p1: 'Antes de tomar cualquier decisión, quiero que sepas la verdad sobre pagar para salir de o pagar para quedar en tu tiempo compartido, porque nadie te lo va a explicar así de claro:',
-    hStay: 'SI TE QUEDAS, SIGUES PAGANDO — LO QUE CUESTA QUEDARTE',
-    stayHtml: '<p style="margin:0 0 10px;"><b>La cuota del préstamo:</b> si todavía tienes saldo, el interés hace que termines pagando más del doble del precio. Un préstamo de $20,000 al 18% a 10 años son $360 al mes — $43,244 en total. Eso rara vez te lo explican al firmar.</p><p style="margin:0 0 10px;"><b>Las tarifas de mantenimiento:</b> no terminan nunca. Tu contrato te obliga a pagarlas de por vida, uses o no uses la propiedad, y suben entre un 8% y un 12% cada año — en 10 años la tarifa anual es más del doble de la de hoy.</p><p style="margin:0 0 10px;"><b>Tus herederos lo heredan, quieran o no:</b> un tiempo compartido es propiedad real, y toda propiedad siempre tiene que tener un dueño. Si no lo resuelves tú, la deuda y las tarifas pasan a tu familia.</p><p style="margin:0 0 4px;"><b>No lo puedes vender:</b> no existe un mercado real de reventa. En eBay hay tiempos compartidos ofrecidos por $1 que ni así se venden, y rentar las mismas semanas en RedWeek sale más barato que ser dueño.</p>',
-    hStop: 'Y DEJAR DE PAGAR POR TU CUENTA NO ES LA SALIDA',
-    hOut: 'LA SALIDA CORRECTA',
-    pOut: 'La tercera opción es salir de una vez, con un proceso legal hecho de la forma correcta: una sola decisión hoy, en vez de pagos que nunca terminan. Tu familia queda libre de esta carga y tú quedas en paz.',
-    p2: 'Tu contrato no desaparece porque dejas de pagar. La deuda sigue creciendo: primero llegan los cargos por mora, después tu cuenta pasa a colecciones, luego el resort ejecuta la hipoteca sobre tu escritura, tu crédito queda dañado por años, y el caso puede terminar en una demanda con un fallo judicial en tu contra por todo el saldo, más intereses y costos legales. Y mientras tanto, las tarifas de mantenimiento se siguen acumulando cada año — y esa deuda pasa a tus herederos.',
-    p3: 'Dejar de pagar no te libera. Te deja solo frente al resort, en la peor posición posible y sin ninguna protección.',
+    greet: 'Hola', p1: 'Te comparto esta información porque quiero que tengas todo lo que necesitas para tomar una decisión informada. No hay prisa: revísala con calma, y cualquier pregunta que te surja, me llamas y lo hablamos.',
     vintro: 'Te dejo estos videos cortos, para que verifiques cada punto por tu cuenta:', watch: '&#9654; VER VIDEO',
     lhead: 'Y aquí tienes los enlaces, para que lo compruebes por tu cuenta:',
     links: [['Por qué no firmaría de nuevo', 'https://nofirmaria.com'], ['Investíganos — quiénes somos y nuestras credenciales', 'https://investiganos.com'], ['Better Business Bureau (A+, acreditados)', 'https://www.bbb.org/search?find_text=Linx+Legal'], ['Nuestras reseñas en Google', 'https://www.google.com/maps/search/Linx+Legal'], ['RedWeek — el valor real de reventa', 'https://www.redweek.com/search'], ['eBay — tiempos compartidos vendiéndose por $1', 'https://www.ebay.com']],
     close: 'Salir de este contrato SÍ es posible — pero se hace de la forma correcta: legalmente, con tu nombre removido de la escritura a nivel del condado y tu crédito protegido. Llámame y lo hablamos con calma. Estoy de tu lado.',
-    subj: 'La verdad sobre tu tiempo compartido: pagar para salir o pagar para quedarte', panel: 'VIDEOS DEL CORREO — marca los que quieres INCLUIR (los desmarcados quedan fuera). El correo de abajo se actualiza solo.', note: 'Copia el correo con formato y pégalo en tu Gmail (sebastian.short@linxlegal.com). Nada se envía automáticamente — revisa antes de enviar.'
+    subj: 'Información para que decidas con todo claro', panel: 'VIDEOS DEL CORREO — marca los que quieres INCLUIR (los desmarcados quedan fuera). El correo de abajo se actualiza solo.', note: 'Copia el correo con formato y pégalo en tu Gmail (sebastian.short@linxlegal.com). Nada se envía automáticamente — revisa antes de enviar.'
   };
   var panel = '<div style="max-width:820px;margin:0 auto 14px;background:#fff7ed;border:2px solid #d97706;border-radius:10px;padding:14px 18px;font-family:Arial,Helvetica,sans-serif"><div style="font-weight:800;color:#92400e;margin-bottom:8px;font-size:15px">&#127916; ' + T.panel + '</div>';
   WALK_VIDEOS.forEach(function(v){
@@ -2327,13 +2313,6 @@ function qWalkBuild(L){
   e += '<tr><td style="background:#1a5968;padding:22px 30px;"><div style="font-size:25px;font-weight:800;color:#ffffff;">Linx Legal</div><div style="font-size:13px;color:#bfe3ea;">' + (en ? 'Timeshare cancellation' : 'Cancelación de tiempos compartidos') + '</div></td></tr>';
   e += '<tr><td style="padding:26px 30px 8px;font-size:15px;color:#23323b;line-height:1.6;"><p style="margin:0 0 12px;">' + T.greet + ' <b>' + escH(first) + '</b>,</p>';
   e += '<p style="margin:0 0 12px;">' + T.p1 + '</p>';
-  e += '<div style="font-size:16px;font-weight:700;color:#1a5968;margin:18px 0 8px;">' + T.hStay + '</div>';
-  e += T.stayHtml;
-  e += '<div style="font-size:16px;font-weight:700;color:#1a5968;margin:18px 0 8px;">' + T.hStop + '</div>';
-  e += '<p style="margin:0 0 12px;">' + T.p2 + '</p>';
-  e += '<div style="background:#fef2f2;border:2px solid #b91c1c;border-radius:10px;padding:13px 16px;margin:16px 0;"><b style="color:#b91c1c;font-size:16px;">' + T.p3 + '</b></div>';
-  e += '<div style="font-size:16px;font-weight:700;color:#1a5968;margin:18px 0 8px;">' + T.hOut + '</div>';
-  e += '<p style="margin:0 0 12px;">' + T.pOut + '</p>';
   e += '<div id="wkVidWrap"></div>';
   e += '<div style="font-size:16px;font-weight:700;color:#1a5968;margin:20px 0 8px;">&#128279; ' + T.lhead + '</div>';
   T.links.forEach(function(lk){
