@@ -400,7 +400,7 @@ sideApply();
 <button class="apttab" id="tabR" onclick="aptToggle('R',true)" title="Mostrar citas de hoy">🗓</button>
 
 <h1 style="font-size:1.15em;margin-bottom:0">🎯 Cita de 90 minutos <span class="tmin">· 6 etapas × 15 min</span></h1>
-<div class="client-line" style="margin:6px 0 10px">Cliente: <input id="clientSearch" type="text" placeholder="🔎 Buscar por cualquier nombre (ej. Lazaro)…" style="padding:5px 8px;font-family:inherit;border-radius:6px;border:1px solid #9ca3af;min-width:280px" oninput="clientSearchGo(this.value,false)" onkeydown="if(event.key==='Enter'){clientSearchGo(this.value,true);event.preventDefault();}"> <select id="clientSel"><option value="">— seleccionar cliente —</option></select>
+<div class="client-line" style="margin:6px 0 10px">Cliente: <input id="clientSearch" type="text" placeholder="🔎 Buscar por cualquier nombre (ej. Lazaro)…" style="padding:5px 8px;font-family:inherit;border-radius:6px;border:1px solid #9ca3af;min-width:280px" oninput="clientSearchGo(this.value,false)" onkeydown="if(event.key==='Enter'){clientSearchGo(this.value,true);event.preventDefault();}"> <select id="clientSel"><option value="">— seleccionar cliente —</option></select> <span id="clientSearchCt" style="margin-left:6px;color:#6b7280;font-size:.9em"></span>
 <button onclick="document.getElementById('s_impfile').click()" style="margin-left:8px;padding:6px 14px;font-size:0.9em;background:#0b3d91;color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Importar JSON</button>
 <input type="file" id="s_impfile" accept=".json,application/json" style="display:none" onchange="importScriptClients(this)"></div>
 
@@ -3366,18 +3366,29 @@ function objFilter(){
   $('objnone').style.display = shown ? 'none' : 'block';
 }
 function slNorm(s){ return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
+var _csCycleQ = '', _csCycleI = -1;
 function clientSearchGo(q, force){
   var toks = slNorm(q).split(/\s+/).filter(Boolean);
-  if (!toks.length) return;
+  var ct = document.getElementById('clientSearchCt');
+  if (!toks.length){ _csCycleQ = ''; _csCycleI = -1; if (ct) ct.textContent = ''; return; }
   if (toks.join(' ').length < 3 && !force) return;
   var cs = slClients(), hits = [];
   for (var i = 0; i < cs.length; i++){
     var n = slNorm(cs[i].name);
     if (toks.every(function(t){ return n.indexOf(t) >= 0; })) hits.push(cs[i]);
   }
-  if (!hits.length) return;
-  if (hits.length > 1 && !force) return;
-  var c = hits[0], v = (c.id != null ? c.id : c.name);
+  if (!hits.length){ if (ct) ct.textContent = 'sin resultados'; return; }
+  var nq = slNorm(q);
+  if (!force){
+    if (nq !== _csCycleQ){ _csCycleQ = nq; _csCycleI = -1; }
+    if (hits.length > 1){ if (ct) ct.textContent = hits.length + ' coinciden \u2014 Enter para recorrerlos'; return; }
+    _csCycleI = 0;
+  } else {
+    if (nq !== _csCycleQ){ _csCycleQ = nq; _csCycleI = -1; }
+    _csCycleI = (_csCycleI + 1) % hits.length;
+  }
+  var c = hits[_csCycleI], v = (c.id != null ? c.id : c.name);
+  if (ct) ct.textContent = hits.length > 1 ? ((_csCycleI + 1) + ' de ' + hits.length + ' \u2014 Enter para el siguiente') : '';
   var sel = document.getElementById('clientSel'); if (sel) sel.value = v;
   pickClient(v);
 }
