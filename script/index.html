@@ -356,7 +356,7 @@
         <div class="ib-ctl">
           <label>MES DE COMPRA <select id="b_pmonth" onchange="qBarCtl()"><option value="">—</option><option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option><option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option><option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option></select></label>
           <label>AÑO DE COMPRA <input id="b_pyr" type="number" min="0" oninput="qBarCtl()"></label>
-          <label>NOCHES <input id="b_nights" type="number" min="0" oninput="qBarCtl()"></label>
+          <label>NOCHES <input id="b_nights" type="number" min="0" value="5" oninput="qNightsDef=false;qBarCtl()"></label>
         </div>
       </div>
     </div>
@@ -464,9 +464,9 @@ sideApply();
   <label class="qf mtgOnly">HIPOTECA MENSUAL <input id="q_mmo" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">MF <input id="q_mf" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">OTROS GASTOS <input id="q_ofees" type="number" min="0" value="0" oninput="qRecalc()"></label>
-  <label class="qf">NOCHES <input id="q_nights" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">NOCHES <input id="q_nights" type="number" min="0" value="5" oninput="qNightsDef=false;qRecalc()"></label>
   <label class="qf">$ POR NOCHE <input id="q_pnight" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf mtgOnly">PLAZO (MESES) <input id="q_term" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf mtgOnly">PLAZO (MESES) <input id="q_term" type="number" min="0" value="120" oninput="qTermDef=false;qRecalc()"></label>
   <label class="qf mtgOnly" style="color:#c62828;font-weight:700">SALDO (PAYOFF) <input id="q_payoff" type="number" min="0" oninput="qRecalc()" style="border:2px solid #c62828;color:#c62828;font-weight:700"></label>
   <label class="qf">ELEVACIÓN ANUAL % <input id="q_esc" type="number" min="0" oninput="qRecalc()"></label>
   </div><div class="cpanel cpanel-mid">
@@ -1347,7 +1347,8 @@ function qConsistency(){
   return { ok: conflicts.length === 0, fin: fin, apr: apr, pmt: pmt, term: term, pv: pv, sched: pmt * term, impApr: impApr, conflicts: conflicts };
 }
 var qLoanAuto = false; // true while q_loan holds the AUTO-INFERRED principal (PV of pago/APR/plazo). An inferred principal must NEVER be persisted as a recorded cfin — before this flag (fixed 2026-10-21) the autosave silently converted every inferred principal into a "recorded" one, inflating ESTIMADO schedule records to VERIFICADO on the next load.
-var qAprImplied = false, qAprImpliedVal = 0; // true while q_aapr holds the solver's IMPLIED APR (from saldo/pago/meses restantes). Like qLoanAuto: an implied rate is an ESTIMATE — qAutoSave never persists q_aapr, so it can never harden into a "recorded" APR on the next load.
+var qAprImplied = false, qAprImpliedVal = 0;
+var qTermDef = false, qNightsDef = false; // true while PLAZO/NOCHES show the display DEFAULT (120 / 5) instead of a recorded value — qAutoSave never persists a default as recorded data // true while q_aapr holds the solver's IMPLIED APR (from saldo/pago/meses restantes). Like qLoanAuto: an implied rate is an ESTIMATE — qAutoSave never persists q_aapr, so it can never harden into a "recorded" APR on the next load.
 // ===== CONTRACTS TOOL (Sebastian, 2026-10-20): charge EACH contract separately, combine totals at top =====
 var qNC = 1; // active contract count
 function qGoCalc(){
@@ -2876,7 +2877,7 @@ function qSync(c){
   $('q_mmo').value = c ? (c.mmo || '') : '';
   $('q_mf').value = c ? c.mf : ''; $('q_esc').value = c ? (c.esc || 8) : '';
   $('q_ofees').value = c ? (c.ofees || 0) : ''; $('q_pnight').value = c ? (c.pnight || '') : '';
-  $('q_pyr').value = c ? (c.pyr || '') : ''; $('q_term').value = c ? (c.term || '') : '';
+  $('q_pyr').value = c ? (c.pyr || '') : ''; $('q_term').value = c ? (c.term || 120) : 120; qTermDef = !(c && c.term);
   $('q_payoff').value = c ? c.payoff : '';
   $('q_fee').value = c && c.fee ? c.fee : ''; $('q_down').value = c ? (c.down || '') : '';
   $('q_paym').value = c ? (c.paymethod || 'ach') : 'ach';
@@ -2888,7 +2889,7 @@ function qSync(c){
   $('q_ddate').value = c ? (c.downdate || '') : ''; $('q_pdate').value = c ? (c.pmtdate || '') : '';
   $('q_cli').innerHTML = c ? qNameLink(c) : 'Ningún cliente seleccionado';
   $('q_pmonth').value = c && c.pmonth ? c.pmonth : '';
-  $('q_nights').value = c && c.nights ? c.nights : '';
+  $('q_nights').value = c && c.nights ? c.nights : 5; qNightsDef = !(c && c.nights);
   $('q_pipe').value = c && (c.pipelineUrl || c.crmlink) ? (c.pipelineUrl || c.crmlink) : '';
   $('q_sheet').value = c && c.sheetUrl ? c.sheetUrl : '';
   $('q_dsurl').value = c && c.docusignUrl ? c.docusignUrl : '';
@@ -3305,12 +3306,12 @@ function qAutoSave(){
       for (var fid in QFIN_LABELS){ if (qFinSnap[fid] !== undefined && snapNow[fid] !== undefined && qFinSnap[fid] !== snapNow[fid]) qAuditLog(QFIN_LABELS[fid], qFinSnap[fid], snapNow[fid]); }
       qFinSnap = snapNow;
       c.mmo = qNum('q_mmo'); c.mf = qNum('q_mf'); c.esc = qNum('q_esc'); c.ofees = qNum('q_ofees'); c.pnight = qNum('q_pnight');
-      c.pyr = qNum2($('q_pyr').value); c.term = qNum('q_term'); c.payoff = qNum('q_payoff');
+      c.pyr = qNum2($('q_pyr').value); if (!(qTermDef && qNum('q_term') === 120)) c.term = qNum('q_term'); c.payoff = qNum('q_payoff');
       c.cfin = qLoanAuto ? (c.cfin || 0) : qNum('q_loan'); // MATEO: never persist an auto-inferred principal as a recorded cfin
       c.fee = qNum('q_fee'); c.down = qNum('q_down'); c.downt = $('q_downt').value;
       c.paymethod = $('q_paym').value; c.fapr = qNum('q_fapr'); c.fmo = qNum('q_fmo');
       c.pmtmo = qNum('q_pmt'); c.downdate = $('q_ddate').value; c.pmtdate = $('q_pdate').value;
-      c.pmonth = parseInt($('q_pmonth').value, 10) || 0; c.nights = qNum('q_nights');
+      c.pmonth = parseInt($('q_pmonth').value, 10) || 0; if (!(qNightsDef && qNum('q_nights') === 5)) c.nights = qNum('q_nights');
       c.crmlink = $('q_pipe').value.trim(); c.pipelineUrl = c.crmlink;
       c.sheetUrl = $('q_sheet').value.trim(); c.docusignUrl = $('q_dsurl').value.trim();
       c.folderPath = $('q_folder').value.trim(); c.loanNote = $('q_loannote').value.trim();
