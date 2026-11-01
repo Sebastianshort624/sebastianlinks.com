@@ -356,7 +356,7 @@
         <div class="ib-ctl">
           <label>MES DE COMPRA <select id="b_pmonth" onchange="qBarCtl()"><option value="">—</option><option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option><option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option><option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option></select></label>
           <label>AÑO DE COMPRA <input id="b_pyr" type="number" min="0" oninput="qBarCtl()"></label>
-          <label>NOCHES/AÑO <input id="b_nights" type="number" min="0" oninput="qBarCtl()"></label>
+          <label>NOCHES <input id="b_nights" type="number" min="0" oninput="qBarCtl()"></label>
         </div>
       </div>
     </div>
@@ -463,8 +463,8 @@ sideApply();
   <label class="qf">MES DE COMPRA <select id="q_pmonth" onchange="qRecalc()"><option value="">—</option><option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option><option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option><option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option></select></label>
   <label class="qf mtgOnly">HIPOTECA MENSUAL <input id="q_mmo" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">MF <input id="q_mf" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf">OTROS GASTOS/AÑO <input id="q_ofees" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf">NOCHES/AÑO <input id="q_nights" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">OTROS GASTOS <input id="q_ofees" type="number" min="0" value="0" oninput="qRecalc()"></label>
+  <label class="qf">NOCHES <input id="q_nights" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf">$ POR NOCHE <input id="q_pnight" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf mtgOnly">PLAZO (MESES) <input id="q_term" type="number" min="0" oninput="qRecalc()"></label>
   <label class="qf mtgOnly" style="color:#c62828;font-weight:700">SALDO (PAYOFF) <input id="q_payoff" type="number" min="0" oninput="qRecalc()" style="border:2px solid #c62828;color:#c62828;font-weight:700"></label>
@@ -2875,7 +2875,7 @@ function qSync(c){
   qApplyDtype();
   $('q_mmo').value = c ? (c.mmo || '') : '';
   $('q_mf').value = c ? c.mf : ''; $('q_esc').value = c ? (c.esc || 8) : '';
-  $('q_ofees').value = c ? (c.ofees || '') : ''; $('q_pnight').value = c ? (c.pnight || '') : '';
+  $('q_ofees').value = c ? (c.ofees || 0) : ''; $('q_pnight').value = c ? (c.pnight || '') : '';
   $('q_pyr').value = c ? (c.pyr || '') : ''; $('q_term').value = c ? (c.term || '') : '';
   $('q_payoff').value = c ? c.payoff : '';
   $('q_fee').value = c && c.fee ? c.fee : ''; $('q_down').value = c ? (c.down || '') : '';
