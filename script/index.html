@@ -2281,14 +2281,14 @@ function qWalkBuild(L){
   try { if (window.__qWalkSel){ sel = window.__qWalkSel; window.__qWalkSel = null; } } catch (e){}
   function isOn(v){ return sel ? (sel.indexOf(v.id) >= 0) : !!v.def; }
   var T = en ? {
-    greet: 'Hi', p1: 'I am sharing this information because I want you to have everything you need to make an informed decision. There is no rush: go through it calmly, and if any question comes up, call me and we will talk it through.',
+    greet: 'Hi', p1: 'Here is all the information necessary for you to make an informed decision about whether to pay to stay in your timeshare or pay to get out of it. Take your time with it, and if any question comes up, call me and we will talk it through.',
     vintro: 'Here are some short videos, so you can verify every point yourself:', watch: '&#9654; WATCH VIDEO',
     lhead: 'And here are the links, so you can check everything on your own:',
     links: [['Why I would not sign again', 'https://nofirmaria.com'], ['Investigate us — who we are and our credentials', 'https://investiganos.com'], ['Better Business Bureau (A+, accredited)', 'https://www.bbb.org/search?find_text=Linx+Legal'], ['Our Google reviews', 'https://www.google.com/maps/search/Linx+Legal'], ['RedWeek — the real resale value', 'https://www.redweek.com/search'], ['eBay — timeshares selling for $1', 'https://www.ebay.com']],
     close: 'Getting out of this contract IS possible — but it has to be done the right way: legally, with your name removed from the deed at the county level and your credit protected. Call me and we will talk it through calmly. I am on your side.',
     subj: 'Information so you can decide with everything clear', panel: 'EMAIL VIDEOS — check the ones to INCLUDE (unchecked stay out). The email below updates itself.', note: 'Copy the formatted email and paste it into your Gmail (sebastian.short@linxlegal.com). Nothing is sent automatically — review before sending.'
   } : {
-    greet: 'Hola', p1: 'Te comparto esta información porque quiero que tengas todo lo que necesitas para tomar una decisión informada. No hay prisa: revísala con calma, y cualquier pregunta que te surja, me llamas y lo hablamos.',
+    greet: 'Hola', p1: 'Aquí tienes toda la información necesaria para tomar una decisión informada sobre si pagar por quedarte o pagar por salir de tu tiempo compartido. Tómate tu tiempo para revisarla, y cualquier pregunta que te surja, me llamas y lo hablamos.',
     vintro: 'Te dejo estos videos cortos, para que verifiques cada punto por tu cuenta:', watch: '&#9654; VER VIDEO',
     lhead: 'Y aquí tienes los enlaces, para que lo compruebes por tu cuenta:',
     links: [['Por qué no firmaría de nuevo', 'https://nofirmaria.com'], ['Investíganos — quiénes somos y nuestras credenciales', 'https://investiganos.com'], ['Better Business Bureau (A+, acreditados)', 'https://www.bbb.org/search?find_text=Linx+Legal'], ['Nuestras reseñas en Google', 'https://www.google.com/maps/search/Linx+Legal'], ['RedWeek — el valor real de reventa', 'https://www.redweek.com/search'], ['eBay — tiempos compartidos vendiéndose por $1', 'https://www.ebay.com']],
