@@ -3353,9 +3353,17 @@ function clientSearchGo(q, force){
   if (!toks.length){ _csCycleQ = ''; _csCycleI = -1; if (ct) ct.textContent = ''; return; }
   if (toks.join(' ').length < 3 && !force) return;
   var cs = slClients(), hits = [];
+  var qDigits = String(q || '').replace(/\D/g, '');
+  var qd = (qDigits.length === 11 && qDigits.charAt(0) === '1') ? qDigits.slice(1) : qDigits;
   for (var i = 0; i < cs.length; i++){
-    var n = slNorm(cs[i].name);
-    if (toks.every(function(t){ return n.indexOf(t) >= 0; })) hits.push(cs[i]);
+    var c = cs[i];
+    var n = slNorm(c.name), e = slNorm((c.email || '') + ' ' + (c.email2 || ''));
+    var hit = toks.every(function(t){ return n.indexOf(t) >= 0 || e.indexOf(t) >= 0; });
+    if (!hit && qd.length >= 4){
+      var pd = String((c.phone || '') + ' ' + (c.phone2 || '')).replace(/\D/g, '');
+      if (pd.indexOf(qd) >= 0) hit = true;
+    }
+    if (hit) hits.push(c);
   }
   if (!hits.length){ if (ct) ct.textContent = 'sin resultados'; return; }
   var nq = slNorm(q);
