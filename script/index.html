@@ -3492,10 +3492,13 @@ function clientSearchGo(q, force){
   var qd = (qDigits.length === 11 && qDigits.charAt(0) === '1') ? qDigits.slice(1) : qDigits;
   for (var i = 0; i < cs.length; i++){
     var c = cs[i];
-    var n = slNorm(c.name), e = slNorm((c.email || '') + ' ' + (c.email2 || ''));
-    var hit = toks.every(function(t){ return n.indexOf(t) >= 0 || e.indexOf(t) >= 0; });
-    if (!hit && qd.length >= 4){
-      var pd = String((c.phone || '') + ' ' + (c.phone2 || '')).replace(/\D/g, '');
+    // SEARCH_ANY_V1 — cualquier fragmento de la info encuentra el registro: nombre,
+    // emails, resort, ciudad (loc/direccion) y notas en un solo indice; telefonos
+    // phone/phone2/phone3 por digitos, fragmentos desde 3 digitos.
+    var n = slNorm([c.name, c.email, c.email2, c.resort, c.loc, c.address, c.notes].join(' '));
+    var hit = toks.every(function(t){ return n.indexOf(t) >= 0; });
+    if (!hit && qd.length >= 3){
+      var pd = String((c.phone || '') + ' ' + (c.phone2 || '') + ' ' + (c.phone3 || '')).replace(/\D/g, '');
       if (pd.indexOf(qd) >= 0) hit = true;
     }
     if (hit) hits.push(c);
