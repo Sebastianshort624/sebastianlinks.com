@@ -2446,9 +2446,10 @@ function qIntroBuild(L){
   return h;
 }
 // ===== TEXTS OUT (TEXTS_OUT_V1) (Sebastian, 2026-11-03): copyable SMS texts for RingCentral — PLAIN TEXT
-// only (no HTML formatting), one block per text, each with its own COPIAR button. The texts are FIXED
+// only (no HTML formatting), one block per text, each with its own COPIAR button. TEXTS 1-2 are FIXED
 // (his exact words) and do NOT depend on the selected client: TEXT 2 keeps the literal [Nombre]
-// placeholder, which he edits after pasting. Nothing is ever sent from here.
+// placeholder, which he edits after pasting. TEXT 3 is DYNAMIC (see qTextsPlan below): it carries the
+// selected client's real plan numbers from the fee panel. Nothing is ever sent from here.
 var TEXTS_OUT_T1 = [
   'Cada lunes: las salidas de la semana.',
   'Video: https://investiganos.com/stage-video.mp4',
@@ -2456,6 +2457,24 @@ var TEXTS_OUT_T1 = [
   'Para que veas lo que nosotros vemos.'
 ].join('\n');
 var TEXTS_OUT_T2 = 'Hola [Nombre], soy Sebastian Short de Linx Legal. Teníamos nuestra primera llamada hoy y no logramos conectar. ¿Los reagendo esta semana? Es cortica, unos 30 minutos. ¿Qué día y hora les queda bien?';
+// TEXT 3 (DYNAMIC, Sebastian 2026-11-03): payment-plan text carrying the SELECTED client's real
+// numbers. The monthly figure is the SAME one the quote presents ("O en pagos: $X/mes x N"): the fee
+// panel's computed monthly (#q_mo = amort(bal, fapr, fmo) inside qRecalc) at the panel's financing
+// months (#q_fmo), read exactly the way qQuoteBuild reads them — NO new formula here. Recomputed on
+// every build (i.e. every time TEXTS OUT opens, for whoever is selected). No client selected, no fee,
+// or no monthly on the panel -> placeholder sentence with NO numbers, so a wrong figure can never be
+// copied. Line 2 is his exact wording (space before the colon kept on purpose).
+var TEXTS_OUT_T3_PH = 'Selecciona un cliente con tarifa para ver su plan';
+function qTextsPlan(){
+  if (typeof cur === 'undefined' || !cur) return '';
+  qRecalc();
+  var fmo = qNum('q_fmo');
+  var moTxt = (($('q_mo') || {}).textContent || '').replace(/\/(mes|sem)$/, '');
+  var mo = parseFloat(moTxt.replace(/[^0-9.]/g, ''));
+  if (!(fmo > 0) || !(mo > 0)) return '';
+  return 'Se puede ir pagando con este plan: ' + fmtC(mo) + '/mes x ' + fmo + '\n' +
+    'Sales por completo antes de haber pagado la mitad de nuestra tarifa : www.investiganos.com/lunes';
+}
 function qTextsHtml(){
   qDocOpen(qTextsBuild());
 }
@@ -2473,6 +2492,7 @@ function qTextsBuild(){
   h += '<div ' + QDOC_BAR + '><b>&#128172; TEXTS OUT</b><span style="font-size:12px;opacity:.85">Textos para pegar en RingCentral — se copian como texto plano, sin formato.</span></div>';
   h += block('tx1', 'CADA LUNES — SALIDAS DE LA SEMANA', TEXTS_OUT_T1);
   h += block('tx2', 'NO CONTESTÓ — PRIMERA VEZ', TEXTS_OUT_T2);
+  h += block('tx3', 'PLAN DE PAGOS — NÚMEROS DEL CLIENTE', qTextsPlan() || TEXTS_OUT_T3_PH);
   h += '</div>';
   h += '<scr' + 'ipt>' +
     'function txCopy(id,b){ var n = document.getElementById(id); var t = n.textContent; function ok(){ var o = b.textContent; b.textContent = "✅ COPIADO"; setTimeout(function(){ b.textContent = o; }, 1600); } if (navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(ok, function(){ txFallback(n, ok); }); } else { txFallback(n, ok); } }' +
@@ -4172,6 +4192,7 @@ setInterval(function(){ if (aptData){ aptRender(); aptLayout(); } }, 60000);
 </script>
 </body>
 </html>
+
 
 
 
