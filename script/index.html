@@ -347,6 +347,8 @@
     <button id="walkBtn" type="button" onclick="qWalkHtml()">✉️ EMAIL OUT</button>
     <!-- INTRO_EMAIL_V1 -->
     <button id="introBtn" type="button" onclick="qIntroHtml()">📧 INTRO</button>
+    <!-- TEXTS_OUT_V1 -->
+    <button id="textsBtn" type="button" onclick="qTextsHtml()">💬 TEXTS OUT</button>
     <button id="caBtn" type="button" onclick="qCaHtml()">📋 CA DISCOVERY</button>
     <button id="cbBtn" type="button" onclick="qCbHtml()">📝 CB DISCOVERY</button>
     <button id="postCallBtn" type="button" onclick="qPostCallHtml()">🧾 POST CALL SHEET</button>
@@ -2443,6 +2445,42 @@ function qIntroBuild(L){
   h += '</body></html>';
   return h;
 }
+// ===== TEXTS OUT (TEXTS_OUT_V1) (Sebastian, 2026-11-03): copyable SMS texts for RingCentral — PLAIN TEXT
+// only (no HTML formatting), one block per text, each with its own COPIAR button. The texts are FIXED
+// (his exact words) and do NOT depend on the selected client: TEXT 2 keeps the literal [Nombre]
+// placeholder, which he edits after pasting. Nothing is ever sent from here.
+var TEXTS_OUT_T1 = [
+  'Cada lunes: las salidas de la semana.',
+  'Video: https://investiganos.com/stage-video.mp4',
+  'Investíganos completo: https://www.investiganos.com',
+  'Para que veas lo que nosotros vemos.'
+].join('\n');
+var TEXTS_OUT_T2 = 'Hola [Nombre], soy Sebastian Short de Linx Legal. Teníamos nuestra primera llamada hoy y no logramos conectar. ¿Los reagendo esta semana? Es cortica, unos 30 minutos. ¿Qué día y hora les queda bien?';
+function qTextsHtml(){
+  qDocOpen(qTextsBuild());
+}
+function qTextsBuild(){
+  var BTN = 'style="background:#1a5968;color:#fff;border:none;border-radius:6px;padding:8px 16px;font-weight:700;cursor:pointer;font-family:inherit;font-size:14px;margin-top:10px"';
+  var HD = 'style="font-size:16px;font-weight:700;color:#1a5968;margin:0 0 8px"';
+  var PRE = 'style="background:#edf5f6;border:1px solid #cfe0e3;border-radius:10px;padding:14px 16px;font-size:15px;line-height:1.55;color:#23323b;white-space:pre-wrap;word-break:break-word;font-family:Arial,Helvetica,sans-serif;margin:0"';
+  function block(id, title, txt){
+    return '<div style="margin-bottom:26px"><div ' + HD + '>' + title + '</div>' +
+      '<pre id="' + id + '" ' + PRE + '>' + escH(txt) + '</pre>' +
+      '<button ' + BTN + ' onclick="txCopy(\'' + id + '\',this)">&#128203; COPIAR TEXTO</button></div>';
+  }
+  var h = '<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><title>TEXTS OUT — textos para RingCentral</title></head><body style="margin:0;padding:20px 8px;background:#f2f5f6;font-family:Arial,Helvetica,sans-serif;color:#23323b;">';
+  h += '<div style="max-width:720px;margin:0 auto;">';
+  h += '<div ' + QDOC_BAR + '><b>&#128172; TEXTS OUT</b><span style="font-size:12px;opacity:.85">Textos para pegar en RingCentral — se copian como texto plano, sin formato.</span></div>';
+  h += block('tx1', 'CADA LUNES — SALIDAS DE LA SEMANA', TEXTS_OUT_T1);
+  h += block('tx2', 'NO CONTESTÓ — PRIMERA VEZ', TEXTS_OUT_T2);
+  h += '</div>';
+  h += '<scr' + 'ipt>' +
+    'function txCopy(id,b){ var n = document.getElementById(id); var t = n.textContent; function ok(){ var o = b.textContent; b.textContent = "✅ COPIADO"; setTimeout(function(){ b.textContent = o; }, 1600); } if (navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(ok, function(){ txFallback(n, ok); }); } else { txFallback(n, ok); } }' +
+    'function txFallback(n, ok){ var r = document.createRange(); r.selectNodeContents(n); var s = getSelection(); s.removeAllRanges(); s.addRange(r); try { document.execCommand("copy"); } catch (e){} s.removeAllRanges(); ok(); }' +
+    '</scr' + 'ipt>';
+  h += '</body></html>';
+  return h;
+}
 // ===== CA NOTES ORGANIZER (Sebastian, 2026-10-23): cur.notes holds a raw CA/CRM dump — it is NEVER printed
 // verbatim again (he called the old full-text dump "garbage" twice). The dump is parsed into CONTACTOS +
 // HECHOS DEL CASO (structured fields) + labeled detail rows + themed bullets (NOTAS DEL CASE BUILDER /
@@ -4131,6 +4169,7 @@ setInterval(function(){ if (aptData){ aptRender(); aptLayout(); } }, 60000);
 </script>
 </body>
 </html>
+
 
 
 
