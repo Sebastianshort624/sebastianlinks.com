@@ -345,6 +345,8 @@
     <button id="emailBtn" type="button" onclick="qEmailHtml()">📧 EMAIL PRE-CITA</button>
     <button id="comboBtn" type="button" onclick="qComboHtml()">🧾 EMAIL COMPLETO</button>
     <button id="walkBtn" type="button" onclick="qWalkHtml()">✉️ EMAIL OUT</button>
+    <!-- INTRO_EMAIL_V1 -->
+    <button id="introBtn" type="button" onclick="qIntroHtml()">📧 INTRO</button>
     <button id="caBtn" type="button" onclick="qCaHtml()">📋 CA DISCOVERY</button>
     <button id="cbBtn" type="button" onclick="qCbHtml()">📝 CB DISCOVERY</button>
     <button id="postCallBtn" type="button" onclick="qPostCallHtml()">🧾 POST CALL SHEET</button>
@@ -1993,6 +1995,7 @@ window.__qDocRender = function(kind, L){
   if (kind === 'ca') return qCaBuild(L);
   if (kind === 'cb') return qCbBuild(L);
   if (kind === 'walk') return qWalkBuild(L);
+  if (kind === 'intro') return qIntroBuild(L);
   if (kind === 'combo') return qComboBuild(L);
   return null;
 };
@@ -2373,6 +2376,70 @@ function qWalkBuild(L){
     'function wkLogRender(){ var el = document.getElementById("wkLogList"); if (el && WKLOG.length) el.innerHTML = WKLOG.map(wkLogRow).join(""); }' +
     'function wkLog(via){ try { if (window.opener && !window.opener.closed && window.opener.__qWalkLog){ var nl = window.opener.__qWalkLog(via, wkSel()); if (nl){ WKLOG = nl; wkLogRender(); } } } catch(e){} }' +
     'wkRender();</scr' + 'ipt>';
+  h += '</body></html>';
+  return h;
+}
+// ===== INTRO EMAIL (INTRO_EMAIL_V1) (Sebastian, 2026-11-03): short intro email — FIRST the recent-exits
+// video (stage-video.mp4), THEN the investiganos.com site. Mirrors the EMAIL OUT doc pattern exactly:
+// same toolbar (Para/Asunto, COPY FORMATTED EMAIL, OPEN IN GMAIL, language toggle), same Linx Legal
+// header band and the SAME signature footer as qWalkBuild. Nothing is ever sent from here.
+function qIntroHtml(){
+  if (!cur){ alert('Selecciona un cliente primero.'); return; }
+  qDocOpen(qIntroBuild(qDocDefLang()));
+}
+function qIntroBuild(L){
+  var en = (L === 'en');
+  var first = qWalkFirst();
+  var T = en ? {
+    greet: 'Hi',
+    p1: 'Before you decide anything, I want you to see it with your own eyes.',
+    vtitle: 'Recent exits — how many days each one took',
+    vsub: 'These are our most recent client exits, and how many days each one took.',
+    watch: '&#9654; WATCH VIDEO',
+    stitle: 'Investigate us',
+    sline: 'And here you can investigate us fully: A+ rating with the Better Business Bureau, the #1 spot on Best Company, and real Google reviews.',
+    sbtn: '&#127760; GO TO THE SITE',
+    close: 'Take your time looking at it, and tell me what you think.',
+    sign: 'Best regards',
+    subj: 'Two links so you can check us out',
+    note: 'Copy the formatted email and paste it into your Gmail (sebastian.short@linxlegal.com). Nothing is sent automatically — review before sending.'
+  } : {
+    greet: 'Hola',
+    p1: 'Antes de decidir cualquier cosa, quiero que lo veas con tus propios ojos.',
+    vtitle: 'Salidas recientes — días que tomó salir',
+    vsub: 'Estas son las salidas más recientes de nuestros clientes, y en cuántos días salió cada uno.',
+    watch: '&#9654; VER VIDEO',
+    stitle: 'Investíganos',
+    sline: 'Y aquí puedes investigarnos completo: calificación A+ del Better Business Bureau, el puesto número 1 en Best Company y las reseñas reales de Google.',
+    sbtn: '&#127760; IR AL SITIO',
+    close: 'Míralo con calma y me dices qué piensas.',
+    sign: 'Un abrazo',
+    subj: 'Dos enlaces para que nos investigues',
+    note: 'Copia el correo con formato y pégalo en tu Gmail (sebastian.short@linxlegal.com). Nada se envía automáticamente — revisa antes de enviar.'
+  };
+  var e = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f2f5f6;"><tr><td align="center" style="padding:24px 8px;"><table role="presentation" width="640" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:14px;overflow:hidden;box-shadow:0 8px 24px rgba(20,50,60,.10);font-family:Arial,Helvetica,sans-serif;">';
+  e += '<tr><td style="background:#1a5968;padding:22px 30px;"><div style="font-size:25px;font-weight:800;color:#ffffff;">Linx Legal</div><div style="font-size:13px;color:#bfe3ea;">' + (en ? 'Timeshare cancellation' : 'Cancelación de tiempos compartidos') + '</div></td></tr>';
+  e += '<tr><td style="padding:26px 30px 8px;font-size:15px;color:#23323b;line-height:1.6;"><p style="margin:0 0 12px;">' + T.greet + ' <b>' + escH(first) + '</b>,</p>';
+  e += '<p style="margin:0 0 12px;">' + T.p1 + '</p>';
+  e += '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:10px;"><tr><td style="background:#edf5f6;border:1px solid #cfe0e3;border-radius:10px;padding:14px 16px;"><div style="font-size:16px;font-weight:700;color:#1a5968;">' + T.vtitle + '</div><div style="font-size:13px;color:#536a72;margin:4px 0 11px;">' + T.vsub + '</div><a href="https://investiganos.com/stage-video.mp4" style="display:inline-block;background:#1a5968;color:#ffffff;text-decoration:none;font-weight:700;padding:9px 18px;border-radius:6px;font-size:14px;">' + T.watch + '</a><div style="font-size:12px;color:#6c7d84;margin-top:9px;">https://investiganos.com/stage-video.mp4</div></td></tr></table>';
+  e += '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:10px;"><tr><td style="background:#edf5f6;border:1px solid #cfe0e3;border-radius:10px;padding:14px 16px;"><div style="font-size:16px;font-weight:700;color:#1a5968;">' + T.stitle + '</div><div style="font-size:13px;color:#536a72;margin:4px 0 11px;">' + T.sline + '</div><a href="https://www.investiganos.com" style="display:inline-block;background:#1a5968;color:#ffffff;text-decoration:none;font-weight:700;padding:9px 18px;border-radius:6px;font-size:14px;">' + T.sbtn + '</a><div style="font-size:12px;color:#6c7d84;margin-top:9px;">https://www.investiganos.com</div></td></tr></table>';
+  e += '<p style="margin:18px 0 4px;">' + T.close + '</p>';
+  e += '<p style="margin:10px 0 4px;">' + T.sign + '</p>';
+  e += '</td></tr>';
+  e += '<tr><td style="padding:19px 30px;background:#f7f9fa;border-top:1px solid #e5ebed;font-size:13px;color:#536a72;line-height:1.55;">Sebastian Short<br><b>Senior Case Builder · Linx Legal Inc.</b><br><a href="mailto:sebastian.short@linxlegal.com" style="color:#1f7a8c;">sebastian.short@linxlegal.com</a> &nbsp;·&nbsp; (689) 326-8754<br><a href="https://investiganos.com/" style="color:#1f7a8c;">investiganos.com</a></td></tr>';
+  e += '</table></td></tr></table>';
+  var h = '<!DOCTYPE html><html lang="' + (en ? 'en' : 'es') + '"><head><meta charset="utf-8"><title>' + 'INTRO — ' + escH(cur.name) + '</title></head><body style="margin:0;padding:20px 8px;background:#f2f5f6;font-family:Arial,Helvetica,sans-serif;color:#23323b;">';
+  h += '<div ' + QDOC_BAR + '><b>' + '&#128231; INTRO' + '</b><span style="font-size:13px">' + (en ? 'To: ' : 'Para: ') + '<input id="emTo" value="' + escH(cur.email || '') + '" style="padding:5px;border-radius:4px;border:none;min-width:210px"> ' + (en ? 'Subject: ' : 'Asunto: ') + '<input id="emSubj" value="' + escH(T.subj) + '" style="padding:5px;border-radius:4px;border:none;min-width:300px"></span>' +
+    '<button ' + QDOC_BTN + ' onclick="inCopy(this)">&#128203; COPY FORMATTED EMAIL</button>' +
+    '<button ' + QDOC_BTN + ' onclick="inGmail()">&#9993;&#65039; OPEN IN GMAIL</button>' +
+    qDocToggleBtn('intro', en) +
+    '<span style="font-size:12px;opacity:.85">' + T.note + '</span></div>';
+  h += '<div id="eml" contenteditable="true">' + e + '</div>';
+  h += '<scr' + 'ipt>' +
+    'function inCopy(b){ var n = document.getElementById("eml"); try { navigator.clipboard.write([new ClipboardItem({ "text/html": new Blob([n.innerHTML], { type: "text/html" }), "text/plain": new Blob([n.innerText], { type: "text/plain" }) })]).then(function(){ b.textContent = "✅ COPIADO"; }); } catch (err){ var r = document.createRange(); r.selectNode(n); var s = getSelection(); s.removeAllRanges(); s.addRange(r); document.execCommand("copy"); b.textContent = "✅ COPIADO"; } }' +
+    'function inGmail(){ var to = document.getElementById("emTo").value, su = document.getElementById("emSubj").value, tx = document.getElementById("eml").innerText; window.open("https://mail.google.com/mail/?view=cm&fs=1&to=" + encodeURIComponent(to) + "&su=" + encodeURIComponent(su) + "&body=" + encodeURIComponent(tx), "_blank"); }' +
+    '</scr' + 'ipt>';
+  h += qDocToggleJs(en);
   h += '</body></html>';
   return h;
 }
