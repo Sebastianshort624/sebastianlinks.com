@@ -293,6 +293,12 @@
   @media (max-width:1099px){#adminlist{display:none}}
   @media print{#adminlist{display:none}}
   #hitlist{border-top:2px solid #e7dfc9;margin-top:12px;padding-top:10px}
+  /* HOTTEST_FU_PANEL_V1 */
+  #hotlist{border-top:2px solid #e7dfc9;margin-top:12px;padding-top:10px}
+  #hotlist .hl-head{color:#b45309}
+  #hotlist .td-item a{color:#b45309}
+  @media (max-width:1099px){#hotlist{display:none}}
+  @media print{#hotlist{display:none}}
   #adminsec{border-top:2px solid #e7dfc9;margin-top:12px;padding-top:10px}
   .td-item{border-top:1px solid #eee7d8;padding:6px 0;font-size:13px}
   .td-item .td-t{font-weight:700;color:#0b3d91;margin-right:6px}
@@ -345,7 +351,7 @@
     <span class="snav"><a href="#stage1">1</a><a href="#stage2">2</a><a href="#stage3">3</a><a href="#stage4">4</a><a href="#stage5">5</a><a href="#stage6">6</a></span>
     <a href="#price-anchor">💰 Precio</a>
     <a href="#coversheet">📝 Contrato</a>
-    <select id="dispoBig" onchange="setDispo(this.value)" title="Disposición del cliente"><option value="">— Sin marcar</option><option value="FU">FU — Seguimiento</option><option value="NA">NA — No contestó</option><option value="NO">NO — No interesado</option><option value="NO GO">NO GO — No va</option><option value="NQ">NQ — No califica</option><option value="RS">RS — Reprogramado</option><option value="QUOTED">QUOTED — Cotizado</option><option value="APT SET">APT SET — Cita agendada</option><option value="SOLD">SOLD — Vendido</option><option value="CHARGED">CHARGED — Cobrado</option><option value="COM PAID">COM PAID — Comisión pagada</option></select>
+    <select id="dispoBig" onchange="setDispo(this.value)" title="Disposición del cliente"><option value="">— Sin marcar</option><option value="FU">FU — Seguimiento</option><option value="HOTTEST FU">🔥 HOTTEST FU</option><option value="NA">NA — No contestó</option><option value="NO">NO — No interesado</option><option value="NO GO">NO GO — No va</option><option value="NQ">NQ — No califica</option><option value="RS">RS — Reprogramado</option><option value="QUOTED">QUOTED — Cotizado</option><option value="APT SET">APT SET — Cita agendada</option><option value="SOLD">SOLD — Vendido</option><option value="CHARGED">CHARGED — Cobrado</option><option value="COM PAID">COM PAID — Comisión pagada</option></select>
     <select id="soldWhen" onchange="soldWhenChange()" title="¿Cuándo se vendió?" style="padding:4px 6px;font-weight:700;font-family:inherit;border-radius:6px;border:1px solid #7f1d1d;background:#fff7ed"><option value="">¿Cuándo?</option><option value="ON APT">EN LA CITA</option><option value="AFTER APT">DESPUÉS DE LA CITA</option></select>
     <button id="quoteBtn" type="button" onclick="qQuoteHtml()">📄 Cotización</button>
     <button id="emailBtn" type="button" onclick="qEmailHtml()">📧 EMAIL PRE-CITA</button>
@@ -395,6 +401,11 @@
   <div class="hl-head"><span>&#127919; FU HIT LIST</span><span><span id="hlCount"></span><button type="button" class="hl-hide" onclick="sideToggle('H',false)" title="Ocultar">&#10005;</button></span></div>
   <div id="hlItems"></div>
   <div class="hl-add"><input id="hlNew" type="text" placeholder="Add a name&hellip;" onkeydown="if(event.key==='Enter')hlAdd()"><button type="button" onclick="hlAdd()">+</button></div>
+</div>
+<!-- HOTTEST_FU_PANEL_V1 -->
+<div id="hotlist">
+  <div class="hl-head"><span>&#128293; HOTTEST FU</span><span><span id="hotCount"></span></span></div>
+  <div id="hotItems"></div>
 </div>
   <div id="adminsec">
   <div class="hl-head"><span>ADMIN HIT LIST</span><span><span id="alCount"></span></span></div>
@@ -648,7 +659,7 @@ sideApply();
   <div id="dispoBlock" style="border:1px solid #dbe4f0;border-radius:6px;padding:8px 10px;margin:0 0 10px;background:#f8fbff">
   <div class="qsec" style="margin-top:0">🎯 DISPOSICIÓN · ESTADO · RESULTADO <span class="tmin" id="dispoWho"></span></div>
   <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:end;margin:2px 0 8px">
-    <label class="qf" style="margin:0">RESULTADO MANUAL <select id="d_manual" onchange="setDispo(this.value)" style="font-weight:800"><option value="">Sin marcar</option><option value="NO GO">NO GO — No va</option><option value="FU">FU — Seguimiento</option><option value="QUOTED">QUOTED — Cotizado</option><option value="APT SET">APT SET — Cita agendada</option><option value="SOLD">SOLD — Vendido</option><option value="RS">RS — Reprogramado</option><option value="NA">NA — No contestó</option><option value="NQ">NQ — No califica</option><option value="NO">NO — No interesado</option><option value="CHARGED">CHARGED — Cobrado</option><option value="COM PAID">COM PAID — Comisión pagada</option></select></label>
+    <label class="qf" style="margin:0">RESULTADO MANUAL <select id="d_manual" onchange="setDispo(this.value)" style="font-weight:800"><option value="">Sin marcar</option><option value="NO GO">NO GO — No va</option><option value="FU">FU — Seguimiento</option><option value="HOTTEST FU">🔥 HOTTEST FU</option><option value="QUOTED">QUOTED — Cotizado</option><option value="APT SET">APT SET — Cita agendada</option><option value="SOLD">SOLD — Vendido</option><option value="RS">RS — Reprogramado</option><option value="NA">NA — No contestó</option><option value="NQ">NQ — No califica</option><option value="NO">NO — No interesado</option><option value="CHARGED">CHARGED — Cobrado</option><option value="COM PAID">COM PAID — Comisión pagada</option></select></label>
     <span class="qsm" id="d_lastapt" style="font-weight:700">ÚLTIMA CITA: —</span>
     <span class="qsm" id="d_nextapt" style="font-weight:700">PRÓXIMA CITA: —</span>
   </div>
@@ -1607,8 +1618,9 @@ function eodToday(){ var t = new Date(); return t.getFullYear() + '-' + String(t
   function dispoKey(){ return cur ? 'sl_dispo_' + cur.id : null; }
   function dispoRead(){
     try { var k = dispoKey(); var raw = k ? localStorage.getItem(k) : null; if (raw) return JSON.parse(raw); } catch(e){}
-    if (cur && (cur.dispo || cur.outcome)) return { manual: cur.manual || '', dispo: cur.dispo || '', status: cur.leadStatus || '', outcome: cur.outcome || '', futype: cur.fuType || '', fudate: cur.fuDate || '', futime: cur.fuTime || '', fuampm: cur.fuAmpm || '' };
-    return { manual:'', dispo:'', status:'', outcome:'', futype:'', fudate:'', futime:'', fuampm:'' };
+    var defM = (cur && typeof DISPO_DEFAULTS !== 'undefined' && DISPO_DEFAULTS[cur.id]) || '';
+    if (cur && (cur.dispo || cur.outcome)) return { manual: cur.manual || defM, dispo: cur.dispo || '', status: cur.leadStatus || '', outcome: cur.outcome || '', futype: cur.fuType || '', fudate: cur.fuDate || '', futime: cur.fuTime || '', fuampm: cur.fuAmpm || '' };
+    return { manual: defM, dispo:'', status:'', outcome:'', futype:'', fudate:'', futime:'', fuampm:'' };
   }
   function soldKey(){ return 'sl_sold_' + (cur ? cur.id : ''); }
 function soldGet(){ try { return JSON.parse(localStorage.getItem(soldKey()) || '{}'); } catch(e){ return {}; } }
@@ -1657,6 +1669,32 @@ function setDispo(v){
   dispoSave();
   dispoSoldCouple(v);
 }
+/* ===== HOTTEST FU (HOTTEST_FU_V1): defaults por cliente + panel lateral =====
+   DISPO_DEFAULTS aplica SOLO cuando el cliente no tiene valor guardado en
+   sl_dispo_<id>; la elección de Sebastian siempre gana sobre el default. */
+var DISPO_DEFAULTS = { 'c-alvarez-1026': 'HOTTEST FU' };
+function dispoManualFor(id){
+  try { var raw = localStorage.getItem('sl_dispo_' + id); if (raw){ var d = JSON.parse(raw); if (d && typeof d.manual === 'string') return d.manual; } } catch(e){}
+  return DISPO_DEFAULTS[id] || '';
+}
+function hotFuRender(){
+  var box = document.getElementById('hotItems'); if (!box) return;
+  var hot = [];
+  try {
+    var cs = slClients();
+    for (var i = 0; i < cs.length; i++){
+      var c = cs[i]; if (!c) continue;
+      if (dispoManualFor(c.id) === 'HOTTEST FU') hot.push(c);
+    }
+  } catch(e){}
+  hot.sort(function(a, b){ return String(a.name || '').localeCompare(String(b.name || '')); });
+  box.innerHTML = hot.length ? hot.map(function(c){
+    var sid = c.id != null ? c.id : c.name;
+    return '<div class="td-item">' + hlNameHtml({ name: c.name || sid, sid: sid, pipe: '' }) + '</div>';
+  }).join('') : '<div class="hl-note">Ninguno marcado todavía.</div>';
+  var ct = document.getElementById('hotCount'); if (ct) ct.textContent = hot.length ? (hot.length + ' HOT') : '';
+}
+hotFuRender();
 function soldWhenChange(){
   var sw = document.getElementById('soldWhen'); if (!sw) return;
   var st = soldGet(); st.when = sw.value;
@@ -1678,6 +1716,7 @@ function dispoLoad(){
     $('d_futime').value = d.futime || ''; $('d_fuampm').value = d.fuampm || '';
     var w = $('dispoWho'); if (w) w.textContent = cur ? '— ' + (cur.name || '') : '';
     dispoSummary(); dispoDates(); dispoTopSync(); try { eodBarRender(); } catch(e){}
+    try { hotFuRender(); } catch(e){}
   }
 
   function dispoTopSync(){
@@ -1701,7 +1740,7 @@ function dispoLoad(){
     var k = dispoKey(); if (!k) return;
     var d = { manual: ($('d_manual') || {}).value || '', dispo: $('d_dispo').value, status: $('d_status').value, outcome: $('d_outcome').value, futype: $('d_futype').value, fudate: $('d_fudate').value, futime: $('d_futime').value, fuampm: $('d_fuampm').value, updated: new Date().toISOString() };
     try { localStorage.setItem(k, JSON.stringify(d)); } catch(e){}
-    dispoSummary(); dispoDates();
+    dispoSummary(); dispoDates(); try { hotFuRender(); } catch(e){}
   }
   function dispoSummary(){
     var el = $('d_summary'); if (!el) return;
@@ -1818,7 +1857,7 @@ function renderBar(c, n){
       '<div><div class="ib-lab">MTF anual</div><div class="ib-big">' + (mf > 0 ? fmtC(mf) : '—') + '</div></div>' +
       '<div><div class="ib-lab">MTG x mes</div><div class="ib-big">' + (mmo > 0 ? fmtC(mmo) : '—') + '</div></div>' +
       '<div><div class="ib-lab">MT fee x mes</div><div class="ib-big">' + (mf > 0 ? fmtC(mf / 12) : '—') + '</div></div></div>' + '<div id="ibDispo">' +
-      '<span class="dtop"><span class="dlab">DISPOSICIÓN</span><select id="t_manual" onchange="setDispo(this.value)"><option value="">Sin marcar</option><option value="NO GO">NO GO — No va</option><option value="FU">FU — Seguimiento</option><option value="QUOTED">QUOTED — Cotizado</option><option value="APT SET">APT SET — Cita agendada</option><option value="SOLD">SOLD — Vendido</option><option value="RS">RS — Reprogramado</option><option value="NA">NA — No contestó</option><option value="NO">NO — No interesado</option><option value="NQ">NQ — No califica</option><option value="CHARGED">CHARGED — Cobrado</option><option value="COM PAID">COM PAID — Comisión pagada</option></select></span>' +
+      '<span class="dtop"><span class="dlab">DISPOSICIÓN</span><select id="t_manual" onchange="setDispo(this.value)"><option value="">Sin marcar</option><option value="NO GO">NO GO — No va</option><option value="FU">FU — Seguimiento</option><option value="HOTTEST FU">🔥 HOTTEST FU</option><option value="QUOTED">QUOTED — Cotizado</option><option value="APT SET">APT SET — Cita agendada</option><option value="SOLD">SOLD — Vendido</option><option value="RS">RS — Reprogramado</option><option value="NA">NA — No contestó</option><option value="NO">NO — No interesado</option><option value="NQ">NQ — No califica</option><option value="CHARGED">CHARGED — Cobrado</option><option value="COM PAID">COM PAID — Comisión pagada</option></select></span>' +
       '<span class="dtop"><span class="dlab">SEGUIMIENTO</span><select id="t_futype" onchange="dispoTopSave()"><option value="">Sin seguimiento</option><option value="evento">Evento de 15 minutos</option><option value="tarea">Tarea</option><option value="ca">Revisar con el CA</option></select></span>' +
       '<span class="dtop"><span class="dlab">FECHA FU</span><input id="t_fudate" type="date" onchange="dispoTopSave()"></span>' +
       '<span class="dtop"><span class="dlab">HORA</span><input id="t_futime" type="time" onchange="dispoTopSave()" style="width:118px"></span>' +
