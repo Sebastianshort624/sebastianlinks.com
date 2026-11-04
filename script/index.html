@@ -2048,17 +2048,26 @@ function qQualityCheck(){
   // omiten del documento con una nota cuando faltan APR / inicio del contrato vigente — nunca se
   // fabrican de datos PENDIENTES. Un saldo marcado poffUnverified NO es una cifra utilizable
   // (sigue PENDIENTE en todo el modelo): bloquea nombrando el único dato que falta.
+  // EXCEPCIÓN (2026-11-04, caso Maria Fonseca en vivo): un precio fijado A PROPÓSITO en la tarifa
+  // (distinto a la fórmula automática de ese saldo) SÍ es un precio que cotizar — es el precio de
+  // Sebastian, no una cifra derivada del saldo; el saldo se mantiene PENDIENTE en el documento.
   // Devuelve la lista de fallas; lista vacía = pasa.
   var fails = [];
   if (typeof cur === 'undefined' || !cur || !cur.name){ fails.push('No hay un cliente activo seleccionado.'); return fails; }
   var db = qIsDB(), pv = qNum('q_payoff');
   var unv = !!(typeof cur !== 'undefined' && cur && cur.poffUnverified);
   var sheetFee = (db && $('q_sheetfee')) ? qNum('q_sheetfee') : 0;
-  var feeField = unv ? 0 : qNum('q_fee'); // con saldo SIN VERIFICAR la tarifa del campo es la fórmula automática de ese mismo saldo: no cuenta como precio
+  var feeField = qNum('q_fee');
   var comboTot = 0; qComboCalc().forEach(function(c){ comboTot += c.price.total; });
-  var hasPrice = (pv > 0 && !unv) || sheetFee > 0 || feeField > 0 || (comboTot > 0 && !unv);
+  // Con saldo SIN VERIFICAR la tarifa del campo SOLO cuenta como precio si es un precio fijado a
+  // propósito (distinto a la fórmula automática de ese saldo, comboTot): la fórmula automática de
+  // un saldo sin verificar NO es un precio y sigue bloqueada; el precio tecleado por Sebastian SÍ
+  // cotiza — es SU precio, no una cifra del saldo — y el documento sigue etiquetando el saldo
+  // PENDIENTE / SIN VERIFICAR y omitiendo las proyecciones que no se pueden calcular.
+  var feeCounts = feeField > 0 && (!unv || Math.abs(feeField - comboTot) > 0.005);
+  var hasPrice = (pv > 0 && !unv) || sheetFee > 0 || feeCounts || (comboTot > 0 && !unv);
   if (!hasPrice)
-    fails.push(db ? 'Falta la tarifa de la hoja PRE-CALL (deed-back): es el único dato que falta para cotizar.' : 'Falta el saldo (payoff): es el único dato que falta para calcular el precio.');
+    fails.push(db ? 'Falta la tarifa de la hoja PRE-CALL (deed-back): es el único dato que falta para cotizar.' : (unv && pv > 0 ? 'El saldo está SIN VERIFICAR: la cotización no sale de la fórmula de un saldo sin verificar. Verifica el saldo o fija tu precio en la tarifa (un monto distinto a la fórmula automática de ese saldo) para cotizar.' : 'Falta el saldo (payoff): es el único dato que falta para calcular el precio.'));
   return fails;
 }
 // ===== DOC LANGUAGE TOGGLE (Sebastian, 2026-10-22): COTIZACIÓN / CA DISCOVERY / CB DISCOVERY open in the
@@ -2201,10 +2210,16 @@ function qEmailHtml(){
   if (!cur){ alert('Selecciona un cliente primero.'); return; }
   var qf = qQualityCheck();
   if (qf.length){ alert('⛔ CONTROL DE CALIDAD — el correo PRE-CITA NO se generó:\n• ' + qf.join('\n• ') + '\n\nCorrige estos puntos y vuelve a intentarlo. Nada se copió ni se envió.'); return; }
+  qDocOpen(qEmailBuild(qDocDefLang()));
+}
+// qEmailBuild(L): constructor del correo PRE-CITA (extraído 2026-11-04 — qComboBuild ya llamaba a
+// qEmailBuild(L) para armar el EMAIL COMPLETO y esa función NO existía: el COMBO tronaba con
+// "qEmailBuild is not defined" para TODOS los clientes). Devuelve el documento completo en string.
+function qEmailBuild(L){
   qRecalc();
   // Sebastian's own PRE-CITA design (uploaded 2026-10-20): teal financial-summary email — header band,
   // COMPROMISO CONTRACTUAL ACTUAL cards, total bar, PROYECCION table, verification footnote, signature.
-  var en = cur.lang === 'en';
+  var en = (L === 'en');
   var F = qCaseFacts();
   var resortT = escH(cur.resort || '');
   var nC = F.multi ? F.multi.length : (cur.contracts || 1);
@@ -2306,7 +2321,7 @@ function qEmailHtml(){
   h += '<scr' + 'ipt>function emCopy(b){var n=document.getElementById("eml");try{navigator.clipboard.write([new ClipboardItem({"text/html":new Blob([n.innerHTML],{type:"text/html"}),"text/plain":new Blob([n.innerText],{type:"text/plain"})})]).then(function(){b.textContent="✅ COPIADO";});}catch(err){var r=document.createRange();r.selectNode(n);var s=getSelection();s.removeAllRanges();s.addRange(r);document.execCommand("copy");b.textContent="✅ COPIADO";}}' +
     'function emGmail(){var to=document.getElementById("emTo").value,su=document.getElementById("emSubj").value,tx=document.getElementById("eml").innerText;window.open("https://mail.google.com/mail/?view=cm&fs=1&to="+encodeURIComponent(to)+"&su="+encodeURIComponent(su)+"&body="+encodeURIComponent(tx),"_blank");}</scr' + 'ipt>';
   h += '</body></html>';
-  qDocOpen(h);
+  return h;
 }
 // ===== COMBO EMAIL (Sebastian, 2026-10-29): ONE formatted email that combines the PRE-CITA email
 // (the client's CURRENT SITUATION: contractual commitment + the trap projections) with the QUOTE
