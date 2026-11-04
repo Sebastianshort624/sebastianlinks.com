@@ -353,6 +353,8 @@
     <button id="walkBtn" type="button" onclick="qWalkHtml()">✉️ EMAIL OUT</button>
     <!-- INTRO_EMAIL_V1 -->
     <button id="introBtn" type="button" onclick="qIntroHtml()">📧 INTRO</button>
+    <!-- FU_EMAIL_V1 -->
+    <button id="fuCortoBtn" type="button" onclick="qFuCortoHtml()">📧 FU CORTO — GERENTE DE CASO</button>
     <!-- TEXTS_OUT_V1 -->
     <button id="textsBtn" type="button" onclick="qTextsHtml()">💬 TEXTS OUT</button>
     <button id="caBtn" type="button" onclick="qCaHtml()">📋 CA DISCOVERY</button>
@@ -2033,6 +2035,7 @@ window.__qDocRender = function(kind, L){
   if (kind === 'cb') return qCbBuild(L);
   if (kind === 'walk') return qWalkBuild(L);
   if (kind === 'intro') return qIntroBuild(L);
+  if (kind === 'fucorto') return qFuCortoBuild(L);
   if (kind === 'combo') return qComboBuild(L);
   return null;
 };
@@ -2470,6 +2473,54 @@ function qIntroBuild(L){
     '<button ' + QDOC_BTN + ' onclick="inCopy(this)">&#128203; COPY FORMATTED EMAIL</button>' +
     '<button ' + QDOC_BTN + ' onclick="inGmail()">&#9993;&#65039; OPEN IN GMAIL</button>' +
     qDocToggleBtn('intro', en) +
+    '<span style="font-size:12px;opacity:.85">' + T.note + '</span></div>';
+  h += '<div id="eml" contenteditable="true">' + e + '</div>';
+  h += '<scr' + 'ipt>' +
+    'function inCopy(b){ var n = document.getElementById("eml"); try { navigator.clipboard.write([new ClipboardItem({ "text/html": new Blob([n.innerHTML], { type: "text/html" }), "text/plain": new Blob([n.innerText], { type: "text/plain" }) })]).then(function(){ b.textContent = "✅ COPIADO"; }); } catch (err){ var r = document.createRange(); r.selectNode(n); var s = getSelection(); s.removeAllRanges(); s.addRange(r); document.execCommand("copy"); b.textContent = "✅ COPIADO"; } }' +
+    'function inGmail(){ var to = document.getElementById("emTo").value, su = document.getElementById("emSubj").value, tx = document.getElementById("eml").innerText; window.open("https://mail.google.com/mail/?view=cm&fs=1&to=" + encodeURIComponent(to) + "&su=" + encodeURIComponent(su) + "&body=" + encodeURIComponent(tx), "_blank"); }' +
+    '</scr' + 'ipt>';
+  h += qDocToggleJs(en);
+  h += '</body></html>';
+  return h;
+}
+// ===== FU CORTO EMAIL (FU_EMAIL_V1) (Sebastian, 2026-11-04): short follow-up email — getting the
+// client's case assigned to a case manager. Mirrors the INTRO doc pattern exactly: same toolbar
+// (Para/Asunto, COPY FORMATTED EMAIL, OPEN IN GMAIL, language toggle), same Linx Legal header band
+// and the SAME signature footer as qIntroBuild. The ES body is Sebastian's verbatim wording; the
+// greeting carries the client's first name via qWalkFirst, exactly like INTRO. Nothing is ever sent.
+function qFuCortoHtml(){
+  if (!cur){ alert('Selecciona un cliente primero.'); return; }
+  qDocOpen(qFuCortoBuild(qDocDefLang()));
+}
+function qFuCortoBuild(L){
+  var en = (L === 'en');
+  var first = qWalkFirst();
+  var T = en ? {
+    greet: 'Hi',
+    body: 'I was hoping that today we could assign your case to a case manager so it can start moving forward. What time works well for you so we can talk?',
+    sign: 'Best regards',
+    subj: 'Su expediente',
+    note: 'Copy the formatted email and paste it into your Gmail (sebastian.short@linxlegal.com). Nothing is sent automatically — review before sending.'
+  } : {
+    greet: 'Hola',
+    body: 'Esperaba que hoy pudiéramos asignar su expediente a un gerente de caso para que empiece a avanzar. A qué hora le queda bien que hablemos?',
+    sign: 'Un abrazo',
+    subj: 'Su expediente',
+    note: 'Copia el correo con formato y pégalo en tu Gmail (sebastian.short@linxlegal.com). Nada se envía automáticamente — revisa antes de enviar.'
+  };
+  var e = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f2f5f6;"><tr><td align="center" style="padding:24px 8px;"><table role="presentation" width="640" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:14px;overflow:hidden;box-shadow:0 8px 24px rgba(20,50,60,.10);font-family:Arial,Helvetica,sans-serif;">';
+  e += '<tr><td style="background:#1a5968;padding:22px 30px;"><div style="font-size:25px;font-weight:800;color:#ffffff;">Linx Legal</div><div style="font-size:13px;color:#bfe3ea;">' + (en ? 'Timeshare cancellation' : 'Cancelación de tiempos compartidos') + '</div></td></tr>';
+  e += '<tr><td style="padding:26px 30px 8px;font-size:15px;color:#23323b;line-height:1.6;"><p style="margin:0 0 12px;">' + T.greet + ' <b>' + escH(first) + '</b>,</p>';
+  e += '<p style="margin:0 0 12px;">' + T.body + '</p>';
+  e += '<p style="margin:10px 0 4px;">' + T.sign + '</p>';
+  e += '</td></tr>';
+  e += '<tr><td style="padding:19px 30px;background:#f7f9fa;border-top:1px solid #e5ebed;font-size:13px;color:#536a72;line-height:1.55;">Sebastian Short<br><b>Senior Case Builder · Linx Legal Inc.</b><br><a href="mailto:sebastian.short@linxlegal.com" style="color:#1f7a8c;">sebastian.short@linxlegal.com</a> &nbsp;·&nbsp; (689) 326-8754<br><a href="https://investiganos.com/" style="color:#1f7a8c;">investiganos.com</a></td></tr>';
+  e += '</table></td></tr></table>';
+  var h = '<!DOCTYPE html><html lang="' + (en ? 'en' : 'es') + '"><head><meta charset="utf-8"><title>' + 'FU CORTO — ' + escH(cur.name) + '</title></head><body style="margin:0;padding:20px 8px;background:#f2f5f6;font-family:Arial,Helvetica,sans-serif;color:#23323b;">';
+  h += '<div ' + QDOC_BAR + '><b>' + '&#128231; FU CORTO — GERENTE DE CASO' + '</b><span style="font-size:13px">' + (en ? 'To: ' : 'Para: ') + '<input id="emTo" value="' + escH(cur.email || '') + '" style="padding:5px;border-radius:4px;border:none;min-width:210px"> ' + (en ? 'Subject: ' : 'Asunto: ') + '<input id="emSubj" value="' + escH(T.subj) + '" style="padding:5px;border-radius:4px;border:none;min-width:300px"></span>' +
+    '<button ' + QDOC_BTN + ' onclick="inCopy(this)">&#128203; COPY FORMATTED EMAIL</button>' +
+    '<button ' + QDOC_BTN + ' onclick="inGmail()">&#9993;&#65039; OPEN IN GMAIL</button>' +
+    qDocToggleBtn('fucorto', en) +
     '<span style="font-size:12px;opacity:.85">' + T.note + '</span></div>';
   h += '<div id="eml" contenteditable="true">' + e + '</div>';
   h += '<scr' + 'ipt>' +
