@@ -1672,7 +1672,7 @@ function setDispo(v){
 /* ===== HOTTEST FU (HOTTEST_FU_V1): defaults por cliente + panel lateral =====
    DISPO_DEFAULTS aplica SOLO cuando el cliente no tiene valor guardado en
    sl_dispo_<id>; la elección de Sebastian siempre gana sobre el default. */
-var DISPO_DEFAULTS = { 'c-alvarez-1026': 'HOTTEST FU' };
+var DISPO_DEFAULTS = { 'c-alvarez-1026': 'HOTTEST FU', 'c-ormeno-1011': 'HOTTEST FU' };
 function dispoManualFor(id){
   try { var raw = localStorage.getItem('sl_dispo_' + id); if (raw){ var d = JSON.parse(raw); if (d && typeof d.manual === 'string') return d.manual; } } catch(e){}
   return DISPO_DEFAULTS[id] || '';
