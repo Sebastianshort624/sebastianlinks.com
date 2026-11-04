@@ -67,6 +67,10 @@
   .cbar .ib-resort { font-size: 1.12em; font-weight: 500; color: #fff; }
   .cbar .ib-ca { color: #fff; }
   .cbar .ib-col + .ib-col { border-left-color: rgba(255,255,255,.35); }
+  /* TOTAL ANUAL EN ROJO (Sebastian, 2026-11-04: "Total anual put at the top in red nxt to mt fee x mo") —
+     solo la cifra Total anual de la barra va en rojo claro (#ff4d4d) sobre el verde, sin fondo extra. */
+  .cbar .ib-totanual .ib-lab, .cbar .ib-totanual .ib-big { color: #ff4d4d; }
+  .cbar .ib-totanual .ib-big { font-weight: 700; }
   .ib-grid { border-collapse: collapse; font-size: 0.66em; width: 100%; }
   .ib-grid th, .ib-grid td { padding: 2px 6px; text-align: right; border-bottom: 1px solid #b9d2f5; font-variant-numeric: tabular-nums; }
   .ib-grid th { color: #40669c; }
@@ -1866,7 +1870,8 @@ function renderBar(c, n){
       '<div><div class="ib-lab">MTG anual</div><div class="ib-big">' + (mmo > 0 ? fmtC(mmo * 12) : '—') + '</div></div>' +
       '<div><div class="ib-lab">MTF anual</div><div class="ib-big">' + (mf > 0 ? fmtC(mf) : '—') + '</div></div>' +
       '<div><div class="ib-lab">MTG x mes</div><div class="ib-big">' + (mmo > 0 ? fmtC(mmo) : '—') + '</div></div>' +
-      '<div><div class="ib-lab">MT fee x mes</div><div class="ib-big">' + (mf > 0 ? fmtC(mf / 12) : '—') + '</div></div></div>' + '<div id="ibDispo">' +
+      '<div><div class="ib-lab">MT fee x mes</div><div class="ib-big">' + (mf > 0 ? fmtC(mf / 12) : '—') + '</div></div>' +
+      '<div class="ib-totanual"><div class="ib-lab">Total anual</div><div class="ib-big">' + ((mmo > 0 || mf > 0) ? fmtC(mmo * 12 + mf) : '—') + '</div></div></div>' + '<div id="ibDispo">' +
       '<span class="dtop"><span class="dlab">DISPOSICIÓN</span><select id="t_manual" onchange="setDispo(this.value)"><option value="">Sin marcar</option><option value="NO GO">NO GO — No va</option><option value="FU">FU — Seguimiento</option><option value="HOTTEST FU">🔥 HOTTEST FU</option><option value="QUOTED">QUOTED — Cotizado</option><option value="APT SET">APT SET — Cita agendada</option><option value="SOLD">SOLD — Vendido</option><option value="RS">RS — Reprogramado</option><option value="NA">NA — No contestó</option><option value="NO">NO — No interesado</option><option value="NQ">NQ — No califica</option><option value="CHARGED">CHARGED — Cobrado</option><option value="COM PAID">COM PAID — Comisión pagada</option></select></span>' +
       '<span class="dtop"><span class="dlab">SEGUIMIENTO</span><select id="t_futype" onchange="dispoTopSave()"><option value="">Sin seguimiento</option><option value="evento">Evento de 15 minutos</option><option value="tarea">Tarea</option><option value="ca">Revisar con el CA</option></select></span>' +
       '<span class="dtop"><span class="dlab">FECHA FU</span><input id="t_fudate" type="date" onchange="dispoTopSave()"></span>' +
