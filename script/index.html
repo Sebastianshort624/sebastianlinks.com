@@ -27,7 +27,7 @@
   .client-line { margin: 4px 0 12px; }
   .client-line input { border: none; border-bottom: 1px solid #333; font-size: 1em; width: 280px; font-family: inherit; }
   .client-line select { font-size: 1em; padding: 6px; font-family: inherit; max-width: 100%; }
-  .cbar { background: #dbeafe; color: #0b3d91; border-radius: 6px; padding: 8px 14px; margin-top: 6px; line-height: 1.32; box-shadow: 0 2px 8px rgba(11,61,145,.18); }
+  .cbar { background: #15803d; color: #fff; border-radius: 6px; padding: 8px 14px; margin-top: 6px; line-height: 1.32; box-shadow: 0 2px 8px rgba(21,128,61,.25); }
   .ib-wrap { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,2fr) minmax(0,1fr); gap: 14px; align-items: start; }
   .ib-col { min-width: 0; overflow-wrap: break-word; }
   .ib-col + .ib-col { border-left: 2px solid rgba(11,61,145,.30); padding-left: 14px; }
@@ -57,6 +57,16 @@
   .ib-line { font-size: 0.85em; margin-top: 2px; }
   .ib-stats { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 4px; }
   .ib-big { font-size: 1.5em; font-weight: 800; color: #0b3d91; line-height: 1.1; }
+  /* GREEN BAR (Sebastian, 2026-11-04: "MAKE THIS GREEN AND SMALLER FONT NOT SO FAT") — solo la barra
+     resumen (.cbar): fondo verde (el verde de la casa, #15803d), valores más chicos y sin el bold
+     pesado (800 → 500/600). Todo va con scope .cbar: nada fuera de la barra cambia. */
+  .cbar .ib-big { font-size: 1.12em; font-weight: 500; color: #fff; }
+  .cbar .ib-lab { color: rgba(255,255,255,.8); font-weight: 600; }
+  .cbar .ib-lab2 { color: rgba(255,255,255,.8); }
+  .cbar .ib-client { font-size: 1.22em; font-weight: 600; color: #fff; }
+  .cbar .ib-resort { font-size: 1.12em; font-weight: 500; color: #fff; }
+  .cbar .ib-ca { color: #fff; }
+  .cbar .ib-col + .ib-col { border-left-color: rgba(255,255,255,.35); }
   .ib-grid { border-collapse: collapse; font-size: 0.66em; width: 100%; }
   .ib-grid th, .ib-grid td { padding: 2px 6px; text-align: right; border-bottom: 1px solid #b9d2f5; font-variant-numeric: tabular-nums; }
   .ib-grid th { color: #40669c; }
@@ -74,8 +84,8 @@
   .fpitem label { display: flex; gap: 10px; cursor: pointer; align-items: flex-start; font-size: 0.98em; }
   .fpitem input { transform: scale(1.3); margin-top: 6px; }
   .fpitem .cf { display: block; font-size: 0.85em; color: #40669c; font-style: italic; margin-top: 3px; }
-  .cbar strong { color: #0b3d91; }
-  .cbar a { color: #0b3d91; text-decoration: none; }
+  .cbar strong { color: #fff; }
+  .cbar a { color: #fff; text-decoration: none; }
   .sprinkle { border: 1px solid #c9dcf7; border-left: 4px solid #0b3d91; border-radius: 8px; padding: 12px 14px; margin: 0 0 18px; background: #f2f7ff; }
   .sprinkle h3 { margin: 0 0 6px; font-size: 1em; color: #0b3d91; }
   .sprinkle ul { margin: 0; padding: 0; list-style: none; }
@@ -3330,7 +3340,7 @@ function qRecalc(){
     var lrP = qNum('q_aapr') / 100 / 12;
     if (mmo > payoff * lrP){
       var mAP = Math.min(term, Math.ceil(-Math.log(1 - payoff * lrP / mmo) / Math.log(1 + lrP)));
-      MGP = { status: 'ok', months: mAP, mmo: mmo, payoff: payoff, apr: qNum('q_aapr'), level: MG.level, projEst: true, projNote: 'APR registrada: ' + qNum('q_aapr') + '% — proyección con el saldo registrado (SIN VERIFICAR)' };
+      MGP = { status: 'ok', months: mAP, mmo: mmo, payoff: payoff, apr: qNum('q_aapr'), level: MG.level, projEst: true, projNote: 'APR registrada: ' + qNum('q_aapr') + '% — saldo SIN VERIFICAR' };
     }
   }
   if (!MGP.projEst && MG.status === 'pending' && payoff > 0 && mmo > 0 && !(qNum('q_aapr') > 0)){
@@ -3552,6 +3562,27 @@ function qRecalc(){
     var totPaid = st.prin + st.inte;
     $('q_tint').textContent = fmtD(st.inte);
     $('q_ipct').textContent = totPaid > 0 ? Math.round(st.inte / totPaid * 100) + '%' : '—';
+  } else if (MG.status === 'pending' && typeof MGP !== 'undefined' && MGP && MGP.projEst && MGP.status === 'ok' && sLoan > 0 && mmo > 0){
+    // SALDO-ANCHORED ESTIMADO BREAKDOWN (Sebastian, 2026-11-04: "same problem with the months left on
+    // mtg still not FIXED"): on the saldo-driven ESTIMADO path there is NO contract start, so MESES
+    // (q_mos) is blank and the schedule-position block above can never run — the desglose printed all
+    // dashes while the header already showed the months left. Anchor on the RECORDED saldo instead:
+    // PAYOFF = saldo registrado; meses transcurridos = plazo − meses restantes (the SAME months the
+    // header prints, from amortizing the saldo); posición sobre el cronograma ORIGINAL (financiado
+    // registrado o inferido). Todo ESTIMADO (SIN VERIFICAR) — la línea de estado ya lo rotula.
+    var remTotA = qMortTotal(MGP); // total de pagos que quedan (cronograma exacto, último pago parcial)
+    var saldoA = MGP.payoff;
+    var elA = Math.max(0, Math.min(term, term - MGP.months));
+    var sA = amortSched(sLoan, sApr, mmo, elA);
+    var totPagadoA = sA.prin + sA.inte; // regla 2026-10-10: del cronograma, no meses × pago
+    var capPagadoA = sLoan - saldoA;
+    var intPagadoA = totPagadoA - capPagadoA;
+    $('q_paid').textContent = fmtD(totPagadoA);
+    $('q_prin').textContent = fmtD(capPagadoA);
+    $('q_inte').textContent = fmtD(intPagadoA);
+    $('q_bal2').textContent = fmtD(saldoA);
+    $('q_tint').textContent = fmtD(remTotA - saldoA);
+    $('q_ipct').textContent = totPagadoA > 0 ? Math.round(intPagadoA / totPagadoA * 100) + '%' : '—';
   } else {
     ['q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct'].forEach(function(id){ $(id).textContent = '—'; });
     // MATEO HARD BLOCK (2026-10-21): a PENDIENTE record shows NO schedule-position balance — a contract
