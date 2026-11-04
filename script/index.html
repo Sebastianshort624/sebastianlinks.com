@@ -27,7 +27,9 @@
   .client-line { margin: 4px 0 12px; }
   .client-line input { border: none; border-bottom: 1px solid #333; font-size: 1em; width: 280px; font-family: inherit; }
   .client-line select { font-size: 1em; padding: 6px; font-family: inherit; max-width: 100%; }
-  .cbar { background: #15803d; color: #fff; border-radius: 6px; padding: 8px 14px; margin-top: 6px; line-height: 1.32; box-shadow: 0 2px 8px rgba(21,128,61,.25); }
+  /* YELLOW BAR (Sebastian, 2026-11-04: "chang background to yellow / letters to black") — la barra
+     resumen (.cbar) va AMARILLA (#facc15) con letras negras; Total anual sigue en rojo (ver abajo). */
+  .cbar { background: #facc15; color: #111; border-radius: 6px; padding: 8px 14px; margin-top: 6px; line-height: 1.32; box-shadow: 0 2px 8px rgba(0,0,0,.18); }
   .ib-wrap { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,2fr) minmax(0,1fr); gap: 14px; align-items: start; }
   .ib-col { min-width: 0; overflow-wrap: break-word; }
   .ib-col + .ib-col { border-left: 2px solid rgba(11,61,145,.30); padding-left: 14px; }
@@ -57,19 +59,20 @@
   .ib-line { font-size: 0.85em; margin-top: 2px; }
   .ib-stats { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 4px; }
   .ib-big { font-size: 1.5em; font-weight: 800; color: #0b3d91; line-height: 1.1; }
-  /* GREEN BAR (Sebastian, 2026-11-04: "MAKE THIS GREEN AND SMALLER FONT NOT SO FAT") — solo la barra
-     resumen (.cbar): fondo verde (el verde de la casa, #15803d), valores más chicos y sin el bold
-     pesado (800 → 500/600). Todo va con scope .cbar: nada fuera de la barra cambia. */
-  .cbar .ib-big { font-size: 1.12em; font-weight: 500; color: #fff; }
-  .cbar .ib-lab { color: rgba(255,255,255,.8); font-weight: 600; }
-  .cbar .ib-lab2 { color: rgba(255,255,255,.8); }
-  .cbar .ib-client { font-size: 1.22em; font-weight: 600; color: #fff; }
-  .cbar .ib-resort { font-size: 1.12em; font-weight: 500; color: #fff; }
-  .cbar .ib-ca { color: #fff; }
-  .cbar .ib-col + .ib-col { border-left-color: rgba(255,255,255,.35); }
+  /* YELLOW BAR (Sebastian, 2026-11-04) — solo la barra resumen (.cbar): fondo amarillo #facc15,
+     letras negras, valores chicos y sin el bold pesado (800 → 500/600; esto vino de su orden previa
+     "MAKE THIS GREEN AND SMALLER FONT NOT SO FAT" del mismo día, el color cambió verde → amarillo).
+     Todo va con scope .cbar: nada fuera de la barra cambia. */
+  .cbar .ib-big { font-size: 1.12em; font-weight: 500; color: #111; }
+  .cbar .ib-lab { color: rgba(0,0,0,.62); font-weight: 600; }
+  .cbar .ib-lab2 { color: rgba(0,0,0,.62); }
+  .cbar .ib-client { font-size: 1.22em; font-weight: 600; color: #111; }
+  .cbar .ib-resort { font-size: 1.12em; font-weight: 500; color: #111; }
+  .cbar .ib-ca { color: #111; }
+  .cbar .ib-col + .ib-col { border-left-color: rgba(0,0,0,.22); }
   /* TOTAL ANUAL EN ROJO (Sebastian, 2026-11-04: "Total anual put at the top in red nxt to mt fee x mo") —
-     solo la cifra Total anual de la barra va en rojo claro (#ff4d4d) sobre el verde, sin fondo extra. */
-  .cbar .ib-totanual .ib-lab, .cbar .ib-totanual .ib-big { color: #ff4d4d; }
+     solo la cifra Total anual de la barra va en rojo (#dc2626, legible sobre el amarillo), sin fondo extra. */
+  .cbar .ib-totanual .ib-lab, .cbar .ib-totanual .ib-big { color: #dc2626; }
   .cbar .ib-totanual .ib-big { font-weight: 700; }
   .ib-grid { border-collapse: collapse; font-size: 0.66em; width: 100%; }
   .ib-grid th, .ib-grid td { padding: 2px 6px; text-align: right; border-bottom: 1px solid #b9d2f5; font-variant-numeric: tabular-nums; }
@@ -88,8 +91,8 @@
   .fpitem label { display: flex; gap: 10px; cursor: pointer; align-items: flex-start; font-size: 0.98em; }
   .fpitem input { transform: scale(1.3); margin-top: 6px; }
   .fpitem .cf { display: block; font-size: 0.85em; color: #40669c; font-style: italic; margin-top: 3px; }
-  .cbar strong { color: #fff; }
-  .cbar a { color: #fff; text-decoration: none; }
+  .cbar strong { color: #111; }
+  .cbar a { color: #111; text-decoration: none; }
   .sprinkle { border: 1px solid #c9dcf7; border-left: 4px solid #0b3d91; border-radius: 8px; padding: 12px 14px; margin: 0 0 18px; background: #f2f7ff; }
   .sprinkle h3 { margin: 0 0 6px; font-size: 1em; color: #0b3d91; }
   .sprinkle ul { margin: 0; padding: 0; list-style: none; }
@@ -2063,9 +2066,10 @@ function qQualityCheck(){
   // omiten del documento con una nota cuando faltan APR / inicio del contrato vigente — nunca se
   // fabrican de datos PENDIENTES. Un saldo marcado poffUnverified NO es una cifra utilizable
   // (sigue PENDIENTE en todo el modelo): bloquea nombrando el único dato que falta.
-  // EXCEPCIÓN (2026-11-04, caso Maria Fonseca en vivo): un precio fijado A PROPÓSITO en la tarifa
-  // (distinto a la fórmula automática de ese saldo) SÍ es un precio que cotizar — es el precio de
-  // Sebastian, no una cifra derivada del saldo; el saldo se mantiene PENDIENTE en el documento.
+  // EXCEPCIÓN (2026-11-04, caso Maria Fonseca en vivo; AMPLIADA el mismo día por orden de Sebastian
+  // tras el bloqueo en vivo de Alma Aponte): con saldo SIN VERIFICAR, CUALQUIER precio presente en
+  // la tarifa cotiza — tecleado por Sebastian o el sugerido por la página que el acepta al cotizar;
+  // es SU precio; el saldo se mantiene PENDIENTE / SIN VERIFICAR en el documento.
   // Devuelve la lista de fallas; lista vacía = pasa.
   var fails = [];
   if (typeof cur === 'undefined' || !cur || !cur.name){ fails.push('No hay un cliente activo seleccionado.'); return fails; }
@@ -2074,15 +2078,15 @@ function qQualityCheck(){
   var sheetFee = (db && $('q_sheetfee')) ? qNum('q_sheetfee') : 0;
   var feeField = qNum('q_fee');
   var comboTot = 0; qComboCalc().forEach(function(c){ comboTot += c.price.total; });
-  // Con saldo SIN VERIFICAR la tarifa del campo SOLO cuenta como precio si es un precio fijado a
-  // propósito (distinto a la fórmula automática de ese saldo, comboTot): la fórmula automática de
-  // un saldo sin verificar NO es un precio y sigue bloqueada; el precio tecleado por Sebastian SÍ
-  // cotiza — es SU precio, no una cifra del saldo — y el documento sigue etiquetando el saldo
-  // PENDIENTE / SIN VERIFICAR y omitiendo las proyecciones que no se pueden calcular.
-  var feeCounts = feeField > 0 && (!unv || Math.abs(feeField - comboTot) > 0.005);
+  // QUOTE GATE V2 (2026-11-04): la tarifa del campo cuenta como precio siempre que sea > 0 — con o
+  // sin verificar el saldo. La excepción anterior (el precio tenía que ser DISTINTO a la fórmula
+  // automática del saldo) bloqueaba el flujo normal de Sebastian (aceptar el precio sugerido) y fue
+  // retirada por su orden directa. El documento sigue etiquetando el saldo PENDIENTE / SIN VERIFICAR
+  // y omitiendo las proyecciones que no se pueden calcular.
+  var feeCounts = feeField > 0;
   var hasPrice = (pv > 0 && !unv) || sheetFee > 0 || feeCounts || (comboTot > 0 && !unv);
   if (!hasPrice)
-    fails.push(db ? 'Falta la tarifa de la hoja PRE-CALL (deed-back): es el único dato que falta para cotizar.' : (unv && pv > 0 ? 'El saldo está SIN VERIFICAR: la cotización no sale de la fórmula de un saldo sin verificar. Verifica el saldo o fija tu precio en la tarifa (un monto distinto a la fórmula automática de ese saldo) para cotizar.' : 'Falta el saldo (payoff): es el único dato que falta para calcular el precio.'));
+    fails.push(db ? 'Falta la tarifa de la hoja PRE-CALL (deed-back): es el único dato que falta para cotizar.' : (unv && pv > 0 ? 'El saldo está SIN VERIFICAR y no hay precio en la tarifa: fija tu precio en la tarifa para cotizar (el documento lo etiqueta SIN VERIFICAR).' : 'Falta el saldo (payoff): es el único dato que falta para calcular el precio.'));
   return fails;
 }
 // ===== DOC LANGUAGE TOGGLE (Sebastian, 2026-10-22): COTIZACIÓN / CA DISCOVERY / CB DISCOVERY open in the
@@ -3710,6 +3714,11 @@ function clientSearchGo(q, force){
     }
     if (hit) hits.push(c);
   }
+  // SEARCH_RANK_V1 (Sebastian, 2026-11-04): los aciertos en el NOMBRE van primero — teclear "alma"
+  // trae a Alma Aponte antes que los registros que solo la mencionan en notas/resort ("Palmar",
+  // notas de Correa). El orden dentro de cada nivel conserva el orden de la lista.
+  var csTier = function(c){ var nm = slNorm(c.name); if (toks.every(function(t){ return nm.indexOf(t) >= 0; })) return 0; if (toks.some(function(t){ return nm.indexOf(t) >= 0; })) return 1; return 2; };
+  hits.sort(function(a, b){ return csTier(a) - csTier(b); });
   if (!hits.length){ if (ct) ct.textContent = 'sin resultados'; return; }
   var nq = slNorm(q);
   if (!force){
@@ -4379,7 +4388,6 @@ setInterval(function(){ if (aptData){ aptRender(); aptLayout(); } }, 60000);
 </script>
 </body>
 </html>
-
 
 
 
