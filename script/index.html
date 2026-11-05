@@ -3934,6 +3934,17 @@ function syncPullAll(){
       refreshClientSel();
       if (cur && cur.id) pickClient(cur.id);
     }
+    // DEEPLINK_V2 (2026-11-04): re-apply the ?c= client after the sync pull,
+    // so a box/report link always lands on the client even when the record
+    // only arrives via sync (the init-time check runs before the pull ends).
+    try {
+      var dcid2 = new URLSearchParams(location.search).get('c');
+      if (dcid2){
+        var cs2 = slClients(), f2 = false;
+        for (var q2 = 0; q2 < cs2.length; q2++) if (cs2[q2].id === dcid2) f2 = true;
+        if (f2){ var sel2 = document.getElementById('clientSel'); if (sel2) sel2.value = dcid2; pickClient(dcid2); }
+      }
+    } catch(e){}
   }).catch(function(){});
 }
 function notesNormDb(row){
