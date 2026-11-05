@@ -1203,7 +1203,14 @@ function resetFills(){
   fillAll('[data-fill="name"]', '_________');
   sumPend();
 }
-function mfTot(mf, r, n){ if (n <= 0) return 0; if (r <= 0) return mf * n; return mf * ((Math.pow(1 + r, n) - 1) / r); }
+function mfTot(mf, r, n){ // TRUECOST_V2 (2026-11-05): year-by-year series — each year's fee rounded to the cent, then summed. Identical to the TRUE COST (CLEAN) sheet's year table, so /script and the sheet print the same totals to the cent.
+  if (n <= 0) return 0;
+  var s = 0, full = Math.floor(n);
+  for (var k = 0; k < full; k++) s += Math.round(mf * Math.pow(1 + r, k) * 100) / 100;
+  var frac = n - full;
+  if (frac > 0) s += mf * Math.pow(1 + r, full) * frac;
+  return Math.round(s * 100) / 100;
+}
 function $(id){ return document.getElementById(id); }
 var cur = null;
 var qDtype = 'MTG';
@@ -1288,7 +1295,8 @@ function qMortTotal(mg){
   for (var k = 0; k < mg.months; k++){ var due = bal * (1 + r); var pay = Math.min(mg.mmo, due); tot += pay; bal = due - pay; if (bal <= 0.005) break; }
   return tot;
 }
-function qMortOver(mg, y){ if (mg.status === 'paid') return 0; if (mg.status === 'ok'){ var H = y * 12; return H >= mg.months ? qMortTotal(mg) : mg.mmo * H; } return null; }
+function qMortOver(mg, y){ // TRUECOST_V2 (2026-11-05): whole-month multiplication — pago x min(horizon months, months remaining). The amortization schedule's partial-final-payment total (qMortTotal) stays ONLY in the loan breakdown / payoff sections, never in projections.
+  if (mg.status === 'paid') return 0; if (mg.status === 'ok') return mg.mmo * Math.min(y * 12, mg.months); return null; }
 // ===== MATEO SPEC (Sebastian, 2026-10-20): BOTH amortizations, always =====
 // (1) ORIGINAL loan amortization from the financed amount, APR, monthly payment and term. The total
 //     scheduled (pago x plazo, e.g. 225 x 120 = $27,000) is a fact of the ORIGINAL loan — it is NOT
@@ -3405,13 +3413,21 @@ function qRecalc(){
     }
   }
   var COMBO = qComboCalc(); // contracts tool: per-contract calcs (each charged separately)
-  // TRUE COST MODEL (Sebastian, 2026-11-05 — "start using your own calculator bc /script sucks"):
-  // this window mirrors the TRUE COST CALCULATOR sheet exactly — mortgage payment x 12 x years over
-  // the FULL horizon (it never drops out at payoff/term end) + maintenance (mf + ofees) escalating
-  // yearly at the ELEVACIÓN % (mfTot). No amortization cap and no PENDIENTE blanking on this window;
-  // PAYOFF EXACTO / pricing / gates elsewhere keep the strict qMortgage model untouched.
-  function win(y){ return mmo * 12 * y + mfTot(mf + ofees, r, y); }
-  function winMo(m){ return mmo * m + (mf + ofees) * m / 12; }
+  // TRUE COST MODEL — LOCKED (Sebastian, 2026-11-05, fix-once): the mortgage payment is charged
+  // ONLY for the months left on the contract; maintenance (mf + ofees) escalates over the FULL
+  // horizon. monthsRemaining source order: (1) documented term (plazo) - MESES elapsed, both on the
+  // panel; (2) the projection model's months (amortization of saldo/pago/APR) when saldo > 0;
+  // (3) unknown -> full horizon. Whole-month multiplication (pago x months charged), MF year-by-year
+  // via mfTot — the SAME model as the TRUE COST (CLEAN) sheet, so both surfaces print identical
+  // totals. No PENDIENTE blanking on this window; PAYOFF EXACTO / pricing / gates elsewhere keep
+  // the strict qMortgage model untouched.
+  var elW = parseInt((($('q_mos') || {}).value || ''), 10), termDoc = qNum('q_term');
+  var MREM = null;
+  if (termDoc > 0 && isFinite(elW) && elW >= 0) MREM = Math.max(0, termDoc - elW);
+  else if (payoff > 0 && MGP && MGP.status === 'ok' && isFinite(MGP.months)) MREM = MGP.months;
+  function mCharged(months){ return MREM === null ? months : Math.min(months, MREM); }
+  function win(y){ return mmo * mCharged(y * 12) + mfTot(mf, r, y) + mfTot(ofees, r, y); }
+  function winMo(m){ return mmo * mCharged(m) + (mf + ofees) * m / 12; }
   var w30 = winMo(1), w90 = winMo(3), w6 = winMo(6);
   var t1 = win(1), t3 = win(3), t5 = win(5), t10 = win(10), t20 = win(20), t30 = win(30);
   function setW(id, v){ var e = $(id); if (e) e.textContent = v === null ? PEND_TXT : fmtC(v); }
@@ -3421,9 +3437,10 @@ function qRecalc(){
   // Expense breakdown (monthly MF floored for display only; annual MF exact, 10-yr MF escalated)
   var mfmo = Math.floor(mf / 12), mfoyr = mf, moyr = mmo * 12, totyr = moyr + mfoyr + ofees;
   var ofmo = Math.floor(ofees / 12);
-  var mo10 = qMortOver(MGP, 10), escR = (esc || 8) / 100;
-  var mf10 = escR > 0 ? Math.round(mfoyr * (Math.pow(1 + escR, 10) - 1) / escR) : mfoyr * 10;
-  var of10 = Math.round(mfTot(ofees, escR, 10));
+  var escR = (esc || 8) / 100;
+  var mo10 = mmo * mCharged(120); // TRUECOST_V2: pago x months left on the contract (full horizon when unknown) — same figure as the Compromiso window and the sheet
+  var mf10 = mfTot(mfoyr, escR, 10);
+  var of10 = mfTot(ofees, escR, 10);
   $('q_xmmo').textContent = fmtD(mmo); $('q_xmfmo').textContent = fmtD(mfmo); $('q_xofmo').textContent = fmtD(ofmo);
   $('q_xtotmo').textContent = fmtD(mmo + mfmo + ofmo);
   $('q_xmoyr').textContent = fmtD(moyr); $('q_xmfyr').textContent = fmtD(mfoyr); $('q_xofyr').textContent = fmtD(ofees);
@@ -3431,10 +3448,10 @@ function qRecalc(){
   var nightsV = qNum('q_nights');
   $('q_xnight').textContent = nightsV > 0 ? fmtC(totyr / nightsV) : '—';
   $('q_xpnightyr').textContent = (pnight > 0 && nightsV > 0) ? fmtC(pnight * nightsV) : '—';
-  $('q_xmo10').textContent = mo10 === null ? PEND_TXT : fmtD(mo10);
+  $('q_xmo10').textContent = fmtD(mo10);
   var xsEl = $('q_xsch'); if (xsEl) xsEl.textContent = mmo > 0 ? fmtD(mmo) + ' × ' + term + ' meses = ' + fmtD(mmo * term) : '—';
   $('q_xescp').textContent = (esc || 8); $('q_xmf10').textContent = fmtD(mf10); $('q_xof10').textContent = fmtD(of10);
-  $('q_xproj10').textContent = mo10 === null ? PEND_TXT : fmtD(mo10 + mf10 + of10);
+  $('q_xproj10').textContent = fmtD(mo10 + mf10 + of10);
   qFmoMode();
   var fee = qNum('q_fee'), fapr = qNum('q_fapr'), fmo = qNum('q_fmo');
   var padCommDb = qNum('q_padcomm'), padDb = padCommDb * 2, cycDbN = qDbCycN(), cycDbAmt = qDbCycAmt();
