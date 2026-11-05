@@ -384,6 +384,8 @@
     <button id="cbBtn" type="button" onclick="qCbHtml()">📝 CB DISCOVERY</button>
     <button id="postCallBtn" type="button" onclick="qPostCallHtml()">🧾 POST CALL SHEET</button>
     <button id="calcBtn" type="button" onclick="qGoCalc()">🧮 CALCULATOR</button>
+    <!-- BOARDLINK_TOP_V1 -->
+    <button id="boardBtn" type="button" onclick="window.open('/board/','_blank')" style="background:#0e7c86;color:#fff;font-weight:700">📋 BOARD</button>
     <span class="nv-timer" id="topbar">⏱ <span id="ot">1:30:00</span> <a href="#" id="obtn" onclick="toggleOverall();return false;">▶ Iniciar</a></span>
   </div>
   <div id="soldStrip"><span>✅ VENDIDO</span><span>📄 DocuSign firmado: <input type="date" id="soldDate" onchange="soldDateChange()"></span><span>💰 Mi comisión: <span class="soldComm" id="soldComm">$0.00</span></span></div>
@@ -4406,7 +4408,6 @@ setInterval(function(){ if (aptData){ aptRender(); aptLayout(); } }, 60000);
 </script>
 </body>
 </html>
-
 
 
 
