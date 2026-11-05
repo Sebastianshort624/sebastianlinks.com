@@ -2475,7 +2475,7 @@ function qWalkBuild(L){
   e += '<div id="wkVidWrap"></div>';
   e += '<div style="font-size:16px;font-weight:700;color:#1a5968;margin:20px 0 8px;">&#128279; ' + T.lhead + '</div>';
   T.links.forEach(function(lk){
-    e += '<p style="margin:7px 0;font-size:14px;"><a href="' + lk[1] + '" style="color:#1f7a8c;font-weight:700;">' + escH(lk[0]) + '</a><br><span style="color:#6c7d84;font-size:12px;">' + lk[1] + '</span></p>';
+    e += '<p style="margin:7px 0;font-size:14px;"><a href="' + lk[1] + '" style="color:#1f7a8c;font-weight:700;">' + escH(lk[0]) + '</a><br><a href="' + lk[1] + '" style="color:#6c7d84;font-size:12px;">' + lk[1] + '</a></p>';
   });
   e += '<p style="margin:18px 0 4px;">' + T.close + '</p>';
   e += '</td></tr>';
@@ -2514,6 +2514,7 @@ function qIntroHtml(){
   if (!cur){ alert('Selecciona un cliente primero.'); return; }
   qDocOpen(qIntroBuild(qDocDefLang()));
 }
+/* CLICKABLE URLS + NOFIRMARIA-LUNES (2026-11-04) */
 function qIntroBuild(L){
   var en = (L === 'en');
   var first = qWalkFirst();
@@ -2526,7 +2527,7 @@ function qIntroBuild(L){
     stitle: 'Investigate us',
     sline: 'And here you can investigate us fully: A+ rating with the Better Business Bureau, the #1 spot on Best Company, and real Google reviews.',
     sbtn: '&#127760; GO TO THE SITE',
-    ntitle: 'I wouldn\'t have signed',
+    ntitle: 'I wouldn\'t have signed', nmon: 'And every Monday, the week\'s exits:',
     nline: 'And here is what almost no resort tells you before you sign: what happens with the interest, with the maintenance fees, and with your heirs. After you watch it, ask yourself: would you have signed?',
     close: 'Take your time looking at it, and tell me what you think.',
     sign: 'Best regards',
@@ -2541,7 +2542,7 @@ function qIntroBuild(L){
     stitle: 'Investíganos',
     sline: 'Y aquí puedes investigarnos completo: calificación A+ del Better Business Bureau, el puesto número 1 en Best Company y las reseñas reales de Google.',
     sbtn: '&#127760; IR AL SITIO',
-    ntitle: 'No firmaría',
+    ntitle: 'No firmaría', nmon: 'Y cada lunes, las salidas de la semana:',
     nline: 'Y aquí está lo que casi ningún resort te dice antes de firmar: lo que pasa con los intereses, con las tarifas de mantenimiento y con tus herederos. Después de verlo, pregúntate: ¿habrías firmado?',
     close: 'Míralo con calma y me dices qué piensas.',
     sign: 'Un abrazo',
@@ -2552,9 +2553,9 @@ function qIntroBuild(L){
   e += '<tr><td style="background:#1a5968;padding:22px 30px;"><div style="font-size:25px;font-weight:800;color:#ffffff;">Linx Legal</div><div style="font-size:13px;color:#bfe3ea;">' + (en ? 'Timeshare cancellation' : 'Cancelación de tiempos compartidos') + '</div></td></tr>';
   e += '<tr><td style="padding:26px 30px 8px;font-size:15px;color:#23323b;line-height:1.6;"><p style="margin:0 0 12px;">' + T.greet + ' <b>' + escH(first) + '</b>,</p>';
   e += '<p style="margin:0 0 12px;">' + T.p1 + '</p>';
-  e += '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:10px;"><tr><td style="background:#edf5f6;border:1px solid #cfe0e3;border-radius:10px;padding:14px 16px;"><div style="font-size:16px;font-weight:700;color:#1a5968;">' + T.vtitle + '</div><div style="font-size:13px;color:#536a72;margin:4px 0 11px;">' + T.vsub + '</div><a href="https://www.investiganos.com/lunes" style="display:inline-block;background:#1a5968;color:#ffffff;text-decoration:none;font-weight:700;padding:9px 18px;border-radius:6px;font-size:14px;">' + T.watch + '</a><div style="font-size:12px;color:#6c7d84;margin-top:9px;">https://www.investiganos.com/lunes</div></td></tr></table>';
-  e += '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:10px;"><tr><td style="background:#edf5f6;border:1px solid #cfe0e3;border-radius:10px;padding:14px 16px;"><div style="font-size:16px;font-weight:700;color:#1a5968;">' + T.stitle + '</div><div style="font-size:13px;color:#536a72;margin:4px 0 11px;">' + T.sline + '</div><a href="https://investiganos.com" style="display:inline-block;background:#1a5968;color:#ffffff;text-decoration:none;font-weight:700;padding:9px 18px;border-radius:6px;font-size:14px;">' + T.sbtn + '</a><div style="font-size:12px;color:#6c7d84;margin-top:9px;">https://investiganos.com</div></td></tr></table>';
-  e += '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:10px;"><tr><td style="background:#edf5f6;border:1px solid #cfe0e3;border-radius:10px;padding:14px 16px;"><div style="font-size:16px;font-weight:700;color:#1a5968;">' + T.ntitle + '</div><div style="font-size:13px;color:#536a72;margin:4px 0 11px;">' + T.nline + '</div><a href="https://www.nofirmaria.com" style="display:inline-block;background:#1a5968;color:#ffffff;text-decoration:none;font-weight:700;padding:9px 18px;border-radius:6px;font-size:14px;">' + T.watch + '</a><div style="font-size:12px;color:#6c7d84;margin-top:9px;">https://www.nofirmaria.com</div></td></tr></table>';
+  e += '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:10px;"><tr><td style="background:#edf5f6;border:1px solid #cfe0e3;border-radius:10px;padding:14px 16px;"><div style="font-size:16px;font-weight:700;color:#1a5968;">' + T.vtitle + '</div><div style="font-size:13px;color:#536a72;margin:4px 0 11px;">' + T.vsub + '</div><a href="https://www.investiganos.com/lunes" style="display:inline-block;background:#1a5968;color:#ffffff;text-decoration:none;font-weight:700;padding:9px 18px;border-radius:6px;font-size:14px;">' + T.watch + '</a><a href="https://www.investiganos.com/lunes" style="display:block;font-size:12px;color:#1f7a8c;text-decoration:underline;margin-top:9px;">https://www.investiganos.com/lunes</a></td></tr></table>';
+  e += '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:10px;"><tr><td style="background:#edf5f6;border:1px solid #cfe0e3;border-radius:10px;padding:14px 16px;"><div style="font-size:16px;font-weight:700;color:#1a5968;">' + T.stitle + '</div><div style="font-size:13px;color:#536a72;margin:4px 0 11px;">' + T.sline + '</div><a href="https://investiganos.com" style="display:inline-block;background:#1a5968;color:#ffffff;text-decoration:none;font-weight:700;padding:9px 18px;border-radius:6px;font-size:14px;">' + T.sbtn + '</a><a href="https://investiganos.com" style="display:block;font-size:12px;color:#1f7a8c;text-decoration:underline;margin-top:9px;">https://investiganos.com</a></td></tr></table>';
+  e += '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:10px;"><tr><td style="background:#edf5f6;border:1px solid #cfe0e3;border-radius:10px;padding:14px 16px;"><div style="font-size:16px;font-weight:700;color:#1a5968;">' + T.ntitle + '</div><div style="font-size:13px;color:#536a72;margin:4px 0 11px;">' + T.nline + '</div><a href="https://www.nofirmaria.com" style="display:inline-block;background:#1a5968;color:#ffffff;text-decoration:none;font-weight:700;padding:9px 18px;border-radius:6px;font-size:14px;">' + T.watch + '</a><a href="https://www.nofirmaria.com" style="display:block;font-size:12px;color:#1f7a8c;text-decoration:underline;margin-top:9px;">https://www.nofirmaria.com</a><div style="font-size:12.5px;color:#536a72;margin-top:10px;">' + T.nmon + ' <a href="https://www.investiganos.com/lunes" style="color:#1f7a8c;font-weight:700;">https://www.investiganos.com/lunes</a></div></td></tr></table>';
   e += '<p style="margin:18px 0 4px;">' + T.close + '</p>';
   e += '<p style="margin:10px 0 4px;">' + T.sign + '</p>';
   e += '</td></tr>';
