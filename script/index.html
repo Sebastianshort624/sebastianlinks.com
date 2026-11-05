@@ -386,6 +386,7 @@
     <button id="calcBtn" type="button" onclick="qGoCalc()">🧮 CALCULATOR</button>
     <!-- BOARDLINK_TOP_V1 -->
     <button id="boardBtn" type="button" onclick="window.open('/board/','_blank')" style="background:#0e7c86;color:#fff;font-weight:700">📋 BOARD</button>
+    <button id="austinBtn" type="button" onclick="austinOpen()" style="background:#7c3aed;color:#fff;font-weight:700">🎤 AUSTIN</button>
     <span class="nv-timer" id="topbar">⏱ <span id="ot">1:30:00</span> <a href="#" id="obtn" onclick="toggleOverall();return false;">▶ Iniciar</a></span>
   </div>
   <div id="soldStrip"><span>✅ VENDIDO</span><span>📄 DocuSign firmado: <input type="date" id="soldDate" onchange="soldDateChange()"></span><span>💰 Mi comisión: <span class="soldComm" id="soldComm">$0.00</span></span></div>
@@ -2221,7 +2222,98 @@ function qQuoteBuild(L){
   h += '</div>';
   h += '<scr' + 'ipt>function qCopy(b){var tx=document.getElementById("qDocBody").innerText;try{navigator.clipboard.writeText(tx).then(function(){b.textContent="✅";});}catch(e){}}</scr' + 'ipt>';
   h += qDocToggleJs(en);
-  h += '</body></html>';
+  h += '
+<!-- AUSTIN_V1 -->
+<div id="austinOverlay" style="display:none;position:fixed;inset:0;background:rgba(10,10,10,0.72);z-index:9999;overflow:auto">
+  <div style="max-width:900px;margin:24px auto;background:#fff;border-radius:10px;padding:20px 26px 28px;color:#1a1a1a;font-family:Arial,Helvetica,sans-serif;line-height:1.55">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:3px solid #1a1a1a;padding-bottom:10px">
+      <span style="font-size:1.3em;font-weight:700">🎤 AUSTIN — ONE-LINERS</span>
+      <span id="austinWho" style="font-weight:600"></span>
+      <span style="flex:1"></span>
+      <span id="austinSaved" style="font-size:12px;color:#0e7c86"></span>
+      <button id="austinLangEn" type="button" onclick="austinSetLang('en')" style="font-weight:700;padding:6px 12px;cursor:pointer">ENGLISH</button>
+      <button id="austinLangEs" type="button" onclick="austinSetLang('es')" style="font-weight:700;padding:6px 12px;cursor:pointer">ESPAÑOL</button>
+      <button type="button" onclick="austinClose()" style="font-weight:700;padding:6px 12px;cursor:pointer;background:#1a1a1a;color:#fff">✕ CERRAR</button>
+    </div>
+    <div id="austinBody"></div>
+  </div>
+</div>
+<style>
+.au-sec{margin-top:22px}
+.au-head{font-size:1.12em;font-weight:700;background:#f0f0f0;padding:10px 12px;border-left:5px solid #1a1a1a}
+.au-line{display:block;margin:8px 0 8px 4px;padding-left:30px;position:relative;cursor:pointer}
+.au-line input{position:absolute;left:0;top:3px;width:18px;height:18px}
+.au-notes-lbl{font-weight:bold;font-size:0.9em;margin-top:12px}
+.au-notes{width:100%;min-height:52px;font-family:inherit;font-size:0.95em;margin-top:6px;border:1px solid #999;border-radius:4px;padding:6px;box-sizing:border-box}
+</style>
+
+<script>
+var AUSTIN_DATA = {"en": [["1 \u00b7 CASE ACCEPTANCE (~2\u20133 MIN)", ["I am in complete agreement with my team, okay? Based off of what y'all shared with me, y'all have answered my questions and my concern about your case. There is absolutely nothing standing in the way of us winning this. Okay? This is a very traditional black and white cancellation here."]], ["2 \u00b7 COMPLETE CANCELLATION \u2014 WHAT IT MEANS (~3\u20135 MIN)", ["It's called a complete cancellation. So that's gonna get you removed from the entire legalized deed. All of the debt owed your monthly mortgage payments, the forever maintenance fees, the right of survivorship. Your entire ownership number altogether. When this is all said and done, they cannot come back to you and say that you owe them a penny more.", "Really, the way I break this down is it's like you never walked in the door to buy it. That's a complete cancel."]], ["3 \u00b7 CASE MANAGER (~2\u20133 MIN)", ["Your case manager, they are your point of contact through the entire process. Okay? They oversee the entire cancellation.", "So that means we take on the heavy lifting. We handle the communicating back to the developer."]], ["4 \u00b7 LETTER OF EXPLANATION (~3\u20135 MIN)", ["It's called a letter of explanation. It is not hard. It's not difficult. We will provide you with template to guide you through it. All it is is what you've explained to me, and my company as to why you want out, just in writing format.", "They will review it, redline it, send it back to you.", "That formal complaint number, that's the physical piece that we need as soon as possible. That's what's going to give us our best chance of success in getting you out of this thing.", "Can y'all handle that letter? Can you get it done quickly and send over to your case manager?"]], ["5 \u00b7 PRICE REVEAL \u2014 PEN & PAPER (~2\u20133 MIN)", ["I want you to grab a pin and a piece of paper. I'm gonna go over what the cost is, the savings, payment options, all of that, and I just want you to write this down so there's not any miscommunication, and let me know when you're ready.", "So, first thing I want you to write down is total savings."]], ["6 \u00b7 THE GUARANTEE (~2 MIN)", ["That is a complete cost. That is the out the door number that includes administrative fees, filing fees, man hours, everything.", "That is a complete cost for a complete cancel. We will not contact you guys for a penny more.", "It's backed with 100% money back policy. Again, that is in writing. There are no strings attached.", "It is at no risk to you. We refund you every single penny that you paid us.", "There are no strings attached. If we do not win, you get your money back."]], ["7 \u00b7 PAYMENT OPTIONS LADDER (~5 MIN)", ["We are not a delusional firm.", "I will start from the top and work my way down through the bottom, okay? And y'all just let me know what works better for you, okay?", "1st and best route to pay for anything in this world, no matter what it is, is if you can avoid interest.", "That's the single best option.", "It's almost like financing it to yourself at that point.", "That would be the next cheapest route to do it, because then you can pay it off at your convenience, and you're not obligated to pay it off early.", "Do y'all want to look at what our financing options are?"]], ["8 \u00b7 THE 3% CARD FEE (~2 MIN)", ["I never want to catch anybody by surprise. Anytime a card is ran compared to just a checking account, just like everywhere else when a card is ran, there's a 3% processing fee.", "It's a 3% card fee anytime a card gets ringed. So whatever the amount is, times 3%."]], ["9 \u00b7 TIMELINE (~3 MIN)", ["The way we make money as a company is to win with speed. The faster we get you out of this, that's less man hours we paid the cancellation team, and it frees your case manager up to being able to take on a new client. So we do not prolong this for the sake of prolonging it. We want you out as fast as humanly possible.", "Yep, you are in the loop the entire time."]], ["10 \u00b7 REFUNDS (~2\u20133 MIN)", ["Yeah, we do go after a refund on your behalf.", "Refunds are icing on the cake.", "It's a 70, 30 split, 70%'s in your favor, 30% is also like a tip or a thank you for getting money that was already gone back for you."]], ["11 \u00b7 STOP PAYING (~3\u20135 MIN)", ["Legally, nobody can advise you what to do, okay? It is illegal for somebody to say to make your payments or to stop. Nobody knows your finances better than you do.", "Why would I throw good money after bad? If I have to pay anything, I'd rather pay to get out than to keep my timeshare.", "It does not change your case one way or another. If you want to pay them, by all means, pay them. We're still gonna get you out of it. If you don't want to pay them, you do not have to.", "Yeah, that's what most people do.", "Get that letter done. ASAP."]], ["12 \u00b7 STOPS THE BLEEDING (~2 MIN)", ["It stops the bleeding. That's essentially what it does, is it stops the bleeding.", "Please do not ever buy another one.", "And it is a mistake, but don't beat yourself up too much over it either."]], ["13 \u00b7 DOCUSIGN WALKTHROUGH (~5 MIN)", ["It's gonna be coming to you twice, for individual initials and signatures.", "What I need you to stop at it will be the very last page, okay? You can't miss it. It's like blue and purple and green.", "That is your template. You can get back to that as many times as you need to.", "What we're saying is, don't take our process and try to start your own company.", "If, you know, heaven forbid, y'all passed away, right? If all didn't wake up tomorrow morning, whoever the executor of your estate is, they were going to inherit this timeshare. We get them out of it as well. We don't stop, we don't charge extra."]], ["14 \u00b7 THE RULES \u2014 DON'T TALK / DON'T USE (~2\u20133 MIN)", ["Don't talk to them. Don't use it.", "If Hilton calls you, do not answer. If you accidentally answer, all you have to say is, I'm sorry I'm busy, and just hang up the phone.", "When we reach out to you throughout the process, you do not have to stop what you're doing to respond, but this also helps the efficiency of the cancellation. So within one to two business days, when we reach out, try to respond back to us."]], ["15 \u00b7 HOMEWORK & FAREWELL (~2\u20133 MIN)", ["Your case manager is your sole point of contact.", "I'm glad we could help you. Hopefully this gives you a breath of fresh air knowing you don't have to worry about this timeshare anymore. Welcome to Links Legal.", "When you send that picture, I will send you a text message back just so you know, I received it, okay?"]]], "es": [["1 \u00b7 ACEPTACI\u00d3N DEL CASO (~2\u20133 MIN)", ["Estoy en completo acuerdo con mi equipo, \u00bfok? Con base en lo que ustedes compartieron conmigo, ya respondieron mis preguntas y mi inquietud sobre su caso. No hay absolutamente nada que se interponga en que ganemos esto. \u00bfOk? Esta es una cancelaci\u00f3n muy tradicional, blanco y negro.", "Estoy de acuerdo con mi equipo, as\u00ed que vamos a tomar este caso, \u00bfok? Los vamos a ayudar. Los vamos a sacar de esto."]], ["2 \u00b7 CANCELACI\u00d3N COMPLETA \u2014 QU\u00c9 SIGNIFICA (~3\u20135 MIN)", ["Se llama cancelaci\u00f3n completa. Eso los va a sacar por completo de la escritura legalizada. Toda la deuda: los pagos mensuales de su hipoteca, las tarifas de mantenimiento para siempre, el derecho de supervivencia. Todo su n\u00famero de propietario, por completo. Cuando todo esto termine, no pueden venir a decirles que les deben ni un centavo m\u00e1s.", "En serio, la forma en que yo lo explico es: es como si nunca hubieran entrado por esa puerta a comprarlo. Eso es una cancelaci\u00f3n completa."]], ["3 \u00b7 GERENTE DE CASO (~2\u20133 MIN)", ["Su gerente de caso es su punto de contacto durante todo el proceso. \u00bfOk? \u00c9l supervisa toda la cancelaci\u00f3n.", "Eso significa que nosotros cargamos con el trabajo pesado. Nosotros manejamos la comunicaci\u00f3n con el desarrollador."]], ["4 \u00b7 CARTA DE EXPLICACI\u00d3N (~3\u20135 MIN)", ["Se llama carta de explicaci\u00f3n. No es dura. No es dif\u00edcil. Les vamos a dar un formato para guiarlos. Es simplemente lo que me explicaron a m\u00ed y a mi compa\u00f1\u00eda sobre por qu\u00e9 quieren salir, pero en formato escrito.", "Ellos la revisan, le hacen correcciones y se la devuelven.", "Ese n\u00famero de queja formal, eso es el documento f\u00edsico que necesitamos lo antes posible. Eso es lo que nos va a dar la mejor oportunidad de \u00e9xito para sacarlos de esto.", "\u00bfPueden encargarse de esa carta? \u00bfPueden hacerla r\u00e1pido y envi\u00e1rsela a su gerente de caso?"]], ["5 \u00b7 REVELAR EL PRECIO \u2014 LAPICERO Y PAPEL (~2\u20133 MIN)", ["Quiero que tomen un lapicero y una hoja de papel. Les voy a explicar cu\u00e1l es el costo, el ahorro, las opciones de pago, todo eso, y solo quiero que lo escriban para que no haya ninguna mala comunicaci\u00f3n. Av\u00edsenme cuando est\u00e9n listos.", "Bueno, lo primero que quiero que escriban es el ahorro total."]], ["6 \u00b7 LA GARANT\u00cdA (~2 MIN)", ["Ese es el costo completo. Ese es el n\u00famero final, todo incluido: tarifas administrativas, tarifas de presentaci\u00f3n, horas de trabajo, todo.", "Ese es el costo completo por una cancelaci\u00f3n completa. No los vamos a contactar por ni un centavo m\u00e1s.", "Est\u00e1 respaldado por la pol\u00edtica de devoluci\u00f3n del 100% de su dinero. De nuevo, eso est\u00e1 por escrito. Sin letra peque\u00f1a.", "No es ning\u00fan riesgo para ustedes. Les devolvemos hasta el \u00faltimo centavo que nos pagaron.", "Sin letra peque\u00f1a. Si no ganamos, recuperan su dinero."]], ["7 \u00b7 ESCALERA DE OPCIONES DE PAGO (~5 MIN)", ["No somos una firma ilusa.", "Voy a empezar desde arriba y voy a bajar hasta el final, \u00bfok? Y ustedes me dicen qu\u00e9 les funciona mejor, \u00bfok?", "La primera y mejor manera de pagar cualquier cosa en este mundo, sea lo que sea, es si pueden evitar el inter\u00e9s.", "Esa es, de lejos, la mejor opci\u00f3n.", "Es casi como financiarse a ustedes mismos en ese punto.", "Esa ser\u00eda la siguiente ruta m\u00e1s econ\u00f3mica, porque as\u00ed pueden pagarlo a su comodidad, y no est\u00e1n obligados a pagarlo antes de tiempo.", "\u00bfQuieren que miremos cu\u00e1les son nuestras opciones de financiamiento?"]], ["8 \u00b7 LA TARIFA DEL 3% DE LA TARJETA (~2 MIN)", ["Nunca quiero tomar a nadie por sorpresa. Cada vez que se pasa una tarjeta, comparado con una cuenta de cheques, igual que en todas partes, cuando se pasa una tarjeta hay una tarifa de procesamiento del 3%.", "Es una tarifa del 3% cada vez que se pasa una tarjeta. Entonces, sea cual sea el monto, por 3%."]], ["9 \u00b7 L\u00cdNEA DE TIEMPO (~3 MIN)", ["La forma en que ganamos dinero como compa\u00f1\u00eda es ganando con rapidez. Entre m\u00e1s r\u00e1pido los saquemos de esto, menos horas de trabajo le pagamos al equipo de cancelaci\u00f3n, y su gerente de caso queda libre para tomar un cliente nuevo. As\u00ed que no alargamos esto por alargarlo. Queremos sacarlos lo m\u00e1s r\u00e1pido humanamente posible.", "S\u00ed, ustedes se mantienen informados todo el tiempo."]], ["10 \u00b7 REEMBOLSOS (~2\u20133 MIN)", ["S\u00ed, nosotros s\u00ed buscamos un reembolso en nombre de ustedes.", "Los reembolsos son la cereza del pastel.", "Es una divisi\u00f3n 70/30: el 70% a favor de ustedes, y el 30% es como una propina o un agradecimiento por recuperar dinero que ya estaba perdido para ustedes."]], ["11 \u00b7 DEJAR DE PAGAR (~3\u20135 MIN)", ["Legalmente, nadie puede aconsejarles qu\u00e9 hacer, \u00bfok? Es ilegal que alguien les diga que hagan sus pagos o que dejen de hacerlos. Nadie conoce sus finanzas mejor que ustedes.", "\u00bfPor qu\u00e9 iba a botar dinero bueno tras dinero malo? Si tengo que pagar algo, prefiero pagar por salir que por quedarme con mi tiempo compartido.", "Eso no cambia su caso en ning\u00fan sentido. Si quieren pagarles, por supuesto, p\u00e1guenles. Igual los vamos a sacar de esto. Si no quieren pagarles, no tienen que hacerlo.", "S\u00ed, eso es lo que hace la mayor\u00eda de la gente.", "Hagan esa carta. Lo antes posible."]], ["12 \u00b7 DETIENE EL SANGRADO (~2 MIN)", ["Detiene el sangrado. Eso es esencialmente lo que hace: detiene el sangrado.", "Por favor, no vuelvan a comprar otro nunca m\u00e1s.", "Y s\u00ed es un error, pero tampoco se castiguen demasiado por eso."]], ["13 \u00b7 RECORRIDO DE DOCUSIGN (~5 MIN)", ["Les va a llegar dos veces, para iniciales y firmas individuales.", "Necesito que se detengan en la \u00faltima p\u00e1gina, \u00bfok? No se les puede pasar. Es azul, morada y verde.", "Ese es su formato. Pueden volver a \u00e9l cuantas veces lo necesiten.", "Lo que estamos diciendo es: no tomen nuestro proceso para montar su propia compa\u00f1\u00eda.", "Si, Dios no lo quiera, ustedes fallecieran, \u00bfno? Si no despertaran ma\u00f1ana en la ma\u00f1ana, quien sea el ejecutor de su patrimonio iba a heredar este tiempo compartido. A ellos tambi\u00e9n los sacamos. No paramos, no cobramos extra."]], ["14 \u00b7 LAS REGLAS \u2014 NO HABLAR / NO USAR (~2\u20133 MIN)", ["No hablen con ellos. No lo usen.", "Si Hilton los llama, no contesten. Si contestan por accidente, lo \u00fanico que tienen que decir es: lo siento, estoy ocupado, y cuelgan el tel\u00e9fono.", "Cuando los contactemos durante el proceso, no tienen que parar lo que est\u00e1n haciendo para responder, pero esto tambi\u00e9n ayuda a la eficiencia de la cancelaci\u00f3n. As\u00ed que en uno o dos d\u00edas h\u00e1biles, cuando los contactemos, traten de respondernos."]], ["15 \u00b7 TAREA Y DESPEDIDA (~2\u20133 MIN)", ["Su gerente de caso es su \u00fanico punto de contacto.", "Me alegra que pudimos ayudarlos. Espero que esto les d\u00e9 un respiro, sabiendo que ya no tienen que preocuparse por este tiempo compartido. Bienvenidos a Linx Legal.", "Cuando env\u00eden esa foto, yo les env\u00edo un mensaje de texto de vuelta, solo para que sepan que la recib\u00ed, \u00bfok?"]]]};
+
+// ===== AUSTIN_V1: one-liners overlay with per-client saved notes =====
+var austinLang = 'en';
+try { austinLang = localStorage.getItem('sl_austin_lang') || 'en'; } catch(e){}
+var austinSaveT = null;
+function austinEsc(t){ return String(t == null ? '' : t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function austinOpen(){
+  var ov = document.getElementById('austinOverlay'); if (!ov) return;
+  ov.style.display = 'block';
+  austinRender();
+}
+function austinClose(){
+  var ov = document.getElementById('austinOverlay'); if (ov) ov.style.display = 'none';
+}
+function austinSetLang(l){
+  austinLang = l;
+  try { localStorage.setItem('sl_austin_lang', l); } catch(e){}
+  austinRender();
+}
+function austinNotes(){
+  if (!cur || !cur.id) return {};
+  return (cur.anotes && typeof cur.anotes === 'object') ? cur.anotes : {};
+}
+function austinRender(){
+  var body = document.getElementById('austinBody'); if (!body) return;
+  var who = document.getElementById('austinWho');
+  if (who) who.textContent = cur && cur.name ? ('— ' + cur.name) : '(sin cliente seleccionado)';
+  var bEn = document.getElementById('austinLangEn'), bEs = document.getElementById('austinLangEs');
+  if (bEn) bEn.style.opacity = austinLang === 'en' ? '1' : '0.45';
+  if (bEs) bEs.style.opacity = austinLang === 'es' ? '1' : '0.45';
+  var secs = AUSTIN_DATA[austinLang] || AUSTIN_DATA.en;
+  var notes = austinNotes();
+  var h = '';
+  secs.forEach(function(sec, i){
+    var n = i + 1;
+    h += '<div class="au-sec"><div class="au-head">' + austinEsc(sec[0]) + '</div>';
+    sec[1].forEach(function(line){
+      h += '<label class="au-line"><input type="checkbox"> <span>' + austinEsc(line) + '</span></label>';
+    });
+    h += '<div class="au-notes-lbl">' + (austinLang === 'es' ? 'Notas' : 'Notes') + ':</div>';
+    h += '<textarea class="au-notes" data-sec="' + n + '" oninput="austinNoteInput(this)">' + austinEsc(notes[String(n)] || '') + '</textarea>';
+    h += '</div>';
+  });
+  body.innerHTML = h;
+}
+function austinNoteInput(ta){
+  if (!cur || !cur.id) return;
+  var cid = cur.id;
+  if (!cur.anotes || typeof cur.anotes !== 'object') cur.anotes = {};
+  cur.anotes[ta.getAttribute('data-sec')] = ta.value;
+  if (austinSaveT) clearTimeout(austinSaveT);
+  austinSaveT = setTimeout(function(){
+    try {
+      var cs = slClients();
+      for (var i = 0; i < cs.length; i++) if (cs[i].id === cid){ cs[i].anotes = cur.anotes; cs[i]._upd = Date.now(); syncPushRecord(cs[i], true); break; }
+      localStorage.setItem('sl_clients', JSON.stringify(cs));
+      var st = document.getElementById('austinSaved');
+      if (st) st.textContent = '💾 ' + new Date().toLocaleTimeString('es');
+    } catch(e){}
+  }, 900);
+}
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape') austinClose(); });
+
+</script>
+</body></html>';
   return h;
 }
 // ===== CLIENT WORKFLOW BUTTONS (SAI Sebastian, 2026-10-20): EMAIL PRE-CITA / CA DISCOVERY / CB DISCOVERY =====
