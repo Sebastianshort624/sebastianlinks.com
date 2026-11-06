@@ -488,6 +488,7 @@ sideApply();
     <div id="urlChips" style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0"></div><button id="urlEditBtn" type="button" onclick="urlToggleFn()" style="background:#374151;color:#fff;border:none;border-radius:6px;padding:5px 12px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.85em;margin-bottom:6px">✏️ Editar enlaces</button><div class="urlgrid" id="urlGrid" style="display:none"><label class="qf urlf"><span class="qlab">PIPELINE</span><span class="urow"><input id="q_pipe" type="text" placeholder="https://app.pipelinecrm.com/people/…" onchange="qPipeSave()" oninput="qUrlLinks()"><a id="q_pipe_go" class="urlgo" href="#" target="_blank" rel="noopener" style="display:none">↗ Abrir</a></span></label><label class="qf urlf"><span class="qlab">HOJA PRE-CALL</span><span class="urow"><input id="q_sheet" type="text" placeholder="https://docs.google.com/spreadsheets/…" onchange="qPipeSave()" oninput="qUrlLinks()"><a id="q_sheet_go" class="urlgo" href="#" target="_blank" rel="noopener" style="display:none">↗ Abrir</a></span></label><label class="qf urlf"><span class="qlab">DocuSign</span><span class="urow"><input id="q_dsurl" type="text" placeholder="https://app.docusign.com/documents/details/…" onchange="qPipeSave()" oninput="qUrlLinks()"><a id="q_dsurl_go" class="urlgo" href="#" target="_blank" rel="noopener" style="display:none">↗ Abrir</a></span></label><label class="qf urlf"><span class="qlab">CARPETA</span><span class="urow"><input id="q_folder" type="text" placeholder="~/Desktop/deals/…" onchange="qPipeSave()" oninput="qUrlLinks()"><a id="q_folder_go" class="urlgo" href="#" onclick="qCopyFolderPath(this);return false;" style="display:none">📋 Copiar</a></span></label><label class="qf urlf"><span class="qlab">PRÉSTAMO</span><span class="urow"><input id="q_loannote" type="text" placeholder="Ej.: contrato firmado en la carpeta" onchange="qPipeSave()"></span></label></div>
     <div class="tmin" id="q_cli" style="margin-bottom:8px">Ningún cliente seleccionado</div>
     <div id="q_savestate" class="tmin" style="margin-bottom:4px"></div>
+    <button type="button" id="q_submitbtn" onclick="qSubmitSave()" style="width:100%;padding:12px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:1.05em;background:#14304d;color:#fff;margin-bottom:8px">&#128190; SUBMIT — SAVE</button>
     <button type="button" id="q_refreshbtn" onclick="qForceRefresh()" style="width:100%;padding:10px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:1em;background:#1e9e57;color:#fff;margin-bottom:8px">&#128260; ACTUALIZAR — recalcular y guardar</button>
     <button type="button" onclick="qAuditToggle()" style="background:#e2e8f0;color:#334155;border:none;border-radius:6px;padding:4px 10px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.85em;margin-bottom:6px">🕘 Historial de cambios manuales</button>
     <div id="q_audithist" style="display:none;margin-bottom:8px"></div>
@@ -3852,6 +3853,34 @@ function qForceRefresh(){
   try { qAutoSave(); } catch(e){}
   setTimeout(function(){ qSaveState('\uD83D\uDD04 Actualizado · ' + new Date().toLocaleTimeString('es') + ' — números recalculados de las casillas actuales.'); }, 1000);
 }
+// SUBMITBTN_V1 (Sebastian, 2026-11-06): explicit SUBMIT — SAVE button. Recalculates from the
+// boxes, flushes the autosave NOW (not at the 900 ms debounce), then pushes the record to the
+// cloud (script_clients) itself and stamps the button '✓ SAVED · <time>' only when the cloud
+// write actually resolves — so he can SEE the save landed, not just hope the autosave fired.
+function qSubmitSave(){
+  var btn = $('q_submitbtn');
+  if (!cur || !cur.id){ if (btn) btn.textContent = '⚠ Pick a client first'; return; }
+  try { qRecalc(); } catch(e){}
+  try { qAutoSave(); } catch(e){}
+  if (btn){ btn.disabled = true; btn.textContent = '⏳ SAVING…'; }
+  setTimeout(function(){
+    var cs = slClients(), c = null;
+    for (var i = 0; i < cs.length; i++) if (cs[i].id === cur.id) c = cs[i];
+    var done = function(ok){
+      if (btn){
+        btn.disabled = false;
+        btn.innerHTML = ok ? ('&#10003; SAVED · ' + new Date().toLocaleTimeString('en')) : '&#128190; SUBMIT — SAVE';
+        if (ok) setTimeout(function(){ btn.innerHTML = '&#128190; SUBMIT — SAVE'; }, 6000);
+      }
+      try { qSaveState(ok ? ('\u2601\uFE0F Submitted · ' + new Date().toLocaleTimeString('es') + ' — registro guardado en la base.') : ('💾 Guardado local · ' + new Date().toLocaleTimeString('es') + ' — sin conexion con la base; se sincroniza al abrir de nuevo.')); } catch(e){}
+    };
+    if (c && syncDbOn()){
+      var p = syncPushRecord(c, true);
+      if (p && p.then) p.then(function(){ done(true); }).catch(function(){ done(false); });
+      else done(true);
+    } else done(true);
+  }, 1100);
+}
 document.addEventListener('change', function(ev){ var t = ev.target; if (t && t.id && /^q\d?_/.test(t.id)){ try { qRecalc(); } catch(e){} } }, true);
 var qSaveT = null;
 function qAutoSave(){
@@ -4106,7 +4135,7 @@ function syncDbReq(path, opts){
 function syncPushRecord(c, quiet){
   if (!syncDbOn() || !c || !c.id) return;
   var body = [{ client_id: c.id, data: c, updated_at: new Date(c._upd || Date.now()).toISOString() }];
-  syncDbReq('?on_conflict=client_id', { method: 'POST', headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' }, body: JSON.stringify(body) })
+  return syncDbReq('?on_conflict=client_id', { method: 'POST', headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' }, body: JSON.stringify(body) })
     .then(function(){ if (!quiet){ try { qSaveState('\u2601\uFE0F Sincronizado \u00B7 ' + new Date().toLocaleTimeString('es')); } catch(e){} } })
     .catch(function(){ if (!quiet){ try { qSaveState('\uD83D\uDCBE Guardado local \u00B7 ' + new Date().toLocaleTimeString('es') + ' \u2014 sin conexion con la base; se sincroniza al abrir de nuevo.'); } catch(e){} } });
 }
