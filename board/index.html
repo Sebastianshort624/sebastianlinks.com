@@ -36,7 +36,7 @@ tr:hover td{background:#fbf8f1}
 a.back{color:#0b5cad}
 </style></head><body>
 <h1>📋 BOARD — Deal Board</h1>
-<div class="sub">Live mirror of <a class="back" href="/script/">/script</a> + the <b>SOLD RATIO</b> tab — for tab clients, their tab status and pending note govern. Last sync: 2026-11-06 19:52 ET · Your edits on this page save automatically and survive syncs.</div>
+<div class="sub">Live mirror of <a class="back" href="/script/">/script</a> + the <b>SOLD RATIO</b> tab — for tab clients, their tab status and pending note govern. Last sync: 2026-11-06 15:01 ET · Your edits on this page save automatically and survive syncs.</div>
 <div class="chips">
 <div class="chip">TOTAL LEADS: <b>120</b></div>
 <div class="chip">From the tab: <b>62</b></div>
@@ -46,8 +46,14 @@ a.back{color:#0b5cad}
 </div>
 <div class="bfilter">
 <input id="bq" type="search" placeholder="Search any lead — name, resort, phone, status...">
-<input id="bfrom" type="date" title="Date range — from (appointment, FU, close or task due)">
-<input id="bto" type="date" title="Date range — to">
+<span style="font-weight:800;color:#14304d;font-size:13px">📅 VIEW RANGE:</span>
+<button type="button" class="bchip" data-vr="today">Today</button>
+<button type="button" class="bchip" data-vr="week">This Week</button>
+<button type="button" class="bchip" data-vr="month">This Month</button>
+<button type="button" class="bchip" data-vr="all">All Dates</button>
+<input id="bfrom" type="date" title="View range — from (any date on the lead: appointment, FU, close or task due)">
+<input id="bto" type="date" title="View range — to">
+<button type="button" id="bview" style="background:#14304d;color:#fff;border:none;border-radius:14px;padding:5px 16px;font-weight:800;cursor:pointer;font-family:inherit;font-size:13px">SHOW</button>
 <button type="button" class="bchip" data-c="today">📅 TODAY</button>
 <button type="button" class="bchip" data-c="new">🆕 NEW APTS</button>
 <button type="button" class="bchip" data-c="sold">💰 SOLD</button>
@@ -327,7 +333,7 @@ If there is no confirmed payment type or total, the commission shows "—" and t
   function applyFilter(){
     var shown=0;
     document.querySelectorAll('tr[data-key]').forEach(function(tr){ var ok=rowMatch(tr); if(ok){ tr.removeAttribute('data-fhide'); tr.style.display=''; shown++; } else { tr.setAttribute('data-fhide','1'); tr.style.display='none'; } });
-    var el=document.getElementById('bshow'); var active=Object.keys(bf.crit).length>0||!!bf.from||!!bf.to; if(el) el.textContent=(!active&&!bf.q)?'':('Showing '+shown+' lead'+(shown===1?'':'s'));
+    var el=document.getElementById('bshow'); var active=Object.keys(bf.crit).length>0||!!bf.from||!!bf.to; if(el){ if(!active&&!bf.q) el.textContent=''; else { el.textContent='Showing '+shown+' lead'+(shown===1?'':'s')+((bf.from||bf.to)?(' · 📅 '+(bf.from||'…')+' → '+(bf.to||'…')):''); el.style.fontWeight='800'; el.style.color='#14304d'; } }
     recountAll();
   }
   function bindFilter(){
@@ -336,9 +342,25 @@ If there is no confirmed payment type or total, the commission shows "—" and t
     var bfr=document.getElementById('bfrom'), bto=document.getElementById('bto');
     if(bfr) bfr.addEventListener('change', function(){ bf.from=bfr.value; applyFilter(); });
     if(bto) bto.addEventListener('change', function(){ bf.to=bto.value; applyFilter(); });
+    // VIEW RANGE (Sebastian 2026-11-06): SHOW reads the inputs directly (no
+    // reliance on the native date-input change event, which can lag a chip
+    // click and silently drop the range); presets fill both inputs + bf.
+    function isoOf(d){ function p(n){ return (n<10?'0':'')+n; } return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); }
+    function setRange(f, t){ bf.from=f; bf.to=t; if(bfr) bfr.value=f; if(bto) bto.value=t; applyFilter(); }
+    var bv=document.getElementById('bview');
+    if(bv) bv.addEventListener('click', function(){ setRange(bfr?bfr.value:'', bto?bto.value:''); });
+    document.querySelectorAll('.bchip[data-vr]').forEach(function(b){ b.addEventListener('click', function(){
+      var mode=b.getAttribute('data-vr'); var nowD=new Date();
+      document.querySelectorAll('.bchip[data-vr]').forEach(function(x){ x.classList.remove('on'); });
+      if(mode==='all'){ setRange('', ''); return; }
+      b.classList.add('on');
+      if(mode==='today'){ var t=isoOf(nowD); setRange(t, t); }
+      else if(mode==='week'){ var dow=(nowD.getDay()+6)%7; var mon=new Date(nowD); mon.setDate(nowD.getDate()-dow); var sun=new Date(mon); sun.setDate(mon.getDate()+6); setRange(isoOf(mon), isoOf(sun)); }
+      else if(mode==='month'){ var f1=new Date(nowD.getFullYear(), nowD.getMonth(), 1); var l1=new Date(nowD.getFullYear(), nowD.getMonth()+1, 0); setRange(isoOf(f1), isoOf(l1)); }
+    }); });
     document.querySelectorAll('.bchip[data-c]').forEach(function(b){ b.addEventListener('click', function(){ var c=b.getAttribute('data-c'); var cur=bf.crit[c]||''; var nxt=(cur==='')?'yes':((cur==='yes')?'no':''); if(nxt) bf.crit[c]=nxt; else delete bf.crit[c]; b.classList.remove('on'); b.classList.remove('no'); if(nxt) b.classList.add(nxt==='yes'?'on':'no'); b.textContent=b.textContent.replace(/^[✓✕] /,''); if(nxt) b.textContent=(nxt==='yes'?'✓ ':'✕ ')+b.textContent; applyFilter(); }); });
     var cl=document.getElementById('bclear');
-    if(cl) cl.addEventListener('click', function(){ bf.crit={}; bf.q=''; bf.from=''; bf.to=''; var q=document.getElementById('bq'); if(q) q.value=''; var _f=document.getElementById('bfrom'); if(_f) _f.value=''; var _t=document.getElementById('bto'); if(_t) _t.value=''; document.querySelectorAll('.bchip[data-c]').forEach(function(x){ x.classList.remove('on'); x.classList.remove('no'); x.textContent=x.textContent.replace(/^[✓✕] /,''); }); applyFilter(); });
+    if(cl) cl.addEventListener('click', function(){ bf.crit={}; bf.q=''; bf.from=''; bf.to=''; var q=document.getElementById('bq'); if(q) q.value=''; var _f=document.getElementById('bfrom'); if(_f) _f.value=''; var _t=document.getElementById('bto'); if(_t) _t.value=''; document.querySelectorAll('.bchip[data-c]').forEach(function(x){ x.classList.remove('on'); x.classList.remove('no'); x.textContent=x.textContent.replace(/^[✓✕] /,''); }); document.querySelectorAll('.bchip[data-vr]').forEach(function(x){ x.classList.remove('on'); }); applyFilter(); });
   }
   function moveRow(tr, secKey){ if(secKey==='T:NQ') secKey='T:NOGO'; var w=document.getElementById(slug(secKey)); if(!w) return; var tb=w.querySelector('tbody'); if(tb) tb.appendChild(tr); }
   function renderTask(tr){
