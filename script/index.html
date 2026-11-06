@@ -1332,12 +1332,13 @@ var qStartSrc = null; // 'contract' | 'purchase' | null — how the active clien
 // no contract start on file AND nothing in the record indicates an upgrade -> the current contract IS
 // the purchase contract, so use the documented purchase month/year (BOTH must be on file — a year alone
 // is not a start date); (3) an indicated upgrade with an unknown date (Nelson) resolves to NO start.
+var qMosManual = false;
 function qContractStart(c){
   var cy = (c && c.cyr) || 0, cm = (c && c.cmonth) || 0;
   if (cy > 0) return { y: cy, m: (cm >= 1 && cm <= 12) ? cm : 1, src: 'contract' };
   if (!c || qUpgradeIndicated(c)) return null;
-  var py = (c.pyr || 0) || qNum('q_pyr') || 0, pm = c.pmonth || 0;
-  if (py > 0 && pm >= 1 && pm <= 12) return { y: py, m: pm, src: 'purchase' };
+  var py = (c.pyr || 0) || qNum('q_pyr') || 0, pm = c.pmonth || parseInt((($('q_pmonth') || {}).value || ''), 10) || 0;
+  if (py > 0) return { y: py, m: (pm >= 1 && pm <= 12) ? pm : 1, src: 'purchase' };
   return null;
 }
 // SCHEDULE CROSS-CHECK: the current balance the loan terms imply today (recorded or inferred principal
@@ -3262,7 +3263,7 @@ function qSync(c){
   else if (r0 > 0 && t0 > 0 && m0 > 0){ $('q_loan').value = Math.round(m0 * (1 - Math.pow(1 + r0, -t0)) / r0); qLoanAuto = true; }
   else { $('q_loan').value = ''; qLoanAuto = false; }
   $('q_aapr').value = c ? (c.apr || '') : '';
-  qAprImplied = false; qAprImpliedVal = 0; // a fresh record starts clean: the solver may fill a blank APR in qRecalc, a recorded APR always governs
+  qAprImplied = false; qAprImpliedVal = 0; qMosManual = false; // a fresh record starts clean: the solver may fill a blank APR in qRecalc, a recorded APR always governs
   // MESES elapsed counts from the CONTRACT START as resolved by qContractStart: the contract start on
   // file when the record has one; the documented PURCHASE date only when no upgrade/refinance is
   // documented anywhere in the record (PAYOFF INTEGRITY 2026-10-23). An indicated-but-undated upgrade
@@ -3270,6 +3271,7 @@ function qSync(c){
   var qst0 = qContractStart(c);
   qStartSrc = qst0 ? qst0.src : null;
   $('q_mos').value = qst0 ? Math.min(t0, Math.max(0, (new Date().getFullYear() - qst0.y) * 12 + (new Date().getMonth() + 1 - qst0.m))) : '';
+  qMosManual = false; var qmEl = $('q_mos'); if (qmEl && !qmEl._mmL){ qmEl.addEventListener('input', function(){ qMosManual = true; }); qmEl._mmL = 1; }
   qTaskSync(); qDocRender();
   qUrlLinks();
   if (!qIsDB() && !$('q_fee').value && c && c.payoff > 0) qFeeApply();
@@ -3339,6 +3341,16 @@ function qRecalc(){
   var r = (esc || 8) / 100;
   var nowY = new Date().getFullYear();
   var pmN = parseInt(($('q_pmonth') || {}).value, 10) || (cur && cur.pmonth) || 0;
+  // YEARFIX_V1 (2026-11-05): MESES must follow the purchase year/month he is LOOKING at — qSync set it
+  // once from the record, so editing ANO/MES DE COMPRA changed nothing and every projection printed the
+  // same. Recompute live unless (a) a documented contract start governs (src 'contract'), (b) an upgrade
+  // is indicated but undated (stays PENDIENTE — Nelson safeguard), or (c) he typed MESES himself.
+  if (!qMosManual && qStartSrc !== 'contract' && !(typeof qUpgradeIndicated === 'function' && cur && qUpgradeIndicated(cur))){
+    if (pyr > 1900 && pyr <= nowY){
+      var elF = Math.min(term, Math.max(0, (nowY - pyr) * 12 + ((new Date().getMonth() + 1) - (pmN || 1))));
+      if ($('q_mos').value !== String(elF)) $('q_mos').value = elF;
+    }
+  }
   // IMPLIED-APR SOLVER (Sebastian, 2026-10-27: fix the whole payoff capability, not one client): when the
   // APR box is blank — or still holds OUR implied value — solve the rate the client's own numbers imply:
   // PV(pago mensual, r, meses restantes) = SALDO, meses restantes = plazo − meses transcurridos (desde el
