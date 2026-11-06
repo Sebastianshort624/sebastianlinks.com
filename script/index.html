@@ -3439,7 +3439,11 @@ function qRecalc(){
   var elW = parseInt((($('q_mos') || {}).value || ''), 10), termDoc = qNum('q_term');
   var MREM = null;
   if (termDoc > 0 && isFinite(elW) && elW >= 0) MREM = Math.max(0, termDoc - elW);
-  else if (payoff > 0 && MGP && MGP.status === 'ok' && isFinite(MGP.months)) MREM = MGP.months;
+  // LIVEPAY_V1 (Sebastian, 2026-11-05): a live monthly payment contradicts a hard zero from the
+  // year math — the client more likely got the year wrong, or has only months remaining. When a
+  // real balance exists, the amortization months govern instead of the year zeroing the mortgage.
+  if (MREM === 0 && mmo > 0 && payoff > 0 && MGP && MGP.status === 'ok' && isFinite(MGP.months) && MGP.months > 0) MREM = MGP.months;
+  else if (MREM === null && payoff > 0 && MGP && MGP.status === 'ok' && isFinite(MGP.months)) MREM = MGP.months;
   function mCharged(months){ return MREM === null ? months : Math.min(months, MREM); }
   function win(y){ return mmo * mCharged(y * 12) + mfTot(mf, r, y) + mfTot(ofees, r, y); }
   function winMo(m){ return mmo * mCharged(m) + (mf + ofees) * m / 12; }
