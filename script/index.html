@@ -2190,6 +2190,18 @@ function qQuoteBuild(L){
   h += '<div id="qDocBody">';
   h += '<div style="text-align:center"><div style="font-size:26px;font-weight:800;color:#0b3d91">Linx Legal</div><div style="font-size:15px;color:#374151">' + (en ? 'Timeshare cancellation services quote' : 'Cotización de servicios de cancelación de tiempo compartido') + '</div><div style="font-size:13px;color:#6b7280">' + today + '</div></div>';
   h += '<p style="margin-top:18px;font-size:16px">' + (en ? 'Prepared for: ' : 'Preparada para: ') + '<b>' + escH(cur.name) + '</b>' + (legal ? '<br>Resort: <b>' + escH(legal) + '</b>' : '') + (cur.loc ? '<br>' + escH(cur.loc) : '') + '</p>';
+  // TITULAR ANULA (Sebastian, 2026-11-06): arriba de la cotización — costo mensual de quedarse
+  // (hipoteca + mantenimiento) x años del préstamo vs nuestro pago mensual x años del plan.
+  var anulMo = mmo + mf / 12;
+  if (mmo > 0 && fee > 0 && anulMo > 0){
+    var yrsL = Math.round((term || 120) / 12) || 10;
+    var ourMoH = parseFloat((moTxt || '').replace(/[^0-9.]/g, '')) || 0;
+    var moR = ourMoH > 0 ? ourMoH : Math.round(fee / 36 * 100) / 100;
+    var yrsR = fmo > 0 ? Math.round(fmo / 12 * 10) / 10 : 3;
+    var fmt2A = function(v){ return '$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
+    var yrsTxtA = function(y){ return (y % 1 === 0) ? String(y) : String(Math.round(y * 10) / 10); };
+    h += '<div style="text-align:center;padding:14px 10px;background:#f8fafc;border:2px solid #0b3d91;border-radius:12px;margin:18px 0 4px;font-size:19px;font-weight:800;line-height:1.35"><span style="color:#b91c1c">' + (en ? 'Cancel Mortgage + Maintenance = ' : 'Anula Hipoteca + Mantenimiento = ') + fmt2A(anulMo) + (en ? '/month' : '/mes') + ' x ' + yrsTxtA(yrsL) + ' yrs</span> <span style="color:#374151">vs</span> <span style="color:#15803d">' + fmt2A(moR) + (en ? '/month' : '/mes') + ' x ' + yrsTxtA(yrsR) + ' yrs</span></div>';
+  }
   var BIGL = 'style="font-size:13px;font-weight:700;letter-spacing:1.5px;color:#374151"';
   h += '<div style="text-align:center;padding:22px 10px;background:#eff6ff;border:2px solid #0b3d91;border-radius:12px;margin:20px 0"><div ' + BIGL + '>' + (en ? 'TOTAL PRICE' : 'PRECIO TOTAL') + '</div><div style="font-size:46px;font-weight:800;color:#0b3d91;line-height:1.1">' + fmtC(fee) + '</div></div>';
   // QUOTE LEFT ALIGN (Sebastian, 2026-11-04): el cuerpo de la cotización va a la IZQUIERDA —
