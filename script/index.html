@@ -371,6 +371,7 @@
     <select id="dispoBig" onchange="setDispo(this.value)" title="Disposición del cliente"><option value="">— Sin marcar</option><option value="FU">FU — Seguimiento</option><option value="HOTTEST FU">🔥 HOTTEST FU</option><option value="NA">NA — No contestó</option><option value="NO">NO — No interesado</option><option value="NO GO">NO GO — No va</option><option value="NQ">NQ — No califica</option><option value="RS">RS — Reprogramado</option><option value="QUOTED">QUOTED — Cotizado</option><option value="APT SET">APT SET — Cita agendada</option><option value="SOLD">SOLD — Vendido</option><option value="CHARGED">CHARGED — Cobrado</option><option value="COM PAID">COM PAID — Comisión pagada</option></select>
     <select id="soldWhen" onchange="soldWhenChange()" title="¿Cuándo se vendió?" style="padding:4px 6px;font-weight:700;font-family:inherit;border-radius:6px;border:1px solid #7f1d1d;background:#fff7ed"><option value="">¿Cuándo?</option><option value="ON APT">EN LA CITA</option><option value="AFTER APT">DESPUÉS DE LA CITA</option></select>
     <button id="quoteBtn" type="button" onclick="qQuoteHtml()">📄 Cotización</button>
+    <button id="quotecurBtn" type="button" onclick="qQuoteCurHtml()">📧 QUOTE + CURRENT</button>
     <button id="emailBtn" type="button" onclick="qEmailHtml()">📧 EMAIL PRE-CITA</button>
     <button id="comboBtn" type="button" onclick="qComboHtml()">🧾 EMAIL COMPLETO</button>
     <button id="walkBtn" type="button" onclick="qWalkHtml()">✉️ EMAIL OUT</button>
@@ -2116,6 +2117,7 @@ function qDocPend(en){ return en ? 'PENDING VERIFICATION' : PEND_TXT; }
 window.__qDocRender = function(kind, L){
   if (typeof cur === 'undefined' || !cur) return null;
   if (kind === 'quote') return qQuoteBuild(L);
+  if (kind === 'quotecur') return qQuoteCurBuild(L);
   if (kind === 'ca') return qCaBuild(L);
   if (kind === 'cb') return qCbBuild(L);
   if (kind === 'walk') return qWalkBuild(L);
@@ -2427,6 +2429,50 @@ function qComboBuild(L){
   h += '<div id="eml" contenteditable="true">' + e + '</div>';
   h += '<scr' + 'ipt>function cbCopyE(b){var n=document.getElementById("eml");try{navigator.clipboard.write([new ClipboardItem({"text/html":new Blob([n.innerHTML],{type:"text/html"}),"text/plain":new Blob([n.innerText],{type:"text/plain"})})]).then(function(){b.textContent="✅ COPIADO";});}catch(err){var r=document.createRange();r.selectNode(n);var s=getSelection();s.removeAllRanges();s.addRange(r);document.execCommand("copy");b.textContent="✅ COPIADO";}}' +
     'function cbGmailE(){var to=document.getElementById("emTo").value,su=document.getElementById("emSubj").value,tx=document.getElementById("eml").innerText;window.open("https://mail.google.com/mail/?view=cm&fs=1&to="+encodeURIComponent(to)+"&su="+encodeURIComponent(su)+"&body="+encodeURIComponent(tx),"_blank");}</scr' + 'ipt>';
+  h += qDocToggleJs(en);
+  h += '</body></html>';
+  return h;
+}
+// ===== QUOTE + CURRENT (Sebastian, 2026-11-06): the QUOTE as a ready-to-send email whose SUBJECT is
+// the Anula comparison line catered to the client — the exact subject Sebastian typed by hand on the
+// Pedraza email (2026-11-06): "Anula Hipoteca + Mantenimiento =$678.33/mes  x 10 yrs vs $375.00/mes x 3 yrs".
+// Body = the quote document itself (same slice the COMBO email uses). Nothing is sent automatically.
+function qQuoteCurSubj(en){
+  qRecalc();
+  var mmo = qNum('q_mmo'), mf = qNum('q_mf'), term = qNum('q_term') || 120, fmo = qNum('q_fmo'), fee = qNum('q_fee');
+  var moTxt = ($('q_mo') || {}).textContent || '';
+  var ourMo = parseFloat((moTxt || '').replace(/[^0-9.]/g, '')) || 0;
+  if (!(ourMo > 0) && fee > 0) ourMo = Math.round(fee / 36 * 100) / 100;
+  if (!(mmo > 0) || !(ourMo > 0)) return '';
+  var yrsL = Math.round(term / 12) || 10;
+  var yrsR = fmo > 0 ? Math.round(fmo / 12 * 10) / 10 : 3;
+  var f2 = function(v){ return '$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
+  var yt = function(y){ return (y % 1 === 0) ? String(y) : String(Math.round(y * 10) / 10); };
+  return (en ? 'Cancel Mortgage + Maintenance =' : 'Anula Hipoteca + Mantenimiento =') + f2(mmo + mf / 12) + (en ? '/month  x ' : '/mes  x ') + yt(yrsL) + ' yrs vs ' + f2(ourMo) + (en ? '/month x ' : '/mes x ') + yt(yrsR) + ' yrs';
+}
+function qQuoteCurHtml(){
+  if (!cur){ alert('Selecciona un cliente primero.'); return; }
+  var qf = qQualityCheck();
+  if (qf.length){ alert('⛔ CONTROL DE CALIDAD — QUOTE + CURRENT NO se generó:\n• ' + qf.join('\n• ') + '\n\nCorrige estos puntos y vuelve a intentarlo. Nada se copió ni se envió.'); return; }
+  qDocOpen(qQuoteCurBuild(qDocDefLang()));
+}
+function qQuoteCurBuild(L){
+  var en = (L === 'en');
+  var body = qComboSlice(qQuoteBuild(L), '<div id="qDocBody">', '</div><script>function qCopy');
+  if (!body){ alert('No se pudo armar QUOTE + CURRENT.'); return qQuoteBuild(L); }
+  var subj = qQuoteCurSubj(en);
+  if (!subj) subj = (en ? 'Your quote — ' : 'Tu cotización — ') + (cur.resort || '');
+  var e = '<div style="max-width:800px;margin:0 auto;background:#ffffff;border-radius:14px;box-shadow:0 8px 24px rgba(20,50,60,.10);padding:10px 28px 28px;">' + body + '</div>';
+  var h = '<!DOCTYPE html><html lang="' + (en ? 'en' : 'es') + '"><head><meta charset="utf-8"><title>QUOTE + CURRENT — ' + escH(cur.name) + '</title></head><body style="margin:0;padding:20px 8px;background:#f2f5f6;font-family:Arial,Helvetica,sans-serif;color:#23323b;">';
+  h += '<div ' + QDOC_BAR + '><b>📧 QUOTE + CURRENT</b><span style="font-size:13px">' + (en ? 'To: ' : 'Para: ') + '<input id="emTo" value="' + escH(cur.email || '') + '" style="padding:5px;border-radius:4px;border:none;min-width:210px"> ' + (en ? 'Subject: ' : 'Asunto: ') + '<input id="emSubj" value="' + escH(subj) + '" style="padding:5px;border-radius:4px;border:none;min-width:300px"></span>' +
+    '<button ' + QDOC_BTN + ' onclick="qcCopy(this)">📋 COPY FORMATTED EMAIL</button>' +
+    '<button ' + QDOC_BTN + ' onclick="qcGmail()">✉️ OPEN IN GMAIL</button>' +
+    qDocToggleBtn('quotecur', en) +
+    qDocRefreshBtn('quotecur', en) +
+    '<span style="font-size:12px;opacity:.85">' + (en ? 'The quote email with the Anula comparison as its subject, catered to this client. Nothing is sent automatically.' : 'La cotización como correo, con la comparación Anula como asunto, calculada para este cliente. Nada se envía automáticamente.') + '</span></div>';
+  h += '<div id="eml" contenteditable="true">' + e + '</div>';
+  h += '<scr' + 'ipt>function qcCopy(b){var n=document.getElementById("eml");try{navigator.clipboard.write([new ClipboardItem({"text/html":new Blob([n.innerHTML],{type:"text/html"}),"text/plain":new Blob([n.innerText],{type:"text/plain"})})]).then(function(){b.textContent="✅ COPIADO";});}catch(err){var r=document.createRange();r.selectNode(n);var s=getSelection();s.removeAllRanges();s.addRange(r);document.execCommand("copy");b.textContent="✅ COPIADO";}}' +
+    'function qcGmail(){var to=document.getElementById("emTo").value,su=document.getElementById("emSubj").value,tx=document.getElementById("eml").innerText;window.open("https://mail.google.com/mail/?view=cm&fs=1&to="+encodeURIComponent(to)+"&su="+encodeURIComponent(su)+"&body="+encodeURIComponent(tx),"_blank");}</scr' + 'ipt>';
   h += qDocToggleJs(en);
   h += '</body></html>';
   return h;
