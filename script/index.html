@@ -3430,20 +3430,27 @@ function qRecalc(){
   var COMBO = qComboCalc(); // contracts tool: per-contract calcs (each charged separately)
   // TRUE COST MODEL — LOCKED (Sebastian, 2026-11-05, fix-once): the mortgage payment is charged
   // ONLY for the months left on the contract; maintenance (mf + ofees) escalates over the FULL
-  // horizon. monthsRemaining source order: (1) documented term (plazo) - MESES elapsed, both on the
-  // panel; (2) the projection model's months (amortization of saldo/pago/APR) when saldo > 0;
-  // (3) unknown -> full horizon. Whole-month multiplication (pago x months charged), MF year-by-year
+  // horizon. monthsRemaining source order (AMORTFIRST, Sebastian 2026-11-05): (1) amortization
+  // months from saldo/pago/APR — the year is never needed when those three exist; (2) documented
+  // term (plazo) - MESES elapsed; (3) the projection model's months; (4) unknown -> full horizon. Whole-month multiplication (pago x months charged), MF year-by-year
   // via mfTot — the SAME model as the TRUE COST (CLEAN) sheet, so both surfaces print identical
   // totals. No PENDIENTE blanking on this window; PAYOFF EXACTO / pricing / gates elsewhere keep
   // the strict qMortgage model untouched.
   var elW = parseInt((($('q_mos') || {}).value || ''), 10), termDoc = qNum('q_term');
   var MREM = null;
-  if (termDoc > 0 && isFinite(elW) && elW >= 0) MREM = Math.max(0, termDoc - elW);
-  // LIVEPAY_V1 (Sebastian, 2026-11-05): a live monthly payment contradicts a hard zero from the
-  // year math — the client more likely got the year wrong, or has only months remaining. When a
-  // real balance exists, the amortization months govern instead of the year zeroing the mortgage.
-  if (MREM === 0 && mmo > 0 && payoff > 0 && MGP && MGP.status === 'ok' && isFinite(MGP.months) && MGP.months > 0) MREM = MGP.months;
-  else if (MREM === null && payoff > 0 && MGP && MGP.status === 'ok' && isFinite(MGP.months)) MREM = MGP.months;
+  // AMORTFIRST_V1 (Sebastian, 2026-11-05: "we should never even need the year"): with saldo + pago +
+  // APR on the panel, the months left to reach zero are pure amortization math — no year, no term.
+  // n = -ln(1 - saldo*r/pago) / ln(1+r), rounded up (a partial month is one more payment). The year
+  // (term - MESES) is ONLY the fallback for when saldo or APR is missing; MGP months after that;
+  // unknown -> full horizon. A live payment can therefore never be zeroed by a wrong year.
+  var aprW = qNum('q_aapr'), rW = aprW / 100 / 12, nAmort = null;
+  if (payoff > 0 && mmo > 0){
+    if (rW > 0){ if (mmo > payoff * rW) nAmort = Math.ceil(-Math.log(1 - payoff * rW / mmo) / Math.log(1 + rW)); }
+    else nAmort = Math.ceil(payoff / mmo);
+  }
+  if (nAmort !== null && isFinite(nAmort) && nAmort > 0) MREM = nAmort;
+  else if (termDoc > 0 && isFinite(elW) && elW >= 0) MREM = Math.max(0, termDoc - elW);
+  else if (payoff > 0 && MGP && MGP.status === 'ok' && isFinite(MGP.months)) MREM = MGP.months;
   function mCharged(months){ return MREM === null ? months : Math.min(months, MREM); }
   function win(y){ return mmo * mCharged(y * 12) + mfTot(mf, r, y) + mfTot(ofees, r, y); }
   function winMo(m){ return mmo * mCharged(m) + (mf + ofees) * m / 12; }
