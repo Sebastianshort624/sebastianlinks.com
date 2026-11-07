@@ -7,7 +7,7 @@
 <meta name="format-detection" content="telephone=no,email=no,address=no">
 <title>Cita de 90 minutos — Guión de llamada</title>
 <style>
-  body { font-family: Arial, Helvetica, sans-serif; font-size: 17px; max-width: 1680px; margin: 0 auto; padding: 24px 32px; color: #1a1a1a; line-height: 1.55; }
+  body { font-family: Arial, Helvetica, sans-serif; font-size: 17px; max-width: 1680px; margin: 0 auto; padding: 10px 20px; color: #1a1a1a; line-height: 1.55; }
   h1 { font-size: 1.4em; margin-bottom: 2px; }
   .total { color: #555; margin-bottom: 18px; }
   .stage { border: 2px solid #1a1a1a; border-radius: 8px; padding: 20px 26px; margin: 18px 0; }
@@ -351,7 +351,7 @@
   #tabHit{left:6px;top:54px}
   @media (max-width:1099px){.sidetab{display:none!important}}
   @media print{.sidetab{display:none!important}}
-  .eodbtn{font-size:13px;font-weight:600;padding:9px 18px;border-radius:999px;border:1px solid rgba(0,0,0,.22);cursor:pointer;letter-spacing:.08em;opacity:.72;font-family:inherit;transition:all .15s ease}
+  .eodbtn{font-size:12px;font-weight:600;padding:5px 12px;border-radius:999px;border:1px solid rgba(0,0,0,.22);cursor:pointer;letter-spacing:.08em;opacity:.72;font-family:inherit;transition:all .15s ease}
 .eodbtn:hover{opacity:.92}
 .eodbtn.on{opacity:1;box-shadow:0 0 0 2px #fffdf8,0 0 0 4px #111827}
 </style>
@@ -451,24 +451,24 @@ sideApply();
 <button class="apttab" id="tabL" onclick="aptToggle('L',true)" title="Mostrar citas de hoy">🗓</button>
 <button class="apttab" id="tabR" onclick="aptToggle('R',true)" title="Mostrar citas de hoy">🗓</button>
 
-<h1 style="font-size:1.15em;margin-bottom:0">🎯 Cita de 90 minutos <span class="tmin">· 6 etapas × 15 min</span></h1>
-<div class="client-line" style="margin:6px 0 10px">Cliente: <input id="clientSearch" type="text" placeholder="🔎 Buscar por cualquier nombre (ej. Lazaro)…" style="padding:5px 8px;font-family:inherit;border-radius:6px;border:1px solid #9ca3af;min-width:280px" oninput="clientSearchGo(this.value,false)" onkeydown="if(event.key==='Enter'){clientSearchGo(this.value,true);event.preventDefault();}"> <select id="clientSel"><option value="">— seleccionar cliente —</option></select> <span id="clientSearchCt" style="margin-left:6px;color:#6b7280;font-size:.9em"></span>
-<button onclick="document.getElementById('s_impfile').click()" style="margin-left:8px;padding:6px 14px;font-size:0.9em;background:#0b3d91;color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Importar JSON</button>
+<h1 style="font-size:.95em;margin:0">🎯 Cita de 90 minutos <span class="tmin">· 6 etapas × 15 min</span></h1>
+<div class="client-line" style="margin:2px 0 5px">Cliente: <input id="clientSearch" type="text" placeholder="🔎 Buscar por cualquier nombre (ej. Lazaro)…" style="padding:3px 6px;font-family:inherit;border-radius:6px;border:1px solid #9ca3af;min-width:220px" oninput="clientSearchGo(this.value,false)" onkeydown="if(event.key==='Enter'){clientSearchGo(this.value,true);event.preventDefault();}"> <select id="clientSel"><option value="">— seleccionar cliente —</option></select> <span id="clientSearchCt" style="margin-left:6px;color:#6b7280;font-size:.9em"></span>
+<button onclick="document.getElementById('s_impfile').click()" style="margin-left:8px;padding:3px 10px;font-size:0.85em;background:#0b3d91;color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Importar JSON</button>
 <input type="file" id="s_impfile" accept=".json,application/json" style="display:none" onchange="importScriptClients(this)"></div>
 
-  <div id="eodBar" style="border:1px solid #ddd6c9;border-radius:12px;padding:14px 18px;margin:0 0 16px;background:#fffdf8;box-shadow:0 1px 3px rgba(0,0,0,.05)">
-  <div style="font-size:.78em;letter-spacing:.18em;color:#6b7280;font-weight:700;margin-bottom:8px">MARCA LA CITA DE HOY <span class="tmin" id="eodWho" style="letter-spacing:normal"></span></div>
-  <div style="display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start">
-  <div>
-  <div style="font-weight:600;font-size:11px;letter-spacing:.14em;margin:2px 0 6px;color:#9ca3af">TIPO DE CITA</div>
+  <!-- COMPACT_V1 --><div id="eodBar" style="border:1px solid #ddd6c9;border-radius:10px;padding:7px 10px;margin:0 0 8px;background:#fffdf8;box-shadow:0 1px 3px rgba(0,0,0,.05)">
+  <div style="font-size:.72em;letter-spacing:.16em;color:#6b7280;font-weight:700;margin-bottom:3px">MARCA LA CITA DE HOY <span class="tmin" id="eodWho" style="letter-spacing:normal"></span></div>
+  <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center">
+  <div style="display:flex;align-items:center;gap:7px">
+  <div style="font-weight:600;font-size:11px;letter-spacing:.12em;margin:0;white-space:nowrap;color:#9ca3af">TIPO:</div>
   <div style="display:flex;gap:7px;flex-wrap:wrap">
     <button type="button" class="eodbtn" data-kind="apt" data-tag="NEW APT" style="background:#facc15;color:#111" onclick="eodSet('apt','NEW APT')">NEW APT</button>
     <button type="button" class="eodbtn" data-kind="apt" data-tag="RESCH" style="background:#38bdf8;color:#111" onclick="eodSet('apt','RESCH')">RESCH</button>
     <button type="button" class="eodbtn" data-kind="apt" data-tag="FU APT" style="background:#7c3aed;color:#fff" onclick="eodSet('apt','FU APT')">FU APT</button>
   </div>
   </div>
-  <div style="margin-left:auto">
-  <div style="font-weight:600;font-size:11px;letter-spacing:.14em;margin:2px 0 6px;color:#9ca3af">RESULTADO</div>
+  <div style="margin-left:auto;display:flex;align-items:center;gap:7px">
+  <div style="font-weight:600;font-size:11px;letter-spacing:.12em;margin:0;white-space:nowrap;color:#9ca3af">RESULTADO:</div>
   <div style="display:flex;gap:7px;flex-wrap:wrap">
     <button type="button" class="eodbtn" data-kind="out" data-tag="SOLD" style="background:#16a34a;color:#fff" onclick="eodSet('out','SOLD')">SOLD</button>
     <button type="button" class="eodbtn" data-kind="out" data-tag="RS" style="background:#dc2626;color:#fff" onclick="eodSet('out','RS')">RS</button>
@@ -480,21 +480,21 @@ sideApply();
   </div>
   </div>
   </div>
-  <div class="qsm" id="eodSummary" style="margin-top:10px;font-weight:400;color:#6b7280"></div>
+  <div class="qsm" id="eodSummary" style="margin-top:4px;font-weight:400;color:#6b7280"></div>
   </div>
 <aside class="calcside calcarea" id="calc-anchor">
   <div class="cbox calc-head"><h3>🧮 Calculadora <button onclick="qSync(cur)" title="Restablecer al cliente">↺</button></h3>
     <div class="qidn" id="q_idn" style="display:none"></div>
-    <div id="urlChips" style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0"></div><button id="urlEditBtn" type="button" onclick="urlToggleFn()" style="background:#374151;color:#fff;border:none;border-radius:6px;padding:5px 12px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.85em;margin-bottom:6px">✏️ Editar enlaces</button><div class="urlgrid" id="urlGrid" style="display:none"><label class="qf urlf"><span class="qlab">PIPELINE</span><span class="urow"><input id="q_pipe" type="text" placeholder="https://app.pipelinecrm.com/people/…" onchange="qPipeSave()" oninput="qUrlLinks()"><a id="q_pipe_go" class="urlgo" href="#" target="_blank" rel="noopener" style="display:none">↗ Abrir</a></span></label><label class="qf urlf"><span class="qlab">HOJA PRE-CALL</span><span class="urow"><input id="q_sheet" type="text" placeholder="https://docs.google.com/spreadsheets/…" onchange="qPipeSave()" oninput="qUrlLinks()"><a id="q_sheet_go" class="urlgo" href="#" target="_blank" rel="noopener" style="display:none">↗ Abrir</a></span></label><label class="qf urlf"><span class="qlab">DocuSign</span><span class="urow"><input id="q_dsurl" type="text" placeholder="https://app.docusign.com/documents/details/…" onchange="qPipeSave()" oninput="qUrlLinks()"><a id="q_dsurl_go" class="urlgo" href="#" target="_blank" rel="noopener" style="display:none">↗ Abrir</a></span></label><label class="qf urlf"><span class="qlab">CARPETA</span><span class="urow"><input id="q_folder" type="text" placeholder="~/Desktop/deals/…" onchange="qPipeSave()" oninput="qUrlLinks()"><a id="q_folder_go" class="urlgo" href="#" onclick="qCopyFolderPath(this);return false;" style="display:none">📋 Copiar</a></span></label><label class="qf urlf"><span class="qlab">PRÉSTAMO</span><span class="urow"><input id="q_loannote" type="text" placeholder="Ej.: contrato firmado en la carpeta" onchange="qPipeSave()"></span></label></div>
-    <div class="tmin" id="q_cli" style="margin-bottom:8px">Ningún cliente seleccionado</div>
-    <div id="q_savestate" class="tmin" style="margin-bottom:4px"></div>
-    <button type="button" id="q_submitbtn" onclick="qSubmitSave()" style="width:100%;padding:12px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:1.05em;background:#14304d;color:#fff;margin-bottom:8px">&#128190; SUBMIT — SAVE</button>
-    <button type="button" id="q_refreshbtn" onclick="qForceRefresh()" style="width:100%;padding:10px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:1em;background:#1e9e57;color:#fff;margin-bottom:8px">&#128260; ACTUALIZAR — recalcular y guardar</button>
+    <div id="urlChips" style="display:flex;gap:5px;flex-wrap:wrap;margin:2px 0"></div><button id="urlEditBtn" type="button" onclick="urlToggleFn()" style="background:#374151;color:#fff;border:none;border-radius:6px;padding:3px 10px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.82em;margin-bottom:2px">✏️ Editar enlaces</button><div class="urlgrid" id="urlGrid" style="display:none"><label class="qf urlf"><span class="qlab">PIPELINE</span><span class="urow"><input id="q_pipe" type="text" placeholder="https://app.pipelinecrm.com/people/…" onchange="qPipeSave()" oninput="qUrlLinks()"><a id="q_pipe_go" class="urlgo" href="#" target="_blank" rel="noopener" style="display:none">↗ Abrir</a></span></label><label class="qf urlf"><span class="qlab">HOJA PRE-CALL</span><span class="urow"><input id="q_sheet" type="text" placeholder="https://docs.google.com/spreadsheets/…" onchange="qPipeSave()" oninput="qUrlLinks()"><a id="q_sheet_go" class="urlgo" href="#" target="_blank" rel="noopener" style="display:none">↗ Abrir</a></span></label><label class="qf urlf"><span class="qlab">DocuSign</span><span class="urow"><input id="q_dsurl" type="text" placeholder="https://app.docusign.com/documents/details/…" onchange="qPipeSave()" oninput="qUrlLinks()"><a id="q_dsurl_go" class="urlgo" href="#" target="_blank" rel="noopener" style="display:none">↗ Abrir</a></span></label><label class="qf urlf"><span class="qlab">CARPETA</span><span class="urow"><input id="q_folder" type="text" placeholder="~/Desktop/deals/…" onchange="qPipeSave()" oninput="qUrlLinks()"><a id="q_folder_go" class="urlgo" href="#" onclick="qCopyFolderPath(this);return false;" style="display:none">📋 Copiar</a></span></label><label class="qf urlf"><span class="qlab">PRÉSTAMO</span><span class="urow"><input id="q_loannote" type="text" placeholder="Ej.: contrato firmado en la carpeta" onchange="qPipeSave()"></span></label></div>
+    <div class="tmin" id="q_cli" style="margin-bottom:3px">Ningún cliente seleccionado</div>
+    <div id="q_savestate" class="tmin" style="margin-bottom:2px"></div>
+    <button type="button" id="q_submitbtn" onclick="qSubmitSave()" style="width:100%;padding:8px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:1.05em;background:#14304d;color:#fff;margin-bottom:8px">&#128190; SUBMIT — SAVE</button>
+    <button type="button" id="q_refreshbtn" onclick="qForceRefresh()" style="width:100%;padding:7px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:1em;background:#1e9e57;color:#fff;margin-bottom:8px">&#128260; ACTUALIZAR — recalcular y guardar</button>
     <button type="button" onclick="qAuditToggle()" style="background:#e2e8f0;color:#334155;border:none;border-radius:6px;padding:4px 10px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.85em;margin-bottom:6px">🕘 Historial de cambios manuales</button>
     <div id="q_audithist" style="display:none;margin-bottom:8px"></div>
     <div id="q_dtypebar" style="display:flex;gap:6px;margin-bottom:10px">
-    <button id="q_btn_mtg" onclick="qSetDtype('MTG')" style="flex:1;padding:9px 6px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:0.95em;background:#0b3d91;color:#fff">🏦 Hipoteca</button>
-    <button id="q_btn_db" onclick="qSetDtype('DB')" style="flex:1;padding:9px 6px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:0.95em;background:#e2e8f0;color:#334155">🔴 DEED-BACK</button>
+    <button id="q_btn_mtg" onclick="qSetDtype('MTG')" style="flex:1;padding:6px 6px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:0.95em;background:#0b3d91;color:#fff">🏦 Hipoteca</button>
+    <button id="q_btn_db" onclick="qSetDtype('DB')" style="flex:1;padding:6px 6px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:0.95em;background:#e2e8f0;color:#334155">🔴 DEED-BACK</button>
   </div>
     <div id="q_dbnote" class="tmin" style="display:none;margin-bottom:8px">DEED-BACK = hipoteca pagada por completo (saldo $0). Un saldo en $0 NO prueba que la escritura ya se haya transferido: la transferencia de la escritura es parte del proceso.</div>
   </div>
