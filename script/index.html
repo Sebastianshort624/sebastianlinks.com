@@ -372,6 +372,7 @@
     <select id="soldWhen" onchange="soldWhenChange()" title="¿Cuándo se vendió?" style="padding:4px 6px;font-weight:700;font-family:inherit;border-radius:6px;border:1px solid #7f1d1d;background:#fff7ed"><option value="">¿Cuándo?</option><option value="ON APT">EN LA CITA</option><option value="AFTER APT">DESPUÉS DE LA CITA</option></select>
     <button id="quoteBtn" type="button" onclick="qQuoteHtml()">📄 Cotización</button>
     <button id="quotecurBtn" type="button" onclick="qQuoteCurHtml()">📧 QUOTE + CURRENT</button>
+    <button id="quote48Btn" type="button" onclick="qQuote48Html()">🚀 48-MO PUSH</button>
     <button id="emailBtn" type="button" onclick="qEmailHtml()">📧 EMAIL PRE-CITA</button>
     <button id="comboBtn" type="button" onclick="qComboHtml()">🧾 EMAIL COMPLETO</button>
     <button id="walkBtn" type="button" onclick="qWalkHtml()">✉️ EMAIL OUT</button>
@@ -2119,6 +2120,7 @@ window.__qDocRender = function(kind, L){
   if (typeof cur === 'undefined' || !cur) return null;
   if (kind === 'quote') return qQuoteBuild(L);
   if (kind === 'quotecur') return qQuoteCurBuild(L);
+  if (kind === 'quote48') return qQuote48Build(L);
   if (kind === 'ca') return qCaBuild(L);
   if (kind === 'cb') return qCbBuild(L);
   if (kind === 'walk') return qWalkBuild(L);
@@ -2533,6 +2535,114 @@ function qQuoteCurBuild(L){
     qDocToggleBtn('quotecur', en) +
     qDocRefreshBtn('quotecur', en) +
     '<span style="font-size:12px;opacity:.85">' + (en ? 'Professional quote email — the Anula comparison is the subject, catered to this client. Nothing is sent automatically.' : 'Cotización profesional por correo — la comparación Anula es el asunto, calculada para este cliente. Nada se envía automáticamente.') + '</span></div>';
+  h += '<div id="eml" contenteditable="true">' + e + '</div>';
+  h += '<scr' + 'ipt>function qcCopy(b){var n=document.getElementById("eml");try{navigator.clipboard.write([new ClipboardItem({"text/html":new Blob([n.innerHTML],{type:"text/html"}),"text/plain":new Blob([n.innerText],{type:"text/plain"})})]).then(function(){b.textContent="✅ COPIADO";});}catch(err){var r=document.createRange();r.selectNode(n);var s=getSelection();s.removeAllRanges();s.addRange(r);document.execCommand("copy");b.textContent="✅ COPIADO";}}' +
+    'function qcGmail(){var to=document.getElementById("emTo").value,su=document.getElementById("emSubj").value,tx=document.getElementById("eml").innerText;window.open("https://mail.google.com/mail/?view=cm&fs=1&to="+encodeURIComponent(to)+"&su="+encodeURIComponent(su)+"&body="+encodeURIComponent(tx),"_blank");}</scr' + 'ipt>';
+  h += qDocToggleJs(en);
+  h += '</body></html>';
+  return h;
+}
+// ===== 48-MO PUSH QUOTE (Sebastian, 2026-11-07): special quote for the 48-month big push —
+// NO CREDIT CHECK, $299 DOWN, balance split evenly (straight split) over 48 monthly payments.
+// Same professional email as QUOTE + CURRENT, same QC gate; it FORCES the 48/$299 structure
+// regardless of the financing settings on the panel. Nothing is sent automatically.
+function qQuote48Subj(en){
+  qRecalc();
+  var mmo = qNum('q_mmo'), mf = qNum('q_mf'), term = qNum('q_term') || 120, fee = qNum('q_fee');
+  var F = qCaseFacts();
+  if (F.isDB && $('q_sheetfee') && $('q_sheetfee').value !== '' && qNum('q_sheetfee') > 0) fee = qNum('q_sheetfee') + 299 + qDbPad() + qDbCycAmt();
+  if (!(fee > 0)){ var CT = 0; qComboCalc().forEach(function(c){ CT += c.price.total; }); if (CT > 0) fee = CT; }
+  var down = fee > 299 ? 299 : 0;
+  var mo48 = fee > 0 ? Math.round((fee - down) / 48 * 100) / 100 : 0;
+  var f2 = function(v){ return '$' + Math.round(v).toLocaleString('en-US'); };
+  var hook = en ? ' · NO CREDIT CHECK · $299 DOWN' : ' · SIN VERIFICACIÓN DE CRÉDITO · $299 DE ENGANCHE';
+  if (!(mo48 > 0)) return '';
+  if (F.isDB || !(mmo > 0)) return (en ? 'Your 48-month plan: ' : 'Tu plan a 48 meses: ') + f2(mo48) + (en ? '/month · ' : '/mes · ') + f2(fee) + (en ? ' total' : ' en total') + hook;
+  var yrsL = Math.round(term / 12) || 10;
+  return (en ? 'Cancel Mortgage + Maintenance =' : 'Anula Hipoteca + Mantenimiento =') + f2(mmo + mf / 12) + (en ? '/month  x ' : '/mes  x ') + yrsL + ' yrs vs ' + f2(mo48) + (en ? '/month x ' : '/mes x ') + '4 yrs' + hook;
+}
+function qQuote48Html(){
+  if (!cur){ alert('Selecciona un cliente primero.'); return; }
+  var qf = qQualityCheck();
+  if (qf.length){ alert('⛔ CONTROL DE CALIDAD — 48-MO PUSH NO se generó:\n• ' + qf.join('\n• ') + '\n\nCorrige estos puntos y vuelve a intentarlo. Nada se copió ni se envió.'); return; }
+  qDocOpen(qQuote48Build(qDocDefLang()));
+}
+function qQuote48Build(L){
+  var en = (L === 'en');
+  qRecalc();
+  var F = qCaseFacts();
+  var legal = qLegalName();
+  var fee = qNum('q_fee');
+  if (F.isDB && $('q_sheetfee') && $('q_sheetfee').value !== '' && qNum('q_sheetfee') > 0) fee = qNum('q_sheetfee') + 299 + qDbPad() + qDbCycAmt();
+  if (!(fee > 0)){ var CT = 0; qComboCalc().forEach(function(c){ CT += c.price.total; }); if (CT > 0) fee = CT; }
+  var down = fee > 299 ? 299 : 0;
+  var fmo = 48;
+  var ourMo = fee > 0 ? Math.round((fee - down) / 48 * 100) / 100 : 0;
+  var fmt0 = function(v){ return '$' + Math.round(v).toLocaleString('en-US'); };
+  var today = new Date().toLocaleDateString(en ? 'en-US' : 'es-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  var subj = qQuote48Subj(en);
+  if (!subj) subj = (en ? 'Your 48-month plan — ' : 'Tu plan a 48 meses — ') + (cur.resort || '');
+  var mfMo = (F.mf + (F.ofees || 0)) / 12;
+  var totMo = (F.isDB ? 0 : F.mmo) + mfMo;
+  var bem = 0;
+  if (fee > 0 && totMo > 0){ var cum = 0, escR2 = (F.esc || 8) / 100; while (cum < fee && bem < 600){ bem++; cum += (F.isDB ? 0 : F.mmo) + mfMo * Math.pow(1 + escR2, Math.floor((bem - 1) / 12)); } }
+  var NAVY = '#14304d', SLATE = '#26313a', MUT = '#68757f', LINE = '#e3e8ec';
+  var LBL = 'font-size:11px;font-weight:700;letter-spacing:1.6px;color:' + MUT;
+  var ROWL = 'padding:9px 0;border-bottom:1px solid ' + LINE + ';font-size:14px;color:' + SLATE;
+  var ROWR = 'padding:9px 0;border-bottom:1px solid ' + LINE + ';font-size:14px;color:' + SLATE + ';text-align:right;font-weight:600;white-space:nowrap';
+  var e = '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;background:#ffffff"><tr><td align="center">';
+  e += '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="640" style="width:640px;max-width:640px;border-collapse:collapse;background:#ffffff;border:1px solid #dfe5ea;font-family:Arial,Helvetica,sans-serif;color:' + SLATE + '">';
+  e += '<tr><td style="background:' + NAVY + ';padding:22px 34px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse"><tr><td style="color:#ffffff;font-size:21px;font-weight:700;letter-spacing:.4px">Linx Legal</td><td align="right" style="color:#b9c9d8;font-size:12px">' + escH(today) + '</td></tr><tr><td colspan="2" style="color:#b9c9d8;font-size:12.5px;padding-top:3px">' + (en ? 'Timeshare cancellation services — quote' : 'Servicios de cancelación de tiempo compartido — cotización') + '</td></tr></table></td></tr>';
+  e += '<tr><td style="padding:22px 34px 0"><div style="' + LBL + '">' + (en ? 'PREPARED FOR' : 'PREPARADA PARA') + '</div><div style="font-size:16px;font-weight:700;color:' + NAVY + ';margin-top:5px">' + escH(cur.name) + '</div>' + (legal ? '<div style="font-size:13.5px;color:' + MUT + ';margin-top:2px">' + escH(legal) + (cur.loc ? ' · ' + escH(cur.loc) : '') + '</div>' : '') + '</td></tr>';
+  if (subj) e += '<tr><td style="padding:18px 34px 0"><div style="border-top:1px solid ' + LINE + ';border-bottom:1px solid ' + LINE + ';padding:13px 0;text-align:center;font-size:15.5px;font-weight:700;color:' + NAVY + '">' + escH(subj) + '</div></td></tr>';
+  e += '<tr><td style="padding:24px 34px 0"><div style="' + LBL + '">' + (en ? 'TOTAL PRICE' : 'PRECIO TOTAL') + '</div><div style="font-size:36px;font-weight:700;color:' + NAVY + ';line-height:1.15;margin-top:4px">' + fmt0(fee) + '</div><p style="font-size:14px;line-height:1.55;color:' + SLATE + ';margin:10px 0 0">' + (en ? 'This price includes everything, beginning to end. We never ask for another dollar. It eliminates all past, present and future debt, and your name is removed from the deed at the county level, so your estate is protected and your next of kin will never inherit this nightmare.' : 'Este precio incluye todo, de principio a fin. Nunca pedimos otro dólar. Este precio elimina toda la deuda pasada, presente y futura, y tu nombre se retira de la escritura a nivel del condado, así tu patrimonio queda protegido y tus herederos nunca heredarán esta pesadilla.') + '</p></td></tr>';
+  var INC = en ? ['Everything included, beginning to end — we never ask for another dollar', 'Elimination of all past, present and future debt', 'Your name removed from the deed at the county level', 'Your estate is safe — your next of kin will never inherit this nightmare'] : ['Todo incluido, de principio a fin — nunca pedimos otro dólar', 'Eliminación de toda la deuda pasada, presente y futura', 'Tu nombre retirado de la escritura a nivel del condado', 'Tu patrimonio protegido — tus herederos nunca heredarán esta pesadilla'];
+  e += '<tr><td style="padding:20px 34px 0"><div style="' + LBL + '">' + (en ? 'WHAT THIS PRICE INCLUDES' : 'LO QUE INCLUYE ESTE PRECIO') + '</div><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin-top:4px">' + INC.map(function(t){ return '<tr><td style="padding:7px 0;border-bottom:1px solid ' + LINE + ';font-size:14px;color:' + SLATE + '"><span style="color:' + NAVY + ';font-weight:700">✓</span>&nbsp;&nbsp;' + t + '</td></tr>'; }).join('') + '</table></td></tr>';
+  e += '<tr><td style="padding:20px 34px 0"><div style="background:#fef3c7;border:2px solid #d97706;border-radius:12px;padding:16px 18px;text-align:center"><div style="font-size:19px;font-weight:800;color:#92400e;letter-spacing:.4px">' + (en ? '🚀 SPECIAL PLAN — 48 MONTHS' : '🚀 PLAN ESPECIAL — 48 MESES') + '</div><div style="font-size:15.5px;color:#26313a;margin-top:8px;line-height:1.6"><b>' + (en ? 'NO CREDIT CHECK' : 'SIN VERIFICACIÓN DE CRÉDITO') + '</b> · <b>' + fmt0(down) + (en ? ' DOWN TODAY' : ' DE ENGANCHE HOY') + '</b> · <b>' + (en ? '48 MONTHLY PAYMENTS OF ' : '48 PAGOS MENSUALES DE ') + fmt0(ourMo) + '</b></div><div style="font-size:13.5px;color:#68757f;margin-top:4px">' + (en ? 'Balance after the down payment: ' : 'Saldo después del enganche: ') + fmt0(fee - down) + (en ? ' — one flat monthly payment, everything included.' : ' — un solo pago mensual fijo, todo incluido.') + '</div></div></td></tr>';
+  if (totMo > 0 && !F.isDB){
+    e += '<tr><td style="padding:24px 34px 0"><div style="' + LBL + '">' + (en ? 'MONTHLY COMPARISON' : 'COMPARACIÓN MENSUAL') + '</div><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin-top:8px">';
+    e += '<tr><td width="50%" style="padding:8px 12px 8px 0;font-size:12px;font-weight:700;letter-spacing:1px;color:' + MUT + ';border-bottom:2px solid ' + NAVY + '">' + (en ? 'WHAT YOU PAY TODAY' : 'LO QUE PAGAS HOY') + '</td><td width="50%" style="padding:8px 0 8px 12px;font-size:12px;font-weight:700;letter-spacing:1px;color:' + MUT + ';border-bottom:2px solid ' + NAVY + '">' + (en ? 'WHAT YOU PAY WITH US' : 'LO QUE PAGAS CON NOSOTROS') + '</td></tr>';
+    e += '<tr><td style="padding:10px 12px 0 0;font-size:14px;color:' + SLATE + '">' + (en ? 'Mortgage' : 'Hipoteca') + '<br><span style="font-size:16px;font-weight:600">' + fmt0(F.mmo) + (en ? '/month' : '/mes') + '</span></td><td style="padding:10px 0 0 12px;font-size:14px;color:' + SLATE + '">' + (en ? 'One monthly payment — everything included' : 'Un solo pago mensual — todo incluido') + '<br><span style="font-size:16px;font-weight:600;color:' + NAVY + '">' + fmt0(ourMo) + (en ? '/month' : '/mes') + '</span></td></tr>';
+    if (mfMo > 0) e += '<tr><td style="padding:8px 12px 0 0;font-size:14px;color:' + SLATE + '">' + (en ? 'Maintenance' : 'Mantenimiento') + '<br><span style="font-size:16px;font-weight:600">' + fmt0(mfMo) + (en ? '/month' : '/mes') + '</span></td><td style="padding:8px 0 0 12px;font-size:13.5px;color:' + MUT + '">× 48 ' + (en ? 'months' : 'meses') + ' · ' + fmt0(down) + (en ? ' down payment · no credit check' : ' de anticipo · sin verificación de crédito') + '</td></tr>';
+    e += '<tr><td style="padding:10px 12px 2px 0;font-size:17px;font-weight:700;color:' + SLATE + ';border-top:1px solid ' + LINE + '">' + fmt0(totMo) + (en ? '/month' : '/mes') + '</td><td style="border-top:1px solid ' + LINE + '"></td></tr>';
+    e += '</table>';
+    if (totMo > ourMo) e += '<p style="font-size:14.5px;color:' + SLATE + ';margin:12px 0 0"><b>' + (en ? 'That is ' + fmt0(totMo - ourMo) + ' less per month.' : 'Son ' + fmt0(totMo - ourMo) + ' menos al mes.') + '</b></p>';
+    if (bem > 0) e += '<p style="font-size:13.5px;color:' + MUT + ';margin:6px 0 0">' + (en ? 'In approximately <b>' + bem + ' months</b>, what you would have paid the resort equals our full fee.' : 'En aproximadamente <b>' + bem + ' meses</b>, lo que habrías pagado al resort iguala nuestra tarifa completa.') + '</p>';
+    e += '</td></tr>';
+  }
+  var apr = qNum('q_aapr');
+  var note = '';
+  if (!F.isDB && F.payoff > 0){
+    note = (F.MG.level === 'verificado' ? (en ? 'Verified mortgage balance: ' : 'Saldo hipotecario verificado: ') : (en ? 'Reported mortgage balance: ' : 'Saldo hipotecario reportado: ')) + '<b>' + fmt0(F.payoff) + '</b>' + (apr > 0 ? ' · ' + (en ? 'APR rate: ' : 'Tasa APR: ') + '<b>' + apr + '%</b>' : '') + (F.MG.status === 'ok' ? ' · ' + (en ? 'Approximately ' : 'Aproximadamente ') + '<b>' + F.MG.months + (en ? ' months' : ' meses') + '</b>' + (en ? ' remaining' : ' restantes') : '') + (F.MG.level === 'verificado' ? '.' : (en ? ', subject to verification.' : ', sujeto a verificación.'));
+  } else if (F.isDB){ note = en ? 'No mortgage balance — property paid off.' : 'Sin saldo hipotecario — propiedad pagada.'; }
+  var OL = (typeof qOrigLoan === 'function') ? qOrigLoan() : null;
+  e += '<tr><td style="padding:24px 34px 0"><div style="' + LBL + '">' + (en ? 'CURRENT CONTRACTUAL COMMITMENT' : 'COMPROMISO CONTRACTUAL ACTUAL') + '</div><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin-top:4px">';
+  e += '<tr><td style="' + ROWL + '">' + (en ? 'Monthly mortgage' : 'Hipoteca mensual') + '</td><td style="' + ROWR + '">' + (F.isDB ? (en ? 'Paid off' : 'Pagada') : fmt0(F.mmo)) + '</td></tr>';
+  e += '<tr><td style="' + ROWL + '">' + (en ? 'Annual maintenance' : 'Mantenimiento anual') + '</td><td style="' + ROWR + '">' + fmt0(F.mf) + '</td></tr>';
+  e += '<tr><td style="' + ROWL + '">' + (en ? 'Maintenance per month' : 'Mantenimiento al mes') + '</td><td style="' + ROWR + '">' + fmt0(mfMo) + '</td></tr>';
+  e += '<tr><td style="' + ROWL + 'font-weight:700">' + (en ? 'Estimated monthly total' : 'Total mensual estimado') + '</td><td style="' + ROWR + 'font-size:16px">' + fmt0(totMo) + '</td></tr>';
+  e += '</table>';
+  if (note) e += '<p style="font-size:12.5px;color:' + MUT + ';line-height:1.55;margin:10px 0 0">' + note + '</p>';
+  if (OL) e += '<p style="font-size:12.5px;color:' + MUT + ';line-height:1.55;margin:4px 0 0">' + (en ? 'Original loan: ' : 'Préstamo original: ') + '<b>' + fmt0(OL.financed) + '</b> ' + (en ? 'financed' : 'financiados') + ' · ' + fmt0(OL.mmo) + ' × ' + OL.term + (en ? ' payments = ' : ' pagos = ') + '<b>' + fmt0(OL.totalScheduled) + '</b>' + (en ? ' total scheduled (interest ' : ' total programado (interés ') + fmt0(OL.totalInterest) + ')</p>';
+  if (!F.isDB && F.MG.status === 'pending'){ var miss = qMissingLoan(); if (miss.length) e += '<p style="font-size:12.5px;color:#9a6a12;line-height:1.55;margin:4px 0 0"><b>' + (en ? 'PENDING — missing: ' : 'PENDIENTE — falta: ') + miss.join(', ') + '.</b></p>'; }
+  e += '</td></tr>';
+  var gv = function(id){ var el = $(id); return el ? el.textContent : ''; };
+  var prows = [['q_w30', 'Próximos 30 días', 'Next 30 days'], ['q_w90', 'Próximos 90 días', 'Next 90 days'], ['q_t1', 'Próximo 1 año', 'Next 1 year'], ['q_t3', 'Próximos 3 años', 'Next 3 years'], ['q_t10', 'Próximos 10 años', 'Next 10 years'], ['q_t20', 'Próximos 20 años', 'Next 20 years'], ['q_t30', 'Próximos 30 años', 'Next 30 years']];
+  var prowHtml = '';
+  prows.forEach(function(r){ var raw = gv(r[0]); if (!raw || raw === '—') return; var v = parseFloat(String(raw).replace(/[^0-9.]/g, '')); if (!(v > 0)) return; prowHtml += '<tr><td style="' + ROWL + '">' + (en ? r[2] : r[1]) + '</td><td style="' + ROWR + '">' + fmt0(v) + '</td></tr>'; });
+  if (prowHtml){
+    var foot = (en ? '* Illustrative projections: initial maintenance of ' : '* Proyecciones ilustrativas: mantenimiento inicial de ') + fmt0(F.mf) + (en ? '/year increasing ' : '/año con aumento del ') + F.esc + (en ? '% annually' : '% anual') + (!F.isDB && F.mmo > 0 && F.MG.status === 'ok' ? (en ? ', plus ' : ', más ') + F.MG.months + (en ? ' estimated mortgage payments of ' : ' pagos hipotecarios estimados de ') + fmt0(F.mmo) : '') + (en ? '. The final mortgage figure may vary based on actual amortization, payment dates, and the confirmed balance.' : '. La cifra hipotecaria final puede variar según amortización real, fecha de pago y saldo confirmado.') + (!F.isDB && F.payoff > 0 && F.MG.level !== 'verificado' ? (en ? ' The balance of ' : ' El saldo de ') + fmt0(F.payoff) + (en ? ' still requires verification.' : ' aún requiere verificación.') : '');
+    e += '<tr><td style="padding:24px 34px 0"><div style="' + LBL + '">' + (en ? 'PROJECTION — THE TRAP' : 'PROYECCIÓN — LA TRAMPA') + '</div><div style="font-size:13px;color:' + MUT + ';margin-top:3px">' + (en ? 'Estimated cost of keeping the timeshare' : 'Costo estimado de conservar el tiempo compartido') + '</div><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin-top:4px">' + prowHtml + '</table><p style="font-size:11.5px;color:' + MUT + ';line-height:1.55;margin:10px 0 0">' + foot + '</p></td></tr>';
+  }
+  e += '<tr><td style="padding:26px 34px 28px"><div style="border-top:1px solid ' + LINE + ';padding-top:16px;font-size:14px;color:' + SLATE + ';line-height:1.55">' + (en ? 'Best regards,' : 'Un abrazo,') + '<br><br><b>Sebastian Short</b><br>Senior Case Builder · Linx Legal Inc.<br><span style="color:' + MUT + '">sebastian.short@linxlegal.com · (689) 326-8754 · investiganos.com</span></div></td></tr>';
+  e += '</table></td></tr></table>';
+  var h = '<!DOCTYPE html><html lang="' + (en ? 'en' : 'es') + '"><head><meta charset="utf-8"><title>48-MO PUSH — ' + escH(cur.name) + '</title></head><body style="margin:0;padding:20px 8px;background:#f2f5f6;font-family:Arial,Helvetica,sans-serif;color:#23323b;">';
+  h += '<div ' + QDOC_BAR + '><b>🚀 48-MO PUSH</b><span style="font-size:13px">' + (en ? 'To: ' : 'Para: ') + '<input id="emTo" value="' + escH(cur.email || '') + '" style="padding:5px;border-radius:4px;border:none;min-width:210px"> ' + (en ? 'Subject: ' : 'Asunto: ') + '<input id="emSubj" value="' + escH(subj) + '" style="padding:5px;border-radius:4px;border:none;min-width:300px"></span>' +
+    '<button ' + QDOC_BTN + ' onclick="qcCopy(this)">📋 COPY FORMATTED EMAIL</button>' +
+    '<button ' + QDOC_BTN + ' onclick="qcGmail()">✉️ OPEN IN GMAIL</button>' +
+    qDocToggleBtn('quote48', en) +
+    qDocRefreshBtn('quote48', en) +
+    '<span style="font-size:12px;opacity:.85">' + (en ? 'Special 48-month push quote — no credit check, $299 down, balance split evenly over 48 months. Nothing is sent automatically.' : 'Cotización especial del plan 48 meses — sin verificación de crédito, $299 de enganche, saldo dividido en partes iguales a 48 meses. Nada se envía automáticamente.') + '</span></div>';
   h += '<div id="eml" contenteditable="true">' + e + '</div>';
   h += '<scr' + 'ipt>function qcCopy(b){var n=document.getElementById("eml");try{navigator.clipboard.write([new ClipboardItem({"text/html":new Blob([n.innerHTML],{type:"text/html"}),"text/plain":new Blob([n.innerText],{type:"text/plain"})})]).then(function(){b.textContent="✅ COPIADO";});}catch(err){var r=document.createRange();r.selectNode(n);var s=getSelection();s.removeAllRanges();s.addRange(r);document.execCommand("copy");b.textContent="✅ COPIADO";}}' +
     'function qcGmail(){var to=document.getElementById("emTo").value,su=document.getElementById("emSubj").value,tx=document.getElementById("eml").innerText;window.open("https://mail.google.com/mail/?view=cm&fs=1&to="+encodeURIComponent(to)+"&su="+encodeURIComponent(su)+"&body="+encodeURIComponent(tx),"_blank");}</scr' + 'ipt>';
