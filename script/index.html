@@ -3991,7 +3991,7 @@ function qRecalc(){
   // (select value AND this pass's fmo, so the financing math below uses 48 immediately).
   // Switching AWAY from in-house never reverts the months — this only ever sets, never unsets.
   if (paym === 'inhouse'){ var fmEl2 = $('q_fmo'); if (fmEl2 && fmEl2.value !== '48') fmEl2.value = '48'; if (fmo !== 48) fmo = 48; }
-  var cpS = $('q_commpay'); if (cpS) cpS.value = (paym === 'check' || paym === 'equity' || paym === 'inhouse') ? 'ach' : paym;
+  var cpS = $('q_commpay'); if (cpS) cpS.value = (paym === 'inhouse') ? 'uga' : (paym === 'check' || paym === 'equity') ? 'ach' : paym; // COMMPAY_REFLECT_V1: dropdown mirrors FORMA DE PAGO (in-house rides the 4% UGA bucket — no in-house option exists)
   var isFin = paym === 'ucfs' || paym === 'equity' || paym === 'uga' || paym === 'inhouse';
   var feeKnown = fee > 0;
   var mwEl = $('q_minwarn');
@@ -4076,8 +4076,13 @@ function qRecalc(){
   $('q_mosn').textContent = mosn;
   var t12 = feeKnown ? fmtD(amort(bal, fapr, 12)) : '—', t24 = feeKnown ? fmtD(amort(bal, fapr, 24)) : '—', t36 = feeKnown ? fmtD(amort(bal, fapr, 36)) : '—';
   $('q_t12').textContent = t12; $('q_t24').textContent = t24; $('q_t36').textContent = t36;
-  var comm = feeKnown ? Math.max(0, fee - qAdminFor(fee)) * 0.10 : 0;
-  if (COMBO && feeKnown){ var cTot3 = 0, cSvc3 = 0, cAct3 = 0; COMBO.forEach(function(cc){ if (cc.active){ cAct3++; cTot3 += cc.price.total; cSvc3 += cc.price.service; } }); if (cAct3 > 1 && Math.abs(fee - cTot3) < 1) comm = cSvc3 * 0.10; }
+  // COMMPAY_REFLECT_V1 (Sebastian, 2026-11-08): the commission REFLECTS the FORMA DE PAGO —
+  // CC/ACH (and check/equity) 10%, UCFS 8%, UGA / in-house 4%. The label and the q_commpay
+  // dropdown follow the payment method, and the amount uses that method's rate.
+  var commRate = (paym === 'ucfs') ? 0.08 : (paym === 'uga' || paym === 'inhouse') ? 0.04 : 0.10;
+  var comm = feeKnown ? Math.max(0, fee - qAdminFor(fee)) * commRate : 0;
+  if (COMBO && feeKnown){ var cTot3 = 0, cSvc3 = 0, cAct3 = 0; COMBO.forEach(function(cc){ if (cc.active){ cAct3++; cTot3 += cc.price.total; cSvc3 += cc.price.service; } }); if (cAct3 > 1 && Math.abs(fee - cTot3) < 1) comm = cSvc3 * commRate; }
+  var clR = $('q_commlab'); if (clR && !qIsDB()) clR.textContent = 'Comisión ' + Math.round(commRate * 100) + '%';
   var commBaseTxt = feeKnown ? '(base ' + fmtD(Math.max(0, fee - qAdminFor(fee))) + ' — tarifa sin admin ni cargo CC, como en la hoja de comisi\u00f3n)' : '';
   if (qIsDB() && sheetFeeActive && feeKnown){ comm = 300 + padCommDb; commBaseTxt = '(deed-back: $300 fijo + \u00bd del pad de ' + fmtD(padDb) + ' = ' + fmtD(comm) + ')'; }
   $('q_comm').textContent = feeKnown ? fmtD(comm) : '—';
