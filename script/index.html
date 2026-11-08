@@ -2649,6 +2649,16 @@ function qMonthlyTxtRender(){
 function qCopyMonthlyTxt(btn){
   var t = ''; try { t = qMonthlyTxt(); } catch(e){}
   if (!t){ alert('Pon un precio primero — sin precio no hay pago mensual que copiar.'); return; }
+  // COPYTOTAL_V1 (Sebastian, 2026-11-08): the copied text leads with the total price line —
+  // "PRECIO TOTAL $6,729" + blank line + the monthly text. The paid-in-full line already
+  // leads with the total, so no header is added there.
+  try {
+    var feeC = qNum('q_fee');
+    if (feeC > 0 && !/^(Precio total:|Total price:)/.test(t)){
+      var hdrC = (typeof cur !== 'undefined' && cur && cur.lang === 'en' ? 'TOTAL PRICE ' : 'PRECIO TOTAL ') + '$' + Math.round(feeC).toLocaleString('en-US');
+      t = hdrC + '\n\n' + t;
+    }
+  } catch(e){}
   function done(){ if (btn){ var old = btn.textContent; btn.textContent = '✅ COPIADO'; setTimeout(function(){ btn.textContent = old; }, 1600); } }
   if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, done);
   else { var ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch(e){} ta.remove(); done(); }
