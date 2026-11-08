@@ -2565,6 +2565,7 @@ function qPush48Fee(){
   var F = qCaseFacts();
   var fee = 0;
   if (F.isDB && $('q_sheetfee') && qNum('q_sheetfee') > 0) fee = qNum('q_sheetfee') + 299 + qDbPad() + qDbCycAmt();
+  else if (!(qNum('q_payoff') > 0) && $('q_sheetfee') && qNum('q_sheetfee') > 0) fee = qNum('q_sheetfee') + 299 + qDbPad() + qDbCycAmt(); // no hay hipoteca (saldo 0): se cotiza por la lista aunque el dtype no este marcado DB
   else if (qNum('q_payoff') > 0){
     var pct = parseFloat(($('q_feepct') || {}).value || '47') || 47;
     var svc = qNum('q_payoff') * pct / 100; if (svc < 3500) svc = 3500;
