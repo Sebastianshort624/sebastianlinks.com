@@ -630,15 +630,9 @@ sideApply();
     <div style="font-size:.85em;font-weight:800;letter-spacing:1.5px">PRECIO TOTAL</div>
     <div id="q_bigprice_amt" style="font-size:2.4em;font-weight:900;line-height:1.15">—</div>
     <div id="q_bigprice_math" style="font-size:1em;font-weight:600;white-space:pre-wrap"></div>
+    <button type="button" onclick="qCopyMonthlyTxt(this)" style="background:#fff;color:#0b3d91;border:none;border-radius:6px;padding:6px 14px;font-weight:800;cursor:pointer;font-family:inherit;margin-top:10px">📋 COPIAR TEXTO</button>
   </div>
-  <!-- MONTHLYTXT_V1 (Sebastian, 2026-11-08): right under the total price, the EXACT monthly payment for whatever price / % / term is on the panel, as a copy-paste text message. Resort name, never the word timeshare, when the resort is on record. -->
-  <div id="q_monthlytxt_box" style="background:#ecfdf5;border:2px solid #0e7c86;border-radius:8px;padding:10px 12px;margin:0 0 10px">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-      <div style="font-size:.85em;font-weight:800;letter-spacing:1px;color:#0e7c86">💬 TEXTO — PAGO MENSUAL EXACTO</div>
-      <button type="button" onclick="qCopyMonthlyTxt(this)" style="background:#0e7c86;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-weight:800;cursor:pointer;font-family:inherit">📋 COPIAR TEXTO</button>
-    </div>
-    <div id="q_monthlytxt_body" style="white-space:pre-wrap;font-size:1.05em;font-weight:700;color:#111827;line-height:1.5;margin-top:6px">—</div>
-  </div>
+  <!-- MONTHLYTXT_BOX_REMOVED_V1 (Sebastian, 2026-11-08): the green TEXTO box is gone — the monthly text lives under PRECIO TOTAL in the blue box now; the copy button moved into the blue box. -->
   <div id="q_minwarn" style="display:none;background:#fef2f2;border:2px solid #b91c1c;color:#b91c1c;font-weight:700;padding:8px 10px;margin:0 0 8px;border-radius:6px">PRECIO MÍNIMO LINX: $3,500 + $299 ADMIN = $3,799 — NUNCA OFRECER MENOS</div>
   <div class="qsm" id="q_minline" style="margin:-4px 0 8px">PRECIO MÍNIMO LINX: $3,500 + $299 ADMIN = <b>$3,799</b> — el precio más bajo que podemos ofrecer.</div>
   <label class="qf">FORMA DE PAGO <select id="q_paym" onchange="qPaymChange()">
