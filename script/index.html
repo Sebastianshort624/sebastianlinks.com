@@ -3569,9 +3569,15 @@ function qSync(c){
     else if (c.payoff > 0 && c.fee > 0){
       var svcA = c.fee - 299; if (svcA >= 10000) svcA = c.fee - 399;
       var imp = svcA / c.payoff * 100, snap = Math.round(imp * 2) / 2;
-      if (Math.abs(imp - snap) < 0.26 && snap >= 30 && snap <= 80) want = String(snap);
+      if (Math.abs(imp - snap) < 0.02 && snap >= 30 && snap <= 80) want = String(snap);
+      else if (imp >= 30 && imp <= 80) want = String(Math.round(imp * 100) / 100); // fee was not priced on a dropdown step (deal price / manual): show its EXACT implied % so the % always matches the dollar amount
     }
-    if (want !== null){ for (var oi = 0; oi < fp.options.length; oi++){ if (fp.options[oi].value === want){ fp.value = want; break; } } }
+    if (want !== null){
+      var found = false;
+      for (var oi = 0; oi < fp.options.length; oi++){ if (fp.options[oi].value === want){ found = true; break; } }
+      if (!found){ var op = document.createElement('option'); op.value = want; op.textContent = want + '%'; fp.appendChild(op); }
+      fp.value = want;
+    }
   })();
   $('q_paym').value = c ? (c.paymethod || 'ach') : 'ach';
   qFmoMode();
