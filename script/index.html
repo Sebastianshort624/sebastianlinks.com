@@ -2641,8 +2641,11 @@ function qMonthlyTxt(){
               : ('Precio total: ' + fC(ftot) + ' — pago completo, sin pagos mensuales · ' + outP + '\n\n~Sebastian');
   }
   var mo = amort(bal, fapr, fmo);
-  if (en) return fC(mo) + ' / month · No credit check · ' + outP + '\n\n~Sebastian';
-  return fC(mo) + ' / mes · Sin correr credito · ' + outP + '\n\n~Sebastian';
+  // MONTHLY_NOCREDIT_V1 (Sebastian, 2026-11-08): "Sin correr credito" prints ONLY when the
+  // financing term is 48 months; below 48 months the phrase is omitted entirely.
+  var nc = fmo >= 48;
+  if (en) return fC(mo) + ' / month' + (nc ? ' · No credit check' : '') + ' · ' + outP + '\n\n~Sebastian';
+  return fC(mo) + ' / mes' + (nc ? ' · Sin correr credito' : '') + ' · ' + outP + '\n\n~Sebastian';
 }
 function qMonthlyTxtRender(){
   var el = $('q_monthlytxt_body'); if (!el) return;
