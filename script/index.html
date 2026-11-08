@@ -3595,11 +3595,14 @@ function qDbPad(){ return (qNum('q_padcomm') || 0) * 2; }
 function qDbCycN(){ return Math.max(0, Math.round(qNum('q_dbcyc') || 0)); }
 function qDbCycAmt(){ var n = qDbCycN(); if (!n) return 0; var mf = qNum('q_mf'), esc = qNum('q_esc') || 8, s = 0; for (var k = 0; k < n; k++) s += mf * Math.pow(1 + esc / 100, k); return Math.round(s); }
 function qFmoMode(){
+  // FMO_CAP48_V1 (Sebastian, 2026-11-08): financing months NEVER above 48 — the option list is
+  // capped here and any stored/current value above 48 clamps to 48 instead of staying selectable.
   var pm = $('q_paym'), fm = $('q_fmo'); if (!pm || !fm) return;
   var lab = $('q_fmolab'); if (lab) lab.textContent = 'MESES FINANC.';
   if (fm.getAttribute('data-mode') === 'm') return;
   var curV = parseInt(fm.value || '0', 10);
-  var opts = [6, 12, 18, 24, 30, 36, 42, 48, 54, 60];
+  if (curV > 48) curV = 48;
+  var opts = [6, 12, 18, 24, 30, 36, 42, 48];
   var h = '';
   for (var i = 0; i < opts.length; i++) h += '<option value="' + opts[i] + '">' + opts[i] + '</option>';
   fm.innerHTML = h;
@@ -3647,7 +3650,7 @@ function qSync(c){
   })();
   $('q_paym').value = c ? (c.paymethod || 'ach') : 'ach';
   qFmoMode();
-  $('q_fapr').value = (c && c.fapr > 0) ? c.fapr : 19.99; $('q_fmo').value = (c && c.fmo > 0) ? c.fmo : 36;
+  $('q_fapr').value = (c && c.fapr > 0) ? c.fapr : 19.99; $('q_fmo').value = (c && c.fmo > 0) ? Math.min(c.fmo, 48) : 36; // FMO_CAP48_V1: stored 54/60 clamps to 48
   if (!$('q_fmo').value) $('q_fmo').value = '36';
   $('q_pmt').value = c ? (c.pmtmo || '') : '';
   $('q_downt').value = c ? (c.downt || 'dol') : 'dol';
