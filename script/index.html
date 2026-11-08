@@ -2611,18 +2611,16 @@ function qMonthlyTxt(){
   var en = cur.lang === 'en';
   var outP = qOutPhrase(en);
   var fC = function(v){ return '$' + Number(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
-  // MONTHLYSIG_V1 (Sebastian, 2026-11-08: "I told you to put ~Sebastian below it"): every output of
-  // this builder ends with the signature line "~Sebastian" on its own line.
+  // MONTHLY_ORIGTEXT_V1 (Sebastian, 2026-11-08): HIS verbatim template is
+  // "$148 / mes · Sin correr credito · y sales del tiempo compartido" + blank line + "~Sebastian";
+  // the printed term added earlier today is removed, and the signature follows a blank line.
   if (!(bal > 0) || !(fmo > 0)){
-    return en ? ('Total price: ' + fC(ftot) + ' — paid in full, no monthly payments · ' + outP + '\n~Sebastian')
-              : ('Precio total: ' + fC(ftot) + ' — pago completo, sin pagos mensuales · ' + outP + '\n~Sebastian');
+    return en ? ('Total price: ' + fC(ftot) + ' — paid in full, no monthly payments · ' + outP + '\n\n~Sebastian')
+              : ('Precio total: ' + fC(ftot) + ' — pago completo, sin pagos mensuales · ' + outP + '\n\n~Sebastian');
   }
   var mo = amort(bal, fapr, fmo);
-  // MONTHLYLINE_V2 (Sebastian correction, 2026-11-08): ONE line only — the hook (exact monthly +
-  // term + resort name). He never ordered the "Precio total: ..." detail line; it is removed.
-  // (The PUSH 48 texts keep their own canonical detail lines — untouched.)
-  if (en) return fC(mo) + ' / month · ' + fmo + ' months · ' + outP + '\n~Sebastian';
-  return fC(mo) + ' / mes · ' + fmo + ' meses · ' + outP + '\n~Sebastian';
+  if (en) return fC(mo) + ' / month · No credit check · ' + outP + '\n\n~Sebastian';
+  return fC(mo) + ' / mes · Sin correr credito · ' + outP + '\n\n~Sebastian';
 }
 function qMonthlyTxtRender(){
   var el = $('q_monthlytxt_body'); if (!el) return;
