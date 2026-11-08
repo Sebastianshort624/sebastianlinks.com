@@ -3330,6 +3330,43 @@ function qCaSourceHtml(L){ // ALMA: ORGANIZED source evidence — contacts, stru
   }
   return h;
 }
+function qCaRecapHtml(L){ // CA_RECAP_V1 (Sebastian, 2026-11-08): the CA DISCOVERY opens with a RECAP — reasons this is a strong case, one line each, built ONLY from representations documented in the record notes. A theme with no documentation never prints.
+  var en = (L === 'en');
+  var low = String((cur && cur.notes) || '').toLowerCase();
+  function has(re){ return re.test(low); }
+  var triedCancel = /trat\w* de cancelar|intent\w* cancelar|no lo dejaron|no los dejaron|tried to cancel|wouldn'?t let|would not let/.test(low);
+  var TH = [
+    { re: /impenetrable|blindad/, es: 'Ese contrato se lo vendieron como impenetrable — que nadie salía de ahí.', en: 'They sold you that contract as impenetrable — nobody ever gets out.' },
+    { re: /inversi|investment/, es: 'Les dijeron que era una inversión que iba a subir de valor. No subió nada — lo que subió fue el costo de quedarse.', en: 'They told you it was an investment that would go up in value. Nothing went up — except the cost of keeping it.' },
+    { re: /tarifas nunca|nunca (iban a )?subir|fees would never|never go up/, es: 'Les dijeron que las tarifas nunca iban a subir. Subieron.', en: 'They told you the fees would never go up. They went up.' },
+    { re: /solo pagar\w+ (tarifas )?si us|only pay[\s\S]{0,30}if you use|solo pagaba/, es: 'Les dijeron que solo pagaban tarifas si usaban el tiempo compartido. Pagan lo usen o no lo usen.', en: 'They told you you would only pay fees if you used it. You pay whether you use it or not.' },
+    { re: /tax write|deducible|write ?off|impuestos/, es: 'Les dijeron que era deducible de impuestos. No lo es.', en: 'They told you it was a tax write-off. It is not.' },
+    { re: /multa|recargo|penalt|late charge/, es: 'Y si no pagan las tarifas, les caen multas y recargos — y la deuda nunca desaparece.', en: 'And if you do not pay the fees, the fines and late charges pile on — and the debt never goes away.' },
+    { re: /presi[oó]n|oferta solo|solo ese d[ií]a|ese d[ií]a|only (that|this) day|pressure/, es: 'La oferta era solo ese día — presión para firmar sin poder pensarlo.', en: 'The offer was that day only — pressure to sign without time to think.' },
+    { re: /rentar|rentarlo|alquilar|rental|rent it/, es: 'Les dijeron que lo podían rentar. Nunca pasó.', en: 'They told you you could rent it out. It never happened.' },
+    { re: /cancelar en cualquier momento|cancel any ?time|cancelar cuando|cancel whenever/, es: triedCancel ? 'Les dijeron que podían cancelar cuando quisieran. Ustedes lo intentaron — y no los dejaron.' : 'Les dijeron que podían cancelar cuando quisieran.', en: triedCancel ? 'They told you you could cancel anytime. You tried — and they would not let you.' : 'They told you you could cancel anytime.' },
+    { re: /no (pudo|pudieron|han podido|pudimos) usar|couldn'?t use|can'?t use|fechas ni los puntos/, es: 'Después de firmar: no han podido usar ni las fechas ni los puntos.', en: 'After signing: you have not been able to use the dates or the points.' },
+    { re: /no (pudo|pudieron) vender|venderlo tampoco|no hay mercado|no resale|can'?t sell/, es: 'Y venderlo tampoco fue salida — no hay mercado para eso.', en: 'And selling it was no way out either — there is no market for it.' }
+  ];
+  var lines = [];
+  TH.forEach(function(t){ if (has(t.re)) lines.push(en ? t.en : t.es); });
+  var caName = caScriptName(cur && cur.ca); if (en && caName === 'nuestro analista de casos') caName = 'our case analyst';
+  var rsName = ''; try { rsName = qLegalName() || ''; } catch(e){} if (!rsName) rsName = cur.resort || '';
+  var h = '<div style="border:2px solid #1f7a8c;border-radius:12px;overflow:hidden;margin:14px 0 20px">';
+  h += '<div style="background:#1f7a8c;color:#fff;padding:16px 20px"><div style="font-size:11px;font-weight:700;letter-spacing:2px;color:#ccf3f1">' + (en ? 'CASE RECAP — CASE BUILDER' : 'RESUMEN DEL CASO — CASE BUILDER') + '</div><div style="font-size:21px;font-weight:700;margin-top:4px">' + escH(cur.name) + '</div>' + (cur.resort ? '<div style="font-size:13.5px;color:#e9f6f7;margin-top:2px">' + escH(cur.resort) + '</div>' : '') + '</div>';
+  h += '<div style="padding:14px 20px 4px;font-size:15.5px;line-height:1.55">&ldquo;' + (en ? 'I just want to make sure the information our department has on your case is accurate.' : 'Solo quiero asegurarme de que la información que nuestro departamento tiene de su caso sea la correcta.') + '&rdquo;<br><br>&ldquo;' + (en ? 'And I can see you and ' + escH(caName) + ' already put together a <b>solid foundation</b> for your case — with that foundation, I can build a case against ' + escH(rsName) + '.' : 'Y veo que ' + escH(caName) + ' y ustedes ya dejaron armada <b>una base bien sólida</b> de su caso — con esa base, yo puedo construir un caso contra ' + escH(rsName) + '.') + '&rdquo;</div>';
+  h += '<div style="padding:8px 20px 2px;font-size:12.5px;font-weight:700;letter-spacing:1.5px;color:#1a5968">' + (en ? 'WHY THIS IS A STRONG CASE' : 'POR QUÉ SU CASO ES FUERTE') + '</div>';
+  if (lines.length){
+    lines.forEach(function(t, i){
+      h += '<div style="display:flex;gap:12px;padding:10px 20px;border-top:1px solid #e6edef;font-size:15.5px;line-height:1.5"><div style="flex:0 0 26px;height:26px;border-radius:50%;background:#1f7a8c;color:#fff;font-weight:700;font-size:13.5px;text-align:center;line-height:26px">' + (i + 1) + '</div><div>' + escH(t) + '</div></div>';
+    });
+    h += '<div style="background:#14532d;color:#fff;padding:14px 20px;font-size:17px;font-weight:700;text-align:center">&ldquo;' + (en ? 'That is not just a bad deal — that is a case.' : 'Eso no es un mal negocio nada más — eso es un caso.') + '&rdquo;</div>';
+  } else {
+    h += '<div style="padding:10px 20px 16px;font-size:15px">' + (en ? 'No sales representations are documented in the CA report yet — this recap is built on the call.' : 'Todavía no hay representaciones documentadas en el reporte del CA — este resumen se arma en la llamada.') + '</div>';
+  }
+  h += '</div>';
+  return h;
+}
 function qCaHtml(){
   if (!cur){ alert('Selecciona un cliente primero.'); return; }
   qDocOpen(qCaBuild(qDocDefLang()));
@@ -3340,6 +3377,7 @@ function qCaBuild(L){
   h += '<div ' + QDOC_BAR + '><b>📋 CA DISCOVERY</b><span style="font-size:13px">' + (en ? 'Only what the Case Analyst documented. Nothing from the CB interview goes here.' : 'Solo lo que el Case Analyst documentó. Nada de la entrevista del CB va aquí.') + '</span>' + qDocToggleBtn('ca', en) + qDocRefreshBtn('ca', en) + '<button ' + QDOC_BTN + ' onclick="caCopy(this)">' + (en ? '📋 COPY REPORT' : '📋 COPIAR REPORTE') + '</button></div>';
   h += '<div id="caDoc"><h1 style="color:#0b3d91;font-size:24px;margin:4px 0">CA DISCOVERY — ' + escH(cur.name) + '</h1>';
   h += '<p style="font-size:13px;color:#6b7280">' + (en ? 'Source: client file (CRM / Case Analyst interview). The CA\'s original questions are not recorded as question-and-answer in the file — no questions or answers are invented. Anything missing is listed in one line at the end.' : 'Fuente: expediente del cliente (CRM / entrevista del Case Analyst). Las preguntas originales del CA no están registradas como pregunta-y-respuesta en el expediente — no se inventan preguntas ni respuestas. Lo que falta se lista en una sola línea al final.') + '</p>';
+  h += qCaRecapHtml(L);
   h += qCaSourceHtml(L);
   // Undocumented topics now render as ONE compact line at the end of qCaSourceHtml (2026-10-23 reformat).
   h += '</div>';
