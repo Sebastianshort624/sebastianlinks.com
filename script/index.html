@@ -2555,14 +2555,45 @@ function qQuoteCurBuild(L){
 // NO CREDIT CHECK, $299 DOWN, balance split evenly (straight split) over 48 monthly payments.
 // Same professional email as QUOTE + CURRENT, same QC gate; it FORCES the 48/$299 structure
 // regardless of the financing settings on the panel. Nothing is sent automatically.
-function qQuote48Subj(en){
-  qRecalc();
-  var mmo = qNum('q_mmo'), mf = qNum('q_mf'), term = qNum('q_term') || 120, fee = qNum('q_fee');
+function qPush48Fee(){
+  // PUSH48_ALL_V1 (Sebastian, 2026-11-08): the 48-MO PUSH exists for EVERY client, priced off the
+  // % he has SELECTED in NUESTRA TARIFA (q_feepct — 35% or whatever he picks), never gated by the
+  // quote QC checklist and never dependent on whatever happens to sit in the fee box.
+  // Mortgage: service = saldo x pct% (floor $3,500) + admin ($299 / $399 at $10,000+ service).
+  // Deed-back: the lista price as always (no % of payoff on deed-backs). No saldo on record ->
+  // fall back to the fee box / combo total so the option still exists.
   var F = qCaseFacts();
-  if (F.isDB && $('q_sheetfee') && $('q_sheetfee').value !== '' && qNum('q_sheetfee') > 0) fee = qNum('q_sheetfee') + 299 + qDbPad() + qDbCycAmt();
+  var fee = 0;
+  if (F.isDB && $('q_sheetfee') && qNum('q_sheetfee') > 0) fee = qNum('q_sheetfee') + 299 + qDbPad() + qDbCycAmt();
+  else if (qNum('q_payoff') > 0){
+    var pct = parseFloat(($('q_feepct') || {}).value || '47') || 47;
+    var svc = qNum('q_payoff') * pct / 100; if (svc < 3500) svc = 3500;
+    fee = Math.round(svc) + (svc >= 10000 ? 399 : 299);
+  }
+  if (!(fee > 0)) fee = qNum('q_fee');
   if (!(fee > 0)){ var CT = 0; qComboCalc().forEach(function(c){ CT += c.price.total; }); if (CT > 0) fee = CT; }
   var down = fee > 299 ? 299 : 0;
-  var mo48 = fee > 0 ? Math.round((fee - down) / 48 * 100) / 100 : 0;
+  var mo = fee > 0 ? Math.round((fee - down) / 48 * 100) / 100 : 0;
+  return { fee: fee, down: down, mo: mo };
+}
+function qPush48Text(){
+  if (typeof cur === 'undefined' || !cur) return '';
+  qRecalc();
+  var P = qPush48Fee();
+  if (!(P.fee > 0) || !(P.mo > 0)) return '';
+  var en = cur.lang === 'en';
+  var f0 = function(v){ return '$' + Math.round(v).toLocaleString('en-US'); };
+  if (en) return f0(P.mo) + ' / month · No credit check · and you\'re out of the timeshare\n' +
+    'Special 48-month plan: ' + f0(P.fee) + ' total · ' + f0(P.down) + ' down today · 48 payments of ' + f0(P.mo) + ' · no credit check';
+  return f0(P.mo) + ' / mes · Sin correr credito · y sales del tiempo compartido\n' +
+    'Plan especial 48 meses: ' + f0(P.fee) + ' en total · ' + f0(P.down) + ' de enganche hoy · 48 pagos de ' + f0(P.mo) + ' · sin verificación de crédito';
+}
+function qQuote48Subj(en){
+  qRecalc();
+  var mmo = qNum('q_mmo'), mf = qNum('q_mf'), term = qNum('q_term') || 120;
+  var F = qCaseFacts();
+  var P48 = qPush48Fee();
+  var fee = P48.fee, down = P48.down, mo48 = P48.mo;
   var f2 = function(v){ return '$' + Math.round(v).toLocaleString('en-US'); };
   var hook = en ? ' · NO CREDIT CHECK · $299 DOWN' : ' · SIN VERIFICACIÓN DE CRÉDITO · $299 DE ENGANCHE';
   if (!(mo48 > 0)) return '';
@@ -2572,8 +2603,8 @@ function qQuote48Subj(en){
 }
 function qQuote48Html(){
   if (!cur){ alert('Selecciona un cliente primero.'); return; }
-  var qf = qQualityCheck();
-  if (qf.length){ alert('⛔ CONTROL DE CALIDAD — 48-MO PUSH NO se generó:\n• ' + qf.join('\n• ') + '\n\nCorrige estos puntos y vuelve a intentarlo. Nada se copió ni se envió.'); return; }
+  qRecalc();
+  if (!(qPush48Fee().fee > 0)){ alert('Este cliente no tiene saldo ni tarifa en el panel — pon un precio primero.'); return; }
   qDocOpen(qQuote48Build(qDocDefLang()));
 }
 function qQuote48Build(L){
@@ -2581,12 +2612,11 @@ function qQuote48Build(L){
   qRecalc();
   var F = qCaseFacts();
   var legal = qLegalName();
-  var fee = qNum('q_fee');
-  if (F.isDB && $('q_sheetfee') && $('q_sheetfee').value !== '' && qNum('q_sheetfee') > 0) fee = qNum('q_sheetfee') + 299 + qDbPad() + qDbCycAmt();
-  if (!(fee > 0)){ var CT = 0; qComboCalc().forEach(function(c){ CT += c.price.total; }); if (CT > 0) fee = CT; }
-  var down = fee > 299 ? 299 : 0;
+  var P48 = qPush48Fee();
+  var fee = P48.fee;
+  var down = P48.down;
   var fmo = 48;
-  var ourMo = fee > 0 ? Math.round((fee - down) / 48 * 100) / 100 : 0;
+  var ourMo = P48.mo;
   var fmt0 = function(v){ return '$' + Math.round(v).toLocaleString('en-US'); };
   var today = new Date().toLocaleDateString(en ? 'en-US' : 'es-US', { year: 'numeric', month: 'long', day: 'numeric' });
   var subj = qQuote48Subj(en);
@@ -2977,6 +3007,7 @@ function qTextsBuild(){
   h += block('tx1', 'CADA LUNES — SALIDAS DE LA SEMANA', TEXTS_OUT_T1);
   h += block('tx2', 'NO CONTESTÓ — PRIMERA VEZ', TEXTS_OUT_T2);
   h += block('tx3', 'PLAN DE PAGOS — NÚMEROS DEL CLIENTE', qTextsPlan() || TEXTS_OUT_T3_PH);
+  h += block('tx6', '🚀 PUSH 48 — ' + (typeof cur !== 'undefined' && cur ? escH(cur.name) : ''), qPush48Text() || 'Selecciona un cliente con saldo o tarifa para ver su PUSH 48');
   h += block('tx4', 'TEXT 4 — ANTES DE LA LLAMADA (ES)', TEXTS_OUT_T4);
   h += block('tx5', 'TEXT 5 — BEFORE THE CALL (EN)', TEXTS_OUT_T5);
   h += '</div>';
