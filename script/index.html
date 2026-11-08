@@ -2564,15 +2564,15 @@ function qPush48Fee(){
   // fall back to the fee box / combo total so the option still exists.
   var F = qCaseFacts();
   var fee = 0;
-  if (F.isDB && $('q_sheetfee') && qNum('q_sheetfee') > 0) fee = qNum('q_sheetfee') + 299 + qDbPad() + qDbCycAmt();
-  else if (!(qNum('q_payoff') > 0) && $('q_sheetfee') && qNum('q_sheetfee') > 0) fee = qNum('q_sheetfee') + 299 + qDbPad() + qDbCycAmt(); // no hay hipoteca (saldo 0): se cotiza por la lista aunque el dtype no este marcado DB
-  else if (qNum('q_payoff') > 0){
-    var pct = parseFloat(($('q_feepct') || {}).value || '47') || 47;
-    var svc = qNum('q_payoff') * pct / 100; if (svc < 3500) svc = 3500;
-    fee = Math.round(svc) + (svc >= 10000 ? 399 : 299);
-  }
-  if (!(fee > 0)) fee = qNum('q_fee');
-  if (!(fee > 0)){ var CT = 0; qComboCalc().forEach(function(c){ CT += c.price.total; }); if (CT > 0) fee = CT; }
+  // PUSH48_MIN_V2 (Sebastian, 2026-11-08): the PUSH 48 offer is the MINIMUM price for EVERY lead —
+  // the copy-paste is the PRECIO MINIMO LINX: $3,500 + $299 admin = $3,799, $299 down, $73/mo x 48.
+  // Deed-backs use their own minimum: lista + $299 admin (+ MF cycles the list charges), never the
+  // pad, never below the lista. NOT the % price and NOT whatever sits in the fee box.
+  var isDbCase = F.isDB || !(qNum('q_payoff') > 0);
+  if (isDbCase && $('q_sheetfee') && qNum('q_sheetfee') > 0) fee = qNum('q_sheetfee') + 299 + qDbCycAmt();
+  else if (!isDbCase) fee = 3799;
+  if (!(fee > 0) && !isDbCase) fee = 3799;
+  if (!(fee > 0)) fee = qNum('q_fee'); // deed-back with no lista on record: the panel price or nothing (never invent a lista)
   var down = fee > 299 ? 299 : 0;
   var mo = fee > 0 ? Math.round((fee - down) / 48 * 100) / 100 : 0;
   return { fee: fee, down: down, mo: mo };
