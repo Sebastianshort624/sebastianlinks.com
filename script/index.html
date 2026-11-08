@@ -3679,7 +3679,7 @@ function qRecalc(){
     // Project with that recorded rate, months derived exactly like the strict model's ok-branch.
     var lrP = qNum('q_aapr') / 100 / 12;
     if (mmo > payoff * lrP){
-      var mAP = Math.min(term, Math.ceil(-Math.log(1 - payoff * lrP / mmo) / Math.log(1 + lrP)));
+      var mAP = Math.ceil(-Math.log(1 - payoff * lrP / mmo) / Math.log(1 + lrP)); // PAYOFF_EVERY_TIME_V1 (2026-11-08): no cap at the original term — the saldo on record is TODAY's balance, so the months left are whatever the amortization math says
       MGP = { status: 'ok', months: mAP, mmo: mmo, payoff: payoff, apr: qNum('q_aapr'), level: MG.level, projEst: true, projNote: 'APR registrada: ' + qNum('q_aapr') + '% — saldo SIN VERIFICAR' };
     }
   }
@@ -3929,7 +3929,7 @@ function qRecalc(){
   // against the SALDO REGISTRADO by the CONFLICTO flag below. Pricing keeps reading the saldo registrado.
   var sLoan = loan, sApr = aapr;
   if (MG.status === 'pending' && typeof MGP !== 'undefined' && MGP && MGP.projEst){ sApr = aapr > 0 ? aapr : (MGP.apr || 0); if (!(sLoan > 0) && mmo > 0 && sApr > 0){ var sLr = sApr / 100 / 12; sLoan = Math.round(mmo * (1 - Math.pow(1 + sLr, -term)) / sLr); } }
-  if (sLoan > 0 && mmo > 0 && $('q_mos').value !== '' && (MG.status !== 'pending' || (typeof MGP !== 'undefined' && MGP && MGP.projEst))){
+  if (sLoan > 0 && mmo > 0 && $('q_mos').value !== '' && MG.status !== 'pending'){
     var s = amortSched(sLoan, sApr, mmo, mos);
     $('q_paid').textContent = fmtD(s.prin + s.inte);
     $('q_prin').textContent = fmtD(s.prin);
@@ -3939,27 +3939,37 @@ function qRecalc(){
     var totPaid = st.prin + st.inte;
     $('q_tint').textContent = fmtD(st.inte);
     $('q_ipct').textContent = totPaid > 0 ? Math.round(st.inte / totPaid * 100) + '%' : '—';
-  } else if (MG.status === 'pending' && typeof MGP !== 'undefined' && MGP && MGP.projEst && MGP.status === 'ok' && sLoan > 0 && mmo > 0){
-    // SALDO-ANCHORED ESTIMADO BREAKDOWN (Sebastian, 2026-11-04: "same problem with the months left on
-    // mtg still not FIXED"): on the saldo-driven ESTIMADO path there is NO contract start, so MESES
-    // (q_mos) is blank and the schedule-position block above can never run — the desglose printed all
-    // dashes while the header already showed the months left. Anchor on the RECORDED saldo instead:
-    // PAYOFF = saldo registrado; meses transcurridos = plazo − meses restantes (the SAME months the
-    // header prints, from amortizing the saldo); posición sobre el cronograma ORIGINAL (financiado
-    // registrado o inferido). Todo ESTIMADO (SIN VERIFICAR) — la línea de estado ya lo rotula.
-    var remTotA = qMortTotal(MGP); // total de pagos que quedan (cronograma exacto, último pago parcial)
-    var saldoA = MGP.payoff;
-    var elA = Math.max(0, Math.min(term, term - MGP.months));
-    var sA = amortSched(sLoan, sApr, mmo, elA);
-    var totPagadoA = sA.prin + sA.inte; // regla 2026-10-10: del cronograma, no meses × pago
-    var capPagadoA = sLoan - saldoA;
-    var intPagadoA = totPagadoA - capPagadoA;
-    $('q_paid').textContent = fmtD(totPagadoA);
-    $('q_prin').textContent = fmtD(capPagadoA);
-    $('q_inte').textContent = fmtD(intPagadoA);
-    $('q_bal2').textContent = fmtD(saldoA);
-    $('q_tint').textContent = fmtD(remTotA - saldoA);
-    $('q_ipct').textContent = totPagadoA > 0 ? Math.round(intPagadoA / totPagadoA * 100) + '%' : '—';
+  } else if (payoff > 0 && mmo > 0 && MG.status !== 'paid' && (MG.status === 'pending' || $('q_mos').value === '')){
+    // SALDO-ANCHORED — PAYOFF EVERY TIME (Sebastian, 2026-11-08: "i need pay off to work every fkn
+    // time"): whenever a saldo is on record, PAYOFF EXACTO IS that saldo, amortized FORWARD from
+    // today — never a contract-schedule reconstruction from the purchase date, which contradicts
+    // the saldo whenever the saldo is current (the Ana Angulo failure). Months left come from the
+    // saldo itself (AMORTFIRST: saldo/pago/APR — the year is never needed); the paid-to-date lines
+    // position the saldo on the original schedule only as context, capped so they can never go
+    // negative or exceed what was actually paid. The calc-status line keeps the honest label
+    // (ESTIMADO / SIN VERIFICAR / PENDIENTE detail) — the number is the saldo of record, always.
+    var aprA = sApr;
+    var remA = (typeof nAmort !== 'undefined' && nAmort !== null && isFinite(nAmort) && nAmort > 0) ? nAmort : ((typeof MGP !== 'undefined' && MGP && MGP.months) || 0);
+    $('q_bal2').textContent = fmtD(payoff);
+    if (remA > 0){
+      var remTotA = qMortTotal({ status: 'ok', months: remA, mmo: mmo, payoff: payoff, apr: aprA });
+      var elA = Math.max(0, Math.min(term, term - remA));
+      var sLoanA = sLoan;
+      if (!(sLoanA > 0) && aprA > 0){ var lrA = aprA / 100 / 12; sLoanA = Math.round(mmo * (1 - Math.pow(1 + lrA, -term)) / lrA); }
+      if (!(sLoanA > 0)) sLoanA = payoff + elA * mmo;
+      if (sLoanA < payoff) sLoanA = payoff;
+      var sA = amortSched(sLoanA, aprA, mmo, elA);
+      var totPagadoA = sA.prin + sA.inte;
+      var capPagadoA = Math.max(0, sLoanA - payoff); if (capPagadoA > totPagadoA) capPagadoA = totPagadoA;
+      var intPagadoA = totPagadoA - capPagadoA;
+      $('q_paid').textContent = fmtD(totPagadoA);
+      $('q_prin').textContent = fmtD(capPagadoA);
+      $('q_inte').textContent = fmtD(intPagadoA);
+      $('q_tint').textContent = fmtD(Math.max(0, remTotA - payoff));
+      $('q_ipct').textContent = totPagadoA > 0 ? Math.round(intPagadoA / totPagadoA * 100) + '%' : '\u2014';
+    } else {
+      ['q_paid','q_prin','q_inte','q_tint','q_ipct'].forEach(function(id){ $(id).textContent = '\u2014'; });
+    }
   } else {
     ['q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct'].forEach(function(id){ $(id).textContent = '—'; });
     // MATEO HARD BLOCK (2026-10-21): a PENDIENTE record shows NO schedule-position balance — a contract
