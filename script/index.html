@@ -3557,6 +3557,22 @@ function qSync(c){
   $('q_pyr').value = c ? (c.pyr || '') : ''; $('q_term').value = c ? (c.term || 120) : 120; qTermDef = !(c && c.term);
   $('q_payoff').value = c ? c.payoff : '';
   $('q_fee').value = c && c.fee ? c.fee : ''; $('q_down').value = c ? (c.down || '') : '';
+  // FEEPCT_SYNC_V1 (Sebastian, 2026-11-08: "still not working"): the % dropdown must OPEN on the %
+  // that actually produced the stored fee. It used to sit at the 47% default while the fee held a
+  // 35% price ($6,943 on Carmen), so the % he saw never matched the dollar amount next to it.
+  // Restore the saved % when the record carries one; otherwise derive it from fee/payoff (admin
+  // backed out) and snap to the nearest dropdown step.
+  (function(){
+    var fp = $('q_feepct'); if (!fp || !c || qIsDB()) return;
+    var want = null;
+    if (c.feepct > 0) want = String(c.feepct);
+    else if (c.payoff > 0 && c.fee > 0){
+      var svcA = c.fee - 299; if (svcA >= 10000) svcA = c.fee - 399;
+      var imp = svcA / c.payoff * 100, snap = Math.round(imp * 2) / 2;
+      if (Math.abs(imp - snap) < 0.26 && snap >= 30 && snap <= 80) want = String(snap);
+    }
+    if (want !== null){ for (var oi = 0; oi < fp.options.length; oi++){ if (fp.options[oi].value === want){ fp.value = want; break; } } }
+  })();
   $('q_paym').value = c ? (c.paymethod || 'ach') : 'ach';
   qFmoMode();
   $('q_fapr').value = (c && c.fapr > 0) ? c.fapr : 19.99; $('q_fmo').value = (c && c.fmo > 0) ? c.fmo : 36;
@@ -4102,7 +4118,7 @@ function qAutoSave(){
       c.mmo = qNum('q_mmo'); c.mf = qNum('q_mf'); c.esc = qNum('q_esc'); c.ofees = qNum('q_ofees'); c.pnight = qNum('q_pnight');
       c.pyr = qNum2($('q_pyr').value); if (!(qTermDef && qNum('q_term') === 120)) c.term = qNum('q_term'); c.payoff = qNum('q_payoff');
       c.cfin = qLoanAuto ? (c.cfin || 0) : qNum('q_loan'); // MATEO: never persist an auto-inferred principal as a recorded cfin
-      c.fee = qNum('q_fee'); c.down = qNum('q_down'); c.downt = $('q_downt').value;
+      c.fee = qNum('q_fee'); c.feepct = parseFloat(($('q_feepct') || {}).value || '47') || 47; c.down = qNum('q_down'); c.downt = $('q_downt').value;
       c.paymethod = $('q_paym').value; c.fapr = qNum('q_fapr'); c.fmo = qNum('q_fmo');
       c.pmtmo = qNum('q_pmt'); c.downdate = $('q_ddate').value; c.pmtdate = $('q_pdate').value;
       c.pmonth = parseInt($('q_pmonth').value, 10) || 0; if (!(qNightsDef && qNum('q_nights') === 5)) c.nights = qNum('q_nights');
