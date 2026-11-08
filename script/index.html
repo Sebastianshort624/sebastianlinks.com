@@ -631,6 +631,14 @@ sideApply();
     <div id="q_bigprice_amt" style="font-size:2.4em;font-weight:900;line-height:1.15">—</div>
     <div id="q_bigprice_math" style="font-size:1em;font-weight:600"></div>
   </div>
+  <!-- MONTHLYTXT_V1 (Sebastian, 2026-11-08): right under the total price, the EXACT monthly payment for whatever price / % / term is on the panel, as a copy-paste text message. Resort name, never the word timeshare, when the resort is on record. -->
+  <div id="q_monthlytxt_box" style="background:#ecfdf5;border:2px solid #0e7c86;border-radius:8px;padding:10px 12px;margin:0 0 10px">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+      <div style="font-size:.85em;font-weight:800;letter-spacing:1px;color:#0e7c86">💬 TEXTO — PAGO MENSUAL EXACTO</div>
+      <button type="button" onclick="qCopyMonthlyTxt(this)" style="background:#0e7c86;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-weight:800;cursor:pointer;font-family:inherit">📋 COPIAR TEXTO</button>
+    </div>
+    <div id="q_monthlytxt_body" style="white-space:pre-wrap;font-size:1.05em;font-weight:700;color:#111827;line-height:1.5;margin-top:6px">—</div>
+  </div>
   <div id="q_minwarn" style="display:none;background:#fef2f2;border:2px solid #b91c1c;color:#b91c1c;font-weight:700;padding:8px 10px;margin:0 0 8px;border-radius:6px">PRECIO MÍNIMO LINX: $3,500 + $299 ADMIN = $3,799 — NUNCA OFRECER MENOS</div>
   <div class="qsm" id="q_minline" style="margin:-4px 0 8px">PRECIO MÍNIMO LINX: $3,500 + $299 ADMIN = <b>$3,799</b> — el precio más bajo que podemos ofrecer.</div>
   <label class="qf">FORMA DE PAGO <select id="q_paym" onchange="qPaymChange()">
@@ -2577,6 +2585,54 @@ function qPush48Fee(){
   var mo = fee > 0 ? Math.round((fee - down) / 48 * 100) / 100 : 0;
   return { fee: fee, down: down, mo: mo };
 }
+function qResortNameTxt(){
+  try { var r = (typeof cur !== 'undefined' && cur) ? (qLegalName() || cur.resort || '') : ''; return String(r || '').trim(); } catch(e){ return ''; }
+}
+function qOutPhrase(en){
+  var resort = qResortNameTxt();
+  if (en) return resort ? ('and you\'re out of ' + resort) : 'and you\'re out of the timeshare';
+  return resort ? ('y sales de ' + resort) : 'y sales del tiempo compartido';
+}
+// MONTHLYTXT_V1 (Sebastian, 2026-11-08): the copy-paste text that lives right under PRECIO TOTAL.
+// It reads the panel AS IT STANDS — total price (whatever % produced it), down payment, financing
+// term (36, 48, whatever is selected) and financing APR — and states the EXACT monthly payment
+// (amortized, cents included) so he can copy it and paste it as a text message. Resort name, not "timeshare".
+function qMonthlyTxt(){
+  if (typeof cur === 'undefined' || !cur) return '';
+  var fee = qNum('q_fee'); if (!(fee > 0)) return '';
+  var paym = ($('q_paym') || {}).value || '';
+  var ftot = paym === 'cc' ? fee * 1.03 : fee;
+  var fapr = qNum('q_fapr'), fmo = qNum('q_fmo');
+  var downRaw = qNum('q_down');
+  var down = ($('q_downt') && $('q_downt').value === 'pct') ? ftot * downRaw / 100 : downRaw;
+  var depSum = 0; for (var dpi = 1; dpi <= 6; dpi++){ var da = $('q_dp' + dpi + 'a'); if (da) depSum += (parseFloat(da.value) || 0); }
+  if (depSum > 0) down = Math.min(depSum, ftot);
+  var bal = Math.max(0, ftot - down);
+  var en = cur.lang === 'en';
+  var outP = qOutPhrase(en);
+  var fC = function(v){ return '$' + Number(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
+  if (!(bal > 0) || !(fmo > 0)){
+    return en ? ('Total price: ' + fC(ftot) + ' — paid in full, no monthly payments · ' + outP)
+              : ('Precio total: ' + fC(ftot) + ' — pago completo, sin pagos mensuales · ' + outP);
+  }
+  var mo = amort(bal, fapr, fmo);
+  if (en) return fC(mo) + ' / month · ' + fmo + ' months · ' + outP + '\n' +
+    'Total price: ' + fC(ftot) + ' · ' + fC(down) + ' down today · Balance: ' + fC(bal) + ' in ' + fmo + ' payments of ' + fC(mo) + (fapr > 0 ? ' at ' + fapr + '%' : ' at 0%');
+  return fC(mo) + ' / mes · ' + fmo + ' meses · ' + outP + '\n' +
+    'Precio total: ' + fC(ftot) + ' · ' + fC(down) + ' de enganche hoy · Saldo: ' + fC(bal) + ' en ' + fmo + ' pagos de ' + fC(mo) + (fapr > 0 ? ' al ' + fapr + '%' : ' al 0%');
+}
+function qMonthlyTxtRender(){
+  var el = $('q_monthlytxt_body'); if (!el) return;
+  var t = ''; try { t = qMonthlyTxt(); } catch(e){ t = ''; }
+  el.textContent = t || '— pon un precio para ver el pago mensual exacto —';
+}
+function qCopyMonthlyTxt(btn){
+  var t = ''; try { t = qMonthlyTxt(); } catch(e){}
+  if (!t){ alert('Pon un precio primero — sin precio no hay pago mensual que copiar.'); return; }
+  function done(){ if (btn){ var old = btn.textContent; btn.textContent = '✅ COPIADO'; setTimeout(function(){ btn.textContent = old; }, 1600); } }
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, done);
+  else { var ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch(e){} ta.remove(); done(); }
+}
 function qPush48Text(){
   if (typeof cur === 'undefined' || !cur) return '';
   qRecalc();
@@ -2584,9 +2640,9 @@ function qPush48Text(){
   if (!(P.fee > 0) || !(P.mo > 0)) return '';
   var en = cur.lang === 'en';
   var f0 = function(v){ return '$' + Math.round(v).toLocaleString('en-US'); };
-  if (en) return f0(P.mo) + ' / month · No credit check · and you\'re out of the timeshare\n' +
+  if (en) return f0(P.mo) + ' / month · No credit check · ' + qOutPhrase(true) + '\n' +
     'Special 48-month plan: ' + f0(P.fee) + ' total · ' + f0(P.down) + ' down today · 48 payments of ' + f0(P.mo) + ' · no credit check';
-  return f0(P.mo) + ' / mes · Sin correr credito · y sales del tiempo compartido\n' +
+  return f0(P.mo) + ' / mes · Sin correr credito · ' + qOutPhrase(false) + '\n' +
     'Plan especial 48 meses: ' + f0(P.fee) + ' en total · ' + f0(P.down) + ' de enganche hoy · 48 pagos de ' + f0(P.mo) + ' · sin verificación de crédito';
 }
 function qQuote48Subj(en){
@@ -2638,7 +2694,7 @@ function qQuote48Build(L){
   e += '<tr><td style="padding:24px 34px 0"><div style="' + LBL + '">' + (en ? 'TOTAL PRICE' : 'PRECIO TOTAL') + '</div><div style="font-size:36px;font-weight:700;color:' + NAVY + ';line-height:1.15;margin-top:4px">' + fmt0(fee) + '</div><p style="font-size:14px;line-height:1.55;color:' + SLATE + ';margin:10px 0 0">' + (en ? 'This price includes everything, beginning to end. We never ask for another dollar. It eliminates all past, present and future debt, and your name is removed from the deed at the county level, so your estate is protected and your next of kin will never inherit this nightmare.' : 'Este precio incluye todo, de principio a fin. Nunca pedimos otro dólar. Este precio elimina toda la deuda pasada, presente y futura, y tu nombre se retira de la escritura a nivel del condado, así tu patrimonio queda protegido y tus herederos nunca heredarán esta pesadilla.') + '</p></td></tr>';
   var INC = en ? ['Everything included, beginning to end — we never ask for another dollar', 'Elimination of all past, present and future debt', 'Your name removed from the deed at the county level', 'Your estate is safe — your next of kin will never inherit this nightmare'] : ['Todo incluido, de principio a fin — nunca pedimos otro dólar', 'Eliminación de toda la deuda pasada, presente y futura', 'Tu nombre retirado de la escritura a nivel del condado', 'Tu patrimonio protegido — tus herederos nunca heredarán esta pesadilla'];
   e += '<tr><td style="padding:20px 34px 0"><div style="' + LBL + '">' + (en ? 'WHAT THIS PRICE INCLUDES' : 'LO QUE INCLUYE ESTE PRECIO') + '</div><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin-top:4px">' + INC.map(function(t){ return '<tr><td style="padding:7px 0;border-bottom:1px solid ' + LINE + ';font-size:14px;color:' + SLATE + '"><span style="color:' + NAVY + ';font-weight:700">✓</span>&nbsp;&nbsp;' + t + '</td></tr>'; }).join('') + '</table></td></tr>';
-  e += '<tr><td style="padding:20px 34px 0"><div style="background:#fef3c7;border:2px solid #d97706;border-radius:12px;padding:16px 18px;text-align:center"><div style="font-size:19px;font-weight:800;color:#92400e;letter-spacing:.4px">' + (en ? '🚀 SPECIAL PLAN — 48 MONTHS' : '🚀 PLAN ESPECIAL — 48 MESES') + '</div><div style="display:inline-block;margin-top:8px;background:#b3261e;color:#fff;font-size:12.5px;font-weight:800;letter-spacing:1px;border-radius:999px;padding:3px 12px">(SATURDAY PROMO ONLY)</div><div style="font-size:21px;font-weight:800;color:#26313a;margin-top:8px">' + (en ? 'MONTHLY PAYMENTS OF ' : 'PAGOS MENSUALES DE ') + fmt0(ourMo) + '</div><div style="font-size:15.5px;color:#26313a;margin-top:6px;line-height:1.6"><b>' + (en ? 'No credit check' : 'Sin correr credito') + '</b> · <b>' + fmt0(down) + (en ? ' down today' : ' de enganche hoy') + '</b> · <b>' + (en ? '48 months' : '48 meses') + '</b> · ' + (en ? "and you're out of the timeshare" : 'y sales del tiempo compartido') + '</div><div style="font-size:13.5px;color:#68757f;margin-top:4px">' + (en ? 'Balance after the down payment: ' : 'Saldo después del enganche: ') + fmt0(fee - down) + (en ? ' — one flat monthly payment, everything included.' : ' — un solo pago mensual fijo, todo incluido.') + '</div></div></td></tr>';
+  e += '<tr><td style="padding:20px 34px 0"><div style="background:#fef3c7;border:2px solid #d97706;border-radius:12px;padding:16px 18px;text-align:center"><div style="font-size:19px;font-weight:800;color:#92400e;letter-spacing:.4px">' + (en ? '🚀 SPECIAL PLAN — 48 MONTHS' : '🚀 PLAN ESPECIAL — 48 MESES') + '</div><div style="display:inline-block;margin-top:8px;background:#b3261e;color:#fff;font-size:12.5px;font-weight:800;letter-spacing:1px;border-radius:999px;padding:3px 12px">(SATURDAY PROMO ONLY)</div><div style="font-size:21px;font-weight:800;color:#26313a;margin-top:8px">' + (en ? 'MONTHLY PAYMENTS OF ' : 'PAGOS MENSUALES DE ') + fmt0(ourMo) + '</div><div style="font-size:15.5px;color:#26313a;margin-top:6px;line-height:1.6"><b>' + (en ? 'No credit check' : 'Sin correr credito') + '</b> · <b>' + fmt0(down) + (en ? ' down today' : ' de enganche hoy') + '</b> · <b>' + (en ? '48 months' : '48 meses') + '</b> · ' + qOutPhrase(en) + '</div><div style="font-size:13.5px;color:#68757f;margin-top:4px">' + (en ? 'Balance after the down payment: ' : 'Saldo después del enganche: ') + fmt0(fee - down) + (en ? ' — one flat monthly payment, everything included.' : ' — un solo pago mensual fijo, todo incluido.') + '</div></div></td></tr>';
   if (totMo > 0 && !F.isDB){
     e += '<tr><td style="padding:24px 34px 0"><div style="' + LBL + '">' + (en ? 'MONTHLY COMPARISON' : 'COMPARACIÓN MENSUAL') + '</div><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin-top:8px">';
     e += '<tr><td width="50%" style="padding:8px 12px 8px 0;font-size:12px;font-weight:700;letter-spacing:1px;color:' + MUT + ';border-bottom:2px solid ' + NAVY + '">' + (en ? 'WHAT YOU PAY TODAY' : 'LO QUE PAGAS HOY') + '</td><td width="50%" style="padding:8px 0 8px 12px;font-size:12px;font-weight:700;letter-spacing:1px;color:' + MUT + ';border-bottom:2px solid ' + NAVY + '">' + (en ? 'WHAT YOU PAY WITH US' : 'LO QUE PAGAS CON NOSOTROS') + '</td></tr>';
@@ -3680,7 +3736,7 @@ function qPanelLang(){ var en = (typeof cur !== "undefined" && cur && cur.lang =
 function qRecalc(){
   qPanelLang();
   var qdEl = $('q_dates'); if (qdEl) qdEl.style.display = ($('q_paym').value === 'uga') ? '' : 'none';
-  if (!cur){ ['q_w30','q_w90','q_w6','q_t1','q_t3','q_t5','q_t10','q_t20','q_t30','q_ftot','q_bal','q_s10','q_mo','q_ftpay','q_ftint','q_mosn','q_t12','q_t24','q_t36','q_comm','q_cdate','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct','q_xmmo','q_xmfmo','q_xtotmo','q_xmoyr','q_xmfyr','q_xtotyr','q_xmo10','q_xsch','q_xmf10','q_xproj10','q_xnight','q_xofmo','q_xofyr','q_xof10','q_xpnightyr'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— meses restantes'; var fe0 = $('q_feesug'); if (fe0) fe0.textContent = ''; var bp0 = $('q_bigprice_amt'); if (bp0) bp0.textContent = '—'; var bm0 = $('q_bigprice_math'); if (bm0) bm0.textContent = ''; var mw0 = $('q_minwarn'); if (mw0) mw0.style.display = 'none'; var cr0 = $('q_ccrow'); if (cr0) cr0.style.display = 'none'; var cb0 = $('q_commbase'); if (cb0) cb0.textContent = ''; var xf0 = $('q_bal2flag'); if (xf0) xf0.style.display = 'none'; var xt0 = $('q_schtag'); if (xt0) xt0.style.display = 'none'; return; }
+  if (!cur){ ['q_w30','q_w90','q_w6','q_t1','q_t3','q_t5','q_t10','q_t20','q_t30','q_ftot','q_bal','q_s10','q_mo','q_ftpay','q_ftint','q_mosn','q_t12','q_t24','q_t36','q_comm','q_cdate','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct','q_xmmo','q_xmfmo','q_xtotmo','q_xmoyr','q_xmfyr','q_xtotyr','q_xmo10','q_xsch','q_xmf10','q_xproj10','q_xnight','q_xofmo','q_xofyr','q_xof10','q_xpnightyr'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— meses restantes'; var fe0 = $('q_feesug'); if (fe0) fe0.textContent = ''; var bp0 = $('q_bigprice_amt'); if (bp0) bp0.textContent = '—'; var bm0 = $('q_bigprice_math'); if (bm0) bm0.textContent = ''; var mt0 = $('q_monthlytxt_body'); if (mt0) mt0.textContent = '—'; var mw0 = $('q_minwarn'); if (mw0) mw0.style.display = 'none'; var cr0 = $('q_ccrow'); if (cr0) cr0.style.display = 'none'; var cb0 = $('q_commbase'); if (cb0) cb0.textContent = ''; var xf0 = $('q_bal2flag'); if (xf0) xf0.style.display = 'none'; var xt0 = $('q_schtag'); if (xt0) xt0.style.display = 'none'; return; }
   var mmo = (qIsDB() && !(qNum('q_payoff') > 0)) ? 0 : qNum('q_mmo'), mf = qNum('q_mf'), esc = qNum('q_esc'), payoff = qNum('q_payoff'), ofees = qNum('q_ofees'), pnight = qNum('q_pnight');
   var pyrIn = parseInt(($('q_pyr').value || '').replace(/\D/g, ''), 10) || 0;
   var pyr = pyrIn; // SAI Fase 2: sin año de compra NO se inventa uno (antes un default oculto 2023 fabricaba la fecha)
@@ -3912,6 +3968,7 @@ function qRecalc(){
   $('q_s10').textContent = feeKnown && t10 !== null ? fmtD(s10) : '—';
   var pmtF = amort(bal, fapr, fmo);
   $('q_mo').textContent = (feeKnown && fmo > 0) ? fmtD(pmtF) + '/mes' : '—';
+  if (typeof qMonthlyTxtRender === 'function') qMonthlyTxtRender(); // MONTHLYTXT_V1: keep the copy-paste monthly text under PRECIO TOTAL in sync with price/%/term/APR/down
   if (feeKnown && bal > 0 && fmo > 0){ var tpay = pmtF * fmo; $('q_ftpay').textContent = fmtC(tpay); $('q_ftint').textContent = fmtC(tpay - bal); }
   else if (feeKnown && bal <= 0){ $('q_ftpay').textContent = fmtC(ftot); $('q_ftint').textContent = fmtC(0); }
   else { $('q_ftpay').textContent = '—'; $('q_ftint').textContent = '—'; }
