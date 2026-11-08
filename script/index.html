@@ -3613,6 +3613,7 @@ function qCommPay(){ var cp = $('q_commpay'); if (!cp) return; var pm = $('q_pay
 // TWICE the commission extra he picks (q_padcomm = $ extra a su comision; comision DB = $300 + 1/2 pad).
 // Down payments: UCFS = $0 requerido (opcional); UGA = 25% requerido; IN-HOUSE a 48 meses = 30% requerido.
 var qDownManual = false, qDownAutoVal = null, qDbFeeKey = null, qDbFeeVal = null;
+var qInhDownAuto = null; // INHOUSE_AUTO_V1 (Sebastian, 2026-11-08): the flat $299/$399 ANTICIPO value WE auto-filled for IN-HOUSE (null = none in force). Cleared the moment Sebastian types in ANTICIPO himself; while it stands, the tier re-derives only across the $10,000 line.
 function qDbPad(){ return (qNum('q_padcomm') || 0) * 2; }
 function qDbCycN(){ return Math.max(0, Math.round(qNum('q_dbcyc') || 0)); }
 function qDbCycAmt(){ var n = qDbCycN(); if (!n) return 0; var mf = qNum('q_mf'), esc = qNum('q_esc') || 8, s = 0; for (var k = 0; k < n; k++) s += mf * Math.pow(1 + esc / 100, k); return Math.round(s); }
@@ -3941,6 +3942,10 @@ function qRecalc(){
     if (COMBO){ var cAct2 = COMBO.filter(function(cc){ return cc.active; }); if (cAct2.length > 1){ var cTot2 = 0; COMBO.forEach(function(cc){ cTot2 += cc.price.total; }); sugEl.innerHTML += '<br><b>PRECIO COMBINADO (' + cAct2.length + ' contratos, cada uno cobrado por separado): ' + fmtD(cTot2) + '</b> <a href="#" onclick="document.getElementById(\'q_fee\').value=' + Math.round(cTot2) + ';qRecalc();return false;">Usar precio combinado</a>'; } }
   }
   var paym = $('q_paym').value;
+  // INHOUSE_AUTO_V1 (Sebastian, 2026-11-08): IN-HOUSE selected ⇒ MESES FINANC. auto-set to 48
+  // (select value AND this pass's fmo, so the financing math below uses 48 immediately).
+  // Switching AWAY from in-house never reverts the months — this only ever sets, never unsets.
+  if (paym === 'inhouse'){ var fmEl2 = $('q_fmo'); if (fmEl2 && fmEl2.value !== '48') fmEl2.value = '48'; if (fmo !== 48) fmo = 48; }
   var cpS = $('q_commpay'); if (cpS) cpS.value = (paym === 'check' || paym === 'equity' || paym === 'inhouse') ? 'ach' : paym;
   var isFin = paym === 'ucfs' || paym === 'equity' || paym === 'uga' || paym === 'inhouse';
   var feeKnown = fee > 0;
@@ -3956,14 +3961,27 @@ function qRecalc(){
     if (mwEl){ mwEl.textContent = 'PRECIO M\u00cdNIMO LINX: $3,500 + $299 ADMIN = $3,799 \u2014 NUNCA OFRECER MENOS'; mwEl.style.display = (feeKnown && fee < 3799) ? '' : 'none'; }
   }
   var ftot = feeKnown && paym === 'cc' ? fee * 1.03 : fee;
-  // ANTICIPO REQUERIDO por forma de pago (Sebastian 2026-10-29): UCFS $0 (opcional) / UGA 25% / IN-HOUSE 48 meses 30%.
+  // ANTICIPO REQUERIDO por forma de pago (Sebastian 2026-10-29): UCFS $0 (opcional) / UGA 25%.
   // Se auto-calcula en el campo ANTICIPO salvo que Sebastian lo haya tecleado el mismo.
   var downReq = null;
-  if (feeKnown){ if (paym === 'uga') downReq = Math.round(ftot * 0.25); else if (paym === 'inhouse' && fmo === 48) downReq = Math.round(ftot * 0.30); }
+  if (feeKnown && paym === 'uga') downReq = Math.round(ftot * 0.25);
   if (!qDownManual){
     var dEl = $('q_down');
     if (downReq !== null){ if (qNum('q_down') !== downReq || $('q_downt').value !== 'dol'){ dEl.value = downReq; $('q_downt').value = 'dol'; } qDownAutoVal = downReq; }
     else if (qDownAutoVal !== null){ dEl.value = ''; qDownAutoVal = null; }
+  }
+  // INHOUSE_AUTO_V1 (Sebastian, 2026-11-08) — SUPERSEDES the old in-house "30% a 48 meses" auto-down:
+  // IN-HOUSE selected + ANTICIPO blank ⇒ auto-fill FLAT $299 (PRECIO TOTAL < $10,000) or $399
+  // (>= $10,000), always in $ mode. While the field still holds that untouched auto value
+  // (qInhDownAuto), the tier re-derives if the price crosses the $10,000 line (299 <-> 399).
+  // A down Sebastian typed himself, or one the record already carried, is NEVER overwritten;
+  // switching away from in-house leaves the down exactly as it is (no revert, no clear).
+  if (qDownManual) qInhDownAuto = null;
+  if (paym === 'inhouse' && feeKnown && !qDownManual){
+    var inhTier = ftot < 10000 ? 299 : 399;
+    var dElI = $('q_down'), inhCur = qNum('q_down');
+    if (dElI.value === '' || inhCur === 0){ dElI.value = inhTier; $('q_downt').value = 'dol'; qInhDownAuto = inhTier; }
+    else if (qInhDownAuto !== null && inhCur === qInhDownAuto && $('q_downt').value === 'dol' && inhTier !== qInhDownAuto){ dElI.value = inhTier; qInhDownAuto = inhTier; }
   }
   var depSum = 0, depCum = 0, dep25Date = '', depLastDate = '';
   for (var dpi3 = 1; dpi3 <= 6; dpi3++){ var da3 = qNum('q_dp' + dpi3 + 'a'); var dd3 = ($('q_dp' + dpi3 + 'd') || {}).value || ''; if (da3 > 0){ depSum += da3; depCum += da3; if (dd3){ if (!depLastDate || dd3 > depLastDate) depLastDate = dd3; if (!dep25Date && feeKnown && depCum >= ftot * 0.25) dep25Date = dd3; } } }
