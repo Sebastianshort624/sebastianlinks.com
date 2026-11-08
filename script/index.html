@@ -629,7 +629,7 @@ sideApply();
   <div id="q_bigprice" style="background:#0b3d91;color:#fff;border-radius:8px;padding:12px 10px;margin:0 0 10px;text-align:center">
     <div style="font-size:.85em;font-weight:800;letter-spacing:1.5px">PRECIO TOTAL</div>
     <div id="q_bigprice_amt" style="font-size:2.4em;font-weight:900;line-height:1.15">—</div>
-    <div id="q_bigprice_math" style="font-size:1em;font-weight:600"></div>
+    <div id="q_bigprice_math" style="font-size:1em;font-weight:600;white-space:pre-wrap"></div>
   </div>
   <!-- MONTHLYTXT_V1 (Sebastian, 2026-11-08): right under the total price, the EXACT monthly payment for whatever price / % / term is on the panel, as a copy-paste text message. Resort name, never the word timeshare, when the resort is on record. -->
   <div id="q_monthlytxt_box" style="background:#ecfdf5;border:2px solid #0e7c86;border-radius:8px;padding:10px 12px;margin:0 0 10px">
@@ -4041,16 +4041,13 @@ function qRecalc(){
   var bpA = $('q_bigprice_amt'), bpM = $('q_bigprice_math');
   if (bpA && bpM){
     if (!feeKnown){ bpA.textContent = '—'; bpM.textContent = ''; }
-    else if (qIsDB()){
+    else {
       bpA.textContent = fmtD(fee);
-      var sfB = qNum('q_sheetfee');
-      bpM.textContent = 'Lista ' + fmtD(sfB) + ' + $299 admin' + (cycDbAmt > 0 ? ' + ciclos MF ' + fmtD(cycDbAmt) : '') + (padDb > 0 ? ' + pad ' + fmtD(padDb) : '') + ' = ' + fmtD(fee) + (paym === 'cc' ? ' · con tarjeta (+3%): ' + fmtD(ftot) : '');
-    } else if (payoff > 0){
-      var pctB = parseFloat(($('q_feepct') || {}).value || '47') || 47;
-      var sB = payoff * pctB / 100; if (sB < 3500) sB = 3500; var admB = sB < 10000 ? 299 : 399; var tB = Math.round(sB + admB);
-      bpA.textContent = fmtD(fee);
-      bpM.textContent = 'payoff ' + fmtD(payoff) + ' × ' + pctB + '% = ' + fmtD(sB) + ' + admin ' + fmtD(admB) + ' = ' + fmtD(tB) + (Math.round(fee) !== tB ? ' · en casilla: ' + fmtD(fee) : '') + (paym === 'cc' ? ' · con tarjeta (+3%): ' + fmtD(ftot) : '');
-    } else { bpA.textContent = fmtD(fee); bpM.textContent = paym === 'cc' ? 'con tarjeta (+3%): ' + fmtD(ftot) : ''; }
+      // BIGPRICE_MONTHLY_V1 (Sebastian, 2026-11-08): under PRECIO TOTAL goes the exact monthly
+      // text (qMonthlyTxt), NOT the payoff formula — the formula already shows above the box
+      // in the NUESTRA TARIFA suggestion line, and he does not want it twice.
+      try { bpM.textContent = qMonthlyTxt(); } catch(e){ bpM.textContent = ''; }
+    }
   }
   var ccRow = $('q_ccrow'); if (ccRow){ var isCC = feeKnown && paym === 'cc'; ccRow.style.display = isCC ? '' : 'none'; if (isCC) $('q_ccfee').textContent = fmtD(ftot - fee); }
   $('q_bal').textContent = feeKnown ? fmtD(bal) : '—';
