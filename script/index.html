@@ -2616,10 +2616,11 @@ function qMonthlyTxt(){
               : ('Precio total: ' + fC(ftot) + ' — pago completo, sin pagos mensuales · ' + outP);
   }
   var mo = amort(bal, fapr, fmo);
-  if (en) return fC(mo) + ' / month · ' + fmo + ' months · ' + outP + '\n' +
-    'Total price: ' + fC(ftot) + ' · ' + fC(down) + ' down today · Balance: ' + fC(bal) + ' in ' + fmo + ' payments of ' + fC(mo) + (fapr > 0 ? ' at ' + fapr + '%' : ' at 0%');
-  return fC(mo) + ' / mes · ' + fmo + ' meses · ' + outP + '\n' +
-    'Precio total: ' + fC(ftot) + ' · ' + fC(down) + ' de enganche hoy · Saldo: ' + fC(bal) + ' en ' + fmo + ' pagos de ' + fC(mo) + (fapr > 0 ? ' al ' + fapr + '%' : ' al 0%');
+  // MONTHLYLINE_V2 (Sebastian correction, 2026-11-08): ONE line only — the hook (exact monthly +
+  // term + resort name). He never ordered the "Precio total: ..." detail line; it is removed.
+  // (The PUSH 48 texts keep their own canonical detail lines — untouched.)
+  if (en) return fC(mo) + ' / month · ' + fmo + ' months · ' + outP;
+  return fC(mo) + ' / mes · ' + fmo + ' meses · ' + outP;
 }
 function qMonthlyTxtRender(){
   var el = $('q_monthlytxt_body'); if (!el) return;
@@ -3065,6 +3066,10 @@ function qTextsBuild(){
   h += block('tx2', 'NO CONTESTÓ — PRIMERA VEZ', TEXTS_OUT_T2);
   h += block('tx3', 'PLAN DE PAGOS — NÚMEROS DEL CLIENTE', qTextsPlan() || TEXTS_OUT_T3_PH);
   h += block('tx6', '🚀 PUSH 48 — ' + (typeof cur !== 'undefined' && cur ? escH(cur.name) : ''), qPush48Text() || 'Selecciona un cliente con saldo o tarifa para ver su PUSH 48');
+  // MONTHLYTXT_TX_V1 (Sebastian, 2026-11-08: "i still cant find the text in my /script"): the exact-monthly
+  // copy-paste ALSO lives here in TEXTS OUT — the place he looks for copy-paste texts — not only deep in the
+  // calculator under PRECIO TOTAL. Same single hook line qMonthlyTxt() builds from the live panel values.
+  h += block('tx7', '&#128172; PAGO MENSUAL EXACTO \u2014 ' + (typeof cur !== 'undefined' && cur ? escH(cur.name) : ''), qMonthlyTxt() || 'Selecciona un cliente con precio para ver su pago mensual exacto');
   h += block('tx4', 'TEXT 4 — ANTES DE LA LLAMADA (ES)', TEXTS_OUT_T4);
   h += block('tx5', 'TEXT 5 — BEFORE THE CALL (EN)', TEXTS_OUT_T5);
   h += '</div>';
