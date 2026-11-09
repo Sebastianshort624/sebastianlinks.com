@@ -1998,6 +1998,41 @@ function amortSched(pv, apr, pmt, months){
   }
   return {prin: prin, inte: inte, bal: Math.max(0, bal)};
 }
+// ===== PAID-TO-DATE SPLIT — INTEREST vs PRINCIPAL (Sebastian, 2026-11-09, PAIDTD_V1): how much of
+// what the client has ALREADY PAID went to interest vs principal. Computed FORWARD from the
+// CALENDAR — months from the purchase month/year (q_pyr/q_pmonth) to today, capped at the term —
+// on the record's amortization terms (payment / APR / term). NEVER backward from the saldo: the
+// saldo answers "how much is left", not "how much has been paid" (saldo-implied months are a
+// different figure and must never wear this label — Sebastian, 2026-11-09: "never ever do that
+// again"). Original principal: the recorded financed amount (cur.cfin / q_loan) when one exists,
+// else PV(payment, APR, term) — inferred. Returns null (the line is OMITTED in every quote and
+// email) when the computation is not sound: no payment, APR outside 0–21%, no term, no purchase
+// year, zero elapsed months, or a saldo that breaks the loan ceiling (qSaldoVsLoanGuard — the
+// Carpio conflict). Level is 'verificado' ONLY when the payoff is verified AND the principal is
+// recorded AND no upgrade/renegotiation is indicated AND neither the APR nor the term is a
+// solver/default placeholder; otherwise 'estimado' (a renegotiated loan's history is still
+// computed on the original terms, as an estimate — never presented as one verified loan).
+function qPaidToDate(){
+  var mmo = qNum('q_mmo'), apr = qNum('q_aapr'), term = Math.round(qNum('q_term')) || 120;
+  var pyr = Math.round(qNum('q_pyr')), pmonth = Math.round(qNum('q_pmonth'));
+  if (!(mmo > 0) || !(apr > 0) || apr > 21 || !(term > 0) || !(pyr > 0)) return null;
+  if (typeof qSaldoVsLoanGuard === 'function' && qSaldoVsLoanGuard()) return null;
+  if (pmonth < 1 || pmonth > 12) pmonth = 1;
+  var now = new Date();
+  var elapsed = (now.getFullYear() - pyr) * 12 + (now.getMonth() + 1 - pmonth);
+  if (elapsed <= 0) return null;
+  if (elapsed > term) elapsed = term;
+  var loan = qNum('q_loan');
+  if (!(loan > 0)){ var rr = apr / 100 / 12; loan = mmo * (1 - Math.pow(1 + rr, -term)) / rr; }
+  if (!(loan > 0)) return null;
+  var s = amortSched(loan, apr, mmo, elapsed);
+  var c = (typeof cur !== 'undefined' && cur) ? cur : null;
+  var verified = !!(c && c.poffVerified === true && !c.poffUnverified && c.cfin > 0) &&
+    !(typeof qUpgradeIndicated === 'function' && c && qUpgradeIndicated(c)) &&
+    !(typeof qAprImplied !== 'undefined' && qAprImplied) &&
+    !(typeof qTermDef !== 'undefined' && qTermDef);
+  return { elapsed: elapsed, total: s.prin + s.inte, inte: s.inte, prin: s.prin, bal: s.bal, loan: loan, level: verified ? 'verificado' : 'estimado' };
+}
 function qTaskKey(){ return cur ? 'sl_tasks_' + cur.id : null; }
 function qTaskSave(){
   var k = qTaskKey(); if (!k) return;
@@ -2271,6 +2306,8 @@ function qQuoteBuild(L){
     h += '</div></div>';
     if (hasFinQ && totMoQ > ourMoQ) h += '<p style="font-size:17px;color:#374151"><b>' + (en ? 'That is ' + fmtC(totMoQ - ourMoQ) + ' less per month.' : 'Son ' + fmtC(totMoQ - ourMoQ) + ' menos al mes.') + '</b></p>';
     if (bem > 0) h += '<p style="font-size:15px;color:#374151">' + (en ? 'In approximately <b>' + bem + ' months</b>, what you would have paid the resort equals our full fee.' : 'En aproximadamente <b>' + bem + ' meses</b>, lo que habrías pagado al resort iguala nuestra tarifa completa.') + '</p>';
+    var PTDQ = (typeof qPaidToDate === 'function') ? qPaidToDate() : null;
+    if (PTDQ) h += '<p style="font-size:16px;color:#374151">' + (en ? 'Of what you have paid to date (' : 'De lo que has pagado hasta hoy (') + '<b>' + fmtC(PTDQ.total) + '</b>): <b>' + fmtC(PTDQ.inte) + '</b>' + (en ? ' went to interest and only <b>' : ' fueron a intereses y solo <b>') + fmtC(PTDQ.prin) + '</b>' + (en ? ' reduced your debt.' : ' bajaron tu deuda.') + (PTDQ.level === 'estimado' ? (en ? ' (estimate)' : ' (estimado)') : '') + '</p>';
   }
   h += '<p style="margin-top:26px;font-size:12px;color:#6b7280">' + (en ? 'Linx Legal · Maintenance projections use an annual increase of ' + esc + '% and are estimates for illustrative purposes.' : 'Linx Legal · Las proyecciones de cuotas usan un aumento anual del ' + esc + '% y son estimados con fines ilustrativos.') + '</p>';
   h += '</div>';
@@ -2383,6 +2420,8 @@ function qEmailBuild(L){
   if (note) e += '<div style="font-size:12px;color:#63757c;line-height:1.55;margin-top:12px;">' + note + '</div>';
   var OL2 = (typeof qOrigLoan === 'function') ? qOrigLoan() : null;
   if (OL2) e += '<div style="font-size:12px;color:#63757c;line-height:1.55;margin-top:6px;">' + (en ? 'Original loan: ' : 'Préstamo original: ') + '<b>' + fmtC(OL2.financed) + '</b> ' + (en ? 'financed' : 'financiados') + ' · ' + fmtC(OL2.mmo) + ' × ' + OL2.term + (en ? ' payments = ' : ' pagos = ') + '<b>' + fmtC(OL2.totalScheduled) + '</b>' + (en ? ' total scheduled (interest ' : ' total programado (interés ') + fmtC(OL2.totalInterest) + ')</div>';
+  var PTD = (typeof qPaidToDate === 'function') ? qPaidToDate() : null;
+  if (PTD && !F.isDB) e += '<div style="font-size:12px;color:#63757c;line-height:1.55;margin-top:6px;">' + (en ? 'Of what you have paid to date (' : 'De lo que has pagado hasta hoy (') + '<b>' + fmtC(PTD.total) + '</b>): <b>' + fmtC(PTD.inte) + '</b>' + (en ? ' went to interest and only <b>' : ' fueron a intereses y solo <b>') + fmtC(PTD.prin) + '</b>' + (en ? ' reduced your debt.' : ' bajaron tu deuda.') + (PTD.level === 'estimado' ? (en ? ' (estimate)' : ' (estimado)') : '') + '</div>';
   if (F.MG.status === 'pending' && !F.isDB){ var miss = qMissingLoan(); if (miss.length) e += '<div style="font-size:12px;color:#b45309;line-height:1.55;margin-top:6px;"><b>' + (en ? '🔴 PENDING — missing: ' : '🔴 PENDIENTE — falta: ') + miss.join(', ') + '.</b></div>'; }
   if (!F.isDB && F.MG.status === 'ok' && F.MG.level === 'verificado') e += '<div style="font-size:12px;color:#2f7d32;line-height:1.55;margin-top:6px;"><b>✅ ' + (en ? 'VERIFIED' : 'VERIFICADO') + '</b> — ' + (en ? 'remaining amortization from verified loan information.' : 'amortización restante con información del préstamo verificada.') + '</div>';
   if (!F.isDB && F.MG.status === 'ok' && F.MG.level === 'estimado') e += '<div style="font-size:12px;color:#b45309;line-height:1.55;margin-top:6px;"><b>🟡 ' + (en ? 'ESTIMATE' : 'ESTIMADO') + '</b> — ' + (en ? 'mathematical model; original principal inferred from payment, APR and term (standard fully amortizing loan, no additional fees or balloon payment). Not a lender-confirmed payoff.' : 'modelo matemático; principal original inferido del pago, el APR y el plazo (préstamo estándar totalmente amortizable, sin cargos adicionales ni pago globo). No es un payoff confirmado por el prestamista.') + '</div>';
@@ -2548,6 +2587,8 @@ function qQuoteCurBuild(L){
   e += '</table>';
   if (note) e += '<p style="font-size:12.5px;color:' + MUT + ';line-height:1.55;margin:10px 0 0">' + note + '</p>';
   if (OL) e += '<p style="font-size:12.5px;color:' + MUT + ';line-height:1.55;margin:4px 0 0">' + (en ? 'Original loan: ' : 'Préstamo original: ') + '<b>' + fmt0(OL.financed) + '</b> ' + (en ? 'financed' : 'financiados') + ' · ' + fmt0(OL.mmo) + ' × ' + OL.term + (en ? ' payments = ' : ' pagos = ') + '<b>' + fmt0(OL.totalScheduled) + '</b>' + (en ? ' total scheduled (interest ' : ' total programado (interés ') + fmt0(OL.totalInterest) + ')</p>';
+  var PTDC = (typeof qPaidToDate === 'function') ? qPaidToDate() : null;
+  if (PTDC && !F.isDB) e += '<p style="font-size:12.5px;color:' + MUT + ';line-height:1.55;margin:4px 0 0">' + (en ? 'Of what you have paid to date (' : 'De lo que has pagado hasta hoy (') + '<b>' + fmtC(PTDC.total) + '</b>): <b>' + fmtC(PTDC.inte) + '</b>' + (en ? ' went to interest and only <b>' : ' fueron a intereses y solo <b>') + fmtC(PTDC.prin) + '</b>' + (en ? ' reduced your debt.' : ' bajaron tu deuda.') + (PTDC.level === 'estimado' ? (en ? ' (estimate)' : ' (estimado)') : '') + '</p>';
   if (!F.isDB && F.MG.status === 'pending'){ var miss = qMissingLoan(); if (miss.length) e += '<p style="font-size:12.5px;color:#9a6a12;line-height:1.55;margin:4px 0 0"><b>' + (en ? 'PENDING — missing: ' : 'PENDIENTE — falta: ') + miss.join(', ') + '.</b></p>'; }
   e += '</td></tr>';
   var gv = function(id){ var el = $(id); return el ? el.textContent : ''; };
@@ -2750,6 +2791,8 @@ function qQuote48Build(L){
   e += '</table>';
   if (note) e += '<p style="font-size:12.5px;color:' + MUT + ';line-height:1.55;margin:10px 0 0">' + note + '</p>';
   if (OL) e += '<p style="font-size:12.5px;color:' + MUT + ';line-height:1.55;margin:4px 0 0">' + (en ? 'Original loan: ' : 'Préstamo original: ') + '<b>' + fmt0(OL.financed) + '</b> ' + (en ? 'financed' : 'financiados') + ' · ' + fmt0(OL.mmo) + ' × ' + OL.term + (en ? ' payments = ' : ' pagos = ') + '<b>' + fmt0(OL.totalScheduled) + '</b>' + (en ? ' total scheduled (interest ' : ' total programado (interés ') + fmt0(OL.totalInterest) + ')</p>';
+  var PTDC = (typeof qPaidToDate === 'function') ? qPaidToDate() : null;
+  if (PTDC && !F.isDB) e += '<p style="font-size:12.5px;color:' + MUT + ';line-height:1.55;margin:4px 0 0">' + (en ? 'Of what you have paid to date (' : 'De lo que has pagado hasta hoy (') + '<b>' + fmtC(PTDC.total) + '</b>): <b>' + fmtC(PTDC.inte) + '</b>' + (en ? ' went to interest and only <b>' : ' fueron a intereses y solo <b>') + fmtC(PTDC.prin) + '</b>' + (en ? ' reduced your debt.' : ' bajaron tu deuda.') + (PTDC.level === 'estimado' ? (en ? ' (estimate)' : ' (estimado)') : '') + '</p>';
   if (!F.isDB && F.MG.status === 'pending'){ var miss = qMissingLoan(); if (miss.length) e += '<p style="font-size:12.5px;color:#9a6a12;line-height:1.55;margin:4px 0 0"><b>' + (en ? 'PENDING — missing: ' : 'PENDIENTE — falta: ') + miss.join(', ') + '.</b></p>'; }
   e += '</td></tr>';
   var gv = function(id){ var el = $(id); return el ? el.textContent : ''; };
