@@ -1680,9 +1680,27 @@ function eodToday(){ var t = new Date(); return t.getFullYear() + '-' + String(t
   /* ===== DISPOSICIÓN / ESTADO DEL LEAD / RESULTADO / SEGUIMIENTO por cliente ===== */
   function dispoKey(){ return cur ? 'sl_dispo_' + cur.id : null; }
   function dispoRead(){
-    try { var k = dispoKey(); var raw = k ? localStorage.getItem(k) : null; if (raw) return JSON.parse(raw); } catch(e){}
+    /* DISPO_SYNC_V1 (2026-11-09): la disposicion es un campo SINCRONIZADO, no
+       una isla del navegador. Manda la actualizacion mas reciente (LAST
+       UPDATE WINS): la copia local solo gana si su 'updated' es mas nuevo
+       que el registro; si el registro es mas nuevo, se usa el registro y la
+       copia local se sana sola. El outcome del registro cae a pstatus cuando
+       outcome no esta guardado (asi un RS/FU/SOLD de Pipeline se ve aqui). */
+    var local = null;
+    try { var k = dispoKey(); var raw = k ? localStorage.getItem(k) : null; if (raw) local = JSON.parse(raw); } catch(e){}
     var defM = (cur && typeof DISPO_DEFAULTS !== 'undefined' && DISPO_DEFAULTS[cur.id]) || '';
-    if (cur && (cur.dispo || cur.outcome)) return { manual: cur.manual || defM, dispo: cur.dispo || '', status: cur.leadStatus || '', outcome: cur.outcome || '', futype: cur.fuType || '', fudate: cur.fuDate || '', futime: cur.fuTime || '', fuampm: cur.fuAmpm || '' };
+    var recD = null, recT = 0;
+    if (cur && (cur.dispo || cur.outcome || cur.pstatus)){
+      recD = { manual: cur.manual || defM, dispo: cur.dispo || '', status: cur.leadStatus || '', outcome: cur.outcome || cur.pstatus || '', futype: cur.fuType || '', fudate: cur.fuDate || '', futime: cur.fuTime || '', fuampm: cur.fuAmpm || '' };
+      recT = cur.dispoUpdated || cur._upd || 0;
+    }
+    if (local){
+      var locT = local.updated ? Date.parse(local.updated) : 0;
+      if (!recD || locT >= recT) return local;
+      try { var k2 = dispoKey(); if (k2) localStorage.setItem(k2, JSON.stringify(recD)); } catch(e){}
+      return recD;
+    }
+    if (recD) return recD;
     return { manual: defM, dispo:'', status:'', outcome:'', futype:'', fudate:'', futime:'', fuampm:'' };
   }
   function soldKey(){ return 'sl_sold_' + (cur ? cur.id : ''); }
@@ -1803,6 +1821,21 @@ function dispoLoad(){
     var k = dispoKey(); if (!k) return;
     var d = { manual: ($('d_manual') || {}).value || '', dispo: $('d_dispo').value, status: $('d_status').value, outcome: $('d_outcome').value, futype: $('d_futype').value, fudate: $('d_fudate').value, futime: $('d_futime').value, fuampm: $('d_fuampm').value, updated: new Date().toISOString() };
     try { localStorage.setItem(k, JSON.stringify(d)); } catch(e){}
+    /* DISPO_SYNC_V1: espejo al registro + nube (mismo camino que qAutoSave).
+       El outcome (SOLD/FU/RS/NA/NO/NQ) alimenta pstatus, que es el campo
+       que el sync hacia Pipeline ya lee. Sin esto, la disposicion nunca
+       salia de este navegador. */
+    try {
+      if (cur && cur.id){
+        cur.manual = d.manual; cur.dispo = d.dispo; cur.leadStatus = d.status; cur.outcome = d.outcome;
+        cur.fuType = d.futype; cur.fuDate = d.fudate; cur.fuTime = d.futime; cur.fuAmpm = d.fuampm;
+        cur.dispoUpdated = Date.parse(d.updated) || Date.now();
+        if (d.outcome) cur.pstatus = d.outcome;
+        var cs = slClients(), ix = -1;
+        for (var i2 = 0; i2 < cs.length; i2++) if (cs[i2].id === cur.id){ ix = i2; break; }
+        if (ix >= 0){ cs[ix] = cur; cur._upd = Date.now(); try { localStorage.setItem('sl_clients', JSON.stringify(cs)); } catch(e2){} syncPushRecord(cur, true); }
+      }
+    } catch(e){}
     dispoSummary(); dispoDates(); try { hotFuRender(); } catch(e){}
   }
   function dispoSummary(){
