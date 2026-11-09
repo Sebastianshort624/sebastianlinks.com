@@ -602,7 +602,7 @@ sideApply();
     <div>Préstamo original (financiado) <span id="q_ofin_tag"></span> <b id="q_ofin">—</b></div>
     <div>Total programado (pago × plazo) <b id="q_osch">—</b></div>
     <div>Interés total (programado) <b id="q_oint">—</b></div>
-    <div>Total pagado <b id="q_paid">—</b></div>
+    <div>Total pagado <span id="q_paidtag"></span> <b id="q_paid">—</b></div>
     <div>Capital <b id="q_prin">—</b></div>
     <div>Interés <b id="q_inte">—</b></div>
     <div style="font-size:1.12em">PAYOFF EXACTO SEGÚN AMORTIZACIÓN <b id="q_bal2">—</b></div>
@@ -1998,40 +1998,56 @@ function amortSched(pv, apr, pmt, months){
   }
   return {prin: prin, inte: inte, bal: Math.max(0, bal)};
 }
-// ===== PAID-TO-DATE SPLIT — INTEREST vs PRINCIPAL (Sebastian, 2026-11-09, PAIDTD_V1): how much of
-// what the client has ALREADY PAID went to interest vs principal. Computed FORWARD from the
-// CALENDAR — months from the purchase month/year (q_pyr/q_pmonth) to today, capped at the term —
-// on the record's amortization terms (payment / APR / term). NEVER backward from the saldo: the
-// saldo answers "how much is left", not "how much has been paid" (saldo-implied months are a
-// different figure and must never wear this label — Sebastian, 2026-11-09: "never ever do that
-// again"). Original principal: the recorded financed amount (cur.cfin / q_loan) when one exists,
-// else PV(payment, APR, term) — inferred. Returns null (the line is OMITTED in every quote and
-// email) when the computation is not sound: no payment, APR outside 0–21%, no term, no purchase
-// year, zero elapsed months, or a saldo that breaks the loan ceiling (qSaldoVsLoanGuard — the
-// Carpio conflict). Level is 'verificado' ONLY when the payoff is verified AND the principal is
-// recorded AND no upgrade/renegotiation is indicated AND neither the APR nor the term is a
-// solver/default placeholder; otherwise 'estimado' (a renegotiated loan's history is still
-// computed on the original terms, as an estimate — never presented as one verified loan).
+// ===== PAID-TO-DATE SPLIT — INTEREST vs PRINCIPAL (Sebastian, 2026-11-09, PAIDTD_V1 +
+// COMPUTATION_RULE_V1): how much of what the client has ALREADY PAID went to interest vs
+// principal. Computed FORWARD from the CALENDAR — months from the purchase month/year
+// (q_pyr/q_pmonth) to today, capped at 120. NEVER backward from the saldo: the saldo answers
+// "how much is left", not "how much has been paid" (Sebastian, 2026-11-09: "never ever do
+// that again"). THE COMPUTATION RULE (Sebastian, CEO ruling, 2026-11-09) governs every input:
+// the ONLY trusted intake inputs are the purchase YEAR (+month when present) and the MONTHLY
+// MORTGAGE PAYMENT; any value Sebastian updated in the case file governs over the intake
+// sheet. APR — HOW TO READ THE CA RATE (Sebastian, 2026-11-09, STEER 3, final form after
+// two quick revisions): a rate written with decimals (14.99) is used AS-IS; a rate written
+// as a WHOLE percent (15) is read as that number + .99 (15 -> 15.99 — whole-percent CA
+// rates are rounded and always wrong as written); NO rate on the record -> 17%. Sebastian's
+// own case-file APR edit governs over all of it. TERM: 120 months, always.
+// Derived set: starting balance = PV(payment, APR, 120); payoff = PV of the remaining
+// payments (the schedule balance); total paid = elapsed x payment (the schedule sum);
+// principal = starting - payoff; interest = total - principal. The derived set governs
+// these figures regardless of questionnaire payoffs or reported saldos — the saldo never
+// enters this computation, so a saldo conflict (Carpio) no longer suppresses it. Returns
+// null (the line is OMITTED in every quote and email; the panel shows dashes) ONLY when the
+// computation cannot start: no monthly payment, no purchase year, or no month elapsed yet.
+// Level is 'verificado' ONLY when the loan facts were verified against documents (payoff
+// verified AND a financed amount recorded) AND no upgrade/renegotiation is indicated;
+// otherwise 'estimado' — intake-sourced payment/year carry the tag, per the rule.
 function qPaidToDate(){
-  var mmo = qNum('q_mmo'), apr = qNum('q_aapr'), term = Math.round(qNum('q_term')) || 120;
+  var mmo = qNum('q_mmo');
+  if (!(mmo > 0)) return null;
   var pyr = Math.round(qNum('q_pyr')), pmonth = Math.round(qNum('q_pmonth'));
-  if (!(mmo > 0) || !(apr > 0) || apr > 21 || !(term > 0) || !(pyr > 0)) return null;
-  if (typeof qSaldoVsLoanGuard === 'function' && qSaldoVsLoanGuard()) return null;
+  if (!(pyr > 0)) return null;
   if (pmonth < 1 || pmonth > 12) pmonth = 1;
   var now = new Date();
   var elapsed = (now.getFullYear() - pyr) * 12 + (now.getMonth() + 1 - pmonth);
   if (elapsed <= 0) return null;
-  if (elapsed > term) elapsed = term;
-  var loan = qNum('q_loan');
-  if (!(loan > 0)){ var rr = apr / 100 / 12; loan = mmo * (1 - Math.pow(1 + rr, -term)) / rr; }
+  if (elapsed > 120) elapsed = 120;
+  // COMPUTATION RULE — HOW TO READ THE CA RATE (Sebastian, 2026-11-09, STEER 3, final):
+  // the source rate is the record's apr as loaded on the panel (Sebastian's own edit of the
+  // box governs; when the box holds OUR solver-implied value it is not a rate of record, so
+  // the record's apr is consulted instead). Read it as: decimals (14.99) -> AS-IS; a WHOLE
+  // percent (15) -> that number + .99 = 15.99 (whole-percent CA rates are rounded, always
+  // wrong as written); absent/0 -> 17%.
+  var boxApr = qNum('q_aapr');
+  var srcApr = (typeof qAprImplied !== 'undefined' && qAprImplied && typeof cur !== 'undefined' && cur && cur.apr) ? cur.apr : boxApr;
+  var apr = !(srcApr > 0) ? 17 : (Math.abs(srcApr - Math.round(srcApr)) < 1e-9 ? srcApr + 0.99 : srcApr);
+  var rr = apr / 100 / 12;
+  var loan = mmo * (1 - Math.pow(1 + rr, -120)) / rr;
   if (!(loan > 0)) return null;
   var s = amortSched(loan, apr, mmo, elapsed);
   var c = (typeof cur !== 'undefined' && cur) ? cur : null;
   var verified = !!(c && c.poffVerified === true && !c.poffUnverified && c.cfin > 0) &&
-    !(typeof qUpgradeIndicated === 'function' && c && qUpgradeIndicated(c)) &&
-    !(typeof qAprImplied !== 'undefined' && qAprImplied) &&
-    !(typeof qTermDef !== 'undefined' && qTermDef);
-  return { elapsed: elapsed, total: s.prin + s.inte, inte: s.inte, prin: s.prin, bal: s.bal, loan: loan, level: verified ? 'verificado' : 'estimado' };
+    !(typeof qUpgradeIndicated === 'function' && c && qUpgradeIndicated(c));
+  return { elapsed: elapsed, total: s.prin + s.inte, inte: s.inte, prin: s.prin, bal: s.bal, loan: loan, apr: apr, level: verified ? 'verificado' : 'estimado' };
 }
 function qTaskKey(){ return cur ? 'sl_tasks_' + cur.id : null; }
 function qTaskSave(){
@@ -3855,7 +3871,7 @@ function qPanelLang(){ var en = (typeof cur !== "undefined" && cur && cur.lang =
 function qRecalc(){
   qPanelLang();
   var qdEl = $('q_dates'); if (qdEl) qdEl.style.display = ($('q_paym').value === 'uga') ? '' : 'none';
-  if (!cur){ ['q_w30','q_w90','q_w6','q_t1','q_t3','q_t5','q_t10','q_t20','q_t30','q_ftot','q_bal','q_s10','q_mo','q_ftpay','q_ftint','q_mosn','q_t12','q_t24','q_t36','q_comm','q_cdate','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct','q_xmmo','q_xmfmo','q_xtotmo','q_xmoyr','q_xmfyr','q_xtotyr','q_xmo10','q_xsch','q_xmf10','q_xproj10','q_xnight','q_xofmo','q_xofyr','q_xof10','q_xpnightyr'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— meses restantes'; var fe0 = $('q_feesug'); if (fe0) fe0.textContent = ''; var bp0 = $('q_bigprice_amt'); if (bp0) bp0.textContent = '—'; var bm0 = $('q_bigprice_math'); if (bm0) bm0.textContent = ''; var mt0 = $('q_monthlytxt_body'); if (mt0) mt0.textContent = '—'; var mw0 = $('q_minwarn'); if (mw0) mw0.style.display = 'none'; var cr0 = $('q_ccrow'); if (cr0) cr0.style.display = 'none'; var cb0 = $('q_commbase'); if (cb0) cb0.textContent = ''; var xf0 = $('q_bal2flag'); if (xf0) xf0.style.display = 'none'; var xt0 = $('q_schtag'); if (xt0) xt0.style.display = 'none'; return; }
+  if (!cur){ ['q_w30','q_w90','q_w6','q_t1','q_t3','q_t5','q_t10','q_t20','q_t30','q_ftot','q_bal','q_s10','q_mo','q_ftpay','q_ftint','q_mosn','q_t12','q_t24','q_t36','q_comm','q_cdate','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct','q_xmmo','q_xmfmo','q_xtotmo','q_xmoyr','q_xmfyr','q_xtotyr','q_xmo10','q_xsch','q_xmf10','q_xproj10','q_xnight','q_xofmo','q_xofyr','q_xof10','q_xpnightyr'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— meses restantes'; var fe0 = $('q_feesug'); if (fe0) fe0.textContent = ''; var bp0 = $('q_bigprice_amt'); if (bp0) bp0.textContent = '—'; var bm0 = $('q_bigprice_math'); if (bm0) bm0.textContent = ''; var mt0 = $('q_monthlytxt_body'); if (mt0) mt0.textContent = '—'; var mw0 = $('q_minwarn'); if (mw0) mw0.style.display = 'none'; var cr0 = $('q_ccrow'); if (cr0) cr0.style.display = 'none'; var cb0 = $('q_commbase'); if (cb0) cb0.textContent = ''; var xf0 = $('q_bal2flag'); if (xf0) xf0.style.display = 'none'; var xt0 = $('q_schtag'); if (xt0) xt0.style.display = 'none'; var pt0 = $('q_paidtag'); if (pt0) pt0.textContent = ''; return; }
   var mmo = (qIsDB() && !(qNum('q_payoff') > 0)) ? 0 : qNum('q_mmo'), mf = qNum('q_mf'), esc = qNum('q_esc'), payoff = qNum('q_payoff'), ofees = qNum('q_ofees'), pnight = qNum('q_pnight');
   var pyrIn = parseInt(($('q_pyr').value || '').replace(/\D/g, ''), 10) || 0;
   var pyr = pyrIn; // SAI Fase 2: sin año de compra NO se inventa uno (antes un default oculto 2023 fabricaba la fecha)
@@ -4185,49 +4201,60 @@ function qRecalc(){
   // against the SALDO REGISTRADO by the CONFLICTO flag below. Pricing keeps reading the saldo registrado.
   var sLoan = loan, sApr = aapr;
   if (MG.status === 'pending' && typeof MGP !== 'undefined' && MGP && MGP.projEst){ sApr = aapr > 0 ? aapr : (MGP.apr || 0); if (!(sLoan > 0) && mmo > 0 && sApr > 0){ var sLr = sApr / 100 / 12; sLoan = Math.round(mmo * (1 - Math.pow(1 + sLr, -term)) / sLr); } }
+  // PANEL_PAIDTD_V1 (Sebastian, 2026-11-09 — "NEVER BACKWARD-DERIVE TOTAL PAGADO"): this panel's
+  // Total pagado / Capital / Interés (and % interés de lo pagado) come ONLY from qPaidToDate() —
+  // the CALENDAR-forward computation under THE COMPUTATION RULE (trusted inputs: purchase year +
+  // monthly payment; APR read per STEER 3 (decimals as-is, whole % -> +.99, none -> 17%); term 120 always; starting
+  // balance = PV of the payments at the rule-read APR; total paid = elapsed x payment). The saldo NEVER derives
+  // them: the saldo-implied elapsed the saldo-anchored branch used to compute (elA = term -
+  // months-from-saldo) is a position on a schedule, not what the client paid — Cortez showed
+  // $3,328 pagado / $862 capital against ~$8,058 actually paid since Jan 2023. When
+  // qPaidToDate() is null (no payment, no purchase year, nothing elapsed) the paid lines show
+  // dashes — never invented numbers. PAYOFF EXACTO (q_bal2) and Interés del plazo (q_tint)
+  // keep their branch mechanics below, untouched.
+  var PTDP = (typeof qPaidToDate === 'function') ? qPaidToDate() : null;
+  var qPanelPaid = function(){
+    if (PTDP){
+      $('q_paid').textContent = fmtD(PTDP.total);
+      $('q_prin').textContent = fmtD(PTDP.prin);
+      $('q_inte').textContent = fmtD(PTDP.inte);
+      $('q_ipct').textContent = PTDP.total > 0 ? Math.round(PTDP.inte / PTDP.total * 100) + '%' : '—';
+      var tgP = $('q_paidtag'); if (tgP) tgP.textContent = PTDP.level === 'estimado' ? ' 🟡 estimado' : '';
+    } else {
+      ['q_paid','q_prin','q_inte','q_ipct'].forEach(function(id){ $(id).textContent = '—'; });
+      var tgN = $('q_paidtag'); if (tgN) tgN.textContent = '';
+    }
+  };
   if (sLoan > 0 && mmo > 0 && $('q_mos').value !== '' && MG.status !== 'pending'){
     var s = amortSched(sLoan, sApr, mmo, mos);
-    $('q_paid').textContent = fmtD(s.prin + s.inte);
-    $('q_prin').textContent = fmtD(s.prin);
-    $('q_inte').textContent = fmtD(s.inte);
+    qPanelPaid(); // PANEL_PAIDTD_V1: paid figures are calendar-derived (PTDP), never the schedule position at MESES
     $('q_bal2').textContent = fmtD(s.bal);
     var st = amortSched(sLoan, sApr, mmo, term);
-    var totPaid = st.prin + st.inte;
     $('q_tint').textContent = fmtD(st.inte);
-    $('q_ipct').textContent = totPaid > 0 ? Math.round(st.inte / totPaid * 100) + '%' : '—';
   } else if (payoff > 0 && mmo > 0 && MG.status !== 'paid' && (MG.status === 'pending' || $('q_mos').value === '')){
     // SALDO-ANCHORED — PAYOFF EVERY TIME (Sebastian, 2026-11-08: "i need pay off to work every fkn
     // time"): whenever a saldo is on record, PAYOFF EXACTO IS that saldo, amortized FORWARD from
     // today — never a contract-schedule reconstruction from the purchase date, which contradicts
     // the saldo whenever the saldo is current (the Ana Angulo failure). Months left come from the
-    // saldo itself (AMORTFIRST: saldo/pago/APR — the year is never needed); the paid-to-date lines
-    // position the saldo on the original schedule only as context, capped so they can never go
-    // negative or exceed what was actually paid. The calc-status line keeps the honest label
-    // (ESTIMADO / SIN VERIFICAR / PENDIENTE detail) — the number is the saldo of record, always.
+    // saldo itself (AMORTFIRST: saldo/pago/APR — the year is never needed). The calc-status line
+    // keeps the honest label (ESTIMADO / SIN VERIFICAR / PENDIENTE detail) — the number is the
+    // saldo of record, always. PANEL_PAIDTD_V1 (2026-11-09): the paid-to-date lines NO LONGER
+    // position the saldo on the original schedule — that backward derivation is removed; they
+    // come from qPanelPaid() / qPaidToDate() (calendar, Computation Rule) or show dashes. Only
+    // Interés del plazo (the interest still ahead on the saldo) keeps using months-left.
     var aprA = sApr;
     var remA = (typeof nAmort !== 'undefined' && nAmort !== null && isFinite(nAmort) && nAmort > 0) ? nAmort : ((typeof MGP !== 'undefined' && MGP && MGP.months) || 0);
     $('q_bal2').textContent = fmtD(payoff);
+    qPanelPaid(); // PANEL_PAIDTD_V1: paid figures are calendar-derived (PTDP) or dashes — the saldo-implied elA derivation is GONE
     if (remA > 0){
       var remTotA = qMortTotal({ status: 'ok', months: remA, mmo: mmo, payoff: payoff, apr: aprA });
-      var elA = Math.max(0, Math.min(term, term - remA));
-      var sLoanA = sLoan;
-      if (!(sLoanA > 0) && aprA > 0){ var lrA = aprA / 100 / 12; sLoanA = Math.round(mmo * (1 - Math.pow(1 + lrA, -term)) / lrA); }
-      if (!(sLoanA > 0)) sLoanA = payoff + elA * mmo;
-      if (sLoanA < payoff) sLoanA = payoff;
-      var sA = amortSched(sLoanA, aprA, mmo, elA);
-      var totPagadoA = sA.prin + sA.inte;
-      var capPagadoA = Math.max(0, sLoanA - payoff); if (capPagadoA > totPagadoA) capPagadoA = totPagadoA;
-      var intPagadoA = totPagadoA - capPagadoA;
-      $('q_paid').textContent = fmtD(totPagadoA);
-      $('q_prin').textContent = fmtD(capPagadoA);
-      $('q_inte').textContent = fmtD(intPagadoA);
       $('q_tint').textContent = fmtD(Math.max(0, remTotA - payoff));
-      $('q_ipct').textContent = totPagadoA > 0 ? Math.round(intPagadoA / totPagadoA * 100) + '%' : '\u2014';
     } else {
-      ['q_paid','q_prin','q_inte','q_tint','q_ipct'].forEach(function(id){ $(id).textContent = '\u2014'; });
+      $('q_tint').textContent = '—';
     }
   } else {
-    ['q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct'].forEach(function(id){ $(id).textContent = '—'; });
+    ['q_bal2','q_tint'].forEach(function(id){ $(id).textContent = '—'; });
+    qPanelPaid(); // PANEL_PAIDTD_V1: paid figures depend only on qPaidToDate(), in every branch
     // MATEO HARD BLOCK (2026-10-21): a PENDIENTE record shows NO schedule-position balance — a contract
     // start date alone never verifies a remaining balance, and a poffUnverified record stays PENDIENTE.
     if (MG.status === 'pending' && $('q_mos').value !== '') $('q_bal2').textContent = PEND_TXT;
