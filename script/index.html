@@ -2628,18 +2628,18 @@ function qMonthlyTxt(){
   var outP = qOutPhrase(en);
   var fC = function(v){ return '$' + Number(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
   // MONTHLY_ORIGTEXT_V1 (Sebastian, 2026-11-08): HIS verbatim template is
-  // "$148 / mes · Sin correr credito · y sales del tiempo compartido" + blank line + "~Sebastian";
+  // "$148 / mes · Sin correr credito · y sales del tiempo compartido" + blank line + "~Linx Legal";
   // the printed term added earlier today is removed, and the signature follows a blank line.
   if (!(bal > 0) || !(fmo > 0)){
-    return en ? ('Total price: ' + fC(ftot) + ' — paid in full, no monthly payments · ' + outP + '\n\n~Sebastian')
-              : ('Precio total: ' + fC(ftot) + ' — pago completo, sin pagos mensuales · ' + outP + '\n\n~Sebastian');
+    return en ? ('Total price: ' + fC(ftot) + ' — paid in full, no monthly payments · ' + outP + '\n\n~Linx Legal')
+              : ('Precio total: ' + fC(ftot) + ' — pago completo, sin pagos mensuales · ' + outP + '\n\n~Linx Legal');
   }
   var mo = amort(bal, fapr, fmo);
   // MONTHLY_NOCREDIT_V1 (Sebastian, 2026-11-08): "Sin correr credito" prints ONLY when the
   // financing term is 48 months; below 48 months the phrase is omitted entirely.
   var nc = fmo >= 48;
-  if (en) return fC(mo) + ' / month' + (nc ? ' · No credit check' : '') + ' · ' + outP + '\n\n~Sebastian';
-  return fC(mo) + ' / mes' + (nc ? ' · Sin correr credito' : '') + ' · ' + outP + '\n\n~Sebastian';
+  if (en) return fC(mo) + ' / month' + (nc ? ' · No credit check' : '') + ' · ' + outP + '\n\n~Linx Legal';
+  return fC(mo) + ' / mes' + (nc ? ' · Sin correr credito' : '') + ' · ' + outP + '\n\n~Linx Legal';
 }
 function qMonthlyTxtRender(){
   var el = $('q_monthlytxt_body'); if (!el) return;
@@ -3546,7 +3546,7 @@ function qFirstName(){ return cur ? (cur.name || '').split(/[&/]/)[0].trim().spl
 function qEmailHref(){
   if (!cur || !cur.email) return '#';
   var subj = encodeURIComponent('Enlace para nuestra llamada');
-  var body = encodeURIComponent('Hola ' + qFirstName() + ' — este es el enlace que usaremos en nuestra llamada: https://investiganos.com/linx\n\nSebastian');
+  var body = encodeURIComponent('Hola ' + qFirstName() + ' — este es el enlace que usaremos en nuestra llamada: https://investiganos.com/linx\n\n~Linx Legal');
   return 'mailto:' + cur.email + '?subject=' + subj + '&body=' + body;
 }
 function qTextMsg(){ return 'Hola ' + qFirstName() + ', soy Sebastian Short — este es el enlace para nuestra llamada: https://investiganos.com/linx'; }
