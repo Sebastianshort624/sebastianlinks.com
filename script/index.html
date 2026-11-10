@@ -1140,11 +1140,37 @@ function slClients(){
       // integrado (fuente verificada CRM) lo trae, se rellena — nunca se sobrescribe un valor ya puesto.
       // Antes esto solo pasaba si payoff+mmo+mf locales eran TODOS cero; con saldo cargado, teléfonos,
       // email, contratos y fecha de compra nuevos nunca llegaban a pantalla (caso Ruben De Paz).
-      ['payoff','mmo','mf','term','apr','pyr','pmonth','esc','fee','contracts','cyr','cmonth'].forEach(function(k){ if ((found[k] === undefined || found[k] === '' || found[k] === null || +found[k] === 0) && b[k] !== undefined && b[k] !== '' && b[k] !== 0) found[k] = b[k]; });
-      ['email','email2','ca','resort','loc','address','phone','phone2','dtype','behind'].forEach(function(k){ if ((found[k] === undefined || found[k] === '' || found[k] === null) && b[k] !== undefined && b[k] !== '' && b[k] !== null) found[k] = b[k]; });
+      ['payoff','mmo','mf','term','apr','pyr','pmonth','esc','fee','contracts','cyr','cmonth','sheetFee','padComm'].forEach(function(k){ if ((found[k] === undefined || found[k] === '' || found[k] === null || +found[k] === 0) && b[k] !== undefined && b[k] !== '' && b[k] !== 0) found[k] = b[k]; });
+      // BLANKFIX_V1 (2026-11-10): la identidad (name/notes/appt/lang) tambien se rellena si la copia
+      // local esta vacia — antes una copia local sin nombre/notas se renderizaba en blanco para siempre.
+      ['name','notes','appt','lang','email','email2','ca','resort','loc','address','phone','phone2','dtype','behind'].forEach(function(k){ if ((found[k] === undefined || found[k] === '' || found[k] === null) && b[k] !== undefined && b[k] !== '' && b[k] !== null) found[k] = b[k]; });
       if (+b.payoff > 0 && found.dtype === 'DB') found.dtype = 'MTG'; }
   });
   return cs;
+}
+// BLANKFIX_V1 (2026-11-10): una copia vacia (sin nombre) jamas pisa un registro poblado.
+// bfFindPopulated busca una copia CON nombre del mismo id (integrado, local crudo o nube).
+// bfHeal rellena la identidad desde esa copia; bfBlocked devuelve true solo si, aun tras
+// intentar rellenar, el nombre sigue vacio Y existe una copia poblada — en ese caso el
+// guardado se bloquea y se conserva la copia poblada.
+function bfFindPopulated(id){
+  if (!id) return null;
+  var has = function(r){ return r && String(r.name || '').trim() !== ''; };
+  try { if (typeof BUILTIN_CLIENTS !== 'undefined' && Array.isArray(BUILTIN_CLIENTS)) for (var i = 0; i < BUILTIN_CLIENTS.length; i++) if (BUILTIN_CLIENTS[i] && BUILTIN_CLIENTS[i].id === id && has(BUILTIN_CLIENTS[i])) return BUILTIN_CLIENTS[i]; } catch(e){}
+  try { var raw = JSON.parse(localStorage.getItem('sl_clients') || '[]'); if (Array.isArray(raw)) for (var j = 0; j < raw.length; j++) if (raw[j] && raw[j].id === id && has(raw[j])) return raw[j]; } catch(e){}
+  try { var cc = window.__bfCloud || {}; if (cc[id] && has(cc[id])) return cc[id]; } catch(e){}
+  return null;
+}
+function bfHeal(c){
+  if (!c || String(c.name || '').trim() !== '') return c;
+  var p = bfFindPopulated(c.id); if (!p) return c;
+  ['name','notes','appt','lang'].forEach(function(k){ if ((c[k] === undefined || c[k] === '' || c[k] === null) && p[k] !== undefined && p[k] !== '' && p[k] !== null) c[k] = p[k]; });
+  return c;
+}
+function bfBlocked(c){
+  if (!c || String(c.name || '').trim() !== '') return false;
+  bfHeal(c);
+  return String(c.name || '').trim() === '' && !!bfFindPopulated(c.id);
 }
 function qDepSample(){
   var nIn = prompt('¿En cuántas cuotas en total? (2 a 6 — la 1ª es el anticipo)', ($('q_depN') || {}).value || '4');
@@ -1654,6 +1680,7 @@ function eodToday(){ var t = new Date(); return t.getFullYear() + '-' + String(t
     var today = eodToday();
     if (kind === 'apt'){ cur.aptTag = (cur.aptTag === tag && cur.aptDate === today) ? '' : tag; cur.aptDate = today; }
     else { cur.outTag = (cur.outTag === tag && cur.outDate === today) ? '' : tag; cur.outDate = today; }
+    bfHeal(cur); // BLANKFIX_V1: nunca guardar una copia vacia sobre un registro poblado
     cur._upd = Date.now();
     try { var cs = slClients(); for (var i = 0; i < cs.length; i++) if (cs[i].id === cur.id){ cs[i] = cur; break; } localStorage.setItem('sl_clients', JSON.stringify(cs)); } catch(e){}
     try { syncPushRecord(cur, true); } catch(e){}
@@ -1831,6 +1858,7 @@ function dispoLoad(){
         cur.fuType = d.futype; cur.fuDate = d.fudate; cur.fuTime = d.futime; cur.fuAmpm = d.fuampm;
         cur.dispoUpdated = Date.parse(d.updated) || Date.now();
         if (d.outcome) cur.pstatus = d.outcome;
+        bfHeal(cur); // BLANKFIX_V1: nunca guardar una copia vacia sobre un registro poblado
         var cs = slClients(), ix = -1;
         for (var i2 = 0; i2 < cs.length; i2++) if (cs[i2].id === cur.id){ ix = i2; break; }
         if (ix >= 0){ cs[ix] = cur; cur._upd = Date.now(); try { localStorage.setItem('sl_clients', JSON.stringify(cs)); } catch(e2){} syncPushRecord(cur, true); }
@@ -4403,6 +4431,7 @@ function qAutoSave(){
       if (cs[ix].c2 && cs[ix].c2.poffVerified !== undefined) c.c2.poffVerified = cs[ix].c2.poffVerified;
       c.c3 = { payoff: qNum('q3_payoff'), mmo: qNum('q3_mmo'), mf: qNum('q3_mf'), esc: qNum('q3_esc'), apr: qNum('q3_apr'), term: qNum('q3_term'), fee: qNum('q3_fee'), pdate: ($('q3_pdate').value || '').trim(), mfShared: !!($('q3_mfshared') && $('q3_mfshared').checked) };
       if (cs[ix].c3 && cs[ix].c3.poffVerified !== undefined) c.c3.poffVerified = cs[ix].c3.poffVerified;
+      if (bfBlocked(c)) return; // BLANKFIX_V1: no sellar ni subir una copia vacia sobre un registro poblado
       c._upd = Date.now();
       localStorage.setItem('sl_clients', JSON.stringify(cs));
       if (cur && cur.id === cid) cur = c;
@@ -4624,18 +4653,22 @@ function syncDbReq(path, opts){
 }
 function syncPushRecord(c, quiet){
   if (!syncDbOn() || !c || !c.id) return;
+  if (bfBlocked(c)) return Promise.resolve(); // BLANKFIX_V1: una copia vacia nunca sube sobre un registro poblado
   var body = [{ client_id: c.id, data: c, updated_at: new Date(c._upd || Date.now()).toISOString() }];
   return syncDbReq('?on_conflict=client_id', { method: 'POST', headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' }, body: JSON.stringify(body) })
     .then(function(){ if (!quiet){ try { qSaveState('\u2601\uFE0F Sincronizado \u00B7 ' + new Date().toLocaleTimeString('es')); } catch(e){} } })
     .catch(function(){ if (!quiet){ try { qSaveState('\uD83D\uDCBE Guardado local \u00B7 ' + new Date().toLocaleTimeString('es') + ' \u2014 sin conexion con la base; se sincroniza al abrir de nuevo.'); } catch(e){} } });
 }
 var syncPulled = false;
+var syncLastPull = 0; // BLANKFIX_V1
 function syncPullAll(){
   if (!syncDbOn() || syncPulled) return;
   syncPulled = true;
+  syncLastPull = Date.now();
   syncDbReq('?select=client_id,data,updated_at', { method: 'GET' }).then(function(rows){
     if (!Array.isArray(rows)) return;
     if (!rows.length){ try { slClients().forEach(function(c){ syncPushRecord(c, true); }); } catch(e){} return; }
+    try { window.__bfCloud = window.__bfCloud || {}; rows.forEach(function(rw){ if (rw && rw.data && rw.data.id) window.__bfCloud[rw.data.id] = rw.data; }); } catch(e){} // BLANKFIX_V1: ultima copia de nube en memoria
     var cs = slClients(), changed = false;
     rows.forEach(function(row){
       var rec = row && row.data; if (!rec || !rec.id) return;
@@ -4662,6 +4695,22 @@ function syncPullAll(){
     } catch(e){}
   }).catch(function(){});
 }
+// BLANKFIX_V1 (2026-11-10): re-descargar al volver a la pestaña, para que un re-pin del
+// servidor llegue a una pestaña ya abierta sin recarga manual. syncPullAll solo reemplaza
+// copias locales cuando la nube trae un _upd estrictamente mas nuevo, asi que un repull
+// nunca pisa ediciones locales mas recientes. Frenos: maximo 1 repull por minuto y nunca
+// mientras hay un autoguardado en curso (qSaveT pendiente).
+function syncRepull(){
+  if (!syncDbOn()) return;
+  if (Date.now() - syncLastPull < 60000) return;
+  try { if (typeof qSaveT !== 'undefined' && qSaveT) return; } catch(e){}
+  syncPulled = false;
+  syncPullAll();
+}
+try {
+  document.addEventListener('visibilitychange', function(){ if (!document.hidden) syncRepull(); });
+  window.addEventListener('focus', syncRepull);
+} catch(e){}
 function notesNormDb(row){
   return { dbid: row.id || '', cid: row.client_id || 'global', cname: row.client_name || '', t: row.created_at ? Date.parse(row.created_at) : 0,
     et: row.edited_at ? Date.parse(row.edited_at) : 0, x: row.body || '',
