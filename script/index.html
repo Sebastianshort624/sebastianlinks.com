@@ -4976,16 +4976,36 @@ document.addEventListener('keydown', function(e){ if (e.key === 'Escape'){ notes
   refreshClientSel();
   syncPullAll();
   document.getElementById('clientSel').addEventListener('change', function(){ pickClient(this.value); });
-  document.getElementById('lcModal').addEventListener('click', function(e){ if (e.target === this) lcClose(); });
+  // CFIX_V1 (2026-11-10): los paneles inferiores (lcModal, qt_*, st*, ph*) estan en el HTML
+  // DESPUES de este bloque: cuando init corre, el parser aun no llega a ellos. Antes, la linea
+  // de lcModal lanzaba TypeError (elemento null) y mataba este IIFE ANTES de aplicar el ?c=, y
+  // pickClient tambien abortaba a mitad de render en qTaskSync ($('qt_emailL')). La ficha abria
+  // en blanco hasta que el pull de Supabase la rescataba (DEEPLINK_V2); con la base lenta o
+  // bloqueada, quedaba en blanco indefinidamente. Ahora el enlace de lcModal y la seleccion
+  // ?c= se aplican en DOMContentLoaded — documento completo, datos ya en mano (BUILTIN +
+  // localStorage), SIN esperar a la red. El pull sigue refrescando al llegar, como siempre.
   try {
-    var dcid = new URLSearchParams(location.search).get('c');
-    if (dcid){
-      var cs9 = slClients(), found9 = false;
-      for (var z9 = 0; z9 < cs9.length; z9++) if (cs9[z9].id === dcid) found9 = true;
-      if (found9){ document.getElementById('clientSel').value = dcid; pickClient(dcid); }
+    var dcid0 = new URLSearchParams(location.search).get('c');
+    if (dcid0){
+      var cs0 = slClients();
+      for (var z0 = 0; z0 < cs0.length; z0++) if (cs0[z0].id === dcid0){ var cb9 = $('cs_body'); if (cb9) cb9.innerHTML = '<span class="tmin">Cargando cliente\u2026</span>'; break; }
     }
   } catch(e){}
-  notesBadge();
+  function cfInitLate(){
+    var lm = document.getElementById('lcModal');
+    if (lm) lm.addEventListener('click', function(e){ if (e.target === this) lcClose(); });
+    try {
+      var dcid = new URLSearchParams(location.search).get('c');
+      if (dcid){
+        var cs9 = slClients(), found9 = false;
+        for (var z9 = 0; z9 < cs9.length; z9++) if (cs9[z9].id === dcid) found9 = true;
+        if (found9){ document.getElementById('clientSel').value = dcid; pickClient(dcid); }
+      }
+    } catch(e){}
+    notesBadge();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', cfInitLate);
+  else cfInitLate();
 })();
 </script>
 
