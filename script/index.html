@@ -5201,6 +5201,41 @@ setInterval(function(){ if (aptData){ aptRender(); aptLayout(); } }, 60000);
   try{ if (localStorage.getItem('sl_urls_open') === '1' && typeof urlToggleFn === 'function'){ var g = document.getElementById('urlGrid'); if (g && g.style.display === 'none') urlToggleFn(); } }catch(e){}
 })();
 </script>
+
+<!-- FOCUS_V1 (Sebastian 2026-11-10): one button hides ALL menus (top bar + both side rails) -->
+<style id="focus-css">
+body.focus-mode #pegbar, body.focus-mode .aptrail, body.focus-mode .apttab, body.focus-mode #pegShowBtn { display: none !important; }
+body.focus-mode { padding-left: 0 !important; padding-right: 0 !important; }
+#focusBtn { position: fixed; right: 14px; bottom: 14px; z-index: 99999; background: #0f766e; color: #fff; border: none; border-radius: 999px; padding: 10px 16px; font: 700 14px Arial, Helvetica, sans-serif; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,.35); }
+body.focus-mode #focusBtn { background: #b45309; }
+</style>
+<script>
+(function(){
+  var KEY = 'sl_focus';
+  function apply(on){
+    document.body.classList.toggle('focus-mode', !!on);
+    var b = document.getElementById('focusBtn');
+    if (b) b.textContent = on ? '\uD83D\uDC41 Mostrar menus' : '\uD83D\uDE48 Ocultar menus';
+  }
+  function init(){
+    if (document.getElementById('focusBtn')) return;
+    var b = document.createElement('button');
+    b.id = 'focusBtn'; b.type = 'button';
+    b.title = 'Ocultar o mostrar todos los menus';
+    b.addEventListener('click', function(){
+      var on = !document.body.classList.contains('focus-mode');
+      apply(on);
+      try { localStorage.setItem(KEY, on ? '1' : '0'); } catch(e){}
+    });
+    document.body.appendChild(b);
+    var on = false;
+    try { on = localStorage.getItem(KEY) === '1'; } catch(e){}
+    apply(on);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+})();
+</script>
+<!-- /FOCUS_V1 -->
 </body>
 </html>
 
