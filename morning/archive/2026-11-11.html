@@ -51,13 +51,39 @@
   .laptally { font-size:19px; font-weight:700; margin:4px 0; letter-spacing:.2px; }
   .laplist { font-size:14px; margin-top:2px; }
   .lapnext { font-size:13px; color:#b9bee8; margin-top:8px; }
+  .nav { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px; }
+  .nav a, .nav button { display:flex; align-items:center; justify-content:center; gap:6px; min-height:48px; padding:10px 8px; background:#1c2733; color:#fff; font-size:15px; font-weight:700; text-decoration:none; border:none; border-radius:10px; text-align:center; cursor:pointer; }
+  .nav button { background:#7b4fc9; }
+  .tasks { background:#fff; border:1px solid #dde3e8; border-left:4px solid #7b4fc9; border-radius:12px; padding:14px; margin-bottom:16px; }
+  .taskshead { font-size:16px; font-weight:700; margin-bottom:8px; }
+  .task { font-size:14.5px; line-height:1.45; padding:7px 0; border-top:1px solid #eef1f4; }
+  .task:first-of-type { border-top:none; }
+  .tname { font-weight:700; }
+  .tname a { color:#0b5cad; text-decoration:none; }
+  .twhen { color:#6a7785; font-size:13px; }
+  .taskempty { font-size:14.5px; line-height:1.5; }
+  .taskempty a { color:#0b5cad; font-weight:600; text-decoration:none; }
   @media (max-width:520px) { .time { min-width:64px; font-size:14px; } .client { font-size:15px; } }
 </style>
 </head>
 <body>
 <div class="wrap">
   <h1>☀️ Morning Board — Wednesday, November 11, 2026</h1>
-  <div class="updated">Updated 7:45 AM ET · 6 appointments</div>
+  <div class="updated">Updated 9:04 AM ET · 6 appointments</div>
+  <div class="nav">
+  <a href="https://sebastianlinks.com/board/">🗂️ Board</a>
+  <a href="https://sebastianlinks.com/casefile/">📂 Case File</a>
+  <a href="https://app.pipelinecrm.com/">🔗 Pipeline</a>
+  <a href="https://calendar.google.com/calendar/u/0/r">📅 Calendar</a>
+  <a href="https://docs.google.com/spreadsheets/d/1P-F605ws8W1_XgRNQ2_5caHvl7cwZ-5RouqF4qOwb5I/edit">📊 PRE-CALL Sheet</a>
+  <a href="https://mail.google.com/mail/u/0/#inbox">✉️ Email</a>
+  <a href="https://muse.ai/">🤖 Astro</a>
+  <button type="button" id="taskbtn">📋 Today's Tasks (—)</button>
+</div>
+  <div class="tasks" id="tasks" hidden>
+  <div class="taskshead">📋 Today's Tasks</div>
+  <div class="taskempty">The full task list has not been loaded yet today. <a href="https://app.pipelinecrm.com/">Open Pipeline</a> to see today's to-dos.</div>
+</div>
   <div class="search">
     <input type="date" id="dsearch" value="2026-11-11" min="2026-11-10" aria-label="Search boards by date">
     <button type="button" id="dgo">Go</button>
@@ -87,42 +113,42 @@ Amen.</p>
     <div class="client"><a href="https://app.pipelinecrm.com/people/1310532513">Jose Garza / Sara Garza</a></div>
     
   </div>
-  <div class="tags"><select class="stsel new" data-rid="c-garza-1107" aria-label="Status for Jose Garza / Sara Garza"><option value="NEW" selected>NEW</option><option value="RS">RS</option><option value="FU">FU</option><option value="FU ST">FU ST</option><option value="SOLD">SOLD</option><option value="NA">NA</option><option value="NO">NO</option><option value="NO GO">NO GO</option><option value="NQ">NQ</option></select><span class="dt">DB</span><a class="cf" href="https://sebastianlinks.com/script/?c=c-garza-1107">📂 Case file</a></div>
+  <div class="tags"><select class="stsel new" data-rid="c-garza-1107" aria-label="Status for Jose Garza / Sara Garza"><option value="NEW" selected>NEW</option><option value="RS">RS</option><option value="FU">FU</option><option value="FU ST">FU ST</option><option value="SOLD">SOLD</option><option value="NA">NA</option><option value="NO">NO</option><option value="NO GO">NO GO</option><option value="NQ">NQ</option></select><span class="dt">DB</span><a class="cf" href="https://sebastianlinks.com/casefile/?c=c-garza-1107">📂 Case file</a></div>
 </div><div class="card">
   <div class="time">1:30 PM</div>
   <div class="main">
     <div class="client"><a href="https://app.pipelinecrm.com/people/1310546310">Brenda Dolloff / Andrew Dolloff</a></div>
     <div class="flag">Deed-back lista NOT SET — CB2 blank</div>
   </div>
-  <div class="tags"><select class="stsel new" data-rid="c-dolloff-1110" aria-label="Status for Brenda Dolloff / Andrew Dolloff"><option value="NEW" selected>NEW</option><option value="RS">RS</option><option value="FU">FU</option><option value="FU ST">FU ST</option><option value="SOLD">SOLD</option><option value="NA">NA</option><option value="NO">NO</option><option value="NO GO">NO GO</option><option value="NQ">NQ</option></select><span class="dt">DB</span><a class="cf" href="https://sebastianlinks.com/script/?c=c-dolloff-1110">📂 Case file</a></div>
+  <div class="tags"><select class="stsel new" data-rid="c-dolloff-1110" aria-label="Status for Brenda Dolloff / Andrew Dolloff"><option value="NEW" selected>NEW</option><option value="RS">RS</option><option value="FU">FU</option><option value="FU ST">FU ST</option><option value="SOLD">SOLD</option><option value="NA">NA</option><option value="NO">NO</option><option value="NO GO">NO GO</option><option value="NQ">NQ</option></select><span class="dt">DB</span><a class="cf" href="https://sebastianlinks.com/casefile/?c=c-dolloff-1110">📂 Case file</a></div>
 </div><div class="card">
   <div class="time">4:00 PM</div>
   <div class="main">
     <div class="client"><a href="https://app.pipelinecrm.com/people/1310096539">Kenneth Wodehouse / Sandy Luze Yegues</a> 🇪🇸</div>
     <div class="flag">CB2 blank — price not landed</div>
   </div>
-  <div class="tags"><select class="stsel new" data-rid="c-wodehouse-1111" aria-label="Status for Kenneth Wodehouse / Sandy Luze Yegues"><option value="NEW" selected>NEW</option><option value="RS">RS</option><option value="FU">FU</option><option value="FU ST">FU ST</option><option value="SOLD">SOLD</option><option value="NA">NA</option><option value="NO">NO</option><option value="NO GO">NO GO</option><option value="NQ">NQ</option></select><span class="dt">MTG</span><a class="cf" href="https://sebastianlinks.com/script/?c=c-wodehouse-1111">📂 Case file</a></div>
+  <div class="tags"><select class="stsel new" data-rid="c-wodehouse-1111" aria-label="Status for Kenneth Wodehouse / Sandy Luze Yegues"><option value="NEW" selected>NEW</option><option value="RS">RS</option><option value="FU">FU</option><option value="FU ST">FU ST</option><option value="SOLD">SOLD</option><option value="NA">NA</option><option value="NO">NO</option><option value="NO GO">NO GO</option><option value="NQ">NQ</option></select><span class="dt">MTG</span><a class="cf" href="https://sebastianlinks.com/casefile/?c=c-wodehouse-1111">📂 Case file</a></div>
 </div><div class="card">
   <div class="time">5:30 PM</div>
   <div class="main">
     <div class="client"><a href="https://app.pipelinecrm.com/people/1310071715">Nikolaos Nikolaidis / Gracie Diaz</a></div>
     <div class="flag">CB2 blank — price not landed</div>
   </div>
-  <div class="tags"><select class="stsel new" data-rid="c-nikolaidis-1111" aria-label="Status for Nikolaos Nikolaidis / Gracie Diaz"><option value="NEW" selected>NEW</option><option value="RS">RS</option><option value="FU">FU</option><option value="FU ST">FU ST</option><option value="SOLD">SOLD</option><option value="NA">NA</option><option value="NO">NO</option><option value="NO GO">NO GO</option><option value="NQ">NQ</option></select><span class="dt">MTG</span><a class="cf" href="https://sebastianlinks.com/script/?c=c-nikolaidis-1111">📂 Case file</a></div>
+  <div class="tags"><select class="stsel new" data-rid="c-nikolaidis-1111" aria-label="Status for Nikolaos Nikolaidis / Gracie Diaz"><option value="NEW" selected>NEW</option><option value="RS">RS</option><option value="FU">FU</option><option value="FU ST">FU ST</option><option value="SOLD">SOLD</option><option value="NA">NA</option><option value="NO">NO</option><option value="NO GO">NO GO</option><option value="NQ">NQ</option></select><span class="dt">MTG</span><a class="cf" href="https://sebastianlinks.com/casefile/?c=c-nikolaidis-1111">📂 Case file</a></div>
 </div><div class="card">
   <div class="time">6:45 PM</div>
   <div class="main">
     <div class="client"><a href="https://app.pipelinecrm.com/people/1310392689">Elia Hernandez y Alfonso Arrieta</a> 🇪🇸</div>
     
   </div>
-  <div class="tags"><select class="stsel fust" data-rid="c-elia-1014" aria-label="Status for Elia Hernandez y Alfonso Arrieta"><option value="NEW">NEW</option><option value="RS">RS</option><option value="FU">FU</option><option value="FU ST" selected>FU ST</option><option value="SOLD">SOLD</option><option value="NA">NA</option><option value="NO">NO</option><option value="NO GO">NO GO</option><option value="NQ">NQ</option></select><span class="dt">MTG</span><a class="cf" href="https://sebastianlinks.com/script/?c=c-elia-1014">📂 Case file</a></div>
+  <div class="tags"><select class="stsel fust" data-rid="c-elia-1014" aria-label="Status for Elia Hernandez y Alfonso Arrieta"><option value="NEW">NEW</option><option value="RS">RS</option><option value="FU">FU</option><option value="FU ST" selected>FU ST</option><option value="SOLD">SOLD</option><option value="NA">NA</option><option value="NO">NO</option><option value="NO GO">NO GO</option><option value="NQ">NQ</option></select><span class="dt">MTG</span><a class="cf" href="https://sebastianlinks.com/casefile/?c=c-elia-1014">📂 Case file</a></div>
 </div><div class="card">
   <div class="time">8:30 PM</div>
   <div class="main">
     <div class="client"><a href="https://app.pipelinecrm.com/people/1310550984">Leah Mora / Adam Mora</a></div>
     <div class="flag">Deed-back lista NOT SET — CB2 blank</div>
   </div>
-  <div class="tags"><select class="stsel new" data-rid="c-mora-1111" aria-label="Status for Leah Mora / Adam Mora"><option value="NEW" selected>NEW</option><option value="RS">RS</option><option value="FU">FU</option><option value="FU ST">FU ST</option><option value="SOLD">SOLD</option><option value="NA">NA</option><option value="NO">NO</option><option value="NO GO">NO GO</option><option value="NQ">NQ</option></select><span class="dt">DB</span><a class="cf" href="https://sebastianlinks.com/script/?c=c-mora-1111">📂 Case file</a></div>
+  <div class="tags"><select class="stsel new" data-rid="c-mora-1111" aria-label="Status for Leah Mora / Adam Mora"><option value="NEW" selected>NEW</option><option value="RS">RS</option><option value="FU">FU</option><option value="FU ST">FU ST</option><option value="SOLD">SOLD</option><option value="NA">NA</option><option value="NO">NO</option><option value="NO GO">NO GO</option><option value="NQ">NQ</option></select><span class="dt">DB</span><a class="cf" href="https://sebastianlinks.com/casefile/?c=c-mora-1111">📂 Case file</a></div>
 </div>
   <div class="lap"><div class="laphead">🌙 pre-Night — Leads Accountability</div>
 <div class="lapsub">Last night (Tuesday Nov 10):</div>
@@ -155,6 +181,8 @@ document.querySelectorAll('.stsel').forEach(function(sel){
 })();
 var dgo=document.getElementById('dgo');
 if(dgo) dgo.addEventListener('click',function(){ var d=document.getElementById('dsearch').value; if(d) location.href='/morning/archive/'+d+'.html'; });
+var tbtn=document.getElementById('taskbtn');
+if(tbtn) tbtn.addEventListener('click',function(){ var t=document.getElementById('tasks'); if(!t) return; var open=t.hasAttribute('hidden'); if(open){ t.removeAttribute('hidden'); t.scrollIntoView({behavior:'smooth',block:'start'}); } else { t.setAttribute('hidden',''); } });
 </script>
 </body>
 </html>
