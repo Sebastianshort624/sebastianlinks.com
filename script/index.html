@@ -4100,15 +4100,19 @@ function qRecalc(){
   if (dbb){
     if (sheetFeeActive){
       var sfv = qNum('q_sheetfee');
-      var dbt = 'Lista ' + fmtD(sfv) + ' + $299 admin' + (cycDbAmt > 0 ? ' + ciclos MF x' + cycDbN + ' ' + fmtD(cycDbAmt) : '') + (padDb > 0 ? ' + pad ' + fmtD(padDb) : '') + ' = PRECIO FINAL ' + fmtD(fee) + ' (ya está en NUESTRA TARIFA)';
+      // DB_SUBTOTAL_V1 (Sebastian, 2026-11-12): the pricing section shows a SUBTOTAL
+      // WITHOUT the $299 (lista + pad + MF cycles); the $299 admin and the CC fee,
+      // if any, go at the END, then PRECIO FINAL.
+      var subDb = sfv + cycDbAmt + padDb;
+      var isCcDb = (($('q_paym') || {}).value === 'cc');
+      var dbt = 'Lista ' + fmtD(sfv) + (cycDbAmt > 0 ? ' + ciclos MF x' + cycDbN + ' ' + fmtD(cycDbAmt) : '') + (padDb > 0 ? ' + pad ' + fmtD(padDb) : '') + ' = SUBTOTAL ' + fmtD(subDb) + ' + $299 admin' + (isCcDb ? ' + cargo CC 3% ' + fmtD(fee * 0.03) : '') + ' = PRECIO FINAL ' + fmtD(isCcDb ? fee * 1.03 : fee) + (isCcDb ? '' : ' (ya está en NUESTRA TARIFA)');
       dbt += ' \u00b7 Comisión deed-back: $300 + \u00bd pad = ' + fmtD(300 + padCommDb);
-      if (($('q_paym') || {}).value === 'cc') dbt += ' \u00b7 Tarjeta +3%: ' + fmtD(fee * 0.03) + ' \u2192 total con tarjeta ' + fmtD(fee * 1.03);
       dbb.textContent = dbt; dbb.style.display = '';
     } else { dbb.textContent = ''; dbb.style.display = 'none'; }
   }
   var sugEl = $('q_feesug');
   if (sugEl){
-    if (qIsDB()) sugEl.innerHTML = sheetFeeActive ? 'Fee activo (deed-back): lista + $299 admin + pad = precio final (automático).' : 'Deed-back: el fee sale de la hoja PRE-CALL \u2014 ingr\u00e9salo en el recuadro rojo.';
+    if (qIsDB()) sugEl.innerHTML = sheetFeeActive ? 'Fee activo (deed-back): lista + pad = subtotal, + $299 admin al final = precio final (automático).' : 'Deed-back: el fee sale de la hoja PRE-CALL \u2014 ingr\u00e9salo en el recuadro rojo.';
     else if (payoff > 0){ var pctS = parseFloat(($('q_feepct') || {}).value || '47') || 47; var s47 = payoff * pctS / 100; if (s47 < 3500) s47 = 3500; var adm = s47 < 10000 ? 299 : 399; var mcN = ''; var ccN = ''; if (($('q_paym') || {}).value === 'cc'){ var ccS = (s47 + adm) * 0.03; ccN = ' + cargo CC 3% = ' + fmtD(ccS) + ' = <b>' + fmtD(s47 + adm + ccS) + '</b> con tarjeta'; } sugEl.innerHTML = 'F\u00f3rmula: payoff \u00d7 ' + pctS + '% = ' + fmtD(s47) + ' + admin ' + fmtD(adm) + ' = <b>' + fmtD(s47 + adm) + '</b>' + ccN + mcN + ' <a href="#" onclick="document.getElementById(\'q_fee\').value=' + Math.round(s47 + adm) + ';qRecalc();return false;">Usar</a>'; }
     else sugEl.textContent = '';
     if (COMBO){ var cAct2 = COMBO.filter(function(cc){ return cc.active; }); if (cAct2.length > 1){ var cTot2 = 0; COMBO.forEach(function(cc){ cTot2 += cc.price.total; }); sugEl.innerHTML += '<br><b>PRECIO COMBINADO (' + cAct2.length + ' contratos, cada uno cobrado por separado): ' + fmtD(cTot2) + '</b> <a href="#" onclick="document.getElementById(\'q_fee\').value=' + Math.round(cTot2) + ';qRecalc();return false;">Usar precio combinado</a>'; } }
