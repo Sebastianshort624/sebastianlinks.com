@@ -2785,8 +2785,10 @@ function qMonthlyTxt(){
   // MONTHLY_NOCREDIT_V1 (Sebastian, 2026-11-08): "Sin correr credito" prints ONLY when the
   // financing term is 48 months; below 48 months the phrase is omitted entirely.
   var nc = fmo >= 48;
-  if (en) return fC(mo) + ' / month' + (nc ? ' · No credit check' : '') + ' · ' + outP + '\n\n~Linx Legal';
-  return fC(mo) + ' / mes' + (nc ? ' · Sin correr credito' : '') + ' · ' + outP + '\n\n~Linx Legal';
+  // MONTHLY_DOWN_V1 (Sebastian, 2026-11-12): el down payment va EN LA LINEA, despues del pago
+  // mensual — "$212.98 / mes · $299 de down payment · Sin correr credito · y sales de ..."
+  if (en) return fC(mo) + ' / month' + (down > 0 ? ' · ' + fC(down) + ' down payment' : '') + (nc ? ' · No credit check' : '') + ' · ' + outP + '\n\n~Linx Legal';
+  return fC(mo) + ' / mes' + (down > 0 ? ' · ' + fC(down) + ' de down payment' : '') + (nc ? ' · Sin correr credito' : '') + ' · ' + outP + '\n\n~Linx Legal';
 }
 function qMonthlyTxtRender(){
   var el = $('q_monthlytxt_body'); if (!el) return;
