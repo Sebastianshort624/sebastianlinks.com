@@ -2835,7 +2835,8 @@ function qQuote48Subj(en){
   if (!(mo48 > 0)) return '';
   if (F.isDB || !(mmo > 0)) return (en ? 'Your 48-month plan: ' : 'Tu plan a 48 meses: ') + f2(mo48) + (en ? '/month · ' : '/mes · ') + f2(fee) + (en ? ' total' : ' en total') + hook;
   var yrsL = Math.round(term / 12) || 10;
-  return (en ? 'Cancel Mortgage + Maintenance =' : 'Anula Hipoteca + Mantenimiento =') + f2(mmo + mf / 12) + (en ? '/month  x ' : '/mes  x ') + yrsL + ' yrs vs ' + f2(mo48) + (en ? '/month x ' : '/mes x ') + '4 yrs' + hook;
+  // SUBJ_OURS_FIRST_V1 (Sebastian, 2026-11-12): NUESTRO precio primero — "$210/mes x 4 yrs vs $429/mes x 10 yrs"
+  return f2(mo48) + (en ? '/month x ' : '/mes x ') + '4 yrs vs ' + f2(mmo + mf / 12) + (en ? '/month x ' : '/mes x ') + yrsL + ' yrs' + hook;
 }
 function qQuote48Html(){
   if (!cur){ alert('Selecciona un cliente primero.'); return; }
