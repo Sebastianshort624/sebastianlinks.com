@@ -2628,7 +2628,8 @@ function qQuoteCurSubj(en){
   var yrsR = fmo > 0 ? Math.round(fmo / 12 * 10) / 10 : 3;
   var f2 = function(v){ return '$' + Math.round(v).toLocaleString('en-US'); };
   var yt = function(y){ return (y % 1 === 0) ? String(y) : String(Math.round(y * 10) / 10); };
-  return (en ? 'Cancel Mortgage + Maintenance =' : 'Anula Hipoteca + Mantenimiento =') + f2(mmo + mf / 12) + (en ? '/month  x ' : '/mes  x ') + yt(yrsL) + ' yrs vs ' + f2(ourMo) + (en ? '/month x ' : '/mes x ') + yt(yrsR) + ' yrs';
+  // SUBJ_OURS_FIRST_V1 (Sebastian, 2026-11-12): NUESTRO precio primero — "$210/mes x 4 yrs vs $429/mes x 10 yrs"
+  return f2(ourMo) + (en ? '/month x ' : '/mes x ') + yt(yrsR) + ' yrs vs ' + f2(mmo + mf / 12) + (en ? '/month  x ' : '/mes  x ') + yt(yrsL) + ' yrs';
 }
 function qQuoteCurHtml(){
   if (!cur){ alert('Selecciona un cliente primero.'); return; }
