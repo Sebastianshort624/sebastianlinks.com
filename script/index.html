@@ -2340,60 +2340,82 @@ function qQuoteBuild(L){
   var H2 = 'style="color:#0b3d91;border-bottom:3px solid #0b3d91;padding-bottom:4px;margin:26px 0 10px;font-size:20px"';
   var ROW = 'style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #e5e7eb"';
   var ROWB = 'style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:2px solid #0b3d91"';
+  // QUOTE_LAYOUT_V2 (Sebastian, 2026-11-12): su diseno — membrete + caja de datos, SITUACION ACTUAL
+  // en dos columnas, PROYECCION A FUTURO con el total en grande y la linea roja, NUESTRA PROPUESTA
+  // (lista / descuento / SUBTOTAL | admin / PRECIO FINAL) y OPCIONES DE PAGO en tres tarjetas.
+  // Reemplaza el titular ANULA, las tarjetas LO QUE PAGAS HOY / CON NOSOTROS, el "menos al mes" y el break-even.
+  var isDBq = qIsDB() && !(payoff > 0);
+  var adminQ = isDBq ? 299 : (fee >= 10399 ? 399 : 299);
+  var ccQ = (paymQ === 'cc' && fee > 0) ? Math.round(fee * 3) / 100 : 0;
+  var finQ = fee + ccQ;
+  var subQ = Math.max(0, fee - adminQ);
+  var listaQ;
+  if (isDBq){ listaQ = ($('q_sheetfee') && qNum('q_sheetfee') > 0) ? qNum('q_sheetfee') : subQ; }
+  else { var pctQ = parseFloat(($('q_feepct') || {}).value || '47') || 47; listaQ = payoff > 0 ? Math.max(Math.round(payoff * pctQ / 100), 3500) : subQ; }
+  if (listaQ < subQ) listaQ = subQ;
+  var descQ = listaQ - subQ;
+  var downRawQ = qNum('q_down');
+  var downQ = (($('q_downt') || {}).value === 'pct') ? finQ * downRawQ / 100 : downRawQ;
+  var ourMoQ2 = parseFloat((moTxt || '').replace(/[^0-9.]/g, '')) || 0;
+  var planDown = downQ, planMo = ourMoQ2, planN = fmo;
+  if (!(planN > 0) || !(planMo > 0)){ planDown = adminQ; planN = 12; planMo = Math.round(subQ / 12 * 100) / 100; }
+  var PTDq = (typeof qPaidToDate === 'function') ? qPaidToDate() : null;
+  var projQ = null;
+  if (MG.status === 'ok' && MG.months > 0){ var remYq = MG.months / 12; var moRemQ = qMortOver(MG, remYq); var mfRemQ = MG.months < 12 ? (mf + ofees) * MG.months / 12 : mfTot(mf + ofees, escR, remYq); if (moRemQ !== null) projQ = moRemQ + mfRemQ; }
+  else if (MG.status === 'paid'){ projQ = mfTot(mf + ofees, escR, 10); }
+  var finNameQ = paymQ === 'uga' ? 'UGA' : (paymQ === 'inhouse' ? (en ? 'our in-house plan' : 'nuestro plan interno') : 'UCFS');
+  var SECQ = 'style="font-size:15px;font-weight:800;letter-spacing:1.2px;color:#111827;border-bottom:2px solid #111827;padding-bottom:5px;margin:28px 0 12px"';
+  var ROWQ = 'style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #e5e7eb;font-size:15px"';
+  var ROWQT = 'style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #e5e7eb;border-top:2px solid #111827;font-size:15px;font-weight:800"';
+  var LBLQ = 'style="color:#374151"';
+  var VALQ = 'style="font-weight:700"';
+  function rowQ(l, v, st){ return '<div ' + (st || ROWQ) + '><span ' + LBLQ + '>' + l + '</span><span ' + VALQ + '>' + v + '</span></div>'; }
   var h = '<!DOCTYPE html><html lang="' + (en ? 'en' : 'es') + '"><head><meta charset="utf-8"><title>' + (en ? 'Quote — ' : 'Cotización — ') + escH(cur.name) + '</title></head><body ' + S + '>';
   h += '<div ' + QDOC_BAR + '><b>' + (en ? '📄 QUOTE' : '📄 COTIZACIÓN') + '</b>' + qDocToggleBtn('quote', en) + qDocRefreshBtn('quote', en) + '<button ' + QDOC_BTN + ' onclick="qCopy(this)">' + (en ? '📋 COPY' : '📋 COPIAR') + '</button>' + qSentBtn('COTIZACIÓN', en) + '</div>';
   h += '<div id="qDocBody">';
-  h += '<div style="text-align:center"><div style="font-size:26px;font-weight:800;color:#0b3d91">Linx Legal</div><div style="font-size:15px;color:#374151">' + (en ? 'Timeshare cancellation services quote' : 'Cotización de servicios de cancelación de tiempo compartido') + '</div><div style="font-size:13px;color:#6b7280">' + today + '</div></div>';
-  h += '<p style="margin-top:18px;font-size:16px">' + (en ? 'Prepared for: ' : 'Preparada para: ') + '<b>' + escH(cur.name) + '</b>' + (legal ? '<br>Resort: <b>' + escH(legal) + '</b>' : '') + (cur.loc ? '<br>' + escH(cur.loc) : '') + '</p>';
-  // TITULAR ANULA (Sebastian, 2026-11-06): arriba de la cotización — costo mensual de quedarse
-  // (hipoteca + mantenimiento) x años del préstamo vs nuestro pago mensual x años del plan.
-  var anulMo = mmo + mf / 12;
-  if (mmo > 0 && fee > 0 && anulMo > 0){
-    var yrsL = Math.round((term || 120) / 12) || 10;
-    var ourMoH = parseFloat((moTxt || '').replace(/[^0-9.]/g, '')) || 0;
-    var moR = ourMoH > 0 ? ourMoH : Math.round(fee / 36 * 100) / 100;
-    var yrsR = fmo > 0 ? Math.round(fmo / 12 * 10) / 10 : 3;
-    var fmt2A = function(v){ return '$' + Math.round(v).toLocaleString('en-US'); };
-    var yrsTxtA = function(y){ return (y % 1 === 0) ? String(y) : String(Math.round(y * 10) / 10); };
-    h += '<div style="text-align:center;padding:14px 10px;background:#f8fafc;border:2px solid #0b3d91;border-radius:12px;margin:18px 0 4px;font-size:19px;font-weight:800;line-height:1.35"><span style="color:#b91c1c">' + (en ? 'Cancel Mortgage + Maintenance = ' : 'Anula Hipoteca + Mantenimiento = ') + fmt2A(anulMo) + (en ? '/month' : '/mes') + ' x ' + yrsTxtA(yrsL) + ' yrs</span> <span style="color:#374151">vs</span> <span style="color:#15803d">' + fmt2A(moR) + (en ? '/month' : '/mes') + ' x ' + yrsTxtA(yrsR) + ' yrs</span></div>';
-  }
-  var BIGL = 'style="font-size:13px;font-weight:700;letter-spacing:1.5px;color:#374151"';
-  h += '<div style="text-align:center;padding:22px 10px;background:#eff6ff;border:2px solid #0b3d91;border-radius:12px;margin:20px 0"><div ' + BIGL + '>' + (en ? 'TOTAL PRICE' : 'PRECIO TOTAL') + '</div><div style="font-size:46px;font-weight:800;color:#0b3d91;line-height:1.1">' + fmtC(fee) + '</div></div>';
-  // QUOTE LEFT ALIGN (Sebastian, 2026-11-04): el cuerpo de la cotización va a la IZQUIERDA —
-  // solo el membrete y el recuadro PRECIO TOTAL quedan centrados; nada de todo centrado.
-  h += '<p style="font-size:17px;color:#374151">' + (en ? fmtC(fee) + ' — and this includes all, beginning to end. We never ask for another dollar. This price eliminates all past, present and future debt, and your name is removed from the deed at the county level, so your estate is safe and your next of kin will never inherit this nightmare.' : 'Este precio incluye todo, de principio a fin. Nunca pedimos otro dólar. Este precio elimina toda la deuda pasada, presente y futura, y tu nombre se retira de la escritura a nivel del condado, así tu patrimonio queda protegido y tus herederos nunca heredarán esta pesadilla.') + '</p>';
-  // LO QUE INCLUYE (Sebastian, 2026-10-30: the quote must SHOW what is included — the SAI includes-all content, itemized)
-  var INC = en ? ['Everything included, beginning to end — we never ask for another dollar', 'Elimination of all past, present and future debt', 'Your name removed from the deed at the county level', 'Your estate is safe — your next of kin will never inherit this nightmare'] : ['Todo incluido, de principio a fin — nunca pedimos otro dólar', 'Eliminación de toda la deuda pasada, presente y futura', 'Tu nombre retirado de la escritura a nivel del condado', 'Tu patrimonio protegido — tus herederos nunca heredarán esta pesadilla'];
-  h += '<div style="margin:18px 0 0"><div ' + BIGL + '>' + (en ? 'WHAT THIS PRICE INCLUDES' : 'LO QUE INCLUYE ESTE PRECIO') + '</div>' + INC.map(function(t){ return '<div style="padding:5px 0;border-bottom:1px solid #e5e7eb;font-size:16px">✅ ' + t + '</div>'; }).join('') + '</div>';
-  if (fmo > 0 && moTxt && moTxt !== '—') h += '<p style="font-size:22px;margin:14px 0"><b>' + (en ? 'Or in payments: ' : 'O en pagos: ') + escH(moTxt.replace(/\/(mes|sem)$/, '')) + ((en ? '/month × ' : '/mes × ') + fmo + (en ? ' months' : ' meses')) + (down > 0 ? (en ? ' (' + fmtC(down) + ' down payment)' : ' (' + fmtC(down) + ' de anticipo)') : '') + '</b></p>';
-  // COMPARACIÓN MENSUAL (Sebastian, 2026-10-30: compare the 2 prices PER MONTH, in the red/green
-  // colors — NOT the 10-year cost/savings cards): what they pay the resort today vs with us.
-  var mfMoQ = Math.floor(mf / 12), ofMoQ = Math.floor(ofees / 12), totMoQ = mmo + mfMoQ + ofMoQ;
-  var ourMoQ = parseFloat((moTxt || '').replace(/[^0-9.]/g, '')) || 0;
-  var hasFinQ = fmo > 0 && moTxt && moTxt !== '—' && ourMoQ > 0;
-  if (totMoQ > 0){
-    h += '<div style="display:flex;gap:14px;margin:22px 0">';
-    h += '<div style="flex:1;padding:18px 12px;background:#f0fdf4;border:2px solid #15803d;border-radius:12px"><div ' + BIGL + '>' + (en ? 'WHAT YOU PAY WITH US — PER MONTH' : 'LO QUE PAGAS CON NOSOTROS — AL MES') + '</div>';
-    if (hasFinQ){
-      h += '<div style="font-size:16px;color:#374151;padding:3px 0">' + (en ? 'One monthly payment — everything included' : 'Un solo pago mensual — todo incluido') + '</div>';
-      h += '<div style="font-size:40px;font-weight:800;color:#15803d;line-height:1.15">' + fmtC(ourMoQ) + (en ? '/month' : '/mes') + '</div>';
-      h += '<div style="font-size:16px;color:#374151">× ' + fmo + (en ? ' months' : ' meses') + (down > 0 ? (en ? ' · ' + fmtC(down) + ' down payment' : ' · ' + fmtC(down) + ' de anticipo') : (en ? ' · no down payment' : ' · sin pago inicial')) + '</div>';
-    } else {
-      h += '<div style="font-size:16px;color:#374151;padding:3px 0">' + (en ? 'One single payment — everything included' : 'Un solo pago — todo incluido') + '</div>';
-      h += '<div style="font-size:40px;font-weight:800;color:#15803d;line-height:1.15">' + fmtC(fee) + '</div>';
-    }
-    h += '<div style="flex:1;padding:18px 12px;background:#fef2f2;border:2px solid #b91c1c;border-radius:12px"><div ' + BIGL + '>' + (en ? 'WHAT YOU PAY TODAY — PER MONTH' : 'LO QUE PAGAS HOY — AL MES') + '</div>';
-    if (mmo > 0) h += '<div style="font-size:16px;color:#374151;padding:3px 0">' + (en ? 'Mortgage ' : 'Hipoteca ') + fmtC(mmo) + '</div>';
-    if (mfMoQ > 0) h += '<div style="font-size:16px;color:#374151;padding:3px 0">' + (en ? 'Maintenance ' : 'Mantenimiento ') + fmtC(mfMoQ) + '</div>';
-    if (ofMoQ > 0) h += '<div style="font-size:16px;color:#374151;padding:3px 0">' + (en ? 'Other expenses ' : 'Otros gastos ') + fmtC(ofMoQ) + '</div>';
-    h += '<div style="font-size:40px;font-weight:800;color:#b91c1c;line-height:1.15">' + fmtC(totMoQ) + (en ? '/month' : '/mes') + '</div></div>';
-    h += '</div></div>';
-    if (hasFinQ && totMoQ > ourMoQ) h += '<p style="font-size:17px;color:#374151"><b>' + (en ? 'That is ' + fmtC(totMoQ - ourMoQ) + ' less per month.' : 'Son ' + fmtC(totMoQ - ourMoQ) + ' menos al mes.') + '</b></p>';
-    if (bem > 0) h += '<p style="font-size:15px;color:#374151">' + (en ? 'In approximately <b>' + bem + ' months</b>, what you would have paid the resort equals our full fee.' : 'En aproximadamente <b>' + bem + ' meses</b>, lo que habrías pagado al resort iguala nuestra tarifa completa.') + '</p>';
-    var PTDQ = (typeof qPaidToDate === 'function') ? qPaidToDate() : null;
-    if (PTDQ) h += '<p style="font-size:16px;color:#374151">' + (en ? 'Of what you have paid to date (' : 'De lo que has pagado hasta hoy (') + '<b>' + fmtC(PTDQ.total) + '</b>): <b>' + fmtC(PTDQ.inte) + '</b>' + (en ? ' went to interest and only <b>' : ' fueron a intereses y solo <b>') + fmtC(PTDQ.prin) + '</b>' + (en ? ' reduced your debt.' : ' bajaron tu deuda.') + (PTDQ.level === 'estimado' ? (en ? ' (estimate)' : ' (estimado)') : '') + '</p>';
-  }
-  h += '<p style="margin-top:26px;font-size:12px;color:#6b7280">' + (en ? 'Linx Legal · Maintenance projections use an annual increase of ' + esc + '% and are estimates for illustrative purposes.' : 'Linx Legal · Las proyecciones de cuotas usan un aumento anual del ' + esc + '% y son estimados con fines ilustrativos.') + '</p>';
+  h += '<div style="font-size:24px;font-weight:800;color:#0b3d91;letter-spacing:.5px">⚖ LINX LEGAL</div>';
+  h += '<div style="background:#f3f4f6;border-radius:10px;padding:20px 22px;margin-top:14px"><div style="font-size:25px;font-weight:800;color:#0b3d91">' + (en ? 'Services Quote' : 'Cotización de Servicios') + '</div>';
+  h += '<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px 30px;margin-top:12px;font-size:15px"><span>' + (en ? 'Name: ' : 'Nombre: ') + '<b>' + escH(cur.name) + '</b></span><span>' + (en ? 'Date: ' : 'Fecha: ') + today + '</span></div>';
+  h += '<div style="font-size:15px;margin-top:6px">' + (en ? 'Advisor: ' : 'Asesor: ') + 'Sebastian Short</div>';
+  if (rname || legal) h += '<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px 30px;font-size:15px;margin-top:6px"><span>Resort: <b>' + escH(rname || legal) + '</b></span>' + (legal ? '<span>' + (en ? 'Developer: ' : 'Desarrollador: ') + '<b>' + escH(legal) + '</b></span>' : '') + '</div>';
+  h += '</div>';
+  h += '<div ' + SECQ + '>' + (en ? 'CURRENT SITUATION' : 'SITUACION ACTUAL') + '</div>';
+  h += '<div style="display:flex;gap:28px;flex-wrap:wrap"><div style="flex:1;min-width:250px">';
+  h += rowQ(en ? 'Total mortgage amount' : 'Monto total de la hipoteca', payoff > 0 ? fmtD(payoff) : (en ? 'Paid in full' : 'Pagada'));
+  h += rowQ(en ? 'Monthly mortgage payment' : 'Pago mensual de la hipoteca', mmo > 0 ? fmtD(mmo) : '—');
+  h += rowQ(en ? 'Months remaining on mortgage' : 'Meses restantes de hipoteca', MG.status === 'ok' ? String(MG.months) : '—');
+  h += '</div><div style="flex:1;min-width:250px">';
+  h += rowQ(en ? 'Maintenance fees per year' : 'Tarifas de mantenimiento por año', fmtD(mf));
+  if (ofees > 0) h += rowQ(en ? 'Other fees per year' : 'Otros gastos por año', fmtD(ofees));
+  if (PTDq){ h += rowQ(en ? 'Paid in interest' : 'Ha pagado en intereses', fmtD(PTDq.inte)); h += rowQ(en ? 'Paid in principal' : 'Ha pagado en principal', fmtD(PTDq.prin)); }
+  h += '</div></div>';
+  if (PTDq && PTDq.level === 'estimado') h += '<p style="font-size:12px;color:#6b7280;margin:6px 0 0">' + (en ? '* Interest/principal figures are estimates based on the payment history.' : '* Las cifras de intereses y principal son estimadas según el historial de pagos.') + '</p>';
+  h += '<div ' + SECQ + '>' + (en ? 'FUTURE PROJECTION' : 'PROYECCION A FUTURO') + '</div>';
+  if (projQ !== null){
+    h += '<p style="font-size:16px;color:#374151;margin:4px 0">' + (en ? 'If you keep your property, you will pay approximately:' : 'Si mantiene su propiedad, pagará aproximadamente:') + '</p>';
+    h += '<div style="font-size:42px;font-weight:800;color:#0b3d91;line-height:1.15">' + fmtD(projQ) + '</div>';
+    h += '<p style="font-size:16px;font-weight:700;color:#b91c1c;margin:8px 0 0">' + (en ? 'You are overpaying for a property you no longer use!' : '¡Está pagando de más por una propiedad que ya no utiliza!') + '</p>';
+  } else { h += projNote; }
+  h += '<div ' + SECQ + '>' + (en ? 'OUR PROPOSAL' : 'NUESTRA PROPUESTA') + '</div>';
+  h += '<div style="display:flex;gap:28px;flex-wrap:wrap"><div style="flex:1;min-width:250px">';
+  h += rowQ(en ? 'List price' : 'Precio de la lista', fmtD(listaQ));
+  h += rowQ(en ? 'Discount today' : 'Descuento hoy', descQ > 0 ? '−' + fmtD(descQ) : fmtD(0));
+  h += rowQ('SUBTOTAL', fmtD(subQ), ROWQT);
+  h += '</div><div style="flex:1;min-width:250px">';
+  h += rowQ(en ? 'Administration fee' : 'Cuota de administración', fmtD(adminQ));
+  if (ccQ > 0) h += rowQ(en ? 'Card fee (3%)' : 'Cargo por tarjeta (3%)', fmtC(ccQ));
+  h += '<div ' + ROWQT + '><span ' + LBLQ + '>' + (en ? 'FINAL PRICE' : 'PRECIO FINAL') + '</span><span style="font-weight:800;font-size:21px;color:#0b3d91">' + (ccQ > 0 ? fmtC(finQ) : fmtD(finQ)) + '</span></div>';
+  h += '</div></div>';
+  h += '<div ' + SECQ + '>' + (en ? 'PAYMENT OPTIONS' : 'OPCIONES DE PAGO') + '</div>';
+  var CARDQ = 'style="flex:1;min-width:200px;border:1.5px solid #d1d5db;border-radius:10px;padding:14px"';
+  var CARDTQ = 'style="font-size:12px;font-weight:800;letter-spacing:1px;color:#0b3d91;margin-bottom:6px"';
+  h += '<div style="display:flex;gap:12px;flex-wrap:wrap">';
+  h += '<div ' + CARDQ + '><div ' + CARDTQ + '>' + (en ? 'OPTION A — PAID IN FULL' : 'OPCIÓN A — PAGO COMPLETO') + '</div><div style="font-size:14px;color:#374151">' + (en ? 'Pay ' + fmtD(finQ) + ' today and be done with this expense once and for all.' : 'Pague ' + fmtD(finQ) + ' hoy y termine con este gasto de una vez.') + '</div></div>';
+  h += '<div style="flex:1;min-width:200px;border:2px solid #0d9488;background:#f0fdfa;border-radius:10px;padding:14px"><div style="font-size:12px;font-weight:800;letter-spacing:1px;color:#0f766e;margin-bottom:6px">' + (en ? 'OPTION B — PAYMENT PLAN' : 'OPCIÓN B — PLAN DE PAGOS') + '</div><div style="font-size:14px;color:#374151">' + (planDown > 0 ? fmtD(planDown) + (en ? ' today, then monthly payments of ' : ' hoy, luego pagos mensuales de ') : (en ? 'No down payment — monthly payments of ' : 'Sin pago inicial — pagos mensuales de ')) + fmtC(planMo) + (en ? ' for ' : ' por ') + planN + (en ? ' months. No interest, no finance charges.' : ' meses. Sin intereses, sin cargos financieros.') + '</div></div>';
+  h += '<div ' + CARDQ + '><div ' + CARDTQ + '>' + (en ? 'OPTION C — FINANCING' : 'OPCIÓN C — FINANCIAMIENTO') + '</div><div style="font-size:14px;color:#374151">' + (en ? 'Financing available through ' + finNameQ + '. Subject to credit approval.' : 'Financiamiento disponible a través de ' + finNameQ + '. Sujeto a aprobación de crédito.') + '</div></div>';
+  h += '</div>';
+  h += '<div style="text-align:center;margin-top:30px;font-size:13px;color:#6b7280">' + (en ? 'This quote is valid for a limited time. Prices may change without notice.' : 'Esta cotización es válida por tiempo limitado. Los precios pueden cambiar sin previo aviso.') + '<br>Linx Legal • Sebastian Short • Sebastian.Short@LinxLegal.com • +1 689 326-8754';
+  h += '<p style="font-size:10.5px;color:#9ca3af;margin:10px 0 0">' + (en ? 'We represent the consumer and are not affiliated with any resort, developer or timeshare company. Linx Legal is a consumer advocacy firm focused on the legal termination of timeshare contracts. This quote does not constitute legal advice.' : 'Representamos al consumidor y no tenemos afiliación con ningún resort, desarrollador ni compañía de tiempo compartido. Linx Legal es una firma de defensa del consumidor enfocada en la terminación legal de contratos de tiempo compartido. Esta cotización no constituye asesoría legal.') + '</p></div>';
   h += '</div>';
   h += '<scr' + 'ipt>function qCopy(b){var tx=document.getElementById("qDocBody").innerText;try{navigator.clipboard.writeText(tx).then(function(){b.textContent="✅";});}catch(e){}}</scr' + 'ipt>';
   h += qDocToggleJs(en);
