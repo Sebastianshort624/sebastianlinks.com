@@ -60,6 +60,12 @@
   .tasks { background:#fff; border:1px solid #dde3e8; border-left:4px solid #7b4fc9; border-radius:12px; padding:14px; margin-bottom:16px; }
   .taskshead { font-size:16px; font-weight:700; margin-bottom:8px; }
   .task { font-size:14.5px; line-height:1.45; padding:7px 0; border-top:1px solid #eef1f4; }
+  .tasklegend { font-size:12.5px; color:#5a6b7a; margin:-2px 0 6px; }
+  .tchecks { display:inline-block; margin-left:10px; white-space:nowrap; }
+  .tchk { font-size:12.5px; font-weight:600; margin-right:8px; cursor:pointer; }
+  .tchk input { width:16px; height:16px; vertical-align:-3px; cursor:pointer; }
+  .task.done { opacity:.5; }
+  .task.done .ttitle, .task.done .tname { text-decoration:line-through; }
   .task:first-of-type { border-top:none; }
   .tname { font-weight:700; }
   .tname a { color:#0b5cad; text-decoration:none; }
@@ -81,7 +87,7 @@
 <body>
 <div class="wrap">
   <h1>☀️ Morning Board — Thursday, November 12, 2026</h1>
-  <div class="updated">Updated 9:39 AM ET · 5 appointments</div>
+  <div class="updated">Updated 9:44 AM ET · 5 appointments</div>
   <div class="nav">
   <a href="https://sebastianlinks.com/board/" target="_blank" rel="noopener noreferrer">🗂️ Board</a>
   <a href="https://sebastianlinks.com/casefile/" target="_blank" rel="noopener noreferrer">📂 Case File</a>
@@ -94,7 +100,8 @@
 </div>
   <div class="tasks" id="tasks" hidden>
   <div class="taskshead">📋 Today's Tasks — 7 open, due today</div>
-  <div class="task"><span class="tname"><a href="https://sebastianlinks.com/casefile/?c=c-rojas-1112" target="_blank" rel="noopener noreferrer">Raul Rojas / Jennis Quintana</a></span> — <span class="ttitle"><a href="https://app.pipelinecrm.com/people/1310558438" target="_blank" rel="noopener noreferrer">RAUL ROJAS / Jennis Quintana / +12018879201 / Split rock resort / West New York, NJ</a></span> <span class="twhen">9:00 AM</span></div><div class="task"><span class="tname"><a href="https://sebastianlinks.com/casefile/?c=c-varperez-1112" target="_blank" rel="noopener noreferrer">Yeny Var Perez / Henry David Martinez Uzcategui</a></span> — <span class="ttitle"><a href="https://app.pipelinecrm.com/people/1310529156" target="_blank" rel="noopener noreferrer">18000 / Yeny Var / +13057845420 / Otro (por favor, enumérelos a continuación) Westgate / Sarasota, Florida</a></span> <span class="twhen">11:00 AM</span></div><div class="task"><span class="tname"><a href="https://sebastianlinks.com/casefile/?c=c-heck-1112" target="_blank" rel="noopener noreferrer">Frances Heck</a></span> — <span class="ttitle"><a href="https://app.pipelinecrm.com/people/1310552489" target="_blank" rel="noopener noreferrer">Frances Heck / / +13175809600 / Bluegreen / Bonita Springs Fl34134, Florida</a></span> <span class="twhen">1:30 PM</span></div><div class="task"><span class="tname"><a href="https://sebastianlinks.com/casefile/?c=c-vazquez-1107" target="_blank" rel="noopener noreferrer">Walkiria Vazquez / Hector Zamora</a></span> — <span class="ttitle"><a href="https://app.pipelinecrm.com/people/1310506024" target="_blank" rel="noopener noreferrer">RSTO — Walkiria Vazquez / Hector Zamora</a></span> <span class="twhen">5:45 PM</span></div><div class="task"><span class="ttitle">** NC ** NO CALLS</span> <span class="twhen">7:30 PM</span></div><div class="task"><span class="tname"><a href="https://sebastianlinks.com/casefile/?c=c-gonzalez-1112" target="_blank" rel="noopener noreferrer">Jonathan Gonzalez / Tatian Moreno</a></span> — <span class="ttitle"><a href="https://app.pipelinecrm.com/people/1310556047" target="_blank" rel="noopener noreferrer">55000 / Jonathan Gonzalez / +16892471606 / wyndham / Apopka, Florida</a></span> <span class="twhen">9:30 PM</span></div><div class="task"><span class="tname"><a href="https://sebastianlinks.com/casefile/?c=c-vazquez-1107" target="_blank" rel="noopener noreferrer">Walkiria Vazquez / Hector Zamora</a></span> — <span class="ttitle"><a href="https://app.pipelinecrm.com/people/1310506024" target="_blank" rel="noopener noreferrer">🔁 FU — Walkiria Vazquez / Hector Zamora</a></span></div>
+  <div class="tasklegend">✅ Done = completes the task in Pipeline too · 🙈 Hide = hides it here only, nothing happens in the CRM</div>
+  <div class="task" data-tkey="79c21a973177"><span class="tname"><a href="https://sebastianlinks.com/casefile/?c=c-rojas-1112" target="_blank" rel="noopener noreferrer">Raul Rojas / Jennis Quintana</a></span> — <span class="ttitle"><a href="https://app.pipelinecrm.com/people/1310558438" target="_blank" rel="noopener noreferrer">RAUL ROJAS / Jennis Quintana / +12018879201 / Split rock resort / West New York, NJ</a></span> <span class="twhen">9:00 AM</span><span class="tchecks"><label class="tchk" title="Complete this task in Pipeline too"><input type="checkbox" class="tkdone" data-tkey="79c21a973177" data-pid="1310558438" data-title="RAUL ROJAS / Jennis Quintana / +12018879201 / Split rock resort / West New York, NJ" data-name="Raul Rojas / Jennis Quintana"> ✅ Done</label><label class="tchk" title="Hide it here only — nothing happens in the CRM"><input type="checkbox" class="tkhide" data-tkey="79c21a973177"> 🙈 Hide</label></span></div><div class="task" data-tkey="bdc2e9bf090f"><span class="tname"><a href="https://sebastianlinks.com/casefile/?c=c-varperez-1112" target="_blank" rel="noopener noreferrer">Yeny Var Perez / Henry David Martinez Uzcategui</a></span> — <span class="ttitle"><a href="https://app.pipelinecrm.com/people/1310529156" target="_blank" rel="noopener noreferrer">18000 / Yeny Var / +13057845420 / Otro (por favor, enumérelos a continuación) Westgate / Sarasota, Florida</a></span> <span class="twhen">11:00 AM</span><span class="tchecks"><label class="tchk" title="Complete this task in Pipeline too"><input type="checkbox" class="tkdone" data-tkey="bdc2e9bf090f" data-pid="1310529156" data-title="18000 / Yeny Var / +13057845420 / Otro (por favor, enumérelos a continuación) Westgate / Sarasota, Florida" data-name="Yeny Var Perez / Henry David Martinez Uzcategui"> ✅ Done</label><label class="tchk" title="Hide it here only — nothing happens in the CRM"><input type="checkbox" class="tkhide" data-tkey="bdc2e9bf090f"> 🙈 Hide</label></span></div><div class="task" data-tkey="26f6f6a4e2f7"><span class="tname"><a href="https://sebastianlinks.com/casefile/?c=c-heck-1112" target="_blank" rel="noopener noreferrer">Frances Heck</a></span> — <span class="ttitle"><a href="https://app.pipelinecrm.com/people/1310552489" target="_blank" rel="noopener noreferrer">Frances Heck / / +13175809600 / Bluegreen / Bonita Springs Fl34134, Florida</a></span> <span class="twhen">1:30 PM</span><span class="tchecks"><label class="tchk" title="Complete this task in Pipeline too"><input type="checkbox" class="tkdone" data-tkey="26f6f6a4e2f7" data-pid="1310552489" data-title="Frances Heck / / +13175809600 / Bluegreen / Bonita Springs Fl34134, Florida" data-name="Frances Heck"> ✅ Done</label><label class="tchk" title="Hide it here only — nothing happens in the CRM"><input type="checkbox" class="tkhide" data-tkey="26f6f6a4e2f7"> 🙈 Hide</label></span></div><div class="task" data-tkey="6df4d972d22c"><span class="tname"><a href="https://sebastianlinks.com/casefile/?c=c-vazquez-1107" target="_blank" rel="noopener noreferrer">Walkiria Vazquez / Hector Zamora</a></span> — <span class="ttitle"><a href="https://app.pipelinecrm.com/people/1310506024" target="_blank" rel="noopener noreferrer">RSTO — Walkiria Vazquez / Hector Zamora</a></span> <span class="twhen">5:45 PM</span><span class="tchecks"><label class="tchk" title="Complete this task in Pipeline too"><input type="checkbox" class="tkdone" data-tkey="6df4d972d22c" data-pid="1310506024" data-title="RSTO — Walkiria Vazquez / Hector Zamora" data-name="Walkiria Vazquez / Hector Zamora"> ✅ Done</label><label class="tchk" title="Hide it here only — nothing happens in the CRM"><input type="checkbox" class="tkhide" data-tkey="6df4d972d22c"> 🙈 Hide</label></span></div><div class="task" data-tkey="ca359bbfccd0"><span class="ttitle">** NC ** NO CALLS</span> <span class="twhen">7:30 PM</span><span class="tchecks"><label class="tchk" title="Complete this task in Pipeline too"><input type="checkbox" class="tkdone" data-tkey="ca359bbfccd0" data-pid="" data-title="** NC ** NO CALLS" data-name=""> ✅ Done</label><label class="tchk" title="Hide it here only — nothing happens in the CRM"><input type="checkbox" class="tkhide" data-tkey="ca359bbfccd0"> 🙈 Hide</label></span></div><div class="task" data-tkey="8baa018806d0"><span class="tname"><a href="https://sebastianlinks.com/casefile/?c=c-gonzalez-1112" target="_blank" rel="noopener noreferrer">Jonathan Gonzalez / Tatian Moreno</a></span> — <span class="ttitle"><a href="https://app.pipelinecrm.com/people/1310556047" target="_blank" rel="noopener noreferrer">55000 / Jonathan Gonzalez / +16892471606 / wyndham / Apopka, Florida</a></span> <span class="twhen">9:30 PM</span><span class="tchecks"><label class="tchk" title="Complete this task in Pipeline too"><input type="checkbox" class="tkdone" data-tkey="8baa018806d0" data-pid="1310556047" data-title="55000 / Jonathan Gonzalez / +16892471606 / wyndham / Apopka, Florida" data-name="Jonathan Gonzalez / Tatian Moreno"> ✅ Done</label><label class="tchk" title="Hide it here only — nothing happens in the CRM"><input type="checkbox" class="tkhide" data-tkey="8baa018806d0"> 🙈 Hide</label></span></div><div class="task" data-tkey="26f264b207e1"><span class="tname"><a href="https://sebastianlinks.com/casefile/?c=c-vazquez-1107" target="_blank" rel="noopener noreferrer">Walkiria Vazquez / Hector Zamora</a></span> — <span class="ttitle"><a href="https://app.pipelinecrm.com/people/1310506024" target="_blank" rel="noopener noreferrer">🔁 FU — Walkiria Vazquez / Hector Zamora</a></span><span class="tchecks"><label class="tchk" title="Complete this task in Pipeline too"><input type="checkbox" class="tkdone" data-tkey="26f264b207e1" data-pid="1310506024" data-title="🔁 FU — Walkiria Vazquez / Hector Zamora" data-name="Walkiria Vazquez / Hector Zamora"> ✅ Done</label><label class="tchk" title="Hide it here only — nothing happens in the CRM"><input type="checkbox" class="tkhide" data-tkey="26f264b207e1"> 🙈 Hide</label></span></div>
 </div>
   <div class="mentions">
   <div class="mentionshead">📰 CRM Feed — latest notes on your clients</div>
@@ -182,6 +189,46 @@ var dgo=document.getElementById('dgo');
 if(dgo) dgo.addEventListener('click',function(){ var d=document.getElementById('dsearch').value; if(d) window.open('/morning/archive/'+d+'.html','_blank','noopener,noreferrer'); });
 var tbtn=document.getElementById('taskbtn');
 if(tbtn) tbtn.addEventListener('click',function(){ var t=document.getElementById('tasks'); if(!t) return; var open=t.hasAttribute('hidden'); if(open){ t.removeAttribute('hidden'); t.scrollIntoView({behavior:'smooth',block:'start'}); } else { t.setAttribute('hidden',''); } });
+// Task checkboxes (Sebastian 2026-11-12): ✅ Done completes the task in
+// Pipeline too (a board_state 'taskstate:' row the sync watcher executes);
+// 🙈 Hide only hides the row here. State persists in board_state.task_done.
+var TSTATE={};
+function tkeyOf(el){ return el.getAttribute('data-tkey'); }
+function tRow(tkey){ return document.querySelector('.task[data-tkey="'+tkey+'"]'); }
+function tApply(tkey){
+  var st=TSTATE[tkey]||{}, row=tRow(tkey); if(!row) return;
+  var d=row.querySelector('.tkdone'), h=row.querySelector('.tkhide');
+  if(d) d.checked=!!st.done;
+  if(h) h.checked=!!st.hidden;
+  row.classList.toggle('done',!!st.done);
+  row.style.display=st.hidden?'none':'';
+}
+function tPersist(tkey){
+  var st=TSTATE[tkey]||{};
+  var body={client_key:'taskstate:'+PAGE_DATE+':'+tkey,task_done:st,updated_at:new Date().toISOString()};
+  fetch(BCFG.url+'/rest/v1/board_state?on_conflict=client_key',{method:'POST',headers:headers({'Prefer':'resolution=merge-duplicates,return=minimal'}),body:JSON.stringify(body)}).catch(function(){});
+}
+document.querySelectorAll('.tkdone').forEach(function(cb){
+  cb.addEventListener('change',function(){
+    var tkey=tkeyOf(cb), st=TSTATE[tkey]||(TSTATE[tkey]={});
+    st.done=cb.checked; st.pid=cb.getAttribute('data-pid')||''; st.title=cb.getAttribute('data-title')||''; st.name=cb.getAttribute('data-name')||''; st.date=PAGE_DATE;
+    if(cb.checked){ st.done_at=new Date().toISOString(); } else { delete st.done_at; delete st.synced; delete st.synced_at; }
+    tApply(tkey); tPersist(tkey);
+  });
+});
+document.querySelectorAll('.tkhide').forEach(function(cb){
+  cb.addEventListener('change',function(){
+    var tkey=tkeyOf(cb), st=TSTATE[tkey]||(TSTATE[tkey]={});
+    st.hidden=cb.checked; st.date=PAGE_DATE;
+    tApply(tkey); tPersist(tkey);
+  });
+});
+(function(){
+  fetch(BCFG.url+'/rest/v1/board_state?select=client_key,task_done&client_key=like.taskstate:*',{headers:headers()}).then(function(r){ return r.ok?r.json():[]; }).then(function(rows){
+    rows.forEach(function(rw){ var ck=rw.client_key||''; if(ck.indexOf('taskstate:'+PAGE_DATE+':')!==0) return; var k=ck.split(':').pop(); if(k&&rw.task_done) TSTATE[k]=rw.task_done; });
+    Object.keys(TSTATE).forEach(tApply);
+  }).catch(function(){});
+})();
 </script>
 </body>
 </html>
