@@ -28,8 +28,10 @@
   .client-line input { border: none; border-bottom: 1px solid #333; font-size: 1em; width: 280px; font-family: inherit; }
   .client-line select { font-size: 1em; padding: 6px; font-family: inherit; max-width: 100%; }
   /* YELLOW BAR (Sebastian, 2026-11-04: "chang background to yellow / letters to black") — la barra
-     resumen (.cbar) va AMARILLA (#facc15) con letras negras; Total anual sigue en rojo (ver abajo). */
-  .cbar { background: #facc15; color: #111; border-radius: 6px; padding: 8px 14px; margin-top: 6px; line-height: 1.32; box-shadow: 0 2px 8px rgba(0,0,0,.18); }
+     resumen (.cbar) — desde 2026-11-12 va BLANCA estilo A.M. (ver CLEAN BAR abajo); Total anual sigue en rojo. */
+  /* CLEAN BAR (Sebastian, 2026-11-12): the dirty yellow is gone — crisp and clean like the
+     A.M. board: white card, navy accent. (Was #facc15 yellow from 2026-11-04.) */
+  .cbar { background: #ffffff; color: #12263a; border: 1px solid #c9dcf7; border-left: 5px solid #0b3d91; border-radius: 8px; padding: 8px 14px; margin-top: 6px; line-height: 1.32; box-shadow: 0 1px 4px rgba(11,61,145,.10); }
   .ib-wrap { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,2fr) minmax(0,1fr); gap: 14px; align-items: start; }
   .ib-col { min-width: 0; overflow-wrap: break-word; }
   .ib-col + .ib-col { border-left: 2px solid rgba(11,61,145,.30); padding-left: 14px; }
@@ -59,7 +61,7 @@
   .ib-line { font-size: 0.85em; margin-top: 2px; }
   .ib-stats { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 4px; }
   .ib-big { font-size: 1.5em; font-weight: 800; color: #0b3d91; line-height: 1.1; }
-  /* YELLOW BAR (Sebastian, 2026-11-04) — solo la barra resumen (.cbar): fondo amarillo #facc15,
+  /* BAR (Sebastian, 2026-11-04; limpia 2026-11-12) — solo la barra resumen (.cbar):
      letras negras, valores chicos y sin el bold pesado (800 → 500/600; esto vino de su orden previa
      "MAKE THIS GREEN AND SMALLER FONT NOT SO FAT" del mismo día, el color cambió verde → amarillo).
      Todo va con scope .cbar: nada fuera de la barra cambia. */
@@ -107,7 +109,7 @@
   [data-fill="down"] { cursor:text; }
   [data-fill="down"]:focus { outline:2px solid #22c55e; background:#bbf7d0; }
   .hl-b { color: #0b3d91; font-weight: bold; }
-  .hl-m { background: #fff3cd; color: #856404; font-weight: bold; padding: 0 4px; border-radius: 3px; }
+  .hl-m { background: #dbeafe; color: #0b3d91; font-weight: bold; padding: 0 4px; border-radius: 3px; }
   .jumpline { background: #fff; padding: 10px 0; margin-bottom: 10px; border-bottom: 2px solid #0b3d91; }
   .jumpline a { display: inline-block; margin-right: 16px; padding: 10px 20px; font-size: 1.1em; font-weight: bold; text-decoration: none; border-radius: 8px; }
   .jumpline a.jprice { background: #0a7a2e; color: #fff; }
@@ -465,7 +467,7 @@ sideApply();
   <div style="display:flex;align-items:center;gap:7px">
   <div style="font-weight:600;font-size:11px;letter-spacing:.12em;margin:0;white-space:nowrap;color:#9ca3af">TIPO:</div>
   <div style="display:flex;gap:7px;flex-wrap:wrap">
-    <button type="button" class="eodbtn" data-kind="apt" data-tag="NEW APT" style="background:#facc15;color:#111" onclick="eodSet('apt','NEW APT')">NEW APT</button>
+    <button type="button" class="eodbtn" data-kind="apt" data-tag="NEW APT" style="background:#0b3d91;color:#fff" onclick="eodSet('apt','NEW APT')">NEW APT</button>
     <button type="button" class="eodbtn" data-kind="apt" data-tag="RESCH" style="background:#38bdf8;color:#111" onclick="eodSet('apt','RESCH')">RESCH</button>
     <button type="button" class="eodbtn" data-kind="apt" data-tag="FU APT" style="background:#7c3aed;color:#fff" onclick="eodSet('apt','FU APT')">FU APT</button>
   </div>
@@ -630,6 +632,7 @@ sideApply();
     <div style="font-size:.85em;font-weight:800;letter-spacing:1.5px">PRECIO TOTAL</div>
     <div id="q_bigprice_amt" style="font-size:2.4em;font-weight:900;line-height:1.15">—</div>
     <div id="q_bigprice_math" style="font-size:1em;font-weight:600;white-space:pre-wrap"></div>
+    <div id="q_bigprice_be" style="font-size:1.02em;font-weight:700;margin-top:6px"></div>
     <button type="button" onclick="qCopyMonthlyTxt(this)" style="background:#fff;color:#0b3d91;border:none;border-radius:6px;padding:6px 14px;font-weight:800;cursor:pointer;font-family:inherit;margin-top:10px">📋 COPIAR TEXTO</button>
   </div>
   <!-- MONTHLYTXT_BOX_REMOVED_V1 (Sebastian, 2026-11-08): the green TEXTO box is gone — the monthly text lives under PRECIO TOTAL in the blue box now; the copy button moved into the blue box. -->
@@ -639,7 +642,7 @@ sideApply();
     <option value="ach">ACH</option>
     <option value="check">CHEQUE</option>
     <option value="cc">CC (+3%)</option>
-    <option value="ucfs">UCFS</option>
+    <option value="ucfs" selected>UCFS</option>
     <option value="equity">Equity</option>
     <option value="uga">UGA</option>
     <option value="inhouse">IN-HOUSE (Linx)</option>
@@ -1218,6 +1221,10 @@ function qDepSample(){
 }
 function fmtD(n){ return '$' + Math.round(n).toLocaleString('en-US'); }
 function fmtPhone(v){ var s = String(v == null ? '' : v), d = s.replace(/\D/g, ''); if (d.length === 11 && d.charAt(0) === '1') d = d.slice(1); if (d.length === 10) return d.slice(0,3) + '-' + d.slice(3,6) + '-' + d.slice(6); if (d.length === 11 && d.slice(0,2) === '51') return '51 ' + d.slice(2,5) + '-' + d.slice(5,8) + '-' + d.slice(8); return s.replace(/^\+/, ''); }
+// TEL_LINKS_V1 (Sebastian, 2026-11-12): phone numbers on the case file are tappable
+// tel: links, same as the A.M. board — press-and-hold offers RingCentral / WhatsApp / iPhone.
+function telHtml(v){ var s = fmtPhone(v); var d = String(v == null ? '' : v).replace(/\D/g, ''); if (!d) return escH(s); if (d.length === 11 && d.charAt(0) === '1') d = d.slice(1); var href = (d.length === 10) ? '+1' + d : '+' + d; return '<a href="tel:' + href + '" style="color:inherit;font-weight:700;text-decoration:underline">' + escH(s) + '</a>'; }
+function telListHtml(c){ return [c.phone, c.phone2].filter(function(x){ return x; }).map(telHtml).join(' · '); }
 function fmtC(n){ return '$' + Number(n).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
 function escH(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]; }); }
 var MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
@@ -1268,7 +1275,7 @@ function qApplyDtype(){
   var cl = $('q_commlab'); if (cl) cl.textContent = db ? 'Comisión deed-back' : 'Comisión 10%';
   var dn = $('q_dbnote'); if (dn) dn.style.display = db ? '' : 'none';
   var pm2 = $('q_paym');
-  if (pm2){ for (var oi = 0; oi < pm2.options.length; oi++){ var op2 = pm2.options[oi]; var ban2 = (op2.value === 'uga' || op2.value === 'inhouse' || op2.value === 'equity'); op2.hidden = db ? ban2 : false; op2.disabled = db ? ban2 : false; } if (db && (pm2.value === 'uga' || pm2.value === 'inhouse' || pm2.value === 'equity')){ pm2.value = 'ach'; } }
+  if (pm2){ for (var oi = 0; oi < pm2.options.length; oi++){ var op2 = pm2.options[oi]; var ban2 = (op2.value === 'uga' || op2.value === 'inhouse' || op2.value === 'equity'); op2.hidden = db ? ban2 : false; op2.disabled = db ? ban2 : false; } if (db && (pm2.value === 'uga' || pm2.value === 'inhouse' || pm2.value === 'equity')){ pm2.value = 'ucfs'; } }
 }
 function qSetDtype(t){
   if (t === 'DB'){
@@ -1969,7 +1976,7 @@ function renderBar(c, n){
   if (c.loanNote || c.folderPath) lk.push('<a href="#" onclick="qCopyInfo(\'loan\', this);return false;" title="' + escH((c.loanNote || 'Contrato de préstamo') + (c.folderPath ? ' — ' + c.folderPath : '') + ' — clic para copiar la ruta') + '">📄 Préstamo</a>');
   var linksHtml = lk.length ? '<div class="ib-links">' + lk.join('<span class="ib-sep">·</span>') + '</div>' : '';
   $('ibL').innerHTML = '<div class="ib-client">' + qNameLink(c) + chip + behindChip + '</div>' +
-      '<div class="ib-cal"><span class="ib-lab2">ANALISTA DE CASOS:</span> ' + escH(c.ca || '—') + '</div>' + (ph ? '<div class="ib-ph">' + escH(ph) + '</div>' : '') +
+      '<div class="ib-cal"><span class="ib-lab2">ANALISTA DE CASOS:</span> ' + escH(c.ca || '—') + '</div>' + (ph ? '<div class="ib-ph">' + telListHtml(c) + '</div>' : '') +
       (c.email ? '<div class="ib-line">' + escH(c.email) + '</div>' : '') +
       (c.email2 ? '<div class="ib-line">' + escH(c.email2) + '</div>' : '') +
       (c.address ? '<div class="ib-line">📍 ' + escH(c.address) + '</div>' : '');
@@ -2044,7 +2051,7 @@ function qIdn(c){
   el.innerHTML = '<b>' + qNameLink(c) + '</b>' + bChip +
     (c.resort ? '<br><b>' + escH(c.resort) + '</b>' : '') +
     (c.address ? '<br>📍 ' + escH(c.address) : '') +
-    (ph ? '<br>' + escH(ph) : '') +
+    (ph ? '<br>' + telListHtml(c) : '') +
     (c.notes ? '<br><a href="javascript:void(0)" onclick="document.getElementById(\'q_notes_full\').style.display=document.getElementById(\'q_notes_full\').style.display===\'none\'?\'block\':\'none\'" style="font-size:0.85em;">📋 Notas del cliente (toca para expandir)</a><div id="q_notes_full" style="display:none;margin-top:6px;"><span class="tmin">' + escH(c.notes) + '</span></div>' : '') +
     (qPipeUrl(c) ? '<br><a href="' + escH(qPipeUrl(c)) + '" target="_blank">Registro en Pipeline ↗</a>' : '') +
     ((c.sentQ && c.sentQ.length) ? '<br>📤 <a href="javascript:void(0)" onclick="qSentqView()">Cotización enviada: ' + escH(qSentqWhen(c.sentQ[c.sentQ.length - 1].ts)) + ' (' + escH(c.sentQ[c.sentQ.length - 1].kind) + ') — ver lo que envié</a>' : '');
@@ -3836,7 +3843,7 @@ function qSync(c){
       fp.value = want;
     }
   })();
-  $('q_paym').value = c ? (c.paymethod || 'ach') : 'ach';
+  $('q_paym').value = c ? (c.paymethod || 'ucfs') : 'ucfs'; // DEFAULT_UCFS_V1 (Sebastian, 2026-11-12): default financing is UCFS, not ACH
   qFmoMode();
   $('q_fapr').value = (c && c.fapr > 0) ? c.fapr : 19.99; $('q_fmo').value = (c && c.fmo > 0) ? Math.min(c.fmo, 48) : 36; // FMO_CAP48_V1: stored 54/60 clamps to 48
   if (!$('q_fmo').value) $('q_fmo').value = '36';
@@ -3932,7 +3939,7 @@ function qPanelLang(){ var en = (typeof cur !== "undefined" && cur && cur.lang =
 function qRecalc(){
   qPanelLang();
   var qdEl = $('q_dates'); if (qdEl) qdEl.style.display = ($('q_paym').value === 'uga') ? '' : 'none';
-  if (!cur){ ['q_w30','q_w90','q_w6','q_t1','q_t3','q_t5','q_t10','q_t20','q_t30','q_ftot','q_bal','q_s10','q_mo','q_ftpay','q_ftint','q_mosn','q_t12','q_t24','q_t36','q_comm','q_cdate','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct','q_xmmo','q_xmfmo','q_xtotmo','q_xmoyr','q_xmfyr','q_xtotyr','q_xmo10','q_xsch','q_xmf10','q_xproj10','q_xnight','q_xofmo','q_xofyr','q_xof10','q_xpnightyr'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— meses restantes'; var fe0 = $('q_feesug'); if (fe0) fe0.textContent = ''; var bp0 = $('q_bigprice_amt'); if (bp0) bp0.textContent = '—'; var bm0 = $('q_bigprice_math'); if (bm0) bm0.textContent = ''; var mt0 = $('q_monthlytxt_body'); if (mt0) mt0.textContent = '—'; var mw0 = $('q_minwarn'); if (mw0) mw0.style.display = 'none'; var cr0 = $('q_ccrow'); if (cr0) cr0.style.display = 'none'; var cb0 = $('q_commbase'); if (cb0) cb0.textContent = ''; var xf0 = $('q_bal2flag'); if (xf0) xf0.style.display = 'none'; var xt0 = $('q_schtag'); if (xt0) xt0.style.display = 'none'; var pt0 = $('q_paidtag'); if (pt0) pt0.textContent = ''; return; }
+  if (!cur){ ['q_w30','q_w90','q_w6','q_t1','q_t3','q_t5','q_t10','q_t20','q_t30','q_ftot','q_bal','q_s10','q_mo','q_ftpay','q_ftint','q_mosn','q_t12','q_t24','q_t36','q_comm','q_cdate','q_paid','q_prin','q_inte','q_bal2','q_tint','q_ipct','q_xmmo','q_xmfmo','q_xtotmo','q_xmoyr','q_xmfyr','q_xtotyr','q_xmo10','q_xsch','q_xmf10','q_xproj10','q_xnight','q_xofmo','q_xofyr','q_xof10','q_xpnightyr'].forEach(function(id){ var el = $(id); if (el) el.textContent = '—'; }); $('q_mleft').textContent = '— meses restantes'; var fe0 = $('q_feesug'); if (fe0) fe0.textContent = ''; var bp0 = $('q_bigprice_amt'); if (bp0) bp0.textContent = '—'; var bm0 = $('q_bigprice_math'); if (bm0) bm0.textContent = ''; var be0 = $('q_bigprice_be'); if (be0) be0.textContent = ''; var mt0 = $('q_monthlytxt_body'); if (mt0) mt0.textContent = '—'; var mw0 = $('q_minwarn'); if (mw0) mw0.style.display = 'none'; var cr0 = $('q_ccrow'); if (cr0) cr0.style.display = 'none'; var cb0 = $('q_commbase'); if (cb0) cb0.textContent = ''; var xf0 = $('q_bal2flag'); if (xf0) xf0.style.display = 'none'; var xt0 = $('q_schtag'); if (xt0) xt0.style.display = 'none'; var pt0 = $('q_paidtag'); if (pt0) pt0.textContent = ''; return; }
   var mmo = (qIsDB() && !(qNum('q_payoff') > 0)) ? 0 : qNum('q_mmo'), mf = qNum('q_mf'), esc = qNum('q_esc'), payoff = qNum('q_payoff'), ofees = qNum('q_ofees'), pnight = qNum('q_pnight');
   var pyrIn = parseInt(($('q_pyr').value || '').replace(/\D/g, ''), 10) || 0;
   var pyr = pyrIn; // SAI Fase 2: sin año de compra NO se inventa uno (antes un default oculto 2023 fabricaba la fecha)
@@ -4171,6 +4178,20 @@ function qRecalc(){
       // text (qMonthlyTxt), NOT the payoff formula — the formula already shows above the box
       // in the NUESTRA TARIFA suggestion line, and he does not want it twice.
       try { bpM.textContent = qMonthlyTxt(); } catch(e){ bpM.textContent = ''; }
+    }
+  }
+  // BREAKEVEN_V1 (Sebastian, 2026-11-12): right under PRECIO TOTAL, when the client
+  // breaks even — months until keeping the timeshare (mortgage + maintenance,
+  // escalating) would have cost this same price. Same model as the bar's beLine,
+  // computed on the panel's live inputs.
+  var bpBE = $('q_bigprice_be');
+  if (bpBE){
+    if (!feeKnown || !(mmo > 0 || mf > 0 || ofees > 0) || !(fee > 0)){ bpBE.textContent = ''; }
+    else {
+      var becum2 = 0, bem2 = 0, bemf2 = (mf + ofees) / 12;
+      while (becum2 < fee && bem2 < 600){ bem2++; becum2 += mmo + bemf2 * Math.pow(1 + escR, Math.floor((bem2 - 1) / 12)); }
+      var enBE = (typeof cur !== 'undefined' && cur && cur.lang === 'en');
+      bpBE.textContent = bem2 >= 600 ? '' : (enBE ? ('\u{1F501} Break-even: in ~' + bem2 + ' months they would have paid this same price just keeping it (mortgage + maintenance fees)') : ('\u{1F501} Break-even: en ~' + bem2 + ' meses ya habr\u00EDa pagado este mismo precio si se queda (hipoteca + mantenimiento)'));
     }
   }
   var ccRow = $('q_ccrow'); if (ccRow){ var isCC = feeKnown && paym === 'cc'; ccRow.style.display = isCC ? '' : 'none'; if (isCC) $('q_ccfee').textContent = fmtD(ftot - fee); }
@@ -4539,7 +4560,7 @@ function importScriptClients(input){
           pyr: qNum2(r.pyr != null ? r.pyr : inp.purchaseYear),
           mmo: qNum2(r.mmo != null ? r.mmo : inp.monthlyPayment),
           fee: qNum2(r.fee != null ? r.fee : inp.caseFee),
-          down: qNum2(r.down), downt: r.downt || 'dol', paymethod: r.paymethod || 'ach',
+          down: qNum2(r.down), downt: r.downt || 'dol', paymethod: r.paymethod || 'ucfs',
           downdate: r.downdate || '', pmtmo: qNum2(r.pmtmo != null ? r.pmtmo : r.pmtmo), pmtdate: r.pmtdate || '',
           fapr: qNum2(r.fapr != null ? r.fapr : r.fapr), fmo: qNum2(r.fmo != null ? r.fmo : r.fmo),
           fu: r.fu || '', crmlink: r.crmlink || r.pipeline || r.pipeline_url || r.link || '',
