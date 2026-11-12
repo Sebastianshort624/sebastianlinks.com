@@ -2336,7 +2336,7 @@ function qQuoteBuild(L){
   var today = new Date().toLocaleDateString(en ? 'en-US' : 'es-US', { year: 'numeric', month: 'long', day: 'numeric' });
   var bem = 0;
   if (fee > 0 && (mmo > 0 || mf > 0)){ var cum = 0, bmf = (mf + ofees) / 12; while (cum < fee && bem < 600){ bem++; cum += mmo + bmf * Math.pow(1 + escR, Math.floor((bem - 1) / 12)); } }
-  var S = 'style="font-family:Arial,Helvetica,sans-serif;color:#111827;max-width:760px;margin:0 auto;padding:28px;line-height:1.45"';
+  var S = 'style="font-family:\'Segoe UI\',\'Helvetica Neue\',Helvetica,Arial,sans-serif;color:#111827;max-width:760px;margin:0 auto;padding:28px;line-height:1.45"';
   var H2 = 'style="color:#0b3d91;border-bottom:3px solid #0b3d91;padding-bottom:4px;margin:26px 0 10px;font-size:20px"';
   var ROW = 'style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #e5e7eb"';
   var ROWB = 'style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:2px solid #0b3d91"';
@@ -2373,7 +2373,7 @@ function qQuoteBuild(L){
   var h = '<!DOCTYPE html><html lang="' + (en ? 'en' : 'es') + '"><head><meta charset="utf-8"><title>' + (en ? 'Quote — ' : 'Cotización — ') + escH(cur.name) + '</title></head><body ' + S + '>';
   h += '<div ' + QDOC_BAR + '><b>' + (en ? '📄 QUOTE' : '📄 COTIZACIÓN') + '</b>' + qDocToggleBtn('quote', en) + qDocRefreshBtn('quote', en) + '<button ' + QDOC_BTN + ' onclick="qCopy(this)">' + (en ? '📋 COPY' : '📋 COPIAR') + '</button>' + qSentBtn('COTIZACIÓN', en) + '</div>';
   h += '<div id="qDocBody">';
-  h += '<div style="font-size:24px;font-weight:800;color:#0b3d91;letter-spacing:.5px">⚖ LINX LEGAL</div>';
+  h += '<div style="font-size:24px;font-weight:800;color:#0b3d91;letter-spacing:.5px">LINX LEGAL</div>';
   h += '<div style="background:#f3f4f6;border-radius:10px;padding:20px 22px;margin-top:14px"><div style="font-size:25px;font-weight:800;color:#0b3d91">' + (en ? 'Services Quote' : 'Cotización de Servicios') + '</div>';
   h += '<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px 30px;margin-top:12px;font-size:15px"><span>' + (en ? 'Name: ' : 'Nombre: ') + '<b>' + escH(cur.name) + '</b></span><span>' + (en ? 'Date: ' : 'Fecha: ') + today + '</span></div>';
   h += '<div style="font-size:15px;margin-top:6px">' + (en ? 'Advisor: ' : 'Asesor: ') + 'Sebastian Short</div>';
