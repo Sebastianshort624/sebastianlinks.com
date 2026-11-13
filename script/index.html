@@ -2628,8 +2628,8 @@ function qQuoteCurSubj(en){
   var yrsR = fmo > 0 ? Math.round(fmo / 12 * 10) / 10 : 3;
   var f2 = function(v){ return '$' + Math.round(v).toLocaleString('en-US'); };
   var yt = function(y){ return (y % 1 === 0) ? String(y) : String(Math.round(y * 10) / 10); };
-  // SUBJ_OURS_FIRST_V1 (Sebastian, 2026-11-12): NUESTRO precio primero — "$210/mes x 4 yrs vs $429/mes x 10 yrs"
-  return f2(ourMo) + (en ? '/month x ' : '/mes x ') + yt(yrsR) + ' yrs vs ' + f2(mmo + mf / 12) + (en ? '/month  x ' : '/mes  x ') + yt(yrsL) + ' yrs';
+  // SUBJ_ANULA_FIRST_V2 (Sebastian, 2026-11-12 19:38): prefijo Anula + EL DE ELLOS primero — "Anula Hipoteca + Mantenimiento =$353/mes x 10 yrs vs $188/mes x 3 yrs"
+  return 'Anula Hipoteca + Mantenimiento =' + f2(mmo + mf / 12) + (en ? '/month x ' : '/mes x ') + yt(yrsL) + ' yrs vs ' + f2(ourMo) + (en ? '/month x ' : '/mes x ') + yt(yrsR) + ' yrs';
 }
 function qQuoteCurHtml(){
   if (!cur){ alert('Selecciona un cliente primero.'); return; }
@@ -2836,8 +2836,8 @@ function qQuote48Subj(en){
   if (!(mo48 > 0)) return '';
   if (F.isDB || !(mmo > 0)) return (en ? 'Your 48-month plan: ' : 'Tu plan a 48 meses: ') + f2(mo48) + (en ? '/month · ' : '/mes · ') + f2(fee) + (en ? ' total' : ' en total') + hook;
   var yrsL = Math.round(term / 12) || 10;
-  // SUBJ_OURS_FIRST_V1 (Sebastian, 2026-11-12): NUESTRO precio primero — "$210/mes x 4 yrs vs $429/mes x 10 yrs"
-  return f2(mo48) + (en ? '/month x ' : '/mes x ') + '4 yrs vs ' + f2(mmo + mf / 12) + (en ? '/month x ' : '/mes x ') + yrsL + ' yrs' + hook;
+  // SUBJ_ANULA_FIRST_V2 (Sebastian, 2026-11-12 19:38): prefijo Anula + EL DE ELLOS primero
+  return 'Anula Hipoteca + Mantenimiento =' + f2(mmo + mf / 12) + (en ? '/month x ' : '/mes x ') + yrsL + ' yrs vs ' + f2(mo48) + (en ? '/month x ' : '/mes x ') + '4 yrs' + hook;
 }
 function qQuote48Html(){
   if (!cur){ alert('Selecciona un cliente primero.'); return; }
