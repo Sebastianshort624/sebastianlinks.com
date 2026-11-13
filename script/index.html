@@ -2004,10 +2004,15 @@ function renderBar(c, n){
   }
   var monNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
   var compLine = (c.pyr > 0 || (c.pmonth >= 1 && c.pmonth <= 12)) ? '<div class="ib-line">Comprado: ' + ((c.pmonth >= 1 && c.pmonth <= 12) ? monNames[c.pmonth - 1] + (c.pyr > 0 ? ' ' : '') : '') + (c.pyr > 0 ? c.pyr : '') + '</div>' : '';
+  // FIRSTCONTACT_V1 (Sebastian, 2026-11-13): 1er contacto = fecha de la PRIMERA cita — el campo firstAppt si existe; si no, el sufijo -mmdd del id del record.
+  var fcTxt = '';
+  if (c.firstAppt) fcTxt = String(c.firstAppt);
+  else { var fmx = /-(\d{2})(\d{2})$/.exec(c.id || ''); if (fmx){ var fmo = +fmx[1], fda = +fmx[2]; if (fmo >= 1 && fmo <= 12 && fda >= 1 && fda <= 31){ var fnow = new Date(), fye = fnow.getFullYear(); if (new Date(fye, fmo - 1, fda) - fnow > 45 * 864e5) fye--; fcTxt = fda + ' ' + monNames[fmo - 1] + ' ' + fye; } } }
+  var fcLine = fcTxt ? '<div class="ib-line">📅 1er contacto: <b>' + escH(fcTxt) + '</b></div>' : '';
   dispoTopSync();
   $('ibR').innerHTML = '<div style="float:right;text-align:right;margin-left:12px"><div class="ib-lab">Costo por noche</div><div class="ib-big">' + perNight + '</div></div>' + '<div class="ib-resort">' + escH(c.resort || '—') + '</div>' +
       (c.loc ? '<div class="ib-line">📍 ' + escH(c.loc) + '</div>' : '') +
-      compLine +
+      compLine + fcLine +
       '<div class="ib-line">Contratos: ' + (c.contracts > 0 ? c.contracts : '—') + '</div>' +
       '<div class="ib-line">MTG: <b>' + fmtD(mmo) + '/mes</b></div>' +
       '<div class="ib-line">MF: <b>' + fmtD(mf) + '</b> (' + fmtD(mfmo) + '/mes)</div>' +
