@@ -1551,13 +1551,14 @@ function qAddedLoad(){ qAdded = {}; var k = qAddedKey(); if (!k) return; try { (
 function qAddedSave(){ var k = qAddedKey(); if (!k) return; try { localStorage.setItem(k, JSON.stringify(Object.keys(qAdded).map(Number))); } catch(e){} }
 function qCxHasData(o){ return !!(o && ((+o.payoff || 0) > 0 || (+o.mmo || 0) > 0 || (+o.mf || 0) > 0 || (+o.apr || 0) > 0 || (+o.term || 0) > 0 || (+o.fee || 0) > 0 || (o.pdate && String(o.pdate).trim()) || o.mfShared)); }
 function qAddContract(){ if (qNC >= 3) return; qNC++; qAdded[qNC] = true; qAddedSave(); qNCButtons(); qRecalc(); }
-function qSetNC(n){ qNC = n; if (n >= 2){ for (var m = 2; m <= n; m++) qAdded[m] = true; qAddedSave(); } qNCButtons(); qRecalc(); }
+function qSetNC(n){ if (n < qNC) n = qNC; qNC = n; if (n >= 2){ for (var m = 2; m <= n; m++) qAdded[m] = true; qAddedSave(); } qNCButtons(); qRecalc(); } // CONTRACTS_FIX_V1: el conteo NUNCA baja; bajarlo escondia el contrato agregado y su data se perdia
 function qNCButtons(){
   // Los números 2 y 3 SOLO se muestran si ese contrato existe (datos o agregado) — regla Sebastian 2026-10-22.
   for (var i = 1; i <= 3; i++){ var b = $('q_nc' + i); if (b){ b.style.background = i === qNC ? '#0b3d91' : '#e2e8f0'; b.style.color = i === qNC ? '#fff' : '#334155'; if (i >= 2) b.style.display = qNC >= i ? '' : 'none'; } }
   var b2 = $('q_c2box'); if (b2) b2.style.display = qNC >= 2 ? '' : 'none';
   var b3 = $('q_c3box'); if (b3) b3.style.display = qNC >= 3 ? '' : 'none';
   var ab = $('q_addc'); if (ab) ab.style.display = qNC < 3 ? '' : 'none';
+  [2, 3].forEach(function(n){ var bx = $('q_c' + n + 'box'); if (bx && !bx._csL){ bx._csL = 1; bx.addEventListener('input', function(){ qAutoSave(); }); bx.addEventListener('change', function(){ qAutoSave(); }); } }); // CONTRACTS_FIX_V1: c2/c3 guardan al teclear (antes solo qRecalc: lo tecleado se perdia al cambiar de contrato/cliente)
 }
 // Values-based twin of qMortgage for contratos 2/3 (same rules: saldo+APR amortization, cap = term, no APR = pending).
 function qMortgageVals(payoff, mmo, apr, term, verified){
