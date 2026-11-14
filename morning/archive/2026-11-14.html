@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Morning Board — Saturday, November 14, 2026</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:-apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background:#f6f8fa; color:#1c2733; }
+  .wrap { max-width:760px; margin:0 auto; padding:16px 12px 40px; }
+  h1 { font-size:22px; margin:4px 0 2px; }
+  .updated { color:#6a7785; font-size:13px; margin-bottom:12px; }
+  .strip { background:#eaf3ee; border:1px solid #cfe3d6; border-radius:10px; padding:10px 12px; font-size:14px; line-height:1.55; margin-bottom:16px; }
+  .card { display:flex; gap:10px; align-items:flex-start; background:#fff; border:1px solid #dde3e8; border-radius:12px; padding:12px; margin-bottom:10px; }
+  .card.overlap { border-color:#e8a13a; background:#fffaf2; }
+  .time { font-weight:700; font-size:15px; min-width:74px; padding-top:2px; }
+  .main { flex:1; min-width:0; }
+  .client { font-size:16px; font-weight:600; line-height:1.3; }
+  .client a { color:#0b5cad; text-decoration:none; }
+  .flag { color:#9a3412; font-size:13px; margin-top:3px; line-height:1.35; }
+  .tags { display:flex; flex-direction:column; gap:6px; align-items:flex-end; }
+  .chip { color:#fff; font-size:12px; font-weight:700; padding:4px 9px; border-radius:999px; white-space:nowrap; }
+  .chip.new { background:#2470c2; } .chip.rs { background:#e07b24; }
+  .chip.fu { background:#7b4fc9; } .chip.fust { background:#4b2a85; }
+  .chip.sold { background:#1e9e57; }
+  .stsel { color:#fff; font-size:13px; font-weight:700; padding:8px 10px; border:none; border-radius:999px; white-space:nowrap; min-height:38px; }
+  .stsel.new { background:#2470c2; } .stsel.rs { background:#e07b24; }
+  .stsel.fu { background:#7b4fc9; } .stsel.fust { background:#4b2a85; }
+  .stsel.sold { background:#1e9e57; } .stsel.na { background:#b03a2e; }
+  .stsel.no { background:#5d6d7e; } .stsel.nogo { background:#7b1113; }
+  .stsel.nq { background:#8a8f94; }
+  .search { display:flex; gap:8px; align-items:center; flex-wrap:wrap; background:#fff; border:1px solid #dde3e8; border-radius:10px; padding:10px 12px; margin-bottom:6px; }
+  .search input[type=date] { font-size:15px; padding:8px; border:1px solid #c8d0d8; border-radius:8px; min-height:38px; }
+  .search button { font-size:14px; font-weight:700; padding:9px 16px; border:none; border-radius:8px; background:#2470c2; color:#fff; min-height:38px; }
+  .search a { font-size:14px; font-weight:600; color:#0b5cad; text-decoration:none; padding:8px 2px; }
+  .archnote { color:#6a7785; font-size:12.5px; margin:0 2px 14px; }
+  .refl { background:#fff; border:1px solid #dde3e8; border-left:4px solid #b98a2f; border-radius:12px; padding:14px; margin-bottom:16px; }
+  .reflhead { font-size:16px; font-weight:700; }
+  .reflhead.prayer { margin-top:14px; }
+  .refltitle { font-size:15px; font-weight:600; font-style:italic; margin-top:4px; }
+  .reflexerpt { font-size:14.5px; line-height:1.55; margin:8px 0; }
+  a.refllink { font-size:14px; font-weight:600; color:#0b5cad; text-decoration:none; }
+  .reflaudio { margin-top:10px; }
+  .reflaudio audio { width:100%; max-width:420px; }
+  .prayertext { font-size:14.5px; line-height:1.6; margin:6px 0 0; white-space:pre-line; }
+  .dt { font-size:12px; font-weight:700; color:#51606e; background:#eef1f4; padding:3px 8px; border-radius:6px; }
+  .dt.db { background:#fde8d7; color:#9a4a12; }
+  .phones { font-size:15px; margin-top:3px; line-height:1.5; }
+  .phones a { color:#0b7a3e; font-weight:700; text-decoration:none; padding:6px 2px; display:inline-block; }
+  a.cf { font-size:13px; color:#0b5cad; text-decoration:none; padding:6px 2px; white-space:nowrap; }
+  .lap { background:#232946; color:#eef0ff; border-radius:12px; padding:14px; margin-top:18px; }
+  .laphead { font-size:16px; font-weight:700; margin-bottom:6px; }
+  .lapsub { font-size:13px; color:#b9bee8; }
+  .laptally { font-size:19px; font-weight:700; margin:4px 0; letter-spacing:.2px; }
+  .laplist { font-size:14px; margin-top:2px; }
+  .lapnext { font-size:13px; color:#b9bee8; margin-top:8px; }
+  .nav { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px; }
+  .nav a, .nav button { display:flex; align-items:center; justify-content:center; gap:6px; min-height:48px; padding:10px 8px; background:#1c2733; color:#fff; font-size:15px; font-weight:700; text-decoration:none; border:none; border-radius:10px; text-align:center; cursor:pointer; }
+  .nav button { background:#7b4fc9; }
+  .tasks { background:#fff; border:1px solid #dde3e8; border-left:4px solid #7b4fc9; border-radius:12px; padding:14px; margin-bottom:16px; }
+  .taskshead { font-size:16px; font-weight:700; margin-bottom:8px; }
+  .task { font-size:14.5px; line-height:1.45; padding:7px 0; border-top:1px solid #eef1f4; }
+  .tasklegend { font-size:12.5px; color:#5a6b7a; margin:-2px 0 6px; }
+  .tchecks { display:inline-block; margin-left:10px; white-space:nowrap; }
+  .tchk { font-size:12.5px; font-weight:600; margin-right:8px; cursor:pointer; }
+  .tchk input { width:16px; height:16px; vertical-align:-3px; cursor:pointer; }
+  .task.done { opacity:.5; }
+  .task.done .ttitle, .task.done .tname { text-decoration:line-through; }
+  .task:first-of-type { border-top:none; }
+  .tname { font-weight:700; }
+  .tname a { color:#0b5cad; text-decoration:none; }
+  .ttitle a { color:#7b4fc9; font-weight:700; text-decoration:none; }
+  .twhen { color:#6a7785; font-size:13px; }
+  .taskempty { font-size:14.5px; line-height:1.5; }
+  .taskempty a { color:#0b5cad; font-weight:600; text-decoration:none; }
+  .mentions { background:#fff; border:1px solid #dde3e8; border-left:4px solid #2470c2; border-radius:12px; padding:14px; margin-bottom:16px; }
+  .mentionshead { font-size:16px; font-weight:700; margin-bottom:8px; }
+  .mention { padding:8px 0; border-top:1px solid #eef1f4; }
+  .mention:first-of-type { border-top:none; }
+  .mhead { font-size:14px; }
+  .mhead a { color:#0b5cad; text-decoration:none; }
+  .mwhen { color:#6a7785; font-size:12.5px; font-weight:400; }
+  .mtext { font-size:14px; line-height:1.5; margin-top:2px; }
+  @media (max-width:520px) { .time { min-width:64px; font-size:14px; } .client { font-size:15px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>☀️ Morning Board — Saturday, November 14, 2026</h1>
+  <div class="updated">Updated 7:49 AM ET · 5 appointments</div>
+  <div class="nav">
+  <a href="https://sebastianlinks.com/board/" target="_blank" rel="noopener noreferrer">🗂️ Board</a>
+  <a href="https://sebastianlinks.com/casefile/" target="_blank" rel="noopener noreferrer">📂 Case File</a>
+  <a href="https://app.pipelinecrm.com/" target="_blank" rel="noopener noreferrer">🔗 Pipeline</a>
+  <a href="https://calendar.google.com/calendar/u/0/r" target="_blank" rel="noopener noreferrer">📅 Calendar</a>
+  <a href="https://docs.google.com/spreadsheets/d/1P-F605ws8W1_XgRNQ2_5caHvl7cwZ-5RouqF4qOwb5I/edit" target="_blank" rel="noopener noreferrer">📊 PRE-CALL Sheet</a>
+  <a href="https://mail.google.com/mail/u/0/#inbox" target="_blank" rel="noopener noreferrer">✉️ Email</a>
+  <a href="https://muse.ai/" target="_blank" rel="noopener noreferrer">🤖 Astro</a>
+  <button type="button" id="taskbtn">📋 Today's Tasks (7)</button>
+</div>
+  <div class="tasks" id="tasks" hidden>
+  <div class="taskshead">📋 Today's Tasks — 7 open, due today</div>
+  <div class="tasklegend">✅ Done = completes the task in Pipeline too · 🙈 Hide = hides it here only, nothing happens in the CRM</div>
+  <div class="task" data-tkey="95853f611e61"><span class="ttitle">*** 7-9 AM No Calls ***</span> <span class="twhen">7:00 AM</span><span class="tchecks"><label class="tchk" title="Complete this task in Pipeline too"><input type="checkbox" class="tkdone" data-tkey="95853f611e61" data-pid="" data-title="*** 7-9 AM No Calls ***" data-name=""> ✅ Done</label><label class="tchk" title="Hide it here only — nothing happens in the CRM"><input type="checkbox" class="tkhide" data-tkey="95853f611e61"> 🙈 Hide</label></span></div><div class="task" data-tkey="2b992445fdd2"><span class="tname"><a href="https://sebastianlinks.com/casefile/?c=c-varperez-1112" target="_blank" rel="noopener noreferrer">Yeny Var Perez / Henry David Martinez Uzcategui</a></span> — <span class="ttitle"><a href="https://app.pipelinecrm.com/people/1310529156" target="_blank" rel="noopener noreferrer">RS — 18000 / Yeny Var / +13057845420 / Otro ... Westgate / Sarasota, Florida</a></span> <span class="twhen">10:00 AM</span><span class="tchecks"><label class="tchk" title="Complete this task in Pipeline too"><input type="checkbox" class="tkdone" data-tkey="2b992445fdd2" data-pid="1310529156" data-title="RS — 18000 / Yeny Var / +13057845420 / Otro ... Westgate / Sarasota, Florida" data-name="Yeny Var Perez / Henry David Martinez Uzcategui"> ✅ Done</label><label class="tchk" title="Hide it here only — nothing happens in the CRM"><input type="checkbox" class="tkhide" data-tkey="2b992445fdd2"> 🙈 Hide</label></span></div><div class="task" data-tkey="5c8d23ac59bb"><span class="tname"><a href="https://sebastianlinks.com/casefile/?c=c-varperez-1112" target="_blank" rel="noopener noreferrer">Yeny Var Perez / Henry David Martinez Uzcategui</a></span> — <span class="ttitle"><a href="https://app.pipelinecrm.com/people/1310529156" target="_blank" rel="noopener noreferrer">RSTO — Yeny Var Perez / Henry David Martinez Uzcategui</a></span> <span class="twhen">10:00 AM</span><span class="tchecks"><label class="tchk" title="Complete this task in Pipeline too"><input type="checkbox" class="tkdone" data-tkey="5c8d23ac59bb" data-pid="1310529156" data-title="RSTO — Yeny Var Perez / Henry David Martinez Uzcategui" data-name="Yeny Var Perez / Henry David Martinez Uzcategui"> ✅ Done</label><label class="tchk" title="Hide it here only — nothing happens in the CRM"><input type="checkbox" class="tkhide" data-tkey="5c8d23ac59bb"> 🙈 Hide</label></span></div><div class="task" data-tkey="fb57d592cd4e"><span class="tname"><a href="https://sebastianlinks.com/casefile/?c=c-jalife-1104" target="_blank" rel="noopener noreferrer">Gloria Jalife / Victor Jalife</a></span> — <span class="ttitle"><a href="https://app.pipelinecrm.com/people/1310478196" target="_blank" rel="noopener noreferrer">FU RSTO — Gloria Jalife / Victor Jalife</a></span> <span class="twhen">11:30 AM</span><span class="tchecks"><label class="tchk" title="Complete this task in Pipeline too"><input type="checkbox" class="tkdone" data-tkey="fb57d592cd4e" data-pid="1310478196" data-title="FU RSTO — Gloria Jalife / Victor Jalife" data-name="Gloria Jalife / Victor Jalife"> ✅ Done</label><label class="tchk" title="Hide it here only — nothing happens in the CRM"><input type="checkbox" class="tkhide" data-tkey="fb57d592cd4e"> 🙈 Hide</label></span></div><div class="task" data-tkey="de2854b49c67"><span class="tname"><a href="https://sebastianlinks.com/casefile/?c=c-rengifo-1114" target="_blank" rel="noopener noreferrer">Carlos Rengifo Osorio</a></span> — <span class="ttitle"><a href="https://app.pipelinecrm.com/people/1310561846" target="_blank" rel="noopener noreferrer">Carlos Rengifo Osorio / Carlos Rengifo Osorio / +16315066878 / Vacations village at parkway / Jacksonville, Florida</a></span> <span class="twhen">3:00 PM</span><span class="tchecks"><label class="tchk" title="Complete this task in Pipeline too"><input type="checkbox" class="tkdone" data-tkey="de2854b49c67" data-pid="1310561846" data-title="Carlos Rengifo Osorio / Carlos Rengifo Osorio / +16315066878 / Vacations village at parkway / Jacksonville, Florida" data-name="Carlos Rengifo Osorio"> ✅ Done</label><label class="tchk" title="Hide it here only — nothing happens in the CRM"><input type="checkbox" class="tkhide" data-tkey="de2854b49c67"> 🙈 Hide</label></span></div><div class="task" data-tkey="2df9ead85283"><span class="tname"><a href="https://sebastianlinks.com/casefile/?c=c-hernandez-1114" target="_blank" rel="noopener noreferrer">Jossely Hernandez Perez / Jose Luis Hernandez Perez</a></span> — <span class="ttitle"><a href="https://app.pipelinecrm.com/people/1310516432" target="_blank" rel="noopener noreferrer">17721.65 / Jossely Hernandez / +16562040880 / wyndham / Tampa, FL</a></span> <span class="twhen">5:00 PM</span><span class="tchecks"><label class="tchk" title="Complete this task in Pipeline too"><input type="checkbox" class="tkdone" data-tkey="2df9ead85283" data-pid="1310516432" data-title="17721.65 / Jossely Hernandez / +16562040880 / wyndham / Tampa, FL" data-name="Jossely Hernandez Perez / Jose Luis Hernandez Perez"> ✅ Done</label><label class="tchk" title="Hide it here only — nothing happens in the CRM"><input type="checkbox" class="tkhide" data-tkey="2df9ead85283"> 🙈 Hide</label></span></div><div class="task" data-tkey="bef40e323c00"><span class="tname"><a href="https://sebastianlinks.com/casefile/?c=c-olmedo-1114" target="_blank" rel="noopener noreferrer">Olga I. Olmedo / Llonel E. Monasterio</a></span> — <span class="ttitle"><a href="https://app.pipelinecrm.com/people/1310243204" target="_blank" rel="noopener noreferrer">40000 / Olga I. Olmedo Llonel E. Monasterio / +14076197508 / Otra opción / Leesburg, FL</a></span> <span class="twhen">7:00 PM</span><span class="tchecks"><label class="tchk" title="Complete this task in Pipeline too"><input type="checkbox" class="tkdone" data-tkey="bef40e323c00" data-pid="1310243204" data-title="40000 / Olga I. Olmedo Llonel E. Monasterio / +14076197508 / Otra opción / Leesburg, FL" data-name="Olga I. Olmedo / Llonel E. Monasterio"> ✅ Done</label><label class="tchk" title="Hide it here only — nothing happens in the CRM"><input type="checkbox" class="tkhide" data-tkey="bef40e323c00"> 🙈 Hide</label></span></div>
+</div>
+  
+  <div class="search">
+    <input type="date" id="dsearch" value="2026-11-14" min="2026-11-10" aria-label="Search boards by date">
+    <button type="button" id="dgo">Go</button>
+    <a href="/morning/" target="_blank" rel="noopener noreferrer">Today</a>
+  </div>
+  <div class="archnote">Boards exist from Nov 10, 2026 forward.</div>
+  <div class="strip">💰 Estimated commission (price = 40% of payoff): <b>$28,455.12</b> across 41 records<br>🛠 Systems check: <b>74 exceptions open</b></div>
+  
+  <div class="card">
+  <div class="time">10:00 AM</div>
+  <div class="main">
+    <div class="client"><a href="https://sebastianlinks.com/casefile/?c=c-varperez-1112" target="_blank" rel="noopener noreferrer">Yeny Var Perez / Henry David Martinez Uzcategui</a> 🇪🇸</div>
+    <div class="phones">📞 <a href="tel:+13057845420">305-784-5420</a> · <a href="tel:+17868186492">786-818-6492</a></div>
+    <div class="flag">CB2 blank — price not landed</div>
+  </div>
+  <div class="tags"><select class="stsel new" data-rid="c-varperez-1112" aria-label="Status for Yeny Var Perez / Henry David Martinez Uzcategui"><option value="NEW" selected>NEW</option><option value="RS">RS</option><option value="FU">FU</option><option value="FU ST">FU ST</option><option value="SOLD">SOLD</option><option value="NA">NA</option><option value="NO">NO</option><option value="NO GO">NO GO</option><option value="NQ">NQ</option></select><span class="dt">MTG</span><a class="cf" href="https://sebastianlinks.com/casefile/?c=c-varperez-1112" target="_blank" rel="noopener noreferrer">📂 Case file</a></div>
+</div><div class="card">
+  <div class="time">11:30 AM</div>
+  <div class="main">
+    <div class="client"><a href="https://sebastianlinks.com/casefile/?c=c-jalife-1104" target="_blank" rel="noopener noreferrer">Gloria Jalife / Victor Jalife</a> 🇪🇸</div>
+    <div class="phones">📞 <a href="tel:+19566245641">956-624-5641</a> · <a href="tel:+19568679760">956-867-9760</a></div>
+    
+  </div>
+  <div class="tags"><select class="stsel fu" data-rid="c-jalife-1104" aria-label="Status for Gloria Jalife / Victor Jalife"><option value="NEW">NEW</option><option value="RS">RS</option><option value="FU" selected>FU</option><option value="FU ST">FU ST</option><option value="SOLD">SOLD</option><option value="NA">NA</option><option value="NO">NO</option><option value="NO GO">NO GO</option><option value="NQ">NQ</option></select><span class="dt db">🟧 DEED-BACK</span><a class="cf" href="https://sebastianlinks.com/casefile/?c=c-jalife-1104" target="_blank" rel="noopener noreferrer">📂 Case file</a></div>
+</div><div class="card">
+  <div class="time">3:00 PM</div>
+  <div class="main">
+    <div class="client"><a href="https://sebastianlinks.com/casefile/?c=c-rengifo-1114" target="_blank" rel="noopener noreferrer">Carlos Rengifo Osorio</a> 🇪🇸</div>
+    <div class="phones">📞 <a href="tel:+16315066878">631-506-6878</a></div>
+    <div class="flag">CB2 blank — price not landed</div>
+  </div>
+  <div class="tags"><select class="stsel new" data-rid="c-rengifo-1114" aria-label="Status for Carlos Rengifo Osorio"><option value="NEW" selected>NEW</option><option value="RS">RS</option><option value="FU">FU</option><option value="FU ST">FU ST</option><option value="SOLD">SOLD</option><option value="NA">NA</option><option value="NO">NO</option><option value="NO GO">NO GO</option><option value="NQ">NQ</option></select><span class="dt db">🟧 DEED-BACK</span><a class="cf" href="https://sebastianlinks.com/casefile/?c=c-rengifo-1114" target="_blank" rel="noopener noreferrer">📂 Case file</a></div>
+</div><div class="card">
+  <div class="time">5:00 PM</div>
+  <div class="main">
+    <div class="client"><a href="https://sebastianlinks.com/casefile/?c=c-hernandez-1114" target="_blank" rel="noopener noreferrer">Jossely Hernandez Perez / Jose Luis Hernandez Perez</a> 🇪🇸</div>
+    <div class="phones">📞 <a href="tel:+16562040880">656-204-0880</a> · <a href="tel:+16562040931">656-204-0931</a></div>
+    <div class="flag">CB2 blank — price not landed</div>
+  </div>
+  <div class="tags"><select class="stsel new" data-rid="c-hernandez-1114" aria-label="Status for Jossely Hernandez Perez / Jose Luis Hernandez Perez"><option value="NEW" selected>NEW</option><option value="RS">RS</option><option value="FU">FU</option><option value="FU ST">FU ST</option><option value="SOLD">SOLD</option><option value="NA">NA</option><option value="NO">NO</option><option value="NO GO">NO GO</option><option value="NQ">NQ</option></select><span class="dt">MTG</span><a class="cf" href="https://sebastianlinks.com/casefile/?c=c-hernandez-1114" target="_blank" rel="noopener noreferrer">📂 Case file</a></div>
+</div><div class="card">
+  <div class="time">7:00 PM</div>
+  <div class="main">
+    <div class="client"><a href="https://sebastianlinks.com/casefile/?c=c-olmedo-1114" target="_blank" rel="noopener noreferrer">Olga I. Olmedo / Llonel E. Monasterio</a> 🇪🇸</div>
+    <div class="phones">📞 <a href="tel:+14079682310">407-968-2310</a> · <a href="tel:+14076197508">407-619-7508</a></div>
+    <div class="flag">CB2 blank — price not landed</div>
+  </div>
+  <div class="tags"><select class="stsel new" data-rid="c-olmedo-1114" aria-label="Status for Olga I. Olmedo / Llonel E. Monasterio"><option value="NEW" selected>NEW</option><option value="RS">RS</option><option value="FU">FU</option><option value="FU ST">FU ST</option><option value="SOLD">SOLD</option><option value="NA">NA</option><option value="NO">NO</option><option value="NO GO">NO GO</option><option value="NQ">NQ</option></select><span class="dt">MTG</span><a class="cf" href="https://sebastianlinks.com/casefile/?c=c-olmedo-1114" target="_blank" rel="noopener noreferrer">📂 Case file</a></div>
+</div>
+  <div class="lap"><div class="laphead">🌙 pre-Night — Leads Accountability</div>
+<div class="lapsub">Last night (Friday Nov 13):</div>
+<div class="laptally">1 CB / 1 SOLD / 0 RS / 0 NA / 1 FU / 0 NO</div>
+<div class="laplist">FU: Kevin Lee / Kaybriel Bell - FU (MTG, NEW) - follow-up set Mon Nov 16 6:00 PM</div><div class="laplist">SOLD: Jose Carballo / Sandra Torres Colon - SOLD (DB) - deed-back close today, outside the CB set (deed-backs never count as CB) - AD/CD Fri Nov 13, $4,998, ACH $2,499 on 11/24/2026 + $2,499 on 12/04/2026</div><div class="laplist">followups: Kevin Lee / Kaybriel Bell - FU (MTG, in Pipeline) - today&#x27;s 7:00 PM NEW appointment, FU set Mon Nov 16 6:00 PM, Frances Heck - FU (DB, in Pipeline) - today&#x27;s 9:30 AM sign-docs event did not close, FU in Pipeline, Sign Docs Wed Nov 18 9:30 AM, Gloria Jalife / Victor Jalife - FU (DB, in Pipeline) - today&#x27;s 8:00 PM RSTO appointment, sits in FU in Pipeline, outcome not yet recorded at draft time</div><div class="laplist">news: Harry Hults - NEW (DB) - 11:00 AM, outcome NA (deed-back, excluded from CB/NA tally), Jose Carballo / Sandra Torres Colon - NEW (DB) - 4:00 PM, SOLD today, Kevin Lee / Kaybriel Bell - NEW (MTG) - 7:00 PM, FU set Mon Nov 16 6:00 PM, Apolonio Martinez Deaquino / Ana Lilia Marin Romano - NEW (MTG) - 9:00 PM, in progress at draft time, outcome not yet recorded, Yadira Morejon - NEW (MTG) - 11:00 PM, not yet worked at draft time (9:38 PM)</div>
+<div class="lapnext">Tonight's pre-Night post runs 9:38 PM.</div></div>
+</div>
+<script>
+var BCFG={url:'https://onyrfjftvtvuwtxozgcc.supabase.co',key:'sb_publishable_0Rl80iGMOWJHINvcCYKU_w_9aTg89Jz'};
+var PAGE_DATE='2026-11-14';
+var TO_OVR={'NEW':'R:CITA / LEAD','RS':'R:RS','FU':'R:FU','FU ST':'R:FU','SOLD':'R:VENDIDO','NA':'R:NA','NO':'R:NO','NO GO':'T:NOGO','NQ':'T:NQ'};
+var FROM_OVR={'R:CITA / LEAD':'NEW','R:RS':'RS','R:FU':'FU','R:VENDIDO':'SOLD','R:FIRMADO':'SOLD','R:NA':'NA','R:NO':'NO','T:NOGO':'NO GO','T:NQ':'NQ','T:FU':'FU','T:RS':'RS','T:NA':'NA','T:HOTFU':'FU','T:FU - HOT':'FU','T:FU - WARM':'FU'};
+var CLS={'NEW':'new','RS':'rs','FU':'fu','FU ST':'fust','SOLD':'sold','NA':'na','NO':'no','NO GO':'nogo','NQ':'nq'};
+var LSKEY='morning_status_v1';
+function lsAll(){ try{ return JSON.parse(localStorage.getItem(LSKEY)||'{}'); }catch(e){ return {}; } }
+function setSel(sel,v){ sel.value=v; sel.className='stsel '+(CLS[v]||'new'); }
+function saveLocal(rid,v){ var a=lsAll(); if(!a[PAGE_DATE]) a[PAGE_DATE]={}; a[PAGE_DATE][rid]=v; try{ localStorage.setItem(LSKEY,JSON.stringify(a)); }catch(e){} }
+function headers(extra){ var h={'apikey':BCFG.key,'Authorization':'Bearer '+BCFG.key,'Content-Type':'application/json'}; if(extra) for(var k in extra) h[k]=extra[k]; return h; }
+function persistStatus(rid,v){ var body={client_key:rid,status_override:(TO_OVR[v]||null),updated_at:new Date().toISOString()};
+  fetch(BCFG.url+'/rest/v1/board_state?on_conflict=client_key',{method:'POST',headers:headers({'Prefer':'resolution=merge-duplicates,return=minimal'}),body:JSON.stringify(body)}).catch(function(){}); }
+document.querySelectorAll('.stsel').forEach(function(sel){
+  sel.addEventListener('change',function(){ var rid=sel.getAttribute('data-rid'); setSel(sel,sel.value); if(rid){ saveLocal(rid,sel.value); persistStatus(rid,sel.value); } });
+});
+(function(){ var mine=(lsAll()[PAGE_DATE]||{});
+  document.querySelectorAll('.stsel').forEach(function(sel){ var rid=sel.getAttribute('data-rid'); if(rid&&mine[rid]) setSel(sel,mine[rid]); });
+  fetch(BCFG.url+'/rest/v1/board_state?select=client_key,status_override',{headers:headers()}).then(function(r){ return r.ok?r.json():[]; }).then(function(rows){
+    var byKey={}; rows.forEach(function(rw){ byKey[rw.client_key]=rw.status_override; });
+    document.querySelectorAll('.stsel').forEach(function(sel){ var rid=sel.getAttribute('data-rid'); var ov=rid?byKey[rid]:null; var v=ov?FROM_OVR[ov]:null; if(v){ setSel(sel,v); saveLocal(rid,v); } });
+  }).catch(function(){});
+})();
+var dgo=document.getElementById('dgo');
+if(dgo) dgo.addEventListener('click',function(){ var d=document.getElementById('dsearch').value; if(d) window.open('/morning/archive/'+d+'.html','_blank','noopener,noreferrer'); });
+var tbtn=document.getElementById('taskbtn');
+if(tbtn) tbtn.addEventListener('click',function(){ var t=document.getElementById('tasks'); if(!t) return; var open=t.hasAttribute('hidden'); if(open){ t.removeAttribute('hidden'); t.scrollIntoView({behavior:'smooth',block:'start'}); } else { t.setAttribute('hidden',''); } });
+// Task checkboxes (Sebastian 2026-11-12): ✅ Done completes the task in
+// Pipeline too (a board_state 'taskstate:' row the sync watcher executes);
+// 🙈 Hide only hides the row here. State persists in board_state.task_done.
+var TSTATE={};
+function tkeyOf(el){ return el.getAttribute('data-tkey'); }
+function tRow(tkey){ return document.querySelector('.task[data-tkey="'+tkey+'"]'); }
+function tApply(tkey){
+  var st=TSTATE[tkey]||{}, row=tRow(tkey); if(!row) return;
+  var d=row.querySelector('.tkdone'), h=row.querySelector('.tkhide');
+  if(d) d.checked=!!st.done;
+  if(h) h.checked=!!st.hidden;
+  row.classList.toggle('done',!!st.done);
+  row.style.display=st.hidden?'none':'';
+}
+function tPersist(tkey){
+  var st=TSTATE[tkey]||{};
+  var body={client_key:'taskstate:'+PAGE_DATE+':'+tkey,task_done:st,updated_at:new Date().toISOString()};
+  fetch(BCFG.url+'/rest/v1/board_state?on_conflict=client_key',{method:'POST',headers:headers({'Prefer':'resolution=merge-duplicates,return=minimal'}),body:JSON.stringify(body)}).catch(function(){});
+}
+document.querySelectorAll('.tkdone').forEach(function(cb){
+  cb.addEventListener('change',function(){
+    var tkey=tkeyOf(cb), st=TSTATE[tkey]||(TSTATE[tkey]={});
+    st.done=cb.checked; st.pid=cb.getAttribute('data-pid')||''; st.title=cb.getAttribute('data-title')||''; st.name=cb.getAttribute('data-name')||''; st.date=PAGE_DATE;
+    if(cb.checked){ st.done_at=new Date().toISOString(); } else { delete st.done_at; delete st.synced; delete st.synced_at; }
+    tApply(tkey); tPersist(tkey);
+  });
+});
+document.querySelectorAll('.tkhide').forEach(function(cb){
+  cb.addEventListener('change',function(){
+    var tkey=tkeyOf(cb), st=TSTATE[tkey]||(TSTATE[tkey]={});
+    st.hidden=cb.checked; st.date=PAGE_DATE;
+    tApply(tkey); tPersist(tkey);
+  });
+});
+(function(){
+  fetch(BCFG.url+'/rest/v1/board_state?select=client_key,task_done&client_key=like.taskstate:*',{headers:headers()}).then(function(r){ return r.ok?r.json():[]; }).then(function(rows){
+    rows.forEach(function(rw){ var ck=rw.client_key||''; if(ck.indexOf('taskstate:'+PAGE_DATE+':')!==0) return; var k=ck.split(':').pop(); if(k&&rw.task_done) TSTATE[k]=rw.task_done; });
+    Object.keys(TSTATE).forEach(tApply);
+  }).catch(function(){});
+})();
+</script>
+</body>
+</html>
