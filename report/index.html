@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vital Activity Report Card</title>
+<style>
+  :root{
+    --navy:#0f2a4a; --navy2:#16406e; --ink:#1c2733; --mut:#6b7a89;
+    --line:#dbe3ec; --bg:#f4f6f9; --card:#ffffff;
+    --red:#d64541; --yel:#e6a817; --grn:#2e9e5b;
+    --gA:#2e9e5b; --gB:#7fb069; --gC:#e6a817; --gD:#e07b39; --gF:#d64541;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+  body{margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; background:var(--bg); color:var(--ink)}
+  .wrap{max-width:860px; margin:0 auto; padding:14px 12px 40px}
+  header.top{text-align:center; padding:10px 0 2px}
+  header.top h1{margin:0; font-size:26px; color:var(--navy); letter-spacing:.2px}
+  header.top .sub{color:var(--mut); font-size:12px; letter-spacing:2.5px; margin-top:3px}
+  .saved{font-size:12px; color:var(--gA); height:16px; margin-top:4px; opacity:0; transition:opacity .25s}
+  .saved.on{opacity:1}
+  .tabs{display:flex; gap:8px; justify-content:center; margin:12px 0 4px}
+  .tabs button{border:1px solid var(--line); background:#fff; color:var(--navy); font-size:14px; font-weight:700; padding:9px 18px; border-radius:999px; cursor:pointer}
+  .tabs button.act{background:var(--navy); color:#fff; border-color:var(--navy)}
+  .period{display:flex; align-items:center; justify-content:center; gap:10px; margin:10px 0 14px; flex-wrap:wrap}
+  .period label{font-size:12px; font-weight:700; letter-spacing:1.5px; color:var(--mut)}
+  .period input[type=date]{font-size:16px; padding:7px 10px; border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink)}
+  .period .range{font-size:16px; font-weight:700; color:var(--navy)}
+  .printbtn{border:1px solid var(--line); background:#fff; color:var(--navy); font-weight:700; font-size:13px; padding:8px 14px; border-radius:8px; cursor:pointer}
+  section.card{background:var(--card); border:1px solid var(--line); border-radius:14px; margin:0 0 16px; overflow:hidden}
+  .sec-head{display:flex; align-items:center; gap:10px; padding:13px 14px; cursor:pointer; user-select:none}
+  .sec-head .dot{font-size:17px}
+  .sec-head .nm{font-size:17px; font-weight:800; color:var(--navy)}
+  .sec-head .wt{font-size:12px; color:var(--mut); font-weight:600}
+  .sec-head .sp{flex:1}
+  .sec-head .pct{font-size:17px; font-weight:800; color:var(--navy)}
+  .chip{display:inline-block; min-width:30px; text-align:center; padding:3px 8px; border-radius:999px; color:#fff; font-weight:800; font-size:14px}
+  .chip.A{background:var(--gA)} .chip.B{background:var(--gB)} .chip.C{background:var(--gC)} .chip.D{background:var(--gD)} .chip.F{background:var(--gF)}
+  .chev{color:var(--mut); font-size:14px}
+  .rows{display:block}
+  .collapsed .rows{display:none}
+  table{width:100%; border-collapse:collapse}
+  th{font-size:11px; letter-spacing:1px; color:var(--mut); text-align:left; padding:6px 8px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); background:#fbfcfe}
+  td{padding:7px 8px; border-bottom:1px solid #eef2f6; vertical-align:middle}
+  td.num, th.num{text-align:center; width:74px}
+  td.pctc, th.pctc{text-align:center; width:56px; font-weight:700}
+  td.grd, th.grd{text-align:center; width:52px}
+  td.del, th.del{width:36px; text-align:center}
+  select.act, input.actname{width:100%; font-size:15px; padding:7px 8px; border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink)}
+  .actwrap{display:flex; gap:6px; align-items:center}
+  .backbtn{border:1px solid var(--line); background:#fff; border-radius:8px; padding:7px 9px; cursor:pointer; color:var(--navy); font-weight:700}
+  input.num{width:64px; font-size:16px; padding:7px 6px; text-align:center; border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink)}
+  .delbtn{border:none; background:none; color:var(--red); font-size:19px; font-weight:700; cursor:pointer; padding:4px 6px}
+  .sec-foot{display:flex; align-items:center; gap:10px; padding:11px 14px; flex-wrap:wrap}
+  .sec-foot .tot{font-weight:800; color:var(--navy); font-size:15px}
+  .sec-foot .sp{flex:1}
+  .addbtn,.resetbtn{border:1px solid var(--line); background:#fff; color:var(--navy); font-weight:700; font-size:13px; padding:8px 13px; border-radius:8px; cursor:pointer}
+  .addbtn{background:var(--navy); color:#fff; border-color:var(--navy)}
+  .overall{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px 14px}
+  .overall h2{margin:0 0 10px; font-size:18px; color:var(--navy); text-align:center}
+  .orow{display:flex; align-items:center; gap:10px; padding:7px 2px; border-bottom:1px solid #eef2f6}
+  .orow .nm{flex:1; font-weight:700}
+  .orow .wt{color:var(--mut); font-size:13px; font-weight:600}
+  .orow .pct{font-weight:800; color:var(--navy); min-width:62px; text-align:right}
+  .weighted{text-align:center; padding-top:14px}
+  .weighted .lab{font-size:12px; letter-spacing:1.5px; color:var(--mut); font-weight:700}
+  .weighted .big{font-size:44px; font-weight:900; color:var(--navy); line-height:1.1}
+  .weighted .wpct{font-size:19px; font-weight:800; color:var(--navy)}
+  .note{text-align:center; color:var(--mut); font-size:12.5px; margin-top:14px; line-height:1.5}
+  @media (max-width:560px){
+    td.num, th.num{width:62px} input.num{width:54px}
+    select.act, input.actname{font-size:14px}
+    header.top h1{font-size:22px}
+  }
+  @media print{
+    body{background:#fff} .tabs,.printbtn,.addbtn,.resetbtn,.delbtn,.backbtn,.saved,.note{display:none!important}
+    .collapsed .rows{display:block!important}
+    section.card,.overall{border:1px solid #bbb}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>Vital Activity Report Card</h1>
+    <div class="sub">RECOVERY · SPIRITUAL · WELLNESS</div>
+    <div class="saved" id="saved">✓ Saved</div>
+  </header>
+
+  <div class="tabs">
+    <button id="tabDaily" type="button">DAILY CARD</button>
+    <button id="tabWeekly" type="button">WEEKLY CARD</button>
+    <span style="flex:0 0 6px"></span>
+    <button class="printbtn" id="printBtn" type="button">⎙ PRINT / SAVE</button>
+  </div>
+
+  <div class="period">
+    <label id="periodLabel">WEEK OF</label>
+    <input type="date" id="periodDate">
+    <span class="range" id="periodRange"></span>
+  </div>
+
+  <div id="sections"></div>
+
+  <div class="overall">
+    <h2 id="overallTitle">Overall Weekly Grade</h2>
+    <div id="overallRows"></div>
+    <div class="weighted">
+      <div class="lab">WEIGHTED GRADE · 60% HIGH · 30% MEDIUM · 10% LOW</div>
+      <div class="big" id="wGrade">—</div>
+      <div class="wpct" id="wPct">—</div>
+    </div>
+  </div>
+
+  <div class="note">Every change saves itself on this device the moment you make it — labels, goals and numbers.<br>Your labels &amp; goals carry into every new week. Each week's numbers are kept for that week.</div>
+</div>
+
+<script>
+"use strict";
+var PRESETS = [
+  "Daily Bootlog – Red & Yellow Circles",
+  "Recovery Time | Prayer Time",
+  "Zoom – PAA / SAA",
+  "Zoom – AA / CA",
+  "IRL – AA / CA",
+  "2 Way Prayer",
+  "Share at a Meeting",
+  "Service Commitment",
+  "Work with Sponsee / Sponsor",
+  "Check Ins",
+  "PAA Home Group",
+  "AA Home Group",
+  "Research Recovery",
+  "Meeting Notes",
+  "Movies – Green",
+  "Working Out – Green Outer",
+  "Couples Reading",
+  "RCA Meeting",
+  "Date Night",
+  "Page 86–87 Listen / Read",
+  "Use 10 Step / Recovery App",
+  "Bike – Comp Green Outer Circle",
+  "Bike – Green Outer Circle"
+];
+function rows(pairs){ return pairs.map(function(p){ return {name:p[0], goal:p[1], custom:PRESETS.indexOf(p[0])<0}; }); }
+var DEFAULTS = {
+  weekly: {
+    high: rows([["Daily Bootlog – Red & Yellow Circles",4],["Recovery Time | Prayer Time",4],["Zoom – PAA / SAA",3],["Zoom – AA / CA",2],["IRL – AA / CA",1],["2 Way Prayer",0.5],["Share at a Meeting",4]]),
+    medium: rows([["Service Commitment",1],["Work with Sponsee / Sponsor",1],["Check Ins",4],["PAA Home Group",1],["AA Home Group",1],["Research Recovery",1],["Meeting Notes",1],["Movies – Green",1],["Working Out – Green Outer",1],["Couples Reading",1]]),
+    low: rows([["RCA Meeting",1],["Date Night",1],["Page 86–87 Listen / Read",3],["Use 10 Step / Recovery App",2],["Bike – Green Outer Circle",1]])
+  },
+  daily: {
+    high: rows([["Daily Bootlog – Red & Yellow Circles",3],["Recovery Time | Prayer Time",3],["Zoom – PAA / SAA",3],["Zoom – AA / CA",2],["IRL – AA / CA",1],["2 Way Prayer",0.25],["Share at a Meeting",3]]),
+    medium: rows([["Service Commitment",0],["Work with Sponsee / Sponsor",0],["Check Ins",5],["PAA Home Group",1],["AA Home Group",1],["Research Recovery",1],["Meeting Notes",1],["Movies – Green",0.5],["Working Out – Green Outer",2],["Couples Reading",1]]),
+    low: rows([["RCA Meeting",0],["Date Night",1],["Page 86–87 Listen / Read",2],["Use 10 Step / Recovery App",0],["Bike – Comp Green Outer Circle",0.25]])
+  }
+};
+var SECTIONS = [
+  {id:"high",   nm:"High Priority",   dot:"🔴", weight:0.60, wlabel:"60%"},
+  {id:"medium", nm:"Medium Priority", dot:"🟡", weight:0.30, wlabel:"30%"},
+  {id:"low",    nm:"Lower Priority",  dot:"🟢", weight:0.10, wlabel:"10%"}
+];
+var LS_KEY = "vitalReportV1";
+
+function clone(o){ return JSON.parse(JSON.stringify(o)); }
+function todayISO(){ var d=new Date(); return isoOf(d); }
+function isoOf(d){ var m=("0"+(d.getMonth()+1)).slice(-2), day=("0"+d.getDate()).slice(-2); return d.getFullYear()+"-"+m+"-"+day; }
+function parseISO(s){ var p=s.split("-"); return new Date(+p[0], +p[1]-1, +p[2]); }
+function mondayOf(dateStr){
+  var d = parseISO(dateStr), dow = d.getDay(); // 0=Sun
+  var monday = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  if(dow===0){ monday.setDate(monday.getDate()+1); }       // Sunday rolls to next week
+  else { monday.setDate(monday.getDate()-(dow-1)); }
+  return monday;
+}
+var MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function fmtMD(d){ return MONTHS[d.getMonth()]+" "+d.getDate(); }
+
+function seed(){
+  return {
+    tab: "weekly",
+    weekDate: todayISO(),
+    dayDate: todayISO(),
+    templates: clone(DEFAULTS),
+    actuals: { weekly:{}, daily:{} },
+    collapsed: { high:false, medium:false, low:false }
+  };
+}
+function load(){
+  try{
+    var raw = localStorage.getItem(LS_KEY);
+    if(!raw) return null;
+    var s = JSON.parse(raw);
+    if(!s || !s.templates || !s.templates.weekly || !s.templates.daily) return null;
+    if(!s.actuals) s.actuals = {weekly:{}, daily:{}};
+    if(!s.actuals.weekly) s.actuals.weekly = {};
+    if(!s.actuals.daily) s.actuals.daily = {};
+    if(!s.collapsed) s.collapsed = {high:false, medium:false, low:false};
+    if(s.tab!=="daily") s.tab = "weekly";
+    if(!s.weekDate) s.weekDate = todayISO();
+    if(!s.dayDate) s.dayDate = todayISO();
+    return s;
+  }catch(e){ return null; }
+}
+var S = load() || seed();
+var saveTimer = null;
+function save(){
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(S)); }catch(e){}
+  var el = document.getElementById("saved");
+  el.classList.add("on");
+  if(saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(function(){ el.classList.remove("on"); }, 900);
+}
+function periodKey(){
+  if(S.tab==="weekly") return isoOf(mondayOf(S.weekDate));
+  return S.dayDate;
+}
+function periodActuals(){
+  var key = periodKey();
+  var book = S.actuals[S.tab];
+  if(!book[key]) book[key] = { high:[], medium:[], low:[] };
+  var pa = book[key];
+  SECTIONS.forEach(function(sec){
+    var n = S.templates[S.tab][sec.id].length;
+    if(!pa[sec.id]) pa[sec.id] = [];
+    while(pa[sec.id].length < n) pa[sec.id].push(0);
+    if(pa[sec.id].length > n) pa[sec.id].length = n;
+  });
+  return pa;
+}
+function gradeOf(pct){ // pct as fraction 0..1
+  var p = pct*100;
+  if(p>=90) return "A"; if(p>=80) return "B"; if(p>=70) return "C"; if(p>=60) return "D"; return "F";
+}
+function rowPct(actual, goal){
+  if(!goal || goal<=0) return 0;
+  var p = actual/goal; if(p>1) p=1; if(p<0) p=0; return p;
+}
+function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function fmt1(n){ return (Math.round(n*10)/10).toFixed(1); }
+
+function render(){
+  document.getElementById("tabDaily").classList.toggle("act", S.tab==="daily");
+  document.getElementById("tabWeekly").classList.toggle("act", S.tab==="weekly");
+  document.getElementById("periodLabel").textContent = (S.tab==="weekly") ? "WEEK OF" : "DATE";
+  var inp = document.getElementById("periodDate");
+  inp.value = (S.tab==="weekly") ? S.weekDate : S.dayDate;
+  var rangeEl = document.getElementById("periodRange");
+  if(S.tab==="weekly"){
+    var mon = mondayOf(S.weekDate), sun = new Date(mon.getFullYear(), mon.getMonth(), mon.getDate()+6);
+    rangeEl.textContent = fmtMD(mon)+" – "+fmtMD(sun)+", "+sun.getFullYear();
+  } else {
+    rangeEl.textContent = fmtMD(parseISO(S.dayDate))+", "+parseISO(S.dayDate).getFullYear();
+  }
+  document.getElementById("overallTitle").textContent = (S.tab==="weekly") ? "Overall Weekly Grade" : "Overall Daily Grade";
+  var pa = periodActuals();
+  var host = document.getElementById("sections");
+  var html = "";
+  SECTIONS.forEach(function(sec){
+    var list = S.templates[S.tab][sec.id];
+    html += '<section class="card'+(S.collapsed[sec.id]?' collapsed':'')+'" data-sec="'+sec.id+'">';
+    html += '<div class="sec-head" data-collapse="'+sec.id+'"><span class="dot">'+sec.dot+'</span>'
+      + '<span class="nm">'+sec.nm+'</span><span class="wt">'+sec.wlabel+' of Grade</span>'
+      + '<span class="sp"></span><span class="pct" id="secpct-'+sec.id+'">—</span>'
+      + '<span class="chip F" id="secchip-'+sec.id+'">—</span>'
+      + '<span class="chev">'+(S.collapsed[sec.id]?'▶':'▼')+'</span></div>';
+    html += '<div class="rows"><table><thead><tr><th>ACTIVITY</th><th class="num">GOAL</th><th class="num">ACTUAL</th><th class="pctc">%</th><th class="grd">GRADE</th><th class="del"></th></tr></thead><tbody>';
+    list.forEach(function(row, i){
+      html += '<tr data-sec="'+sec.id+'" data-idx="'+i+'">';
+      html += '<td><div class="actwrap">';
+      if(row.custom){
+        html += '<input class="actname" type="text" placeholder="Type activity name…" value="'+esc(row.name)+'" data-field="name">'
+          + '<button class="backbtn" type="button" data-back="1" title="Pick from the list instead">▾</button>';
+      } else {
+        html += '<select class="act" data-field="name">';
+        html += '<option value="">— Choose task —</option>';
+        PRESETS.forEach(function(p){ html += '<option value="'+esc(p)+'"'+(row.name===p?' selected':'')+'>'+esc(p)+'</option>'; });
+        html += '<option value="__custom">✎ Custom name…</option>';
+        html += '</select>';
+      }
+      html += '</div></td>';
+      html += '<td class="num"><input class="num" type="number" step="any" min="0" value="'+row.goal+'" data-field="goal"></td>';
+      html += '<td class="num"><input class="num" type="number" step="any" min="0" value="'+(pa[sec.id][i]||0)+'" data-field="actual"></td>';
+      html += '<td class="pctc" data-cell="pct">—</td>';
+      html += '<td class="grd"><span class="chip F" data-cell="chip">—</span></td>';
+      html += '<td class="del"><button class="delbtn" type="button" data-del="1" title="Remove activity">×</button></td>';
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+    html += '<div class="sec-foot"><span class="tot" id="sectot-'+sec.id+'">—</span><span class="sp"></span>'
+      + '<button class="resetbtn" type="button" data-reset="'+sec.id+'">↺ Reset</button>'
+      + '<button class="addbtn" type="button" data-add="'+sec.id+'">＋ Add Activity</button></div>';
+    html += '</div></section>';
+  });
+  host.innerHTML = html;
+  var or = "";
+  SECTIONS.forEach(function(sec){
+    or += '<div class="orow"><span class="dot">'+sec.dot+'</span><span class="nm">'+sec.nm+'</span>'
+      + '<span class="wt">'+sec.wlabel+'</span><span class="pct" id="opct-'+sec.id+'">—</span>'
+      + '<span class="chip F" id="ochip-'+sec.id+'">—</span></div>';
+  });
+  document.getElementById("overallRows").innerHTML = or;
+  recalc();
+}
+
+function recalc(){
+  var pa = periodActuals();
+  var secPcts = {};
+  SECTIONS.forEach(function(sec){
+    var list = S.templates[S.tab][sec.id];
+    var sumA = 0, sumG = 0;
+    list.forEach(function(row, i){
+      var a = +pa[sec.id][i] || 0, g = +row.goal || 0;
+      sumA += a; sumG += g;
+      var p = rowPct(a, g);
+      var tr = document.querySelector('tr[data-sec="'+sec.id+'"][data-idx="'+i+'"]');
+      if(tr){
+        tr.querySelector('[data-cell="pct"]').textContent = Math.round(p*100)+"%";
+        var chip = tr.querySelector('[data-cell="chip"]');
+        var gr = gradeOf(p);
+        chip.textContent = gr; chip.className = "chip "+gr;
+      }
+    });
+    var sp = (sumG>0) ? Math.min(sumA/sumG, 1) : 0;
+    if(sp<0) sp=0;
+    secPcts[sec.id] = sp;
+    var gr2 = gradeOf(sp);
+    var e1 = document.getElementById("secpct-"+sec.id); if(e1) e1.textContent = (sp*100).toFixed(1)+"%";
+    var e2 = document.getElementById("secchip-"+sec.id); if(e2){ e2.textContent = gr2; e2.className = "chip "+gr2; }
+    var e3 = document.getElementById("sectot-"+sec.id); if(e3) e3.textContent = fmt1(sumA)+" / "+fmt1(sumG);
+    var e4 = document.getElementById("opct-"+sec.id); if(e4) e4.textContent = (sp*100).toFixed(1)+"%";
+    var e5 = document.getElementById("ochip-"+sec.id); if(e5){ e5.textContent = gr2; e5.className = "chip "+gr2; }
+  });
+  var w = 0;
+  SECTIONS.forEach(function(sec){ w += sec.weight * secPcts[sec.id]; });
+  var wg = gradeOf(w);
+  document.getElementById("wPct").textContent = (w*100).toFixed(2)+"%";
+  var wEl = document.getElementById("wGrade");
+  wEl.textContent = wg;
+  wEl.style.color = (wg==="A") ? "#2e9e5b" : (wg==="B") ? "#7fb069" : (wg==="C") ? "#e6a817" : (wg==="D") ? "#e07b39" : "#d64541";
+}
+
+document.getElementById("tabDaily").addEventListener("click", function(){ S.tab="daily"; save(); render(); });
+document.getElementById("tabWeekly").addEventListener("click", function(){ S.tab="weekly"; save(); render(); });
+document.getElementById("printBtn").addEventListener("click", function(){ window.print(); });
+document.getElementById("periodDate").addEventListener("change", function(e){
+  if(!e.target.value) return;
+  if(S.tab==="weekly") S.weekDate = e.target.value; else S.dayDate = e.target.value;
+  save(); render();
+});
+document.getElementById("sections").addEventListener("click", function(e){
+  var head = e.target.closest("[data-collapse]");
+  if(head && !e.target.closest("button") && !e.target.closest("input") && !e.target.closest("select")){
+    var id = head.getAttribute("data-collapse");
+    S.collapsed[id] = !S.collapsed[id]; save(); render(); return;
+  }
+  var add = e.target.closest("[data-add]");
+  if(add){
+    var secA = add.getAttribute("data-add");
+    S.templates[S.tab][secA].push({name:"", goal:1, custom:false});
+    periodActuals()[secA].push(0);
+    save(); render(); return;
+  }
+  var rst = e.target.closest("[data-reset]");
+  if(rst){
+    var secR = rst.getAttribute("data-reset");
+    var nm = {high:"High Priority", medium:"Medium Priority", low:"Lower Priority"}[secR];
+    if(confirm("Reset "+nm+" back to the standard activity list? This clears this section's numbers for this period.")){
+      S.templates[S.tab][secR] = clone(DEFAULTS[S.tab][secR]);
+      var pa = periodActuals();
+      pa[secR] = S.templates[S.tab][secR].map(function(){ return 0; });
+      save(); render();
+    }
+    return;
+  }
+  var tr = e.target.closest("tr[data-sec]");
+  if(!tr) return;
+  var sec = tr.getAttribute("data-sec"), idx = +tr.getAttribute("data-idx");
+  if(e.target.closest("[data-del]")){
+    S.templates[S.tab][sec].splice(idx, 1);
+    Object.keys(S.actuals[S.tab]).forEach(function(k){
+      var arr = S.actuals[S.tab][k][sec];
+      if(arr && arr.length > idx) arr.splice(idx, 1);
+    });
+    save(); render(); return;
+  }
+  if(e.target.closest("[data-back]")){
+    var row = S.templates[S.tab][sec][idx];
+    row.custom = false; row.name = "";
+    save(); render(); return;
+  }
+});
+document.getElementById("sections").addEventListener("change", function(e){
+  var tr = e.target.closest("tr[data-sec]");
+  if(!tr) return;
+  var sec = tr.getAttribute("data-sec"), idx = +tr.getAttribute("data-idx");
+  var row = S.templates[S.tab][sec][idx];
+  if(e.target.matches('select[data-field="name"]')){
+    if(e.target.value === "__custom"){ row.custom = true; row.name = ""; save(); render(); }
+    else { row.custom = false; row.name = e.target.value; save(); recalc(); }
+  }
+});
+document.getElementById("sections").addEventListener("input", function(e){
+  var tr = e.target.closest("tr[data-sec]");
+  if(!tr) return;
+  var sec = tr.getAttribute("data-sec"), idx = +tr.getAttribute("data-idx");
+  var row = S.templates[S.tab][sec][idx];
+  var f = e.target.getAttribute("data-field");
+  if(f === "name" && e.target.matches("input.actname")){ row.name = e.target.value; save(); }
+  else if(f === "goal"){ row.goal = parseFloat(e.target.value) || 0; save(); recalc(); }
+  else if(f === "actual"){ periodActuals()[sec][idx] = parseFloat(e.target.value) || 0; save(); recalc(); }
+});
+render();
+</script>
+</body>
+</html>
