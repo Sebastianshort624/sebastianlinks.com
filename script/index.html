@@ -537,6 +537,7 @@ sideApply();
     <div class="qsm"><span class="qhl" data-es="Próximos 90 días" data-en="Next 90 days">Próximos 90 días</span> <b id="q_w90">—</b></div>
     <div><span class="qhl" data-es="Próximo 1 año" data-en="Next 1 year">Próximo 1 año</span> <b id="q_t1">—</b></div>
     <div><span class="qhl" data-es="Próximos 3 años" data-en="Next 3 years">Próximos 3 años</span> <b id="q_t3">—</b></div>
+    <div><span class="qhl" data-es="Próximos 5 años" data-en="Next 5 years">Próximos 5 años</span> <b id="q_t5">—</b></div>
     <div><span class="qhl" data-es="Próximos 10 años" data-en="Next 10 years">Próximos 10 años</span> <b id="q_t10">—</b></div>
     <div><span class="qhl" data-es="Próximos 20 años" data-en="Next 20 years">Próximos 20 años</span> <b id="q_t20">—</b></div>
     <div><span class="qhl" data-es="Próximos 30 años" data-en="Next 30 years">Próximos 30 años</span> <b id="q_t30">—</b></div>
@@ -2566,7 +2567,7 @@ function qEmailBuild(L){
   var totMo = (F.isDB ? 0 : F.mmo) + mfMo;
   if (comboOk) totMo = comboList.reduce(function(s, c){ return s + c.mmo + (c.mfEff != null ? c.mfEff : c.mf) / 12; }, 0);
   var gv2 = function(id){ var el = $(id); return el ? el.textContent : ''; };
-  var prows = [['q_w30','Próximos 30 días','Next 30 days'],['q_w90','Próximos 90 días','Next 90 days'],['q_t1','Próximo 1 año','Next 1 year'],['q_t3','Próximos 3 años','Next 3 years'],['q_t10','Próximos 10 años','Next 10 years'],['q_t20','Próximos 20 años','Next 20 years'],['q_t30','Próximos 30 años','Next 30 years']];
+  var prows = [['q_w30','Próximos 30 días','Next 30 days'],['q_w90','Próximos 90 días','Next 90 days'],['q_t1','Próximo 1 año','Next 1 year'],['q_t3','Próximos 3 años','Next 3 years'],['q_t5','Próximos 5 años','Next 5 years'],['q_t10','Próximos 10 años','Next 10 years'],['q_t20','Próximos 20 años','Next 20 years'],['q_t30','Próximos 30 años','Next 30 years']];
   var prowHtml = '';
   var prowMonths = [1, 3, 12, 36, 120, 240, 360];
   prows.forEach(function(r, i){
@@ -2762,7 +2763,7 @@ function qQuoteCurBuild(L){
     e += '</td></tr>';
   }
   var gv = function(id){ var el = $(id); return el ? el.textContent : ''; };
-  var prows = [['q_w30', 'Próximos 30 días', 'Next 30 days'], ['q_w90', 'Próximos 90 días', 'Next 90 days'], ['q_t1', 'Próximo 1 año', 'Next 1 year'], ['q_t3', 'Próximos 3 años', 'Next 3 years'], ['q_t10', 'Próximos 10 años', 'Next 10 years'], ['q_t20', 'Próximos 20 años', 'Next 20 years'], ['q_t30', 'Próximos 30 años', 'Next 30 years']];
+  var prows = [['q_w30', 'Próximos 30 días', 'Next 30 days'], ['q_w90', 'Próximos 90 días', 'Next 90 days'], ['q_t1', 'Próximo 1 año', 'Next 1 year'], ['q_t3', 'Próximos 3 años', 'Next 3 years'], ['q_t5', 'Próximos 5 años', 'Next 5 years'], ['q_t10', 'Próximos 10 años', 'Next 10 years'], ['q_t20', 'Próximos 20 años', 'Next 20 years'], ['q_t30', 'Próximos 30 años', 'Next 30 years']];
   var prowHtml = '';
   prows.forEach(function(r){ var raw = gv(r[0]); if (!raw || raw === '—') return; var v = parseFloat(String(raw).replace(/[^0-9.]/g, '')); if (!(v > 0)) return; prowHtml += '<tr><td style="' + ROWL + '">' + (en ? r[2] : r[1]) + '</td><td style="' + ROWR + '">' + fmt0(v) + '</td></tr>'; });
   if (prowHtml){
@@ -2969,7 +2970,7 @@ function qQuote48Build(L){
     e += '</td></tr>';
   }
   var gv = function(id){ var el = $(id); return el ? el.textContent : ''; };
-  var prows = [['q_w30', 'Próximos 30 días', 'Next 30 days'], ['q_w90', 'Próximos 90 días', 'Next 90 days'], ['q_t1', 'Próximo 1 año', 'Next 1 year'], ['q_t3', 'Próximos 3 años', 'Next 3 years'], ['q_t10', 'Próximos 10 años', 'Next 10 years'], ['q_t20', 'Próximos 20 años', 'Next 20 years'], ['q_t30', 'Próximos 30 años', 'Next 30 years']];
+  var prows = [['q_w30', 'Próximos 30 días', 'Next 30 days'], ['q_w90', 'Próximos 90 días', 'Next 90 days'], ['q_t1', 'Próximo 1 año', 'Next 1 year'], ['q_t3', 'Próximos 3 años', 'Next 3 years'], ['q_t5', 'Próximos 5 años', 'Next 5 years'], ['q_t10', 'Próximos 10 años', 'Next 10 years'], ['q_t20', 'Próximos 20 años', 'Next 20 years'], ['q_t30', 'Próximos 30 años', 'Next 30 years']];
   var prowHtml = '';
   prows.forEach(function(r){ var raw = gv(r[0]); if (!raw || raw === '—') return; var v = parseFloat(String(raw).replace(/[^0-9.]/g, '')); if (!(v > 0)) return; prowHtml += '<tr><td style="' + ROWL + '">' + (en ? r[2] : r[1]) + '</td><td style="' + ROWR + '">' + fmt0(v) + '</td></tr>'; });
   if (prowHtml){
@@ -4173,7 +4174,7 @@ function qRecalc(){
   function setW(id, v){ var e = $(id); if (e) e.textContent = v === null ? PEND_TXT : fmtC(v); }
   setW('q_w30', w30); setW('q_w90', w90);
   function setT(id, v){ var e = $(id); if (e) e.textContent = v === null ? PEND_TXT : fmtC(v); }
-  setT('q_t1', t1); setT('q_t3', t3); setT('q_t10', t10); setT('q_t20', t20); setT('q_t30', t30);
+  setT('q_t1', t1); setT('q_t3', t3); setT('q_t5', t5); setT('q_t10', t10); setT('q_t20', t20); setT('q_t30', t30);
   // Expense breakdown (monthly MF floored for display only; annual MF exact, 10-yr MF escalated)
   var mfmo = Math.floor(mf / 12), mfoyr = mf, moyr = mmo * 12, totyr = moyr + mfoyr + ofees;
   var ofmo = Math.floor(ofees / 12);
