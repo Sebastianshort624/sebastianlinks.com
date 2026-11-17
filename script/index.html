@@ -743,7 +743,7 @@ sideApply();
     <li data-keys="spouse wife husband partner talk discuss family decide together"><b>"Necesito hablarlo con mi esposo/a."</b> → "Claro que sí — ¿está por ahí ahora mismo? <b>Metámoslo/a a la llamada</b>, porque prefiero responderle sus preguntas directamente a que tengas que volver a explicarle todo esto de segunda mano."</li>
     <li data-keys="scam scammed burned ripped off trust skeptical"><b>"Ya me estafaron antes."</b> → "Exactamente por eso lo hacemos de esta manera — <b>garantía de devolución del 100% de tu dinero</b>, A+ con el BBB, y tú mismo viste nuestras reseñas. Si no logramos sacarte, te devolvemos tu dinero. ¿Qué te garantizó la última compañía?"</li>
     <li data-keys="credit score hurt damage report bureau bureaus"><b>"¿Esto va a afectar mi crédito?"</b> → "<b>Nunca revisamos tu crédito</b> y no reportamos nada a las centrales de riesgo. ¿Qué parte te preocupa?"</li>
-    <li data-keys="expensive cost too much price afford can't afford money"><b>"Es muy caro."</b> → "¿Comparado con qué? No hacer nada te cuesta <b><span data-fill="total10">$________</span></b> en los próximos 10 años. Esto es <b><span data-fill="fee">$________</span></b> una sola vez — y después se acabó para siempre."</li>
+    <li data-keys="expensive cost too much price afford can't afford money"><b>"Es muy caro."</b> → "¿Comparado con qué? No hacer nada te cuesta <b><span data-fill="total3">$________</span></b> en los próximos 3 años y <b><span data-fill="total5">$________</span></b> en los próximos 5 años. Esto es <b><span data-fill="fee">$________</span></b> una sola vez — y después se acabó para siempre."</li>
     <li data-keys="different difference others other companies vs versus competitor"><b>"¿En qué se diferencian?"</b> → "La mayoría de compañías te sacan haciendo que le pagues al resort. Nosotros lo invertimos — <b>el resort te deja salir y te paga a ti</b>. Y nadie más lo respalda con una garantía de devolución del 100% de tu dinero."</li>
   </ul>
   <div id="objnone" class="tmin" style="display:none;padding:6px 4px">Sin resultados — prueba con otra palabra.</div>
@@ -1299,6 +1299,8 @@ function resetFills(){
   fillAll('[data-fill="fee"]', '$________');
   fillAll('[data-fill="savings"]', '$________');
   fillAll('[data-fill="total10"]', '$________');
+  fillAll('[data-fill="total3"]', '$________');
+  fillAll('[data-fill="total5"]', '$________');
   fillAll('[data-fill="ca"]', 'nuestro analista de casos');
   fillAll('[data-fill="resort"]', '_________');
   fillAll('[data-fill="name"]', '_________');
@@ -2100,6 +2102,8 @@ function applyFills(c, n){
   fillAll('[data-fill="fee"]', n.feeKnown ? fmtC(n.fee) : '$________');
   fillAll('[data-fill="savings"]', n.feeKnown && n.s10 !== null ? fmtC(n.s10) : '$________');
   fillAll('[data-fill="total10"]', n.feeKnown && n.t10 !== null ? fmtC(n.t10) : '$________');
+  fillAll('[data-fill="total3"]', n.feeKnown && n.t3 !== null && n.t3 !== undefined ? fmtC(n.t3) : '$________');
+  fillAll('[data-fill="total5"]', n.feeKnown && n.t5 !== null && n.t5 !== undefined ? fmtC(n.t5) : '$________');
   fillAll('[data-fill="ca"]', caScriptName(c.ca));
   fillAll('[data-fill="resort"]', c.resort || '_________');
   fillAll('[data-fill="name"]', c.name ? c.name.replace(' / ', ' y ') : '_________');
@@ -4473,7 +4477,7 @@ function qRecalc(){
   var XF = $('q_bal2flag'), XT = $('q_schtag');
   if (XF){ if (qSaldoGuard){ XF.style.display = ''; XF.innerHTML = '⚠️ <b>CONFLICTO</b>: el saldo registrado (' + fmtC(qSaldoGuard.saldo) + ') supera el préstamo original (' + fmtC(qSaldoGuard.fin) + '). Con ' + fmtC(qSaldoGuard.pmt) + '/mes al ' + qSaldoGuard.apr + '% a ' + qSaldoGuard.term + ' meses, el préstamo máximo posible es ' + fmtC(qSaldoGuard.pv) + '. Verifica pago, APR, plazo o saldo antes de cotizar.'; } else if (XC && XC.conflict){ XF.style.display = ''; XF.innerHTML = '⚠️ <b>CONFLICTO DE SALDO</b> — la amortización estima un saldo de ' + fmtC(XC.bal) + ', pero el SALDO REGISTRADO es ' + fmtC(XC.payoff) + ' (diferencia ' + XC.diffPct + '%). Manda el saldo registrado: el precio y las proyecciones se calculan con él. Verifica el saldo real con el prestamista — ningún campo fue ajustado automáticamente.'; } else XF.style.display = 'none'; }
   if (XT){ var xtMsg = ''; if (XC && !XC.conflict) xtMsg = '✓ La amortización cuadra con el saldo registrado (diferencia menor al 2%).'; else if (MG.assumedStart === 'purchase' || (XC && XC.src === 'purchase')) xtMsg = '🟡 Posición calculada desde la fecha de COMPRA: el registro no documenta upgrade ni refinanciamiento. Si lo hubo, la posición real difiere.'; if (xtMsg){ XT.style.display = ''; XT.textContent = xtMsg; } else XT.style.display = 'none'; }
-  var n = {fee: fee, feeKnown: feeKnown, t5: t5, t10: t10, s10: t10 === null ? null : s10};
+  var n = {fee: fee, feeKnown: feeKnown, t3: t3, t5: t5, t10: t10, s10: t10 === null ? null : s10};
   var c2 = {}, k;
   for (k in cur) c2[k] = cur[k];
   c2.mf = mf; c2.mmo = mmo; c2.payoff = payoff; c2.down = down;
