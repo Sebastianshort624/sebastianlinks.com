@@ -28,6 +28,9 @@ tr:hover td{background:#fbf8f1}
 .bcap{font-size:10px;color:#8a8378;font-weight:700;letter-spacing:.4px;margin:1px 0 5px}
 .bdate{font-weight:600}
 .bfilter{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 18px}
+.btype{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 14px}
+.btype-btn{font:inherit;font-size:16px;font-weight:800;border:2px solid #14304d;color:#14304d;background:#fff;border-radius:12px;padding:10px 22px;cursor:pointer;min-height:48px}
+.btype-btn.on{background:#14304d;color:#fff}
 .bfilter input{font:inherit;font-size:14px;padding:7px 10px;border:1px solid #ddd6c9;border-radius:8px;min-width:290px;background:#fff}
 .bchip{font:inherit;font-size:13px;border:1px solid #0e7c86;color:#0e7c86;background:#fff;border-radius:999px;padding:5px 12px;cursor:pointer}
 .bchip.on{background:#0e7c86;color:#fff}
@@ -48,6 +51,7 @@ a.back{color:#0b5cad}
 <div class="chip">Exact commission: <b>66</b> rows</div>
 <div class="chip">Total exact commissions: <b>$33,252.45</b></div>
 </div>
+<div class="btype" role="group" aria-label="Deal type filter"><button type="button" class="btype-btn on" data-dtype="">ALL</button><button type="button" class="btype-btn" data-dtype="mtg">🏦 MORTGAGE ONLY</button><button type="button" class="btype-btn" data-dtype="db">🏠 DEED-BACK ONLY</button></div>
 <div class="bfilter">
 <input id="bq" type="search" placeholder="Search any lead — name, resort, phone, status...">
 <span style="font-weight:800;color:#14304d;font-size:13px">📅 VIEW RANGE:</span>
@@ -604,7 +608,7 @@ If there is no confirmed payment type or total, the commission shows "—" and t
   }
   function renderStars(tr){ var s=state[tr.getAttribute('data-key')]; var n=(s&&s.stars)||0; tr.querySelectorAll('.bstar').forEach(function(sp,i){ sp.textContent=i<n?'★':'☆'; }); }
   function recountAll(){ document.querySelectorAll('.bsec').forEach(function(w){ var n=0; w.querySelectorAll('tbody tr[data-key]').forEach(function(tr){ if(tr.getAttribute('data-fhide')!=='1') n++; }); var h=w.querySelector('h2 .cnt'); if(h) h.textContent=n; w.style.display=n?'':'none'; }); }
-  var bf={q:'',crit:{},from:'',to:'',status:'',paydayView:''};
+  var bf={q:'',crit:{},from:'',to:'',status:'',paydayView:'',dtype:''};
   function todayISO(){ var d=new Date(); function p(n){ return (n<10?'0':'')+n; } return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); }
   function critMatch(tr, c){
     if(c==='today'){ var td=tr.getAttribute('data-taskdue'); return tr.getAttribute('data-today')==='1' || tr.getAttribute('data-close')===todayISO() || (!!td && td<=todayISO()); }
@@ -635,6 +639,11 @@ If there is no confirmed payment type or total, the commission shows "—" and t
     // 💵 PAYDAY view (Sebastian 2026-11-09): while a pay day is selected it
     // overrides every other filter — only that day's deal rows show.
     if(bf.paydayView) return tr.getAttribute('data-payview')==='1' && tr.getAttribute('data-payday')===bf.paydayView;
+    // DEAL-TYPE TOGGLE (Sebastian 2026-11-19): All / Mortgage only /
+    // Deed-back only — the row's data-db flag is the same classification
+    // the generator used (deed-back sections, DB badge, pad math).
+    if(bf.dtype==='db' && tr.getAttribute('data-db')!=='1') return false;
+    if(bf.dtype==='mtg' && tr.getAttribute('data-db')==='1') return false;
     if(bf.status && !statusMatch(tr, bf.status)) return false;
     if(bf.q){ var bd=tr.getAttribute('data-band')||''; var hay=((tr.getAttribute('data-name')||'')+' '+(bd?('cat'+bd.slice(1)+' cat '+bd.slice(1)+' category '+bd.slice(1)+' '):'')+(tr.textContent||'')).toLowerCase(); if(hay.indexOf(bf.q)<0) return false; }
     if(bf.from || bf.to){
@@ -668,7 +677,7 @@ If there is no confirmed payment type or total, the commission shows "—" and t
   function applyFilter(){
     var shown=0;
     document.querySelectorAll('tr[data-key]').forEach(function(tr){ var ok=rowMatch(tr); if(ok){ tr.removeAttribute('data-fhide'); tr.style.display=''; shown++; } else { tr.setAttribute('data-fhide','1'); tr.style.display='none'; } });
-    var el=document.getElementById('bshow'); var active=Object.keys(bf.crit).length>0||!!bf.from||!!bf.to||!!bf.status||!!bf.paydayView; if(el){ if(!active&&!bf.q) el.textContent=''; else { el.textContent='Showing '+shown+' lead'+(shown===1?'':'s')+((bf.from||bf.to)?(' · 📅 '+(bf.from||'…')+' → '+(bf.to||'…')):'')+(bf.status?(' · STATUS: '+bf.status.toUpperCase()):''); el.style.fontWeight='800'; el.style.color='#14304d'; } }
+    var el=document.getElementById('bshow'); var active=Object.keys(bf.crit).length>0||!!bf.from||!!bf.to||!!bf.status||!!bf.paydayView||!!bf.dtype; if(el){ if(!active&&!bf.q) el.textContent=''; else { el.textContent='Showing '+shown+' lead'+(shown===1?'':'s')+((bf.from||bf.to)?(' · 📅 '+(bf.from||'…')+' → '+(bf.to||'…')):'')+(bf.status?(' · STATUS: '+bf.status.toUpperCase()):'')+(bf.dtype?(' · TYPE: '+(bf.dtype==='db'?'DEED-BACK':'MORTGAGE')):''); el.style.fontWeight='800'; el.style.color='#14304d'; } }
     recountAll();
   }
   function bindFilter(){
@@ -676,6 +685,9 @@ If there is no confirmed payment type or total, the commission shows "—" and t
     if(q) q.addEventListener('input', function(){ bf.q=q.value.trim().toLowerCase(); applyFilter(); });
     var bst=document.getElementById('bstatus');
     if(bst) bst.addEventListener('change', function(){ bf.status=bst.value; applyFilter(); });
+    // DEAL-TYPE TOGGLE buttons (main board only — /dback renders none,
+    // so this binds nothing there).
+    document.querySelectorAll('.btype-btn').forEach(function(b){ b.addEventListener('click', function(){ bf.dtype=b.getAttribute('data-dtype')||''; document.querySelectorAll('.btype-btn').forEach(function(x){ x.classList.toggle('on', x===b); }); applyFilter(); }); });
     // 💵 PAYDAY (Sebastian 2026-11-09): the button opens the view on the
     // default pay day (this Friday); the dropdown switches days; the
     // banner states the day in tense — WAS PAID / BEING PAID THIS FRIDAY /
@@ -706,7 +718,7 @@ If there is no confirmed payment type or total, the commission shows "—" and t
     }); });
     document.querySelectorAll('.bchip[data-c]').forEach(function(b){ b.addEventListener('click', function(){ var c=b.getAttribute('data-c'); var cur=bf.crit[c]||''; var nxt=(cur==='')?'yes':((cur==='yes')?'no':''); if(nxt) bf.crit[c]=nxt; else delete bf.crit[c]; b.classList.remove('on'); b.classList.remove('no'); if(nxt) b.classList.add(nxt==='yes'?'on':'no'); b.textContent=b.textContent.replace(/^[✓✕] /,''); if(nxt) b.textContent=(nxt==='yes'?'✓ ':'✕ ')+b.textContent; applyFilter(); }); });
     var cl=document.getElementById('bclear');
-    if(cl) cl.addEventListener('click', function(){ bf.crit={}; bf.q=''; bf.from=''; bf.to=''; bf.status=''; bf.paydayView=''; var _bp=document.getElementById('bpayday'); if(_bp) _bp.classList.remove('on'); var _ps=document.getElementById('bpaydaysel'); if(_ps) _ps.style.display='none'; var _pi=document.getElementById('bpayinfo'); if(_pi) _pi.style.display='none'; var _bs=document.getElementById('bstatus'); if(_bs) _bs.value=''; var q=document.getElementById('bq'); if(q) q.value=''; var _f=document.getElementById('bfrom'); if(_f) _f.value=''; var _t=document.getElementById('bto'); if(_t) _t.value=''; document.querySelectorAll('.bchip[data-c]').forEach(function(x){ x.classList.remove('on'); x.classList.remove('no'); x.textContent=x.textContent.replace(/^[✓✕] /,''); }); document.querySelectorAll('.bchip[data-vr]').forEach(function(x){ x.classList.remove('on'); }); applyFilter(); });
+    if(cl) cl.addEventListener('click', function(){ bf.crit={}; bf.q=''; bf.from=''; bf.to=''; bf.status=''; bf.paydayView=''; bf.dtype=''; var _bp=document.getElementById('bpayday'); if(_bp) _bp.classList.remove('on'); var _ps=document.getElementById('bpaydaysel'); if(_ps) _ps.style.display='none'; var _pi=document.getElementById('bpayinfo'); if(_pi) _pi.style.display='none'; var _bs=document.getElementById('bstatus'); if(_bs) _bs.value=''; var q=document.getElementById('bq'); if(q) q.value=''; var _f=document.getElementById('bfrom'); if(_f) _f.value=''; var _t=document.getElementById('bto'); if(_t) _t.value=''; document.querySelectorAll('.bchip[data-c]').forEach(function(x){ x.classList.remove('on'); x.classList.remove('no'); x.textContent=x.textContent.replace(/^[✓✕] /,''); }); document.querySelectorAll('.bchip[data-vr]').forEach(function(x){ x.classList.remove('on'); }); document.querySelectorAll('.btype-btn').forEach(function(x){ x.classList.toggle('on', (x.getAttribute('data-dtype')||'')===''); }); applyFilter(); });
   }
   function moveRow(tr, secKey){ if(secKey==='T:NQ') secKey='T:NOGO'; var w=document.getElementById(slug(secKey)); if(!w) return; var tb=w.querySelector('tbody'); if(tb) tb.appendChild(tr); }
   function renderTask(tr){
