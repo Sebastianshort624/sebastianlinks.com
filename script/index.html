@@ -5492,7 +5492,7 @@ setInterval(function(){ if (aptData){ aptRender(); aptLayout(); } }, 60000);
   function applyPeg(h){ document.body.classList.toggle('peg-hidden', !!h); try{ localStorage.setItem('sl_peg_hidden', h ? '1' : '0'); }catch(e){} }
   if (hideB) hideB.addEventListener('click', function(){ applyPeg(true); });
   if (showB) showB.addEventListener('click', function(){ applyPeg(false); });
-  try{ if (localStorage.getItem('sl_peg_hidden') === '1') applyPeg(true); }catch(e){}
+  try{ localStorage.removeItem('sl_peg_hidden'); }catch(e){} /* BARFIX_V2: bar always shows on load; hiding is session-only */
   try{ if (localStorage.getItem('sl_urls_open') === '1' && typeof urlToggleFn === 'function'){ var g = document.getElementById('urlGrid'); if (g && g.style.display === 'none') urlToggleFn(); } }catch(e){}
 })();
 </script>
@@ -5524,7 +5524,7 @@ body.focus-mode #focusBtn { background: #b45309; }
     });
     document.body.appendChild(b);
     var on = false;
-    try { on = localStorage.getItem(KEY) === '1'; } catch(e){}
+    try { localStorage.removeItem(KEY); } catch(e){} /* BARFIX_V2: focus mode never persists across loads */
     apply(on);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
