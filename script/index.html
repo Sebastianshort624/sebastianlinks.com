@@ -357,6 +357,28 @@
 .eodbtn:hover{opacity:.92}
 .eodbtn.on{opacity:1;box-shadow:0 0 0 2px #fffdf8,0 0 0 4px #111827}
 </style>
+<style>
+@media screen {
+/* SIDEDOCK_V1 (Sebastian 2026-11-20): the top bar moves to a right-side dock - nothing eats the top of the screen */
+body { padding-right: 288px; }
+body.peg-hidden { padding-right: 0; }
+body.focus-mode { padding-right: 0; }
+body #pegbar { position: fixed; top: 0; right: 0; width: 272px; height: 100vh; max-height: 100vh; overflow-y: auto; overflow-x: hidden; margin: 0; padding: 10px 10px 18px; background: #f1f5f9; border-left: 3px solid #0b3d91; box-shadow: -4px 0 14px rgba(11,61,145,.18); z-index: 60; box-sizing: border-box; }
+body #pegbar .navline { flex-direction: column; align-items: stretch; gap: 8px; flex-wrap: nowrap; padding: 0; }
+body #pegbar .navline > a { text-align: center; }
+body #pegbar .navline select, body #pegbar .navline button { width: 100%; box-sizing: border-box; }
+body #pegbar .snav { display: flex; justify-content: space-between; }
+body #pegbar .snav a { flex: 1; text-align: center; }
+body #pegbar .nv-timer { margin-left: 0; text-align: center; }
+body #pegbar #soldStrip { flex-direction: column; align-items: stretch; gap: 8px; padding: 10px; }
+body #pegbar .cbar { margin-top: 10px; }
+body #pegbar .ib-wrap { grid-template-columns: 1fr; gap: 10px; }
+body #pegbar .ib-col { border-left: none; padding-left: 0; border-top: 2px solid rgba(11,61,145,.30); padding-top: 10px; }
+body #pegbar .ib-col:first-child { border-top: none; padding-top: 0; }
+body #pegHideBtn { width: 100%; margin: 0 0 10px; }
+body #railR { right: 280px; }
+}
+</style>
 </head>
 <body>
 
