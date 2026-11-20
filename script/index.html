@@ -5531,6 +5531,10 @@ body.focus-mode #focusBtn { background: #b45309; }
 })();
 </script>
 <!-- /FOCUS_V1 -->
+<script>
+/* BARRESET_V1: opening the page with ?resetbar clears the saved hidden-bar states (focus mode + peg bar) */
+(function(){ try{ if (/[?&]resetbar(\b|=)/.test(location.search)) { localStorage.removeItem('sl_focus'); localStorage.removeItem('sl_peg_hidden'); document.body.classList.remove('focus-mode','peg-hidden'); var b=document.getElementById('focusBtn'); if(b) b.textContent='\uD83D\uDE48 Ocultar menus'; var u=new URL(location.href); u.searchParams.delete('resetbar'); history.replaceState(null,'',u.toString()); } }catch(e){} })();
+</script>
 </body>
 </html>
 
