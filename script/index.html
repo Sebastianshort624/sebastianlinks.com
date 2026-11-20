@@ -376,6 +376,8 @@
     <button id="quotecurBtn" type="button" onclick="qQuoteCurHtml()">📧 QUOTE + CURRENT</button>
     <!-- COMPROMISO_V1 -->
     <button id="compBtn" type="button" onclick="qCompHtml()">📧 COMPROMISO CONTRACTUAL ACTUAL</button>
+    <!-- INCENTIVO_V1 -->
+    <button id="incBtn" type="button" onclick="qIncHtml()">📧 INCENTIVO FDS</button>
     <button id="quote48Btn" type="button" onclick="qQuote48Html()">🚀 48-MO PUSH</button>
     <!-- SENT_QUOTE_V1 -->
     <button id="sentqBtn" type="button" onclick="qSentqView()" title="Ver la cotizacion que le enviaste a este cliente">📤 ENVIADO</button>
@@ -2351,6 +2353,7 @@ window.__qDocRender = function(kind, L){
   if (kind === 'quote') return qQuoteBuild(L);
   if (kind === 'quotecur') return qQuoteCurBuild(L);
   if (kind === 'compromiso') return qCompBuild(L);
+  if (kind === 'incentivo') return qIncBuild(L);
   if (kind === 'quote48') return qQuote48Build(L);
   if (kind === 'ca') return qCaBuild(L);
   if (kind === 'cb') return qCbBuild(L);
@@ -2906,6 +2909,42 @@ function qCompBuild(L){
     '<span style="font-size:12px;opacity:.85">' + (en ? 'Current-commitment email only — no price pitch. Nothing is sent automatically.' : 'Correo solo del compromiso actual — sin cotización. Nada se envía automáticamente.') + '</span></div>';
   h += '<div id="eml" contenteditable="true">' + e + '</div>';
   h += '<scr' + 'ipt>function qcCopy(b){var n=document.getElementById("eml");try{navigator.clipboard.write([new ClipboardItem({"text/html":new Blob([n.innerHTML],{type:"text/html"}),"text/plain":new Blob([n.innerText],{type:"text/plain"})})]).then(function(){b.textContent="✅ COPIADO";});}catch(err){var r=document.createRange();r.selectNode(n);var s=getSelection();s.removeAllRanges();s.addRange(r);document.execCommand("copy");b.textContent="✅ COPIADO";}}' +
+    'function qcGmail(){var to=document.getElementById("emTo").value,su=document.getElementById("emSubj").value,tx=document.getElementById("eml").innerText;window.open("https://mail.google.com/mail/?view=cm&fs=1&to="+encodeURIComponent(to)+"&su="+encodeURIComponent(su)+"&body="+encodeURIComponent(tx),"_blank");}</scr' + 'ipt>';
+  h += qDocToggleJs(en);
+  h += '</body></html>';
+  return h;
+}
+// ===== INCENTIVO FDS EMAIL (Sebastian, 2026-11-20): fixed-text weekend incentive email —
+// his exact words, NO signature block (he said "no signature"). Nothing is sent automatically.
+function qIncHtml(){
+  if (!cur){ alert('Selecciona un cliente primero.'); return; }
+  qDocOpen(qIncBuild(qDocDefLang()));
+}
+function qIncBuild(L){
+  var en = (L === 'en');
+  var today = new Date().toLocaleDateString(en ? 'en-US' : 'es-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  var subj = en ? 'An incentive to look over the contract this weekend' : 'Un incentivo para mirar el contrato este fin de semana';
+  var NAVY = '#14304d', SLATE = '#26313a';
+  var lines = en
+    ? ['Hello, an incentive to look over the contract this weekend is:', '$0 money down', '$0 Payments until January 2027', '0% interest for 90 Days']
+    : ['Hola, un incentivo para mirar el contrato este fin de semana es:', '$0 de dinero de entrada', '$0 Pagos hasta enero de 2027', '0% de inter\u00e9s por 90 Dias'];
+  var e = '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;background:#ffffff"><tr><td align="center">';
+  e += '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="640" style="width:640px;max-width:640px;border-collapse:collapse;background:#ffffff;border:1px solid #dfe5ea;font-family:Arial,Helvetica,sans-serif;color:' + SLATE + '">';
+  e += '<tr><td style="background:' + NAVY + ';padding:22px 34px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse"><tr><td style="color:#ffffff;font-size:21px;font-weight:700;letter-spacing:.4px">Linx Legal</td><td align="right" style="color:#b9c9d8;font-size:12px">' + escH(today) + '</td></tr><tr><td colspan="2" style="color:#b9c9d8;font-size:12.5px;padding-top:3px">' + (en ? 'Weekend incentive' : 'Incentivo de fin de semana') + '</td></tr></table></td></tr>';
+  e += '<tr><td style="padding:24px 34px 28px"><p style="font-size:15px;line-height:1.6;color:' + SLATE + ';margin:0">' + escH(lines[0]) + '</p>';
+  e += '<p style="font-size:15px;line-height:1.6;color:' + SLATE + ';margin:16px 0 0">' + escH(lines[1]) + '<br>' + escH(lines[2]) + '<br>' + escH(lines[3]) + '</p>';
+  e += '</td></tr>';
+  e += '</table></td></tr></table>';
+  var h = '<!DOCTYPE html><html lang="' + (en ? 'en' : 'es') + '"><head><meta charset="utf-8"><title>INCENTIVO FDS \u2014 ' + escH(cur.name) + '</title></head><body style="margin:0;padding:20px 8px;background:#f2f5f6;font-family:Arial,Helvetica,sans-serif;color:#23323b;">';
+  h += '<div ' + QDOC_BAR + '><b>\uD83D\uDCE7 INCENTIVO FDS</b><span style="font-size:13px">' + (en ? 'To: ' : 'Para: ') + '<input id="emTo" value="' + escH(cur.email || '') + '" style="padding:5px;border-radius:4px;border:none;min-width:210px"> ' + (en ? 'Subject: ' : 'Asunto: ') + '<input id="emSubj" value="' + escH(subj) + '" style="padding:5px;border-radius:4px;border:none;min-width:300px"></span>' +
+    '<button ' + QDOC_BTN + ' onclick="qcCopy(this)">\uD83D\uDCCB COPY FORMATTED EMAIL</button>' +
+    '<button ' + QDOC_BTN + ' onclick="qcGmail()">\u2709\uFE0F OPEN IN GMAIL</button>' +
+    qSentBtn('EMAIL \u2014 INCENTIVO FDS', en) +
+    qDocToggleBtn('incentivo', en) +
+    qDocRefreshBtn('incentivo', en) +
+    '<span style="font-size:12px;opacity:.85">' + (en ? 'Fixed weekend-incentive text, no signature. Nothing is sent automatically.' : 'Texto fijo del incentivo de fin de semana, sin firma. Nada se env\u00eda autom\u00e1ticamente.') + '</span></div>';
+  h += '<div id="eml" contenteditable="true">' + e + '</div>';
+  h += '<scr' + 'ipt>function qcCopy(b){var n=document.getElementById("eml");try{navigator.clipboard.write([new ClipboardItem({"text/html":new Blob([n.innerHTML],{type:"text/html"}),"text/plain":new Blob([n.innerText],{type:"text/plain"})})]).then(function(){b.textContent="\u2705 COPIADO";});}catch(err){var r=document.createRange();r.selectNode(n);var s=getSelection();s.removeAllRanges();s.addRange(r);document.execCommand("copy");b.textContent="\u2705 COPIADO";}}' +
     'function qcGmail(){var to=document.getElementById("emTo").value,su=document.getElementById("emSubj").value,tx=document.getElementById("eml").innerText;window.open("https://mail.google.com/mail/?view=cm&fs=1&to="+encodeURIComponent(to)+"&su="+encodeURIComponent(su)+"&body="+encodeURIComponent(tx),"_blank");}</scr' + 'ipt>';
   h += qDocToggleJs(en);
   h += '</body></html>';
