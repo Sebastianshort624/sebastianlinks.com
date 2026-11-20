@@ -2928,8 +2928,8 @@ function qIncBuild(L){
   var NAVY = '#14304d', SLATE = '#26313a', MUT = '#68757f', LINE = '#e3e8ec';
   var resort = qResortNameTxt();
   var lines = en
-    ? ['Hello,', 'Today you invest LESS to get out of than you pay to keep your timeshare at ' + resort + '.', 'An incentive to look over the contract this weekend is:', '$0 money down', '$0 Payments until January 2027', '0% interest for 90 Days', 'Best regards,']
-    : ['Hola,', 'Hoy inviertes MENOS para salirte de que pagas por quedarte con tu tiempo compartido en ' + resort + '.', 'Un incentivo para mirar el contrato este fin de semana es:', '$0 de dinero de entrada', '$0 Pagos hasta enero de 2027', '0% de inter\u00e9s por 90 Dias', 'Un abrazo,'];
+    ? ['Hello,', 'Today you invest LESS to get out of what you pay to keep your timeshare at ' + resort + '.', 'An incentive to look over the contract this weekend is:', '$0 money down', '$0 Payments until January 2027', '0% interest for 90 Days', 'Best regards,']
+    : ['Hola,', 'Hoy inviertes MENOS para salirte de lo que pagas por quedarte con tu tiempo compartido en ' + resort + '.', 'Un incentivo para mirar el contrato este fin de semana es:', '$0 de dinero de entrada', '$0 Pagos hasta enero de 2027', '0% de inter\u00e9s por 90 Dias', 'Un abrazo,'];
   var e = '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;background:#ffffff"><tr><td align="center">';
   e += '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="640" style="width:640px;max-width:640px;border-collapse:collapse;background:#ffffff;border:1px solid #dfe5ea;font-family:Arial,Helvetica,sans-serif;color:' + SLATE + '">';
   e += '<tr><td style="background:' + NAVY + ';padding:22px 34px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse"><tr><td style="color:#ffffff;font-size:21px;font-weight:700;letter-spacing:.4px">Linx Legal</td><td align="right" style="color:#b9c9d8;font-size:12px">' + escH(today) + '</td></tr><tr><td colspan="2" style="color:#b9c9d8;font-size:12.5px;padding-top:3px">' + (en ? 'Weekend incentive' : 'Incentivo de fin de semana') + '</td></tr></table></td></tr>';
@@ -2938,7 +2938,7 @@ function qIncBuild(L){
   e += '<p style="font-size:15px;line-height:1.6;color:' + SLATE + ';margin:16px 0 0">' + escH(lines[2]) + '</p>';
   e += '<p style="font-size:15px;line-height:1.6;color:' + SLATE + ';margin:16px 0 0">' + escH(lines[3]) + '<br>' + escH(lines[4]) + '<br>' + escH(lines[5]) + '</p>';
   e += '<p style="font-size:15px;line-height:1.6;color:' + SLATE + ';margin:16px 0 0">' + escH(lines[6]) + '</p>';
-  e += '<div style="border-top:1px solid ' + LINE + ';padding-top:16px;margin-top:20px;font-size:14px;color:' + SLATE + ';line-height:1.6"><b>Sebastian Short</b><br>Senior Case Builder<br>Linx Legal Inc.<br><span style="color:' + MUT + '">Email: sebastian.short@linxlegal.com<br>Phone: (689) 326-8754</span></div>';
+  e += '<div style="border-top:1px solid ' + LINE + ';padding-top:16px;margin-top:20px;font-size:14px;color:' + SLATE + ';line-height:1.6"><b>Sebastian Short</b><br>Senior Case Builder<br>Linx Legal Inc.<br><span style="color:' + MUT + '">sebastian.short@linxlegal.com<br>Phone: (689) 326-8754</span></div>';
   e += '</td></tr>';
   e += '</table></td></tr></table>';
   var h = '<!DOCTYPE html><html lang="' + (en ? 'en' : 'es') + '"><head><meta charset="utf-8"><title>INCENTIVO FDS \u2014 ' + escH(cur.name) + '</title></head><body style="margin:0;padding:20px 8px;background:#f2f5f6;font-family:Arial,Helvetica,sans-serif;color:#23323b;">';
