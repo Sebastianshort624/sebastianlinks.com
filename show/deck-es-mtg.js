@@ -773,52 +773,28 @@ window.DECK_TEXT_ES_MTG = {
   },
   {
    "sec": "EL CONTRATO IMPENETRABLE",
-   "kind": "text",
-   "sentences": [
-    {
-     "x": "¿Les dijeron que ese contrato de",
-     "s": 352.58,
-     "d": 3.09
-    }
-   ],
-   "panel": null,
-   "start": 352.58,
-   "dur": 3.09,
-   "img": 164
-  },
-  {
-   "sec": "EL CONTRATO IMPENETRABLE",
-   "kind": "text",
-   "sentences": [],
-   "panel": "qnums",
-   "start": 355.67,
-   "dur": 6.0,
-   "img": 164
-  },
-  {
-   "sec": "EL CONTRATO IMPENETRABLE",
    "kind": "question",
    "sentences": [
     {
-     "x": "Si les hubieran dicho la verdad, ¿habrían firmado el contrato?",
-     "s": 361.67,
-     "d": 5.15
+     "x": "¿Les dijeron que ese contrato de {{LOAN}}, a {{MMO}} al mes por {{TERM}} meses, termina costándoles {{SCHED}} — más del {{INTPCT}}% en intereses? Si les hubieran dicho la verdad, ¿habrían firmado el contrato?",
+     "s": 352.58,
+     "d": 16.1
     },
     {
      "x": "—No.",
-     "s": 366.82,
+     "s": 368.68,
      "d": 1.2,
      "beat": true
     },
     {
      "x": "Exacto.",
-     "s": 368.02,
+     "s": 369.88,
      "d": 3.87
     }
    ],
    "panel": null,
-   "start": 361.67,
-   "dur": 10.22,
+   "start": 352.58,
+   "dur": 21.17,
    "img": 164
   },
   {
@@ -828,21 +804,21 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "¿Ven el patrón?",
-     "s": 371.89,
+     "s": 373.75,
      "d": 2.57
     },
     {
      "x": "Cada \"no\" es una verdad que les ocultaron.",
-     "s": 374.46,
+     "s": 376.32,
      "d": 3.7
     },
     {
      "x": "Y cada verdad ocultada es una razón por la que ustedes no debieron firmar.",
-     "s": 378.16,
+     "s": 380.02,
      "d": 5.43
     }
    ],
-   "start": 371.89,
+   "start": 373.75,
    "dur": 11.7,
    "img": 1029
   },
@@ -853,11 +829,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Eso es exactamente lo que vamos a demostrar.",
-     "s": 383.59,
+     "s": 385.45,
      "d": 5.36
     }
    ],
-   "start": 383.59,
+   "start": 385.45,
    "dur": 5.36,
    "img": 164
   },
@@ -868,11 +844,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Ok, ahora aquí, acerca del pago de mantenimiento: ¿sabían que los pagos de mantenimiento son por siempre y que anualmente van subiendo?",
-     "s": 388.95,
+     "s": 390.81,
      "d": 9.63
     }
    ],
-   "start": 388.95,
+   "start": 390.81,
    "dur": 9.63,
    "img": 1018
   },
@@ -883,11 +859,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "¿Sabían que era hereditario?",
-     "s": 398.58,
+     "s": 400.44,
      "d": 3.34
     }
    ],
-   "start": 398.58,
+   "start": 400.44,
    "dur": 3.34,
    "img": 1036
   },
@@ -898,11 +874,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "¿Pensaron que era que podían hacer dinero, que era una oportunidad de inversión, o si era porque les pareció un buen plan vacacional?",
-     "s": 401.92,
+     "s": 403.78,
      "d": 10.04
     }
    ],
-   "start": 401.92,
+   "start": 403.78,
    "dur": 10.04,
    "img": 1039
   },
@@ -913,16 +889,16 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Ok chicos,",
-     "s": 411.96,
+     "s": 413.82,
      "d": 0.87
     },
     {
      "x": "pero en el contrato que ustedes firmaron sí dice claramente que el interés es altísimo,",
-     "s": 412.83,
+     "s": 414.69,
      "d": 6.5
     }
    ],
-   "start": 411.96,
+   "start": 413.82,
    "dur": 7.37,
    "img": 1018
   },
@@ -933,11 +909,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "dice que un tiempo compartido no se puede rentar.",
-     "s": 419.33,
+     "s": 421.19,
      "d": 3.89
     }
    ],
-   "start": 419.33,
+   "start": 421.19,
    "dur": 3.89,
    "img": 1036
   },
@@ -948,21 +924,21 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "No se puede vender,",
-     "s": 423.22,
+     "s": 425.08,
      "d": 1.44
     },
     {
      "x": "no se puede financiar,",
-     "s": 424.66,
+     "s": 426.52,
      "d": 1.44
     },
     {
      "x": "dice que el mantenimiento es anualmente por siempre y que va subiendo anualmente,",
-     "s": 426.1,
+     "s": 427.96,
      "d": 4.69
     }
    ],
-   "start": 423.22,
+   "start": 425.08,
    "dur": 7.57,
    "img": 1039
   },
@@ -973,16 +949,16 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "y dice esto y lo otro.",
-     "s": 430.79,
+     "s": 432.65,
      "d": 2.18
     },
     {
      "x": "¿Cómo fue el proceso de firma,",
-     "s": 432.97,
+     "s": 434.83,
      "d": 2.22
     }
    ],
-   "start": 430.79,
+   "start": 432.65,
    "dur": 4.4,
    "img": 1018
   },
@@ -993,11 +969,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "que ustedes no se dieron cuenta que lo que estaban firmando era diferente a lo que el vendedor les había dicho verbalmente?",
-     "s": 435.19,
+     "s": 437.05,
      "d": 8.16
     }
    ],
-   "start": 435.19,
+   "start": 437.05,
    "dur": 8.16,
    "img": 1036
   },
@@ -1008,16 +984,16 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "¿Les dieron alcohol?",
-     "s": 443.35,
+     "s": 445.21,
      "d": 2.74
     },
     {
      "x": "Ok chicos, ahora acerca del pago de mantenimiento, ¿qué información estuvieron dando?",
-     "s": 446.09,
+     "s": 447.95,
      "d": 7.11
     }
    ],
-   "start": 443.35,
+   "start": 445.21,
    "dur": 9.85,
    "img": 1039
   },
@@ -1028,16 +1004,16 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Yo imagino que ustedes, siendo compradores nuevos, no tenían conocimiento de qué era el mantenimiento.",
-     "s": 453.2,
+     "s": 455.06,
      "d": 7.49
     },
     {
      "x": "¿Qué les explicaron que serían estos pagos?",
-     "s": 460.69,
+     "s": 462.55,
      "d": 5.36
     }
    ],
-   "start": 453.2,
+   "start": 455.06,
    "dur": 12.85,
    "img": 1018
   },
@@ -1048,16 +1024,16 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Ok chicos, ahora acerca del pago de mantenimiento.",
-     "s": 466.05,
+     "s": 467.91,
      "d": 5.21
     },
     {
      "x": "Primeramente, el pago de mantenimiento es eterno, eso es una deuda.",
-     "s": 471.26,
+     "s": 473.12,
      "d": 7.3
     }
    ],
-   "start": 466.05,
+   "start": 467.91,
    "dur": 12.51,
    "img": 1036
   },
@@ -1068,11 +1044,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Eso es una conexión financiera con ese resort que durará para siempre, incluso después de que ustedes paguen su deuda de {{PAYOFF}}.",
-     "s": 478.56,
+     "s": 480.42,
      "d": 10.42
     }
    ],
-   "start": 478.56,
+   "start": 480.42,
    "dur": 10.42,
    "img": 1039
   },
@@ -1083,11 +1059,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Incluso en el mundo paralelo de que esos mantenimientos no suban — lo cual no es real,",
-     "s": 488.98,
+     "s": 490.84,
      "d": 6.19
     }
    ],
-   "start": 488.98,
+   "start": 490.84,
    "dur": 6.19,
    "img": 1018
   },
@@ -1098,21 +1074,21 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "el pago de mantenimiento sube anualmente — son una conexión financiera eterna con ellos,",
-     "s": 495.17,
+     "s": 497.03,
      "d": 5.1
     },
     {
      "x": "incluso después de pagar su deuda,",
-     "s": 500.27,
+     "s": 502.13,
      "d": 2.18
     },
     {
      "x": "y anualmente va a estar subiendo.",
-     "s": 502.45,
+     "s": 504.31,
      "d": 2.18
     }
    ],
-   "start": 495.17,
+   "start": 497.03,
    "dur": 9.46,
    "img": 1036
   },
@@ -1123,11 +1099,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Eso es el pago de mantenimiento, que es {{MFYR}}.",
-     "s": 504.63,
+     "s": 506.49,
      "d": 6.3
     }
    ],
-   "start": 504.63,
+   "start": 506.49,
    "dur": 6.3,
    "img": 1039
   },
@@ -1138,11 +1114,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "El año que viene puede ser 2,000 y de aquí a 10 años puede ser 10 mil dólares,",
-     "s": 510.93,
+     "s": 512.79,
      "d": 7.06
     }
    ],
-   "start": 510.93,
+   "start": 512.79,
    "dur": 7.06,
    "img": 1018
   },
@@ -1153,16 +1129,16 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "quién sabe,",
-     "s": 517.99,
+     "s": 519.85,
      "d": 0.78
     },
     {
      "x": "depende de cuánto le agreguen.",
-     "s": 518.77,
+     "s": 520.63,
      "d": 1.96
     }
    ],
-   "start": 517.99,
+   "start": 519.85,
    "dur": 2.74,
    "img": 1036
   },
@@ -1173,11 +1149,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Ahora, ¿sabían que era hereditario?",
-     "s": 520.73,
+     "s": 522.59,
      "d": 5.34
     }
    ],
-   "start": 520.73,
+   "start": 522.59,
    "dur": 5.34,
    "img": 1039
   },
@@ -1188,16 +1164,16 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Ok, les vendieron esta idea como un beneficio.",
-     "s": 526.07,
+     "s": 527.93,
      "d": 4.66
     },
     {
      "x": "Ahora, en realidad no es un beneficio.",
-     "s": 530.73,
+     "s": 532.59,
      "d": 4.25
     }
    ],
-   "start": 526.07,
+   "start": 527.93,
    "dur": 8.91,
    "img": 1018
   },
@@ -1208,11 +1184,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Primeramente, no es como cualquier otra herencia: con las otras, ustedes tienen la decisión, ustedes deciden si quieren pasarla o no.",
-     "s": 534.98,
+     "s": 536.84,
      "d": 9.36
     }
    ],
-   "start": 534.98,
+   "start": 536.84,
    "dur": 9.36,
    "img": 1036
   },
@@ -1223,11 +1199,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Esta herencia es obligatoria.",
-     "s": 544.34,
+     "s": 546.2,
      "d": 4.66
     }
    ],
-   "start": 544.34,
+   "start": 546.2,
    "dur": 4.66,
    "img": 1039
   },
@@ -1238,31 +1214,31 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "El día que ustedes dos mueren,",
-     "s": 549.0,
+     "s": 550.86,
      "d": 2.53
     },
     {
      "x": "ya no están,",
-     "s": 551.53,
+     "s": 553.39,
      "d": 1.26
     },
     {
      "x": "por ley de vida y naturaleza,",
-     "s": 552.79,
+     "s": 554.65,
      "d": 2.53
     },
     {
      "x": "este contrato,",
-     "s": 555.32,
+     "s": 557.18,
      "d": 0.84
     },
     {
      "x": "esta responsabilidad económica,",
-     "s": 556.16,
+     "s": 558.02,
      "d": 1.26
     }
    ],
-   "start": 549.0,
+   "start": 550.86,
    "dur": 8.42,
    "img": 1018
   },
@@ -1273,11 +1249,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "pasa a ser ahora obligación del heredero de ustedes.",
-     "s": 557.42,
+     "s": 559.28,
      "d": 3.8
     }
    ],
-   "start": 557.42,
+   "start": 559.28,
    "dur": 3.8,
    "img": 1036
   },
@@ -1288,11 +1264,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Ahora, si ustedes llegan a ser una pareja que no tiene hijos, el tiempo compartido siempre encuentra un familiar.",
-     "s": 561.22,
+     "s": 563.08,
      "d": 9.25
     }
    ],
-   "start": 561.22,
+   "start": 563.08,
    "dur": 9.25,
    "img": 1039
   },
@@ -1303,11 +1279,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Encuentra un hermano, un primo, un tío, un familiar de conexión sanguínea inmediata al cual ellos le pasan esta deuda.",
-     "s": 570.47,
+     "s": 572.33,
      "d": 8.6
     }
    ],
-   "start": 570.47,
+   "start": 572.33,
    "dur": 8.6,
    "img": 1018
   },
@@ -1318,16 +1294,16 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Y como ya les comenté, no es opcional, pasa de manera automática, obligatorio.",
-     "s": 579.07,
+     "s": 580.93,
      "d": 6.77
     },
     {
      "x": "¿Esto se lo dijeron en algún momento?",
-     "s": 585.84,
+     "s": 587.7,
      "d": 4.93
     }
    ],
-   "start": 579.07,
+   "start": 580.93,
    "dur": 11.7,
    "img": 1036
   },
@@ -1338,11 +1314,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Entonces imagínense, chicos: una propiedad que es hereditaria, de generación en generación, de aquí a 20 años.",
-     "s": 590.77,
+     "s": 592.63,
      "d": 9.29
     }
    ],
-   "start": 590.77,
+   "start": 592.63,
    "dur": 9.29,
    "img": 1039
   },
@@ -1353,11 +1329,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Ustedes suenan jóvenes, aunque suelen decir que tienen 80 años.",
-     "s": 600.06,
+     "s": 601.92,
      "d": 7.02
     }
    ],
-   "start": 600.06,
+   "start": 601.92,
    "dur": 7.02,
    "img": 1018
   },
@@ -1368,11 +1344,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "¿Cuánto van a ser esos pagos de mantenimiento?",
-     "s": 607.08,
+     "s": 608.94,
      "d": 4.04
     }
    ],
-   "start": 607.08,
+   "start": 608.94,
    "dur": 4.04,
    "img": 1036
   },
@@ -1383,11 +1359,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Incluso si ustedes pagan su deuda de {{PAYOFF}}, sus familiares van a estar heredando unos pagos de mantenimiento que van a ser horrendosos.",
-     "s": 611.12,
+     "s": 612.98,
      "d": 9.6
     }
    ],
-   "start": 611.12,
+   "start": 612.98,
    "dur": 9.6,
    "img": 1039
   },
@@ -1398,11 +1374,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "De aquí a 20 años puede que sean 20 mil dólares, o quién sabe más.",
-     "s": 620.72,
+     "s": 622.58,
      "d": 7.18
     }
    ],
-   "start": 620.72,
+   "start": 622.58,
    "dur": 7.18,
    "img": 1018
   },
@@ -1411,7 +1387,7 @@ window.DECK_TEXT_ES_MTG = {
    "kind": "break",
    "sentences": [],
    "panel": null,
-   "start": 627.9,
+   "start": 629.76,
    "dur": 2.0,
    "img": 1039
   },
@@ -1422,11 +1398,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Ok chicos, entiendo.",
-     "s": 629.9,
+     "s": 631.76,
      "d": 3.51
     }
    ],
-   "start": 629.9,
+   "start": 631.76,
    "dur": 3.51,
    "img": 1041
   },
@@ -1437,11 +1413,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Esas eran todas las preguntas que tenía, como les comenté, para asegurarme de que el caso de ustedes sí tiene, pues, las características que estamos buscando.",
-     "s": 633.41,
+     "s": 635.27,
      "d": 11.86
     }
    ],
-   "start": 633.41,
+   "start": 635.27,
    "dur": 11.86,
    "img": 1044
   },
@@ -1452,11 +1428,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Como yo les comenté al principio de la llamada,",
-     "s": 645.27,
+     "s": 647.13,
      "d": 3.34
     }
    ],
-   "start": 645.27,
+   "start": 647.13,
    "dur": 3.34,
    "img": 1041
   },
@@ -1467,11 +1443,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "estamos buscando casos a los cuales le podamos garantizar el éxito de la cancelación al 100%.",
-     "s": 648.61,
+     "s": 650.47,
      "d": 5.95
     }
    ],
-   "start": 648.61,
+   "start": 650.47,
    "dur": 5.95,
    "img": 1044
   },
@@ -1482,11 +1458,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Y como también les estuve comentando, basamos nuestros casos en las malas representaciones y en la mentira que utilizan todos los vendedores.",
-     "s": 654.56,
+     "s": 656.42,
      "d": 10.28
     }
    ],
-   "start": 654.56,
+   "start": 656.42,
    "dur": 10.28,
    "img": 1041
   },
@@ -1497,26 +1473,26 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Que el caso de ustedes,",
-     "s": 664.84,
+     "s": 666.7,
      "d": 2.12
     },
     {
      "x": "obviamente,",
-     "s": 666.96,
+     "s": 668.82,
      "d": 0.42
     },
     {
      "x": "lo podemos tomar y les podemos garantizar la cancelación al 100%,",
-     "s": 667.38,
+     "s": 669.24,
      "d": 4.66
     },
     {
      "x": "porque ustedes no sabían básicamente lo que estaban firmando,",
-     "s": 672.04,
+     "s": 673.9,
      "d": 3.81
     }
    ],
-   "start": 664.84,
+   "start": 666.7,
    "dur": 11.01,
    "img": 1044
   },
@@ -1527,16 +1503,16 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "les estuvieron mintiendo.",
-     "s": 675.85,
+     "s": 677.71,
      "d": 1.28
     },
     {
      "x": "El caso de ustedes sí califica para que nosotros los podamos ayudar.",
-     "s": 677.13,
+     "s": 678.99,
      "d": 6.7
     }
    ],
-   "start": 675.85,
+   "start": 677.71,
    "dur": 7.98,
    "img": 1041
   },
@@ -1547,21 +1523,21 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Ahora,",
-     "s": 683.83,
+     "s": 685.69,
      "d": 0.4
     },
     {
      "x": "antes de que yo pase a explicarles el proceso de cancelación y lo que podemos hacer por ustedes,",
-     "s": 684.23,
+     "s": 686.09,
      "d": 7.24
     },
     {
      "x": "qué tipo de cancelación manejamos acá,",
-     "s": 691.47,
+     "s": 693.33,
      "d": 2.41
     }
    ],
-   "start": 683.83,
+   "start": 685.69,
    "dur": 10.05,
    "img": 1044
   },
@@ -1572,11 +1548,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "¿tienen alguna pregunta o alguna duda para mí?",
-     "s": 693.88,
+     "s": 695.74,
      "d": 3.23
     }
    ],
-   "start": 693.88,
+   "start": 695.74,
    "dur": 3.23,
    "img": 1041
   },
@@ -1587,11 +1563,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "¿Tienen alguna duda acerca de lo que les estuve comentando anteriormente,",
-     "s": 697.11,
+     "s": 698.97,
      "d": 4.35
     }
    ],
-   "start": 697.11,
+   "start": 698.97,
    "dur": 4.35,
    "img": 1044
   },
@@ -1602,11 +1578,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "antes de que yo pase a explicarles el proceso de cancelación y cómo es el servicio que les podemos ofrecer?",
-     "s": 701.46,
+     "s": 703.32,
      "d": 7.9
     }
    ],
-   "start": 701.46,
+   "start": 703.32,
    "dur": 7.9,
    "img": 1041
   },
@@ -1617,11 +1593,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "¿Tienen algo más que hasta el momento no hayan mencionado y creen que tenga peso y que pueda ayudar al caso?",
-     "s": 709.36,
+     "s": 711.22,
      "d": 8.17
     }
    ],
-   "start": 709.36,
+   "start": 711.22,
    "dur": 8.17,
    "img": 1044
   },
@@ -1632,21 +1608,21 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Chicos,",
-     "s": 717.53,
+     "s": 719.39,
      "d": 0.41
     },
     {
      "x": "esas eran las preguntas que yo tenía para asegurarme de que,",
-     "s": 717.94,
+     "s": 719.8,
      "d": 4.51
     },
     {
      "x": "como ya les expliqué,",
-     "s": 722.45,
+     "s": 724.31,
      "d": 1.64
     }
    ],
-   "start": 717.53,
+   "start": 719.39,
    "dur": 6.56,
    "img": 1041
   },
@@ -1657,11 +1633,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "este caso tiene las características que buscamos para poder garantizarles la cancelación.",
-     "s": 724.09,
+     "s": 725.95,
      "d": 4.92
     }
    ],
-   "start": 724.09,
+   "start": 725.95,
    "dur": 4.92,
    "img": 1044
   },
@@ -1672,11 +1648,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Ok, les dije, la cancelación la basamos en las malas representaciones, y de esas ustedes tienen una cuenta.",
-     "s": 729.01,
+     "s": 730.87,
      "d": 9.75
     }
    ],
-   "start": 729.01,
+   "start": 730.87,
    "dur": 9.75,
    "img": 1041
   },
@@ -1687,11 +1663,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Antes de que yo pase a explicarles el servicio que podemos ofrecerles y cómo los podemos ayudar,",
-     "s": 738.76,
+     "s": 740.62,
      "d": 5.9
     }
    ],
-   "start": 738.76,
+   "start": 740.62,
    "dur": 5.9,
    "img": 1044
   },
@@ -1702,11 +1678,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "¿ustedes tienen algo más que no hayan comentado hasta el momento y piensan que tenga peso,",
-     "s": 744.66,
+     "s": 746.52,
      "d": 5.56
     }
    ],
-   "start": 744.66,
+   "start": 746.52,
    "dur": 5.56,
    "img": 1041
   },
@@ -1717,11 +1693,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "o algo que les molesta de manera particular y me quieran comentar?",
-     "s": 750.22,
+     "s": 752.08,
      "d": 4.17
     }
    ],
-   "start": 750.22,
+   "start": 752.08,
    "dur": 4.17,
    "img": 1044
   },
@@ -1732,11 +1708,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "¿Otro detalle que les haya quedado?",
-     "s": 754.39,
+     "s": 756.25,
      "d": 4.88
     }
    ],
-   "start": 754.39,
+   "start": 756.25,
    "dur": 4.88,
    "img": 1041
   },
@@ -1745,7 +1721,7 @@ window.DECK_TEXT_ES_MTG = {
    "kind": "break",
    "sentences": [],
    "panel": null,
-   "start": 759.27,
+   "start": 761.13,
    "dur": 2.0,
    "img": 1044
   },
@@ -1756,16 +1732,16 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Cancelación totalmente legítima.",
-     "s": 761.27,
+     "s": 763.13,
      "d": 3.87
     },
     {
      "x": "En Estados Unidos la única compañía que ofrece cancelaciones totalmente legítimas es nuestra compañía.",
-     "s": 765.14,
+     "s": 767.0,
      "d": 7.25
     }
    ],
-   "start": 761.27,
+   "start": 763.13,
    "dur": 11.12,
    "img": 1050
   },
@@ -1776,11 +1752,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Llevamos 17 años haciendo cancelaciones de tiempos compartidos y este es el tipo de cancelaciones que hacemos.",
-     "s": 772.39,
+     "s": 774.25,
      "d": 7.95
     }
    ],
-   "start": 772.39,
+   "start": 774.25,
    "dur": 7.95,
    "img": 1040
   },
@@ -1791,11 +1767,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Una cancelación legítima significa que retiramos la propiedad del nombre de ustedes y se la devolvemos al tiempo compartido.",
-     "s": 780.34,
+     "s": 782.2,
      "d": 9.46
     }
    ],
-   "start": 780.34,
+   "start": 782.2,
    "dur": 9.46,
    "img": 1050
   },
@@ -1806,11 +1782,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Una vez que la cancelación está completada al 100%, {{RESORT}} vuelve a ser dueño de esta propiedad.",
-     "s": 789.8,
+     "s": 791.66,
      "d": 7.54
     }
    ],
-   "start": 789.8,
+   "start": 791.66,
    "dur": 7.54,
    "img": 1040
   },
@@ -1821,11 +1797,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Obviamente, cuando esta propiedad vuelve a ser de {{RESORT}}, esa deuda que actualmente aparece en su crédito desaparece de inmediato.",
-     "s": 797.34,
+     "s": 799.2,
      "d": 10.18
     }
    ],
-   "start": 797.34,
+   "start": 799.2,
    "dur": 10.18,
    "img": 1050
   },
@@ -1836,21 +1812,21 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Cualquier conexión que hay entre ustedes,",
-     "s": 807.52,
+     "s": 809.38,
      "d": 2.49
     },
     {
      "x": "para mantenimiento,",
-     "s": 810.01,
+     "s": 811.87,
      "d": 0.83
     },
     {
      "x": "de mensualidad,",
-     "s": 810.84,
+     "s": 812.7,
      "d": 0.83
     }
    ],
-   "start": 807.52,
+   "start": 809.38,
    "dur": 4.15,
    "img": 1040
   },
@@ -1861,11 +1837,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "todo desaparece porque {{RESORT}} vuelve a ser dueño de esta propiedad y ustedes dejan de tener cualquier conexión con ellos.",
-     "s": 811.67,
+     "s": 813.53,
      "d": 8.29
     }
    ],
-   "start": 811.67,
+   "start": 813.53,
    "dur": 8.29,
    "img": 1050
   },
@@ -1876,11 +1852,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Ahora, a cada caso le asignamos un equipo de cancelación.",
-     "s": 819.96,
+     "s": 821.82,
      "d": 6.56
     }
    ],
-   "start": 819.96,
+   "start": 821.82,
    "dur": 6.56,
    "img": 1040
   },
@@ -1891,11 +1867,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Como ya les expliqué,",
-     "s": 826.52,
+     "s": 828.38,
      "d": 1.61
     }
    ],
-   "start": 826.52,
+   "start": 828.38,
    "dur": 1.61,
    "img": 1050
   },
@@ -1906,11 +1882,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "mi trabajo es elaborar el caso con el cual vamos a estar trabajando y asegurarme de que podemos garantizarles el éxito de la cancelación al 100%.",
-     "s": 828.13,
+     "s": 829.99,
      "d": 10.49
     }
    ],
-   "start": 828.13,
+   "start": 829.99,
    "dur": 10.49,
    "img": 1040
   },
@@ -1921,16 +1897,16 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Una vez que yo tengo con ustedes completado el acuerdo de servicio,",
-     "s": 838.62,
+     "s": 840.48,
      "d": 4.76
     },
     {
      "x": "el cual es un documento,",
-     "s": 843.38,
+     "s": 845.24,
      "d": 1.98
     }
    ],
-   "start": 838.62,
+   "start": 840.48,
    "dur": 6.74,
    "img": 1050
   },
@@ -1941,16 +1917,16 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "una vez firmado por ustedes y por mi representación de la compañía,",
-     "s": 845.36,
+     "s": 847.22,
      "d": 4.76
     },
     {
      "x": "nos da la potestad de representarlos legalmente.",
-     "s": 850.12,
+     "s": 851.98,
      "d": 2.79
     }
    ],
-   "start": 845.36,
+   "start": 847.22,
    "dur": 7.55,
    "img": 1040
   },
@@ -1961,11 +1937,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Una vez que yo complete este documento con ustedes,",
-     "s": 852.91,
+     "s": 854.77,
      "d": 3.24
     }
    ],
-   "start": 852.91,
+   "start": 854.77,
    "dur": 3.24,
    "img": 1050
   },
@@ -1976,11 +1952,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "yo lo envío al departamento de administración de la compañía y ahí se les asigna un case manager.",
-     "s": 856.15,
+     "s": 858.01,
      "d": 6.48
     }
    ],
-   "start": 856.15,
+   "start": 858.01,
    "dur": 6.48,
    "img": 1040
   },
@@ -1991,11 +1967,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Este case manager se comunicará con ustedes mañana mismo y les explica cómo será el inicio del proceso de cancelación.",
-     "s": 862.63,
+     "s": 864.49,
      "d": 9.37
     }
    ],
-   "start": 862.63,
+   "start": 864.49,
    "dur": 9.37,
    "img": 1050
   },
@@ -2006,26 +1982,26 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Ahora,",
-     "s": 872.0,
+     "s": 873.86,
      "d": 0.37
     },
     {
      "x": "su case manager,",
-     "s": 872.37,
+     "s": 874.23,
      "d": 1.11
     },
     {
      "x": "cuando se comunique con ustedes mañana,",
-     "s": 873.48,
+     "s": 875.34,
      "d": 2.22
     },
     {
      "x": "les va a pedir lo único que necesitamos de parte de ustedes para iniciar el proceso,",
-     "s": 875.7,
+     "s": 877.56,
      "d": 5.93
     }
    ],
-   "start": 872.0,
+   "start": 873.86,
    "dur": 9.63,
    "img": 1040
   },
@@ -2036,11 +2012,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "y es que escriban una carta de explicación.",
-     "s": 881.63,
+     "s": 883.49,
      "d": 2.97
     }
    ],
-   "start": 881.63,
+   "start": 883.49,
    "dur": 2.97,
    "img": 1050
   },
@@ -2051,11 +2027,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Cuando ustedes envían a su case manager vía email la carta explicativa, nosotros podemos iniciar el proceso de cancelación de inmediato.",
-     "s": 884.6,
+     "s": 886.46,
      "d": 10.11
     }
    ],
-   "start": 884.6,
+   "start": 886.46,
    "dur": 10.11,
    "img": 1040
   },
@@ -2066,11 +2042,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Ahora, no se demoren escribiendo esta carta pensando que tiene que verse profesional, nosotros nos encargamos de esos detalles.",
-     "s": 894.71,
+     "s": 896.57,
      "d": 8.84
     }
    ],
-   "start": 894.71,
+   "start": 896.57,
    "dur": 8.84,
    "img": 1050
   },
@@ -2081,21 +2057,21 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Nosotros lo único que queremos es que escriban con sus palabras,",
-     "s": 903.55,
+     "s": 905.41,
      "d": 4.52
     },
     {
      "x": "con sus expresiones,",
-     "s": 908.07,
+     "s": 909.93,
      "d": 1.23
     },
     {
      "x": "con su punto de vista,",
-     "s": 909.3,
+     "s": 911.16,
      "d": 2.05
     }
    ],
-   "start": 903.55,
+   "start": 905.41,
    "dur": 7.8,
    "img": 1040
   },
@@ -2106,16 +2082,16 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "cuál fue la experiencia que ustedes han tenido,",
-     "s": 911.35,
+     "s": 913.21,
      "d": 3.29
     },
     {
      "x": "por qué están descontentos y están buscando una cancelación.",
-     "s": 914.64,
+     "s": 916.5,
      "d": 3.7
     }
    ],
-   "start": 911.35,
+   "start": 913.21,
    "dur": 6.99,
    "img": 1050
   },
@@ -2126,11 +2102,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Una vez que la cancelación está completada al 100%,",
-     "s": 918.34,
+     "s": 920.2,
      "d": 3.47
     }
    ],
-   "start": 918.34,
+   "start": 920.2,
    "dur": 3.47,
    "img": 1040
   },
@@ -2141,11 +2117,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "el tiempo compartido emite una notificación de cancelación en la cual ellos admiten que la venta fue fraudulenta y por esto ellos entienden que ya no debe haber ninguna conexión entre ustedes.",
-     "s": 921.81,
+     "s": 923.67,
      "d": 12.35
     }
    ],
-   "start": 921.81,
+   "start": 923.67,
    "dur": 12.35,
    "img": 1050
   },
@@ -2156,11 +2132,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Una vez que de su crédito desaparece la deuda y ustedes tienen esta notificación de cancelación de parte del tiempo compartido,",
-     "s": 934.16,
+     "s": 936.02,
      "d": 9.2
     }
    ],
-   "start": 934.16,
+   "start": 936.02,
    "dur": 9.2,
    "img": 1040
   },
@@ -2171,11 +2147,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "damos por completado el proceso de cancelación.",
-     "s": 943.36,
+     "s": 945.22,
      "d": 3.07
     }
    ],
-   "start": 943.36,
+   "start": 945.22,
    "dur": 3.07,
    "img": 1050
   },
@@ -2186,11 +2162,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Ahora, aparte de la cancelación que está garantizada al 100%, también queremos conseguir un reembolso del dinero que ustedes han perdido.",
-     "s": 946.43,
+     "s": 948.29,
      "d": 9.51
     }
    ],
-   "start": 946.43,
+   "start": 948.29,
    "dur": 9.51,
    "img": 1060
   },
@@ -2201,11 +2177,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Ahora acá siempre me gusta ser 100% claro,",
-     "s": 955.94,
+     "s": 957.8,
      "d": 3.18
     }
    ],
-   "start": 955.94,
+   "start": 957.8,
    "dur": 3.18,
    "img": 1029
   },
@@ -2216,11 +2192,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "me gusta ser transparente para que mis clientes no tengan ningún tipo de dudas o no tengan sus expectativas puestas en el lugar incorrecto.",
-     "s": 959.12,
+     "s": 960.98,
      "d": 9.55
     }
    ],
-   "start": 959.12,
+   "start": 960.98,
    "dur": 9.55,
    "img": 1060
   },
@@ -2231,16 +2207,16 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "La cancelación se garantiza al 100%; el reembolso no se puede garantizar al 100%.",
-     "s": 968.67,
+     "s": 970.53,
      "d": 7.32
     },
     {
      "x": "El reembolso depende mucho de cómo va el proceso de cancelación.",
-     "s": 975.99,
+     "s": 977.85,
      "d": 5.19
     }
    ],
-   "start": 968.67,
+   "start": 970.53,
    "dur": 12.51,
    "img": 1029
   },
@@ -2251,11 +2227,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "En algunos casos se consigue un reembolso total del dinero que ustedes han perdido y en otros casos sólo una parte del reembolso;",
-     "s": 981.18,
+     "s": 983.04,
      "d": 9.09
     }
    ],
-   "start": 981.18,
+   "start": 983.04,
    "dur": 9.09,
    "img": 1060
   },
@@ -2266,11 +2242,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "depende de cómo va el proceso.",
-     "s": 990.27,
+     "s": 992.13,
      "d": 2.37
     }
    ],
-   "start": 990.27,
+   "start": 992.13,
    "dur": 2.37,
    "img": 1029
   },
@@ -2281,11 +2257,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Ahora la mayor garantía que nuestros clientes tienen es que si nosotros no ganamos su caso hacemos una devolución total de su inversión.",
-     "s": 992.64,
+     "s": 994.5,
      "d": 8.48
     }
    ],
-   "start": 992.64,
+   "start": 994.5,
    "dur": 8.48,
    "img": 1060
   },
@@ -2296,11 +2272,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Ahora les digo, para que tengan en cuenta: en 17 años de experiencia, esto nunca ha sucedido.",
-     "s": 1001.12,
+     "s": 1002.98,
      "d": 9.37
     }
    ],
-   "start": 1001.12,
+   "start": 1002.98,
    "dur": 9.37,
    "img": 1029
   },
@@ -2311,11 +2287,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Nosotros nunca hemos tomado un caso en el cual no hayamos podido ganar y tengamos que hacer un reembolso.",
-     "s": 1010.49,
+     "s": 1012.35,
      "d": 6.75
     }
    ],
-   "start": 1010.49,
+   "start": 1012.35,
    "dur": 6.75,
    "img": 1060
   },
@@ -2326,11 +2302,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Esto simplemente es una garantía que ofrecemos para que ustedes vean que no tienen nada que perder,",
-     "s": 1017.24,
+     "s": 1019.1,
      "d": 6.61
     }
    ],
-   "start": 1017.24,
+   "start": 1019.1,
    "dur": 6.61,
    "img": 1029
   },
@@ -2341,11 +2317,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "que nosotros tomamos todo el riesgo y que sabemos el servicio que les estamos ofreciendo.",
-     "s": 1023.85,
+     "s": 1025.71,
      "d": 5.83
     }
    ],
-   "start": 1023.85,
+   "start": 1025.71,
    "dur": 5.83,
    "img": 1060
   },
@@ -2356,11 +2332,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "¿Tienen alguna duda, alguna pregunta?",
-     "s": 1029.68,
+     "s": 1031.54,
      "d": 5.17
     }
    ],
-   "start": 1029.68,
+   "start": 1031.54,
    "dur": 5.17,
    "img": 1029
   },
@@ -2371,11 +2347,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Tomen un papel y un lápiz, porque necesito que escriban unos números — y que me digan si alguna vez les mostraron esto.",
-     "s": 1034.85,
+     "s": 1036.71,
      "d": 8.12
     }
    ],
-   "start": 1034.85,
+   "start": 1036.71,
    "dur": 8.12,
    "img": 1039
   },
@@ -2386,11 +2362,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Cuando ustedes compran una casa, por ley tienen que mostrarles la tabla de amortización.",
-     "s": 1042.97,
+     "s": 1044.83,
      "d": 6.41
     }
    ],
-   "start": 1042.97,
+   "start": 1044.83,
    "dur": 6.41,
    "img": 1016
   },
@@ -2401,11 +2377,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Yo también soy Loan Officer licenciado,",
-     "s": 1049.38,
+     "s": 1051.24,
      "d": 2.05
     }
    ],
-   "start": 1049.38,
+   "start": 1051.24,
    "dur": 2.05,
    "img": 1039
   },
@@ -2416,11 +2392,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "y cada vez que vendo una casa estoy obligado a mostrar esa tabla — porque esa tabla dice el costo verdadero de ser dueño de la propiedad.",
-     "s": 1051.43,
+     "s": 1053.29,
      "d": 9.23
     }
    ],
-   "start": 1051.43,
+   "start": 1053.29,
    "dur": 9.23,
    "img": 1016
   },
@@ -2431,16 +2407,16 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Y esto también es una propiedad de bienes raíces.",
-     "s": 1060.66,
+     "s": 1062.52,
      "d": 4.54
     },
     {
      "x": "Y ustedes también entraron en una hipoteca.",
-     "s": 1065.2,
+     "s": 1067.06,
      "d": 4.06
     }
    ],
-   "start": 1060.66,
+   "start": 1062.52,
    "dur": 8.6,
    "img": 1039
   },
@@ -2451,11 +2427,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Así que a ustedes también tenían que mostrarles — o escribirles en un papel, o enseñarles en una tableta — un par de números.",
-     "s": 1069.26,
+     "s": 1071.12,
      "d": 8.69
     }
    ],
-   "start": 1069.26,
+   "start": 1071.12,
    "dur": 8.69,
    "img": 1016
   },
@@ -2466,11 +2442,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Escriban estos números: 3, 5, 10, 20.",
-     "s": 1077.95,
+     "s": 1079.81,
      "d": 5.79
     }
    ],
-   "start": 1077.95,
+   "start": 1079.81,
    "dur": 5.79,
    "img": 1039
   },
@@ -2481,11 +2457,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Esta columna representa años — años contando desde hoy.",
-     "s": 1083.74,
+     "s": 1085.6,
      "d": 5.0
     }
    ],
-   "start": 1083.74,
+   "start": 1085.6,
    "dur": 5.0,
    "img": 1016
   },
@@ -2496,11 +2472,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Al lado del 3 — tres años desde hoy — escriban esta cantidad: {{T3}}.",
-     "s": 1088.74,
+     "s": 1090.6,
      "d": 6.72
     }
    ],
-   "start": 1088.74,
+   "start": 1090.6,
    "dur": 6.72,
    "img": 1039
   },
@@ -2511,16 +2487,16 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Al lado del 5 — cinco años desde hoy — escriban esta cantidad: {{T5}}.",
-     "s": 1095.46,
+     "s": 1097.32,
      "d": 6.96
     },
     {
      "x": "Al lado del 10 — diez años — escriban: {{T10}}.",
-     "s": 1102.42,
+     "s": 1104.28,
      "d": 5.57
     }
    ],
-   "start": 1095.46,
+   "start": 1097.32,
    "dur": 12.53,
    "img": 1016
   },
@@ -2531,11 +2507,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Y al lado del 20 — veinte años — escriban: {{T20}}.",
-     "s": 1107.99,
+     "s": 1109.85,
      "d": 5.76
     }
    ],
-   "start": 1107.99,
+   "start": 1109.85,
    "dur": 5.76,
    "img": 1039
   },
@@ -2546,21 +2522,21 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Ahora díganme: ¿recuerdan haber visto estos números?",
-     "s": 1113.75,
+     "s": 1115.61,
      "d": 4.92
     },
     {
      "x": "Porque esto es el costo verdadero.",
-     "s": 1118.67,
+     "s": 1120.53,
      "d": 3.75
     },
     {
      "x": "Por ley, ellos tenían que mostrarles el monto total de su obligación contractual.",
-     "s": 1122.42,
+     "s": 1124.28,
      "d": 6.03
     }
    ],
-   "start": 1113.75,
+   "start": 1115.61,
    "dur": 14.7,
    "img": 1016
   },
@@ -2571,11 +2547,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Y si no lo hicieron,",
-     "s": 1128.45,
+     "s": 1130.31,
      "d": 1.87
     }
    ],
-   "start": 1128.45,
+   "start": 1130.31,
    "dur": 1.87,
    "img": 1039
   },
@@ -2586,11 +2562,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "violaron su derecho a estar informados — el derecho que dice que usted tiene que recibir información suficiente antes de entrar en un contrato a largo plazo.",
-     "s": 1130.32,
+     "s": 1132.18,
      "d": 10.07
     }
    ],
-   "start": 1130.32,
+   "start": 1132.18,
    "dur": 10.07,
    "img": 1016
   },
@@ -2601,11 +2577,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Bueno, señores, para hacer una cancelación completa y eliminar toda su titularidad como propietarios, vamos a revisar los números.",
-     "s": 1140.39,
+     "s": 1142.25,
      "d": 9.68
     }
    ],
-   "start": 1140.39,
+   "start": 1142.25,
    "dur": 9.68,
    "img": 1039
   },
@@ -2616,21 +2592,21 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Lo primero que quiero que anoten es: AHORRO TOTAL: {{SAVE20}}.",
-     "s": 1150.07,
+     "s": 1151.93,
      "d": 5.76
     },
     {
      "x": "Ese es su ahorro total.",
-     "s": 1155.83,
+     "s": 1157.69,
      "d": 3.2
     },
     {
      "x": "Y ahora escriban: INVERSIÓN TOTAL: {{PRICE}}.",
-     "s": 1159.03,
+     "s": 1160.89,
      "d": 4.95
     }
    ],
-   "start": 1150.07,
+   "start": 1151.93,
    "dur": 13.91,
    "img": 1016
   },
@@ -2641,11 +2617,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "La inversión por la cancelación completa y legítima de su deuda, y la posible recuperación del dinero que han perdido, sería de tanto.",
-     "s": 1163.98,
+     "s": 1165.84,
      "d": 8.86
     }
    ],
-   "start": 1163.98,
+   "start": 1165.84,
    "dur": 8.86,
    "img": 1039
   },
@@ -2656,16 +2632,16 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Avísenme cuando lo tengan anotado.",
-     "s": 1172.84,
+     "s": 1174.7,
      "d": 3.65
     },
     {
      "x": "Perfecto.",
-     "s": 1176.49,
+     "s": 1178.35,
      "d": 2.57
     }
    ],
-   "start": 1172.84,
+   "start": 1174.7,
    "dur": 6.22,
    "img": 1016
   },
@@ -2676,21 +2652,21 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Ahora quiero aclararles algunas cosas.",
-     "s": 1179.06,
+     "s": 1180.92,
      "d": 3.96
     },
     {
      "x": "Primero,",
-     "s": 1183.02,
+     "s": 1184.88,
      "d": 0.44
     },
     {
      "x": "esa inversión es completa: es el número final e incluye los gastos administrativos,",
-     "s": 1183.46,
+     "s": 1185.32,
      "d": 5.76
     }
    ],
-   "start": 1179.06,
+   "start": 1180.92,
    "dur": 10.16,
    "img": 1039
   },
@@ -2701,16 +2677,16 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "los costos de presentación de documentos,",
-     "s": 1189.22,
+     "s": 1191.08,
      "d": 2.66
     },
     {
      "x": "las horas de trabajo y absolutamente todo.",
-     "s": 1191.88,
+     "s": 1193.74,
      "d": 3.1
     }
    ],
-   "start": 1189.22,
+   "start": 1191.08,
    "dur": 5.76,
    "img": 1016
   },
@@ -2721,11 +2697,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Esta no es una situación en la que empezamos a trabajar en su caso y después descubrimos que resulta más costoso de lo que habíamos calculado.",
-     "s": 1194.98,
+     "s": 1196.84,
      "d": 8.43
     }
    ],
-   "start": 1194.98,
+   "start": 1196.84,
    "dur": 8.43,
    "img": 1039
   },
@@ -2736,11 +2712,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "No vamos a regresar a decirles: señores, resulta que esto cuesta más de lo que pensábamos.",
-     "s": 1203.41,
+     "s": 1205.27,
      "d": 7.37
     }
    ],
-   "start": 1203.41,
+   "start": 1205.27,
    "dur": 7.37,
    "img": 1016
   },
@@ -2751,16 +2727,16 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Esa es la inversión completa para una cancelación completa.",
-     "s": 1210.78,
+     "s": 1212.64,
      "d": 4.83
     },
     {
      "x": "No vamos a comunicarnos con ustedes por ni un centavo más.",
-     "s": 1215.61,
+     "s": 1217.47,
      "d": 5.14
     }
    ],
-   "start": 1210.78,
+   "start": 1212.64,
    "dur": 9.97,
    "img": 1039
   },
@@ -2771,11 +2747,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Además, el servicio está respaldado por una política de devolución del 100% de su dinero.",
-     "s": 1220.75,
+     "s": 1222.61,
      "d": 7.3
     }
    ],
-   "start": 1220.75,
+   "start": 1222.61,
    "dur": 7.3,
    "img": 1016
   },
@@ -2786,21 +2762,21 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Y nuevamente, eso está por escrito.",
-     "s": 1228.05,
+     "s": 1229.91,
      "d": 3.87
     },
     {
      "x": "No hay condiciones ocultas.",
-     "s": 1231.92,
+     "s": 1233.78,
      "d": 3.39
     },
     {
      "x": "Esta garantía existe para quitarles el riesgo si por alguna razón no ganamos.",
-     "s": 1235.31,
+     "s": 1237.17,
      "d": 5.86
     }
    ],
-   "start": 1228.05,
+   "start": 1229.91,
    "dur": 13.12,
    "img": 1039
   },
@@ -2811,16 +2787,16 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "No existe ningún riesgo para ustedes.",
-     "s": 1241.17,
+     "s": 1243.03,
      "d": 4.04
     },
     {
      "x": "Les devolvemos cada centavo de su inversión.",
-     "s": 1245.21,
+     "s": 1247.07,
      "d": 5.36
     }
    ],
-   "start": 1241.17,
+   "start": 1243.03,
    "dur": 9.4,
    "img": 1016
   },
@@ -2831,21 +2807,21 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Ok chicos,",
-     "s": 1250.57,
+     "s": 1252.43,
      "d": 0.75
     },
     {
      "x": "lo primero que me viene a la mente,",
-     "s": 1251.32,
+     "s": 1253.18,
      "d": 3.0
     },
     {
      "x": "mirando lo que ustedes pagan entre mantenimiento y mensualidad,",
-     "s": 1254.32,
+     "s": 1256.18,
      "d": 3.38
     }
    ],
-   "start": 1250.57,
+   "start": 1252.43,
    "dur": 7.13,
    "img": 1016
   },
@@ -2856,16 +2832,16 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "es que en 10 años ustedes van a terminar pagando {{T10}}.",
-     "s": 1257.7,
+     "s": 1259.56,
      "d": 4.13
     },
     {
      "x": "Esto significa que ustedes estarán pagando un interés superior al 80%.",
-     "s": 1261.83,
+     "s": 1263.69,
      "d": 7.5
     }
    ],
-   "start": 1257.7,
+   "start": 1259.56,
    "dur": 11.63,
    "img": 1060
   },
@@ -2876,16 +2852,16 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Mi pregunta es la siguiente: en el momento de la compra,",
-     "s": 1269.33,
+     "s": 1271.19,
      "d": 4.43
     },
     {
      "x": "¿el vendedor les dijo a ustedes que ese costo de interés sería tan alto,",
-     "s": 1273.76,
+     "s": 1275.62,
      "d": 5.64
     }
    ],
-   "start": 1269.33,
+   "start": 1271.19,
    "dur": 10.07,
    "img": 1016
   },
@@ -2896,11 +2872,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "que ustedes en 10 años terminarían pagando {{T10}}?",
-     "s": 1279.4,
+     "s": 1281.26,
      "d": 3.23
     }
    ],
-   "start": 1279.4,
+   "start": 1281.26,
    "dur": 3.23,
    "img": 1060
   },
@@ -2911,11 +2887,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Si no tienen más preguntas, les puedo explicar las tres diferentes maneras en que los clientes hacen esta inversión.",
-     "s": 1282.63,
+     "s": 1284.49,
      "d": 8.89
     }
    ],
-   "start": 1282.63,
+   "start": 1284.49,
    "dur": 8.89,
    "img": 1041
   },
@@ -2926,21 +2902,21 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "En cuanto a las maneras de hacer esta inversión,",
-     "s": 1291.52,
+     "s": 1293.38,
      "d": 3.68
     },
     {
      "x": "obviamente,",
-     "s": 1295.2,
+     "s": 1297.06,
      "d": 0.41
     },
     {
      "x": "tenemos clientes que pueden hacer la inversión completa con una tarjeta de crédito,",
-     "s": 1295.61,
+     "s": 1297.47,
      "d": 5.32
     }
    ],
-   "start": 1291.52,
+   "start": 1293.38,
    "dur": 9.41,
    "img": 1047
   },
@@ -2951,16 +2927,16 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "o una tarjeta de débito,",
-     "s": 1300.93,
+     "s": 1302.79,
      "d": 2.05
     },
     {
      "x": "o con ahorros.",
-     "s": 1302.98,
+     "s": 1304.84,
      "d": 1.22
     }
    ],
-   "start": 1300.93,
+   "start": 1302.79,
    "dur": 3.27,
    "img": 1054
   },
@@ -2971,16 +2947,16 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Hay clientes que necesitan un poco más de asistencia financiera.",
-     "s": 1304.2,
+     "s": 1306.06,
      "d": 5.04
     },
     {
      "x": "¿Ustedes en qué posición se sienten?",
-     "s": 1309.24,
+     "s": 1311.1,
      "d": 3.65
     }
    ],
-   "start": 1304.2,
+   "start": 1306.06,
    "dur": 8.69,
    "img": 1047
   },
@@ -2991,11 +2967,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "¿Ustedes tienen algún método de pago con el cual podrían cubrir esta inversión completa?",
-     "s": 1312.89,
+     "s": 1314.75,
      "d": 7.52
     }
    ],
-   "start": 1312.89,
+   "start": 1314.75,
    "dur": 7.52,
    "img": 1054
   },
@@ -3006,16 +2982,16 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Podemos ofrecerles una financiación.",
-     "s": 1320.41,
+     "s": 1322.27,
      "d": 3.77
     },
     {
      "x": "Llevamos años trabajando con una financiera.",
-     "s": 1324.18,
+     "s": 1326.04,
      "d": 5.53
     }
    ],
-   "start": 1320.41,
+   "start": 1322.27,
    "dur": 9.3,
    "img": 1047
   },
@@ -3026,21 +3002,21 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Llevamos años trabajando con una financiera,",
-     "s": 1329.71,
+     "s": 1331.57,
      "d": 2.3
     },
     {
      "x": "y así es que hacemos una aplicación,",
-     "s": 1332.01,
+     "s": 1333.87,
      "d": 2.68
     },
     {
      "x": "y si la aceptan,",
-     "s": 1334.69,
+     "s": 1336.55,
      "d": 1.53
     }
    ],
-   "start": 1329.71,
+   "start": 1331.57,
    "dur": 6.51,
    "img": 1054
   },
@@ -3051,11 +3027,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "las mensualidades de la inversión pueden llegar a ser hasta de 36 meses.",
-     "s": 1336.22,
+     "s": 1338.08,
      "d": 4.97
     }
    ],
-   "start": 1336.22,
+   "start": 1338.08,
    "dur": 4.97,
    "img": 1047
   },
@@ -3066,11 +3042,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Ahora, si ustedes quieren más tiempo o menos tiempo, obviamente sería más o menos mensualidad.",
-     "s": 1341.19,
+     "s": 1343.05,
      "d": 8.58
     }
    ],
-   "start": 1341.19,
+   "start": 1343.05,
    "dur": 8.58,
    "img": 1054
   },
@@ -3081,16 +3057,16 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Por 36 meses sería tanto.",
-     "s": 1349.77,
+     "s": 1351.63,
      "d": 3.68
     },
     {
      "x": "¿Qué les parece?",
-     "s": 1353.45,
+     "s": 1355.31,
      "d": 3.97
     }
    ],
-   "start": 1349.77,
+   "start": 1351.63,
    "dur": 7.65,
    "img": 1047
   },
@@ -3101,21 +3077,21 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Perfecto.",
-     "s": 1357.42,
+     "s": 1359.28,
      "d": 0.52
     },
     {
      "x": "Ahora, esto es un préstamo financiero,",
-     "s": 1357.94,
+     "s": 1359.8,
      "d": 3.09
     },
     {
      "x": "así que les van a pedir identificación,",
-     "s": 1361.03,
+     "s": 1362.89,
      "d": 3.61
     }
    ],
-   "start": 1357.42,
+   "start": 1359.28,
    "dur": 7.22,
    "img": 1054
   },
@@ -3126,16 +3102,16 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "documentación,",
-     "s": 1364.64,
+     "s": 1366.5,
      "d": 0.52
     },
     {
      "x": "información de trabajo y de residencia — las preguntas típicas de una solicitud financiera.",
-     "s": 1365.16,
+     "s": 1367.02,
      "d": 7.22
     }
    ],
-   "start": 1364.64,
+   "start": 1366.5,
    "dur": 7.74,
    "img": 1047
   },
@@ -3146,11 +3122,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Chicos, si necesitan hablarlo, algo que siempre recomiendo es que me pongan en silencio y lo debatan entre ustedes.",
-     "s": 1372.38,
+     "s": 1374.24,
      "d": 9.42
     }
    ],
-   "start": 1372.38,
+   "start": 1374.24,
    "dur": 9.42,
    "img": 1054
   },
@@ -3161,11 +3137,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Ya que yo estoy acá en la llamada, cualquier pregunta que surja yo la puedo responder.",
-     "s": 1381.8,
+     "s": 1383.66,
      "d": 7.5
     }
    ],
-   "start": 1381.8,
+   "start": 1383.66,
    "dur": 7.5,
    "img": 1047
   },
@@ -3176,11 +3152,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "La primera mensualidad de la inversión no se hace hasta el mes que viene.",
-     "s": 1389.3,
+     "s": 1391.16,
      "d": 6.44
     }
    ],
-   "start": 1389.3,
+   "start": 1391.16,
    "dur": 6.44,
    "img": 1054
   },
@@ -3191,11 +3167,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Una vez iniciado el proceso de cancelación, nuestros clientes no tienen la obligación de continuar con los pagos al tiempo compartido.",
-     "s": 1395.74,
+     "s": 1397.6,
      "d": 8.48
     }
    ],
-   "start": 1395.74,
+   "start": 1397.6,
    "dur": 8.48,
    "img": 1015
   },
@@ -3206,11 +3182,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Nosotros vamos a ganar la cancelación, nosotros garantizamos el éxito de la cancelación, independientemente de si usted continúa o descontinúa sus pagos al tiempo compartido.",
-     "s": 1404.22,
+     "s": 1406.08,
      "d": 12.78
     }
    ],
-   "start": 1404.22,
+   "start": 1406.08,
    "dur": 12.78,
    "img": 1015
   },
@@ -3221,11 +3197,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Si nosotros iniciamos el proceso y les hace sentido financieramente descontinuar estos pagos, pueden descontinuarse, no afectan en absoluto la cancelación.",
-     "s": 1417.0,
+     "s": 1418.86,
      "d": 10.3
     }
    ],
-   "start": 1417.0,
+   "start": 1418.86,
    "dur": 10.3,
    "img": 1015
   },
@@ -3236,11 +3212,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Yo no les dije que dejaran de pagar.",
-     "s": 1427.3,
+     "s": 1429.16,
      "d": 4.95
     }
    ],
-   "start": 1427.3,
+   "start": 1429.16,
    "dur": 4.95,
    "img": 1015
   },
@@ -3251,11 +3227,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Ok, no tenemos una varita mágica que durante el proceso de cancelación pueda garantizar al 100% que ellos no vayan a tocar su crédito.",
-     "s": 1432.25,
+     "s": 1434.11,
      "d": 9.2
     }
    ],
-   "start": 1432.25,
+   "start": 1434.11,
    "dur": 9.2,
    "img": 1048
   },
@@ -3266,11 +3242,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Lo que sí les puedo decir es que,",
-     "s": 1441.45,
+     "s": 1443.31,
      "d": 2.87
     }
    ],
-   "start": 1441.45,
+   "start": 1443.31,
    "dur": 2.87,
    "img": 1048
   },
@@ -3281,11 +3257,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "una vez que la cancelación está completada al 100% y el tiempo compartido emite la notificación de cancelación a ustedes,",
-     "s": 1444.32,
+     "s": 1446.18,
      "d": 7.17
     }
    ],
-   "start": 1444.32,
+   "start": 1446.18,
    "dur": 7.17,
    "img": 1048
   },
@@ -3296,11 +3272,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "en ese momento se puede eliminar el daño que el tiempo compartido ha estado haciendo en su crédito.",
-     "s": 1451.49,
+     "s": 1453.35,
      "d": 6.46
     }
    ],
-   "start": 1451.49,
+   "start": 1453.35,
    "dur": 6.46,
    "img": 1048
   },
@@ -3311,11 +3287,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Se puede eliminar parte del daño que el tiempo compartido ha estado haciendo en su crédito.",
-     "s": 1457.95,
+     "s": 1459.81,
      "d": 6.29
     }
    ],
-   "start": 1457.95,
+   "start": 1459.81,
    "dur": 6.29,
    "img": 1048
   },
@@ -3326,11 +3302,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Pero no durante el proceso de cancelación: no se puede garantizar que no vayan a afectar su crédito.",
-     "s": 1464.24,
+     "s": 1466.1,
      "d": 6.96
     }
    ],
-   "start": 1464.24,
+   "start": 1466.1,
    "dur": 6.96,
    "img": 1048
   },
@@ -3341,11 +3317,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Después de que termine, se puede eliminar el daño.",
-     "s": 1471.2,
+     "s": 1473.06,
      "d": 5.84
     }
    ],
-   "start": 1471.2,
+   "start": 1473.06,
    "dur": 5.84,
    "img": 1048
   },
@@ -3356,11 +3332,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Una vez completado el proceso de cancelación al 100%, se puede eliminar el daño que el tiempo compartido ha hecho en su crédito.",
-     "s": 1477.04,
+     "s": 1478.9,
      "d": 10.02
     }
    ],
-   "start": 1477.04,
+   "start": 1478.9,
    "dur": 10.02,
    "img": 1048
   },
@@ -3369,7 +3345,7 @@ window.DECK_TEXT_ES_MTG = {
    "kind": "break",
    "sentences": [],
    "panel": null,
-   "start": 1487.06,
+   "start": 1488.92,
    "dur": 2.0,
    "img": 1048
   },
@@ -3380,21 +3356,21 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Chicos,",
-     "s": 1489.06,
+     "s": 1490.92,
      "d": 0.36
     },
     {
      "x": "lo que iniciaremos el proceso sería el día de hoy,",
-     "s": 1489.42,
+     "s": 1491.28,
      "d": 3.56
     },
     {
      "x": "y sí es ideal iniciar el proceso lo antes posible,",
-     "s": 1492.98,
+     "s": 1494.84,
      "d": 3.56
     }
    ],
-   "start": 1489.06,
+   "start": 1490.92,
    "dur": 7.48,
    "img": 1015
   },
@@ -3405,11 +3381,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "ya que el día de hoy es que nosotros les podemos ofrecer el servicio que yo les he explicado.",
-     "s": 1496.54,
+     "s": 1498.4,
      "d": 6.74
     }
    ],
-   "start": 1496.54,
+   "start": 1498.4,
    "dur": 6.74,
    "img": 1015
   },
@@ -3420,16 +3396,16 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Cuando ustedes regresen, cómo podrá ser el servicio que les podemos ofrecer, no lo sé.",
-     "s": 1503.28,
+     "s": 1505.14,
      "d": 6.63
     },
     {
      "x": "Pero como les digo,",
-     "s": 1509.91,
+     "s": 1511.77,
      "d": 1.67
     }
    ],
-   "start": 1503.28,
+   "start": 1505.14,
    "dur": 8.3,
    "img": 1015
   },
@@ -3440,16 +3416,16 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "las maneras de hacer la inversión son bastante flexibles: la primera mensualidad de la inversión sería hasta el mes que viene,",
-     "s": 1511.58,
+     "s": 1513.44,
      "d": 8.75
     },
     {
      "x": "sin embargo,",
-     "s": 1520.33,
+     "s": 1522.19,
      "d": 0.83
     }
    ],
-   "start": 1511.58,
+   "start": 1513.44,
    "dur": 9.58,
    "img": 1015
   },
@@ -3460,11 +3436,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "nosotros iniciamos el proceso de cancelación de inmediato.",
-     "s": 1521.16,
+     "s": 1523.02,
      "d": 3.33
     }
    ],
-   "start": 1521.16,
+   "start": 1523.02,
    "dur": 3.33,
    "img": 1015
   },
@@ -3473,7 +3449,7 @@ window.DECK_TEXT_ES_MTG = {
    "kind": "break",
    "sentences": [],
    "panel": null,
-   "start": 1524.49,
+   "start": 1526.35,
    "dur": 2.0,
    "img": 1015
   },
@@ -3484,11 +3460,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Lo agendamos para otro día, o dentro de dos días cuando más.",
-     "s": 1526.49,
+     "s": 1528.35,
      "d": 4.54
     }
    ],
-   "start": 1526.49,
+   "start": 1528.35,
    "dur": 4.51,
    "img": 1015
   },
@@ -3499,11 +3475,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Perfecto, eligieron financiarlo. Ahora vamos a llenar la solicitud de financiamiento juntos, paso a paso, y yo los voy guiando en cada pregunta.",
-     "s": 1531.0,
+     "s": 1532.86,
      "d": 11.85
     }
    ],
-   "start": 1531.0,
+   "start": 1532.86,
    "dur": 11.85,
    "img": 1015
   },
@@ -3514,11 +3490,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Primero, los datos personales de cada uno: nombre completo, fecha de nacimiento y número de seguro social.",
-     "s": 1542.85,
+     "s": 1544.71,
      "d": 8.76
     }
    ],
-   "start": 1542.85,
+   "start": 1544.71,
    "dur": 8.76,
    "img": 1015
   },
@@ -3529,11 +3505,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Tengan a la mano una identificación con foto de cada uno.",
-     "s": 1551.61,
+     "s": 1553.47,
      "d": 5.67
     }
    ],
-   "start": 1551.61,
+   "start": 1553.47,
    "dur": 5.67,
    "img": 1015
   },
@@ -3544,11 +3520,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Ahora, la dirección: dónde viven actualmente y cuánto tiempo llevan viviendo ahí.",
-     "s": 1557.28,
+     "s": 1559.14,
      "d": 6.18
     }
    ],
-   "start": 1557.28,
+   "start": 1559.14,
    "dur": 6.18,
    "img": 1015
   },
@@ -3559,11 +3535,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Ahora, el empleo: dónde trabaja cada uno, su puesto y cuánto tiempo lleva en ese trabajo.",
-     "s": 1563.46,
+     "s": 1565.32,
      "d": 8.24
     }
    ],
-   "start": 1563.46,
+   "start": 1565.32,
    "dur": 8.24,
    "img": 1015
   },
@@ -3574,11 +3550,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Ahora, los ingresos: cuánto gana cada uno al mes y si tienen algún otro ingreso.",
-     "s": 1571.7,
+     "s": 1573.56,
      "d": 7.73
     }
    ],
-   "start": 1571.7,
+   "start": 1573.56,
    "dur": 7.73,
    "img": 1015
   },
@@ -3589,11 +3565,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Revisamos que todo esté correcto antes de enviarla. Un error en un número puede atrasar la aprobación.",
-     "s": 1579.43,
+     "s": 1581.29,
      "d": 8.76
     }
    ],
-   "start": 1579.43,
+   "start": 1581.29,
    "dur": 8.76,
    "img": 1015
   },
@@ -3604,11 +3580,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "La respuesta de la financiera es rápida. En cuanto quede aprobada, seguimos con el acuerdo.",
-     "s": 1588.19,
+     "s": 1590.05,
      "d": 7.73
     }
    ],
-   "start": 1588.19,
+   "start": 1590.05,
    "dur": 7.73,
    "img": 1015
   },
@@ -3619,11 +3595,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Ahora les envío el acuerdo por DocuSign y lo repasamos juntos, página por página.",
-     "s": 1595.92,
+     "s": 1597.78,
      "d": 7.21
     }
    ],
-   "start": 1595.92,
+   "start": 1597.78,
    "dur": 7.21,
    "img": 1015
   },
@@ -3634,11 +3610,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Yo no les entrego el contrato para que lo lean solos. Lo leemos juntos, y cualquier pregunta que tengan, me la hacen en el momento.",
-     "s": 1603.13,
+     "s": 1604.99,
      "d": 12.88
     }
    ],
-   "start": 1603.13,
+   "start": 1604.99,
    "dur": 12.88,
    "img": 1015
   },
@@ -3649,11 +3625,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Esta es la parte más importante de todo el acuerdo: si no logramos cancelar su tiempo compartido y sacarlo de su nombre, les devolvemos su dinero.",
-     "s": 1616.01,
+     "s": 1617.87,
      "d": 13.39
     }
    ],
-   "start": 1616.01,
+   "start": 1617.87,
    "dur": 13.39,
    "img": 1015
   },
@@ -3664,11 +3640,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "La meta es llegar juntos a la última página, la de colores. Si llegan antes que yo, me avisan, pero no le den finalizar hasta que estemos todos ahí.",
-     "s": 1629.4,
+     "s": 1631.26,
      "d": 14.94
     }
    ],
-   "start": 1629.4,
+   "start": 1631.26,
    "dur": 14.94,
    "img": 1015
   },
@@ -3679,11 +3655,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Número siete: la tarifa de cancelación. Si no están seguros de que quieren deshacerse de su tiempo compartido, dejen de firmar ahora mismo.",
-     "s": 1644.34,
+     "s": 1646.2,
      "d": 11.85
     }
    ],
-   "start": 1644.34,
+   "start": 1646.2,
    "dur": 11.85,
    "img": 1015
   },
@@ -3694,11 +3670,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Porque una vez que seguimos, si cambian de opinión, hay una tarifa de cancelación de $7,000. Si creen que podrían quedarse con el tiempo compartido, paren de firmar ahora.",
-     "s": 1656.19,
+     "s": 1658.05,
      "d": 14.94
     }
    ],
-   "start": 1656.19,
+   "start": 1658.05,
    "dur": 14.94,
    "img": 1015
   },
@@ -3709,11 +3685,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "Vayan firmando donde el sistema les va marcando, y al final le dan finalizar.",
-     "s": 1671.13,
+     "s": 1672.99,
      "d": 7.21
     }
    ],
-   "start": 1671.13,
+   "start": 1672.99,
    "dur": 7.21,
    "img": 1015
   },
@@ -3724,11 +3700,11 @@ window.DECK_TEXT_ES_MTG = {
    "sentences": [
     {
      "x": "En cuanto quede firmado por todos, les llega su copia completa por correo.",
-     "s": 1678.34,
+     "s": 1680.2,
      "d": 6.7
     }
    ],
-   "start": 1678.34,
+   "start": 1680.2,
    "dur": 6.7,
    "img": 1015
   }
