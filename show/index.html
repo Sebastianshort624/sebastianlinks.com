@@ -96,6 +96,14 @@
   .titlecard .sub { font-size: clamp(17px, 2.6vw, 23px); color: rgba(255,255,255,.92); text-shadow: 0 1px 8px rgba(0,0,0,.65); }
   .titlecard .rule { width: 74px; height: 3px; background: #ffd968; margin: 20px auto; border-radius: 2px; }
   .breakcard .bigsec { font-size: clamp(26px, 4.6vw, 44px); color: #fff; line-height: 1.25; text-shadow: 0 2px 18px rgba(0,0,0,.65), 0 1px 4px rgba(0,0,0,.7); }
+  /* STOPCARD_V1 (Sebastian, 2026-11-23): post-price silence slide — red octagon stop sign */
+  .stopcard .stopsign { width: clamp(128px, 24vw, 200px); height: clamp(128px, 24vw, 200px); margin: 12px auto 10px;
+    background: #c0272d; clip-path: polygon(29% 0%, 71% 0%, 100% 29%, 100% 71%, 71% 100%, 29% 100%, 0% 71%, 0% 29%);
+    display: flex; align-items: center; justify-content: center; filter: drop-shadow(0 10px 26px rgba(0,0,0,.55)); }
+  .stopcard .stopsign span { color: #fff; font-weight: 900; letter-spacing: .14em; font-size: clamp(24px, 4.2vw, 40px);
+    border: 3px solid #fff; border-radius: 8px; padding: 3px 12px 5px; }
+  .stopcard .stopnote { color: #fff; font-size: clamp(16px, 2.6vw, 23px); line-height: 1.45; max-width: 660px; margin: 10px auto 0;
+    text-shadow: 0 2px 14px rgba(0,0,0,.65), 0 1px 4px rgba(0,0,0,.7); }
   /* ---------- panels — translucent dark glass over the video (not a page):
      the numbers float on the background like the words do ---------- */
   .panel { margin: 24px auto 6px; max-width: 620px; text-align: left; background: rgba(8,17,36,.55); border: 1px solid rgba(255,255,255,.35);
@@ -484,6 +492,8 @@ function tokens(){
     '{{LOAN}}': f ? f.loan : miss, '{{SCHED}}': f ? f.sched : miss,
     '{{INTPCT}}': d ? Math.floor(d.intpct) : '100',
     '{{PRICE}}': f ? f.price : miss, '{{SAVE20}}': f ? f.save20 : miss,
+    '{{CASH}}': '________', /* the amount the CLIENT states live (Sebastian, 2026-11-23) — always a literal blank, never a record value */
+    '{{PMT36}}': d && d.price ? fmtC(Math.round(d.price / 36 * 100) / 100) : miss, /* the derived price over 36 months, formatted like the other money values */
     '{{LISTA}}': f && f.lista ? f.lista : miss
   };
 }
@@ -585,9 +595,20 @@ function render(){
       '<div class="sub">' + esc(client.resort || '') + '</div><div class="rule"></div>' +
       '<div class="sub">' + L[lang].titleSub + '</div>' + BIGCTL + drawImg(sl.sec) + '</div>';
   } else if (sl.kind === 'break'){
-    html = '<div class="card breakcard"><div class="sec">' + L[lang].cont + '</div>' +
-      '<div class="bigsec">' + esc(sl.sec) + '</div>' +
-      BIGCTL + drawImg(sl.sec) + '</div>';
+    if (sl.stop){
+      /* STOPCARD_V1 (Sebastian, 2026-11-23): the post-price silence
+         slide — a big red stop sign, the section word big, and his
+         note verbatim under it. No drawing, no narration: just stop. */
+      html = '<div class="card breakcard stopcard"><div class="sec">' + L[lang].cont + '</div>' +
+        '<div class="stopsign"><span>STOP</span></div>' +
+        '<div class="bigsec">' + esc(sl.sec) + '</div>' +
+        '<div class="stopnote">' + esc(sl.note || '') + '</div>' +
+        BIGCTL + '</div>';
+    } else {
+      html = '<div class="card breakcard"><div class="sec">' + L[lang].cont + '</div>' +
+        '<div class="bigsec">' + esc(sl.sec) + '</div>' +
+        BIGCTL + drawImg(sl.sec) + '</div>';
+    }
   } else if (sl.kind === 'question'){
     var q = sl.sentences[0], no = sl.sentences[1], pf = sl.sentences[2];
     html = '<div class="card"><div class="sec">' + esc(sl.sec) + '</div>' +
@@ -693,7 +714,7 @@ function tick(now){
   if (elapsed >= sl.dur){
     if (sl.panel){ /* NUMBERS HOLD (Sebastian, 2026-11-23): a slide showing a set of numbers (panel = confirm / buildup / price / pricenote / qnums — any panel slide) stays on screen for as long as it takes him to say his own words about them — no script, no auto-advance; he moves on with the double arrow */
       elapsed = sl.dur; markCurrent();
-      if (!held){ held = true; syncModeBtn(); toast(lang === 'es' ? 'Numeros en pantalla \u2014 \u23ed para seguir' : 'Numbers on screen \u2014 \u23ed to continue'); }
+      if (!held){ held = true; syncModeBtn(); toast(sl.stop ? (lang === 'es' ? 'Silencio — ⏭ cuando ellos hablen' : 'Silence — ⏭ when they talk') : (lang === 'es' ? 'Numeros en pantalla \u2014 \u23ed para seguir' : 'Numbers on screen \u2014 \u23ed to continue')); }
       rafId = null; lastTick = null; return;
     }
     if (idx < slides.length - 1){ idx++; render(); }
@@ -865,7 +886,9 @@ function go(n){
    HELD it says so (Sebastian read "AUTOSCROLL: ON" on a frozen show as
    broken) — the normal AUTOSCROLL/MANUAL label returns on the next slide */
 function syncModeBtn(){
-  if (held) $('modebtn').textContent = (lang === 'es') ? '⏸ EN PAUSA — NÚMEROS' : '⏸ HELD — NUMBERS';
+  if (held) $('modebtn').textContent = (slides[idx] && slides[idx].stop)
+    ? '⏸ ' + (lang === 'es' ? 'Silencio — ⏭ cuando ellos hablen' : 'Silence — ⏭ when they talk')
+    : ((lang === 'es') ? '⏸ EN PAUSA — NÚMEROS' : '⏸ HELD — NUMBERS');
   else $('modebtn').textContent = auto ? 'AUTOSCROLL: ON' : 'MANUAL';
   /* BOTH play glyphs — the small #play and the BIG mid-stage #bigplay —
      are written HERE and nowhere else, derived from the one predicate:
