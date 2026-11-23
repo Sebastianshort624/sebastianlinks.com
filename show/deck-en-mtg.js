@@ -3016,28 +3016,13 @@ window.DECK_TEXT_EN_MTG = {
    "panel": null,
    "sentences": [
     {
-     "x": "As for the ways to make this investment,",
+     "x": "We have clients who make the complete payment with savings.",
      "s": 1405.96,
-     "d": 2.9
-    },
-    {
-     "x": "obviously,",
-     "s": 1408.86,
-     "d": 0.36
-    },
-    {
-     "x": "we have clients who can make the complete investment with a credit card,",
-     "s": 1409.22,
-     "d": 4.71
-    },
-    {
-     "x": "or a debit card,",
-     "s": 1413.93,
-     "d": 1.44
+     "d": 5.15
     }
    ],
    "start": 1405.96,
-   "dur": 9.41,
+   "dur": 5.15,
    "img": 1047
   },
   {
@@ -3046,14 +3031,14 @@ window.DECK_TEXT_EN_MTG = {
    "panel": null,
    "sentences": [
     {
-     "x": "or with savings.",
-     "s": 1415.37,
-     "d": 3.27
+     "x": "We have clients who make the complete payment with a credit card.",
+     "s": 1411.11,
+     "d": 6.18
     }
    ],
-   "start": 1415.37,
-   "dur": 3.27,
-   "img": 1054
+   "start": 1411.11,
+   "dur": 6.18,
+   "img": 1047
   },
   {
    "sec": "PAYMENT OPTIONS",
@@ -3061,34 +3046,29 @@ window.DECK_TEXT_EN_MTG = {
    "panel": null,
    "sentences": [
     {
-     "x": "There are clients who need a little more financial assistance.",
-     "s": 1418.64,
-     "d": 4.83
-    },
+     "x": "And we have clients who need more financial assistance — financing up to 36 months.",
+     "s": 1417.29,
+     "d": 7.73
+    }
+   ],
+   "start": 1417.29,
+   "dur": 7.73,
+   "img": 1047
+  },
+  {
+   "sec": "PAYMENT OPTIONS",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
     {
      "x": "What position do you feel you are in?",
-     "s": 1423.47,
-     "d": 3.86
+     "s": 1425.02,
+     "d": 4.12
     }
    ],
-   "start": 1418.64,
-   "dur": 8.69,
+   "start": 1425.02,
+   "dur": 4.12,
    "img": 1047
-  },
-  {
-   "sec": "PAYMENT OPTIONS",
-   "kind": "text",
-   "panel": null,
-   "sentences": [
-    {
-     "x": "Do you have any payment method with which you could cover this complete investment?",
-     "s": 1427.33,
-     "d": 7.52
-    }
-   ],
-   "start": 1427.33,
-   "dur": 7.52,
-   "img": 1054
   },
   {
    "sec": "PAYMENT OPTIONS",
@@ -3097,16 +3077,16 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "We can offer you financing.",
-     "s": 1434.85,
+     "s": 1429.14,
      "d": 3.1
     },
     {
      "x": "We have been working for years with a finance company.",
-     "s": 1437.95,
+     "s": 1432.24,
      "d": 6.2
     }
    ],
-   "start": 1434.85,
+   "start": 1429.14,
    "dur": 9.3,
    "img": 1047
   },
@@ -3117,21 +3097,21 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "We have been working for years with a finance company,",
-     "s": 1444.15,
+     "s": 1438.44,
      "d": 2.83
     },
     {
      "x": "and that is how we do an application,",
-     "s": 1446.98,
+     "s": 1441.27,
      "d": 2.26
     },
     {
      "x": "and if they accept it,",
-     "s": 1449.24,
+     "s": 1443.53,
      "d": 1.42
     }
    ],
-   "start": 1444.15,
+   "start": 1438.44,
    "dur": 6.51,
    "img": 1054
   },
@@ -3142,11 +3122,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "the monthly payments of the investment can be up to 36 months.",
-     "s": 1450.66,
+     "s": 1444.95,
      "d": 4.97
     }
    ],
-   "start": 1450.66,
+   "start": 1444.95,
    "dur": 4.97,
    "img": 1047
   },
@@ -3157,11 +3137,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "Now, if you want more time or less time, obviously it would be more or less monthly payment.",
-     "s": 1455.63,
+     "s": 1449.92,
      "d": 8.58
     }
    ],
-   "start": 1455.63,
+   "start": 1449.92,
    "dur": 8.58,
    "img": 1054
   },
@@ -3172,16 +3152,16 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "For 36 months it would be so much.",
-     "s": 1464.21,
+     "s": 1458.5,
      "d": 5.1
     },
     {
      "x": "What do you think?",
-     "s": 1469.31,
+     "s": 1463.6,
      "d": 2.55
     }
    ],
-   "start": 1464.21,
+   "start": 1458.5,
    "dur": 7.65,
    "img": 1047
   },
@@ -3192,26 +3172,26 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "Perfect.",
-     "s": 1471.86,
+     "s": 1466.15,
      "d": 0.52
     },
     {
      "x": "Now,",
-     "s": 1472.38,
+     "s": 1466.67,
      "d": 0.52
     },
     {
      "x": "this is a financial loan,",
-     "s": 1472.9,
+     "s": 1467.19,
      "d": 2.58
     },
     {
      "x": "so they're going to ask for identification,",
-     "s": 1475.48,
+     "s": 1469.77,
      "d": 3.6
     }
    ],
-   "start": 1471.86,
+   "start": 1466.15,
    "dur": 7.22,
    "img": 1054
   },
@@ -3222,16 +3202,16 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "documentation,",
-     "s": 1479.08,
+     "s": 1473.37,
      "d": 0.7
     },
     {
      "x": "work and residence information — the typical financial application questions.",
-     "s": 1479.78,
+     "s": 1474.07,
      "d": 7.04
     }
    ],
-   "start": 1479.08,
+   "start": 1473.37,
    "dur": 7.74,
    "img": 1047
   },
@@ -3242,11 +3222,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "Guys, if you need to talk it over, something I always recommend is that you put me on mute and debate it between you.",
-     "s": 1486.82,
+     "s": 1481.11,
      "d": 9.42
     }
    ],
-   "start": 1486.82,
+   "start": 1481.11,
    "dur": 9.42,
    "img": 1054
   },
@@ -3257,11 +3237,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "Since I am here on the call, any question that arises I can answer it.",
-     "s": 1496.24,
+     "s": 1490.53,
      "d": 7.5
     }
    ],
-   "start": 1496.24,
+   "start": 1490.53,
    "dur": 7.5,
    "img": 1047
   },
@@ -3272,11 +3252,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "The first monthly payment of the investment is not made until next month.",
-     "s": 1503.74,
+     "s": 1498.03,
      "d": 6.44
     }
    ],
-   "start": 1503.74,
+   "start": 1498.03,
    "dur": 6.44,
    "img": 1054
   },
@@ -3287,11 +3267,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "Once the cancellation process has started, our clients do not have the obligation to continue with the payments to the timeshare.",
-     "s": 1510.18,
+     "s": 1504.47,
      "d": 8.48
     }
    ],
-   "start": 1510.18,
+   "start": 1504.47,
    "dur": 8.48,
    "img": 1015
   },
@@ -3302,11 +3282,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "We are going to win the cancellation, we guarantee the success of the cancellation, regardless of whether you continue or discontinue your payments to the timeshare.",
-     "s": 1518.66,
+     "s": 1512.95,
      "d": 12.78
     }
    ],
-   "start": 1518.66,
+   "start": 1512.95,
    "dur": 12.78,
    "img": 1015
   },
@@ -3317,16 +3297,16 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "If we start the process and it makes financial sense to you to discontinue these payments,",
-     "s": 1531.44,
+     "s": 1525.73,
      "d": 8.24
     },
     {
      "x": "they can be discontinued,",
-     "s": 1539.68,
+     "s": 1533.97,
      "d": 2.06
     }
    ],
-   "start": 1531.44,
+   "start": 1525.73,
    "dur": 10.3,
    "img": 1015
   },
@@ -3337,16 +3317,16 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "they do not affect the cancellation at all.",
-     "s": 1541.74,
+     "s": 1536.03,
      "d": 2.48
     },
     {
      "x": "I did not tell you to stop paying.",
-     "s": 1544.22,
+     "s": 1538.51,
      "d": 2.47
     }
    ],
-   "start": 1541.74,
+   "start": 1536.03,
    "dur": 4.95,
    "img": 1015
   },
@@ -3357,11 +3337,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "Ok, we do not have a magic wand that during the cancellation process can guarantee at 100% that they are not going to touch your credit.",
-     "s": 1546.69,
+     "s": 1540.98,
      "d": 9.2
     }
    ],
-   "start": 1546.69,
+   "start": 1540.98,
    "dur": 9.2,
    "img": 1048
   },
@@ -3372,11 +3352,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "What I can tell you is that,",
-     "s": 1555.89,
+     "s": 1550.18,
      "d": 2.87
     }
    ],
-   "start": 1555.89,
+   "start": 1550.18,
    "dur": 2.87,
    "img": 1048
   },
@@ -3387,11 +3367,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "once the cancellation is completed at 100% and the timeshare issues the cancellation notification to you,",
-     "s": 1558.76,
+     "s": 1553.05,
      "d": 7.17
     }
    ],
-   "start": 1558.76,
+   "start": 1553.05,
    "dur": 7.17,
    "img": 1048
   },
@@ -3402,11 +3382,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "at that moment the damage that the timeshare has been doing to your credit can be eliminated.",
-     "s": 1565.93,
+     "s": 1560.22,
      "d": 6.46
     }
    ],
-   "start": 1565.93,
+   "start": 1560.22,
    "dur": 6.46,
    "img": 1048
   },
@@ -3417,11 +3397,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "Part of the damage that the timeshare has been doing to your credit can be eliminated.",
-     "s": 1572.39,
+     "s": 1566.68,
      "d": 6.29
     }
    ],
-   "start": 1572.39,
+   "start": 1566.68,
    "dur": 6.29,
    "img": 1048
   },
@@ -3432,11 +3412,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "But not during the cancellation process: it cannot be guaranteed that they are not going to affect your credit.",
-     "s": 1578.68,
+     "s": 1572.97,
      "d": 6.96
     }
    ],
-   "start": 1578.68,
+   "start": 1572.97,
    "dur": 6.96,
    "img": 1048
   },
@@ -3447,11 +3427,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "After it ends, the damage can be eliminated.",
-     "s": 1585.64,
+     "s": 1579.93,
      "d": 5.84
     }
    ],
-   "start": 1585.64,
+   "start": 1579.93,
    "dur": 5.84,
    "img": 1048
   },
@@ -3462,11 +3442,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "Once the cancellation process is completed at 100%, the damage that the timeshare has done to your credit can be eliminated.",
-     "s": 1591.48,
+     "s": 1585.77,
      "d": 10.02
     }
    ],
-   "start": 1591.48,
+   "start": 1585.77,
    "dur": 10.02,
    "img": 1048
   },
@@ -3475,7 +3455,7 @@ window.DECK_TEXT_EN_MTG = {
    "kind": "break",
    "sentences": [],
    "panel": null,
-   "start": 1601.5,
+   "start": 1595.79,
    "dur": 2.0,
    "img": 1048
   },
@@ -3486,36 +3466,36 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "Guys,",
-     "s": 1603.5,
+     "s": 1597.79,
      "d": 0.33
     },
     {
      "x": "what we will start,",
-     "s": 1603.83,
+     "s": 1598.12,
      "d": 1.3
     },
     {
      "x": "the process,",
-     "s": 1605.13,
+     "s": 1599.42,
      "d": 0.65
     },
     {
      "x": "would be today,",
-     "s": 1605.78,
+     "s": 1600.07,
      "d": 0.98
     },
     {
      "x": "and yes,",
-     "s": 1606.76,
+     "s": 1601.05,
      "d": 0.65
     },
     {
      "x": "it is ideal to start the process as soon as possible,",
-     "s": 1607.41,
+     "s": 1601.7,
      "d": 3.57
     }
    ],
-   "start": 1603.5,
+   "start": 1597.79,
    "dur": 7.48,
    "img": 1015
   },
@@ -3526,11 +3506,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "since today is when we can offer you the service that I have explained to you.",
-     "s": 1610.98,
+     "s": 1605.27,
      "d": 6.74
     }
    ],
-   "start": 1610.98,
+   "start": 1605.27,
    "dur": 6.74,
    "img": 1015
   },
@@ -3541,16 +3521,16 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "When you come back, how the service we can offer you will be, I do not know.",
-     "s": 1617.72,
+     "s": 1612.01,
      "d": 6.41
     },
     {
      "x": "But as I tell you,",
-     "s": 1624.13,
+     "s": 1618.42,
      "d": 1.89
     }
    ],
-   "start": 1617.72,
+   "start": 1612.01,
    "dur": 8.3,
    "img": 1015
   },
@@ -3561,16 +3541,16 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "the ways of making the investment are quite flexible: the first monthly payment of the investment would be until next month,",
-     "s": 1626.02,
+     "s": 1620.31,
      "d": 9.14
     },
     {
      "x": "however,",
-     "s": 1635.16,
+     "s": 1629.45,
      "d": 0.44
     }
    ],
-   "start": 1626.02,
+   "start": 1620.31,
    "dur": 9.58,
    "img": 1015
   },
@@ -3581,11 +3561,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "we start the cancellation process immediately.",
-     "s": 1635.6,
+     "s": 1629.89,
      "d": 3.33
     }
    ],
-   "start": 1635.6,
+   "start": 1629.89,
    "dur": 3.33,
    "img": 1015
   },
@@ -3594,7 +3574,7 @@ window.DECK_TEXT_EN_MTG = {
    "kind": "break",
    "sentences": [],
    "panel": null,
-   "start": 1638.93,
+   "start": 1633.22,
    "dur": 2.0,
    "img": 1015
   },
@@ -3605,11 +3585,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "We schedule it for another day, or within two days at most.",
-     "s": 1640.93,
+     "s": 1635.22,
      "d": 4.51
     }
    ],
-   "start": 1640.93,
+   "start": 1635.22,
    "dur": 4.51,
    "img": 1015
   },
@@ -3620,11 +3600,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "Perfect, you chose to finance it. Now we are going to fill out the financing application together, step by step, and I will guide you through each question.",
-     "s": 1645.44,
+     "s": 1639.73,
      "d": 14.42
     }
    ],
-   "start": 1645.44,
+   "start": 1639.73,
    "dur": 14.42,
    "img": 1015
   },
@@ -3635,11 +3615,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "First, each person's information: full name, date of birth, and Social Security number.",
-     "s": 1659.86,
+     "s": 1654.15,
      "d": 6.7
     }
    ],
-   "start": 1659.86,
+   "start": 1654.15,
    "dur": 6.7,
    "img": 1015
   },
@@ -3650,11 +3630,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "Have a photo ID ready for each of you.",
-     "s": 1666.56,
+     "s": 1660.85,
      "d": 4.63
     }
    ],
-   "start": 1666.56,
+   "start": 1660.85,
    "dur": 4.63,
    "img": 1015
   },
@@ -3665,11 +3645,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "Now, the address: where you currently live and how long you have lived there.",
-     "s": 1671.19,
+     "s": 1665.48,
      "d": 7.21
     }
    ],
-   "start": 1671.19,
+   "start": 1665.48,
    "dur": 7.21,
    "img": 1015
   },
@@ -3680,11 +3660,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "Now, employment: where each of you works, your position, and how long you have been at that job.",
-     "s": 1678.4,
+     "s": 1672.69,
      "d": 9.27
     }
    ],
-   "start": 1678.4,
+   "start": 1672.69,
    "dur": 9.27,
    "img": 1015
   },
@@ -3695,11 +3675,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "Now, income: how much each of you earns per month and whether you have any other income.",
-     "s": 1687.67,
+     "s": 1681.96,
      "d": 8.76
     }
    ],
-   "start": 1687.67,
+   "start": 1681.96,
    "dur": 8.76,
    "img": 1015
   },
@@ -3710,11 +3690,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "We check that everything is correct before submitting it. One wrong number can delay the approval.",
-     "s": 1696.43,
+     "s": 1690.72,
      "d": 8.24
     }
    ],
-   "start": 1696.43,
+   "start": 1690.72,
    "dur": 8.24,
    "img": 1015
   },
@@ -3725,11 +3705,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "The lender's answer is quick. As soon as it is approved, we move on to the agreement.",
-     "s": 1704.67,
+     "s": 1698.96,
      "d": 8.76
     }
    ],
-   "start": 1704.67,
+   "start": 1698.96,
    "dur": 8.76,
    "img": 1015
   },
@@ -3740,11 +3720,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "Now I am sending you the agreement through DocuSign, and we will go over it together, page by page.",
-     "s": 1713.43,
+     "s": 1707.72,
      "d": 9.79
     }
    ],
-   "start": 1713.43,
+   "start": 1707.72,
    "dur": 9.79,
    "img": 1015
   },
@@ -3755,11 +3735,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "I do not hand you the contract to read on your own. We read it together, and any question you have, you ask me right then.",
-     "s": 1723.22,
+     "s": 1717.51,
      "d": 13.39
     }
    ],
-   "start": 1723.22,
+   "start": 1717.51,
    "dur": 13.39,
    "img": 1015
   },
@@ -3770,11 +3750,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "This is the most important part of the whole agreement: if we do not get your timeshare cancelled and removed from your name, you get your money back.",
-     "s": 1736.61,
+     "s": 1730.9,
      "d": 14.42
     }
    ],
-   "start": 1736.61,
+   "start": 1730.9,
    "dur": 14.42,
    "img": 1015
   },
@@ -3785,11 +3765,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "The goal is to get to the last page together, the colorful one. If you beat me there, let me know, but do not click finish until we are all there.",
-     "s": 1751.03,
+     "s": 1745.32,
      "d": 15.96
     }
    ],
-   "start": 1751.03,
+   "start": 1745.32,
    "dur": 15.96,
    "img": 1015
   },
@@ -3800,11 +3780,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "Number seven: the cancellation fee. If you are not sure you want to get rid of your timeshare, stop signing right now.",
-     "s": 1766.99,
+     "s": 1761.28,
      "d": 11.33
     }
    ],
-   "start": 1766.99,
+   "start": 1761.28,
    "dur": 11.33,
    "img": 1015
   },
@@ -3815,11 +3795,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "Because once we go through with this, if you change your mind, there is a $7,000 cancellation fee. If you think you might keep the timeshare, stop signing now.",
-     "s": 1778.32,
+     "s": 1772.61,
      "d": 14.94
     }
    ],
-   "start": 1778.32,
+   "start": 1772.61,
    "dur": 14.94,
    "img": 1015
   },
@@ -3830,11 +3810,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "Sign where the system prompts you, and at the end, click finish.",
-     "s": 1793.26,
+     "s": 1787.55,
      "d": 6.18
     }
    ],
-   "start": 1793.26,
+   "start": 1787.55,
    "dur": 6.18,
    "img": 1015
   },
@@ -3845,11 +3825,11 @@ window.DECK_TEXT_EN_MTG = {
    "sentences": [
     {
      "x": "As soon as it is signed by everyone, your complete copy arrives by email.",
-     "s": 1799.44,
+     "s": 1793.73,
      "d": 7.21
     }
    ],
-   "start": 1799.44,
+   "start": 1793.73,
    "dur": 7.21,
    "img": 1015
   }
