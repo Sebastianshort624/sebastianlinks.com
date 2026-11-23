@@ -57,17 +57,20 @@
      HIGHLIGHT GRANULARITY (Sebastian, 2026-11-23): the highlight window is
      4-6 WORDS at a time (.w spans), advancing in 3-4 steps per slide —
      never a whole sentence at once. Same styling in MANUAL: the current
-     chunk stays highlighted while every word remains visible. */
+     chunk stays highlighted while every word remains visible.
+     HIGHLIGHT COLOR (Sebastian, 2026-11-23): NOT bright yellow — the lit
+     chunk is a VERY LIGHT sticky-note yellow (#FFF9C4 text on a translucent
+     rgba(255,249,196,.18) wash), bold, same restyle behavior. */
   .txt .w { transition: background .3s, color .3s; border-radius: 6px; padding: 0 2px; color: rgba(255,255,255,.6); }
-  .txt .w.cur { color: #14213d; background: #ffe45e; font-weight: 700; text-shadow: none; }
+  .txt .w.cur { color: #FFF9C4; background: rgba(255,249,196,.18); font-weight: 700; text-shadow: 0 2px 14px rgba(0,0,0,.62), 0 1px 3px rgba(0,0,0,.7); }
   .txt .w.done { color: rgba(255,255,255,.95); }
   .qtxt { font-size: clamp(21px, 3.3vw, 31px); line-height: 1.5; font-weight: 700; color: #fff;
     text-shadow: 0 2px 14px rgba(0,0,0,.62), 0 1px 3px rgba(0,0,0,.7); }
   .noans { margin-top: 20px; font-size: clamp(19px, 2.6vw, 25px); color: rgba(255,255,255,.88); font-style: italic; text-shadow: 0 1px 8px rgba(0,0,0,.65); }
   .perf { margin-top: 6px; font-size: clamp(19px, 2.6vw, 25px); color: #ffd968; font-weight: 700; text-shadow: 0 1px 8px rgba(0,0,0,.65); }
   body.auto .noans, body.auto .perf { opacity: .62; }
-  .noans.cur, .perf.cur { opacity: 1; background: #ffe45e; color: #14213d; text-shadow: none; border-radius: 6px; }
-  .qtxt.cur { background: #ffe45e; color: #14213d; text-shadow: none; border-radius: 6px; }
+  .noans.cur, .perf.cur { opacity: 1; background: rgba(255,249,196,.18); color: #FFF9C4; text-shadow: 0 1px 8px rgba(0,0,0,.65); border-radius: 6px; }
+  .qtxt.cur { background: rgba(255,249,196,.18); color: #FFF9C4; text-shadow: 0 2px 14px rgba(0,0,0,.62), 0 1px 3px rgba(0,0,0,.7); border-radius: 6px; }
   /* SECTION DRAWING (Sebastian, 2026-11-23): one classy gold-line drawing
      per section sits under the words, directly on the background — thin
      gold frame, no white card, no grayscale stock photo. */
