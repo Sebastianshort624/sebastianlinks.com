@@ -3432,6 +3432,246 @@ window.DECK_TEXT_EN_MTG = {
    "start": 1497.45,
    "dur": 4.51,
    "img": 1015
+  },
+  {
+   "sec": "FINANCING APPLICATION — UCFS",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Perfect, you chose to finance it. Now we are going to fill out the financing application together, step by step, and I will guide you through each question.",
+     "s": 1501.96,
+     "d": 14.42
+    }
+   ],
+   "start": 1501.96,
+   "dur": 14.42,
+   "img": 1015
+  },
+  {
+   "sec": "FINANCING APPLICATION — UCFS",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "First, each person's information: full name, date of birth, and Social Security number.",
+     "s": 1516.38,
+     "d": 6.7
+    }
+   ],
+   "start": 1516.38,
+   "dur": 6.7,
+   "img": 1015
+  },
+  {
+   "sec": "FINANCING APPLICATION — UCFS",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Have a photo ID ready for each of you.",
+     "s": 1523.08,
+     "d": 4.63
+    }
+   ],
+   "start": 1523.08,
+   "dur": 4.63,
+   "img": 1015
+  },
+  {
+   "sec": "FINANCING APPLICATION — UCFS",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Now, the address: where you currently live and how long you have lived there.",
+     "s": 1527.71,
+     "d": 7.21
+    }
+   ],
+   "start": 1527.71,
+   "dur": 7.21,
+   "img": 1015
+  },
+  {
+   "sec": "FINANCING APPLICATION — UCFS",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Now, employment: where each of you works, your position, and how long you have been at that job.",
+     "s": 1534.92,
+     "d": 9.27
+    }
+   ],
+   "start": 1534.92,
+   "dur": 9.27,
+   "img": 1015
+  },
+  {
+   "sec": "FINANCING APPLICATION — UCFS",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Now, income: how much each of you earns per month and whether you have any other income.",
+     "s": 1544.19,
+     "d": 8.76
+    }
+   ],
+   "start": 1544.19,
+   "dur": 8.76,
+   "img": 1015
+  },
+  {
+   "sec": "FINANCING APPLICATION — UCFS",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "We check that everything is correct before submitting it. One wrong number can delay the approval.",
+     "s": 1552.95,
+     "d": 8.24
+    }
+   ],
+   "start": 1552.95,
+   "dur": 8.24,
+   "img": 1015
+  },
+  {
+   "sec": "FINANCING APPLICATION — UCFS",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "The lender's answer is quick. As soon as it is approved, we move on to the agreement.",
+     "s": 1561.19,
+     "d": 8.76
+    }
+   ],
+   "start": 1561.19,
+   "dur": 8.76,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Now I am sending you the agreement through DocuSign, and we will go over it together, page by page.",
+     "s": 1569.95,
+     "d": 9.79
+    }
+   ],
+   "start": 1569.95,
+   "dur": 9.79,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "I do not hand you the contract to read on your own. We read it together, and any question you have, you ask me right then.",
+     "s": 1579.74,
+     "d": 13.39
+    }
+   ],
+   "start": 1579.74,
+   "dur": 13.39,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "This is the most important part of the whole agreement: if we do not get your timeshare cancelled and removed from your name, you get your money back.",
+     "s": 1593.13,
+     "d": 14.42
+    }
+   ],
+   "start": 1593.13,
+   "dur": 14.42,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "The goal is to get to the last page together, the colorful one. If you beat me there, let me know, but do not click finish until we are all there.",
+     "s": 1607.55,
+     "d": 15.96
+    }
+   ],
+   "start": 1607.55,
+   "dur": 15.96,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Number seven: the cancellation fee. If you are not sure you want to get rid of your timeshare, stop signing right now.",
+     "s": 1623.51,
+     "d": 11.33
+    }
+   ],
+   "start": 1623.51,
+   "dur": 11.33,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Because once we go through with this, if you change your mind, there is a $7,000 cancellation fee. If you think you might keep the timeshare, stop signing now.",
+     "s": 1634.84,
+     "d": 14.94
+    }
+   ],
+   "start": 1634.84,
+   "dur": 14.94,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Sign where the system prompts you, and at the end, click finish.",
+     "s": 1649.78,
+     "d": 6.18
+    }
+   ],
+   "start": 1649.78,
+   "dur": 6.18,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "As soon as it is signed by everyone, your complete copy arrives by email.",
+     "s": 1655.96,
+     "d": 7.21
+    }
+   ],
+   "start": 1655.96,
+   "dur": 7.21,
+   "img": 1015
   }
  ]
 };
