@@ -186,9 +186,9 @@
   "joined": true
  },
  "32": {
-  "file": "slide-d25efa8e3e60.mp3",
-  "dur": 6.74,
-  "hash": "d25efa8e3e60"
+  "file": "slide-434596f812d2.mp3",
+  "dur": 7.556,
+  "hash": "434596f812d2"
  },
  "33": {
   "file": "slide-365a733d48f5.mp3",
@@ -197,9 +197,9 @@
   "joined": true
  },
  "34": {
-  "file": "slide-d25efa8e3e60.mp3",
-  "dur": 6.74,
-  "hash": "d25efa8e3e60"
+  "file": "slide-434596f812d2.mp3",
+  "dur": 7.556,
+  "hash": "434596f812d2"
  },
  "35": {
   "file": "slide-3d1a92482583.mp3",
@@ -208,9 +208,9 @@
   "joined": true
  },
  "36": {
-  "file": "slide-d25efa8e3e60.mp3",
-  "dur": 6.74,
-  "hash": "d25efa8e3e60"
+  "file": "slide-434596f812d2.mp3",
+  "dur": 7.556,
+  "hash": "434596f812d2"
  },
  "37": {
   "file": "slide-a87d8a3edde4.mp3",
@@ -219,9 +219,9 @@
   "joined": true
  },
  "38": {
-  "file": "slide-d25efa8e3e60.mp3",
-  "dur": 6.74,
-  "hash": "d25efa8e3e60"
+  "file": "slide-434596f812d2.mp3",
+  "dur": 7.556,
+  "hash": "434596f812d2"
  },
  "39": {
   "file": "slide-0ac8236ccf6e.mp3",
@@ -230,9 +230,9 @@
   "joined": true
  },
  "40": {
-  "file": "slide-ee65440952a3.mp3",
-  "dur": 6.236,
-  "hash": "ee65440952a3"
+  "file": "slide-b105f5151ba1.mp3",
+  "dur": 7.052,
+  "hash": "b105f5151ba1"
  },
  "41": {
   "file": "slide-3d9866e8b975.mp3",
@@ -241,14 +241,14 @@
   "joined": true
  },
  "42": {
-  "file": "slide-d25efa8e3e60.mp3",
-  "dur": 6.74,
-  "hash": "d25efa8e3e60"
+  "file": "slide-434596f812d2.mp3",
+  "dur": 7.556,
+  "hash": "434596f812d2"
  },
  "43": {
-  "file": "slide-fe16bb6e48a4.mp3",
-  "dur": 15.428,
-  "hash": "fe16bb6e48a4",
+  "file": "slide-a7d3f2fd0edd.mp3",
+  "dur": 16.244,
+  "hash": "a7d3f2fd0edd",
   "redacted_tokens": [
    "{{INTPCT}}",
    "{{LOAN}}",
@@ -380,13 +380,13 @@
   "hash": "3bfc77cdc842"
  },
  "66": {
-  "file": "slide-d58dfe91efd2.mp3",
-  "dur": 47.958,
-  "hash": "d58dfe91efd2",
+  "file": "slide-6b383820e420.mp3",
+  "dur": 23.286,
+  "hash": "6b383820e420",
   "redacted_tokens": [
    "{{MF10}}",
    "{{MF20}}",
-   "{{MF30}}",
+   "{{MF5}}",
    "{{MFY10}}",
    "{{MFYR}}"
   ]
