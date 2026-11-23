@@ -15,6 +15,9 @@ nav button.on{background:#ffd23f;color:#122b1a;border-color:#ffd23f;font-weight:
 .chips{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;padding:4px 10px}
 .chip{font-size:12.5px;padding:6px 10px;border-color:#4a7a5a;background:#142e1f}
 .chip.on{background:#3ecf6e;color:#0e2417;font-weight:700}
+.tbtn{border:2px solid #3ecf6e;background:#173a25;color:#fff;border-radius:999px;padding:8px 14px;font-size:15px;cursor:pointer}
+body.hidebody .route{display:none}
+body.hidebody .bname{display:none}
 .route{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;padding:2px 10px 10px;max-width:1000px;margin:0 auto}
 .rstop{font-size:11.5px;padding:4px 9px;border-radius:999px;background:#142e1f;border:1px solid #4a7a5a;color:#cfe8d4;white-space:nowrap}
 .rstop .rs{opacity:.7;font-size:10px;text-transform:uppercase;letter-spacing:.3px}
@@ -58,6 +61,7 @@ main{max-width:860px;margin:0 auto;padding:12px}
 <button data-mode="letters">🔤 Primeras Letras</button>
 <button data-mode="cold">🌅 Cold Test</button>
 </nav>
+<div style="text-align:center;padding:2px 8px 6px"><button class="tbtn" id="bodytoggle" onclick="toggleBody()">🙈 Ocultar cuerpo</button></div>
 <div class="chips" id="chips"></div>
 <div class="route" id="route"></div>
 <main id="main"></main>
@@ -68,9 +72,16 @@ const DATA = [{"index": 1, "section": "APERTURA", "palace_location": "Cabello", 
 const LS='memoryZooV1';
 let state = JSON.parse(localStorage.getItem(LS)||'{"known":[],"missed":[]}');
 if(!state.scenes||typeof state.scenes!=='object'||Array.isArray(state.scenes)) state.scenes={};
+if(typeof state.hideBody!=='boolean') state.hideBody=false;
 let mode='actor', section='ALL', queue=[], qi=0;
 let drill={i:0, stage:0};
 function save(){localStorage.setItem(LS,JSON.stringify(state)); renderScore();}
+function applyHideBody(){
+  document.body.classList.toggle('hidebody', !!state.hideBody);
+  const btn=document.getElementById('bodytoggle');
+  if(btn) btn.textContent = state.hideBody ? '👀 Mostrar cuerpo' : '🙈 Ocultar cuerpo';
+}
+window.toggleBody=()=>{ state.hideBody=!state.hideBody; save(); applyHideBody(); };
 function renderScore(){
   const k=state.known.length;
   document.getElementById('prog').style.width=(k/DATA.length*100)+'%';
@@ -85,7 +96,7 @@ function drawChips(){chips.innerHTML='';chip('TODO','ALL');secs.forEach(s=>chip(
 function pool(){return section==='ALL'?DATA.slice():DATA.filter(b=>'s:'+b.section===section);}
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
 function flag(b){return b.index%2===1?'🇲🇽':'🇨🇺';}
-function head(b){return '<div class="loc">'+flag(b)+' 🧍 Parada '+b.index+': '+esc(b.palace_location)+'</div><div class="sec">'+esc(b.section)+' · Grupo '+b.index+' / '+DATA.length+'</div>';}
+function head(b){return '<div class="loc">'+flag(b)+' 🧍 Parada '+b.index+'<span class="bname">: '+esc(b.palace_location)+'</span></div><div class="sec">'+esc(b.section)+' · Grupo '+b.index+' / '+DATA.length+'</div>';}
 function hintHTML(b){return '<div class="hintbox">💡 '+esc(b.hint)+'</div>';}
 function puenteHTML(b){return b.puente?'<div class="puente">➡ Puente al siguiente grupo: '+esc(b.puente)+'</div>':'';}
 const SC_NOUN=['León','Elefante','Mono','Perro','Gato','Caballo','Oso','Serpiente','Águila','Tiburón','Hombre','Mujer','Niño','Niña','Bebé'];
@@ -188,5 +199,5 @@ function renderOne(){
 window.markIdx=(i,got)=>{const b=DATA.find(x=>x.index===i);mark(b,got); if(mode==='learn')renderLearn(); else {qi++;drill={i:0,stage:0};renderOne();}};
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.remove('on'));b.classList.add('on');mode=b.dataset.mode;start();});
 document.getElementById('reset').onclick=e=>{e.preventDefault();state={known:[],missed:[]};save();start();};
-drawChips(); drawRoute(-1); renderScore(); start();
+drawChips(); drawRoute(-1); renderScore(); applyHideBody(); start();
 </script></body></html>
