@@ -146,13 +146,13 @@ window.DECK_TEXT_ES_DB = {
    "panel": null,
    "sentences": [
     {
-     "x": "y mi trabajo es elaborar el caso con el cual vamos a estar peleando.",
+     "x": "y mi trabajo — yo soy Sebastian, de Linx Legal — es elaborar el caso con el cual vamos a estar peleando.",
      "s": 53.96,
-     "d": 4.45
+     "d": 7.54
     }
    ],
    "start": 53.96,
-   "dur": 4.45,
+   "dur": 7.54,
    "img": 1047
   },
   {
@@ -161,13 +161,13 @@ window.DECK_TEXT_ES_DB = {
    "panel": null,
    "sentences": [
     {
-     "x": "Ahora, nosotros solamente tomamos casos a los cuales les podamos garantizar al 100% la cancelación de su tiempo compartido.",
-     "s": 58.41,
-     "d": 9.94
+     "x": "Ahora, nosotros en Linx Legal solamente tomamos casos a los cuales les podamos garantizar al 100% la cancelación de su tiempo compartido.",
+     "s": 61.5,
+     "d": 11.49
     }
    ],
-   "start": 58.41,
-   "dur": 9.94,
+   "start": 61.5,
+   "dur": 11.49,
    "img": 1035
   },
   {
@@ -177,11 +177,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Y para yo poder elaborar un caso al cual yo le puedo garantizar al 100% el éxito de la cancelación,",
-     "s": 68.35,
+     "s": 72.99,
      "d": 6.59
     }
    ],
-   "start": 68.35,
+   "start": 72.99,
    "dur": 6.59,
    "img": 1015
   },
@@ -192,11 +192,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "yo tengo que tener una idea básicamente exacta de cuál fue su punto de vista y su posición en toda la experiencia que ustedes han tenido hasta el momento.",
-     "s": 74.94,
+     "s": 79.58,
      "d": 9.55
     }
    ],
-   "start": 74.94,
+   "start": 79.58,
    "dur": 9.55,
    "img": 1047
   },
@@ -207,11 +207,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Yo tengo acá un par de preguntas,",
-     "s": 84.49,
+     "s": 89.13,
      "d": 2.3
     }
    ],
-   "start": 84.49,
+   "start": 89.13,
    "dur": 2.3,
    "img": 1035
   },
@@ -222,11 +222,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "algunas dudas que les voy a estar preguntando para asegurarme que entendí toda la información que yo tengo hasta el momento de su caso.",
-     "s": 86.79,
+     "s": 91.43,
      "d": 7.88
     }
    ],
-   "start": 86.79,
+   "start": 91.43,
    "dur": 7.88,
    "img": 1015
   },
@@ -237,11 +237,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Ok?",
-     "s": 94.67,
+     "s": 99.31,
      "d": 2.57
     }
    ],
-   "start": 94.67,
+   "start": 99.31,
    "dur": 9.97,
    "img": 1047
   },
@@ -252,11 +252,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Primeramente quiero confirmar los datos que tengo acá de su propiedad.",
-     "s": 104.64,
+     "s": 109.28,
      "d": 5.67
     }
    ],
-   "start": 104.64,
+   "start": 109.28,
    "dur": 5.67,
    "img": 1016
   },
@@ -267,11 +267,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Veo por acá que ustedes compraron en {{RESORT}} en el año {{PYR}}.",
-     "s": 110.31,
+     "s": 114.95,
      "d": 6.18
     }
    ],
-   "start": 110.31,
+   "start": 114.95,
    "dur": 6.18,
    "img": 1060
   },
@@ -282,11 +282,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "El mantenimiento es {{MFMO}} al mes, {{MFYR}} al año.",
-     "s": 116.49,
+     "s": 121.13,
      "d": 4.63
     }
    ],
-   "start": 116.49,
+   "start": 121.13,
    "dur": 4.63,
    "img": 1016
   },
@@ -297,11 +297,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Su propiedad está en la lista de deed-back en {{LISTA}}.",
-     "s": 121.12,
+     "s": 125.76,
      "d": 5.15
     }
    ],
-   "start": 121.12,
+   "start": 125.76,
    "dur": 5.15,
    "img": 1060
   },
@@ -312,11 +312,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Ahora bien, {{NAMES}}: no todos los casos califican para nuestro plan legal.",
-     "s": 126.27,
+     "s": 130.91,
      "d": 6.18
     }
    ],
-   "start": 126.27,
+   "start": 130.91,
    "dur": 6.18,
    "img": 1048
   },
@@ -327,11 +327,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Tenemos que asegurarnos de que su caso sea lo suficientemente fuerte para sacarlos dentro de nuestro presupuesto.",
-     "s": 132.45,
+     "s": 137.09,
      "d": 8.76
     }
    ],
-   "start": 132.45,
+   "start": 137.09,
    "dur": 8.76,
    "img": 1048
   },
@@ -342,11 +342,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "La buena noticia es esta: si yo siento que su caso es lo suficientemente fuerte, ustedes tienen garantizado salir de ese tiempo compartido.",
-     "s": 141.21,
+     "s": 145.85,
      "d": 11.85
     }
    ],
-   "start": 141.21,
+   "start": 145.85,
    "dur": 11.85,
    "img": 1048
   },
@@ -356,13 +356,13 @@ window.DECK_TEXT_ES_DB = {
    "panel": null,
    "sentences": [
     {
-     "x": "Pero si no me siento seguro de poder sacarlos, no voy a hacer que nuestra compañía asuma ese riesgo ni ponga en juego nuestra reputación.",
-     "s": 153.06,
-     "d": 12.88
+     "x": "Pero si no me siento seguro de poder sacarlos, no voy a hacer que nuestra compañía, Linx Legal, asuma ese riesgo ni ponga en juego nuestra reputación.",
+     "s": 157.7,
+     "d": 13.91
     }
    ],
-   "start": 153.06,
-   "dur": 12.88,
+   "start": 157.7,
+   "dur": 13.91,
    "img": 1048
   },
   {
@@ -371,17 +371,17 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "¿El contrato que firmaron estaba en inglés o en español?",
-     "s": 165.94,
+     "s": 171.61,
      "d": 5.15
     },
     {
      "x": "Porque si la presentación fue en español y el contrato no estaba también en español, eso es discriminación — y los expone a una multa.",
-     "s": 171.09,
+     "s": 176.76,
      "d": 12.88
     }
    ],
    "panel": null,
-   "start": 165.94,
+   "start": 171.61,
    "dur": 18.03,
    "img": 1048
   },
@@ -391,12 +391,12 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Y sí, sacamos a muchos propietarios de {{RESORT}}. Estoy hablando de más de media docena a la semana.",
-     "s": 183.97,
+     "s": 189.64,
      "d": 9.27
     }
    ],
    "panel": null,
-   "start": 183.97,
+   "start": 189.64,
    "dur": 9.27,
    "img": 1048
   },
@@ -407,11 +407,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Antes de hacerles las preguntas, quiero que entiendan algo importante sobre este contrato.",
-     "s": 193.24,
+     "s": 198.91,
      "d": 7.69
     }
    ],
-   "start": 193.24,
+   "start": 198.91,
    "dur": 7.69,
    "img": 1048
   },
@@ -422,11 +422,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Este contrato es impenetrable.",
-     "s": 200.93,
+     "s": 206.6,
      "d": 3.46
     }
    ],
-   "start": 200.93,
+   "start": 206.6,
    "dur": 3.46,
    "img": 1029
   },
@@ -437,11 +437,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Es un contrato de bienes raíces, y está diseñado para una sola cosa: que ustedes y su familia sigan pagando tarifas de mantenimiento por generaciones.",
-     "s": 204.39,
+     "s": 210.06,
      "d": 11.65
     }
    ],
-   "start": 204.39,
+   "start": 210.06,
    "dur": 11.65,
    "img": 164
   },
@@ -452,16 +452,16 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "No hay abogado que pueda pelear el contrato en sí.",
-     "s": 216.04,
+     "s": 221.71,
      "d": 4.23
     },
     {
      "x": "Su firma está en todas las páginas.",
-     "s": 220.27,
+     "s": 225.94,
      "d": 3.84
     }
    ],
-   "start": 216.04,
+   "start": 221.71,
    "dur": 8.07,
    "img": 1040
   },
@@ -472,11 +472,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Y el contrato lo dice claramente: no lo pueden vender, no lo pueden rentar, y cuando ustedes ya no estén, pasa a sus herederos.",
-     "s": 224.11,
+     "s": 229.78,
      "d": 10.35
     }
    ],
-   "start": 224.11,
+   "start": 229.78,
    "dur": 10.35,
    "img": 1048
   },
@@ -487,11 +487,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Y esto es lo que nos separa de los demás.",
-     "s": 234.46,
+     "s": 240.13,
      "d": 5.19
     }
    ],
-   "start": 234.46,
+   "start": 240.13,
    "dur": 5.19,
    "img": 1029
   },
@@ -502,21 +502,21 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Llevamos 17 años haciendo esto.",
-     "s": 239.65,
+     "s": 245.32,
      "d": 3.99
     },
     {
      "x": "Nosotros no peleamos con ellos.",
-     "s": 243.64,
+     "s": 249.31,
      "d": 3.65
     },
     {
      "x": "No los amenazamos con la corte.",
-     "s": 247.29,
+     "s": 252.96,
      "d": 3.46
     }
    ],
-   "start": 239.65,
+   "start": 245.32,
    "dur": 11.1,
    "img": 164
   },
@@ -527,11 +527,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Tenemos un arreglo con ellos: si demostramos suficientes hallazgos en su caso — el mínimo es de $88,000 — ellos anulan el contrato.",
-     "s": 250.75,
+     "s": 256.42,
      "d": 11.31
     }
    ],
-   "start": 250.75,
+   "start": 256.42,
    "dur": 11.31,
    "img": 1040
   },
@@ -541,18 +541,13 @@ window.DECK_TEXT_ES_DB = {
    "panel": null,
    "sentences": [
     {
-     "x": "¿Y de dónde salen esos hallazgos?",
-     "s": 262.06,
-     "d": 3.65
-    },
-    {
-     "x": "De lo que ustedes me van a contestar ahora.",
-     "s": 265.71,
-     "d": 5.02
+     "x": "Y esos hallazgos provienen directamente de las respuestas que ustedes me van a dar.",
+     "s": 267.73,
+     "d": 7.21
     }
    ],
-   "start": 262.06,
-   "dur": 8.67,
+   "start": 267.73,
+   "dur": 7.21,
    "img": 1048
   },
   {
@@ -562,11 +557,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Porque lo que vamos a demostrar es esto: que ustedes jamás habrían firmado ese contrato si les hubieran dicho la verdad.",
-     "s": 270.73,
+     "s": 274.94,
      "d": 7.64
     }
    ],
-   "start": 270.73,
+   "start": 274.94,
    "dur": 7.64,
    "img": 1029
   },
@@ -577,11 +572,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Si ellos hubieran hecho su trabajo y hubieran sido honestos con ustedes, ustedes no estarían en este contrato.",
-     "s": 278.37,
+     "s": 282.58,
      "d": 8.7
     }
    ],
-   "start": 278.37,
+   "start": 282.58,
    "dur": 8.7,
    "img": 164
   },
@@ -592,11 +587,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Por eso les voy a hacer unas preguntas.",
-     "s": 287.07,
+     "s": 291.28,
      "d": 3.7
     }
    ],
-   "start": 287.07,
+   "start": 291.28,
    "dur": 3.7,
    "img": 1040
   },
@@ -607,11 +602,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Y en cada una, háganse esta cuenta: si me hubieran dicho esto, ¿habrían firmado?",
-     "s": 290.77,
+     "s": 294.98,
      "d": 8.1
     }
    ],
-   "start": 290.77,
+   "start": 294.98,
    "dur": 8.1,
    "img": 1048
   },
@@ -621,17 +616,17 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "¿Les dijeron que las tarifas de mantenimiento suben cada año",
-     "s": 298.87,
+     "s": 303.08,
      "d": 5.45
     },
     {
      "x": "— y que nunca terminan, que son de por vida?",
-     "s": 304.32,
+     "s": 308.53,
      "d": 5.45
     }
    ],
    "panel": null,
-   "start": 298.87,
+   "start": 303.08,
    "dur": 10.9,
    "img": 1048
   },
@@ -641,23 +636,23 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Si les hubieran dicho la verdad, ¿habrían firmado el contrato?",
-     "s": 309.77,
+     "s": 313.98,
      "d": 5.15
     },
     {
      "x": "—No.",
-     "s": 314.92,
+     "s": 319.13,
      "d": 1.2,
      "beat": true
     },
     {
      "x": "Exacto.",
-     "s": 316.12,
+     "s": 320.33,
      "d": 3.87
     }
    ],
    "panel": null,
-   "start": 309.77,
+   "start": 313.98,
    "dur": 10.22,
    "img": 1048
   },
@@ -667,17 +662,17 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "¿Les dijeron que aunque paguen toda la deuda,",
-     "s": 319.99,
+     "s": 324.2,
      "d": 5.29
     },
     {
      "x": "las tarifas de mantenimiento continúan para siempre?",
-     "s": 325.28,
+     "s": 329.49,
      "d": 4.62
     }
    ],
    "panel": null,
-   "start": 319.99,
+   "start": 324.2,
    "dur": 9.91,
    "img": 1029
   },
@@ -687,23 +682,23 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Si les hubieran dicho la verdad, ¿habrían firmado el contrato?",
-     "s": 329.9,
+     "s": 334.11,
      "d": 5.15
     },
     {
      "x": "—No.",
-     "s": 335.05,
+     "s": 339.26,
      "d": 1.2,
      "beat": true
     },
     {
      "x": "Exacto.",
-     "s": 336.25,
+     "s": 340.46,
      "d": 3.87
     }
    ],
    "panel": null,
-   "start": 329.9,
+   "start": 334.11,
    "dur": 10.22,
    "img": 1029
   },
@@ -713,17 +708,17 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "¿Les dijeron que esto es hereditario",
-     "s": 340.12,
+     "s": 344.33,
      "d": 3.14
     },
     {
      "x": "— que cuando ustedes ya no estén, esta obligación pasa a sus hijos, a su familia?",
-     "s": 343.26,
+     "s": 347.47,
      "d": 8.36
     }
    ],
    "panel": null,
-   "start": 340.12,
+   "start": 344.33,
    "dur": 11.5,
    "img": 164
   },
@@ -733,23 +728,23 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Si les hubieran dicho la verdad, ¿habrían firmado el contrato?",
-     "s": 351.62,
+     "s": 355.83,
      "d": 5.15
     },
     {
      "x": "—No.",
-     "s": 356.77,
+     "s": 360.98,
      "d": 1.2,
      "beat": true
     },
     {
      "x": "Exacto.",
-     "s": 357.97,
+     "s": 362.18,
      "d": 3.87
     }
    ],
    "panel": null,
-   "start": 351.62,
+   "start": 355.83,
    "dur": 10.22,
    "img": 164
   },
@@ -759,17 +754,17 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "¿Les dijeron que no lo pueden vender, que no lo pueden rentar",
-     "s": 361.84,
+     "s": 366.05,
      "d": 6.61
     },
     {
      "x": "— que no hay salida?",
-     "s": 368.45,
+     "s": 372.66,
      "d": 2.75
     }
    ],
    "panel": null,
-   "start": 361.84,
+   "start": 366.05,
    "dur": 9.36,
    "img": 1040
   },
@@ -779,23 +774,23 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Si les hubieran dicho la verdad, ¿habrían firmado el contrato?",
-     "s": 371.2,
+     "s": 375.41,
      "d": 5.15
     },
     {
      "x": "—No.",
-     "s": 376.35,
+     "s": 380.56,
      "d": 1.2,
      "beat": true
     },
     {
      "x": "Exacto.",
-     "s": 377.55,
+     "s": 381.76,
      "d": 3.87
     }
    ],
    "panel": null,
-   "start": 371.2,
+   "start": 375.41,
    "dur": 10.22,
    "img": 1040
   },
@@ -805,17 +800,17 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "¿Les mostraron el costo real de este contrato",
-     "s": 381.42,
+     "s": 385.63,
      "d": 5.22
     },
     {
      "x": "— cuánto interés iban a terminar pagando?",
-     "s": 386.64,
+     "s": 390.85,
      "d": 4.57
     }
    ],
    "panel": null,
-   "start": 381.42,
+   "start": 385.63,
    "dur": 9.79,
    "img": 1048
   },
@@ -824,25 +819,25 @@ window.DECK_TEXT_ES_DB = {
    "kind": "question",
    "sentences": [
     {
-     "x": "Si les hubieran dicho la verdad, ¿habrían firmado el contrato?",
-     "s": 391.21,
-     "d": 5.15
+     "x": "Si se lo hubieran mostrado, ¿habrían firmado el contrato?",
+     "s": 395.42,
+     "d": 4.64
     },
     {
      "x": "—No.",
-     "s": 396.36,
+     "s": 400.57,
      "d": 1.2,
      "beat": true
     },
     {
      "x": "Exacto.",
-     "s": 397.56,
+     "s": 401.77,
      "d": 3.87
     }
    ],
    "panel": null,
-   "start": 391.21,
-   "dur": 10.22,
+   "start": 395.42,
+   "dur": 9.71,
    "img": 1048
   },
   {
@@ -851,17 +846,17 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "¿Les dijeron que esto no es una inversión",
-     "s": 401.43,
+     "s": 405.13,
      "d": 4.17
     },
     {
      "x": "— que ustedes no iban a hacer dinero con esto?",
-     "s": 405.6,
+     "s": 409.3,
      "d": 5.21
     }
    ],
    "panel": null,
-   "start": 401.43,
+   "start": 405.13,
    "dur": 9.38,
    "img": 1029
   },
@@ -871,23 +866,23 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Si les hubieran dicho la verdad, ¿habrían firmado el contrato?",
-     "s": 410.81,
+     "s": 414.51,
      "d": 5.15
     },
     {
      "x": "—No.",
-     "s": 415.96,
+     "s": 419.66,
      "d": 1.2,
      "beat": true
     },
     {
      "x": "Exacto.",
-     "s": 417.16,
+     "s": 420.86,
      "d": 3.87
     }
    ],
    "panel": null,
-   "start": 410.81,
+   "start": 414.51,
    "dur": 10.22,
    "img": 1029
   },
@@ -898,21 +893,21 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "¿Ven el patrón?",
-     "s": 421.03,
+     "s": 424.73,
      "d": 2.57
     },
     {
      "x": "Cada \"no\" es una verdad que les ocultaron.",
-     "s": 423.6,
+     "s": 427.3,
      "d": 3.7
     },
     {
      "x": "Y cada verdad ocultada es una razón por la que ustedes no debieron firmar.",
-     "s": 427.3,
+     "s": 431.0,
      "d": 5.43
     }
    ],
-   "start": 421.03,
+   "start": 424.73,
    "dur": 11.7,
    "img": 1029
   },
@@ -923,11 +918,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Eso es exactamente lo que vamos a demostrar.",
-     "s": 432.73,
+     "s": 436.43,
      "d": 5.36
     }
    ],
-   "start": 432.73,
+   "start": 436.43,
    "dur": 5.36,
    "img": 164
   },
@@ -938,11 +933,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Ok, ahora aquí, acerca del pago de mantenimiento: ¿sabían que los pagos de mantenimiento son por siempre y que anualmente van subiendo?",
-     "s": 438.09,
+     "s": 441.79,
      "d": 9.63
     }
    ],
-   "start": 438.09,
+   "start": 441.79,
    "dur": 9.63,
    "img": 1018
   },
@@ -953,11 +948,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "¿Pensaron que era que podían hacer dinero, que era una oportunidad de inversión, o si era porque les pareció un buen plan vacacional?",
-     "s": 447.72,
+     "s": 451.42,
      "d": 10.04
     }
    ],
-   "start": 447.72,
+   "start": 451.42,
    "dur": 10.04,
    "img": 1039
   },
@@ -968,16 +963,16 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Ok chicos,",
-     "s": 457.76,
+     "s": 461.46,
      "d": 0.87
     },
     {
      "x": "pero en el contrato que ustedes firmaron sí dice claramente que el mantenimiento sube cada año,",
-     "s": 458.63,
+     "s": 462.33,
      "d": 8.24
     }
    ],
-   "start": 457.76,
+   "start": 461.46,
    "dur": 9.11,
    "img": 1018
   },
@@ -988,11 +983,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "dice que un tiempo compartido no se puede rentar.",
-     "s": 466.87,
+     "s": 470.57,
      "d": 3.89
     }
    ],
-   "start": 466.87,
+   "start": 470.57,
    "dur": 3.89,
    "img": 1036
   },
@@ -1003,21 +998,21 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "No se puede vender,",
-     "s": 470.76,
+     "s": 474.46,
      "d": 1.44
     },
     {
      "x": "no se puede financiar,",
-     "s": 472.2,
+     "s": 475.9,
      "d": 1.44
     },
     {
      "x": "dice que el mantenimiento es anualmente por siempre y que va subiendo anualmente,",
-     "s": 473.64,
+     "s": 477.34,
      "d": 4.69
     }
    ],
-   "start": 470.76,
+   "start": 474.46,
    "dur": 7.57,
    "img": 1039
   },
@@ -1028,21 +1023,21 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "y que tenían que hacer reservaciones con meses de anticipación.",
-     "s": 478.33,
+     "s": 482.03,
      "d": 5.15
     },
     {
      "x": "Y básicamente, todo lo que les dijeron en la presentación del tiempo compartido fue mentira.",
-     "s": 483.48,
+     "s": 487.18,
      "d": 7.73
     },
     {
      "x": "¿Cómo fue el proceso de firma,",
-     "s": 491.21,
+     "s": 494.91,
      "d": 2.22
     }
    ],
-   "start": 478.33,
+   "start": 482.03,
    "dur": 15.1,
    "img": 1018
   },
@@ -1053,11 +1048,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "que ustedes no se dieron cuenta que lo que estaban firmando era diferente a lo que el vendedor les había dicho verbalmente?",
-     "s": 493.43,
+     "s": 497.13,
      "d": 8.16
     }
    ],
-   "start": 493.43,
+   "start": 497.13,
    "dur": 8.16,
    "img": 1036
   },
@@ -1068,11 +1063,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "¿Les dieron alcohol?",
-     "s": 501.59,
+     "s": 505.29,
      "d": 2.74
     }
    ],
-   "start": 501.59,
+   "start": 505.29,
    "dur": 2.74,
    "img": 1039
   },
@@ -1083,16 +1078,16 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Yo imagino que ustedes, siendo compradores nuevos, no tenían conocimiento de qué era el mantenimiento.",
-     "s": 504.33,
+     "s": 508.03,
      "d": 7.49
     },
     {
      "x": "¿Qué les explicaron que serían estos pagos?",
-     "s": 511.82,
+     "s": 515.52,
      "d": 5.36
     }
    ],
-   "start": 504.33,
+   "start": 508.03,
    "dur": 12.85,
    "img": 1018
   },
@@ -1103,11 +1098,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Eso es una conexión financiera con ese resort que durará para siempre.",
-     "s": 517.18,
+     "s": 520.88,
      "d": 6.18
     }
    ],
-   "start": 517.18,
+   "start": 520.88,
    "dur": 6.18,
    "img": 1039
   },
@@ -1118,11 +1113,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "¿Recuerdan cuánto era el mantenimiento cuando compraron por primera vez?",
-     "s": 523.36,
+     "s": 527.06,
      "d": 5.15
     }
    ],
-   "start": 523.36,
+   "start": 527.06,
    "dur": 5.15,
    "img": 1036
   },
@@ -1133,11 +1128,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Era mucho menos que hoy, ¿verdad? Hoy ya es {{MFYR}} al año.",
-     "s": 528.51,
+     "s": 532.21,
      "d": 6.18
     }
    ],
-   "start": 528.51,
+   "start": 532.21,
    "dur": 6.18,
    "img": 1036
   },
@@ -1148,11 +1143,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Y sube entre 8% y 12% cada año — el doble de la inflación, por lo menos. Yo uso el mínimo: 8%.",
-     "s": 534.69,
+     "s": 538.39,
      "d": 11.33
     }
    ],
-   "start": 534.69,
+   "start": 538.39,
    "dur": 11.33,
    "img": 1036
   },
@@ -1163,11 +1158,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "¿Tienen papel y lápiz a la mano?",
-     "s": 546.02,
+     "s": 549.72,
      "d": 3.6
     }
    ],
-   "start": 546.02,
+   "start": 549.72,
    "dur": 3.6,
    "img": 1036
   },
@@ -1178,11 +1173,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Escriban tres números: el primero es 10, el segundo es 20, el tercero es 30. Son años.",
-     "s": 549.62,
+     "s": 553.32,
      "d": 8.76
     }
    ],
-   "start": 549.62,
+   "start": 553.32,
    "dur": 8.76,
    "img": 1036
   },
@@ -1193,26 +1188,26 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "O sea, solo en mantenimiento, subiendo el 8% anual, en 10 años se comprometieron a pagar {{MF10}}, en 20 años {{MF20}}, y en 30 años {{MF30}}.",
-     "s": 558.38,
+     "s": 562.08,
      "d": 13.39
     },
     {
      "x": "Y el mantenimiento de un año, que hoy es {{MFYR}}, en el año 10 ya sería {{MFY10}}.",
-     "s": 571.77,
+     "s": 575.47,
      "d": 8.76
     },
     {
      "x": "¿Ustedes habrían estado de acuerdo con eso?",
-     "s": 580.53,
+     "s": 584.23,
      "d": 3.6
     },
     {
      "x": "—No firmarían.",
-     "s": 584.13,
+     "s": 587.83,
      "d": 1.03
     }
    ],
-   "start": 558.38,
+   "start": 562.08,
    "dur": 26.78,
    "img": 1036
   },
@@ -1223,11 +1218,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Ahora, ¿sabían que era hereditario?",
-     "s": 585.16,
+     "s": 588.86,
      "d": 5.34
     }
    ],
-   "start": 585.16,
+   "start": 588.86,
    "dur": 5.34,
    "img": 1039
   },
@@ -1238,16 +1233,16 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Ok, les vendieron esta idea como un beneficio.",
-     "s": 590.5,
+     "s": 594.2,
      "d": 4.66
     },
     {
      "x": "Ahora, en realidad no es un beneficio.",
-     "s": 595.16,
+     "s": 598.86,
      "d": 4.25
     }
    ],
-   "start": 590.5,
+   "start": 594.2,
    "dur": 8.91,
    "img": 1018
   },
@@ -1258,11 +1253,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Primeramente, no es como cualquier otra herencia: con las otras, ustedes tienen la decisión, ustedes deciden si quieren pasarla o no.",
-     "s": 599.41,
+     "s": 603.11,
      "d": 9.36
     }
    ],
-   "start": 599.41,
+   "start": 603.11,
    "dur": 9.36,
    "img": 1036
   },
@@ -1273,11 +1268,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Esta herencia es obligatoria.",
-     "s": 608.77,
+     "s": 612.47,
      "d": 4.66
     }
    ],
-   "start": 608.77,
+   "start": 612.47,
    "dur": 4.66,
    "img": 1039
   },
@@ -1288,31 +1283,31 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "El día que ustedes dos mueren,",
-     "s": 613.43,
+     "s": 617.13,
      "d": 2.53
     },
     {
      "x": "ya no están,",
-     "s": 615.96,
+     "s": 619.66,
      "d": 1.26
     },
     {
      "x": "por ley de vida y naturaleza,",
-     "s": 617.22,
+     "s": 620.92,
      "d": 2.53
     },
     {
      "x": "este contrato,",
-     "s": 619.75,
+     "s": 623.45,
      "d": 0.84
     },
     {
      "x": "esta responsabilidad económica,",
-     "s": 620.59,
+     "s": 624.29,
      "d": 1.26
     }
    ],
-   "start": 613.43,
+   "start": 617.13,
    "dur": 8.42,
    "img": 1018
   },
@@ -1323,11 +1318,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "pasa a ser ahora obligación del heredero de ustedes.",
-     "s": 621.85,
+     "s": 625.55,
      "d": 3.8
     }
    ],
-   "start": 621.85,
+   "start": 625.55,
    "dur": 3.8,
    "img": 1036
   },
@@ -1338,11 +1333,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Ahora, si ustedes llegan a ser una pareja que no tiene hijos, el tiempo compartido siempre encuentra un familiar.",
-     "s": 625.65,
+     "s": 629.35,
      "d": 9.25
     }
    ],
-   "start": 625.65,
+   "start": 629.35,
    "dur": 9.25,
    "img": 1039
   },
@@ -1353,11 +1348,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Encuentra un hermano, un primo, un tío, un familiar de conexión sanguínea inmediata al cual ellos le pasan esta deuda.",
-     "s": 634.9,
+     "s": 638.6,
      "d": 8.6
     }
    ],
-   "start": 634.9,
+   "start": 638.6,
    "dur": 8.6,
    "img": 1018
   },
@@ -1368,16 +1363,16 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Y como ya les comenté, no es opcional, pasa de manera automática, obligatorio.",
-     "s": 643.5,
+     "s": 647.2,
      "d": 6.77
     },
     {
      "x": "¿Esto se lo dijeron en algún momento?",
-     "s": 650.27,
+     "s": 653.97,
      "d": 4.93
     }
    ],
-   "start": 643.5,
+   "start": 647.2,
    "dur": 11.7,
    "img": 1036
   },
@@ -1388,11 +1383,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Entonces imagínense, chicos: una propiedad que es hereditaria, de generación en generación, de aquí a 40 años.",
-     "s": 655.2,
+     "s": 658.9,
      "d": 9.29
     }
    ],
-   "start": 655.2,
+   "start": 658.9,
    "dur": 9.29,
    "img": 1039
   },
@@ -1403,11 +1398,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "¿Cuánto irán a ser esos pagos de mantenimiento en ese momento?",
-     "s": 664.49,
+     "s": 668.19,
      "d": 5.67
     }
    ],
-   "start": 664.49,
+   "start": 668.19,
    "dur": 5.67,
    "img": 1036
   },
@@ -1418,11 +1413,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Incluso así, sus familiares van a estar heredando unos pagos de mantenimiento que van a ser horrendosos.",
-     "s": 670.16,
+     "s": 673.86,
      "d": 8.76
     }
    ],
-   "start": 670.16,
+   "start": 673.86,
    "dur": 8.76,
    "img": 1039
   },
@@ -1431,7 +1426,7 @@ window.DECK_TEXT_ES_DB = {
    "kind": "break",
    "sentences": [],
    "panel": null,
-   "start": 678.92,
+   "start": 682.62,
    "dur": 2.0,
    "img": 1039
   },
@@ -1442,11 +1437,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Ok chicos, entiendo.",
-     "s": 680.92,
+     "s": 684.62,
      "d": 3.51
     }
    ],
-   "start": 680.92,
+   "start": 684.62,
    "dur": 3.51,
    "img": 1041
   },
@@ -1457,11 +1452,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Esas eran todas las preguntas que tenía, como les comenté, para asegurarme de que el caso de ustedes sí tiene, pues, las características que estamos buscando.",
-     "s": 684.43,
+     "s": 688.13,
      "d": 11.86
     }
    ],
-   "start": 684.43,
+   "start": 688.13,
    "dur": 11.86,
    "img": 1044
   },
@@ -1472,11 +1467,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Como yo les comenté al principio de la llamada,",
-     "s": 696.29,
+     "s": 699.99,
      "d": 3.34
     }
    ],
-   "start": 696.29,
+   "start": 699.99,
    "dur": 3.34,
    "img": 1041
   },
@@ -1487,11 +1482,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "estamos buscando casos a los cuales le podamos garantizar el éxito de la cancelación al 100%.",
-     "s": 699.63,
+     "s": 703.33,
      "d": 5.95
     }
    ],
-   "start": 699.63,
+   "start": 703.33,
    "dur": 5.95,
    "img": 1044
   },
@@ -1502,11 +1497,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Y como también les estuve comentando, basamos nuestros casos en las malas representaciones y en la mentira que utilizan todos los vendedores.",
-     "s": 705.58,
+     "s": 709.28,
      "d": 10.28
     }
    ],
-   "start": 705.58,
+   "start": 709.28,
    "dur": 10.28,
    "img": 1041
   },
@@ -1517,26 +1512,26 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Que el caso de ustedes,",
-     "s": 715.86,
+     "s": 719.56,
      "d": 2.12
     },
     {
      "x": "obviamente,",
-     "s": 717.98,
+     "s": 721.68,
      "d": 0.42
     },
     {
      "x": "lo podemos tomar y les podemos garantizar la cancelación al 100%,",
-     "s": 718.4,
+     "s": 722.1,
      "d": 4.66
     },
     {
      "x": "porque ustedes no sabían básicamente lo que estaban firmando,",
-     "s": 723.06,
+     "s": 726.76,
      "d": 3.81
     }
    ],
-   "start": 715.86,
+   "start": 719.56,
    "dur": 11.01,
    "img": 1044
   },
@@ -1547,16 +1542,16 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "les estuvieron mintiendo.",
-     "s": 726.87,
+     "s": 730.57,
      "d": 1.28
     },
     {
      "x": "El caso de ustedes sí califica para que nosotros los podamos ayudar.",
-     "s": 728.15,
+     "s": 731.85,
      "d": 6.7
     }
    ],
-   "start": 726.87,
+   "start": 730.57,
    "dur": 7.98,
    "img": 1041
   },
@@ -1567,21 +1562,21 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Ahora,",
-     "s": 734.85,
+     "s": 738.55,
      "d": 0.4
     },
     {
      "x": "antes de que yo pase a explicarles el proceso de cancelación y lo que podemos hacer por ustedes,",
-     "s": 735.25,
+     "s": 738.95,
      "d": 7.24
     },
     {
      "x": "qué tipo de cancelación manejamos acá,",
-     "s": 742.49,
+     "s": 746.19,
      "d": 2.41
     }
    ],
-   "start": 734.85,
+   "start": 738.55,
    "dur": 10.05,
    "img": 1044
   },
@@ -1592,11 +1587,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "¿tienen alguna pregunta o alguna duda para mí?",
-     "s": 744.9,
+     "s": 748.6,
      "d": 3.23
     }
    ],
-   "start": 744.9,
+   "start": 748.6,
    "dur": 3.23,
    "img": 1041
   },
@@ -1607,11 +1602,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "¿Tienen alguna duda acerca de lo que les estuve comentando anteriormente,",
-     "s": 748.13,
+     "s": 751.83,
      "d": 4.35
     }
    ],
-   "start": 748.13,
+   "start": 751.83,
    "dur": 4.35,
    "img": 1044
   },
@@ -1622,11 +1617,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "antes de que yo pase a explicarles el proceso de cancelación y cómo es el servicio que les podemos ofrecer?",
-     "s": 752.48,
+     "s": 756.18,
      "d": 7.9
     }
    ],
-   "start": 752.48,
+   "start": 756.18,
    "dur": 7.9,
    "img": 1041
   },
@@ -1637,11 +1632,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "¿Tienen algo más que hasta el momento no hayan mencionado y creen que tenga peso y que pueda ayudar al caso?",
-     "s": 760.38,
+     "s": 764.08,
      "d": 8.17
     }
    ],
-   "start": 760.38,
+   "start": 764.08,
    "dur": 8.17,
    "img": 1044
   },
@@ -1652,21 +1647,21 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Chicos,",
-     "s": 768.55,
+     "s": 772.25,
      "d": 0.41
     },
     {
      "x": "esas eran las preguntas que yo tenía para asegurarme de que,",
-     "s": 768.96,
+     "s": 772.66,
      "d": 4.51
     },
     {
      "x": "como ya les expliqué,",
-     "s": 773.47,
+     "s": 777.17,
      "d": 1.64
     }
    ],
-   "start": 768.55,
+   "start": 772.25,
    "dur": 6.56,
    "img": 1041
   },
@@ -1677,11 +1672,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "este caso tiene las características que buscamos para poder garantizarles la cancelación.",
-     "s": 775.11,
+     "s": 778.81,
      "d": 4.92
     }
    ],
-   "start": 775.11,
+   "start": 778.81,
    "dur": 4.92,
    "img": 1044
   },
@@ -1692,11 +1687,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Ok, les dije, la cancelación la basamos en las malas representaciones, y de esas ustedes tienen una cuenta.",
-     "s": 780.03,
+     "s": 783.73,
      "d": 9.75
     }
    ],
-   "start": 780.03,
+   "start": 783.73,
    "dur": 9.75,
    "img": 1041
   },
@@ -1707,11 +1702,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Antes de que yo pase a explicarles el servicio que podemos ofrecerles y cómo los podemos ayudar,",
-     "s": 789.78,
+     "s": 793.48,
      "d": 5.9
     }
    ],
-   "start": 789.78,
+   "start": 793.48,
    "dur": 5.9,
    "img": 1044
   },
@@ -1722,11 +1717,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "¿ustedes tienen algo más que no hayan comentado hasta el momento y piensan que tenga peso,",
-     "s": 795.68,
+     "s": 799.38,
      "d": 5.56
     }
    ],
-   "start": 795.68,
+   "start": 799.38,
    "dur": 5.56,
    "img": 1041
   },
@@ -1737,11 +1732,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "o algo que les molesta de manera particular y me quieran comentar?",
-     "s": 801.24,
+     "s": 804.94,
      "d": 4.17
     }
    ],
-   "start": 801.24,
+   "start": 804.94,
    "dur": 4.17,
    "img": 1044
   },
@@ -1752,11 +1747,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "¿Otro detalle que les haya quedado?",
-     "s": 805.41,
+     "s": 809.11,
      "d": 4.88
     }
    ],
-   "start": 805.41,
+   "start": 809.11,
    "dur": 4.88,
    "img": 1041
   },
@@ -1765,7 +1760,7 @@ window.DECK_TEXT_ES_DB = {
    "kind": "break",
    "sentences": [],
    "panel": null,
-   "start": 810.29,
+   "start": 813.99,
    "dur": 2.0,
    "img": 1044
   },
@@ -1776,17 +1771,17 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Cancelación totalmente legítima.",
-     "s": 812.29,
+     "s": 815.99,
      "d": 3.87
     },
     {
-     "x": "En Estados Unidos la única compañía que ofrece cancelaciones totalmente legítimas es nuestra compañía.",
-     "s": 816.16,
-     "d": 7.25
+     "x": "En Estados Unidos la única compañía que ofrece cancelaciones totalmente legítimas es nuestra compañía, Linx Legal.",
+     "s": 819.86,
+     "d": 8.28
     }
    ],
-   "start": 812.29,
-   "dur": 11.12,
+   "start": 815.99,
+   "dur": 12.15,
    "img": 1050
   },
   {
@@ -1796,11 +1791,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Llevamos 17 años haciendo cancelaciones de tiempos compartidos y este es el tipo de cancelaciones que hacemos.",
-     "s": 823.41,
+     "s": 828.14,
      "d": 7.95
     }
    ],
-   "start": 823.41,
+   "start": 828.14,
    "dur": 7.95,
    "img": 1040
   },
@@ -1811,11 +1806,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Una cancelación legítima significa que retiramos la propiedad del nombre de ustedes y se la devolvemos al tiempo compartido.",
-     "s": 831.36,
+     "s": 836.09,
      "d": 9.46
     }
    ],
-   "start": 831.36,
+   "start": 836.09,
    "dur": 9.46,
    "img": 1050
   },
@@ -1826,11 +1821,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Una vez que la cancelación está completada al 100%, {{RESORT}} vuelve a ser dueño de esta propiedad.",
-     "s": 840.82,
+     "s": 845.55,
      "d": 7.54
     }
    ],
-   "start": 840.82,
+   "start": 845.55,
    "dur": 7.54,
    "img": 1040
   },
@@ -1841,11 +1836,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Obviamente, cuando esta propiedad vuelve a ser de {{RESORT}}, esa deuda que actualmente aparece en su crédito desaparece de inmediato.",
-     "s": 848.36,
+     "s": 853.09,
      "d": 10.18
     }
    ],
-   "start": 848.36,
+   "start": 853.09,
    "dur": 10.18,
    "img": 1050
   },
@@ -1856,21 +1851,21 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Cualquier conexión que hay entre ustedes,",
-     "s": 858.54,
+     "s": 863.27,
      "d": 2.49
     },
     {
      "x": "para mantenimiento,",
-     "s": 861.03,
+     "s": 865.76,
      "d": 0.83
     },
     {
      "x": "de mensualidad,",
-     "s": 861.86,
+     "s": 866.59,
      "d": 0.83
     }
    ],
-   "start": 858.54,
+   "start": 863.27,
    "dur": 4.15,
    "img": 1040
   },
@@ -1881,11 +1876,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "todo desaparece porque {{RESORT}} vuelve a ser dueño de esta propiedad y ustedes dejan de tener cualquier conexión con ellos.",
-     "s": 862.69,
+     "s": 867.42,
      "d": 8.29
     }
    ],
-   "start": 862.69,
+   "start": 867.42,
    "dur": 8.29,
    "img": 1050
   },
@@ -1896,11 +1891,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Ahora, a cada caso le asignamos un equipo de cancelación.",
-     "s": 870.98,
+     "s": 875.71,
      "d": 6.56
     }
    ],
-   "start": 870.98,
+   "start": 875.71,
    "dur": 6.56,
    "img": 1040
   },
@@ -1911,11 +1906,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Como ya les expliqué,",
-     "s": 877.54,
+     "s": 882.27,
      "d": 1.61
     }
    ],
-   "start": 877.54,
+   "start": 882.27,
    "dur": 1.61,
    "img": 1050
   },
@@ -1925,13 +1920,13 @@ window.DECK_TEXT_ES_DB = {
    "panel": null,
    "sentences": [
     {
-     "x": "mi trabajo es elaborar el caso con el cual vamos a estar trabajando y asegurarme de que podemos garantizarles el éxito de la cancelación al 100%.",
-     "s": 879.15,
-     "d": 10.49
+     "x": "mi trabajo en Linx Legal es elaborar el caso con el cual vamos a estar trabajando y asegurarme de que podemos garantizarles el éxito de la cancelación al 100%.",
+     "s": 883.88,
+     "d": 12.04
     }
    ],
-   "start": 879.15,
-   "dur": 10.49,
+   "start": 883.88,
+   "dur": 12.04,
    "img": 1040
   },
   {
@@ -1941,16 +1936,16 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Una vez que yo tengo con ustedes completado el acuerdo de servicio,",
-     "s": 889.64,
+     "s": 895.92,
      "d": 4.76
     },
     {
      "x": "el cual es un documento,",
-     "s": 894.4,
+     "s": 900.68,
      "d": 1.98
     }
    ],
-   "start": 889.64,
+   "start": 895.92,
    "dur": 6.74,
    "img": 1050
   },
@@ -1961,16 +1956,16 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "una vez firmado por ustedes y por mi representación de la compañía,",
-     "s": 896.38,
+     "s": 902.66,
      "d": 4.76
     },
     {
      "x": "nos da la potestad de representarlos legalmente.",
-     "s": 901.14,
+     "s": 907.42,
      "d": 2.79
     }
    ],
-   "start": 896.38,
+   "start": 902.66,
    "dur": 7.55,
    "img": 1040
   },
@@ -1981,11 +1976,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Una vez que yo complete este documento con ustedes,",
-     "s": 903.93,
+     "s": 910.21,
      "d": 3.24
     }
    ],
-   "start": 903.93,
+   "start": 910.21,
    "dur": 3.24,
    "img": 1050
   },
@@ -1996,11 +1991,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "yo lo envío al departamento de administración de la compañía y ahí se les asigna un case manager.",
-     "s": 907.17,
+     "s": 913.45,
      "d": 6.48
     }
    ],
-   "start": 907.17,
+   "start": 913.45,
    "dur": 6.48,
    "img": 1040
   },
@@ -2011,11 +2006,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Este case manager se comunicará con ustedes mañana mismo y les explica cómo será el inicio del proceso de cancelación.",
-     "s": 913.65,
+     "s": 919.93,
      "d": 9.37
     }
    ],
-   "start": 913.65,
+   "start": 919.93,
    "dur": 9.37,
    "img": 1050
   },
@@ -2026,26 +2021,26 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Ahora,",
-     "s": 923.02,
+     "s": 929.3,
      "d": 0.37
     },
     {
      "x": "su case manager,",
-     "s": 923.39,
+     "s": 929.67,
      "d": 1.11
     },
     {
      "x": "cuando se comunique con ustedes mañana,",
-     "s": 924.5,
+     "s": 930.78,
      "d": 2.22
     },
     {
      "x": "les va a pedir lo único que necesitamos de parte de ustedes para iniciar el proceso,",
-     "s": 926.72,
+     "s": 933.0,
      "d": 5.93
     }
    ],
-   "start": 923.02,
+   "start": 929.3,
    "dur": 9.63,
    "img": 1040
   },
@@ -2056,11 +2051,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "y es que escriban una carta de explicación.",
-     "s": 932.65,
+     "s": 938.93,
      "d": 2.97
     }
    ],
-   "start": 932.65,
+   "start": 938.93,
    "dur": 2.97,
    "img": 1050
   },
@@ -2071,11 +2066,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Cuando ustedes envían a su case manager vía email la carta explicativa, nosotros podemos iniciar el proceso de cancelación de inmediato.",
-     "s": 935.62,
+     "s": 941.9,
      "d": 10.11
     }
    ],
-   "start": 935.62,
+   "start": 941.9,
    "dur": 10.11,
    "img": 1040
   },
@@ -2086,11 +2081,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Ahora, no se demoren escribiendo esta carta pensando que tiene que verse profesional, nosotros nos encargamos de esos detalles.",
-     "s": 945.73,
+     "s": 952.01,
      "d": 8.84
     }
    ],
-   "start": 945.73,
+   "start": 952.01,
    "dur": 8.84,
    "img": 1050
   },
@@ -2101,21 +2096,21 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Nosotros lo único que queremos es que escriban con sus palabras,",
-     "s": 954.57,
+     "s": 960.85,
      "d": 4.52
     },
     {
      "x": "con sus expresiones,",
-     "s": 959.09,
+     "s": 965.37,
      "d": 1.23
     },
     {
      "x": "con su punto de vista,",
-     "s": 960.32,
+     "s": 966.6,
      "d": 2.05
     }
    ],
-   "start": 954.57,
+   "start": 960.85,
    "dur": 7.8,
    "img": 1040
   },
@@ -2126,16 +2121,16 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "cuál fue la experiencia que ustedes han tenido,",
-     "s": 962.37,
+     "s": 968.65,
      "d": 3.29
     },
     {
      "x": "por qué están descontentos y están buscando una cancelación.",
-     "s": 965.66,
+     "s": 971.94,
      "d": 3.7
     }
    ],
-   "start": 962.37,
+   "start": 968.65,
    "dur": 6.99,
    "img": 1050
   },
@@ -2146,11 +2141,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Una vez que la cancelación está completada al 100%,",
-     "s": 969.36,
+     "s": 975.64,
      "d": 3.47
     }
    ],
-   "start": 969.36,
+   "start": 975.64,
    "dur": 3.47,
    "img": 1040
   },
@@ -2161,11 +2156,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "el tiempo compartido emite una notificación de cancelación en la cual ellos admiten que la venta fue fraudulenta y por esto ellos entienden que ya no debe haber ninguna conexión entre ustedes.",
-     "s": 972.83,
+     "s": 979.11,
      "d": 12.35
     }
    ],
-   "start": 972.83,
+   "start": 979.11,
    "dur": 12.35,
    "img": 1050
   },
@@ -2176,11 +2171,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Una vez que de su crédito desaparece la deuda y ustedes tienen esta notificación de cancelación de parte del tiempo compartido,",
-     "s": 985.18,
+     "s": 991.46,
      "d": 9.2
     }
    ],
-   "start": 985.18,
+   "start": 991.46,
    "dur": 9.2,
    "img": 1040
   },
@@ -2191,11 +2186,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "damos por completado el proceso de cancelación.",
-     "s": 994.38,
+     "s": 1000.66,
      "d": 3.07
     }
    ],
-   "start": 994.38,
+   "start": 1000.66,
    "dur": 3.07,
    "img": 1050
   },
@@ -2206,11 +2201,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Ahora, aparte de la cancelación que está garantizada al 100%, también queremos conseguir un reembolso del dinero que ustedes han perdido.",
-     "s": 997.45,
+     "s": 1003.73,
      "d": 9.51
     }
    ],
-   "start": 997.45,
+   "start": 1003.73,
    "dur": 9.51,
    "img": 1060
   },
@@ -2221,11 +2216,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Ahora acá siempre me gusta ser 100% claro,",
-     "s": 1006.96,
+     "s": 1013.24,
      "d": 3.18
     }
    ],
-   "start": 1006.96,
+   "start": 1013.24,
    "dur": 3.18,
    "img": 1029
   },
@@ -2236,11 +2231,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "me gusta ser transparente para que mis clientes no tengan ningún tipo de dudas o no tengan sus expectativas puestas en el lugar incorrecto.",
-     "s": 1010.14,
+     "s": 1016.42,
      "d": 9.55
     }
    ],
-   "start": 1010.14,
+   "start": 1016.42,
    "dur": 9.55,
    "img": 1060
   },
@@ -2251,16 +2246,16 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "La cancelación se garantiza al 100%; el reembolso no se puede garantizar al 100%.",
-     "s": 1019.69,
+     "s": 1025.97,
      "d": 7.32
     },
     {
      "x": "El reembolso depende mucho de cómo va el proceso de cancelación.",
-     "s": 1027.01,
+     "s": 1033.29,
      "d": 5.19
     }
    ],
-   "start": 1019.69,
+   "start": 1025.97,
    "dur": 12.51,
    "img": 1029
   },
@@ -2271,11 +2266,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "En algunos casos se consigue un reembolso total del dinero que ustedes han perdido y en otros casos sólo una parte del reembolso;",
-     "s": 1032.2,
+     "s": 1038.48,
      "d": 9.09
     }
    ],
-   "start": 1032.2,
+   "start": 1038.48,
    "dur": 9.09,
    "img": 1060
   },
@@ -2286,11 +2281,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "depende de cómo va el proceso.",
-     "s": 1041.29,
+     "s": 1047.57,
      "d": 2.37
     }
    ],
-   "start": 1041.29,
+   "start": 1047.57,
    "dur": 2.37,
    "img": 1029
   },
@@ -2301,11 +2296,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Ahora la mayor garantía que nuestros clientes tienen es que si nosotros no ganamos su caso hacemos una devolución total de su inversión.",
-     "s": 1043.66,
+     "s": 1049.94,
      "d": 8.48
     }
    ],
-   "start": 1043.66,
+   "start": 1049.94,
    "dur": 8.48,
    "img": 1060
   },
@@ -2316,11 +2311,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Ahora les digo, para que tengan en cuenta: en 17 años de experiencia, esto nunca ha sucedido.",
-     "s": 1052.14,
+     "s": 1058.42,
      "d": 9.37
     }
    ],
-   "start": 1052.14,
+   "start": 1058.42,
    "dur": 9.37,
    "img": 1029
   },
@@ -2331,11 +2326,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Nosotros nunca hemos tomado un caso en el cual no hayamos podido ganar y tengamos que hacer un reembolso.",
-     "s": 1061.51,
+     "s": 1067.79,
      "d": 6.75
     }
    ],
-   "start": 1061.51,
+   "start": 1067.79,
    "dur": 6.75,
    "img": 1060
   },
@@ -2346,11 +2341,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Esto simplemente es una garantía que ofrecemos para que ustedes vean que no tienen nada que perder,",
-     "s": 1068.26,
+     "s": 1074.54,
      "d": 6.61
     }
    ],
-   "start": 1068.26,
+   "start": 1074.54,
    "dur": 6.61,
    "img": 1029
   },
@@ -2361,11 +2356,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "que nosotros tomamos todo el riesgo y que sabemos el servicio que les estamos ofreciendo.",
-     "s": 1074.87,
+     "s": 1081.15,
      "d": 5.83
     }
    ],
-   "start": 1074.87,
+   "start": 1081.15,
    "dur": 5.83,
    "img": 1060
   },
@@ -2376,11 +2371,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "¿Tienen alguna duda, alguna pregunta?",
-     "s": 1080.7,
+     "s": 1086.98,
      "d": 5.17
     }
    ],
-   "start": 1080.7,
+   "start": 1086.98,
    "dur": 5.17,
    "img": 1029
   },
@@ -2391,11 +2386,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Bueno, señores, para hacer una cancelación completa y eliminar toda su titularidad como propietarios, vamos a revisar los números.",
-     "s": 1085.87,
+     "s": 1092.15,
      "d": 9.68
     }
    ],
-   "start": 1085.87,
+   "start": 1092.15,
    "dur": 9.68,
    "img": 1039
   },
@@ -2406,11 +2401,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Lo primero que quiero que anoten es: INVERSIÓN TOTAL: {{PRICE}}.",
-     "s": 1095.55,
+     "s": 1101.83,
      "d": 5.15
     }
    ],
-   "start": 1095.55,
+   "start": 1101.83,
    "dur": 5.15,
    "img": 1016
   },
@@ -2421,11 +2416,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "La inversión por la cancelación completa y legítima de su deuda, y la posible recuperación del dinero que han perdido, sería de tanto.",
-     "s": 1100.7,
+     "s": 1106.98,
      "d": 8.86
     }
    ],
-   "start": 1100.7,
+   "start": 1106.98,
    "dur": 8.86,
    "img": 1039
   },
@@ -2436,11 +2431,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Y solo en mantenimiento, en 20 años pagarían {{MF20}}.",
-     "s": 1109.56,
+     "s": 1115.84,
      "d": 4.63
     }
    ],
-   "start": 1109.56,
+   "start": 1115.84,
    "dur": 4.63,
    "img": 1016
   },
@@ -2451,16 +2446,16 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Avísenme cuando lo tengan anotado.",
-     "s": 1114.19,
+     "s": 1120.47,
      "d": 3.65
     },
     {
      "x": "Perfecto.",
-     "s": 1117.84,
+     "s": 1124.12,
      "d": 2.57
     }
    ],
-   "start": 1114.19,
+   "start": 1120.47,
    "dur": 6.22,
    "img": 1016
   },
@@ -2471,21 +2466,21 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Ahora quiero aclararles algunas cosas.",
-     "s": 1120.41,
+     "s": 1126.69,
      "d": 3.96
     },
     {
      "x": "Primero,",
-     "s": 1124.37,
+     "s": 1130.65,
      "d": 0.44
     },
     {
      "x": "esa inversión es completa: es el número final e incluye los gastos administrativos,",
-     "s": 1124.81,
+     "s": 1131.09,
      "d": 5.76
     }
    ],
-   "start": 1120.41,
+   "start": 1126.69,
    "dur": 10.16,
    "img": 1039
   },
@@ -2496,16 +2491,16 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "los costos de presentación de documentos,",
-     "s": 1130.57,
+     "s": 1136.85,
      "d": 2.66
     },
     {
      "x": "las horas de trabajo y absolutamente todo.",
-     "s": 1133.23,
+     "s": 1139.51,
      "d": 3.1
     }
    ],
-   "start": 1130.57,
+   "start": 1136.85,
    "dur": 5.76,
    "img": 1016
   },
@@ -2516,11 +2511,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Esta no es una situación en la que empezamos a trabajar en su caso y después descubrimos que resulta más costoso de lo que habíamos calculado.",
-     "s": 1136.33,
+     "s": 1142.61,
      "d": 8.43
     }
    ],
-   "start": 1136.33,
+   "start": 1142.61,
    "dur": 8.43,
    "img": 1039
   },
@@ -2531,11 +2526,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "No vamos a regresar a decirles: señores, resulta que esto cuesta más de lo que pensábamos.",
-     "s": 1144.76,
+     "s": 1151.04,
      "d": 7.37
     }
    ],
-   "start": 1144.76,
+   "start": 1151.04,
    "dur": 7.37,
    "img": 1016
   },
@@ -2546,16 +2541,16 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Esa es la inversión completa para una cancelación completa.",
-     "s": 1152.13,
+     "s": 1158.41,
      "d": 4.83
     },
     {
      "x": "No vamos a comunicarnos con ustedes por ni un centavo más.",
-     "s": 1156.96,
+     "s": 1163.24,
      "d": 5.14
     }
    ],
-   "start": 1152.13,
+   "start": 1158.41,
    "dur": 9.97,
    "img": 1039
   },
@@ -2566,11 +2561,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Además, el servicio está respaldado por una política de devolución del 100% de su dinero.",
-     "s": 1162.1,
+     "s": 1168.38,
      "d": 7.3
     }
    ],
-   "start": 1162.1,
+   "start": 1168.38,
    "dur": 7.3,
    "img": 1016
   },
@@ -2581,21 +2576,21 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Y nuevamente, eso está por escrito.",
-     "s": 1169.4,
+     "s": 1175.68,
      "d": 3.87
     },
     {
      "x": "No hay condiciones ocultas.",
-     "s": 1173.27,
+     "s": 1179.55,
      "d": 3.39
     },
     {
      "x": "Esta garantía existe para quitarles el riesgo si por alguna razón no ganamos.",
-     "s": 1176.66,
+     "s": 1182.94,
      "d": 5.86
     }
    ],
-   "start": 1169.4,
+   "start": 1175.68,
    "dur": 13.12,
    "img": 1039
   },
@@ -2606,16 +2601,16 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "No existe ningún riesgo para ustedes.",
-     "s": 1182.52,
+     "s": 1188.8,
      "d": 4.04
     },
     {
      "x": "Les devolvemos cada centavo de su inversión.",
-     "s": 1186.56,
+     "s": 1192.84,
      "d": 5.36
     }
    ],
-   "start": 1182.52,
+   "start": 1188.8,
    "dur": 9.4,
    "img": 1016
   },
@@ -2626,11 +2621,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Si no tienen más preguntas, les puedo explicar las tres diferentes maneras en que los clientes hacen esta inversión.",
-     "s": 1191.92,
+     "s": 1198.2,
      "d": 8.89
     }
    ],
-   "start": 1191.92,
+   "start": 1198.2,
    "dur": 8.89,
    "img": 1041
   },
@@ -2641,21 +2636,21 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "En cuanto a las maneras de hacer esta inversión,",
-     "s": 1200.81,
+     "s": 1207.09,
      "d": 3.68
     },
     {
      "x": "obviamente,",
-     "s": 1204.49,
+     "s": 1210.77,
      "d": 0.41
     },
     {
      "x": "tenemos clientes que pueden hacer la inversión completa con una tarjeta de crédito,",
-     "s": 1204.9,
+     "s": 1211.18,
      "d": 5.32
     }
    ],
-   "start": 1200.81,
+   "start": 1207.09,
    "dur": 9.41,
    "img": 1047
   },
@@ -2666,16 +2661,16 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "o una tarjeta de débito,",
-     "s": 1210.22,
+     "s": 1216.5,
      "d": 2.05
     },
     {
      "x": "o con ahorros.",
-     "s": 1212.27,
+     "s": 1218.55,
      "d": 1.22
     }
    ],
-   "start": 1210.22,
+   "start": 1216.5,
    "dur": 3.27,
    "img": 1054
   },
@@ -2686,16 +2681,16 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Hay clientes que necesitan un poco más de asistencia financiera.",
-     "s": 1213.49,
+     "s": 1219.77,
      "d": 5.04
     },
     {
      "x": "¿Ustedes en qué posición se sienten?",
-     "s": 1218.53,
+     "s": 1224.81,
      "d": 3.65
     }
    ],
-   "start": 1213.49,
+   "start": 1219.77,
    "dur": 8.69,
    "img": 1047
   },
@@ -2706,11 +2701,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "¿Ustedes tienen algún método de pago con el cual podrían cubrir esta inversión completa?",
-     "s": 1222.18,
+     "s": 1228.46,
      "d": 7.52
     }
    ],
-   "start": 1222.18,
+   "start": 1228.46,
    "dur": 7.52,
    "img": 1054
   },
@@ -2721,16 +2716,16 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Podemos ofrecerles una financiación.",
-     "s": 1229.7,
+     "s": 1235.98,
      "d": 3.77
     },
     {
      "x": "Llevamos años trabajando con una financiera.",
-     "s": 1233.47,
+     "s": 1239.75,
      "d": 5.53
     }
    ],
-   "start": 1229.7,
+   "start": 1235.98,
    "dur": 9.3,
    "img": 1047
   },
@@ -2741,21 +2736,21 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Llevamos años trabajando con una financiera,",
-     "s": 1239.0,
+     "s": 1245.28,
      "d": 2.3
     },
     {
      "x": "y así es que hacemos una aplicación,",
-     "s": 1241.3,
+     "s": 1247.58,
      "d": 2.68
     },
     {
      "x": "y si la aceptan,",
-     "s": 1243.98,
+     "s": 1250.26,
      "d": 1.53
     }
    ],
-   "start": 1239.0,
+   "start": 1245.28,
    "dur": 6.51,
    "img": 1054
   },
@@ -2766,11 +2761,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "las mensualidades de la inversión pueden llegar a ser hasta de 36 meses.",
-     "s": 1245.51,
+     "s": 1251.79,
      "d": 4.97
     }
    ],
-   "start": 1245.51,
+   "start": 1251.79,
    "dur": 4.97,
    "img": 1047
   },
@@ -2781,11 +2776,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Ahora, si ustedes quieren más tiempo o menos tiempo, obviamente sería más o menos mensualidad.",
-     "s": 1250.48,
+     "s": 1256.76,
      "d": 8.58
     }
    ],
-   "start": 1250.48,
+   "start": 1256.76,
    "dur": 8.58,
    "img": 1054
   },
@@ -2796,16 +2791,16 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Por 36 meses sería tanto.",
-     "s": 1259.06,
+     "s": 1265.34,
      "d": 3.68
     },
     {
      "x": "¿Qué les parece?",
-     "s": 1262.74,
+     "s": 1269.02,
      "d": 3.97
     }
    ],
-   "start": 1259.06,
+   "start": 1265.34,
    "dur": 7.65,
    "img": 1047
   },
@@ -2816,21 +2811,21 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Perfecto.",
-     "s": 1266.71,
+     "s": 1272.99,
      "d": 0.52
     },
     {
      "x": "Ahora, esto es un préstamo financiero,",
-     "s": 1267.23,
+     "s": 1273.51,
      "d": 3.09
     },
     {
      "x": "así que les van a pedir identificación,",
-     "s": 1270.32,
+     "s": 1276.6,
      "d": 3.61
     }
    ],
-   "start": 1266.71,
+   "start": 1272.99,
    "dur": 7.22,
    "img": 1054
   },
@@ -2841,16 +2836,16 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "documentación,",
-     "s": 1273.93,
+     "s": 1280.21,
      "d": 0.52
     },
     {
      "x": "información de trabajo y de residencia — las preguntas típicas de una solicitud financiera.",
-     "s": 1274.45,
+     "s": 1280.73,
      "d": 7.22
     }
    ],
-   "start": 1273.93,
+   "start": 1280.21,
    "dur": 7.74,
    "img": 1047
   },
@@ -2861,11 +2856,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Chicos, si necesitan hablarlo, algo que siempre recomiendo es que me pongan en silencio y lo debatan entre ustedes.",
-     "s": 1281.67,
+     "s": 1287.95,
      "d": 9.42
     }
    ],
-   "start": 1281.67,
+   "start": 1287.95,
    "dur": 9.42,
    "img": 1054
   },
@@ -2876,11 +2871,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Ya que yo estoy acá en la llamada, cualquier pregunta que surja yo la puedo responder.",
-     "s": 1291.09,
+     "s": 1297.37,
      "d": 7.5
     }
    ],
-   "start": 1291.09,
+   "start": 1297.37,
    "dur": 7.5,
    "img": 1047
   },
@@ -2891,11 +2886,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "La primera mensualidad de la inversión no se hace hasta el mes que viene.",
-     "s": 1298.59,
+     "s": 1304.87,
      "d": 6.44
     }
    ],
-   "start": 1298.59,
+   "start": 1304.87,
    "dur": 6.44,
    "img": 1054
   },
@@ -2906,11 +2901,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Una vez iniciado el proceso de cancelación, nuestros clientes no tienen la obligación de continuar con los pagos al tiempo compartido.",
-     "s": 1305.03,
+     "s": 1311.31,
      "d": 8.48
     }
    ],
-   "start": 1305.03,
+   "start": 1311.31,
    "dur": 8.48,
    "img": 1015
   },
@@ -2921,11 +2916,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Nosotros vamos a ganar la cancelación, nosotros garantizamos el éxito de la cancelación, independientemente de si usted continúa o descontinúa sus pagos al tiempo compartido.",
-     "s": 1313.51,
+     "s": 1319.79,
      "d": 12.78
     }
    ],
-   "start": 1313.51,
+   "start": 1319.79,
    "dur": 12.78,
    "img": 1015
   },
@@ -2936,11 +2931,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Si nosotros iniciamos el proceso y les hace sentido financieramente descontinuar estos pagos, pueden descontinuarse, no afectan en absoluto la cancelación.",
-     "s": 1326.29,
+     "s": 1332.57,
      "d": 10.3
     }
    ],
-   "start": 1326.29,
+   "start": 1332.57,
    "dur": 10.3,
    "img": 1015
   },
@@ -2951,11 +2946,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Yo no les dije que dejaran de pagar.",
-     "s": 1336.59,
+     "s": 1342.87,
      "d": 4.95
     }
    ],
-   "start": 1336.59,
+   "start": 1342.87,
    "dur": 4.95,
    "img": 1015
   },
@@ -2966,11 +2961,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Ok, no tenemos una varita mágica que durante el proceso de cancelación pueda garantizar al 100% que ellos no vayan a tocar su crédito.",
-     "s": 1341.54,
+     "s": 1347.82,
      "d": 9.2
     }
    ],
-   "start": 1341.54,
+   "start": 1347.82,
    "dur": 9.2,
    "img": 1048
   },
@@ -2981,11 +2976,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Lo que sí les puedo decir es que,",
-     "s": 1350.74,
+     "s": 1357.02,
      "d": 2.87
     }
    ],
-   "start": 1350.74,
+   "start": 1357.02,
    "dur": 2.87,
    "img": 1048
   },
@@ -2996,11 +2991,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "una vez que la cancelación está completada al 100% y el tiempo compartido emite la notificación de cancelación a ustedes,",
-     "s": 1353.61,
+     "s": 1359.89,
      "d": 7.17
     }
    ],
-   "start": 1353.61,
+   "start": 1359.89,
    "dur": 7.17,
    "img": 1048
   },
@@ -3011,11 +3006,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "en ese momento se puede eliminar el daño que el tiempo compartido ha estado haciendo en su crédito.",
-     "s": 1360.78,
+     "s": 1367.06,
      "d": 6.46
     }
    ],
-   "start": 1360.78,
+   "start": 1367.06,
    "dur": 6.46,
    "img": 1048
   },
@@ -3026,11 +3021,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Se puede eliminar parte del daño que el tiempo compartido ha estado haciendo en su crédito.",
-     "s": 1367.24,
+     "s": 1373.52,
      "d": 6.29
     }
    ],
-   "start": 1367.24,
+   "start": 1373.52,
    "dur": 6.29,
    "img": 1048
   },
@@ -3041,11 +3036,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Pero no durante el proceso de cancelación: no se puede garantizar que no vayan a afectar su crédito.",
-     "s": 1373.53,
+     "s": 1379.81,
      "d": 6.96
     }
    ],
-   "start": 1373.53,
+   "start": 1379.81,
    "dur": 6.96,
    "img": 1048
   },
@@ -3056,11 +3051,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Después de que termine, se puede eliminar el daño.",
-     "s": 1380.49,
+     "s": 1386.77,
      "d": 5.84
     }
    ],
-   "start": 1380.49,
+   "start": 1386.77,
    "dur": 5.84,
    "img": 1048
   },
@@ -3071,11 +3066,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Una vez completado el proceso de cancelación al 100%, se puede eliminar el daño que el tiempo compartido ha hecho en su crédito.",
-     "s": 1386.33,
+     "s": 1392.61,
      "d": 10.02
     }
    ],
-   "start": 1386.33,
+   "start": 1392.61,
    "dur": 10.02,
    "img": 1048
   },
@@ -3084,7 +3079,7 @@ window.DECK_TEXT_ES_DB = {
    "kind": "break",
    "sentences": [],
    "panel": null,
-   "start": 1396.35,
+   "start": 1402.63,
    "dur": 2.0,
    "img": 1048
   },
@@ -3095,21 +3090,21 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Chicos,",
-     "s": 1398.35,
+     "s": 1404.63,
      "d": 0.36
     },
     {
      "x": "lo que iniciaremos el proceso sería el día de hoy,",
-     "s": 1398.71,
+     "s": 1404.99,
      "d": 3.56
     },
     {
      "x": "y sí es ideal iniciar el proceso lo antes posible,",
-     "s": 1402.27,
+     "s": 1408.55,
      "d": 3.56
     }
    ],
-   "start": 1398.35,
+   "start": 1404.63,
    "dur": 7.48,
    "img": 1015
   },
@@ -3120,11 +3115,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "ya que el día de hoy es que nosotros les podemos ofrecer el servicio que yo les he explicado.",
-     "s": 1405.83,
+     "s": 1412.11,
      "d": 6.74
     }
    ],
-   "start": 1405.83,
+   "start": 1412.11,
    "dur": 6.74,
    "img": 1015
   },
@@ -3135,16 +3130,16 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Cuando ustedes regresen, cómo podrá ser el servicio que les podemos ofrecer, no lo sé.",
-     "s": 1412.57,
+     "s": 1418.85,
      "d": 6.63
     },
     {
      "x": "Pero como les digo,",
-     "s": 1419.2,
+     "s": 1425.48,
      "d": 1.67
     }
    ],
-   "start": 1412.57,
+   "start": 1418.85,
    "dur": 8.3,
    "img": 1015
   },
@@ -3155,16 +3150,16 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "las maneras de hacer la inversión son bastante flexibles: la primera mensualidad de la inversión sería hasta el mes que viene,",
-     "s": 1420.87,
+     "s": 1427.15,
      "d": 8.75
     },
     {
      "x": "sin embargo,",
-     "s": 1429.62,
+     "s": 1435.9,
      "d": 0.83
     }
    ],
-   "start": 1420.87,
+   "start": 1427.15,
    "dur": 9.58,
    "img": 1015
   },
@@ -3175,11 +3170,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "nosotros iniciamos el proceso de cancelación de inmediato.",
-     "s": 1430.45,
+     "s": 1436.73,
      "d": 3.33
     }
    ],
-   "start": 1430.45,
+   "start": 1436.73,
    "dur": 3.33,
    "img": 1015
   },
@@ -3188,7 +3183,7 @@ window.DECK_TEXT_ES_DB = {
    "kind": "break",
    "sentences": [],
    "panel": null,
-   "start": 1433.78,
+   "start": 1440.06,
    "dur": 2.0,
    "img": 1015
   },
@@ -3199,11 +3194,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Lo agendamos para otro día, o dentro de dos días cuando más.",
-     "s": 1435.78,
+     "s": 1442.06,
      "d": 4.54
     }
    ],
-   "start": 1435.78,
+   "start": 1442.06,
    "dur": 4.54,
    "img": 1015
   },
@@ -3214,11 +3209,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Perfecto, eligieron financiarlo. Ahora vamos a llenar la solicitud de financiamiento juntos, paso a paso, y yo los voy guiando en cada pregunta.",
-     "s": 1440.32,
+     "s": 1446.6,
      "d": 11.85
     }
    ],
-   "start": 1440.32,
+   "start": 1446.6,
    "dur": 11.85,
    "img": 1015
   },
@@ -3229,11 +3224,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Primero, los datos personales de cada uno: nombre completo, fecha de nacimiento y número de seguro social.",
-     "s": 1452.17,
+     "s": 1458.45,
      "d": 8.76
     }
    ],
-   "start": 1452.17,
+   "start": 1458.45,
    "dur": 8.76,
    "img": 1015
   },
@@ -3244,11 +3239,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Tengan a la mano una identificación con foto de cada uno.",
-     "s": 1460.93,
+     "s": 1467.21,
      "d": 5.67
     }
    ],
-   "start": 1460.93,
+   "start": 1467.21,
    "dur": 5.67,
    "img": 1015
   },
@@ -3259,11 +3254,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Ahora, la dirección: dónde viven actualmente y cuánto tiempo llevan viviendo ahí.",
-     "s": 1466.6,
+     "s": 1472.88,
      "d": 6.18
     }
    ],
-   "start": 1466.6,
+   "start": 1472.88,
    "dur": 6.18,
    "img": 1015
   },
@@ -3274,11 +3269,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Ahora, el empleo: dónde trabaja cada uno, su puesto y cuánto tiempo lleva en ese trabajo.",
-     "s": 1472.78,
+     "s": 1479.06,
      "d": 8.24
     }
    ],
-   "start": 1472.78,
+   "start": 1479.06,
    "dur": 8.24,
    "img": 1015
   },
@@ -3289,11 +3284,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Ahora, los ingresos: cuánto gana cada uno al mes y si tienen algún otro ingreso.",
-     "s": 1481.02,
+     "s": 1487.3,
      "d": 7.73
     }
    ],
-   "start": 1481.02,
+   "start": 1487.3,
    "dur": 7.73,
    "img": 1015
   },
@@ -3304,11 +3299,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Revisamos que todo esté correcto antes de enviarla. Un error en un número puede atrasar la aprobación.",
-     "s": 1488.75,
+     "s": 1495.03,
      "d": 8.76
     }
    ],
-   "start": 1488.75,
+   "start": 1495.03,
    "dur": 8.76,
    "img": 1015
   },
@@ -3319,11 +3314,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "La respuesta de la financiera es rápida. En cuanto quede aprobada, seguimos con el acuerdo.",
-     "s": 1497.51,
+     "s": 1503.79,
      "d": 7.73
     }
    ],
-   "start": 1497.51,
+   "start": 1503.79,
    "dur": 7.73,
    "img": 1015
   },
@@ -3334,11 +3329,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Ahora les envío el acuerdo por DocuSign y lo repasamos juntos, página por página.",
-     "s": 1505.24,
+     "s": 1511.52,
      "d": 7.21
     }
    ],
-   "start": 1505.24,
+   "start": 1511.52,
    "dur": 7.21,
    "img": 1015
   },
@@ -3349,11 +3344,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Yo no les entrego el contrato para que lo lean solos. Lo leemos juntos, y cualquier pregunta que tengan, me la hacen en el momento.",
-     "s": 1512.45,
+     "s": 1518.73,
      "d": 12.88
     }
    ],
-   "start": 1512.45,
+   "start": 1518.73,
    "dur": 12.88,
    "img": 1015
   },
@@ -3364,11 +3359,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Esta es la parte más importante de todo el acuerdo: si no logramos cancelar su tiempo compartido y sacarlo de su nombre, les devolvemos su dinero.",
-     "s": 1525.33,
+     "s": 1531.61,
      "d": 13.39
     }
    ],
-   "start": 1525.33,
+   "start": 1531.61,
    "dur": 13.39,
    "img": 1015
   },
@@ -3379,11 +3374,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "La meta es llegar juntos a la última página, la de colores. Si llegan antes que yo, me avisan, pero no le den finalizar hasta que estemos todos ahí.",
-     "s": 1538.72,
+     "s": 1545.0,
      "d": 14.94
     }
    ],
-   "start": 1538.72,
+   "start": 1545.0,
    "dur": 14.94,
    "img": 1015
   },
@@ -3394,11 +3389,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Número siete: la tarifa de cancelación. Si no están seguros de que quieren deshacerse de su tiempo compartido, dejen de firmar ahora mismo.",
-     "s": 1553.66,
+     "s": 1559.94,
      "d": 11.85
     }
    ],
-   "start": 1553.66,
+   "start": 1559.94,
    "dur": 11.85,
    "img": 1015
   },
@@ -3409,11 +3404,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Porque una vez que seguimos, si cambian de opinión, hay una tarifa de cancelación de $7,000. Si creen que podrían quedarse con el tiempo compartido, paren de firmar ahora.",
-     "s": 1565.51,
+     "s": 1571.79,
      "d": 14.94
     }
    ],
-   "start": 1565.51,
+   "start": 1571.79,
    "dur": 14.94,
    "img": 1015
   },
@@ -3424,11 +3419,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Vayan firmando donde el sistema les va marcando, y al final le dan finalizar.",
-     "s": 1580.45,
+     "s": 1586.73,
      "d": 7.21
     }
    ],
-   "start": 1580.45,
+   "start": 1586.73,
    "dur": 7.21,
    "img": 1015
   },
@@ -3439,11 +3434,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "En cuanto quede firmado por todos, les llega su copia completa por correo.",
-     "s": 1587.66,
+     "s": 1593.94,
      "d": 6.7
     }
    ],
-   "start": 1587.66,
+   "start": 1593.94,
    "dur": 6.7,
    "img": 1015
   }
