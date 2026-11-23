@@ -815,9 +815,12 @@
   ]
  },
  "136": {
-  "file": "slide-68f1d05c3ccc.mp3",
-  "dur": 8.16,
-  "hash": "68f1d05c3ccc"
+  "file": "slide-329749aea797.mp3",
+  "dur": 7.992,
+  "hash": "329749aea797",
+  "redacted_tokens": [
+   "{{PRICE}}"
+  ]
  },
  "137": {
   "file": "slide-e462b41cbccf.mp3",
