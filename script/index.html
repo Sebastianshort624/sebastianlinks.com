@@ -41,6 +41,7 @@
   .ib-chip-behind { background: #dc2626; }
   .ib-chip-current { background: #15803d; }
   .urlchip { background: none; color: #2563eb; padding: 0; font-size: .92em; font-weight: 600; text-decoration: underline; cursor: pointer; border: none; display: inline; }
+  .showBtn { background: #0b3d91; color: #fff; padding: 3px 10px; border-radius: 6px; font-size: .88em; font-weight: 700; text-decoration: none; display: inline-block; }
   #q_idn, #q_cli { display: none !important; }
   .ib-ctl { margin-top: 6px; display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 6px; font-size: 0.85em; }
   .ib-ctl label { display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 2px; color: #0b3d91; }
@@ -2330,6 +2331,13 @@ function qUrlLinks(){
     if (sv) out.push('<a class="urlchip" href="' + escH(sv) + '" target="_blank" rel="noopener">📋 Hoja ↗</a>');
     if (dv) out.push('<a class="urlchip" href="' + escH(dv) + '" target="_blank" rel="noopener">✍️ DocuSign ↗</a>');
     if (fv) out.push('<a class="urlchip" href="#" onclick="qCopyFolderPath(this);return false;">📁 Carpeta 📋</a>');
+    // SHOWBTN_V1 (Sebastian, 2026-11-23): per-client slideshow buttons — language first, then deal type (page's own qIsDB classification).
+    if (cur && cur.id){
+      var sbType = qIsDB() ? 'DB' : 'MTG';
+      var sbBase = 'https://sebastianlinks.com/show/?c=' + encodeURIComponent(cur.id);
+      out.push('<a class="urlchip showBtn" href="' + sbBase + '&lang=es" target="_blank" rel="noopener">▶ ES · ' + sbType + '</a>');
+      out.push('<a class="urlchip showBtn" href="' + sbBase + '&lang=en" target="_blank" rel="noopener">▶ EN · ' + sbType + '</a>');
+    }
     ch.innerHTML = out.join('');
   }
 }
