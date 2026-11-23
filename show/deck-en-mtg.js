@@ -516,7 +516,7 @@ window.DECK_TEXT_EN_MTG = {
      "beat": true
     },
     {
-     "x": "Perfect.",
+     "x": "Exactly.",
      "s": 242.52,
      "d": 3.87
     }
@@ -542,7 +542,7 @@ window.DECK_TEXT_EN_MTG = {
      "beat": true
     },
     {
-     "x": "Perfect.",
+     "x": "Exactly.",
      "s": 257.5,
      "d": 3.87
     }
@@ -568,7 +568,7 @@ window.DECK_TEXT_EN_MTG = {
      "beat": true
     },
     {
-     "x": "Perfect.",
+     "x": "Exactly.",
      "s": 274.07,
      "d": 3.87
     }
@@ -594,7 +594,7 @@ window.DECK_TEXT_EN_MTG = {
      "beat": true
     },
     {
-     "x": "Perfect.",
+     "x": "Exactly.",
      "s": 288.5,
      "d": 3.87
     }
@@ -620,7 +620,7 @@ window.DECK_TEXT_EN_MTG = {
      "beat": true
     },
     {
-     "x": "Perfect.",
+     "x": "Exactly.",
      "s": 303.36,
      "d": 3.87
     }
@@ -646,7 +646,7 @@ window.DECK_TEXT_EN_MTG = {
      "beat": true
     },
     {
-     "x": "Perfect.",
+     "x": "Exactly.",
      "s": 317.81,
      "d": 3.87
     }
@@ -672,7 +672,7 @@ window.DECK_TEXT_EN_MTG = {
      "beat": true
     },
     {
-     "x": "Perfect.",
+     "x": "Exactly.",
      "s": 338.98,
      "d": 3.87
     }
