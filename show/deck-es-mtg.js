@@ -3347,6 +3347,246 @@ window.DECK_TEXT_ES_MTG = {
    "start": 1497.45,
    "dur": 4.51,
    "img": 1015
+  },
+  {
+   "sec": "SOLICITUD DE FINANCIAMIENTO — UCFS",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Perfecto, eligieron financiarlo. Ahora vamos a llenar la solicitud de financiamiento juntos, paso a paso, y yo los voy guiando en cada pregunta.",
+     "s": 1501.96,
+     "d": 11.85
+    }
+   ],
+   "start": 1501.96,
+   "dur": 11.85,
+   "img": 1015
+  },
+  {
+   "sec": "SOLICITUD DE FINANCIAMIENTO — UCFS",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Primero, los datos personales de cada uno: nombre completo, fecha de nacimiento y número de seguro social.",
+     "s": 1513.81,
+     "d": 8.76
+    }
+   ],
+   "start": 1513.81,
+   "dur": 8.76,
+   "img": 1015
+  },
+  {
+   "sec": "SOLICITUD DE FINANCIAMIENTO — UCFS",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Tengan a la mano una identificación con foto de cada uno.",
+     "s": 1522.57,
+     "d": 5.67
+    }
+   ],
+   "start": 1522.57,
+   "dur": 5.67,
+   "img": 1015
+  },
+  {
+   "sec": "SOLICITUD DE FINANCIAMIENTO — UCFS",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Ahora, la dirección: dónde viven actualmente y cuánto tiempo llevan viviendo ahí.",
+     "s": 1528.24,
+     "d": 6.18
+    }
+   ],
+   "start": 1528.24,
+   "dur": 6.18,
+   "img": 1015
+  },
+  {
+   "sec": "SOLICITUD DE FINANCIAMIENTO — UCFS",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Ahora, el empleo: dónde trabaja cada uno, su puesto y cuánto tiempo lleva en ese trabajo.",
+     "s": 1534.42,
+     "d": 8.24
+    }
+   ],
+   "start": 1534.42,
+   "dur": 8.24,
+   "img": 1015
+  },
+  {
+   "sec": "SOLICITUD DE FINANCIAMIENTO — UCFS",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Ahora, los ingresos: cuánto gana cada uno al mes y si tienen algún otro ingreso.",
+     "s": 1542.66,
+     "d": 7.73
+    }
+   ],
+   "start": 1542.66,
+   "dur": 7.73,
+   "img": 1015
+  },
+  {
+   "sec": "SOLICITUD DE FINANCIAMIENTO — UCFS",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Revisamos que todo esté correcto antes de enviarla. Un error en un número puede atrasar la aprobación.",
+     "s": 1550.39,
+     "d": 8.76
+    }
+   ],
+   "start": 1550.39,
+   "dur": 8.76,
+   "img": 1015
+  },
+  {
+   "sec": "SOLICITUD DE FINANCIAMIENTO — UCFS",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "La respuesta de la financiera es rápida. En cuanto quede aprobada, seguimos con el acuerdo.",
+     "s": 1559.15,
+     "d": 7.73
+    }
+   ],
+   "start": 1559.15,
+   "dur": 7.73,
+   "img": 1015
+  },
+  {
+   "sec": "REPASO DEL ACUERDO — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Ahora les envío el acuerdo por DocuSign y lo repasamos juntos, página por página.",
+     "s": 1566.88,
+     "d": 7.21
+    }
+   ],
+   "start": 1566.88,
+   "dur": 7.21,
+   "img": 1015
+  },
+  {
+   "sec": "REPASO DEL ACUERDO — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Yo no les entrego el contrato para que lo lean solos. Lo leemos juntos, y cualquier pregunta que tengan, me la hacen en el momento.",
+     "s": 1574.09,
+     "d": 12.88
+    }
+   ],
+   "start": 1574.09,
+   "dur": 12.88,
+   "img": 1015
+  },
+  {
+   "sec": "REPASO DEL ACUERDO — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Esta es la parte más importante de todo el acuerdo: si no logramos cancelar su tiempo compartido y sacarlo de su nombre, les devolvemos su dinero.",
+     "s": 1586.97,
+     "d": 13.39
+    }
+   ],
+   "start": 1586.97,
+   "dur": 13.39,
+   "img": 1015
+  },
+  {
+   "sec": "REPASO DEL ACUERDO — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "La meta es llegar juntos a la última página, la de colores. Si llegan antes que yo, me avisan, pero no le den finalizar hasta que estemos todos ahí.",
+     "s": 1600.36,
+     "d": 14.94
+    }
+   ],
+   "start": 1600.36,
+   "dur": 14.94,
+   "img": 1015
+  },
+  {
+   "sec": "REPASO DEL ACUERDO — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Número siete: la tarifa de cancelación. Si no están seguros de que quieren deshacerse de su tiempo compartido, dejen de firmar ahora mismo.",
+     "s": 1615.3,
+     "d": 11.85
+    }
+   ],
+   "start": 1615.3,
+   "dur": 11.85,
+   "img": 1015
+  },
+  {
+   "sec": "REPASO DEL ACUERDO — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Porque una vez que seguimos, si cambian de opinión, hay una tarifa de cancelación de $7,000. Si creen que podrían quedarse con el tiempo compartido, paren de firmar ahora.",
+     "s": 1627.15,
+     "d": 14.94
+    }
+   ],
+   "start": 1627.15,
+   "dur": 14.94,
+   "img": 1015
+  },
+  {
+   "sec": "REPASO DEL ACUERDO — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Vayan firmando donde el sistema les va marcando, y al final le dan finalizar.",
+     "s": 1642.09,
+     "d": 7.21
+    }
+   ],
+   "start": 1642.09,
+   "dur": 7.21,
+   "img": 1015
+  },
+  {
+   "sec": "REPASO DEL ACUERDO — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "En cuanto quede firmado por todos, les llega su copia completa por correo.",
+     "s": 1649.3,
+     "d": 6.7
+    }
+   ],
+   "start": 1649.3,
+   "dur": 6.7,
+   "img": 1015
   }
  ]
 };
