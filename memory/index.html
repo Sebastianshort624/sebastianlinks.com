@@ -130,7 +130,10 @@ function drawChips(){chips.innerHTML='';chip('TODO','ALL');secs.forEach(s=>chip(
 function pool(){return section==='ALL'?DATA.slice():DATA.filter(b=>'s:'+b.section===section);}
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
 function flag(b){return b.index%2===1?'🇲🇽':'🇨🇺';}
-function head(b){return '<div class="loc">'+flag(b)+' 🧍 Parada '+b.index+'<span class="bname">: '+esc(stopName(b))+'</span></div><div class="sec">'+esc(b.section)+' · Grupo '+b.index+' / '+DATA.length+'</div>';}
+const CHAP={};{const c={};DATA.slice().sort((a,b)=>a.index-b.index).forEach(b=>{c[b.section]=(c[b.section]||0)+1;CHAP[b.index]=c[b.section];});}
+function ref(b,i){return shortSec(b.section)+' '+CHAP[b.index]+':'+(i+1);}
+function chapRef(b){return shortSec(b.section)+' '+CHAP[b.index];}
+function head(b){return '<div class="loc">'+flag(b)+' 🧍 Parada '+b.index+'<span class="bname">: '+esc(stopName(b))+'</span></div><div class="sec">'+esc(b.section)+' · Grupo '+b.index+' / '+DATA.length+' · 📖 '+esc(chapRef(b))+'</div>';}
 function hintHTML(b){return '<div class="hintbox">💡 '+esc(b.hint)+'</div>';}
 function puenteHTML(b){return '';}
 const SC_NOUN=['🦁','🐘','🐒','🐶','🐱','🐴','🐻','🐍','🦅','🦈','👨','👩','👦','👧','👶'];
@@ -205,7 +208,7 @@ function fraseDetail(f){return '<div class="ftext">'+esc(f.texto)+'</div><div cl
 function chainHTML(b,hideStarters){
   return b.frases.map((f,i)=>{
     const label = hideStarters ? 'Frase '+(i+1)+' — toca cuando ya intentaste decirla' : esc(f.inicio);
-    return '<div class="frase" onclick="toggleFrase(this)"><div class="n">FRASE '+(i+1)+'</div>'
+    return '<div class="frase" onclick="toggleFrase(this)"><div class="n">'+esc(ref(b,i))+'</div>'
       +'<div class="inicio">'+label+'</div>'
       +'<div class="fdetail">'+(hideStarters?'<div class="inicio" style="margin-bottom:5px">'+esc(f.inicio)+'</div>':'')+fraseDetail(f)+'</div></div>';
   }).join('');
