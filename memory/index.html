@@ -132,8 +132,8 @@ function drawChips(){chips.innerHTML='';chip('TODO','ALL');secs.forEach(s=>chip(
 function pool(){return section==='ALL'?ODATA.slice():ODATA.filter(b=>'s:'+b.section===section);}
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
 function flag(b){return b.index%2===1?'🇲🇽':'🇨🇺';}
-const CHAP={};{const c={};ODATA.forEach(b=>{c[b.section]=(c[b.section]||0)+1;CHAP[b.index]=String.fromCharCode(64+c[b.section]);});}
-function ref(b,i){return shortSec(b.section)+' '+CHAP[b.index]+':'+(i+1);}
+const CHAP={};{const c={};ODATA.forEach(b=>{c[b.section]=(c[b.section]||0)+1;CHAP[b.index]=c[b.section];});}
+function ref(b,i){return shortSec(b.section)+' '+CHAP[b.index]+':'+String.fromCharCode(65+i);}
 function chapRef(b){return shortSec(b.section)+' '+CHAP[b.index];}
 function head(b){return '<div class="loc">'+flag(b)+' 🧍 Parada '+b.index+'<span class="bname">: '+esc(stopName(b))+'</span></div><div class="sec">'+esc(b.section)+' · Grupo '+b.index+' / '+DATA.length+' · 📖 '+esc(chapRef(b))+'</div>';}
 function hintHTML(b){return '<div class="hintbox">💡 '+esc(b.hint)+'</div>';}
