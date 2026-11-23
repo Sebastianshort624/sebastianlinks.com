@@ -272,6 +272,7 @@
 <script src="deck-es-db.js"></script>
 <script src="deck-en-db.js"></script>
 <script src="deck-en-fu.js"></script>
+<script src="deck-en-fudb.js"></script>
 <script src="objections-es.js"></script>
 <script src="objections-en.js"></script>
 <script>
@@ -388,18 +389,23 @@ var params = new URLSearchParams(location.search);
 var CLIENTS = window.DECK_CLIENTS || {};
 var DECKS = { es: { MTG: window.DECK_TEXT_ES_MTG || null, DB: window.DECK_TEXT_ES_DB || null },
               en: { MTG: window.DECK_TEXT_EN_MTG || null, DB: window.DECK_TEXT_EN_DB || null,
-                    FU: window.DECK_TEXT_EN_FU || null } };
+                    FU: window.DECK_TEXT_EN_FU || null, FUDB: window.DECK_TEXT_EN_FUDB || null } };
 var lang = (params.get('lang') === 'en' && DECKS.en.MTG) ? 'en' : 'es';
 var typeParam = (params.get('type') || '').toLowerCase();
 var dtype = typeParam === 'db' ? 'DB' : (typeParam === 'mtg' ? 'MTG' : (typeParam === 'fu' ? 'FU' : null)); /* null = follow the record, decided at boot */
-/* deck resolution: FU exists only in English (deck-en-fu.js). FU in
-   English serves the FU deck when the file has loaded; FU in Spanish
+/* deck resolution: FU exists only in English, and it respects the
+   open record's deal type (Sebastian, 2026-11-23): an English FU show
+   on a deed-back record serves deck-en-fudb.js (DECK_TEXT_EN_FUDB), on
+   a mortgage record deck-en-fu.js (DECK_TEXT_EN_FU). FU in Spanish
    (no ES FU deck yet) — and FU before the EN file lands — falls back
    to the current language's MTG deck; the FU option stays visible and
    selected either way. */
-function deckFor(l, t){
+function deckFor(l, t, recType){
   if (t === 'FU'){
-    if (l === 'en' && DECKS.en.FU) return DECKS.en.FU;
+    if (l === 'en'){
+      if (recType === 'DB' && DECKS.en.FUDB) return DECKS.en.FUDB;
+      if (recType !== 'DB' && DECKS.en.FU) return DECKS.en.FU;
+    }
     return DECKS[l].MTG;
   }
   return DECKS[l][t] || DECKS[l].MTG;
@@ -1110,7 +1116,7 @@ document.addEventListener('keydown', function(e){
    it exists in the new deck (else clamped to the last slide); play
    state is preserved (render + startTimer resume the show). */
 function loadDeck(){
-  DECK = deckFor(lang, dtype);
+  DECK = deckFor(lang, dtype, client && client.dtype);
   slides = DECK ? DECK.slides : [];
   idx = Math.max(0, Math.min(slides.length - 1, idx));
   buildRuler(); /* chapter ruler follows the loaded deck */
@@ -1411,7 +1417,7 @@ $('btnEn').classList.toggle('act', lang === 'en');
 if (!dtype) dtype = client.dtype === 'DB' ? 'DB' : 'MTG';
 if (dtype !== 'FU' && !DECKS[lang][dtype]) dtype = dtype === 'DB' ? 'MTG' : 'DB';
 syncTypeBtns();
-if (!deckFor(lang, dtype)){
+if (!deckFor(lang, dtype, client && client.dtype)){
   $('stage').innerHTML = '<div class="card"><div class="notice">Deck data missing.</div></div>';
 } else {
   document.body.classList.add('auto');
