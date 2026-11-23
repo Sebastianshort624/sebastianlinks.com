@@ -3,7 +3,7 @@ window.DECK_TEXT_EN_FUDB = {
   "lang": "en",
   "dtype": "FUDB",
   "version": "v1-2026-11-23",
-  "note": "English FU (post-price) DEED-BACK deck, built 2026-11-23 from FU-Script-PostPrice-EN.txt, deed-back adaptation modeled on deck-en-db.js. Recap is maintenance-only: maintenance today {{MFMO}}/mo - {{MFYR}}/yr, rising 8-12%/yr (8% minimum), write-down at 1/3/5/10/20 years. PAYMENT OPTIONS is Cesar's 3 ways (savings / credit card / financing up to 36 months) + his position question per Sebastian's correction - the FU text's options passage was NOT used. No mortgage, no loan, no eBay, no TILA/RESPA. KNOWN GAP: the player defines no cumulative-MF token for 3 years, so the 3-year write-down line carries the source text's literal $X; the 1-year line uses {{MFYR}} (cumulative MF after year 1 = MFYR exactly). UCFS + DocuSign closings copied from deck-en-db.js. All timings words x 0.515 (no EN narration yet)."
+  "note": "English FU (post-price) DEED-BACK deck, built 2026-11-23 from FU-Script-PostPrice-EN.txt, deed-back adaptation modeled on deck-en-db.js. Recap is maintenance-only: maintenance today {{MFMO}}/mo - {{MFYR}}/yr, rising 8-12%/yr (8% minimum), write-down at 1/3/5/10/20 years. PAYMENT OPTIONS is Cesar's 3 ways (savings / credit card / financing up to 36 months) + his position question per Sebastian's correction - the FU text's options passage was NOT used. No mortgage, no loan, no eBay, no TILA/RESPA. The 3-year write-down line uses {{MF3}} (player token added 2026-11-23, Part 16); the 1-year line uses {{MFYR}} (cumulative MF after year 1 = MFYR exactly). UCFS + DocuSign closings copied from deck-en-db.js. All timings words x 0.515 (no EN narration yet)."
  },
  "slides": [
   {
@@ -280,7 +280,7 @@ window.DECK_TEXT_EN_FUDB = {
    "panel": null,
    "sentences": [
     {
-     "x": "Next to the 3 — three years from today — write this amount: $X.",
+     "x": "Next to the 3 — three years from today — write this amount: {{MF3}}.",
      "s": 136.43,
      "d": 7.21
     }
