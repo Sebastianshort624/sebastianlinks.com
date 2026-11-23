@@ -95,160 +95,157 @@
  },
  "15": {
   "file": "slide-2313c7d28caa.mp3",
-  "dur": 10.512,
+  "dur": 13.248,
   "hash": "2313c7d28caa",
   "joined": true,
-  "cross_slide": true
- },
- "16": {
-  "file": "slide-70f9337f341c.mp3",
-  "dur": 8.184,
-  "hash": "70f9337f341c",
-  "join_in": true
- },
- "17": {
-  "file": "slide-c5bea9f0ed39.mp3",
-  "dur": 7.368,
-  "hash": "c5bea9f0ed39",
+  "cross_slide": true,
   "redacted_tokens": [
+   "{{CAD}}",
    "{{RESORT}}"
   ]
  },
- "18": {
+ "16": {
+  "file": null,
+  "dur": null,
+  "hash": "3c16cb52b429",
+  "join_in": true,
+  "note": "join_through"
+ },
+ "17": {
   "file": "slide-08cc4b041959.mp3",
   "dur": 5.688,
   "hash": "08cc4b041959"
  },
- "19": {
+ "18": {
   "file": "slide-22c993382ac5.mp3",
   "dur": 2.76,
   "hash": "22c993382ac5"
  },
- "20": {
+ "19": {
   "file": "slide-09847d7b3975.mp3",
   "dur": 9.816,
   "hash": "09847d7b3975"
  },
- "21": {
+ "20": {
   "file": "slide-5ca3a160b58b.mp3",
   "dur": 6.922,
   "hash": "5ca3a160b58b"
  },
- "22": {
+ "21": {
   "file": "slide-64df14bdaf32.mp3",
   "dur": 8.544,
   "hash": "64df14bdaf32"
  },
- "23": {
+ "22": {
   "file": "slide-f8999b261a3d.mp3",
   "dur": 3.192,
   "hash": "f8999b261a3d"
  },
- "24": {
+ "23": {
   "file": "slide-dbfb62014afa.mp3",
   "dur": 9.5,
   "hash": "dbfb62014afa"
  },
- "25": {
+ "24": {
   "file": "slide-ea0b94a1f031.mp3",
   "dur": 9.312,
   "hash": "ea0b94a1f031"
  },
- "26": {
+ "25": {
   "file": "slide-9c980ac590a6.mp3",
   "dur": 5.16,
   "hash": "9c980ac590a6"
  },
- "27": {
+ "26": {
   "file": "slide-88001047e151.mp3",
   "dur": 7.104,
   "hash": "88001047e151"
  },
- "28": {
+ "27": {
   "file": "slide-5c86460f68b5.mp3",
   "dur": 6.96,
   "hash": "5c86460f68b5"
  },
- "29": {
+ "28": {
   "file": "slide-a3cc40e0d936.mp3",
   "dur": 3.096,
   "hash": "a3cc40e0d936"
  },
- "30": {
+ "29": {
   "file": "slide-d18e9f70497e.mp3",
   "dur": 6.192,
   "hash": "d18e9f70497e"
  },
- "31": {
+ "30": {
   "file": "slide-c627c58d7c48.mp3",
   "dur": 6.888,
   "hash": "c627c58d7c48",
   "joined": true
  },
- "32": {
-  "file": "slide-909e06048ed7.mp3",
-  "dur": 8.588,
-  "hash": "909e06048ed7"
+ "31": {
+  "file": "slide-be8ec7ee9907.mp3",
+  "dur": 8.804,
+  "hash": "be8ec7ee9907"
  },
- "33": {
+ "32": {
   "file": "slide-c37dff6bf8fb.mp3",
   "dur": 5.88,
   "hash": "c37dff6bf8fb",
   "joined": true
  },
- "34": {
-  "file": "slide-909e06048ed7.mp3",
-  "dur": 8.588,
-  "hash": "909e06048ed7"
+ "33": {
+  "file": "slide-be8ec7ee9907.mp3",
+  "dur": 8.804,
+  "hash": "be8ec7ee9907"
  },
- "35": {
+ "34": {
   "file": "slide-19f1a5f381a3.mp3",
   "dur": 7.68,
   "hash": "19f1a5f381a3",
   "joined": true
  },
- "36": {
-  "file": "slide-909e06048ed7.mp3",
-  "dur": 8.588,
-  "hash": "909e06048ed7"
+ "35": {
+  "file": "slide-be8ec7ee9907.mp3",
+  "dur": 8.804,
+  "hash": "be8ec7ee9907"
  },
- "37": {
+ "36": {
   "file": "slide-33a4f0b24ed5.mp3",
   "dur": 5.328,
   "hash": "33a4f0b24ed5",
   "joined": true
  },
- "38": {
-  "file": "slide-909e06048ed7.mp3",
-  "dur": 8.588,
-  "hash": "909e06048ed7"
+ "37": {
+  "file": "slide-be8ec7ee9907.mp3",
+  "dur": 8.804,
+  "hash": "be8ec7ee9907"
  },
- "39": {
+ "38": {
   "file": "slide-556e0f440a19.mp3",
   "dur": 5.808,
   "hash": "556e0f440a19",
   "joined": true
  },
- "40": {
-  "file": "slide-6af883aa560b.mp3",
-  "dur": 8.396,
-  "hash": "6af883aa560b"
+ "39": {
+  "file": "slide-4ac04d211e7f.mp3",
+  "dur": 8.612,
+  "hash": "4ac04d211e7f"
  },
- "41": {
+ "40": {
   "file": "slide-07698c97d6a4.mp3",
   "dur": 5.328,
   "hash": "07698c97d6a4",
   "joined": true
  },
- "42": {
-  "file": "slide-909e06048ed7.mp3",
-  "dur": 8.588,
-  "hash": "909e06048ed7"
+ "41": {
+  "file": "slide-be8ec7ee9907.mp3",
+  "dur": 8.804,
+  "hash": "be8ec7ee9907"
  },
- "43": {
-  "file": "slide-9548f3c28c77.mp3",
-  "dur": 16.628,
-  "hash": "9548f3c28c77",
+ "42": {
+  "file": "slide-d8fd21708cee.mp3",
+  "dur": 16.844,
+  "hash": "d8fd21708cee",
   "redacted_tokens": [
    "{{INTPCT}}",
    "{{LOAN}}",
@@ -257,48 +254,48 @@
    "{{TERM}}"
   ]
  },
- "44": {
+ "43": {
   "file": "slide-b9e9be6fc995.mp3",
   "dur": 10.388,
   "hash": "b9e9be6fc995"
  },
- "45": {
+ "44": {
   "file": "slide-1ebdce07e94d.mp3",
   "dur": 3.36,
   "hash": "1ebdce07e94d"
  },
- "46": {
+ "45": {
   "file": "slide-e8d18e35d128.mp3",
   "dur": 8.928,
   "hash": "e8d18e35d128"
  },
- "47": {
+ "46": {
   "file": "slide-0116d3c757ed.mp3",
   "dur": 8.04,
   "hash": "0116d3c757ed"
  },
- "48": {
+ "47": {
   "file": "slide-940b8158629d.mp3",
   "dur": 9.264,
   "hash": "940b8158629d",
   "joined": true,
   "cross_slide": true
  },
- "49": {
+ "48": {
   "file": null,
   "dur": null,
   "hash": "957fd2723a44",
   "join_in": true,
   "note": "join_through"
  },
- "50": {
+ "49": {
   "file": "slide-2da8c115dd3f.mp3",
   "dur": 10.704,
   "hash": "2da8c115dd3f",
   "joined": true,
   "cross_slide": true
  },
- "51": {
+ "50": {
   "file": "slide-b8a60876c251.mp3",
   "dur": 14.554,
   "hash": "b8a60876c251",
@@ -306,12 +303,17 @@
   "cross_slide": true,
   "join_in": true
  },
- "52": {
+ "51": {
   "file": null,
   "dur": null,
   "hash": "d5fd1305eaae",
   "join_in": true,
   "note": "join_through"
+ },
+ "52": {
+  "file": "slide-70f9337f341c.mp3",
+  "dur": 12.202,
+  "hash": "70f9337f341c"
  },
  "53": {
   "file": "slide-9741e6867123.mp3",
@@ -333,137 +335,161 @@
   ]
  },
  "56": {
+  "file": "slide-4d2eef76aec3.mp3",
+  "dur": 9.744,
+  "hash": "4d2eef76aec3"
+ },
+ "57": {
+  "file": "slide-60967b74b523.mp3",
+  "dur": 3.912,
+  "hash": "60967b74b523"
+ },
+ "58": {
+  "file": "slide-26065859a287.mp3",
+  "dur": 13.032,
+  "hash": "26065859a287",
+  "joined": true,
+  "cross_slide": true
+ },
+ "59": {
+  "file": null,
+  "dur": null,
+  "hash": "ed05147e6b05",
+  "join_in": true,
+  "note": "join_through"
+ },
+ "60": {
   "file": "slide-f1558c36494d.mp3",
   "dur": 5.808,
   "hash": "f1558c36494d"
  },
- "57": {
+ "61": {
   "file": "slide-aac10a6300fe.mp3",
   "dur": 7.464,
   "hash": "aac10a6300fe"
  },
- "58": {
+ "62": {
   "file": "slide-55a7767135ea.mp3",
   "dur": 8.856,
   "hash": "55a7767135ea"
  },
- "59": {
+ "63": {
   "file": "slide-10f84920f449.mp3",
   "dur": 10.488,
   "hash": "10f84920f449"
  },
- "60": {
+ "64": {
   "file": "slide-a89436f20ab1.mp3",
   "dur": 7.344,
   "hash": "a89436f20ab1"
  },
- "61": {
+ "65": {
   "file": "slide-a22e33a4953a.mp3",
   "dur": 8.448,
   "hash": "a22e33a4953a"
  },
- "62": {
+ "66": {
   "file": "slide-759d2ae6b832.mp3",
   "dur": 11.064,
   "hash": "759d2ae6b832"
  },
- "63": {
+ "67": {
   "file": "slide-e8082482bccd.mp3",
   "dur": 2.76,
   "hash": "e8082482bccd"
  },
- "64": {
-  "file": "slide-aae17d7c89d1.mp3",
-  "dur": 8.304,
-  "hash": "aae17d7c89d1"
+ "68": {
+  "file": "slide-c13d472c3b18.mp3",
+  "dur": 8.088,
+  "hash": "c13d472c3b18"
  },
- "65": {
+ "69": {
   "file": "slide-d5d852964ac8.mp3",
   "dur": 10.344,
   "hash": "d5d852964ac8"
  },
- "66": {
-  "file": "slide-e329cce73257.mp3",
-  "dur": 20.838,
-  "hash": "e329cce73257",
+ "70": {
+  "file": "slide-3160ddcfa763.mp3",
+  "dur": 20.886,
+  "hash": "3160ddcfa763",
   "redacted_tokens": [
    "{{MF10}}",
    "{{MF20}}",
-   "{{MF30}}",
+   "{{MF5}}",
    "{{MFY10}}",
    "{{MFYR}}"
   ]
  },
- "67": {
+ "71": {
   "file": "slide-8ea3b801d52d.mp3",
   "dur": 7.368,
   "hash": "8ea3b801d52d"
  },
- "68": {
+ "72": {
   "file": "slide-5bb5b52209b6.mp3",
   "dur": 7.704,
   "hash": "5bb5b52209b6"
  },
- "69": {
+ "73": {
   "file": "slide-cad29ec21c94.mp3",
   "dur": 3.336,
   "hash": "cad29ec21c94"
  },
- "70": {
+ "74": {
   "file": "slide-fa2449865d68.mp3",
   "dur": 7.762,
   "hash": "fa2449865d68"
  },
- "71": {
+ "75": {
   "file": "slide-334943c9fecf.mp3",
   "dur": 8.664,
   "hash": "334943c9fecf"
  },
- "72": {
+ "76": {
   "file": "slide-af32febc2988.mp3",
   "dur": 2.664,
   "hash": "af32febc2988"
  },
- "73": {
+ "77": {
   "file": "slide-903313cb55bb.mp3",
   "dur": 11.52,
   "hash": "903313cb55bb",
   "joined": true,
   "cross_slide": true
  },
- "74": {
+ "78": {
   "file": null,
   "dur": null,
   "hash": "b0abd245f756",
   "join_in": true,
   "note": "join_through"
  },
- "75": {
+ "79": {
   "file": "slide-ba78accfb499.mp3",
   "dur": 7.248,
   "hash": "ba78accfb499"
  },
- "76": {
+ "80": {
   "file": "slide-6dbcf5e9c942.mp3",
   "dur": 7.896,
   "hash": "6dbcf5e9c942"
  },
- "77": {
+ "81": {
   "file": "slide-37eef3aaf06f.mp3",
   "dur": 9.25,
   "hash": "37eef3aaf06f"
  },
- "78": {
+ "82": {
   "file": "slide-cc6ca2f8d22d.mp3",
   "dur": 8.76,
   "hash": "cc6ca2f8d22d"
  },
- "79": {
+ "83": {
   "file": "slide-9d195c279455.mp3",
   "dur": 4.224,
   "hash": "9d195c279455"
  },
- "80": {
+ "84": {
   "file": "slide-f19a7b8cd8c0.mp3",
   "dur": 7.92,
   "hash": "f19a7b8cd8c0",
@@ -471,192 +497,192 @@
    "{{PAYOFF}}"
   ]
  },
- "82": {
+ "86": {
   "file": "slide-5f3616644c71.mp3",
   "dur": 2.808,
   "hash": "5f3616644c71"
  },
- "83": {
+ "87": {
   "file": "slide-bc4ca71bae7d.mp3",
   "dur": 9.864,
   "hash": "bc4ca71bae7d"
  },
- "84": {
+ "88": {
   "file": "slide-ccd6c2768b2b.mp3",
   "dur": 8.592,
   "hash": "ccd6c2768b2b",
   "joined": true,
   "cross_slide": true
  },
- "85": {
+ "89": {
   "file": null,
   "dur": null,
   "hash": "adae9c0a24f7",
   "join_in": true,
   "note": "join_through"
  },
- "86": {
+ "90": {
   "file": "slide-9ee3094dc509.mp3",
   "dur": 8.28,
   "hash": "9ee3094dc509"
  },
- "87": {
+ "91": {
   "file": "slide-1619a76ec435.mp3",
   "dur": 11.592,
   "hash": "1619a76ec435",
   "joined": true,
   "cross_slide": true
  },
- "88": {
+ "92": {
   "file": "slide-441c433e97e9.mp3",
   "dur": 4.704,
   "hash": "441c433e97e9",
   "join_in": true
  },
- "89": {
+ "93": {
   "file": "slide-1b7deb9352a3.mp3",
   "dur": 11.28,
   "hash": "1b7deb9352a3",
   "joined": true,
   "cross_slide": true
  },
- "90": {
+ "94": {
   "file": null,
   "dur": null,
   "hash": "9fbfda74d143",
   "join_in": true,
   "note": "join_through"
  },
- "91": {
+ "95": {
   "file": "slide-bb29fe679f3f.mp3",
   "dur": 10.248,
   "hash": "bb29fe679f3f",
   "joined": true,
   "cross_slide": true
  },
- "92": {
+ "96": {
   "file": null,
   "dur": null,
   "hash": "137a94c3f6d6",
   "join_in": true,
   "note": "join_through"
  },
- "93": {
+ "97": {
   "file": "slide-967205a98986.mp3",
   "dur": 6.168,
   "hash": "967205a98986"
  },
- "94": {
+ "98": {
   "file": "slide-0e3fb6cd5d9a.mp3",
   "dur": 10.776,
   "hash": "0e3fb6cd5d9a",
   "joined": true,
   "cross_slide": true
  },
- "95": {
+ "99": {
   "file": null,
   "dur": null,
   "hash": "1b18e0fa2c57",
   "join_in": true,
   "note": "join_through"
  },
- "96": {
+ "100": {
   "file": "slide-8d9a0097f720.mp3",
   "dur": 7.752,
   "hash": "8d9a0097f720"
  },
- "97": {
+ "101": {
   "file": "slide-5e6d478553c4.mp3",
   "dur": 13.632,
   "hash": "5e6d478553c4",
   "joined": true,
   "cross_slide": true
  },
- "98": {
+ "102": {
   "file": null,
   "dur": null,
   "hash": "2300975f2aa8",
   "join_in": true,
   "note": "join_through"
  },
- "99": {
+ "103": {
   "file": null,
   "dur": null,
   "hash": "3f0479d28a0e",
   "join_in": true,
   "note": "join_through"
  },
- "100": {
+ "104": {
   "file": "slide-4884c627738b.mp3",
   "dur": 2.88,
   "hash": "4884c627738b"
  },
- "101": {
+ "105": {
   "file": "slide-85750ea2fff5.mp3",
   "dur": 3.672,
   "hash": "85750ea2fff5"
  },
- "102": {
+ "106": {
   "file": "slide-e17f66d29a18.mp3",
   "dur": 6.6,
   "hash": "e17f66d29a18"
  },
- "103": {
+ "107": {
   "file": "slide-b4ca26b41d08.mp3",
   "dur": 4.344,
   "hash": "b4ca26b41d08"
  },
- "104": {
+ "108": {
   "file": "slide-f061e3344f8c.mp3",
   "dur": 4.368,
   "hash": "f061e3344f8c"
  },
- "105": {
+ "109": {
   "file": "slide-2900b1915ccb.mp3",
   "dur": 7.656,
   "hash": "2900b1915ccb"
  },
- "107": {
+ "111": {
   "file": "slide-731a48872d07.mp3",
   "dur": 2.808,
   "hash": "731a48872d07"
  },
- "108": {
+ "112": {
   "file": "slide-69648c748a54.mp3",
   "dur": 4.152,
   "hash": "69648c748a54"
  },
- "109": {
+ "113": {
   "file": "slide-a063c2d42dd4.mp3",
   "dur": 9.648,
   "hash": "a063c2d42dd4"
  },
- "110": {
+ "114": {
   "file": "slide-21fe575bb0b9.mp3",
   "dur": 5.568,
   "hash": "21fe575bb0b9"
  },
- "111": {
+ "115": {
   "file": "slide-c2084802e803.mp3",
   "dur": 4.128,
   "hash": "c2084802e803"
  },
- "112": {
+ "116": {
   "file": "slide-3a5d4ac41bf3.mp3",
   "dur": 9.97,
   "hash": "3a5d4ac41bf3"
  },
- "113": {
+ "117": {
   "file": "slide-2d936f37ee68.mp3",
   "dur": 7.248,
   "hash": "2d936f37ee68"
  },
- "114": {
+ "118": {
   "file": "slide-85131901ac2b.mp3",
   "dur": 7.464,
   "hash": "85131901ac2b"
  },
- "115": {
+ "119": {
   "file": "slide-c3452aec9962.mp3",
   "dur": 6.432,
   "hash": "c3452aec9962",
@@ -664,7 +690,7 @@
    "{{RESORT}}"
   ]
  },
- "116": {
+ "120": {
   "file": "slide-9875fc2f462e.mp3",
   "dur": 7.728,
   "hash": "9875fc2f462e",
@@ -672,7 +698,7 @@
    "{{RESORT}}"
   ]
  },
- "117": {
+ "121": {
   "file": "slide-3978f0cf438a.mp3",
   "dur": 11.664,
   "hash": "3978f0cf438a",
@@ -682,298 +708,298 @@
    "{{RESORT}}"
   ]
  },
- "118": {
+ "122": {
   "file": null,
   "dur": null,
   "hash": "2d3efddb9b50",
   "join_in": true,
   "note": "join_through"
  },
- "119": {
+ "123": {
   "file": "slide-4ec023066f65.mp3",
   "dur": 4.56,
   "hash": "4ec023066f65"
  },
- "120": {
+ "124": {
   "file": "slide-3a21d3e45f5c.mp3",
   "dur": 10.104,
   "hash": "3a21d3e45f5c",
   "joined": true,
   "cross_slide": true
  },
- "121": {
+ "125": {
   "file": null,
   "dur": null,
   "hash": "6fb6e280dee8",
   "join_in": true,
   "note": "join_through"
  },
- "122": {
+ "126": {
   "file": "slide-3def6d131ebe.mp3",
   "dur": 12.288,
   "hash": "3def6d131ebe",
   "joined": true,
   "cross_slide": true
  },
- "123": {
+ "127": {
   "file": null,
   "dur": null,
   "hash": "552a6e24c9e0",
   "join_in": true,
   "note": "join_through"
  },
- "124": {
+ "128": {
   "file": "slide-3dcc0539b9de.mp3",
   "dur": 9.024,
   "hash": "3dcc0539b9de",
   "joined": true,
   "cross_slide": true
  },
- "125": {
+ "129": {
   "file": null,
   "dur": null,
   "hash": "0de97607ea5a",
   "join_in": true,
   "note": "join_through"
  },
- "126": {
+ "130": {
   "file": "slide-5820a074ce1c.mp3",
   "dur": 7.368,
   "hash": "5820a074ce1c"
  },
- "127": {
+ "131": {
   "file": "slide-3cb2d1ecb77d.mp3",
   "dur": 5.016,
   "hash": "3cb2d1ecb77d"
  },
- "128": {
+ "132": {
   "file": "slide-4a65c2182ad4.mp3",
   "dur": 3.048,
   "hash": "4a65c2182ad4"
  },
- "129": {
+ "133": {
   "file": "slide-b9dfe1768c59.mp3",
   "dur": 3.24,
   "hash": "b9dfe1768c59"
  },
- "130": {
+ "134": {
   "file": "slide-76af3f414803.mp3",
   "dur": 4.032,
   "hash": "76af3f414803"
  },
- "131": {
+ "135": {
   "file": "slide-894bf07979d8.mp3",
   "dur": 11.904,
   "hash": "894bf07979d8",
   "joined": true,
   "cross_slide": true
  },
- "132": {
+ "136": {
   "file": null,
   "dur": null,
   "hash": "845a17a5babd",
   "join_in": true,
   "note": "join_through"
  },
- "133": {
+ "137": {
   "file": "slide-9f70c7880465.mp3",
   "dur": 8.112,
   "hash": "9f70c7880465"
  },
- "134": {
+ "138": {
   "file": "slide-c27186c15661.mp3",
   "dur": 8.136,
   "hash": "c27186c15661"
  },
- "135": {
+ "139": {
   "file": "slide-50aca079406d.mp3",
   "dur": 12.792,
   "hash": "50aca079406d",
   "joined": true,
   "cross_slide": true
  },
- "136": {
+ "140": {
   "file": null,
   "dur": null,
   "hash": "e863bb158e83",
   "join_in": true,
   "note": "join_through"
  },
- "137": {
+ "141": {
   "file": "slide-c98623534e44.mp3",
   "dur": 6.696,
   "hash": "c98623534e44"
  },
- "138": {
+ "142": {
   "file": "slide-cadd3be91adc.mp3",
   "dur": 3.288,
   "hash": "cadd3be91adc"
  },
- "139": {
+ "143": {
   "file": "slide-863cd2262008.mp3",
   "dur": 6.528,
   "hash": "863cd2262008"
  },
- "140": {
+ "144": {
   "file": "slide-ee01fc91026f.mp3",
   "dur": 4.32,
   "hash": "ee01fc91026f"
  },
- "141": {
+ "145": {
   "file": "slide-b5d52e9e9464.mp3",
   "dur": 5.352,
   "hash": "b5d52e9e9464"
  },
- "142": {
+ "146": {
   "file": "slide-395147190739.mp3",
   "dur": 5.856,
   "hash": "395147190739"
  },
- "143": {
+ "147": {
   "file": "slide-c60edb052577.mp3",
   "dur": 13.824,
   "hash": "c60edb052577",
   "joined": true,
   "cross_slide": true
  },
- "144": {
+ "148": {
   "file": null,
   "dur": null,
   "hash": "8d33176debe2",
   "join_in": true,
   "note": "join_through"
  },
- "145": {
+ "149": {
   "file": "slide-e56a14ec7863.mp3",
   "dur": 10.272,
   "hash": "e56a14ec7863",
   "joined": true,
   "cross_slide": true
  },
- "146": {
+ "150": {
   "file": null,
   "dur": null,
   "hash": "c83064fd3999",
   "join_in": true,
   "note": "join_through"
  },
- "147": {
+ "151": {
   "file": "slide-de6af56210d7.mp3",
   "dur": 8.808,
   "hash": "de6af56210d7"
  },
- "148": {
+ "152": {
   "file": "slide-ab996b715684.mp3",
   "dur": 10.728,
   "hash": "ab996b715684",
   "joined": true,
   "cross_slide": true
  },
- "149": {
+ "153": {
   "file": null,
   "dur": null,
   "hash": "80dfab479018",
   "join_in": true,
   "note": "join_through"
  },
- "150": {
+ "154": {
   "file": "slide-b14e490f4725.mp3",
   "dur": 11.362,
   "hash": "b14e490f4725"
  },
- "151": {
+ "155": {
   "file": "slide-e5caa1b2af85.mp3",
   "dur": 9.456,
   "hash": "e5caa1b2af85",
   "joined": true,
   "cross_slide": true
  },
- "152": {
+ "156": {
   "file": null,
   "dur": null,
   "hash": "3a83b3d873ef",
   "join_in": true,
   "note": "join_through"
  },
- "153": {
+ "157": {
   "file": "slide-0d59e10778aa.mp3",
   "dur": 7.776,
   "hash": "0d59e10778aa"
  },
- "154": {
+ "158": {
   "file": "slide-bb4e7638ff42.mp3",
   "dur": 7.368,
   "hash": "bb4e7638ff42"
  },
- "155": {
+ "159": {
   "file": "slide-64adc3985556.mp3",
   "dur": 6.048,
   "hash": "64adc3985556"
  },
- "156": {
+ "160": {
   "file": "slide-7d0bc70b326d.mp3",
   "dur": 10.44,
   "hash": "7d0bc70b326d",
   "joined": true,
   "cross_slide": true
  },
- "157": {
+ "161": {
   "file": null,
   "dur": null,
   "hash": "cdccd9f2254a",
   "join_in": true,
   "note": "join_through"
  },
- "158": {
+ "162": {
   "file": "slide-9a0018cea297.mp3",
   "dur": 3.168,
   "hash": "9a0018cea297"
  },
- "159": {
+ "163": {
   "file": "slide-2c4fed0e0f0b.mp3",
   "dur": 7.416,
   "hash": "2c4fed0e0f0b"
  },
- "160": {
+ "164": {
   "file": "slide-295332de3177.mp3",
   "dur": 5.712,
   "hash": "295332de3177"
  },
- "161": {
+ "165": {
   "file": "slide-a4a595dfc0c1.mp3",
   "dur": 10.584,
   "hash": "a4a595dfc0c1",
   "joined": true,
   "cross_slide": true
  },
- "162": {
+ "166": {
   "file": null,
   "dur": null,
   "hash": "b61e2e0dd8c4",
   "join_in": true,
   "note": "join_through"
  },
- "163": {
+ "167": {
   "file": "slide-f62edc8d7847.mp3",
   "dur": 7.45,
   "hash": "f62edc8d7847"
  },
- "164": {
+ "168": {
   "file": "slide-78d80af0ded9.mp3",
   "dur": 7.992,
   "hash": "78d80af0ded9"
  },
- "165": {
+ "169": {
   "file": "slide-de3e49c526cf.mp3",
   "dur": 5.088,
   "hash": "de3e49c526cf"
  },
- "166": {
+ "170": {
   "file": "slide-db2883650a62.mp3",
   "dur": 4.296,
   "hash": "db2883650a62"
  },
- "167": {
+ "171": {
   "file": "slide-3edee43ab268.mp3",
   "dur": 5.064,
   "hash": "3edee43ab268",
@@ -981,7 +1007,7 @@
    "{{T3}}"
   ]
  },
- "168": {
+ "172": {
   "file": "slide-0b908836c531.mp3",
   "dur": 9.298,
   "hash": "0b908836c531",
@@ -990,7 +1016,7 @@
    "{{T5}}"
   ]
  },
- "169": {
+ "173": {
   "file": "slide-db5d7daffef4.mp3",
   "dur": 3.984,
   "hash": "db5d7daffef4",
@@ -998,46 +1024,46 @@
    "{{T20}}"
   ]
  },
- "170": {
+ "174": {
   "file": "slide-3cbc14ee8ec5.mp3",
   "dur": 13.1,
   "hash": "3cbc14ee8ec5"
  },
- "171": {
+ "175": {
   "file": "slide-ff636c522d84.mp3",
   "dur": 9.936,
   "hash": "ff636c522d84",
   "joined": true,
   "cross_slide": true
  },
- "172": {
+ "176": {
   "file": null,
   "dur": null,
   "hash": "2a26122ccf95",
   "join_in": true,
   "note": "join_through"
  },
- "173": {
+ "177": {
   "file": "slide-bdb5cd2ee2f7.mp3",
   "dur": 8.976,
   "hash": "bdb5cd2ee2f7"
  },
- "174": {
+ "178": {
   "file": "slide-d37a0f76d709.mp3",
   "dur": 3.528,
   "hash": "d37a0f76d709"
  },
- "175": {
+ "179": {
   "file": "slide-0e4fd96c47af.mp3",
   "dur": 8.256,
   "hash": "0e4fd96c47af"
  },
- "176": {
+ "180": {
   "file": "slide-d60d84cfb0b7.mp3",
   "dur": 2.76,
   "hash": "d60d84cfb0b7"
  },
- "177": {
+ "181": {
   "file": "slide-b297fc4e159c.mp3",
   "dur": 10.1,
   "hash": "b297fc4e159c",
@@ -1046,7 +1072,7 @@
    "{{SAVE20}}"
   ]
  },
- "178": {
+ "182": {
   "file": "slide-329749aea797.mp3",
   "dur": 7.992,
   "hash": "329749aea797",
@@ -1054,95 +1080,95 @@
    "{{PRICE}}"
   ]
  },
- "179": {
+ "183": {
   "file": "slide-c80a8110ac5c.mp3",
   "dur": 5.074,
   "hash": "c80a8110ac5c"
  },
- "180": {
+ "184": {
   "file": "slide-7859dee0c127.mp3",
   "dur": 14.77,
   "hash": "7859dee0c127",
   "joined": true,
   "cross_slide": true
  },
- "181": {
+ "185": {
   "file": null,
   "dur": null,
   "hash": "f98b8531cc03",
   "join_in": true,
   "note": "join_through"
  },
- "182": {
+ "186": {
   "file": "slide-7e2a325714b8.mp3",
   "dur": 7.728,
   "hash": "7e2a325714b8"
  },
- "183": {
+ "187": {
   "file": "slide-86f1ab11b1e5.mp3",
   "dur": 6.672,
   "hash": "86f1ab11b1e5"
  },
- "184": {
+ "188": {
   "file": "slide-ab7e7e345575.mp3",
   "dur": 8.818,
   "hash": "ab7e7e345575"
  },
- "185": {
+ "189": {
   "file": "slide-4a7e7621524e.mp3",
   "dur": 6.6,
   "hash": "4a7e7621524e"
  },
- "186": {
+ "190": {
   "file": "slide-a72297272aa2.mp3",
   "dur": 11.516,
   "hash": "a72297272aa2"
  },
- "187": {
+ "191": {
   "file": "slide-2768727aa98d.mp3",
   "dur": 6.946,
   "hash": "2768727aa98d"
  },
- "189": {
+ "193": {
   "file": "slide-fe71d984f7b9.mp3",
   "dur": 10.272,
   "hash": "fe71d984f7b9"
  },
- "190": {
+ "194": {
   "file": "slide-ee21432ff246.mp3",
   "dur": 8.568,
   "hash": "ee21432ff246"
  },
- "191": {
+ "195": {
   "file": "slide-7a7a7adc7d3f.mp3",
   "dur": 3.192,
   "hash": "7a7a7adc7d3f"
  },
- "192": {
+ "196": {
   "file": "slide-8cde7c4da5d8.mp3",
   "dur": 18.192,
   "hash": "8cde7c4da5d8",
   "joined": true,
   "cross_slide": true
  },
- "193": {
+ "197": {
   "file": null,
   "dur": null,
   "hash": "141f7792052c",
   "join_in": true,
   "note": "join_through"
  },
- "194": {
+ "198": {
   "file": "slide-f74730375d5c.mp3",
   "dur": 9.216,
   "hash": "f74730375d5c"
  },
- "195": {
+ "199": {
   "file": "slide-2852b369e7e5.mp3",
   "dur": 4.152,
   "hash": "2852b369e7e5"
  },
- "196": {
+ "200": {
   "file": "slide-7984b6fc27b1.mp3",
   "dur": 7.824,
   "hash": "7984b6fc27b1",
@@ -1150,37 +1176,37 @@
    "{{CASH}}"
   ]
  },
- "197": {
+ "201": {
   "file": "slide-1d96883762bd.mp3",
   "dur": 6.864,
   "hash": "1d96883762bd"
  },
- "198": {
+ "202": {
   "file": "slide-55cd85f4b38a.mp3",
   "dur": 8.4,
   "hash": "55cd85f4b38a"
  },
- "199": {
+ "203": {
   "file": "slide-eac54c613d9d.mp3",
   "dur": 5.712,
   "hash": "eac54c613d9d"
  },
- "200": {
+ "204": {
   "file": "slide-c30913bfe9ec.mp3",
   "dur": 4.536,
   "hash": "c30913bfe9ec"
  },
- "201": {
+ "205": {
   "file": "slide-408d830d9c6b.mp3",
   "dur": 6.408,
   "hash": "408d830d9c6b"
  },
- "202": {
+ "206": {
   "file": "slide-06e34e605729.mp3",
   "dur": 3.696,
   "hash": "06e34e605729"
  },
- "203": {
+ "207": {
   "file": "slide-ef336153bd75.mp3",
   "dur": 10.128,
   "hash": "ef336153bd75",
@@ -1189,232 +1215,232 @@
    "{{PMT36}}"
   ]
  },
- "204": {
+ "208": {
   "file": "slide-b2202c9cf821.mp3",
   "dur": 3.36,
   "hash": "b2202c9cf821"
  },
- "205": {
+ "209": {
   "file": "slide-ceaff8b2b7aa.mp3",
   "dur": 14.17,
   "hash": "ceaff8b2b7aa",
   "joined": true,
   "cross_slide": true
  },
- "206": {
+ "210": {
   "file": null,
   "dur": null,
   "hash": "533ba0eeb660",
   "join_in": true,
   "note": "join_through"
  },
- "207": {
+ "211": {
   "file": "slide-0f70164e9a97.mp3",
   "dur": 7.416,
   "hash": "0f70164e9a97"
  },
- "208": {
+ "212": {
   "file": "slide-0eb072da0d50.mp3",
   "dur": 5.496,
   "hash": "0eb072da0d50"
  },
- "209": {
+ "213": {
   "file": "slide-5c5316f7e36e.mp3",
   "dur": 4.44,
   "hash": "5c5316f7e36e"
  },
- "210": {
+ "214": {
   "file": "slide-48f2f5bc0843.mp3",
   "dur": 7.776,
   "hash": "48f2f5bc0843"
  },
- "211": {
+ "215": {
   "file": "slide-5fa8ca041958.mp3",
   "dur": 10.776,
   "hash": "5fa8ca041958"
  },
- "212": {
+ "216": {
   "file": "slide-44dfe466a811.mp3",
   "dur": 9.6,
   "hash": "44dfe466a811"
  },
- "213": {
+ "217": {
   "file": "slide-e8fedcc762c9.mp3",
   "dur": 2.952,
   "hash": "e8fedcc762c9"
  },
- "214": {
+ "218": {
   "file": "slide-82beef739a0a.mp3",
   "dur": 8.496,
   "hash": "82beef739a0a"
  },
- "215": {
+ "219": {
   "file": "slide-db171319a8b0.mp3",
   "dur": 14.496,
   "hash": "db171319a8b0",
   "joined": true,
   "cross_slide": true
  },
- "216": {
+ "220": {
   "file": null,
   "dur": null,
   "hash": "d000faa7e0f9",
   "join_in": true,
   "note": "join_through"
  },
- "217": {
+ "221": {
   "file": null,
   "dur": null,
   "hash": "3922b2411fb9",
   "join_in": true,
   "note": "join_through"
  },
- "218": {
+ "222": {
   "file": "slide-ad842e179b39.mp3",
   "dur": 5.592,
   "hash": "ad842e179b39"
  },
- "219": {
+ "223": {
   "file": "slide-93ada8a26c1f.mp3",
   "dur": 6.264,
   "hash": "93ada8a26c1f"
  },
- "220": {
+ "224": {
   "file": "slide-950f15517ad5.mp3",
   "dur": 3.84,
   "hash": "950f15517ad5"
  },
- "221": {
+ "225": {
   "file": "slide-ec1163d67934.mp3",
   "dur": 8.016,
   "hash": "ec1163d67934"
  },
- "223": {
+ "227": {
   "file": "slide-b0a26ee6450f.mp3",
   "dur": 12.216,
   "hash": "b0a26ee6450f",
   "joined": true,
   "cross_slide": true
  },
- "224": {
+ "228": {
   "file": null,
   "dur": null,
   "hash": "96b1d7d6e6b3",
   "join_in": true,
   "note": "join_through"
  },
- "225": {
+ "229": {
   "file": "slide-f61163da453f.mp3",
   "dur": 18.754,
   "hash": "f61163da453f",
   "joined": true,
   "cross_slide": true
  },
- "226": {
+ "230": {
   "file": null,
   "dur": null,
   "hash": "f8dd2746f43a",
   "join_in": true,
   "note": "join_through"
  },
- "227": {
+ "231": {
   "file": null,
   "dur": null,
   "hash": "bc658b1815f3",
   "join_in": true,
   "note": "join_through"
  },
- "229": {
+ "233": {
   "file": "slide-93e968db1f12.mp3",
   "dur": 4.536,
   "hash": "93e968db1f12"
  },
- "230": {
+ "234": {
   "file": "slide-9860f8e96431.mp3",
   "dur": 6.768,
   "hash": "9860f8e96431"
  },
- "231": {
+ "235": {
   "file": "slide-bed90d58accb.mp3",
   "dur": 16.848,
   "hash": "bed90d58accb"
  },
- "232": {
+ "236": {
   "file": "slide-baeebb04fc5d.mp3",
   "dur": 10.584,
   "hash": "baeebb04fc5d"
  },
- "233": {
+ "237": {
   "file": "slide-dbd616a15df9.mp3",
   "dur": 7.776,
   "hash": "dbd616a15df9"
  },
- "234": {
+ "238": {
   "file": "slide-6cd3279c1af7.mp3",
   "dur": 4.224,
   "hash": "6cd3279c1af7"
  },
- "235": {
+ "239": {
   "file": "slide-ce1b148a822c.mp3",
   "dur": 5.712,
   "hash": "ce1b148a822c"
  },
- "236": {
+ "240": {
   "file": "slide-95ee8d48bf05.mp3",
   "dur": 6.96,
   "hash": "95ee8d48bf05"
  },
- "237": {
+ "241": {
   "file": "slide-0248de755a17.mp3",
   "dur": 6.024,
   "hash": "0248de755a17"
  },
- "238": {
+ "242": {
   "file": "slide-2ac592036379.mp3",
   "dur": 7.2,
   "hash": "2ac592036379"
  },
- "239": {
+ "243": {
   "file": "slide-cc5e7ef022c6.mp3",
   "dur": 6.84,
   "hash": "cc5e7ef022c6"
  },
- "240": {
+ "244": {
   "file": "slide-ad635685e194.mp3",
   "dur": 5.88,
   "hash": "ad635685e194"
  },
- "241": {
+ "245": {
   "file": "slide-f9e6a7d3ef64.mp3",
   "dur": 9.072,
   "hash": "f9e6a7d3ef64"
  },
- "242": {
+ "246": {
   "file": "slide-cec5d6fa25f7.mp3",
   "dur": 8.88,
   "hash": "cec5d6fa25f7"
  },
- "243": {
+ "247": {
   "file": "slide-ed738e7e8014.mp3",
   "dur": 10.608,
   "hash": "ed738e7e8014"
  },
- "244": {
+ "248": {
   "file": "slide-26da30b64153.mp3",
   "dur": 9.696,
   "hash": "26da30b64153"
  },
- "245": {
+ "249": {
   "file": "slide-72552744c2fb.mp3",
   "dur": 11.928,
   "hash": "72552744c2fb"
  },
- "246": {
+ "250": {
   "file": "slide-0082277f3cc6.mp3",
   "dur": 5.52,
   "hash": "0082277f3cc6"
  },
- "247": {
+ "251": {
   "file": "slide-775ff6279517.mp3",
   "dur": 5.16,
   "hash": "775ff6279517"
