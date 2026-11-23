@@ -2355,7 +2355,7 @@ window.DECK_TEXT_ES_DB = {
    "panel": null,
    "sentences": [
     {
-     "x": "La inversión por la cancelación completa y legítima de su deuda, y la posible recuperación del dinero que han perdido, sería de tanto.",
+     "x": "La inversión por la cancelación completa y legítima de su deuda, y la posible recuperación del dinero que han perdido, sería de {{PRICE}}.",
      "s": 1063.5,
      "d": 8.86
     }
