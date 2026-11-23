@@ -335,9 +335,12 @@
   "hash": "62c31b211ebc"
  },
  "57": {
-  "file": "slide-941cefcef854.mp3",
-  "dur": 4.704,
-  "hash": "941cefcef854"
+  "file": "slide-ec7949f64337.mp3",
+  "dur": 4.536,
+  "hash": "ec7949f64337",
+  "redacted_tokens": [
+   "{{RESORT}}"
+  ]
  },
  "58": {
   "file": "slide-fbbc21fce923.mp3",
