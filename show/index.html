@@ -28,22 +28,6 @@
   .langbtn { font-family: inherit; font-size: 13px; font-weight: 700; padding: 6px 12px; border-radius: 999px;
     border: 1px solid #0b3d91; background: rgba(255,255,255,.9); color: #0b3d91; cursor: pointer; }
   .langbtn.act { background: #0b3d91; color: #fff; }
-  /* ---------- chapter jump row (Sebastian, 2026-11-23): in the SAME
-     header row as the Esp/Eng toggle — one chip per section of the
-     loaded deck (built at runtime from the deck data) + a final
-     objections chip. Dark glass + gold, like the section drawings;
-     scrolls horizontally, never pushes the stage off screen. ---------- */
-  #chips { display: flex; gap: 6px; overflow-x: auto; overflow-y: hidden; max-width: 40vw; padding: 3px 1px;
-    scrollbar-width: thin; scrollbar-color: rgba(255,217,104,.55) transparent; }
-  #chips::-webkit-scrollbar { height: 4px; }
-  #chips::-webkit-scrollbar-thumb { background: rgba(255,217,104,.55); border-radius: 2px; }
-  .chip { flex: 0 0 auto; font-family: inherit; font-size: 11px; font-weight: 700; letter-spacing: .8px;
-    text-transform: uppercase; white-space: nowrap; padding: 5px 10px; border-radius: 999px; cursor: pointer;
-    border: 1px solid rgba(255,217,104,.55); background: rgba(8,17,36,.55); color: #ffd968;
-    backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); text-shadow: 0 1px 5px rgba(0,0,0,.55); }
-  .chip:hover, .chip:active { border-color: #ffd968; }
-  .chip.cur { background: rgba(255,217,104,.28); color: #fff; }
-  .chip.obj { border-color: rgba(255,255,255,.55); color: #fff; }
   /* ---------- stage ---------- */
   #stage { position: fixed; inset: 0; z-index: 2; display: flex; align-items: center; justify-content: center; padding: 64px 18px 108px; }
   /* NO CARD (Sebastian, 2026-11-23): .card is now just a transparent text
@@ -105,6 +89,23 @@
   /* ---------- controls ---------- */
   #controls { position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; padding: 10px 16px 14px;
     background: linear-gradient(180deg, rgba(8,15,30,0), rgba(8,15,30,.55) 30%); }
+  /* ---------- chapter ruler (Sebastian, 2026-11-23): section ticks +
+     labels above the progress bar, positioned by first-slide index like
+     ruler markings (two staggered rows, long names shortened); the
+     ruler + bar are one padded click target — click anywhere to jump
+     to that point of the deck, click a label for its section start -- */
+  #seekzone { cursor: pointer; padding: 10px 0 2px; }
+  #ruler { position: relative; height: 46px; }
+  .rtick { position: absolute; bottom: 0; width: 2px; height: 8px; margin-left: -1px; background: rgba(255,217,104,.55); border-radius: 1px; }
+  .rtick.cur { background: #ffe45e; height: 12px; }
+  .rlab { position: absolute; transform: translateX(-50%); font-family: inherit; font-size: 10.5px; font-weight: 700;
+    letter-spacing: .5px; text-transform: uppercase; white-space: nowrap; max-width: 132px; overflow: hidden;
+    text-overflow: ellipsis; padding: 2px 7px; border-radius: 999px; cursor: pointer;
+    border: 1px solid rgba(255,217,104,.4); background: rgba(8,17,36,.55); color: #ffd968;
+    backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); text-shadow: 0 1px 5px rgba(0,0,0,.55); }
+  .rlab.row0 { bottom: 13px; }
+  .rlab.row1 { bottom: 27px; }
+  .rlab.cur { background: rgba(255,217,104,.3); color: #fff; border-color: #ffd968; z-index: 3; }
   #progwrap { height: 5px; background: rgba(255,255,255,.3); border-radius: 3px; overflow: hidden; margin-bottom: 10px; }
   #prog { height: 100%; width: 0; background: #ffd968; border-radius: 3px; transition: width .3s; }
   .ctlrow { display: flex; align-items: center; gap: 10px; }
@@ -166,7 +167,6 @@
   <div class="spacer"></div>
   <button class="langbtn act" id="btnEs">Esp</button>
   <button class="langbtn" id="btnEn">Eng</button>
-  <div id="chips"></div>
 </header>
 
 <div id="stage"></div>
@@ -174,7 +174,7 @@
 <div id="obj"><div id="objbg"></div><div id="objveil"></div><div class="objwrap" id="objwrap"></div></div>
 
 <div id="controls">
-  <div id="progwrap"><div id="prog"></div></div>
+  <div id="seekzone"><div id="ruler"></div><div id="progwrap"><div id="prog"></div></div></div>
   <div class="ctlrow">
     <button class="cbtn" id="prevslide" title="Pantalla anterior">⏮</button>
     <button class="cbtn" id="prevchunk" title="Resaltado anterior">◀</button>
@@ -417,7 +417,7 @@ function render(){
   $('prog').style.width = ((idx + 1) / slides.length * 100) + '%';
   elapsed = 0; lastTick = null; chunkIdx = 0;
   applyChunk();
-  syncModeBtn(); markChip();
+  syncModeBtn(); markRuler();
 }
 /* ---- highlight chunks: windows of 4-6 words, 3-4 steps per slide ---- */
 function wordEls(){ return document.querySelectorAll('#stage .txt .w'); }
@@ -537,36 +537,45 @@ function toast(msg){
   clearTimeout(t._h); t._h = setTimeout(function(){ t.style.display = 'none'; }, 4200);
 }
 
-/* ================= CHAPTER JUMP ROW (Sebastian, 2026-11-23) =================
-   Chips in the header row, next to the Esp/Eng toggle: one per section
-   of the CURRENTLY LOADED deck, built from the deck data at runtime
-   (unique section names in deck order — never hard-coded, so new
-   sections like the UCFS application + DocuSign closing pick up
-   automatically), plus a final 🛡️ chip that opens the objections menu.
-   Clicking a section chip jumps to that section's first slide. */
-var chipSecs = [], chipFirst = [];
-function buildChips(){
-  var wrap = $('chips');
-  if (!wrap) return;
-  chipSecs = []; chipFirst = [];
+/* ================= CHAPTER RULER (Sebastian, 2026-11-23) =================
+   Section ticks + labels above the progress bar, built from the loaded
+   deck's data at runtime (unique sections in deck order, positioned by
+   first-slide index — never hard-coded, so new sections like the UCFS
+   application + DocuSign closing appear automatically) and rebuilt on
+   language switch. Clicking the ruler/bar jumps proportionally;
+   clicking a label jumps to that section's first slide. Rebuttals stay
+   on the 🛡️ Objeciones button in the controls row. Long names shorten
+   at the " — " suffix and ellipsize inside their pill. */
+var rulerSecs = [];
+function buildRuler(){
+  var r = $('ruler');
+  if (!r) return;
+  rulerSecs = [];
   slides.forEach(function(sl, i){
-    if (sl.sec && chipSecs.indexOf(sl.sec) === -1){ chipSecs.push(sl.sec); chipFirst.push(i); }
+    if (sl.sec && !rulerSecs.some(function(s){ return s.sec === sl.sec; }))
+      rulerSecs.push({ sec: sl.sec, first: i });
   });
+  var total = slides.length || 1;
   var html = '';
-  chipSecs.forEach(function(sec, k){
-    html += '<button class="chip" data-ci="' + k + '">' + esc(sec) + '</button>';
+  rulerSecs.forEach(function(s, k){
+    var pct = s.first / total * 100;
+    var tx = pct < 5 ? '-8%' : (pct > 95 ? '-92%' : '-50%');
+    var disp = s.sec, cut = disp.indexOf(' \u2014 ');
+    if (cut >= 4) disp = disp.slice(0, cut); /* "EMPUJE — SI LO QUIEREN PENSAR" -> "EMPUJE" */
+    html += '<div class="rtick" style="left:' + pct + '%"></div>' +
+      '<button class="rlab row' + (k % 2) + '" data-first="' + s.first + '" title="' + esc(s.sec) +
+      '" style="left:' + pct + '%;transform:translateX(' + tx + ')">' + esc(disp) + '</button>';
   });
-  html += '<button class="chip obj" data-obj="1">' + OBJL[lang].btn + '</button>';
-  wrap.innerHTML = html;
-  markChip();
+  r.innerHTML = html;
+  markRuler();
 }
-function markChip(){
-  var wrap = $('chips');
-  if (!wrap || !slides.length || !slides[idx]) return;
-  var cur = slides[idx].sec;
-  wrap.querySelectorAll('.chip[data-ci]').forEach(function(b){
-    b.classList.toggle('cur', chipSecs[+b.getAttribute('data-ci')] === cur);
-  });
+function markRuler(){
+  var r = $('ruler');
+  if (!r || !slides.length) return;
+  var cur = -1;
+  rulerSecs.forEach(function(s, k){ if (s.first <= idx) cur = k; });
+  r.querySelectorAll('.rlab').forEach(function(b, k){ b.classList.toggle('cur', k === cur); });
+  r.querySelectorAll('.rtick').forEach(function(b, k){ b.classList.toggle('cur', k === cur); });
 }
 
 /* background montage — slow Ken Burns crossfade, full-bleed under the
@@ -624,12 +633,14 @@ $('play').addEventListener('click', function(){
   if (playing) startTimer();
 });
 $('modebtn').addEventListener('click', function(){ setAuto(!auto); });
-$('chips').addEventListener('click', function(e){
-  var b = e.target.closest('.chip');
-  if (!b) return;
-  if (b.hasAttribute('data-obj')){ openObj(); return; }
-  var k = +b.getAttribute('data-ci');
-  if (chipFirst[k] != null) go(chipFirst[k]);
+$('seekzone').addEventListener('click', function(e){
+  if (!slides.length) return;
+  var lab = e.target.closest('.rlab');
+  if (lab){ go(+lab.getAttribute('data-first')); return; } /* label = section start */
+  var rect = $('seekzone').getBoundingClientRect();
+  var frac = (e.clientX - rect.left) / rect.width;
+  frac = Math.max(0, Math.min(0.9999, frac));
+  go(Math.floor(frac * slides.length)); /* bar/ruler = proportional jump */
 });
 document.addEventListener('keydown', function(e){
   if (objOpen){ if (e.key === 'Escape') closeObj(); return; }
@@ -653,10 +664,10 @@ function setLang(nl){
   $('btnEn').classList.toggle('act', nl === 'en');
   $('objbtn').textContent = OBJL[nl].btn;
   if (objOpen) renderObj(); /* menu follows the show's language */
-  if (client.dtype === 'DB'){ buildChips(); renderDbNotice(); return; }
+  if (client.dtype === 'DB'){ buildRuler(); renderDbNotice(); return; }
   slides = DECK.slides;
   idx = Math.max(0, Math.min(slides.length - 1, idx));
-  buildChips(); /* chapter row follows the loaded deck + language */
+  buildRuler(); /* chapter ruler follows the loaded deck + language */
   resetBg(); /* background pool follows the language */
   render(); startTimer();
 }
@@ -768,14 +779,14 @@ document.documentElement.lang = lang;
 $('btnEs').classList.toggle('act', lang === 'es');
 $('btnEn').classList.toggle('act', lang === 'en');
 if (client.dtype === 'DB'){
-  buildChips();
+  buildRuler();
   renderDbNotice();
 } else if (!DECK){
   $('stage').innerHTML = '<div class="card"><div class="notice">Deck data missing.</div></div>';
 } else {
   slides = DECK.slides;
   document.body.classList.add('auto');
-  buildChips();
+  buildRuler();
   render(); startTimer();
 }
 </script>
