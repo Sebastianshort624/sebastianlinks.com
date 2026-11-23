@@ -318,17 +318,17 @@ function deriveClient(c){
   if (fee > 0) price = fee;
   else { var s47 = Math.max(payoff * 0.47, 3500); price = s47 + (s47 < 10000 ? 299 : 399); }
   var mfmo = Math.floor(mf / 12);
-  var mf5 = mfCum(mf, esc, 5), mf10 = mfCum(mf, esc, 10), mf20 = mfCum(mf, esc, 20),
+  var mf3 = mfCum(mf, esc, 3), mf5 = mfCum(mf, esc, 5), mf10 = mfCum(mf, esc, 10), mf20 = mfCum(mf, esc, 20),
       mf30 = mfCum(mf, esc, 30), mf40 = mfCum(mf, esc, 40);
   var mfy10 = Math.round(mf * Math.pow(1 + esc, 9) * 100) / 100;
   return { mrem: mrem, t1: t1, t3: t3, t5: t5, t10: t10, t20: t20,
     loan: Math.round(loan * 100) / 100, sched: Math.round(sched * 100) / 100,
     intpct: Math.round(intpct * 10) / 10, price: Math.round(price * 100) / 100,
     save20: Math.round((t20 - price) * 100) / 100, mfmo: mfmo,
-    mf5: mf5, mf10: mf10, mf20: mf20, mf30: mf30, mf40: mf40, mfy10: mfy10,
+    mf3: mf3, mf5: mf5, mf10: mf10, mf20: mf20, mf30: mf30, mf40: mf40, mfy10: mfy10,
     totmo: Math.round((mmo + mfmo) * 100) / 100, totyr: Math.round((mmo * 12 + mf) * 100) / 100,
     f: { payoff: fmtC(payoff), mmo: fmtC(mmo), mfyr: fmtC(mf), mfmo: fmtD(mfmo),
-         mf5: fmtC(mf5), mf10: fmtC(mf10), mf20: fmtC(mf20), mf30: fmtC(mf30), mf40: fmtC(mf40), mfy10: fmtC(mfy10),
+         mf3: fmtC(mf3), mf5: fmtC(mf5), mf10: fmtC(mf10), mf20: fmtC(mf20), mf30: fmtC(mf30), mf40: fmtC(mf40), mfy10: fmtC(mfy10),
          totmo: fmtC(mmo + mfmo), totyr: fmtC(mmo * 12 + mf), t1: fmtC(t1), t3: fmtC(t3), t5: fmtC(t5),
          t10: fmtC(t10), t20: fmtC(t20), loan: fmtC(loan), sched: fmtC(sched),
          price: fmtD(price), save20: fmtC(t20 - price) } };
@@ -355,7 +355,7 @@ function deriveDb(c){
     f: { lista: fmtC(lista), price: price > 0 ? fmtD(price) : miss,
          save20: price > 0 ? fmtC(save20) : miss, t1: fmtC(mfCum(mf, esc, 1)), t20: fmtC(mf20),
          mfyr: fmtC(mf), mfmo: fmtD(mfmo),
-         mf5: fmtC(mfCum(mf, esc, 5)), mf10: fmtC(mfCum(mf, esc, 10)),
+         mf3: fmtC(mfCum(mf, esc, 3)), mf5: fmtC(mfCum(mf, esc, 5)), mf10: fmtC(mfCum(mf, esc, 10)),
          mf20: fmtC(mf20), mf30: fmtC(mfCum(mf, esc, 30)),
          mf40: fmtC(mfCum(mf, esc, 40)),
          mfy10: fmtC(Math.round(mf * Math.pow(1 + esc, 9) * 100) / 100),
@@ -370,7 +370,7 @@ function mfFigures(c){
   if (!c) return null;
   var mf = +c.mf || 0, esc = (+c.esc || 8) / 100;
   if (mf <= 0) return null;
-  return { mf5: fmtC(mfCum(mf, esc, 5)), mf10: fmtC(mfCum(mf, esc, 10)),
+  return { mf3: fmtC(mfCum(mf, esc, 3)), mf5: fmtC(mfCum(mf, esc, 5)), mf10: fmtC(mfCum(mf, esc, 10)),
            mf20: fmtC(mfCum(mf, esc, 20)), mf30: fmtC(mfCum(mf, esc, 30)),
            mf40: fmtC(mfCum(mf, esc, 40)),
            mfy10: fmtC(Math.round(mf * Math.pow(1 + esc, 9) * 100) / 100) };
@@ -457,6 +457,7 @@ function tokens(){
     '{{TERM}}': client.term || 120,
     '{{PAYOFF}}': f ? f.payoff : miss, '{{MMO}}': f ? f.mmo : miss,
     '{{MFYR}}': f ? f.mfyr : miss, '{{MFMO}}': f ? f.mfmo : miss,
+    '{{MF3}}': f && f.mf3 ? f.mf3 : miss,
     '{{MF5}}': f && f.mf5 ? f.mf5 : miss, '{{MF10}}': f && f.mf10 ? f.mf10 : miss,
     '{{MF20}}': f && f.mf20 ? f.mf20 : miss, '{{MF30}}': f && f.mf30 ? f.mf30 : miss,
     '{{MF40}}': f && f.mf40 ? f.mf40 : miss,
