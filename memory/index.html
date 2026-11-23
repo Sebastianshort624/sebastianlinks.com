@@ -53,7 +53,7 @@ main{max-width:860px;margin:0 auto;padding:12px}
 .scene{margin-top:14px;background:#fdf6ec;border:2px solid #e8a33d;border-radius:10px;padding:12px}
 .scene h3{margin:0 0 8px;font-size:16px;color:#7a4d00}
 .srow{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
-.srow select{flex:1 1 30%;min-width:100px;font-size:14.5px;padding:8px 6px;border-radius:8px;border:1.5px solid #c9a45c;background:#fff;color:#17251b}
+.srow select{flex:1 1 30%;min-width:100px;font-size:22px;text-align:center;padding:8px 6px;border-radius:8px;border:1.5px solid #c9a45c;background:#fff;color:#17251b}
 .sbtns{display:flex;gap:4px;align-items:flex-start}
 .sbtn{border:1.5px solid #c9a45c;background:#fff;color:#7a4d00;border-radius:8px;padding:7px 9px;font-size:13px;cursor:pointer;font-weight:700}
 .sbtn:disabled{opacity:.3;cursor:default}
@@ -83,7 +83,9 @@ const DATA = [{"index": 1, "section": "APERTURA", "palace_location": "Cabello", 
 const LS='memoryZooV1';
 let state = JSON.parse(localStorage.getItem(LS)||'{"known":[],"missed":[]}');
 if(!state.scenes||typeof state.scenes!=='object'||Array.isArray(state.scenes)) state.scenes={};
+const WORD2EMOJI={'León':'🦁','Elefante':'🐘','Mono':'🐒','Perro':'🐶','Gato':'🐱','Caballo':'🐴','Oso':'🐻','Serpiente':'🐍','Águila':'🦅','Tiburón':'🦈','Hombre':'👨','Mujer':'👩','Niño':'👦','Niña':'👧','Bebé':'👶','Casa':'🏠','Cuarto':'🛏️','Castillo':'🏰','Patio':'🏡','Calle':'🛣️','Pueblo':'🏘️','Ciudad':'🏙️','Campo':'🌾','Planeta':'🪐','Luna':'🌙','Playa':'🏖️','Bosque':'🌲','Corriendo':'🏃','Nadando':'🏊','Montando':'🏇','Colgando':'🪝','Levantando':'🏋️','Saltando':'🦘','Bailando':'💃','Cocinando':'🍳','Durmiendo':'😴','Volando':'🧚','Cavando':'⛏️','Pescando':'🎣','Riendo':'😂','Llorando':'😭','Gritando':'🗣️','Asustado':'😨','Enojado':'😡','Feliz':'😄','Sorprendido':'😲','Nervioso':'😬','Orgulloso':'😤','Cansado':'🥱','Confundido':'😕','Enamorado':'😍','Libro':'📚','Silla':'🪑','Mesa':'🍽️','Cuchara':'🥄','Sombrero':'🎩','Llave':'🔑','Teléfono':'📱','Espejo':'🪞','Reloj':'⏰','Martillo':'🔨','Tijeras':'✂️','Vela':'🕯️','Botella':'🍾','Maleta':'🧳','Bicicleta':'🚲','Guitarra':'🎸','Pelota':'⚽','Corona':'👑','Espada':'⚔️','Mapa':'🗺️'};
 for(const k in state.scenes){ if(Array.isArray(state.scenes[k])) state.scenes[k]=state.scenes[k].map(r=>{ if(Array.isArray(r)&&r.length===5){ const n=r.slice(); n.splice(2,0,''); return n; } return r; }); }
+for(const k in state.scenes){ if(Array.isArray(state.scenes[k])) state.scenes[k]=state.scenes[k].map(r=>Array.isArray(r)?r.map(v=>WORD2EMOJI[v]||v):r); }
 if(typeof state.hideBody!=='boolean') state.hideBody=false;
 const DEFPARTS=DATA.slice().sort((a,b)=>a.index-b.index).map(b=>b.palace_location);
 if(!Array.isArray(state.bodyMap)||state.bodyMap.length!==68||new Set(state.bodyMap).size!==68||!state.bodyMap.every(p=>DEFPARTS.indexOf(p)>=0)) state.bodyMap=DEFPARTS.slice();
@@ -131,11 +133,11 @@ function flag(b){return b.index%2===1?'🇲🇽':'🇨🇺';}
 function head(b){return '<div class="loc">'+flag(b)+' 🧍 Parada '+b.index+'<span class="bname">: '+esc(stopName(b))+'</span></div><div class="sec">'+esc(b.section)+' · Grupo '+b.index+' / '+DATA.length+'</div>';}
 function hintHTML(b){return '<div class="hintbox">💡 '+esc(b.hint)+'</div>';}
 function puenteHTML(b){return b.puente?'<div class="puente">➡ Puente al siguiente grupo: '+esc(b.puente)+'</div>':'';}
-const SC_NOUN=['León','Elefante','Mono','Perro','Gato','Caballo','Oso','Serpiente','Águila','Tiburón','Hombre','Mujer','Niño','Niña','Bebé'];
-const SC_PLACE=['Casa','Cuarto','Castillo','Patio','Calle','Pueblo','Ciudad','Campo','Planeta','Luna','Playa','Bosque'];
-const SC_ACT=['Corriendo','Nadando','Montando','Colgando','Levantando','Saltando','Bailando','Cocinando','Durmiendo','Volando','Cavando','Pescando'];
-const SC_EMO=['Riendo','Llorando','Gritando','Asustado','Enojado','Feliz','Sorprendido','Nervioso','Orgulloso','Cansado','Confundido','Enamorado'];
-const SC_OBJ=['Libro','Silla','Mesa','Cuchara','Sombrero','Llave','Teléfono','Espejo','Reloj','Martillo','Tijeras','Vela','Botella','Maleta','Bicicleta','Guitarra','Pelota','Corona','Espada','Mapa'];
+const SC_NOUN=['🦁','🐘','🐒','🐶','🐱','🐴','🐻','🐍','🦅','🦈','👨','👩','👦','👧','👶'];
+const SC_PLACE=['🏠','🛏️','🏰','🏡','🛣️','🏘️','🏙️','🌾','🪐','🌙','🏖️','🌲'];
+const SC_ACT=['🏃','🏊','🏇','🪝','🏋️','🦘','💃','🍳','😴','🧚','⛏️','🎣'];
+const SC_EMO=['😂','😭','🗣️','😨','😡','😄','😲','😬','😤','🥱','😕','😍'];
+const SC_OBJ=['📚','🪑','🍽️','🥄','🎩','🔑','📱','🪞','⏰','🔨','✂️','🕯️','🍾','🧳','🚲','🎸','⚽','👑','⚔️','🗺️'];
 const SC_COLS=[SC_NOUN,SC_PLACE,SC_OBJ,SC_ACT,SC_EMO,SC_NOUN];
 function sceneSel(unit,col,val){
   let h='<select data-unit="'+unit+'" data-col="'+col+'" onchange="sceneChange(this)"><option value="">—</option>';
@@ -161,7 +163,7 @@ function sceneHTML(b){
   const has=Object.prototype.hasOwnProperty.call(state.scenes,b.index);
   const rows=has?(state.scenes[b.index]||[]).map(sceneNormRow):[sceneNormRow([])];
   return '<div class="scene" id="scene-'+b.index+'"><h3>🎨 Crea tu escena</h3>'
-    +'<div style="font-size:12px;color:#7a4d00;margin-bottom:6px">Animal/Persona · Lugar · Objeto · Acción · Emoción · Animal/Persona</div>'
+    +'<div style="font-size:19px;margin-bottom:6px">🐶 · 🏠 · 📚 · 🏃 · 😂 · 🐶</div>'
     +'<div class="srows">'+rows.map((r,i)=>sceneRowHTML(b.index,i,r,rows.length)).join('')+'</div>'
     +'<button class="sadd" onclick="sceneAdd('+b.index+')">+ Agregar fila</button></div>';
 }
