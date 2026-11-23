@@ -475,6 +475,7 @@ function tokens(){
   return {
     '{{NAMES}}': names,
     '{{RESORT}}': client.resortShort || L[lang].resortDef,
+    '{{CAD}}': (function(){ var c = client.cad || (/westgate/i.test(client.resort || '') ? 'day' : ''); var mm = lang === 'es' ? {day: 'al día', week: 'a la semana', month: 'al mes'} : {day: 'a day', week: 'a week', month: 'a month'}; return mm[c] || ''; })(), /* half-dozen cadence — client/resort-specific (Sebastian, 2026-11-23): Westgate = a day; record cad field wins; unknown = no rate shown, never guessed */
     '{{CA}}': client.caFirst || L[lang].caDef,
     '{{PYR}}': client.pyr || '—',
     '{{TERM}}': client.term || 120,
