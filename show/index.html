@@ -302,16 +302,17 @@ function deriveClient(c){
   if (fee > 0) price = fee;
   else { var s47 = Math.max(payoff * 0.47, 3500); price = s47 + (s47 < 10000 ? 299 : 399); }
   var mfmo = Math.floor(mf / 12);
-  var mf5 = mfCum(mf, esc, 5), mf10 = mfCum(mf, esc, 10), mf20 = mfCum(mf, esc, 20);
+  var mf5 = mfCum(mf, esc, 5), mf10 = mfCum(mf, esc, 10), mf20 = mfCum(mf, esc, 20),
+      mf40 = mfCum(mf, esc, 40);
   var mfy10 = Math.round(mf * Math.pow(1 + esc, 9) * 100) / 100;
   return { mrem: mrem, t3: t3, t5: t5, t10: t10, t20: t20,
     loan: Math.round(loan * 100) / 100, sched: Math.round(sched * 100) / 100,
     intpct: Math.round(intpct * 10) / 10, price: Math.round(price * 100) / 100,
     save20: Math.round((t20 - price) * 100) / 100, mfmo: mfmo,
-    mf5: mf5, mf10: mf10, mf20: mf20, mfy10: mfy10,
+    mf5: mf5, mf10: mf10, mf20: mf20, mf40: mf40, mfy10: mfy10,
     totmo: Math.round((mmo + mfmo) * 100) / 100, totyr: Math.round((mmo * 12 + mf) * 100) / 100,
     f: { payoff: fmtC(payoff), mmo: fmtC(mmo), mfyr: fmtC(mf), mfmo: fmtD(mfmo),
-         mf5: fmtC(mf5), mf10: fmtC(mf10), mf20: fmtC(mf20), mfy10: fmtC(mfy10),
+         mf5: fmtC(mf5), mf10: fmtC(mf10), mf20: fmtC(mf20), mf40: fmtC(mf40), mfy10: fmtC(mfy10),
          totmo: fmtC(mmo + mfmo), totyr: fmtC(mmo * 12 + mf), t3: fmtC(t3), t5: fmtC(t5),
          t10: fmtC(t10), t20: fmtC(t20), loan: fmtC(loan), sched: fmtC(sched),
          price: fmtD(price), save20: fmtC(t20 - price) } };
@@ -319,7 +320,7 @@ function deriveClient(c){
 /* MATH-PORT-END */
 
 /* Maintenance-only figures for clients whose clients.js record carries a
-   PRECOMPUTED derived block (those blocks predate MF5/MF10/MF20/MFY10):
+   PRECOMPUTED derived block (those blocks predate MF5/MF10/MF20/MF40/MFY10):
    merge the four values into derived.f from the record's own mf/esc so the
    tokens always resolve — a raw {{MF5}} must never reach the screen. */
 function mfFigures(c){
@@ -327,7 +328,8 @@ function mfFigures(c){
   var mf = +c.mf || 0, esc = (+c.esc || 8) / 100;
   if (mf <= 0) return null;
   return { mf5: fmtC(mfCum(mf, esc, 5)), mf10: fmtC(mfCum(mf, esc, 10)),
-           mf20: fmtC(mfCum(mf, esc, 20)), mfy10: fmtC(Math.round(mf * Math.pow(1 + esc, 9) * 100) / 100) };
+           mf20: fmtC(mfCum(mf, esc, 20)), mf40: fmtC(mfCum(mf, esc, 40)),
+           mfy10: fmtC(Math.round(mf * Math.pow(1 + esc, 9) * 100) / 100) };
 }
 function ensureMf(){
   if (!derived || !client) return;
@@ -391,7 +393,8 @@ function tokens(){
     '{{PAYOFF}}': f ? f.payoff : miss, '{{MMO}}': f ? f.mmo : miss,
     '{{MFYR}}': f ? f.mfyr : miss, '{{MFMO}}': f ? f.mfmo : miss,
     '{{MF5}}': f && f.mf5 ? f.mf5 : miss, '{{MF10}}': f && f.mf10 ? f.mf10 : miss,
-    '{{MF20}}': f && f.mf20 ? f.mf20 : miss, '{{MFY10}}': f && f.mfy10 ? f.mfy10 : miss,
+    '{{MF20}}': f && f.mf20 ? f.mf20 : miss, '{{MF40}}': f && f.mf40 ? f.mf40 : miss,
+    '{{MFY10}}': f && f.mfy10 ? f.mfy10 : miss,
     '{{TOTMO}}': f ? f.totmo : miss, '{{TOTYR}}': f ? f.totyr : miss,
     '{{T3}}': f ? f.t3 : miss, '{{T5}}': f ? f.t5 : miss,
     '{{T10}}': f ? f.t10 : miss, '{{T20}}': f ? f.t20 : miss,
@@ -599,7 +602,7 @@ function tick(now){
       rafId = null; lastTick = null; return;
     }
     if (idx < slides.length - 1){ idx++; render(); }
-    else { playing = false; $('play').textContent = '\u25b6'; syncModeBtn(); rafId = null; return; }
+    else { playing = false; syncModeBtn(); rafId = null; return; }
   } else markCurrent();
   rafId = requestAnimationFrame(tick);
 }
@@ -617,18 +620,44 @@ function go(n){
 function syncModeBtn(){
   if (held) $('modebtn').textContent = (lang === 'es') ? '⏸ EN PAUSA — NÚMEROS' : '⏸ HELD — NUMBERS';
   else $('modebtn').textContent = auto ? 'AUTOSCROLL: ON' : 'MANUAL';
-  /* the BIG mid-stage play button always agrees with the small one:
+  /* BOTH play glyphs — the small #play and the BIG mid-stage #bigplay —
+     are written HERE and nowhere else, derived from the one predicate:
      ⏸ while the show is actually advancing, ▶ whenever it is stopped
      (paused, held on a numbers slide, or stepped into MANUAL) */
+  var glyph = (auto && playing && !held) ? '⏸' : '▶';
   var bp = $('bigplay');
-  if (bp) bp.textContent = (auto && playing && !held) ? '⏸' : '▶';
+  if (bp) bp.textContent = glyph;
+  var sp = $('play');
+  if (sp) sp.textContent = glyph;
 }
 function setAuto(on){
   auto = on;
+  playing = on; /* both flags set BEFORE the glyph sync — MANUAL is stopped,
+                   AUTOSCROLL is playing; no stale-flag window in between */
   document.body.classList.toggle('auto', auto);
   syncModeBtn();
-  if (auto){ playing = true; $('play').textContent = '⏸'; startTimer(); }
+  if (auto){ startTimer(); }
   else { applyChunk(); } /* MANUAL keeps the current chunk highlighted */
+}
+/* PLAY/PAUSE — the ONE toggle behind the small button, the BIG mid-stage
+   button (the stage delegation routes it to the small one), the spacebar
+   and the click-the-screen surface, so state and glyph can never drift
+   apart again. Live bug (Sebastian, 2026-11-23): on a HELD numbers slide
+   the old toggle flipped `playing` behind the hold — the show never
+   moved and the big glyph never changed; he hit it and nothing happened.
+   From HELD, play releases the hold and advances, same as ⏭. */
+function togglePlay(){
+  if (!slides.length) return;
+  if (held){
+    held = false;
+    if (idx < slides.length - 1){ setAuto(true); go(idx + 1); }
+    else { playing = false; syncModeBtn(); }
+    return;
+  }
+  if (!auto){ setAuto(true); return; }
+  playing = !playing;
+  syncModeBtn();
+  if (playing) startTimer();
 }
 /* NAVIGATION (Sebastian, 2026-11-23): DOUBLE arrows (⏮/⏭) move between
    SLIDES; SINGLE arrows (◀/▶) step the HIGHLIGHT CHUNK within the slide.
@@ -770,13 +799,7 @@ $('nextslide').addEventListener('click', function(){ go(idx + 1); });
 $('prevslide').addEventListener('click', function(){ go(idx - 1); });
 $('nextchunk').addEventListener('click', function(){ stepChunk(1); });
 $('prevchunk').addEventListener('click', function(){ stepChunk(-1); });
-$('play').addEventListener('click', function(){
-  if (!auto){ setAuto(true); return; }
-  playing = !playing;
-  $('play').textContent = playing ? '⏸' : '▶';
-  syncModeBtn(); /* keep the big mid-stage button's glyph in agreement */
-  if (playing) startTimer();
-});
+$('play').addEventListener('click', togglePlay);
 /* ============ CLICK THE SCREEN = PLAY/PAUSE (Sebastian, 2026-11-23):
    clients answer and interject mid-pitch, so the whole slide surface
    is the pause button: one click/tap on the stage pauses; the next
@@ -793,15 +816,11 @@ function flashToggle(msg){
 }
 function toggleStagePlay(){
   if (objOpen || !slides.length) return;
-  if (auto && playing){
-    playing = false;
-    $('play').textContent = '▶';
-    syncModeBtn();
-    flashToggle(lang === 'es' ? '⏸ Pausa' : '⏸ Paused');
-  } else {
-    setAuto(true); /* re-engages autoscroll + playing from right here */
-    flashToggle(lang === 'es' ? '▶ Autoscroll' : '▶ Autoscroll');
-  }
+  togglePlay(); /* the same single toggle as the play buttons — including
+                   releasing a numbers HOLD by advancing */
+  var advancing = auto && playing && !held;
+  flashToggle(advancing ? (lang === 'es' ? '▶ Autoscroll' : '▶ Autoscroll')
+                        : (lang === 'es' ? '⏸ Pausa' : '⏸ Paused'));
 }
 $('stage').addEventListener('click', function(e){
   var t = e.target;
