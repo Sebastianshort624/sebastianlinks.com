@@ -1183,7 +1183,7 @@ window.DECK_TEXT_ES_MTG = {
    "panel": null,
    "sentences": [
     {
-     "x": "O sea, solo en mantenimiento, subiendo el 8% anual, en 10 años se comprometieron a pagar {{MF10}}, en 20 años {{MF20}}, y en 30 años {{MF30}}.",
+     "x": "O sea, solo en mantenimiento, subiendo el 8% anual, en 5 años se comprometieron a pagar {{MF5}}, en 10 años {{MF10}}, y en 20 años {{MF20}}.",
      "s": 590.87,
      "d": 13.39
     },
