@@ -1198,7 +1198,7 @@ window.DECK_TEXT_EN_MTG = {
    "panel": null,
    "sentences": [
     {
-     "x": "So, in maintenance fees alone, rising 8% a year, in 10 years you committed to pay {{MF10}}, in 20 years {{MF20}}, and in 30 years {{MF30}}.",
+     "x": "So, in maintenance fees alone, rising 8% a year, in 5 years you committed to pay {{MF5}}, in 10 years {{MF10}}, and in 20 years {{MF20}}.",
      "s": 599.42,
      "d": 13.39
     },
