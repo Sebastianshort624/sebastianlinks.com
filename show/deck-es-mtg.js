@@ -265,34 +265,14 @@ window.DECK_TEXT_ES_MTG = {
    "kind": "text",
    "sentences": [
     {
-     "x": "¿El contrato que firmaron estaba en inglés o en español?",
-     "s": 114.91,
-     "d": 5.15
-    },
-    {
-     "x": "Porque si la presentación fue en español y el contrato no estaba también en español, eso es discriminación — y los expone a una multa.",
-     "s": 120.06,
-     "d": 12.88
+     "x": "Y sí, sacamos a muchos propietarios de {{RESORT}}. Estoy hablando de más de media docena {{CAD}}.",
+     "s": 132.94,
+     "d": 8.24
     }
    ],
    "panel": null,
    "start": 114.91,
-   "dur": 18.03,
-   "img": 1048
-  },
-  {
-   "sec": "EL CONTRATO IMPENETRABLE",
-   "kind": "text",
-   "sentences": [
-    {
-     "x": "Y sí, sacamos a muchos propietarios de {{RESORT}}. Estoy hablando de más de media docena a la semana.",
-     "s": 132.94,
-     "d": 9.27
-    }
-   ],
-   "panel": null,
-   "start": 132.94,
-   "dur": 9.27,
+   "dur": 8.24,
    "img": 1048
   },
   {
@@ -306,7 +286,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 7.69
     }
    ],
-   "start": 142.21,
+   "start": 123.15,
    "dur": 7.69,
    "img": 1048
   },
@@ -321,7 +301,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 3.46
     }
    ],
-   "start": 149.9,
+   "start": 130.84,
    "dur": 3.46,
    "img": 1029
   },
@@ -336,7 +316,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 11.65
     }
    ],
-   "start": 153.36,
+   "start": 134.3,
    "dur": 11.65,
    "img": 164
   },
@@ -356,7 +336,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 3.84
     }
    ],
-   "start": 165.01,
+   "start": 145.95,
    "dur": 8.07,
    "img": 1040
   },
@@ -371,7 +351,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 10.35
     }
    ],
-   "start": 173.08,
+   "start": 154.02,
    "dur": 10.35,
    "img": 1048
   },
@@ -386,7 +366,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 5.19
     }
    ],
-   "start": 183.43,
+   "start": 164.37,
    "dur": 5.19,
    "img": 1029
   },
@@ -411,7 +391,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 3.46
     }
    ],
-   "start": 188.62,
+   "start": 169.56,
    "dur": 11.1,
    "img": 164
   },
@@ -426,7 +406,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 11.31
     }
    ],
-   "start": 199.72,
+   "start": 180.66,
    "dur": 11.31,
    "img": 1040
   },
@@ -441,7 +421,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 7.21
     }
    ],
-   "start": 211.03,
+   "start": 191.97,
    "dur": 7.21,
    "img": 1048
   },
@@ -456,7 +436,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 7.64
     }
    ],
-   "start": 218.24,
+   "start": 199.18,
    "dur": 7.64,
    "img": 1029
   },
@@ -471,7 +451,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 8.7
     }
    ],
-   "start": 225.88,
+   "start": 206.82,
    "dur": 8.7,
    "img": 164
   },
@@ -486,7 +466,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 3.7
     }
    ],
-   "start": 234.58,
+   "start": 215.52,
    "dur": 3.7,
    "img": 1040
   },
@@ -501,7 +481,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 8.1
     }
    ],
-   "start": 238.28,
+   "start": 219.22,
    "dur": 8.1,
    "img": 1048
   },
@@ -521,7 +501,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 246.38,
+   "start": 227.32,
    "dur": 10.9,
    "img": 1048
   },
@@ -547,7 +527,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 257.28,
+   "start": 238.22,
    "dur": 11.08,
    "img": 1048
   },
@@ -567,7 +547,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 268.36,
+   "start": 249.3,
    "dur": 9.91,
    "img": 1029
   },
@@ -593,7 +573,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 278.27,
+   "start": 259.21,
    "dur": 11.08,
    "img": 1029
   },
@@ -613,7 +593,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 289.35,
+   "start": 270.29,
    "dur": 11.5,
    "img": 164
   },
@@ -639,7 +619,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 300.85,
+   "start": 281.79,
    "dur": 11.08,
    "img": 164
   },
@@ -659,7 +639,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 311.93,
+   "start": 292.87,
    "dur": 9.36,
    "img": 1040
   },
@@ -685,7 +665,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 321.29,
+   "start": 302.23,
    "dur": 11.08,
    "img": 1040
   },
@@ -705,7 +685,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 332.37,
+   "start": 313.31,
    "dur": 9.79,
    "img": 1048
   },
@@ -731,7 +711,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 342.16,
+   "start": 323.1,
    "dur": 10.57,
    "img": 1048
   },
@@ -751,7 +731,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 352.73,
+   "start": 333.67,
    "dur": 8.35,
    "img": 1029
   },
@@ -777,7 +757,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 361.08,
+   "start": 342.02,
    "dur": 11.08,
    "img": 1029
   },
@@ -803,7 +783,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 372.16,
+   "start": 353.1,
    "dur": 22.03,
    "img": 164
   },
@@ -828,7 +808,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 5.43
     }
    ],
-   "start": 394.19,
+   "start": 375.13,
    "dur": 11.7,
    "img": 1029
   },
@@ -843,7 +823,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 5.36
     }
    ],
-   "start": 405.89,
+   "start": 386.83,
    "dur": 5.36,
    "img": 164
   },
@@ -858,7 +838,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 9.63
     }
    ],
-   "start": 411.25,
+   "start": 392.19,
    "dur": 9.63,
    "img": 1018
   },
@@ -873,7 +853,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 10.04
     }
    ],
-   "start": 420.88,
+   "start": 401.82,
    "dur": 10.04,
    "img": 1039
   },
@@ -893,7 +873,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 6.5
     }
    ],
-   "start": 430.92,
+   "start": 411.86,
    "dur": 7.37,
    "img": 1018
   },
@@ -908,7 +888,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 3.89
     }
    ],
-   "start": 438.29,
+   "start": 419.23,
    "dur": 3.89,
    "img": 1036
   },
@@ -933,7 +913,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 4.69
     }
    ],
-   "start": 442.18,
+   "start": 423.12,
    "dur": 7.57,
    "img": 1039
   },
@@ -958,7 +938,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 2.22
     }
    ],
-   "start": 449.75,
+   "start": 430.69,
    "dur": 15.1,
    "img": 1018
   },
@@ -973,9 +953,29 @@ window.DECK_TEXT_ES_MTG = {
      "d": 8.16
     }
    ],
-   "start": 464.85,
+   "start": 445.79,
    "dur": 8.16,
    "img": 1036
+  },
+  {
+   "sec": "MANTENIMIENTO / HEREDITARIO",
+   "kind": "text",
+   "sentences": [
+    {
+     "x": "¿El contrato que firmaron estaba en inglés o en español?",
+     "s": 114.91,
+     "d": 5.15
+    },
+    {
+     "x": "Porque si la presentación fue en español y el contrato no estaba también en español, eso es discriminación — y los expone a una multa.",
+     "s": 120.06,
+     "d": 12.88
+    }
+   ],
+   "panel": null,
+   "start": 453.95,
+   "dur": 18.03,
+   "img": 1048
   },
   {
    "sec": "MANTENIMIENTO / HEREDITARIO",
@@ -988,7 +988,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 2.74
     }
    ],
-   "start": 473.01,
+   "start": 471.98,
    "dur": 2.74,
    "img": 1039
   },
@@ -1008,7 +1008,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 5.36
     }
    ],
-   "start": 475.75,
+   "start": 474.72,
    "dur": 12.85,
    "img": 1018
   },
@@ -1023,9 +1023,57 @@ window.DECK_TEXT_ES_MTG = {
      "d": 9.9
     }
    ],
-   "start": 488.6,
+   "start": 487.57,
    "dur": 9.9,
    "img": 1039
+  },
+  {
+   "sec": "MANTENIMIENTO / HEREDITARIO",
+   "sentences": [
+    {
+     "x": "OK, hay una pregunta más importante que les quiero hacer, porque conlleva las multas más grandes — porque viola las leyes federales si no les mostraron esto.",
+     "s": 0.0,
+     "d": 13.905
+    }
+   ],
+   "start": 497.47,
+   "dur": 13.905
+  },
+  {
+   "sec": "MANTENIMIENTO / HEREDITARIO",
+   "sentences": [
+    {
+     "x": "Les voy a hacer escribir algo — ¿tienen un lapicero?",
+     "s": 0.0,
+     "d": 5.15
+    }
+   ],
+   "start": 511.375,
+   "dur": 5.15
+  },
+  {
+   "sec": "MANTENIMIENTO / HEREDITARIO",
+   "sentences": [
+    {
+     "x": "Les voy a explicar toda la amortización, y les voy a especificar qué significa amortización:",
+     "s": 0.0,
+     "d": 7.725
+    }
+   ],
+   "start": 516.525,
+   "dur": 7.725
+  },
+  {
+   "sec": "MANTENIMIENTO / HEREDITARIO",
+   "sentences": [
+    {
+     "x": "Les muestra el total que van a pagar a los 5 años, a los 10 años, a los 20 años si están comprando una casa.",
+     "s": 0.0,
+     "d": 12.875
+    }
+   ],
+   "start": 524.25,
+   "dur": 12.875
   },
   {
    "sec": "MANTENIMIENTO / HEREDITARIO",
@@ -1038,7 +1086,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 7.21
     }
    ],
-   "start": 498.5,
+   "start": 537.125,
    "dur": 7.21,
    "img": 1036
   },
@@ -1053,7 +1101,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 10.3
     }
    ],
-   "start": 505.71,
+   "start": 544.335,
    "dur": 10.3,
    "img": 1036
   },
@@ -1068,7 +1116,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 10.3
     }
    ],
-   "start": 516.01,
+   "start": 554.635,
    "dur": 10.3,
    "img": 1036
   },
@@ -1083,7 +1131,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 11.85
     }
    ],
-   "start": 526.31,
+   "start": 564.935,
    "dur": 11.85,
    "img": 1036
   },
@@ -1098,7 +1146,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 9.79
     }
    ],
-   "start": 538.16,
+   "start": 576.785,
    "dur": 9.79,
    "img": 1036
   },
@@ -1113,7 +1161,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 10.3
     }
    ],
-   "start": 547.95,
+   "start": 586.575,
    "dur": 10.3,
    "img": 1036
   },
@@ -1128,7 +1176,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 14.42
     }
    ],
-   "start": 558.25,
+   "start": 596.875,
    "dur": 14.42,
    "img": 1036
   },
@@ -1143,7 +1191,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 3.61
     }
    ],
-   "start": 572.67,
+   "start": 611.295,
    "dur": 3.61,
    "img": 1036
   },
@@ -1153,12 +1201,12 @@ window.DECK_TEXT_ES_MTG = {
    "panel": null,
    "sentences": [
     {
-     "x": "Escriban tres números: el primero es 10, el segundo es 20, el tercero es 30. Son años.",
+     "x": "Escriban tres números: el primero es 5, el segundo es 10, el tercero es 20. Son años.",
      "s": 570.26,
      "d": 8.76
     }
    ],
-   "start": 576.28,
+   "start": 614.905,
    "dur": 8.76,
    "img": 1036
   },
@@ -1173,7 +1221,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 11.85
     }
    ],
-   "start": 585.04,
+   "start": 623.665,
    "dur": 11.85,
    "img": 1036
   },
@@ -1203,7 +1251,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 1.03
     }
    ],
-   "start": 596.89,
+   "start": 635.515,
    "dur": 26.78,
    "img": 1036
   },
@@ -1218,7 +1266,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 9.27
     }
    ],
-   "start": 623.67,
+   "start": 662.295,
    "dur": 9.27,
    "img": 1036
   },
@@ -1233,7 +1281,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 8.24
     }
    ],
-   "start": 632.94,
+   "start": 671.565,
    "dur": 8.24,
    "img": 1036
   },
@@ -1248,7 +1296,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 5.34
     }
    ],
-   "start": 641.18,
+   "start": 679.805,
    "dur": 5.34,
    "img": 1039
   },
@@ -1268,7 +1316,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 4.25
     }
    ],
-   "start": 646.52,
+   "start": 685.145,
    "dur": 8.91,
    "img": 1018
   },
@@ -1283,7 +1331,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 9.36
     }
    ],
-   "start": 655.43,
+   "start": 694.055,
    "dur": 9.36,
    "img": 1036
   },
@@ -1298,7 +1346,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 4.66
     }
    ],
-   "start": 664.79,
+   "start": 703.415,
    "dur": 4.66,
    "img": 1039
   },
@@ -1333,7 +1381,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 1.26
     }
    ],
-   "start": 669.45,
+   "start": 708.075,
    "dur": 8.42,
    "img": 1018
   },
@@ -1348,7 +1396,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 3.8
     }
    ],
-   "start": 677.87,
+   "start": 716.495,
    "dur": 3.8,
    "img": 1036
   },
@@ -1363,7 +1411,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 9.25
     }
    ],
-   "start": 681.67,
+   "start": 720.295,
    "dur": 9.25,
    "img": 1039
   },
@@ -1378,7 +1426,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 8.6
     }
    ],
-   "start": 690.92,
+   "start": 729.545,
    "dur": 8.6,
    "img": 1018
   },
@@ -1398,7 +1446,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 4.93
     }
    ],
-   "start": 699.52,
+   "start": 738.145,
    "dur": 11.7,
    "img": 1036
   },
@@ -1413,7 +1461,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 9.29
     }
    ],
-   "start": 711.22,
+   "start": 749.845,
    "dur": 9.29,
    "img": 1039
   },
@@ -1428,7 +1476,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 5.67
     }
    ],
-   "start": 720.51,
+   "start": 759.135,
    "dur": 5.67,
    "img": 1036
   },
@@ -1443,7 +1491,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 9.6
     }
    ],
-   "start": 726.18,
+   "start": 764.805,
    "dur": 9.6,
    "img": 1039
   },
@@ -1452,7 +1500,7 @@ window.DECK_TEXT_ES_MTG = {
    "kind": "break",
    "sentences": [],
    "panel": null,
-   "start": 735.78,
+   "start": 774.405,
    "dur": 2.0,
    "img": 1039
   },
@@ -1467,7 +1515,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 3.51
     }
    ],
-   "start": 737.78,
+   "start": 776.405,
    "dur": 3.51,
    "img": 1041
   },
@@ -1482,7 +1530,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 11.86
     }
    ],
-   "start": 741.29,
+   "start": 779.915,
    "dur": 11.86,
    "img": 1044
   },
@@ -1497,7 +1545,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 3.34
     }
    ],
-   "start": 753.15,
+   "start": 791.775,
    "dur": 3.34,
    "img": 1041
   },
@@ -1512,7 +1560,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 5.95
     }
    ],
-   "start": 756.49,
+   "start": 795.115,
    "dur": 5.95,
    "img": 1044
   },
@@ -1527,7 +1575,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 10.28
     }
    ],
-   "start": 762.44,
+   "start": 801.065,
    "dur": 10.28,
    "img": 1041
   },
@@ -1557,7 +1605,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 3.81
     }
    ],
-   "start": 772.72,
+   "start": 811.345,
    "dur": 11.01,
    "img": 1044
   },
@@ -1577,7 +1625,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 6.7
     }
    ],
-   "start": 783.73,
+   "start": 822.355,
    "dur": 7.98,
    "img": 1041
   },
@@ -1602,7 +1650,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 2.41
     }
    ],
-   "start": 791.71,
+   "start": 830.335,
    "dur": 10.05,
    "img": 1044
   },
@@ -1617,7 +1665,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 3.23
     }
    ],
-   "start": 801.76,
+   "start": 840.385,
    "dur": 3.23,
    "img": 1041
   },
@@ -1632,7 +1680,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 4.35
     }
    ],
-   "start": 804.99,
+   "start": 843.615,
    "dur": 4.35,
    "img": 1044
   },
@@ -1647,7 +1695,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 7.9
     }
    ],
-   "start": 809.34,
+   "start": 847.965,
    "dur": 7.9,
    "img": 1041
   },
@@ -1662,7 +1710,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 8.17
     }
    ],
-   "start": 817.24,
+   "start": 855.865,
    "dur": 8.17,
    "img": 1044
   },
@@ -1687,7 +1735,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 1.64
     }
    ],
-   "start": 825.41,
+   "start": 864.035,
    "dur": 6.56,
    "img": 1041
   },
@@ -1702,7 +1750,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 4.92
     }
    ],
-   "start": 831.97,
+   "start": 870.595,
    "dur": 4.92,
    "img": 1044
   },
@@ -1717,7 +1765,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 9.75
     }
    ],
-   "start": 836.89,
+   "start": 875.515,
    "dur": 9.75,
    "img": 1041
   },
@@ -1732,7 +1780,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 5.9
     }
    ],
-   "start": 846.64,
+   "start": 885.265,
    "dur": 5.9,
    "img": 1044
   },
@@ -1747,7 +1795,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 5.56
     }
    ],
-   "start": 852.54,
+   "start": 891.165,
    "dur": 5.56,
    "img": 1041
   },
@@ -1762,7 +1810,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 4.17
     }
    ],
-   "start": 858.1,
+   "start": 896.725,
    "dur": 4.17,
    "img": 1044
   },
@@ -1777,7 +1825,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 4.88
     }
    ],
-   "start": 862.27,
+   "start": 900.895,
    "dur": 4.88,
    "img": 1041
   },
@@ -1792,7 +1840,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 867.15,
+   "start": 905.775,
    "dur": 4.12,
    "img": 1041
   },
@@ -1807,7 +1855,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 871.27,
+   "start": 909.895,
    "dur": 9.27,
    "img": 1041
   },
@@ -1822,7 +1870,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 880.54,
+   "start": 919.165,
    "dur": 5.67,
    "img": 1041
   },
@@ -1837,7 +1885,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 886.21,
+   "start": 924.835,
    "dur": 4.63,
    "img": 1041
   },
@@ -1852,7 +1900,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 890.84,
+   "start": 929.465,
    "dur": 8.24,
    "img": 1041
   },
@@ -1861,7 +1909,7 @@ window.DECK_TEXT_ES_MTG = {
    "kind": "break",
    "sentences": [],
    "panel": null,
-   "start": 899.08,
+   "start": 937.705,
    "dur": 2.0,
    "img": 1044
   },
@@ -1876,7 +1924,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 901.08,
+   "start": 939.705,
    "dur": 2.06,
    "img": 1050
   },
@@ -1891,7 +1939,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 903.14,
+   "start": 941.765,
    "dur": 5.67,
    "img": 1050
   },
@@ -1906,7 +1954,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 908.81,
+   "start": 947.435,
    "dur": 12.36,
    "img": 1050
   },
@@ -1921,7 +1969,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 921.17,
+   "start": 959.795,
    "dur": 8.24,
    "img": 1050
   },
@@ -1936,7 +1984,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 929.41,
+   "start": 968.035,
    "dur": 5.67,
    "img": 1050
   },
@@ -1956,7 +2004,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 7.21
     }
    ],
-   "start": 935.08,
+   "start": 973.705,
    "dur": 11.08,
    "img": 1050
   },
@@ -1971,7 +2019,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 7.95
     }
    ],
-   "start": 946.16,
+   "start": 984.785,
    "dur": 7.95,
    "img": 1040
   },
@@ -1986,7 +2034,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 9.46
     }
    ],
-   "start": 954.11,
+   "start": 992.735,
    "dur": 9.46,
    "img": 1050
   },
@@ -2001,7 +2049,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 7.54
     }
    ],
-   "start": 963.57,
+   "start": 1002.195,
    "dur": 7.54,
    "img": 1040
   },
@@ -2016,7 +2064,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 10.18
     }
    ],
-   "start": 971.11,
+   "start": 1009.735,
    "dur": 10.18,
    "img": 1050
   },
@@ -2041,7 +2089,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 0.83
     }
    ],
-   "start": 981.29,
+   "start": 1019.915,
    "dur": 4.15,
    "img": 1040
   },
@@ -2056,7 +2104,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 8.29
     }
    ],
-   "start": 985.44,
+   "start": 1024.065,
    "dur": 8.29,
    "img": 1050
   },
@@ -2071,7 +2119,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 6.56
     }
    ],
-   "start": 993.73,
+   "start": 1032.355,
    "dur": 6.56,
    "img": 1040
   },
@@ -2086,7 +2134,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 1.61
     }
    ],
-   "start": 1000.29,
+   "start": 1038.915,
    "dur": 1.61,
    "img": 1050
   },
@@ -2101,7 +2149,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 13.39
     }
    ],
-   "start": 1001.9,
+   "start": 1040.525,
    "dur": 13.39,
    "img": 1040
   },
@@ -2121,7 +2169,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 1.98
     }
    ],
-   "start": 1015.29,
+   "start": 1053.915,
    "dur": 6.74,
    "img": 1050
   },
@@ -2141,7 +2189,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 2.79
     }
    ],
-   "start": 1022.03,
+   "start": 1060.655,
    "dur": 7.55,
    "img": 1040
   },
@@ -2156,7 +2204,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 3.24
     }
    ],
-   "start": 1029.58,
+   "start": 1068.205,
    "dur": 3.24,
    "img": 1050
   },
@@ -2171,7 +2219,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 6.48
     }
    ],
-   "start": 1032.82,
+   "start": 1071.445,
    "dur": 6.48,
    "img": 1040
   },
@@ -2186,7 +2234,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 9.37
     }
    ],
-   "start": 1039.3,
+   "start": 1077.925,
    "dur": 9.37,
    "img": 1050
   },
@@ -2201,7 +2249,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 1048.67,
+   "start": 1087.295,
    "dur": 7.21,
    "img": 1050
   },
@@ -2216,7 +2264,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 1055.88,
+   "start": 1094.505,
    "dur": 2.58,
    "img": 1050
   },
@@ -2231,7 +2279,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 1058.46,
+   "start": 1097.085,
    "dur": 3.09,
    "img": 1050
   },
@@ -2246,7 +2294,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 1061.55,
+   "start": 1100.175,
    "dur": 3.6,
    "img": 1050
   },
@@ -2276,7 +2324,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 5.93
     }
    ],
-   "start": 1065.15,
+   "start": 1103.775,
    "dur": 9.63,
    "img": 1040
   },
@@ -2291,7 +2339,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 2.97
     }
    ],
-   "start": 1074.78,
+   "start": 1113.405,
    "dur": 2.97,
    "img": 1050
   },
@@ -2306,7 +2354,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 10.11
     }
    ],
-   "start": 1077.75,
+   "start": 1116.375,
    "dur": 10.11,
    "img": 1040
   },
@@ -2321,7 +2369,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 8.84
     }
    ],
-   "start": 1087.86,
+   "start": 1126.485,
    "dur": 8.84,
    "img": 1050
   },
@@ -2346,7 +2394,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 2.05
     }
    ],
-   "start": 1096.7,
+   "start": 1135.325,
    "dur": 7.8,
    "img": 1040
   },
@@ -2366,7 +2414,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 3.7
     }
    ],
-   "start": 1104.5,
+   "start": 1143.125,
    "dur": 6.99,
    "img": 1050
   },
@@ -2381,7 +2429,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 1111.49,
+   "start": 1150.115,
    "dur": 5.67,
    "img": 1050
   },
@@ -2396,7 +2444,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 1117.16,
+   "start": 1155.785,
    "dur": 4.12,
    "img": 1050
   },
@@ -2411,7 +2459,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 1121.28,
+   "start": 1159.905,
    "dur": 10.81,
    "img": 1050
   },
@@ -2426,7 +2474,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 1132.09,
+   "start": 1170.715,
    "dur": 5.15,
    "img": 1050
   },
@@ -2441,7 +2489,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 1137.24,
+   "start": 1175.865,
    "dur": 7.21,
    "img": 1050
   },
@@ -2456,7 +2504,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 1144.45,
+   "start": 1183.075,
    "dur": 7.21,
    "img": 1050
   },
@@ -2471,7 +2519,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 3.47
     }
    ],
-   "start": 1151.66,
+   "start": 1190.285,
    "dur": 3.47,
    "img": 1040
   },
@@ -2486,7 +2534,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 12.35
     }
    ],
-   "start": 1155.13,
+   "start": 1193.755,
    "dur": 12.35,
    "img": 1050
   },
@@ -2501,7 +2549,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 9.2
     }
    ],
-   "start": 1167.48,
+   "start": 1206.105,
    "dur": 9.2,
    "img": 1040
   },
@@ -2516,7 +2564,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 3.07
     }
    ],
-   "start": 1176.68,
+   "start": 1215.305,
    "dur": 3.07,
    "img": 1050
   },
@@ -2531,7 +2579,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 9.51
     }
    ],
-   "start": 1179.75,
+   "start": 1218.375,
    "dur": 9.51,
    "img": 1060
   },
@@ -2546,7 +2594,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 3.18
     }
    ],
-   "start": 1189.26,
+   "start": 1227.885,
    "dur": 3.18,
    "img": 1029
   },
@@ -2561,7 +2609,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 9.55
     }
    ],
-   "start": 1192.44,
+   "start": 1231.065,
    "dur": 9.55,
    "img": 1060
   },
@@ -2581,7 +2629,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 5.19
     }
    ],
-   "start": 1201.99,
+   "start": 1240.615,
    "dur": 12.51,
    "img": 1029
   },
@@ -2596,7 +2644,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 9.09
     }
    ],
-   "start": 1214.5,
+   "start": 1253.125,
    "dur": 9.09,
    "img": 1060
   },
@@ -2611,7 +2659,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 2.37
     }
    ],
-   "start": 1223.59,
+   "start": 1262.215,
    "dur": 2.37,
    "img": 1029
   },
@@ -2626,7 +2674,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 8.48
     }
    ],
-   "start": 1225.96,
+   "start": 1264.585,
    "dur": 8.48,
    "img": 1060
   },
@@ -2641,7 +2689,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 9.37
     }
    ],
-   "start": 1234.44,
+   "start": 1273.065,
    "dur": 9.37,
    "img": 1029
   },
@@ -2656,7 +2704,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 6.75
     }
    ],
-   "start": 1243.81,
+   "start": 1282.435,
    "dur": 6.75,
    "img": 1060
   },
@@ -2671,7 +2719,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 6.61
     }
    ],
-   "start": 1250.56,
+   "start": 1289.185,
    "dur": 6.61,
    "img": 1029
   },
@@ -2686,7 +2734,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 5.83
     }
    ],
-   "start": 1257.17,
+   "start": 1295.795,
    "dur": 5.83,
    "img": 1060
   },
@@ -2701,7 +2749,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 5.17
     }
    ],
-   "start": 1263.0,
+   "start": 1301.625,
    "dur": 5.17,
    "img": 1029
   },
@@ -2716,7 +2764,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 8.12
     }
    ],
-   "start": 1268.17,
+   "start": 1306.795,
    "dur": 8.12,
    "img": 1039
   },
@@ -2731,7 +2779,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 6.41
     }
    ],
-   "start": 1276.29,
+   "start": 1314.915,
    "dur": 6.41,
    "img": 1016
   },
@@ -2746,7 +2794,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 2.05
     }
    ],
-   "start": 1282.7,
+   "start": 1321.325,
    "dur": 2.05,
    "img": 1039
   },
@@ -2761,7 +2809,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 9.23
     }
    ],
-   "start": 1284.75,
+   "start": 1323.375,
    "dur": 9.23,
    "img": 1016
   },
@@ -2781,7 +2829,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 4.06
     }
    ],
-   "start": 1293.98,
+   "start": 1332.605,
    "dur": 8.6,
    "img": 1039
   },
@@ -2796,7 +2844,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 8.69
     }
    ],
-   "start": 1302.58,
+   "start": 1341.205,
    "dur": 8.69,
    "img": 1016
   },
@@ -2811,7 +2859,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 5.79
     }
    ],
-   "start": 1311.27,
+   "start": 1349.895,
    "dur": 5.79,
    "img": 1039
   },
@@ -2826,7 +2874,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 5.0
     }
    ],
-   "start": 1317.06,
+   "start": 1355.685,
    "dur": 5.0,
    "img": 1016
   },
@@ -2841,7 +2889,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 6.72
     }
    ],
-   "start": 1322.06,
+   "start": 1360.685,
    "dur": 6.72,
    "img": 1039
   },
@@ -2861,7 +2909,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 5.57
     }
    ],
-   "start": 1328.78,
+   "start": 1367.405,
    "dur": 12.53,
    "img": 1016
   },
@@ -2876,7 +2924,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 5.76
     }
    ],
-   "start": 1341.31,
+   "start": 1379.935,
    "dur": 5.76,
    "img": 1039
   },
@@ -2901,7 +2949,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 6.03
     }
    ],
-   "start": 1347.07,
+   "start": 1385.695,
    "dur": 14.7,
    "img": 1016
   },
@@ -2916,7 +2964,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 1.87
     }
    ],
-   "start": 1361.77,
+   "start": 1400.395,
    "dur": 1.87,
    "img": 1039
   },
@@ -2931,7 +2979,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 10.07
     }
    ],
-   "start": 1363.64,
+   "start": 1402.265,
    "dur": 10.07,
    "img": 1016
   },
@@ -2946,7 +2994,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 9.68
     }
    ],
-   "start": 1373.71,
+   "start": 1412.335,
    "dur": 9.68,
    "img": 1039
   },
@@ -2961,7 +3009,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 1383.39,
+   "start": 1422.015,
    "dur": 5.15,
    "img": 1016
   },
@@ -2976,7 +3024,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 1388.54,
+   "start": 1427.165,
    "dur": 10.81,
    "img": 1016
   },
@@ -2991,7 +3039,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 1399.35,
+   "start": 1437.975,
    "dur": 2.06,
    "img": 1016
   },
@@ -3016,7 +3064,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 4.95
     }
    ],
-   "start": 1401.41,
+   "start": 1440.035,
    "dur": 13.91,
    "img": 1016
   },
@@ -3031,7 +3079,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 8.86
     }
    ],
-   "start": 1415.32,
+   "start": 1453.945,
    "dur": 8.86,
    "img": 1039
   },
@@ -3051,7 +3099,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 2.57
     }
    ],
-   "start": 1424.18,
+   "start": 1462.805,
    "dur": 6.22,
    "img": 1016
   },
@@ -3076,7 +3124,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 5.76
     }
    ],
-   "start": 1430.4,
+   "start": 1469.025,
    "dur": 10.16,
    "img": 1039
   },
@@ -3096,7 +3144,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 3.1
     }
    ],
-   "start": 1440.56,
+   "start": 1479.185,
    "dur": 5.76,
    "img": 1016
   },
@@ -3111,7 +3159,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 8.43
     }
    ],
-   "start": 1446.32,
+   "start": 1484.945,
    "dur": 8.43,
    "img": 1039
   },
@@ -3126,7 +3174,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 7.37
     }
    ],
-   "start": 1454.75,
+   "start": 1493.375,
    "dur": 7.37,
    "img": 1016
   },
@@ -3146,7 +3194,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 5.14
     }
    ],
-   "start": 1462.12,
+   "start": 1500.745,
    "dur": 9.97,
    "img": 1039
   },
@@ -3161,7 +3209,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 7.3
     }
    ],
-   "start": 1472.09,
+   "start": 1510.715,
    "dur": 7.3,
    "img": 1016
   },
@@ -3186,7 +3234,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 5.86
     }
    ],
-   "start": 1479.39,
+   "start": 1518.015,
    "dur": 13.12,
    "img": 1039
   },
@@ -3206,7 +3254,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 5.36
     }
    ],
-   "start": 1492.51,
+   "start": 1531.135,
    "dur": 9.4,
    "img": 1016
   },
@@ -3215,7 +3263,7 @@ window.DECK_TEXT_ES_MTG = {
    "kind": "break",
    "sentences": [],
    "panel": "stop",
-   "start": 1501.91,
+   "start": 1540.535,
    "dur": 2.0,
    "img": 1016,
    "stop": true,
@@ -3232,7 +3280,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 15.45
     }
    ],
-   "start": 1503.91,
+   "start": 1542.535,
    "dur": 15.45,
    "img": 1041
   },
@@ -3247,7 +3295,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 1519.36,
+   "start": 1557.985,
    "dur": 11.33,
    "img": 1047
   },
@@ -3262,7 +3310,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 1530.69,
+   "start": 1569.315,
    "dur": 3.09,
    "img": 1047
   },
@@ -3277,7 +3325,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 1533.78,
+   "start": 1572.405,
    "dur": 7.73,
    "img": 1047
   },
@@ -3292,7 +3340,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 1541.51,
+   "start": 1580.135,
    "dur": 18.54,
    "img": 1047
   },
@@ -3307,7 +3355,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 1560.05,
+   "start": 1598.675,
    "dur": 12.36,
    "img": 1047
   },
@@ -3322,7 +3370,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 1572.41,
+   "start": 1611.035,
    "dur": 4.12,
    "img": 1047
   },
@@ -3337,7 +3385,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 1576.53,
+   "start": 1615.155,
    "dur": 10.3,
    "img": 1047
   },
@@ -3352,7 +3400,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 1586.83,
+   "start": 1625.455,
    "dur": 10.3,
    "img": 1047
   },
@@ -3367,7 +3415,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 1597.13,
+   "start": 1635.755,
    "dur": 10.81,
    "img": 1047
   },
@@ -3382,7 +3430,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 1607.94,
+   "start": 1646.565,
    "dur": 7.73,
    "img": 1047
   },
@@ -3397,7 +3445,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 1615.67,
+   "start": 1654.295,
    "dur": 5.15,
    "img": 1047
   },
@@ -3412,7 +3460,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 1620.82,
+   "start": 1659.445,
    "dur": 7.73,
    "img": 1047
   },
@@ -3427,7 +3475,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 1628.55,
+   "start": 1667.175,
    "dur": 5.15,
    "img": 1047
   },
@@ -3442,7 +3490,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 1633.7,
+   "start": 1672.325,
    "dur": 12.88,
    "img": 1047
   },
@@ -3457,7 +3505,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 1646.58,
+   "start": 1685.205,
    "dur": 4.12,
    "img": 1047
   },
@@ -3482,7 +3530,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 3.61
     }
    ],
-   "start": 1650.7,
+   "start": 1689.325,
    "dur": 7.22,
    "img": 1054
   },
@@ -3502,7 +3550,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 7.22
     }
    ],
-   "start": 1657.92,
+   "start": 1696.545,
    "dur": 7.74,
    "img": 1047
   },
@@ -3517,7 +3565,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 9.42
     }
    ],
-   "start": 1665.66,
+   "start": 1704.285,
    "dur": 9.42,
    "img": 1054
   },
@@ -3532,7 +3580,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 7.5
     }
    ],
-   "start": 1675.08,
+   "start": 1713.705,
    "dur": 7.5,
    "img": 1047
   },
@@ -3547,7 +3595,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 6.44
     }
    ],
-   "start": 1682.58,
+   "start": 1721.205,
    "dur": 6.44,
    "img": 1054
   },
@@ -3562,7 +3610,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 8.48
     }
    ],
-   "start": 1689.02,
+   "start": 1727.645,
    "dur": 8.48,
    "img": 1015
   },
@@ -3577,7 +3625,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 12.78
     }
    ],
-   "start": 1697.5,
+   "start": 1736.125,
    "dur": 12.78,
    "img": 1015
   },
@@ -3592,7 +3640,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 10.3
     }
    ],
-   "start": 1710.28,
+   "start": 1748.905,
    "dur": 10.3,
    "img": 1015
   },
@@ -3607,7 +3655,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 4.95
     }
    ],
-   "start": 1720.58,
+   "start": 1759.205,
    "dur": 4.95,
    "img": 1015
   },
@@ -3622,7 +3670,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 9.2
     }
    ],
-   "start": 1725.53,
+   "start": 1764.155,
    "dur": 9.2,
    "img": 1048
   },
@@ -3637,7 +3685,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 2.87
     }
    ],
-   "start": 1734.73,
+   "start": 1773.355,
    "dur": 2.87,
    "img": 1048
   },
@@ -3652,7 +3700,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 7.17
     }
    ],
-   "start": 1737.6,
+   "start": 1776.225,
    "dur": 7.17,
    "img": 1048
   },
@@ -3667,7 +3715,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 6.46
     }
    ],
-   "start": 1744.77,
+   "start": 1783.395,
    "dur": 6.46,
    "img": 1048
   },
@@ -3682,7 +3730,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 6.29
     }
    ],
-   "start": 1751.23,
+   "start": 1789.855,
    "dur": 6.29,
    "img": 1048
   },
@@ -3697,7 +3745,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 6.96
     }
    ],
-   "start": 1757.52,
+   "start": 1796.145,
    "dur": 6.96,
    "img": 1048
   },
@@ -3712,7 +3760,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 5.84
     }
    ],
-   "start": 1764.48,
+   "start": 1803.105,
    "dur": 5.84,
    "img": 1048
   },
@@ -3727,7 +3775,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 10.02
     }
    ],
-   "start": 1770.32,
+   "start": 1808.945,
    "dur": 10.02,
    "img": 1048
   },
@@ -3736,7 +3784,7 @@ window.DECK_TEXT_ES_MTG = {
    "kind": "break",
    "sentences": [],
    "panel": null,
-   "start": 1780.34,
+   "start": 1818.965,
    "dur": 2.0,
    "img": 1048
   },
@@ -3761,7 +3809,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 3.56
     }
    ],
-   "start": 1782.34,
+   "start": 1820.965,
    "dur": 7.48,
    "img": 1015
   },
@@ -3776,7 +3824,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 6.74
     }
    ],
-   "start": 1789.82,
+   "start": 1828.445,
    "dur": 6.74,
    "img": 1015
   },
@@ -3796,7 +3844,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 1.67
     }
    ],
-   "start": 1796.56,
+   "start": 1835.185,
    "dur": 8.3,
    "img": 1015
   },
@@ -3816,7 +3864,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 0.83
     }
    ],
-   "start": 1804.86,
+   "start": 1843.485,
    "dur": 9.58,
    "img": 1015
   },
@@ -3831,7 +3879,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 3.33
     }
    ],
-   "start": 1814.44,
+   "start": 1853.065,
    "dur": 3.33,
    "img": 1015
   },
@@ -3840,7 +3888,7 @@ window.DECK_TEXT_ES_MTG = {
    "kind": "break",
    "sentences": [],
    "panel": null,
-   "start": 1817.77,
+   "start": 1856.395,
    "dur": 2.0,
    "img": 1015
   },
@@ -3855,7 +3903,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 4.54
     }
    ],
-   "start": 1819.77,
+   "start": 1858.395,
    "dur": 4.54,
    "img": 1015
   },
@@ -3870,7 +3918,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 1824.31,
+   "start": 1862.935,
    "dur": 9.27,
    "img": 1015
   },
@@ -3885,7 +3933,7 @@ window.DECK_TEXT_ES_MTG = {
     }
    ],
    "panel": null,
-   "start": 1833.58,
+   "start": 1872.205,
    "dur": 20.09,
    "img": 1015
   },
@@ -3900,7 +3948,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 11.85
     }
    ],
-   "start": 1853.67,
+   "start": 1892.295,
    "dur": 11.85,
    "img": 1015
   },
@@ -3915,7 +3963,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 8.76
     }
    ],
-   "start": 1865.52,
+   "start": 1904.145,
    "dur": 8.76,
    "img": 1015
   },
@@ -3930,7 +3978,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 5.67
     }
    ],
-   "start": 1874.28,
+   "start": 1912.905,
    "dur": 5.67,
    "img": 1015
   },
@@ -3945,7 +3993,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 6.18
     }
    ],
-   "start": 1879.95,
+   "start": 1918.575,
    "dur": 6.18,
    "img": 1015
   },
@@ -3960,7 +4008,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 8.24
     }
    ],
-   "start": 1886.13,
+   "start": 1924.755,
    "dur": 8.24,
    "img": 1015
   },
@@ -3975,7 +4023,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 7.73
     }
    ],
-   "start": 1894.37,
+   "start": 1932.995,
    "dur": 7.73,
    "img": 1015
   },
@@ -3990,7 +4038,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 8.76
     }
    ],
-   "start": 1902.1,
+   "start": 1940.725,
    "dur": 8.76,
    "img": 1015
   },
@@ -4005,7 +4053,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 7.73
     }
    ],
-   "start": 1910.86,
+   "start": 1949.485,
    "dur": 7.73,
    "img": 1015
   },
@@ -4020,7 +4068,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 7.21
     }
    ],
-   "start": 1918.59,
+   "start": 1957.215,
    "dur": 7.21,
    "img": 1015
   },
@@ -4035,7 +4083,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 12.88
     }
    ],
-   "start": 1925.8,
+   "start": 1964.425,
    "dur": 12.88,
    "img": 1015
   },
@@ -4050,7 +4098,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 13.39
     }
    ],
-   "start": 1938.68,
+   "start": 1977.305,
    "dur": 13.39,
    "img": 1015
   },
@@ -4065,7 +4113,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 14.94
     }
    ],
-   "start": 1952.07,
+   "start": 1990.695,
    "dur": 14.94,
    "img": 1015
   },
@@ -4080,7 +4128,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 11.85
     }
    ],
-   "start": 1967.01,
+   "start": 2005.635,
    "dur": 11.85,
    "img": 1015
   },
@@ -4095,7 +4143,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 14.94
     }
    ],
-   "start": 1978.86,
+   "start": 2017.485,
    "dur": 14.94,
    "img": 1015
   },
@@ -4110,7 +4158,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 7.21
     }
    ],
-   "start": 1993.8,
+   "start": 2032.425,
    "dur": 7.21,
    "img": 1015
   },
@@ -4125,7 +4173,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 6.7
     }
    ],
-   "start": 2001.01,
+   "start": 2039.635,
    "dur": 6.7,
    "img": 1015
   }
