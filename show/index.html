@@ -48,7 +48,7 @@
   @keyframes slidein { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
   .sec { font-size: 12.5px; font-weight: 700; letter-spacing: 3px; color: #ffd968; text-transform: uppercase; margin-bottom: 6px; text-shadow: 0 1px 8px rgba(0,0,0,.65); }
   .ref { font-size: 12px; color: rgba(255,255,255,.8); letter-spacing: 1.5px; margin-bottom: 16px; text-shadow: 0 1px 6px rgba(0,0,0,.6); }
-  .txt { font-size: clamp(20px, 3.1vw, 29px); line-height: 1.5; color: #fff;
+  .txt { font-size: clamp(22.7px, 3.4vw, 31.7px); line-height: 1.5; color: #fff;
     text-shadow: 0 2px 14px rgba(0,0,0,.62), 0 1px 3px rgba(0,0,0,.7); }
   /* HIGHLIGHT RULE (Sebastian, 2026-11-23): every word of the slide is in the
      DOM from the moment the slide appears and NEVER changes — the highlight
@@ -64,10 +64,10 @@
   .txt .w { transition: background .3s, color .3s; border-radius: 6px; padding: 0 2px; color: rgba(255,255,255,.6); }
   .txt .w.cur { color: #FFF9C4; background: rgba(255,249,196,.18); font-weight: 700; text-shadow: 0 2px 14px rgba(0,0,0,.62), 0 1px 3px rgba(0,0,0,.7); }
   .txt .w.done { color: rgba(255,255,255,.95); }
-  .qtxt { font-size: clamp(21px, 3.3vw, 31px); line-height: 1.5; font-weight: 700; color: #fff;
+  .qtxt { font-size: clamp(23.7px, 3.6vw, 33.7px); line-height: 1.5; font-weight: 700; color: #fff;
     text-shadow: 0 2px 14px rgba(0,0,0,.62), 0 1px 3px rgba(0,0,0,.7); }
-  .noans { margin-top: 20px; font-size: clamp(19px, 2.6vw, 25px); color: rgba(255,255,255,.88); font-style: italic; text-shadow: 0 1px 8px rgba(0,0,0,.65); }
-  .perf { margin-top: 6px; font-size: clamp(19px, 2.6vw, 25px); color: #ffd968; font-weight: 700; text-shadow: 0 1px 8px rgba(0,0,0,.65); }
+  .noans { margin-top: 20px; font-size: clamp(21.7px, 2.9vw, 27.7px); color: rgba(255,255,255,.88); font-style: italic; text-shadow: 0 1px 8px rgba(0,0,0,.65); }
+  .perf { margin-top: 6px; font-size: clamp(21.7px, 2.9vw, 27.7px); color: #ffd968; font-weight: 700; text-shadow: 0 1px 8px rgba(0,0,0,.65); }
   body.auto .noans, body.auto .perf { opacity: .62; }
   .noans.cur, .perf.cur { opacity: 1; background: rgba(255,249,196,.18); color: #FFF9C4; text-shadow: 0 1px 8px rgba(0,0,0,.65); border-radius: 6px; }
   .qtxt.cur { background: rgba(255,249,196,.18); color: #FFF9C4; text-shadow: 0 2px 14px rgba(0,0,0,.62), 0 1px 3px rgba(0,0,0,.7); border-radius: 6px; }
@@ -671,7 +671,7 @@ function startTimer(){
    Ramona's voice speaking IN SYNC with the highlights, with a
    YouTube-style mute + volume on the show page (never system volume).
    Assets: audio-es/manifest.json maps slide index -> {file, dur, hash,
-   joined / cross_slide / join_in / skipped_tokens}, built by
+   joined / cross_slide / join_in / redacted_tokens}, built by
    ~/workspace/apertura-video/show-audio-es/build_show_audio.py — every
    recording is COMPLETE grammatical sentences only; fragments were
    joined, and a joined sentence's audio lives in the mp3 of the slide
@@ -681,8 +681,8 @@ function startTimer(){
    audio, the AUDIO drives the slide timing — highlight chunks advance
    proportionally across the audio's duration (each chain slide owns
    the share of the mp3 proportional to its deck duration). Slides
-   with no audio (token slides flagged skipped_tokens, panel / break /
-   title cards) run the timer engine at SPEED 0.85 exactly as before,
+   with no audio (panel / break / title cards, join-through slides)
+   run the timer engine at SPEED 0.85 exactly as before,
    and a numbers panel still HOLDS silently. EN slides never engage
    the audio (EN narration comes later). Pause / step / hold pause the
    voice too; unmuting mid-slide resumes it at the elapsed proportion.
@@ -710,18 +710,15 @@ function audChain(i){
   while (audManifest[e + 1] && audManifest[e + 1].join_in) e++;
   return { start: s, end: e, entry: e0 };
 }
-/* SILENT TOKEN RULE (Sebastian, 2026-11-23 — "just stay silent always
-   during those parts for duration of that data to be spoken"): a slide
-   whose text carries client-specific data (any {{TOKEN}} — names, the
-   CA, figures) plays NO narration voice, even when an mp3 exists for
-   it; it advances on the timer for its full spoken duration instead,
-   highlight chunks stepping as normal. */
-function slideHasTokens(sl){
-  if (!sl || !sl.sentences) return false;
-  for (var i = 0; i < sl.sentences.length; i++)
-    if (/\{\{[A-Z0-9]+\}\}/.test(sl.sentences[i].x || '')) return true;
-  return false;
-}
+/* WORD-LEVEL SILENCE (Sebastian, 2026-11-23, corrected the same day —
+   "just the one word, the dollar amount only or client name only, the
+   rest I want said out loud"): token sentences are NOT silent slides.
+   The audio builder synthesizes them in redacted form — the whole
+   sentence spoken except the client-specific word itself, which is
+   just a beat in the track; Sebastian fills that one word live. The
+   player needs no special case: the redacted mp3 drives the slide
+   like any other, highlights scaling proportionally across it, so the
+   chunk carrying the token occupies the beat. */
 function audStop(){
   audMode = false; audChainCur = null;
   if (narr && !narr.paused) narr.pause();
@@ -745,7 +742,6 @@ function audSetupSlide(){
   /* the ES narration was recorded for the MTG deck only — never play it
      over a deed-back deck (indices would not match the words) */
   if (lang !== 'es' || dtype !== 'MTG' || !audManifest || !slides.length){ audStop(); return; }
-  if (slideHasTokens(slides[idx])){ audStop(); return; } /* SILENT TOKEN RULE: timer carries the slide for its full duration */
   var ch = audChain(idx);
   if (!ch){ audStop(); return; }
   var sum = 0, k;
