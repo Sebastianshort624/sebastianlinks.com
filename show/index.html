@@ -1020,13 +1020,7 @@ $('mutebtn').addEventListener('click', function(){
 $('volslider').addEventListener('input', function(){
   showVolume = this.value / 100;
   try { localStorage.setItem('showVolume', String(showVolume)); } catch(e){}
-  if (narr) narr.volume = showVolume;
-  if (showVolume > 0 && showMuted){
-    showMuted = false;
-    if (narr) narr.muted = false;
-    try { localStorage.setItem('showMuted', '0'); } catch(e){}
-    audSyncBtn();
-  }
+  if (narr) narr.volume = showVolume; /* volume only — muting is the mute button's job, never a side effect */
 });
 $('seekzone').addEventListener('click', function(e){
   if (!slides.length) return;
