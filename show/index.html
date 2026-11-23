@@ -18,6 +18,16 @@
     opacity: 0; transition: opacity 2.4s ease; animation: kenburns 26s ease-in-out infinite alternate; }
   .bglayer.on { opacity: 1; }
   @keyframes kenburns { from { transform: scale(1) translate(0,0); } to { transform: scale(1.13) translate(-1.5%, 1.5%); } }
+  /* ---------- background VIDEO (Sebastian, 2026-11-23): the rolling
+     watercolor montage from the downloaded karaoke video, as a real
+     <video> layer over the photo layers. It fades in only once it can
+     actually play ('on'); if it errors or never starts, it hides and
+     the folk-photo rotation underneath carries on untouched. The veil
+     scrim above it is unchanged. */
+  #bgvid { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    filter: saturate(1.55) contrast(1.06) brightness(1.03) blur(1px);
+    opacity: 0; transition: opacity 1.6s ease; }
+  #bgvid.on { opacity: 1; }
   #veil { position: fixed; inset: 0; z-index: 1; background: linear-gradient(180deg, rgba(9,17,34,.46), rgba(9,17,34,.34) 38%, rgba(9,17,34,.40) 62%, rgba(9,17,34,.58)); }
   /* ---------- header ---------- */
   header { position: fixed; top: 0; left: 0; right: 0; z-index: 5; display: flex; align-items: center; gap: 10px;
@@ -63,6 +73,22 @@
      gold frame, no white card, no grayscale stock photo. */
   .drawimg { margin: 22px auto 4px; display: block; width: min(430px, 80%); height: 190px; object-fit: cover;
     border-radius: 10px; box-shadow: 0 10px 28px rgba(0,0,0,.45); border: 1px solid rgba(255,217,104,.55); }
+  /* ---------- BIG MANUAL CONTROLS (Sebastian, 2026-11-23): clients
+     interject and expound, so the pitch runs MANUAL — a big play/pause
+     flanked by the highlight steppers sits in flow BETWEEN the words
+     and the section drawing, reachable without looking down. Round
+     dark-glass, gold glyphs, NO white card; same actions as the small
+     controls row (steppers = single-arrow chunk steps, play = the
+     play/pause toggle). */
+  #bigctl { display: flex; align-items: center; justify-content: center; gap: 18px; margin: 20px auto 2px; }
+  .bbtn { font-family: inherit; border-radius: 50%; border: 1px solid rgba(255,217,104,.55);
+    background: rgba(8,17,36,.55); color: #ffd968; cursor: pointer; line-height: 1;
+    width: 68px; height: 68px; font-size: 26px;
+    backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+    text-shadow: 0 1px 5px rgba(0,0,0,.55); }
+  .bbtn.main { width: 84px; height: 84px; font-size: 34px; background: rgba(11,61,145,.82); color: #fff;
+    border-color: rgba(255,255,255,.5); }
+  .bbtn:active { transform: scale(.94); }
   .titlecard h1 { font-size: clamp(30px, 5.4vw, 52px); line-height: 1.2; color: #fff; margin: 8px 0 10px; text-shadow: 0 2px 18px rgba(0,0,0,.65), 0 1px 4px rgba(0,0,0,.7); }
   .titlecard .sub { font-size: clamp(17px, 2.6vw, 23px); color: rgba(255,255,255,.92); text-shadow: 0 1px 8px rgba(0,0,0,.65); }
   .titlecard .rule { width: 74px; height: 3px; background: #ffd968; margin: 20px auto; border-radius: 2px; }
@@ -193,7 +219,7 @@
 </style>
 </head>
 <body>
-<div id="bg"><div class="bglayer" id="bg1"></div><div class="bglayer" id="bg2"></div></div>
+<div id="bg"><div class="bglayer" id="bg1"></div><div class="bglayer" id="bg2"></div><video id="bgvid" autoplay muted loop playsinline preload="auto" poster="img/folk01.jpg" src="img/bg-montage.mp4"></video></div>
 <div id="veil"></div>
 
 <header>
@@ -448,6 +474,16 @@ var SEC_DRAW = {
 function drawImg(sec){
   return '<img class="drawimg" src="' + (SEC_DRAW[sec] || 'img/draw-apertura.jpg') + '" alt="">';
 }
+/* BIG MANUAL CONTROLS (Sebastian, 2026-11-23): rendered in flow between
+   the words and the drawing on every slide. The buttons carry no
+   handlers of their own — the #stage click delegation routes them to
+   the SAME small-control actions (prevchunk / play / nextchunk), so
+   semantics can never drift apart. #bigplay's glyph is synced from
+   syncModeBtn() alongside the mode button. */
+var BIGCTL = '<div id="bigctl">' +
+  '<button class="bbtn" id="bigprev" title="Resaltado anterior">◀</button>' +
+  '<button class="bbtn main" id="bigplay" title="Pausar / continuar">⏸</button>' +
+  '<button class="bbtn" id="bignext" title="Resaltado siguiente">▶</button></div>';
 
 function render(){
   var sl = slides[idx];
@@ -457,11 +493,11 @@ function render(){
     html = '<div class="card titlecard"><div class="sec">' + L[lang].pres + '</div>' +
       '<h1>' + esc(fill(L[lang].prepFor + '{{NAMES}}')) + '</h1>' +
       '<div class="sub">' + esc(client.resort || '') + '</div><div class="rule"></div>' +
-      '<div class="sub">' + L[lang].titleSub + '</div>' + drawImg(sl.sec) + '</div>';
+      '<div class="sub">' + L[lang].titleSub + '</div>' + BIGCTL + drawImg(sl.sec) + '</div>';
   } else if (sl.kind === 'break'){
     html = '<div class="card breakcard"><div class="sec">' + L[lang].cont + '</div>' +
       '<div class="bigsec">' + esc(sl.sec) + '</div>' +
-      drawImg(sl.sec) + '</div>';
+      BIGCTL + drawImg(sl.sec) + '</div>';
   } else if (sl.kind === 'question'){
     var q = sl.sentences[0], no = sl.sentences[1], pf = sl.sentences[2];
     html = '<div class="card"><div class="sec">' + esc(sl.sec) + '</div>' +
@@ -469,7 +505,7 @@ function render(){
       '<div class="qtxt" data-s="' + q.s + '" data-d="' + q.d + '">' + esc(fill(q.x)) + '</div>' +
       '<div class="noans" data-s="' + no.s + '" data-d="' + no.d + '">' + esc(fill(no.x)) + '</div>' +
       '<div class="perf" data-s="' + pf.s + '" data-d="' + pf.d + '">' + esc(fill(pf.x)) + '</div>' +
-      drawImg(sl.sec) + '</div>';
+      BIGCTL + drawImg(sl.sec) + '</div>';
   } else {
     /* word-level spans: the highlight window moves 4-6 words at a time
        across these; every word is rendered (dimmed) from slide start */
@@ -483,7 +519,7 @@ function render(){
     html = '<div class="card"><div class="sec">' + esc(sl.sec) + '</div>' +
       '<div class="ref">' + (idx + 1) + ' / ' + slides.length + '</div>' +
       '<div class="txt">' + spans + '</div>' + panelHTML(sl.panel) +
-      drawImg(sl.sec) + '</div>';
+      BIGCTL + drawImg(sl.sec) + '</div>';
   }
   stage.innerHTML = html;
   $('counter').textContent = (idx + 1) + ' / ' + slides.length;
@@ -560,7 +596,7 @@ function tick(now){
       rafId = null; lastTick = null; return;
     }
     if (idx < slides.length - 1){ idx++; render(); }
-    else { playing = false; $('play').textContent = '\u25b6'; rafId = null; return; }
+    else { playing = false; $('play').textContent = '\u25b6'; syncModeBtn(); rafId = null; return; }
   } else markCurrent();
   rafId = requestAnimationFrame(tick);
 }
@@ -578,6 +614,11 @@ function go(n){
 function syncModeBtn(){
   if (held) $('modebtn').textContent = (lang === 'es') ? '⏸ EN PAUSA — NÚMEROS' : '⏸ HELD — NUMBERS';
   else $('modebtn').textContent = auto ? 'AUTOSCROLL: ON' : 'MANUAL';
+  /* the BIG mid-stage play button always agrees with the small one:
+     ⏸ while the show is actually advancing, ▶ whenever it is stopped
+     (paused, held on a numbers slide, or stepped into MANUAL) */
+  var bp = $('bigplay');
+  if (bp) bp.textContent = (auto && playing && !held) ? '⏸' : '▶';
 }
 function setAuto(on){
   auto = on;
@@ -682,6 +723,31 @@ function resetBg(){
 }
 cycleBg(); setInterval(cycleBg, 9000);
 
+/* background VIDEO (Sebastian, 2026-11-23) — the rolling watercolor
+   montage from the downloaded karaoke video, web-encoded as
+   img/bg-montage.mp4. It fades in over the photo layers only once it
+   can actually play, and runs continuously across slides (render()
+   never touches it). ANY failure — error event, blocked autoplay, a
+   load that never produces data — hides it and the folk-photo
+   rotation above carries on exactly as before. */
+(function(){
+  var v = $('bgvid');
+  if (!v) return;
+  var dead = false;
+  function fail(){
+    if (dead) return; dead = true;
+    v.classList.remove('on');
+    v.style.display = 'none';
+    try { v.pause(); } catch(e){}
+  }
+  v.addEventListener('error', fail, true);
+  v.addEventListener('canplay', function(){ if (!dead) v.classList.add('on'); });
+  var p = null;
+  try { p = v.play(); } catch(e){ /* ancient browser: photos carry on */ }
+  if (p && p.catch) p.catch(function(){ /* autoplay blocked: stay on the photos */ });
+  setTimeout(function(){ if (v.readyState === 0) fail(); }, 20000);
+})();
+
 /* client select */
 var sel = $('clientsel');
 Object.keys(CLIENTS).forEach(function(id){
@@ -705,7 +771,47 @@ $('play').addEventListener('click', function(){
   if (!auto){ setAuto(true); return; }
   playing = !playing;
   $('play').textContent = playing ? '⏸' : '▶';
+  syncModeBtn(); /* keep the big mid-stage button's glyph in agreement */
   if (playing) startTimer();
+});
+/* ============ CLICK THE SCREEN = PLAY/PAUSE (Sebastian, 2026-11-23):
+   clients answer and interject mid-pitch, so the whole slide surface
+   is the pause button: one click/tap on the stage pauses; the next
+   click re-engages AUTOSCROLL and resumes from the current chunk —
+   including out of MANUAL after highlight stepping. The BIG mid-stage
+   buttons are routed first (same actions as the small controls); any
+   other interactive element never toggles. Feedback is the existing
+   toast, kept brief. ============ */
+function flashToggle(msg){
+  toast(msg);
+  var t = $('toast');
+  clearTimeout(t._h);
+  t._h = setTimeout(function(){ t.style.display = 'none'; }, 900);
+}
+function toggleStagePlay(){
+  if (objOpen || !slides.length) return;
+  if (auto && playing){
+    playing = false;
+    $('play').textContent = '▶';
+    syncModeBtn();
+    flashToggle(lang === 'es' ? '⏸ Pausa' : '⏸ Paused');
+  } else {
+    setAuto(true); /* re-engages autoscroll + playing from right here */
+    flashToggle(lang === 'es' ? '▶ Autoscroll' : '▶ Autoscroll');
+  }
+}
+$('stage').addEventListener('click', function(e){
+  var t = e.target;
+  if (!t || !t.closest) return;
+  var bc = t.closest('#bigprev, #bignext, #bigplay');
+  if (bc){
+    if (bc.id === 'bigprev') $('prevchunk').click();
+    else if (bc.id === 'bignext') $('nextchunk').click();
+    else $('play').click();
+    return; /* the big buttons act, they never also toggle */
+  }
+  if (t.closest('button, a, select, input, textarea, #rail, #seekzone, #objwrap, #obj')) return;
+  toggleStagePlay();
 });
 $('modebtn').addEventListener('click', function(){ setAuto(!auto); });
 $('seekzone').addEventListener('click', function(e){
