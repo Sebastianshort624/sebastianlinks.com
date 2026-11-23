@@ -381,6 +381,37 @@ body #adminlist { left: auto; right: 6px; }
 body #railL { left: auto; right: 6px; }
 body #pegShowBtn { right: auto; left: 8px; }
 }
+
+  /* ===== MOBILE_V1 (Sebastian 2026-11-23): modo movil — columna unica, letra chica, paneles plegables ===== */
+  body.mobile-mode { font-size: 12.5px; padding: 6px; line-height: 1.4; overflow-x: hidden; }
+  body.mobile-mode #pegbar { position: static; width: auto; height: auto; max-height: none; overflow: visible; margin: 0 -6px 8px; }
+  body.mobile-mode .client-line { position: sticky; top: 0; z-index: 65; background: #fff; padding: 6px 2px; border-bottom: 2px solid #0b3d91; margin: 0 -2px 8px; }
+  body.mobile-mode .client-line input[type="text"] { min-width: 0 !important; width: 36vw; padding: 5px 6px; }
+  body.mobile-mode #clientSel { width: 42vw; padding: 5px 4px; }
+  body.mobile-mode .calcgrid, body.mobile-mode .calcgrid.g3 { grid-template-columns: 1fr; gap: 10px; margin-bottom: 10px; }
+  body.mobile-mode .cpanel { padding: 10px; border-radius: 8px; }
+  body.mobile-mode .calcside { margin-bottom: 10px; }
+  body.mobile-mode .cbox { padding: 8px 9px; margin-bottom: 9px; }
+  body.mobile-mode .csgrid { grid-template-columns: 1fr; }
+  body.mobile-mode .rlinks { grid-template-columns: 1fr; }
+  body.mobile-mode .urlgrid { grid-template-columns: 1fr; gap: 8px; }
+  body.mobile-mode .ib-wrap { grid-template-columns: 1fr; }
+  body.mobile-mode .ib-col + .ib-col { border-left: none; padding-left: 0; border-top: 2px solid rgba(11,61,145,.30); padding-top: 8px; }
+  body.mobile-mode .qf { margin-bottom: 3px; }
+  body.mobile-mode .qf input { width: 92px; padding: 3px 5px; }
+  body.mobile-mode .qf select { max-width: 128px; }
+  body.mobile-mode input, body.mobile-mode select, body.mobile-mode textarea { font-size: 12.5px; }
+  body.mobile-mode button { min-height: 30px; }
+  body.mobile-mode table { max-width: 100%; }
+  body.mobile-mode .qsec { margin: 8px 0 4px; }
+  body.mobile-mode .fpitem { padding: 5px 2px; }
+  body.mobile-mode #adminlist, body.mobile-mode #hitlist, body.mobile-mode #hotlist, body.mobile-mode #histlist { width: 88vw; max-width: 88vw; }
+  body.mobile-mode .aptrail { width: 84vw; max-width: 84vw; }
+  body.mobile-mode .mhead { cursor: pointer; }
+  body.mobile-mode .mhead::after { content: ' \25BE'; color: #0b3d91; }
+  body.mobile-mode .mclosed .mhead::after { content: ' \25B8'; }
+  body.mobile-mode .mclosed > *:not(.mhead) { display: none !important; }
+  body.mobile-mode #notesFab { padding: 9px 14px; bottom: 12px; right: 12px; }
 </style>
 </head>
 <body>
@@ -392,9 +423,9 @@ body #pegShowBtn { right: auto; left: 8px; }
   <button id="pegHideBtn" type="button">✕ Ocultar barra</button>
   <div class="navline">
     <a href="#" onclick="resetOverall();return false;" title="Reiniciar el temporizador general">↺ Reiniciar</a>
-    <span class="snav"><a href="#stage1">1</a><a href="#stage2">2</a><a href="#stage3">3</a><a href="#stage4">4</a><a href="#stage5">5</a><a href="#stage6">6</a></span>
-    <a href="#price-anchor">💰 Precio</a>
-    <a href="#coversheet">📝 Contrato</a>
+    
+    
+    <a href="#coversheet">📝 Contrato</a> <button id="mobToggle" type="button" onclick="mobToggleFn()" style="background:#111827;color:#fff;border:1px solid #374151;border-radius:6px;padding:4px 10px;font-weight:700;cursor:pointer;font-family:inherit">📱 Móvil</button>
     <select id="dispoBig" onchange="setDispo(this.value)" title="Disposición del cliente"><option value="">— Sin marcar</option><option value="NEW">NEW — Sin trabajar</option><option value="FU">FU — Seguimiento</option><option value="HOTTEST FU">🔥 HOTTEST FU</option><option value="NA">NA — No contestó</option><option value="NO">NO — No interesado</option><option value="NO GO">NO GO — No va</option><option value="NQ">NQ — No califica</option><option value="RS">RS — Reprogramado</option><option value="QUOTED">QUOTED — Cotizado</option><option value="APT SET">APT SET — Cita agendada</option><option value="SOLD">SOLD — Vendido</option><option value="CHARGED">CHARGED — Cobrado</option><option value="COM PAID">COM PAID — Comisión pagada</option></select>
     <select id="soldWhen" onchange="soldWhenChange()" title="¿Cuándo se vendió?" style="padding:4px 6px;font-weight:700;font-family:inherit;border-radius:6px;border:1px solid #7f1d1d;background:#fff7ed"><option value="">¿Cuándo?</option><option value="ON APT">EN LA CITA</option><option value="AFTER APT">DESPUÉS DE LA CITA</option></select>
     <button id="quoteBtn" type="button" onclick="qQuoteHtml()">📄 Cotización</button>
@@ -749,374 +780,6 @@ sideApply();
 
 
 
-<div class="sideboxes">
-<aside class="sprinkle">
-  <h3>🎲 Frases sueltas — para cualquier momento</h3>
-  <ul>
-    <li>"No está hecho para funcionar — está hecho para mantenerte en un <b>pago perpetuo</b>."</li>
-    <li>"¿Te trataron de dar <b>alcohol</b>, o estabas tomando algún tipo de <b>medicamento</b>? 💊"</li>
-    <li>"Financieramente, <b>¿qué entendieron</b> que estaban aceptando?"</li>
-    <li>"<b>No pagar tu tiempo compartido no es una estrategia de cancelación.</b>"</li>
-    <li>"Son <b>buenos para ser malos</b>."</li>
-    <li>"Te digo esto — si no podemos ahorrarte una <b>cantidad ridícula de dinero</b>, ni siquiera vamos a intentar tomar tu caso."</li>
-    <li>"Esto no es interés simple — es <b>interés compuesto, igual que una tarjeta de crédito</b>."</li>
-    <li>"Entonces cuando le llevamos esto de vuelta a Wyndham — <b>ellos tienen que mostrarnos cómo eso tiene sentido</b>."</li>
-    <li>"<b>Tuvieron que mentirte una y otra vez</b> para meterte en ese contrato."</li>
-  </ul>
-</aside>
-<aside class="sprinkle" id="objbox">
-  <h3>🛡️ Contraobjeciones</h3>
-  <input class="objsrch" id="objq" placeholder="🔍 Buscar objeciones…" oninput="objFilter()">
-  <ul>
-    <li data-keys="think thinking about it need time stall delay"><b>"Necesito pensarlo."</b> → "Claro — ¿pensar qué, específicamente? Los números no van a cambiar, pero la disponibilidad del gerente de caso sí podría. <b>¿Qué parte quieres que repasemos?</b>"</li>
-    <li data-keys="spouse wife husband partner talk discuss family decide together"><b>"Necesito hablarlo con mi esposo/a."</b> → "Claro que sí — ¿está por ahí ahora mismo? <b>Metámoslo/a a la llamada</b>, porque prefiero responderle sus preguntas directamente a que tengas que volver a explicarle todo esto de segunda mano."</li>
-    <li data-keys="scam scammed burned ripped off trust skeptical"><b>"Ya me estafaron antes."</b> → "Exactamente por eso lo hacemos de esta manera — <b>garantía de devolución del 100% de tu dinero</b>, A+ con el BBB, y tú mismo viste nuestras reseñas. Si no logramos sacarte, te devolvemos tu dinero. ¿Qué te garantizó la última compañía?"</li>
-    <li data-keys="credit score hurt damage report bureau bureaus"><b>"¿Esto va a afectar mi crédito?"</b> → "<b>Nunca revisamos tu crédito</b> y no reportamos nada a las centrales de riesgo. ¿Qué parte te preocupa?"</li>
-    <li data-keys="expensive cost too much price afford can't afford money"><b>"Es muy caro."</b> → "¿Comparado con qué? No hacer nada te cuesta <b><span data-fill="total3">$________</span></b> en los próximos 3 años y <b><span data-fill="total5">$________</span></b> en los próximos 5 años. Esto es <b><span data-fill="fee">$________</span></b> una sola vez — y después se acabó para siempre."</li>
-    <li data-keys="different difference others other companies vs versus competitor"><b>"¿En qué se diferencian?"</b> → "La mayoría de compañías te sacan haciendo que le pagues al resort. Nosotros lo invertimos — <b>el resort te deja salir y te paga a ti</b>. Y nadie más lo respalda con una garantía de devolución del 100% de tu dinero."</li>
-  </ul>
-  <div id="objnone" class="tmin" style="display:none;padding:6px 4px">Sin resultados — prueba con otra palabra.</div>
-</aside>
-</div>
-
-<!-- ca_oneliners_v1 -->
-<section id="ca-oneliners" style="border:2px solid #0b3d91;border-radius:10px;padding:14px 18px;margin:14px 0;background:#fffdf8">
-<h2 style="margin:0 0 4px;color:#0b3d91">&#127919; CESAR + AUSTIN — ONE-LINERS POR SUBCATEGORÍA</h2>
-<p style="margin:0 0 10px;font-size:.85em;color:#6b7280">Unido, sin repeticiones · Cesar abre y califica, Austin acepta y cierra · Las etapas y la parte de pagos de abajo quedan igual.</p>
-<h3 style="margin:12px 0 4px;color:#0f766e;font-size:1em">1 · INTRODUCCIÓN — QUÉ HACEMOS</h3>
-<ul style="margin:0 0 6px;padding-left:22px">
-<li>“Lo que hacemos aquí son cancelaciones completas.”</li>
-<li>“Eso es diferente a lo que hace cualquier otra compañía en el mundo.”</li>
-<li>“Nosotros fuimos los pioneros en esto.”</li>
-<li>“Somos como Coca-Cola. Tenemos una fórmula secreta.”</li>
-</ul>
-<h3 style="margin:12px 0 4px;color:#0f766e;font-size:1em">2 · CÓMO FUNCIONA</h3>
-<ul style="margin:0 0 6px;padding-left:22px">
-<li>“Para poder hacer eso, necesitamos violaciones legítimas.”</li>
-<li>“Necesitamos cosas que ellos hicieron al venderles esto y rompieron ciertos códigos, políticas o incluso leyes.”</li>
-<li>“Es parecido a un caso en la corte: ellos no siguieron su protocolo y por eso todo queda desestimado.”</li>
-<li>“Lo que estamos haciendo es lograr que todo esto quede eliminado, como si nunca hubiera existido.”</li>
-<li>“Hay ciertas cosas que necesitamos buscar.”</li>
-</ul>
-<h3 style="margin:12px 0 4px;color:#0f766e;font-size:1em">3 · VIOLACIÓN — VERACIDAD EN LOS PRÉSTAMOS</h3>
-<ul style="margin:0 0 6px;padding-left:22px">
-<li>“Una de las cosas que no estoy viendo es una muy grande: la violación de las prácticas de veracidad en los préstamos.”</li>
-<li>“Se supone que deben entender qué están pagando, cuáles son sus términos y cuál es su tasa de interés.”</li>
-<li>“Con base en lo que estoy viendo, dudaría mucho que ustedes realmente hubieran entendido lo que estaban haciendo.”</li>
-</ul>
-<h3 style="margin:12px 0 4px;color:#0f766e;font-size:1em">4 · VIOLACIÓN — PRESIÓN</h3>
-<ul style="margin:0 0 6px;padding-left:22px">
-<li>“No se sientan mal.”</li>
-<li>“Los mantienen ahí por horas y horas y después los pasan rapidísimo por todo el papeleo.”</li>
-<li>“¿Recuerdan cuánto tiempo estuvieron ahí dentro?”</li>
-<li>“Para cuando llegan a la firma ya están tan agotados que solo quieren salir de ahí como sea.”</li>
-<li>“¿Suena parecido a lo que ustedes vivieron?”</li>
-</ul>
-<h3 style="margin:12px 0 4px;color:#0f766e;font-size:1em">5 · VIOLACIÓN — REVENTA</h3>
-<ul style="margin:0 0 6px;padding-left:22px">
-<li>“Ustedes ya saben que estas cosas no tienen ningún valor.”</li>
-<li>“Pueden comprar cualquier tiempo compartido en el mundo que quieran por un dólar.”</li>
-<li>“Estoy seguro de que Eli les mostró eso en eBay, ¿cierto?”</li>
-<li>“Que les dijeran que tenía valor, que era una buena oferta, que sus puntos iban a subir, eso es una representación falsa.”</li>
-</ul>
-<h3 style="margin:12px 0 4px;color:#0f766e;font-size:1em">6 · VIOLACIÓN — EXCLUSIVIDAD</h3>
-<ul style="margin:0 0 6px;padding-left:22px">
-<li>“¿Les hicieron creer que era exclusivo?”</li>
-<li>“Ni siquiera necesitan ser propietarios para quedarse en estas habitaciones.”</li>
-<li>“Si hicieron eso, esa es otra mentira, y la voy a usar.”</li>
-</ul>
-<h3 style="margin:12px 0 4px;color:#0f766e;font-size:1em">7 · CALIFICACIÓN</h3>
-<ul style="margin:0 0 6px;padding-left:22px">
-<li>“Por lo que veo en las notas, parece que hicieron un par de cosas, y por eso pasaron su caso conmigo.”</li>
-<li>“Parece que esto tiene potencial.”</li>
-<li>“Necesitamos asegurarnos con un 100% de certeza.”</li>
-<li>“Ganamos más del 99% de nuestros casos, y su caso tiene que tener al menos un 99% de probabilidad de éxito.”</li>
-<li>“Quiero confirmar un par de cosas y entrar un poco más en detalle.”</li>
-<li>“Solo piénsenlo con lógica.”</li>
-</ul>
-<h3 style="margin:12px 0 4px;color:#0f766e;font-size:1em">8 · ACEPTACIÓN DEL CASO</h3>
-<ul style="margin:0 0 6px;padding-left:22px">
-<li>“Estoy en completo acuerdo con mi equipo, ¿ok?”</li>
-<li>“Con base en lo que ustedes compartieron conmigo, ya respondieron mis preguntas y mi inquietud sobre su caso.”</li>
-<li>“No hay absolutamente nada que se interponga en que ganemos esto.”</li>
-<li>“Esta es una cancelación muy tradicional, blanco y negro.”</li>
-<li>“Vamos a tomar este caso, ¿ok? Los vamos a ayudar. Los vamos a sacar de esto.”</li>
-</ul>
-<h3 style="margin:12px 0 4px;color:#0f766e;font-size:1em">9 · CANCELACIÓN COMPLETA</h3>
-<ul style="margin:0 0 6px;padding-left:22px">
-<li>“Se llama cancelación completa.”</li>
-<li>“Eso los va a sacar por completo de la escritura legalizada.”</li>
-<li>“Toda la deuda: los pagos mensuales de su hipoteca, las tarifas de mantenimiento para siempre, el derecho de supervivencia, todo su número de propietario.”</li>
-<li>“Cuando todo esto termine, no pueden venir a decirles que les deben ni un centavo más.”</li>
-<li>“Es como si nunca hubieran entrado por esa puerta a comprar.”</li>
-</ul>
-<h3 style="margin:12px 0 4px;color:#0f766e;font-size:1em">10 · GERENTE DE CASO</h3>
-<ul style="margin:0 0 6px;padding-left:22px">
-<li>“Su gerente de caso es su único punto de contacto durante todo el proceso.”</li>
-<li>“Él supervisa toda la cancelación.”</li>
-<li>“Nosotros cargamos con el trabajo pesado.”</li>
-<li>“Nosotros manejamos la comunicación con el desarrollador.”</li>
-</ul>
-<h3 style="margin:12px 0 4px;color:#0f766e;font-size:1em">11 · CARTA DE EXPLICACIÓN</h3>
-<ul style="margin:0 0 6px;padding-left:22px">
-<li>“Se llama carta de explicación. No es complicado. No es difícil.”</li>
-<li>“Les vamos a dar un formato para guiarlos.”</li>
-<li>“Es simplemente lo que me explicaron a mí y a mi compañía sobre por qué quieren salir, pero en formato escrito.”</li>
-<li>“Ellos la revisan, le hacen correcciones y se la devuelven.”</li>
-<li>“Ese número de queja formal es el documento físico que necesitamos lo antes posible.”</li>
-<li>“¿Pueden encargarse de esa carta, hacerla rápido y enviársela a su gerente de caso?”</li>
-</ul>
-<h3 style="margin:12px 0 4px;color:#0f766e;font-size:1em">12 · REVELAR EL PRECIO</h3>
-<ul style="margin:0 0 6px;padding-left:22px">
-<li>“Quiero que tomen un lapicero y una hoja de papel.”</li>
-<li>“Les voy a explicar el costo, el ahorro, las opciones de pago, todo eso, para que no haya ninguna mala comunicación.”</li>
-<li>“Avísenme cuando estén listos.”</li>
-<li>“Lo primero que quiero que escriban es el ahorro total.”</li>
-</ul>
-<h3 style="margin:12px 0 4px;color:#0f766e;font-size:1em">13 · COSTO Y GARANTÍA</h3>
-<ul style="margin:0 0 6px;padding-left:22px">
-<li>“Ese es el costo completo, el número final, todo incluido: tarifas administrativas, tarifas de presentación, horas de trabajo, todo.”</li>
-<li>“No los vamos a contactar por ni un centavo más.”</li>
-<li>“Está respaldado por la política de devolución del 100% de su dinero, por escrito, sin letra pequeña.”</li>
-<li>“No es ningún riesgo para ustedes. Si no ganamos, les devolvemos hasta el último centavo que nos pagaron.”</li>
-</ul>
-<h3 style="margin:12px 0 4px;color:#0f766e;font-size:1em">14 · OPCIONES DE PAGO</h3>
-<ul style="margin:0 0 6px;padding-left:22px">
-<li>“No somos una firma ilusa.”</li>
-<li>“Voy a empezar desde arriba y bajar hasta el final, ¿ok? Y ustedes me dicen qué les funciona mejor.”</li>
-<li>“La primera y mejor manera de pagar cualquier cosa es si pueden evitar el interés.”</li>
-<li>“Esa es, de lejos, la mejor opción.”</li>
-<li>“La siguiente ruta es casi como financiarse a ustedes mismos: pueden pagarlo a su comodidad, sin estar obligados a pagarlo antes de tiempo.”</li>
-<li>“¿Quieren que miremos cuáles son nuestras opciones de financiamiento?”</li>
-</ul>
-<h3 style="margin:12px 0 4px;color:#0f766e;font-size:1em">15 · TARIFA DEL 3%</h3>
-<ul style="margin:0 0 6px;padding-left:22px">
-<li>“Nunca quiero tomar a nadie por sorpresa.”</li>
-<li>“Cada vez que se pasa una tarjeta, hay una tarifa de procesamiento del 3%, sea cual sea el monto.”</li>
-</ul>
-<h3 style="margin:12px 0 4px;color:#0f766e;font-size:1em">16 · LÍNEA DE TIEMPO</h3>
-<ul style="margin:0 0 6px;padding-left:22px">
-<li>“Ganamos dinero como compañía ganando con rapidez.”</li>
-<li>“Entre más rápido los saquemos, menos horas le pagamos al equipo de cancelación y su gerente queda libre para un cliente nuevo.”</li>
-<li>“No alargamos esto por alargarlo. Queremos sacarlos lo más rápido humanamente posible.”</li>
-<li>“Ustedes se mantienen informados todo el tiempo.”</li>
-</ul>
-<h3 style="margin:12px 0 4px;color:#0f766e;font-size:1em">17 · REEMBOLSOS</h3>
-<ul style="margin:0 0 6px;padding-left:22px">
-<li>“Sí buscamos un reembolso en nombre de ustedes.”</li>
-<li>“Los reembolsos son la cereza del pastel.”</li>
-<li>“Es 70/30: el 70% a favor de ustedes, el 30% como agradecimiento por recuperar dinero que ya estaba perdido.”</li>
-</ul>
-<h3 style="margin:12px 0 4px;color:#0f766e;font-size:1em">18 · DEJAR DE PAGAR</h3>
-<ul style="margin:0 0 6px;padding-left:22px">
-<li>“Legalmente, nadie puede aconsejarles qué hacer, ¿ok? Es ilegal decirles que hagan sus pagos o que dejen de hacerlos.”</li>
-<li>“Nadie conoce sus finanzas mejor que ustedes.”</li>
-<li>“¿Por qué botar dinero bueno tras dinero malo? Prefiero pagar por salir que por quedarme.”</li>
-<li>“Eso no cambia su caso: si quieren pagarles, páguenles, igual los vamos a sacar; si no quieren, no tienen que hacerlo.”</li>
-<li>“Eso es lo que hace la mayoría de la gente.”</li>
-</ul>
-<h3 style="margin:12px 0 4px;color:#0f766e;font-size:1em">19 · DETENER EL SANGRADO</h3>
-<ul style="margin:0 0 6px;padding-left:22px">
-<li>“Detiene el sangrado, eso es esencialmente lo que hace.”</li>
-<li>“Por favor, no vuelvan a comprar otro nunca más.”</li>
-<li>“Sí es un error, pero no se castiguen demasiado por eso.”</li>
-</ul>
-<h3 style="margin:12px 0 4px;color:#0f766e;font-size:1em">20 · DOCUSIGN</h3>
-<ul style="margin:0 0 6px;padding-left:22px">
-<li>“Les va a llegar dos veces, para iniciales y firmas individuales.”</li>
-<li>“Necesito que se detengan en la última página, ¿ok? No se les puede pasar, es azul, morada y verde.”</li>
-<li>“Ese es su formato, pueden volver a él cuantas veces necesiten.”</li>
-<li>“No tomen nuestro proceso para montar su propia compañía.”</li>
-<li>“Si, Dios no lo quiera, ustedes fallecieran, quien sea el ejecutor de su patrimonio iba a heredar este tiempo compartido. A ellos también los sacamos, no paramos, no cobramos extra.”</li>
-</ul>
-<h3 style="margin:12px 0 4px;color:#0f766e;font-size:1em">21 · REGLAS — NO HABLAR / NO USAR</h3>
-<ul style="margin:0 0 6px;padding-left:22px">
-<li>“No hablen con ellos. No lo usen.”</li>
-<li>“Si Hilton los llama, no contestan.”</li>
-<li>“Si contestan por accidente: lo siento, estoy ocupado, y cuelgan.”</li>
-<li>“Cuando los contactemos, traten de respondernos en uno o dos días hábiles.”</li>
-</ul>
-<h3 style="margin:12px 0 4px;color:#0f766e;font-size:1em">22 · DESPEDIDA</h3>
-<ul style="margin:0 0 6px;padding-left:22px">
-<li>“Me alegra que pudimos ayudarlos.”</li>
-<li>“Espero que esto les dé un respiro, sabiendo que ya no tienen que preocuparse por este tiempo compartido.”</li>
-<li>“Bienvenidos a Linx Legal.”</li>
-<li>“Cuando envíen esa foto, les envío un mensaje de texto de vuelta para que sepan que la recibí, ¿ok?”</li>
-</ul>
-</section>
-<div class="stage" id="stage1">
-  <h2>ETAPA 1 — ACEPTAMOS TU CASO <span class="t">15 MIN</span></h2>
-  <div class="clock">0:00–0:15 · aceptamos tu caso <span class="tmin">(5 min)</span> → qué significa cancelación completa <span class="tmin">(10 min)</span> <span class="stimer"><button id="sb1" onclick="toggleStage(1)">▶ 15:00</button> <button class="rs" onclick="resetStage(1)" title="Reiniciar">↺</button></span></div>
-  <ol class="liners">
-    <li><span class="sline first"><span class="grp">Aceptamos tu caso:</span></span><ol>
-        <li><span class="sline first">"Estoy en completo acuerdo con mi equipo, ¿ok?</span><span class="sline cont">Con base en lo que ustedes compartieron conmigo, ya respondieron mis preguntas y mi inquietud sobre su caso.</span><span class="sline cont">No hay absolutamente nada que se interponga en que ganemos esto.</span><span class="sline cont">¿Ok?</span><span class="sline cont">Esta es una cancelación muy tradicional, blanco y negro."</span></li>
-        <li><span class="sline first">"Estoy de acuerdo con mi equipo, así que vamos a tomar este caso, ¿ok?</span><span class="sline cont">Los vamos a ayudar.</span><span class="sline cont">Los vamos a sacar de esto."</span></li>
-      </ol></li>
-    <li><span class="sline first"><span class="grp">Qué significa — cancelación completa:</span></span><ol>
-        <li><span class="sline first">"Se llama cancelación completa.</span><span class="sline cont">Eso los va a sacar por completo de la escritura legalizada.</span><span class="sline cont">Toda la deuda: los pagos mensuales de su hipoteca, las tarifas de mantenimiento para siempre, el derecho de supervivencia.</span><span class="sline cont">Todo su número de propietario, por completo.</span><span class="sline cont">Cuando todo esto termine, no pueden venir a decirles que les deben ni un centavo más."</span></li>
-        <li><span class="sline first">"En serio, la forma en que yo lo explico es: es como si nunca hubieran entrado por esa puerta a comprarlo.</span><span class="sline cont">Eso es una cancelación completa."</span></li>
-      </ol></li>
-  </ol>
-</div>
-<div class="trans">→ Caso aceptado. Ahora, quién te acompaña y la carta.</div>
-<div class="stage" id="showclient">
-  <h2>👀 MOSTRAR AL CLIENTE — EN ESTE ORDEN</h2>
-  <div class="qsec" style="margin-top:2px">1 · MERCADO DE REVENTA — REDWEEK Y EBAY</div>
-  <div class="rlinks">
-    <a href="https://www.redweek.com/timeshare-resales" target="_blank"><b>RedWeek ↗</b><span>Mira por cuánto se revenden realmente los tiempos compartidos</span></a>
-    <a href="https://www.google.com/search?q=ebay+timeshares+for+sale+%241&rlz=1C1HKFL_enUS1213US1213&oq=ebay+timeshares+for+sale+%241&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIGCAEQRRhAMgYIAhBFGEAyBggDEEUYQNIBCDg0NTlqMGo3qAIIsAIB8QULbjRRxUndIg&sourceid=chrome&source=chrome.ob&ie=UTF-8" target="_blank"><b>eBay — Tiempos compartidos en venta ↗</b><span>Anuncios desde $1</span></a>
-  </div>
-  <div class="qsec">2 · INVESTÍGANOS — INVESTIGA NUESTRA COMPAÑÍA</div>
-  <div class="rlinks">
-    <a href="https://investiganos.com" target="_blank"><b>Sebastian Short — Asesor Hipotecario ↗</b><span>Tu contacto directo en Linx Legal</span></a>
-    <a href="https://linxlegal.com/about-us/" target="_blank"><b>Linx Legal — Nuestros líderes ↗</b><span>Quiénes somos</span></a>
-    <a href="https://bestcompany.com/timeshare-cancellation/linx-legal-inc" target="_blank"><b>Best Company ↗</b><span>Reseñas verificadas de clientes</span></a>
-    <a href="https://www.bbb.org/us/nc/charlotte/profile/timeshare-cancellation/linx-legal-inc-0473-576031" target="_blank"><b>Better Business Bureau ↗</b><span>Calificación A+ · Acreditado por el BBB</span></a>
-    <a href="https://www.google.com/search?q=linx+legal+5+stars+industry+pioneer&amp;sca_esv=683d24960322eb4b&amp;sxsrf=APpeQnsB4MI2fXBSuXr-xT5MQabnig2Lsw%3A1790973988703&amp;ei=JBjAau2rKo63wN4PyNmHCQ&amp;biw=1545&amp;bih=722&amp;oq=linx+legal+5+stars+industry+pioneer%5C&amp;gs_lp=Egxnd3Mtd2l6LXNlcnAiJGxpbnggbGVnYWwgNSBzdGFycyBpbmR1c3RyeSBwaW9uZWVyXCoECAAYJzIEECMYJzIEECMYJzIHECMY8AUYJzIKEC4YxwEYrwEYJzIKEAAYgAQYigUYQzIKEAAYgAQYigUYQzIFEAAYgAQYigUYQzIFEAAYgARIwhJQAFi8EnABeAGQAQCYAVGgAZQBqgEBMrgBA8gBAPgBAZgCA6ACowHCAhMQLhiABBiKBRhDGMcBGK8BGI4FmAMAkgcBM6AHuxayBwEyuAefAcIHAzItM8gHCoAIAQ&amp;sclient=gws-wiz-serp" target="_blank"><b>Investigación a fondo de Linx Legal ↗</b><span>Búscanos en Google · 5 estrellas</span></a>
-    <a href="https://linxlegal.com/where-we-work-linx-legal/" target="_blank"><b>Dónde trabajamos ↗</b><span>Estados y resorts que atendemos</span></a>
-  </div>
-  <div class="qsec">3 · FALSOS PRETEXTOS — MARCA LO QUE LES DIJERON</div>
-  <div class="fpitem"><label><input type="checkbox" id="fp1" onchange="qFpSave()"><span><b>¿Firmaste tu contrato porque te dijeron que podías rentar o vender tu tiempo compartido?</b><span class="cf">Si no te hubieran dicho esto antes de firmar, ¿habrías firmado el contrato?</span></span></label></div>
-  <div class="fpitem"><label><input type="checkbox" id="fp2" onchange="qFpSave()"><span><b>¿Te revelaron la cláusula de perpetuidad: que las cuotas de mantenimiento son una obligación para siempre?</b><span class="cf">Si no te hubieran dicho esto antes de firmar, ¿habrías firmado el contrato?</span></span></label></div>
-  <div class="fpitem"><label><input type="checkbox" id="fp3" onchange="qFpSave()"><span><b>¿Te dijeron cuál era la cuota de mantenimiento al momento de la compra, y que esas cuotas aumentarían año tras año?</b><span class="cf">Si no te hubieran dicho esto antes de firmar, ¿habrías firmado el contrato?</span></span></label></div>
-  <div class="fpitem"><label><input type="checkbox" id="fp4" onchange="qFpSave()"><span><b>¿Te prometieron privilegio de prioridad al reservar, con mejor disponibilidad que el público en general?</b><span class="cf">Si no te hubieran dicho esto antes de firmar, ¿habrías firmado el contrato?</span></span></label></div>
-  <div class="fpitem"><label><input type="checkbox" id="fp5" onchange="qFpSave()"><span><b>¿Te dijeron que reservar tus fechas era cuestión de solo días o semanas de anticipación?</b><span class="cf">Si no te hubieran dicho esto antes de firmar, ¿habrías firmado el contrato?</span></span></label></div>
-  <div class="fpitem"><label><input type="checkbox" id="fp6" onchange="qFpSave()"><span><b>¿Te mostraron el verdadero costo total de ser propietario antes de firmar?</b><span class="cf">Si no te hubieran dicho esto antes de firmar, ¿habrías firmado el contrato?</span></span></label></div>
-  <div class="qsec">4 · POST CALL — LO QUE VIO EL CLIENTE</div>
-  <div class="fpitem"><label><input type="checkbox" id="pc1" onchange="qPcSave()"><span><b>BBB (A+ / Acreditado)</b></span></label></div>
-  <div class="fpitem"><label><input type="checkbox" id="pc2" onchange="qPcSave()"><span><b>Best Company</b></span></label></div>
-  <div class="fpitem"><label><input type="checkbox" id="pc3" onchange="qPcSave()"><span><b>Google Reviews</b></span></label></div>
-  <div class="fpitem"><label><input type="checkbox" id="pc4" onchange="qPcSave()"><span><b>Google Maps</b></span></label></div>
-  <div class="fpitem"><label><input type="checkbox" id="pc5" onchange="qPcSave()"><span><b>Perfil de la empresa — investiganos.com</b></span></label></div>
-  <div class="fpitem"><label><input type="checkbox" id="pc6" onchange="qPcSave()"><span><b>RedWeek (precios reales de su resort)</b></span></label></div>
-  <div class="fpitem"><label><input type="checkbox" id="pc7" onchange="qPcSave()"><span><b>eBay (timeshares por $1)</b></span></label></div>
-  <div class="fpitem"><label><input type="checkbox" id="pc8" onchange="qPcSave()"><span><b>Comparar: rentar sale más barato que ser dueño</b></span></label></div>
-</div>
-
-<div class="stage" id="stage2">
-  <h2>ETAPA 2 — TU GERENTE DE CASO Y LA CARTA <span class="t">15 MIN</span></h2>
-  <div class="clock">0:15–0:30 · tu gerente de caso <span class="tmin">(5 min)</span> → la carta de explicación <span class="tmin">(10 min)</span> <span class="stimer"><button id="sb2" onclick="toggleStage(2)">▶ 15:00</button> <button class="rs" onclick="resetStage(2)" title="Reiniciar">↺</button></span></div>
-  <ol class="liners">
-    <li><span class="sline first"><span class="grp">Tu gerente de caso:</span></span><ol>
-        <li><span class="sline first">"Su gerente de caso es su punto de contacto durante todo el proceso.</span><span class="sline cont">¿Ok?</span><span class="sline cont">Él supervisa toda la cancelación."</span></li>
-        <li><span class="sline first">"Eso significa que nosotros cargamos con el trabajo pesado.</span><span class="sline cont">Nosotros manejamos la comunicación con el desarrollador."</span></li>
-      </ol></li>
-    <li><span class="sline first"><span class="grp">La carta de explicación:</span></span><ol>
-        <li><span class="sline first">"Se llama carta de explicación.</span><span class="sline cont">No es dura.</span><span class="sline cont">No es difícil.</span><span class="sline cont">Les vamos a dar un formato para guiarlos.</span><span class="sline cont">Es simplemente lo que me explicaron a mí y a mi compañía sobre por qué quieren salir, pero en formato escrito."</span></li>
-        <li><span class="sline first">"Ellos la revisan, le hacen correcciones y se la devuelven."</span></li>
-        <li><span class="sline first">"Ese número de queja formal, eso es el documento físico que necesitamos lo antes posible.</span><span class="sline cont">Eso es lo que nos va a dar la mejor oportunidad de éxito para sacarlos de esto."</span></li>
-        <li><span class="sline first">"¿Pueden encargarse de esa carta?</span><span class="sline cont">¿Pueden hacerla rápido y enviársela a su gerente de caso?"</span></li>
-      </ol></li>
-  </ol>
-</div>
-<div class="trans">→ Carta comprometida. Ahora, el precio.</div>
-
-<div class="stage" id="stage3">
-  <h2>ETAPA 3 — EL PRECIO <span class="t">15 MIN</span></h2>
-  <div class="clock">0:30–0:45 · pluma y papel <span class="tmin">(5 min)</span> → tu precio, todo incluido <span class="tmin">(5 min)</span> → la garantía <span class="tmin">(5 min)</span> <span class="stimer"><button id="sb3" onclick="toggleStage(3)">▶ 15:00</button> <button class="rs" onclick="resetStage(3)" title="Reiniciar">↺</button></span></div>
-  <ol class="liners">
-    <li><span class="sline first">"Quiero que tomen un lapicero y una hoja de papel.</span><span class="sline cont">Les voy a explicar cuál es el costo, el ahorro, las opciones de pago, todo eso, y solo quiero que lo escriban para que no haya ninguna mala comunicación.</span><span class="sline cont">Avísenme cuando estén listos."</span></li>
-    <li><span class="sline first">"Bueno, lo primero que quiero que escriban es el ahorro total."</span> <span class="tmin">— que escriba: ahorro total <b><span data-fill="savings">$________</span></b> · costo de quedarse 10 años <b><span data-fill="total10">$________</span></b></span></li>
-    <li id="price-anchor"><span class="sline first">"Tu precio total es <b><span class="hl-b" data-fill="fee">$________</span></b> — y esto incluye todo, de principio a fin.</span><span class="sline cont">Nunca te pedimos otro dólar.</span><span class="sline cont">Este precio elimina toda la deuda pasada, presente y futura, y tu nombre se retira de la escritura a nivel del condado, para que tu patrimonio esté a salvo y tus herederos nunca hereden esta pesadilla."</span></li>
-    <li><span class="sline first"><span class="grp">La garantía:</span></span><ol>
-        <li><span class="sline first">"Ese es el costo completo.</span><span class="sline cont">Ese es el número final, todo incluido: tarifas administrativas, tarifas de presentación, horas de trabajo, todo."</span></li>
-        <li><span class="sline first">"Ese es el costo completo por una cancelación completa.</span><span class="sline cont">No los vamos a contactar por ni un centavo más."</span></li>
-        <li><span class="sline first">"Está respaldado por la política de devolución del 100% de su dinero.</span><span class="sline cont">De nuevo, eso está por escrito.</span><span class="sline cont">Sin letra pequeña."</span></li>
-        <li><span class="sline first">"No es ningún riesgo para ustedes.</span><span class="sline cont">Les devolvemos hasta el último centavo que nos pagaron."</span></li>
-        <li><span class="sline first">"Sin letra pequeña.</span><span class="sline cont">Si no ganamos, recuperan su dinero."</span></li>
-      </ol></li>
-  </ol>
-</div>
-<div class="trans">→ Precio claro y garantizado. Ahora sí: cómo lo pagas.</div>
-
-<div class="trans" style="background:#0b3d91;color:#fff;font-size:1.25em;font-weight:800;text-align:center;padding:14px 10px;border-radius:8px;letter-spacing:.5px">💳 ━━━ PAGOS Y FINANCIAMIENTO ━━━<br><span style="font-size:.62em;font-weight:600">AQUÍ TERMINA EL PRECIO — AQUÍ EMPIEZAN LAS MANERAS DE PAGAR</span></div>
-
-<div class="stage" id="stage4">
-  <h2>ETAPA 4 — LAS TRES MANERAS DE PAGAR <span class="t">15 MIN</span></h2>
-  <div class="clock">0:45–1:00 · pago completo, sin interés <span class="tmin">(5 min)</span> → tarjetas <span class="tmin">(5 min)</span> → financiamiento <span class="tmin">(5 min)</span> <span class="stimer"><button id="sb4" onclick="toggleStage(4)">▶ 15:00</button> <button class="rs" onclick="resetStage(4)" title="Reiniciar">↺</button></span></div>
-  <div class="plink">🔗 Financiamiento: <a href="https://distributor.ucfs.net/">UCFS merchant portal</a> · <a href="https://agent.uportal360.com/dashboard">UGA (uPortal360)</a> · Equity Bank</div>
-  <ol class="liners">
-    <li id="pago-transicion"><span class="sline first">Lo que podemos hacer es mirar las tres maneras en que la mayoría de las personas pagan por nuestro servicio.</span></li>
-    <li style="list-style:none"><div class="ib-ctl centered">
-          <label>MES DE COMPRA <select id="b_pmonth" onchange="qBarCtl()"><option value="">—</option><option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option><option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option><option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option></select></label>
-          <label>AÑO DE COMPRA <input id="b_pyr" type="number" min="0" oninput="qBarCtl()"></label>
-          <label>NOCHES <input id="b_nights" type="number" min="0" value="5" oninput="qNightsDef=false;qBarCtl()"></label>
-        </div></li>
-    <li><span class="sline first"><span class="grp">Manera 1 — Pago completo (sin interés):</span></span><ol>
-        <li><span class="sline first">"No somos una firma ilusa."</span></li>
-        <li><span class="sline first">"Voy a empezar desde arriba y bajar hasta el final, ¿ok? Y ustedes me dicen qué les funciona mejor."</span></li>
-        <li><span class="sline first">"La primera y mejor manera de pagar cualquier cosa es si pueden evitar el interés."</span></li>
-        <li><span class="sline first">"Esa es, de lejos, la mejor opción."</span></li>
-      </ol></li>
-    <li><span class="sline first"><span class="grp">Manera 2 — Tarjetas (financiarte a ti mismo):</span></span><ol>
-        <li><span class="sline first">"La siguiente ruta es casi como financiarse a ustedes mismos: pueden pagarlo a su comodidad, sin estar obligados a pagarlo antes de tiempo."</span></li>
-      </ol></li>
-    <li><span class="sline first"><span class="grp">La tarifa de tarjeta — sin sorpresas:</span></span><ol>
-        <li><span class="sline first">"Nunca quiero tomar a nadie por sorpresa."</span></li>
-        <li><span class="sline first">"Cada vez que se pasa una tarjeta, hay una tarifa de procesamiento del 3%, sea cual sea el monto."</span></li>
-      </ol></li>
-    <li><span class="sline first"><span class="grp">Manera 3 — Financiamiento:</span></span><ol>
-        <li><span class="sline first">"¿Quieren que miremos cuáles son nuestras opciones de financiamiento?"</span></li>
-      </ol></li>
-  </ol>
-</div>
-<div class="trans">→ Manera elegida. Cerramos con tiempos, reembolsos y la firma.</div>
-
-<div class="stage" id="stage5">
-  <h2>ETAPA 5 — TIEMPOS Y REEMBOLSOS <span class="t">15 MIN</span></h2>
-  <div class="clock">1:00–1:15 · línea de tiempo <span class="tmin">(5 min)</span> → reembolsos <span class="tmin">(5 min)</span> → ¿sigues pagando al resort? <span class="tmin">(5 min)</span> <span class="stimer"><button id="sb5" onclick="toggleStage(5)">▶ 15:00</button> <button class="rs" onclick="resetStage(5)" title="Reiniciar">↺</button></span></div>
-  <ol class="liners">
-    <li><span class="sline first"><span class="grp">Línea de tiempo:</span></span><ol>
-        <li><span class="sline first">"Ganamos dinero como compañía ganando con rapidez."</span></li>
-        <li><span class="sline first">"Entre más rápido los saquemos, menos horas le pagamos al equipo de cancelación y su gerente queda libre para un cliente nuevo."</span></li>
-        <li><span class="sline first">"No alargamos esto por alargarlo. Queremos sacarlos lo más rápido humanamente posible."</span></li>
-        <li><span class="sline first">"Ustedes se mantienen informados todo el tiempo."</span></li>
-      </ol></li>
-    <li><span class="sline first"><span class="grp">Reembolsos:</span></span><ol>
-        <li><span class="sline first">"Sí buscamos un reembolso en nombre de ustedes."</span></li>
-        <li><span class="sline first">"Los reembolsos son la cereza del pastel."</span></li>
-        <li><span class="sline first">"Es 70/30: el 70% a favor de ustedes, el 30% como agradecimiento por recuperar dinero que ya estaba perdido."</span></li>
-      </ol></li>
-    <li><span class="sline first"><span class="grp">¿Sigues pagando al resort?:</span></span><ol>
-        <li><span class="sline first">"Legalmente, nadie puede aconsejarles qué hacer, ¿ok? Es ilegal decirles que hagan sus pagos o que dejen de hacerlos."</span></li>
-        <li><span class="sline first">"Nadie conoce sus finanzas mejor que ustedes."</span></li>
-        <li><span class="sline first">"¿Por qué botar dinero bueno tras dinero malo? Prefiero pagar por salir que por quedarme."</span></li>
-        <li><span class="sline first">"Eso no cambia su caso: si quieren pagarles, páguenles, igual los vamos a sacar; si no quieren, no tienen que hacerlo."</span></li>
-        <li><span class="sline first">"Eso es lo que hace la mayoría de la gente."</span></li>
-        <li><span class="sline first">"Detiene el sangrado.</span><span class="sline cont">Eso es esencialmente lo que hace: detiene el sangrado."</span></li>
-        <li><span class="sline first">"Hagan esa carta.</span><span class="sline cont">Lo antes posible."</span></li>
-      </ol></li>
-  </ol>
-</div>
-<div class="trans">→ Todo claro. A firmar.</div>
-
-<div class="stage" id="stage6">
-  <h2>ETAPA 6 — FIRMAR Y REGLAS <span class="t">15 MIN</span></h2>
-  <div class="clock">1:15–1:30 · DocuSign paso a paso <span class="tmin">(10 min)</span> → las reglas y despedida <span class="tmin">(5 min)</span> <span class="stimer"><button id="sb6" onclick="toggleStage(6)">▶ 15:00</button> <button class="rs" onclick="resetStage(6)" title="Reiniciar">↺</button></span></div>
-  <div class="plink">🔗 <a href="https://account.docusign.com">DocuSign</a> · <a href="https://youtu.be/UQqgr5Q0r1I">Cómo enviar un DocuSign (video)</a></div>
-  <ol class="liners">
-    <li><span class="sline first"><span class="grp">DocuSign:</span></span><ol>
-        <li><span class="sline first">"Les va a llegar dos veces, para iniciales y firmas individuales."</span></li>
-        <li><span class="sline first">"Necesito que se detengan en la última página, ¿ok?</span><span class="sline cont">No se les puede pasar.</span><span class="sline cont">Es azul, morada y verde."</span></li>
-        <li><span class="sline first">"Ese es su formato.</span><span class="sline cont">Pueden volver a él cuantas veces lo necesiten."</span></li>
-        <li><span class="sline first">"Lo que estamos diciendo es: no tomen nuestro proceso para montar su propia compañía."</span></li>
-        <li><span class="sline first">"Si, Dios no lo quiera, ustedes fallecieran, ¿no?</span><span class="sline cont">Si no despertaran mañana en la mañana, quien sea el ejecutor de su patrimonio iba a heredar este tiempo compartido.</span><span class="sline cont">A ellos también los sacamos.</span><span class="sline cont">No paramos, no cobramos extra."</span></li>
-      </ol></li>
-    <li><span class="sline first"><span class="grp">Las reglas:</span></span><ol>
-        <li><span class="sline first">"No hablen con ellos.</span><span class="sline cont">No lo usen."</span></li>
-        <li><span class="sline first">"Si Hilton los llama, no contesten.</span><span class="sline cont">Si contestan por accidente, lo único que tienen que decir es: lo siento, estoy ocupado, y cuelgan el teléfono."</span> <span class="tmin">— cambia Hilton por el resort del cliente</span></li>
-        <li><span class="sline first">"Cuando los contactemos durante el proceso, no tienen que parar lo que están haciendo para responder, pero esto también ayuda a la eficiencia de la cancelación.</span><span class="sline cont">Así que en uno o dos días hábiles, cuando los contactemos, traten de respondernos."</span></li>
-      </ol></li>
-    <li><span class="sline first"><span class="grp">Despedida:</span></span><ol>
-        <li><span class="sline first">"Su gerente de caso es su único punto de contacto."</span></li>
-        <li><span class="sline first">"Por favor, no vuelvan a comprar otro nunca más."</span></li>
-        <li><span class="sline first">"Y sí es un error, pero tampoco se castiguen demasiado por eso."</span></li>
-        <li><span class="sline first">"Me alegra que pudimos ayudarlos.</span><span class="sline cont">Espero que esto les dé un respiro, sabiendo que ya no tienen que preocuparse por este tiempo compartido.</span><span class="sline cont">Bienvenidos a Linx Legal."</span></li>
-        <li><span class="sline first">"Cuando envíen esa foto, yo les envío un mensaje de texto de vuelta, solo para que sepan que la recibí, ¿ok?"</span></li>
-      </ol></li>
-  </ol>
-</div>
-
 <section class="coversheet" id="coversheet">
   <h2>📋 Hoja de cierre del deal <button onclick="window.print()" class="csprint">🖨 Imprimir</button></h2>
   <div id="cs_body"><span class="tmin">Selecciona un cliente arriba para generar la hoja de cierre.</span></div>
@@ -1143,7 +806,7 @@ function resetStage(n){ stages[n].e = 0; stages[n].run = false; render(); }
 function toggleOverall(){ if (ov.run) { ov.e = nowS(ov); ov.run = false; } else { ov.t0 = Date.now(); ov.run = true; } render(); }
 function resetOverall(){ ov.e = 0; ov.run = false; render(); }
 function render(){
-  for (var i = 1; i <= 6; i++) document.getElementById('sb' + i).textContent = (stages[i].run ? '\u23F8 ' : '\u25B6 ') + fmt(Math.max(0, 15*60 - nowS(stages[i])));
+  for (var i = 1; i <= 6; i++){ var sbE = document.getElementById('sb' + i); if (sbE) sbE.textContent = (stages[i].run ? '\u23F8 ' : '\u25B6 ') + fmt(Math.max(0, 15*60 - nowS(stages[i]))); } /* DECLUTTER_V1: stage buttons removed — guarded */
   document.getElementById('ot').textContent = fmtH(Math.max(0, 90*60 - nowS(ov)));
   document.getElementById('obtn').textContent = ov.run ? '\u23F8 Pausa' : '\u25B6 Iniciar';
   document.getElementById('topbar').classList.toggle('over', nowS(ov) >= 90 * 60);
@@ -3919,13 +3582,19 @@ function qPostCallHtml(){
   if (comm && comm !== '—') h += '<div ' + ROW + '><span>Comisión CB</span><b>' + escH(comm) + '</b></div>';
   h += '<h2 ' + H2 + '>Preguntas de los videos</h2>';
   var fpQ = ['¿Firmaste tu contrato porque te dijeron que podías rentar o vender tu tiempo compartido?','¿Te revelaron la cláusula de perpetuidad: que las cuotas de mantenimiento son una obligación para siempre?','¿Te dijeron cuál era la cuota de mantenimiento al momento de la compra, y que esas cuotas aumentarían año tras año?','¿Te prometieron privilegio de prioridad al reservar, con mejor disponibilidad que el público en general?','¿Te dijeron que reservar tus fechas era cuestión de solo días o semanas de anticipación?','¿Te mostraron el verdadero costo total de ser propietario antes de firmar?'];
+  /* DECLUTTER_V1: question panels removed from page — answers read from localStorage (same keys/defaults as qFpLoad/qPcLoad) */
+  var fpSto = null, pcSto = null;
+  try { var frw = localStorage.getItem(cur ? 'sl_fp_' + cur.id : ''); if (frw !== null && frw !== '') fpSto = JSON.parse(frw); } catch(e){}
+  try { var prw = localStorage.getItem(cur ? 'sl_pc_' + cur.id : ''); if (prw !== null && prw !== '') pcSto = JSON.parse(prw); } catch(e){}
+  function fpOn(ix){ var e9 = $('fp' + ix); if (e9) return e9.checked; if (fpSto) return !!fpSto['fp' + ix]; return true; }
+  function pcOn(ix){ var e9 = $('pc' + ix); if (e9) return e9.checked; if (pcSto) return !!pcSto['pc' + ix]; return false; }
   var allYes = true, i, el;
-  for (i = 1; i <= 6; i++){ el = $('fp' + i); if (!el || !el.checked) allYes = false; }
+  for (i = 1; i <= 6; i++){ if (!fpOn(i)) allYes = false; }
   if (allYes) h += '<p style="font-size:15px"><b>✅ El cliente respondió SÍ a todas las preguntas de los videos.</b></p>';
-  for (i = 1; i <= 6; i++){ el = $('fp' + i); var on = el ? el.checked : false; h += '<div ' + ROW + '><span>' + fpQ[i - 1] + '<br><span style="font-size:12px;color:#6b7280">Si no te hubieran dicho esto antes de firmar, ¿habrías firmado el contrato?</span></span><b>' + (on ? '✔ SÍ' : '✘ NO') + '</b></div>'; }
+  for (i = 1; i <= 6; i++){ var on = fpOn(i); h += '<div ' + ROW + '><span>' + fpQ[i - 1] + '<br><span style="font-size:12px;color:#6b7280">Si no te hubieran dicho esto antes de firmar, ¿habrías firmado el contrato?</span></span><b>' + (on ? '✔ SÍ' : '✘ NO') + '</b></div>'; }
   var pcL = ['BBB (A+ / Acreditado)','Best Company','Google Reviews','Google Maps','Perfil de la empresa — investiganos.com','RedWeek (precios reales de su resort)','eBay (timeshares por $1)','Comparar: rentar sale más barato que ser dueño'];
   var vio = [];
-  for (i = 1; i <= 8; i++){ el = $('pc' + i); if (el && el.checked) vio.push(pcL[i - 1]); }
+  for (i = 1; i <= 8; i++){ if (pcOn(i)) vio.push(pcL[i - 1]); }
   if (vio.length){ h += '<h2 ' + H2 + '>Lo que vio el cliente en la llamada</h2>'; vio.forEach(function(v){ h += '<div ' + ROW + '><span>' + v + '</span><b>✔ Mostrado</b></div>'; }); }
   h += '<p style="margin-top:26px;font-size:12px;color:#6b7280;text-align:center">Linx Legal · Hoja post-llamada generada por Sebastian Short · ' + today + ' · ' + hora + '</p>';
   h += '</body></html>';
@@ -5337,18 +5006,6 @@ document.addEventListener('keydown', function(e){ if (e.key === 'Escape'){ notes
 
 
 <!-- bottom_panels_v1 (Sebastian 2026-10-31): COMISION + TAREAS + DOCUMENTOS + ETAPAS + FISICO moved to the bottom, in this order -->
-<div class="cpanel" id="commSection">
-  <div class="qsec" style="margin-top:0">💵 COMISIÓN — LA HOJA, EXPLICADA</div>
-  <div style="font-size:.92em;line-height:1.5">
-    <p style="margin:4px 0"><b>LA FÓRMULA (toda la hoja es esto):</b><br>COMISIONABLE = TOTAL − FEES − $299 admin.<br>FEES = 3% del total si paga con tarjeta · $199 fijo en todo lo demás.<br>Tu % se aplica sobre el comisionable, nunca sobre el total cobrado.</p>
-    <p style="margin:4px 0"><b>CC / ACH — 10%</b> ← tu mejor tasa<br>Dinero directo a Linx: tarjeta, ACH o cheque pagado completo (aunque el depósito venga en porciones).</p>
-    <p style="margin:4px 0"><b>UCFS — 8%</b><br>Financiera externa. Sin anticipo requerido ($0 down, opcional). Término en MESES, al 19.99%.</p>
-    <p style="margin:4px 0"><b>UGA / IN-HOUSE — 4%</b> ← la misma cubeta en la hoja<br>UGA = financiera externa, exige <b>25% de anticipo</b>. In-house = Linx financia al 19.99%; a 48 meses exige <b>30% de anticipo</b>. El mismo deal paga la MITAD que por UCFS.</p>
-    <p style="margin:4px 0"><b>DEED-BACK — $300 + ½ PAD</b><br>Sin porcentaje. El pad es tu aumento: cada +$100 que quieres de comisión = +$200 al precio final (selector en el recuadro rojo).</p>
-    <p style="margin:4px 0"><b>CUÁNDO TE PAGAN</b><br>Firmado días 1–15 → cobras el día 6 · firmado 16–fin de mes → cobras el día 20 (del mes siguiente). La comisión se debe cuando ya se cobró el 25% del total.</p>
-    <p style="margin:4px 0"><b>CÓMO MAXIMIZAR — EVITAR LA COMISIÓN BAJA</b><br>1. Primero ofrece PAGADO COMPLETO por tarjeta / ACH / cheque (10%). Si no pueden de una sola vez, reparte el DEPÓSITO en porciones directo a Linx: sigue siendo full-down, no UGA.<br>2. Si necesitan financiera: UCFS (8%, $0 down) siempre antes que UGA (4%).<br>3. UGA / in-house solo de último recurso: 4% = la mitad de UCFS y menos de la mitad de directo.<br>4. En deed-back, sube el pad con el selector — es tu única palanca de comisión en esos deals.<br>5. El cargo de tarjeta (3%) lo paga el cliente y se excluye de tu comisionable: cobrar con tarjeta no te baja la tasa.</p>
-  </div>
-  </div>
 <div class="calcgrid"><div class="cpanel">
   <div class="qsec" style="margin-top:0">TAREAS DEL DEAL</div>
   <div class="qtasks">
@@ -5374,17 +5031,6 @@ document.addEventListener('keydown', function(e){ if (e.key === 'Escape'){ notes
   </div>
   </div>
 <div class="calcgrid"><div class="cpanel">
-<div class="qsec" style="margin-top:0">✔ ETAPAS DEL GUIÓN — CUBIERTAS</div>
-<div class="fpitem"><label><input type="checkbox" id="st1" onchange="qStSave()"><span>Confirmar Noches Por Año</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="st2" onchange="qStSave()"><span>Precio Por Noche → RedWeek</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="st3" onchange="qStSave()"><span>investiganos.com</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="st4" onchange="qStSave()"><span>Investigación</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="st5" onchange="qStSave()"><span>¿Le impide seguir adelante con nosotros hoy mismo?</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="st6" onchange="qStSave()"><span>99%</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="st7" onchange="qStSave()"><span>Negociaciones</span></label></div>
-<div class="fpitem"><label><input type="checkbox" id="st8" onchange="qStSave()"><span>Navegar</span></label></div>
-</div>
-<div class="cpanel">
 <div class="qsec" style="margin-top:0">✔ FÍSICO</div>
 <div class="fpitem"><label><input type="checkbox" id="ph1" onchange="qPhSave()"><span>Pre-Llamada</span></label></div>
 <div class="fpitem"><label><input type="checkbox" id="ph2" onchange="qPhSave()"><span>Hoja Pre-Call</span></label></div>
@@ -5566,6 +5212,43 @@ body.focus-mode #focusBtn { background: #b45309; }
 /* BARRESET_V1: opening the page with ?resetbar clears the saved hidden-bar states (focus mode + peg bar) */
 (function(){ try{ if (/[?&]resetbar(\b|=)/.test(location.search)) { localStorage.removeItem('sl_focus'); localStorage.removeItem('sl_peg_hidden'); document.body.classList.remove('focus-mode','peg-hidden'); var b=document.getElementById('focusBtn'); if(b) b.textContent='\uD83D\uDE48 Ocultar menus'; var u=new URL(location.href); u.searchParams.delete('resetbar'); history.replaceState(null,'',u.toString()); } }catch(e){} })();
 </script>
+
+<script>
+/* ===== MOBILE_V1 (Sebastian 2026-11-23) ===== */
+function mobPanelsInit(){
+  var panels = document.querySelectorAll('.cpanel, aside.calcarea');
+  for (var i = 0; i < panels.length; i++){
+    var p = panels[i];
+    if (p.getAttribute('data-mobinit')) continue;
+    p.setAttribute('data-mobinit', '1');
+    var h = p.querySelector('.qsec');
+    if (!h) continue;
+    h.classList.add('mhead');
+    if (!p.classList.contains('calcarea')) p.classList.add('mclosed');
+    (function(panel, head){
+      head.addEventListener('click', function(){ panel.classList.toggle('mclosed'); });
+    })(p, h);
+  }
+}
+function mobApply(on){
+  document.body.classList.toggle('mobile-mode', on);
+  var b = document.getElementById('mobToggle');
+  if (b) b.textContent = on ? '\uD83D\uDDA5\uFE0F Normal' : '\uD83D\uDCF1 M\u00F3vil';
+  if (on) mobPanelsInit();
+}
+function mobToggleFn(){
+  var on = !document.body.classList.contains('mobile-mode');
+  try { localStorage.setItem('sl_mobile', on ? '1' : '0'); } catch(e){}
+  mobApply(on);
+}
+(function(){
+  var pref = null;
+  try { pref = localStorage.getItem('sl_mobile'); } catch(e){}
+  var on = (pref === '1') || (pref === null && window.matchMedia && window.matchMedia('(max-width: 820px)').matches);
+  if (on) mobApply(true);
+})();
+</script>
+
 </body>
 </html>
 
