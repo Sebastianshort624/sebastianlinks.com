@@ -43,7 +43,7 @@
  },
  "7": {
   "file": "slide-e2ff02dce08f.mp3",
-  "dur": 11.232,
+  "dur": 8.52,
   "hash": "e2ff02dce08f",
   "joined": true,
   "cross_slide": true
@@ -51,14 +51,14 @@
  "8": {
   "file": null,
   "dur": null,
-  "hash": "905d6b850dd3",
+  "hash": "c6db8cc8086a",
   "join_in": true,
   "note": "join_through"
  },
  "9": {
-  "file": "slide-f2da11f42b8e.mp3",
-  "dur": 8.904,
-  "hash": "f2da11f42b8e"
+  "file": "slide-d477c928238f.mp3",
+  "dur": 7.944,
+  "hash": "d477c928238f"
  },
  "10": {
   "file": "slide-68f4dc3a838f.mp3",
@@ -588,9 +588,9 @@
   "hash": "4884c627738b"
  },
  "102": {
-  "file": "slide-b71f5fc414a0.mp3",
-  "dur": 10.954,
-  "hash": "b71f5fc414a0"
+  "file": "slide-3a5d4ac41bf3.mp3",
+  "dur": 9.97,
+  "hash": "3a5d4ac41bf3"
  },
  "103": {
   "file": "slide-2d936f37ee68.mp3",
@@ -642,7 +642,7 @@
  },
  "110": {
   "file": "slide-3a21d3e45f5c.mp3",
-  "dur": 10.776,
+  "dur": 10.104,
   "hash": "3a21d3e45f5c",
   "joined": true,
   "cross_slide": true
@@ -650,7 +650,7 @@
  "111": {
   "file": null,
   "dur": null,
-  "hash": "78e3ea1bbb66",
+  "hash": "6fb6e280dee8",
   "join_in": true,
   "note": "join_through"
  },
