@@ -107,9 +107,12 @@
   "join_in": true
  },
  "17": {
-  "file": "slide-1fa45dafe17b.mp3",
-  "dur": 8.112,
-  "hash": "1fa45dafe17b"
+  "file": "slide-c5bea9f0ed39.mp3",
+  "dur": 7.368,
+  "hash": "c5bea9f0ed39",
+  "redacted_tokens": [
+   "{{RESORT}}"
+  ]
  },
  "18": {
   "file": "slide-08cc4b041959.mp3",
@@ -321,11 +324,12 @@
   "hash": "62c31b211ebc"
  },
  "55": {
-  "file": "slide-815e6a24a0c1.mp3",
-  "dur": 7.368,
-  "hash": "815e6a24a0c1",
+  "file": "slide-3ebca5cb0880.mp3",
+  "dur": 7.176,
+  "hash": "3ebca5cb0880",
   "redacted_tokens": [
-   "{{PAYOFF}}"
+   "{{PAYOFF}}",
+   "{{RESORT}}"
   ]
  },
  "56": {
