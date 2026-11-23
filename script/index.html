@@ -2872,8 +2872,8 @@ function qCompBuild(L){
   var totMo = (F.isDB ? 0 : F.mmo) + mfMo;
   var hipYr = (F.isDB ? 0 : F.mmo) * 12;
   var totYr = hipYr + F.mf + (F.ofees || 0);
-  var nights = (cur && +cur.nights > 0) ? +cur.nights : 5;
-  var perNight = totYr > 0 ? totYr / nights : 0;
+  var nights = (cur && +cur.nights > 0) ? +cur.nights : (qNightsDef ? 0 : qNum('q_nights')); // PNNIGHT_BASIS_V1 (2026-11-22): misma regla que el panel — sin noches registradas ni tecleadas no hay costo por noche; la fila se omite (perNight 0), nunca se divide entre el default 5.
+  var perNight = (totYr > 0 && nights > 0) ? totYr / nights : 0;
   var firstName = String(cur.name || '').split('/')[0].trim().split(' ')[0];
   var NAVY = '#14304d', SLATE = '#26313a', MUT = '#68757f', LINE = '#e3e8ec';
   var LBL = 'font-size:11px;font-weight:700;letter-spacing:1.6px;color:' + MUT;
@@ -4360,7 +4360,7 @@ function qRecalc(){
   $('q_xtotmo').textContent = fmtD(mmo + mfmo + ofmo);
   $('q_xmoyr').textContent = fmtD(moyr); $('q_xmfyr').textContent = fmtD(mfoyr); $('q_xofyr').textContent = fmtD(ofees);
   $('q_xtotyr').textContent = fmtD(totyr);
-  var nightsV = qNum('q_nights');
+  var nightsV = qNightsDef ? 0 : qNum('q_nights'); // PNNIGHT_BASIS_V1 (2026-11-22): costo por noche SOLO con base real — las noches del registro o un NOCHES tecleado por Sebastian (qNightsDef=false). El default de despliegue (5) NUNCA es base: sin base registrada se omite (—), nunca se inventa.
   $('q_xnight').textContent = nightsV > 0 ? fmtC(totyr / nightsV) : '—';
   $('q_xpnightyr').textContent = (pnight > 0 && nightsV > 0) ? fmtC(pnight * nightsV) : '—';
   $('q_xmo10').textContent = fmtD(mo10);
