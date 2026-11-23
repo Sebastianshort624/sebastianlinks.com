@@ -43,17 +43,21 @@
   /* HIGHLIGHT RULE (Sebastian, 2026-11-23): every word of the slide is in the
      DOM from the moment the slide appears and NEVER changes — the highlight
      below only restyles (dimmed white → bold yellow highlight). No words are
-     ever revealed, hidden, added or removed as the highlight moves. */
-  .txt .sent { transition: background .3s, color .3s; border-radius: 6px; padding: 0 3px; }
-  body.auto .txt .sent { color: rgba(255,255,255,.6); }
-  body.auto .txt .sent.cur { color: #14213d; background: #ffe45e; font-weight: 700; text-shadow: none; }
-  body.auto .txt .sent.done { color: rgba(255,255,255,.95); }
+     ever revealed, hidden, added or removed as the highlight moves.
+     HIGHLIGHT GRANULARITY (Sebastian, 2026-11-23): the highlight window is
+     4-6 WORDS at a time (.w spans), advancing in 3-4 steps per slide —
+     never a whole sentence at once. Same styling in MANUAL: the current
+     chunk stays highlighted while every word remains visible. */
+  .txt .w { transition: background .3s, color .3s; border-radius: 6px; padding: 0 2px; color: rgba(255,255,255,.6); }
+  .txt .w.cur { color: #14213d; background: #ffe45e; font-weight: 700; text-shadow: none; }
+  .txt .w.done { color: rgba(255,255,255,.95); }
   .qtxt { font-size: clamp(21px, 3.3vw, 31px); line-height: 1.5; font-weight: 700; color: #fff;
     text-shadow: 0 2px 14px rgba(0,0,0,.62), 0 1px 3px rgba(0,0,0,.7); }
   .noans { margin-top: 20px; font-size: clamp(19px, 2.6vw, 25px); color: rgba(255,255,255,.88); font-style: italic; text-shadow: 0 1px 8px rgba(0,0,0,.65); }
   .perf { margin-top: 6px; font-size: clamp(19px, 2.6vw, 25px); color: #ffd968; font-weight: 700; text-shadow: 0 1px 8px rgba(0,0,0,.65); }
   body.auto .noans, body.auto .perf { opacity: .62; }
-  body.auto .noans.cur, body.auto .perf.cur { opacity: 1; background: #ffe45e; color: #14213d; text-shadow: none; border-radius: 6px; }
+  .noans.cur, .perf.cur { opacity: 1; background: #ffe45e; color: #14213d; text-shadow: none; border-radius: 6px; }
+  .qtxt.cur { background: #ffe45e; color: #14213d; text-shadow: none; border-radius: 6px; }
   .bwimg { margin: 22px auto 4px; display: block; width: min(430px, 80%); height: 190px; object-fit: cover;
     border-radius: 10px; filter: grayscale(1) contrast(1.06); box-shadow: 0 8px 24px rgba(0,0,0,.18); border: 6px solid #fff; }
   .titlecard h1 { font-size: clamp(30px, 5.4vw, 52px); line-height: 1.2; color: #fff; margin: 8px 0 10px; text-shadow: 0 2px 18px rgba(0,0,0,.65), 0 1px 4px rgba(0,0,0,.7); }
@@ -117,9 +121,11 @@
 <div id="controls">
   <div id="progwrap"><div id="prog"></div></div>
   <div class="ctlrow">
-    <button class="cbtn" id="prev" title="Atrás">⏮</button>
+    <button class="cbtn" id="prevslide" title="Pantalla anterior">⏮</button>
+    <button class="cbtn" id="prevchunk" title="Resaltado anterior">◀</button>
     <button class="cbtn main" id="play" title="Pausar / continuar">⏸</button>
-    <button class="cbtn" id="next" title="Adelante">⏭</button>
+    <button class="cbtn" id="nextchunk" title="Resaltado siguiente">▶</button>
+    <button class="cbtn" id="nextslide" title="Pantalla siguiente">⏭</button>
     <button id="modebtn">AUTOSCROLL: ON</button>
     <div id="counter"></div>
     <div class="spacer" style="flex:1"></div>
@@ -187,6 +193,7 @@ var clientId = params.get('c') || 'c-balderas-1122';
 if (!CLIENTS[clientId]) clientId = Object.keys(CLIENTS)[0];
 var client = null, derived = null, slides = [], idx = 0;
 var auto = true, playing = true, elapsed = 0, lastTick = null, rafId = null;
+var chunkIdx = 0; /* current highlight window (4-6 words) on this slide */
 
 /* UI + panel labels per language (deck text itself lives in the data files) */
 var L = {
@@ -281,35 +288,83 @@ function render(){
     var q = sl.sentences[0], no = sl.sentences[1], pf = sl.sentences[2];
     html = '<div class="card"><div class="sec">' + esc(sl.sec) + '</div>' +
       '<div class="ref">' + L[lang].qref + (idx + 1) + ' / ' + slides.length + '</div>' +
-      '<div class="qtxt sent" data-s="' + q.s + '" data-d="' + q.d + '">' + esc(fill(q.x)) + '</div>' +
+      '<div class="qtxt" data-s="' + q.s + '" data-d="' + q.d + '">' + esc(fill(q.x)) + '</div>' +
       '<div class="noans" data-s="' + no.s + '" data-d="' + no.d + '">' + esc(fill(no.x)) + '</div>' +
       '<div class="perf" data-s="' + pf.s + '" data-d="' + pf.d + '">' + esc(fill(pf.x)) + '</div>' +
       '<img class="bwimg" src="https://picsum.photos/id/' + sl.img + '/900/420?grayscale" alt=""></div>';
   } else {
-    var sents = sl.sentences.map(function(s){
-      return '<span class="sent" data-s="' + s.s + '" data-d="' + s.d + '">' + esc(fill(s.x)) + '</span>';
+    /* word-level spans: the highlight window moves 4-6 words at a time
+       across these; every word is rendered (dimmed) from slide start */
+    var words = [];
+    sl.sentences.forEach(function(s){
+      fill(s.x).split(/\s+/).forEach(function(w){ if (w) words.push(w); });
+    });
+    var spans = words.map(function(w, i){
+      return '<span class="w" data-w="' + i + '">' + esc(w) + '</span>';
     }).join(' ');
     html = '<div class="card"><div class="sec">' + esc(sl.sec) + '</div>' +
       '<div class="ref">' + (idx + 1) + ' / ' + slides.length + '</div>' +
-      '<div class="txt">' + sents + '</div>' + panelHTML(sl.panel) +
+      '<div class="txt">' + spans + '</div>' + panelHTML(sl.panel) +
       '<img class="bwimg" src="https://picsum.photos/id/' + sl.img + '/900/420?grayscale" alt=""></div>';
   }
   stage.innerHTML = html;
   $('counter').textContent = (idx + 1) + ' / ' + slides.length;
   $('secname').textContent = sl.sec || '';
   $('prog').style.width = ((idx + 1) / slides.length * 100) + '%';
-  elapsed = 0; lastTick = null;
-  markCurrent();
+  elapsed = 0; lastTick = null; chunkIdx = 0;
+  applyChunk();
+}
+/* ---- highlight chunks: windows of 4-6 words, 3-4 steps per slide ---- */
+function wordEls(){ return document.querySelectorAll('#stage .txt .w'); }
+function chunkCount(){
+  var sl = slides[idx];
+  if (!sl) return 1;
+  if (sl.kind === 'question') return 3; /* question / —No. / Perfecto. */
+  var W = wordEls().length;
+  if (!W) return 1;
+  var S = Math.round(W / 5);
+  S = Math.max(1, Math.min(4, S));
+  while (Math.ceil(W / S) > 6 && S < W) S++; /* never more than 6 words lit */
+  return S;
+}
+function chunkRange(k){
+  var W = wordEls().length, S = chunkCount();
+  return [Math.round(k * W / S), Math.round((k + 1) * W / S)];
+}
+function applyChunk(){
+  var sl = slides[idx];
+  if (!sl) return;
+  if (sl.kind === 'question'){
+    document.querySelectorAll('#stage .qtxt, #stage .noans, #stage .perf')
+      .forEach(function(el, i){
+        el.classList.toggle('cur', i === chunkIdx);
+        el.classList.toggle('done', i < chunkIdx);
+      });
+    return;
+  }
+  if (sl.kind !== 'text') return;
+  var r = chunkRange(chunkIdx);
+  wordEls().forEach(function(el, i){
+    el.classList.toggle('cur', i >= r[0] && i < r[1]);
+    el.classList.toggle('done', i < r[0]);
+  });
 }
 function markCurrent(){
   if (!auto) return;
   var sl = slides[idx];
-  var t = sl.start + elapsed;
-  document.querySelectorAll('[data-s]').forEach(function(el){
-    var s = parseFloat(el.getAttribute('data-s')), d = parseFloat(el.getAttribute('data-d'));
-    el.classList.toggle('cur', t >= s && t < s + d);
-    el.classList.toggle('done', t >= s + d);
-  });
+  if (sl.kind === 'question'){
+    var t = sl.start + elapsed;
+    document.querySelectorAll('[data-s]').forEach(function(el){
+      var s = parseFloat(el.getAttribute('data-s')), d = parseFloat(el.getAttribute('data-d'));
+      el.classList.toggle('cur', t >= s && t < s + d);
+      el.classList.toggle('done', t >= s + d);
+    });
+    return;
+  }
+  if (sl.kind !== 'text') return;
+  var S = chunkCount();
+  chunkIdx = Math.min(S - 1, Math.floor(elapsed / sl.dur * S));
+  applyChunk();
 }
 function tick(now){
   if (!auto || !playing){ rafId = null; return; }
@@ -335,26 +390,60 @@ function setAuto(on){
   document.body.classList.toggle('auto', auto);
   $('modebtn').textContent = auto ? 'AUTOSCROLL: ON' : 'MANUAL';
   if (auto){ playing = true; $('play').textContent = '⏸'; startTimer(); }
-  else { markClear(); }
+  else { applyChunk(); } /* MANUAL keeps the current chunk highlighted */
 }
-function markClear(){
-  document.querySelectorAll('[data-s]').forEach(function(el){ el.classList.remove('cur', 'done'); });
+/* NAVIGATION (Sebastian, 2026-11-23): DOUBLE arrows (⏮/⏭) move between
+   SLIDES; SINGLE arrows (◀/▶) step the HIGHLIGHT CHUNK within the slide.
+   Single-next on the last chunk advances to the next slide; single-prev
+   on the first chunk goes back to the previous slide (landing on its
+   last chunk). Stepping a chunk while AUTOSCROLL runs pauses it into
+   MANUAL so the operator controls the pace. */
+function stepChunk(dir){
+  if (!slides.length) return;
+  if (auto){ markCurrent(); setAuto(false); }
+  var S = chunkCount();
+  var nk = chunkIdx + dir;
+  if (nk >= S){ if (idx < slides.length - 1) go(idx + 1); return; }
+  if (nk < 0){
+    if (idx > 0){
+      idx--; render();
+      chunkIdx = chunkCount() - 1; applyChunk();
+    }
+    return;
+  }
+  chunkIdx = nk; applyChunk();
 }
 function toast(msg){
   var t = $('toast'); t.textContent = msg; t.style.display = 'block';
   clearTimeout(t._h); t._h = setTimeout(function(){ t.style.display = 'none'; }, 4200);
 }
 
-/* background montage — watercolor-filtered stills, slow Ken Burns crossfade
-   (Spanish deck: Latin landscapes/cities; English deck pool swaps with its
-   text data file when it lands) */
-var BG = [1015, 1016, 1018, 1029, 1036, 1039, 1047, 1048, 1050, 164, 183, 1067];
+/* background montage — slow Ken Burns crossfade, full-bleed under the
+   scrim. SPANISH deck (Sebastian, 2026-11-23): traditional FOLKLORIC
+   DANCES of South American countries and Cuba, self-hosted in img/
+   (sources in img/SOURCES.md) — the old green-mountain/city stock did
+   not look like Cuba, Mexico or Colombia. ENGLISH deck keeps its
+   Americana pool. */
+var BG_EN = [1015, 1016, 1018, 1029, 1036, 1039, 1047, 1048, 1050, 164, 183, 1067];
+var BG_ES = ['img/folk01.jpg', 'img/folk02.jpg', 'img/folk03.jpg', 'img/folk04.jpg',
+  'img/folk05.jpg', 'img/folk06.jpg', 'img/folk07.jpg', 'img/folk08.jpg',
+  'img/folk09.jpg', 'img/folk10.jpg', 'img/folk11.jpg', 'img/folk12.jpg',
+  'img/folk13.jpg', 'img/folk14.jpg'];
+function bgUrl(i){
+  if (lang === 'es') return BG_ES[i % BG_ES.length];
+  return 'https://picsum.photos/id/' + BG_EN[i % BG_EN.length] + '/1600/1000';
+}
 var bgIdx = 0, bgFlip = false;
 function cycleBg(){
   var a = $(bgFlip ? 'bg1' : 'bg2'), b = $(bgFlip ? 'bg2' : 'bg1');
-  a.style.backgroundImage = 'url(https://picsum.photos/id/' + BG[bgIdx % BG.length] + '/1600/1000)';
+  a.style.backgroundImage = 'url(' + bgUrl(bgIdx) + ')';
   a.classList.add('on'); b.classList.remove('on');
   bgFlip = !bgFlip; bgIdx++;
+}
+function resetBg(){
+  bgIdx = 0; bgFlip = false;
+  $('bg1').classList.remove('on'); $('bg2').classList.remove('on');
+  cycleBg();
 }
 cycleBg(); setInterval(cycleBg, 9000);
 
@@ -372,9 +461,11 @@ sel.addEventListener('change', function(){
   location.href = url.toString();
 });
 
-/* controls */
-$('next').addEventListener('click', function(){ go(idx + 1); });
-$('prev').addEventListener('click', function(){ go(idx - 1); });
+/* controls — ⏮/⏭ slides, ◀/▶ highlight chunks (see stepChunk) */
+$('nextslide').addEventListener('click', function(){ go(idx + 1); });
+$('prevslide').addEventListener('click', function(){ go(idx - 1); });
+$('nextchunk').addEventListener('click', function(){ stepChunk(1); });
+$('prevchunk').addEventListener('click', function(){ stepChunk(-1); });
 $('play').addEventListener('click', function(){
   if (!auto){ setAuto(true); return; }
   playing = !playing;
@@ -383,8 +474,14 @@ $('play').addEventListener('click', function(){
 });
 $('modebtn').addEventListener('click', function(){ setAuto(!auto); });
 document.addEventListener('keydown', function(e){
-  if (e.key === 'ArrowRight') go(idx + 1);
-  else if (e.key === 'ArrowLeft') go(idx - 1);
+  /* Right/Left = highlight steps; PageDown/PageUp or Shift+Right/Left =
+     slides; spacebar = play/pause */
+  if (e.key === 'PageDown'){ e.preventDefault(); go(idx + 1); }
+  else if (e.key === 'PageUp'){ e.preventDefault(); go(idx - 1); }
+  else if (e.key === 'ArrowRight' && e.shiftKey) go(idx + 1);
+  else if (e.key === 'ArrowLeft' && e.shiftKey) go(idx - 1);
+  else if (e.key === 'ArrowRight') stepChunk(1);
+  else if (e.key === 'ArrowLeft') stepChunk(-1);
   else if (e.key === ' '){ e.preventDefault(); $('play').click(); }
 });
 /* language toggle — switches decks BOTH ways, at any slide, landing on the
@@ -398,6 +495,7 @@ function setLang(nl){
   if (client.dtype === 'DB'){ renderDbNotice(); return; }
   slides = DECK.slides;
   idx = Math.max(0, Math.min(slides.length - 1, idx));
+  resetBg(); /* background pool follows the language */
   render(); startTimer();
 }
 $('btnEn').addEventListener('click', function(){ setLang('en'); });
