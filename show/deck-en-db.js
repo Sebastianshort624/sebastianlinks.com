@@ -315,34 +315,14 @@ window.DECK_TEXT_EN_DB = {
    "kind": "text",
    "sentences": [
     {
-     "x": "Was the contract you signed in English or in Spanish?",
-     "s": 127.33,
-     "d": 5.15
-    },
-    {
-     "x": "Because if the presentation was in Spanish and the contract was not also in Spanish, that is discrimination — and it exposes them to a fine.",
-     "s": 132.48,
-     "d": 13.39
+     "x": "And yes, we get a lot of owners out of {{RESORT}}. I'm talking over half a dozen {{CAD}}.",
+     "s": 145.87,
+     "d": 9.275
     }
    ],
    "panel": null,
    "start": 127.33,
-   "dur": 18.54,
-   "img": 1048
-  },
-  {
-   "sec": "THE IMPENETRABLE CONTRACT",
-   "kind": "text",
-   "sentences": [
-    {
-     "x": "And yes, we get a lot of owners out of {{RESORT}}. I'm talking over half a dozen a week.",
-     "s": 145.87,
-     "d": 9.79
-    }
-   ],
-   "panel": null,
-   "start": 145.87,
-   "dur": 9.79,
+   "dur": 9.275,
    "img": 1048
   },
   {
@@ -356,7 +336,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 7.69
     }
    ],
-   "start": 155.66,
+   "start": 136.605,
    "dur": 7.69,
    "img": 1048
   },
@@ -371,7 +351,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 3.46
     }
    ],
-   "start": 163.35,
+   "start": 144.295,
    "dur": 3.46,
    "img": 1029
   },
@@ -386,7 +366,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 11.65
     }
    ],
-   "start": 166.81,
+   "start": 147.755,
    "dur": 11.65,
    "img": 164
   },
@@ -406,7 +386,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 3.03
     }
    ],
-   "start": 178.46,
+   "start": 159.405,
    "dur": 8.07,
    "img": 1040
   },
@@ -421,7 +401,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 10.35
     }
    ],
-   "start": 186.53,
+   "start": 167.475,
    "dur": 10.35,
    "img": 1048
   },
@@ -436,7 +416,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 5.19
     }
    ],
-   "start": 196.88,
+   "start": 177.825,
    "dur": 5.19,
    "img": 1029
   },
@@ -461,7 +441,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 3.89
     }
    ],
-   "start": 202.07,
+   "start": 183.015,
    "dur": 11.1,
    "img": 164
   },
@@ -476,7 +456,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 11.31
     }
    ],
-   "start": 213.17,
+   "start": 194.115,
    "dur": 11.31,
    "img": 1040
   },
@@ -491,7 +471,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 7.21
     }
    ],
-   "start": 224.48,
+   "start": 205.425,
    "dur": 7.21,
    "img": 1048
   },
@@ -506,7 +486,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 7.64
     }
    ],
-   "start": 231.69,
+   "start": 212.635,
    "dur": 7.64,
    "img": 1029
   },
@@ -521,7 +501,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 8.7
     }
    ],
-   "start": 239.33,
+   "start": 220.275,
    "dur": 8.7,
    "img": 164
   },
@@ -536,7 +516,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 3.7
     }
    ],
-   "start": 248.03,
+   "start": 228.975,
    "dur": 3.7,
    "img": 1040
   },
@@ -551,7 +531,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 8.1
     }
    ],
-   "start": 251.73,
+   "start": 232.675,
    "dur": 8.1,
    "img": 1048
   },
@@ -571,7 +551,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 259.83,
+   "start": 240.775,
    "dur": 11.85,
    "img": 1048
   },
@@ -597,7 +577,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 271.68,
+   "start": 252.625,
    "dur": 12.115,
    "img": 1048
   },
@@ -617,7 +597,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 283.795,
+   "start": 264.74,
    "dur": 9.91,
    "img": 1029
   },
@@ -643,7 +623,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 293.705,
+   "start": 274.65,
    "dur": 12.115,
    "img": 1029
   },
@@ -663,7 +643,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 305.82,
+   "start": 286.765,
    "dur": 12.88,
    "img": 164
   },
@@ -689,7 +669,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 318.7,
+   "start": 299.645,
    "dur": 12.115,
    "img": 164
   },
@@ -709,7 +689,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 330.815,
+   "start": 311.76,
    "dur": 10.82,
    "img": 1040
   },
@@ -735,7 +715,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 341.635,
+   "start": 322.58,
    "dur": 12.115,
    "img": 1040
   },
@@ -755,7 +735,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 353.75,
+   "start": 334.695,
    "dur": 10.82,
    "img": 1048
   },
@@ -781,7 +761,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 364.57,
+   "start": 345.515,
    "dur": 12.115,
    "img": 1048
   },
@@ -801,7 +781,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 376.685,
+   "start": 357.63,
    "dur": 9.79,
    "img": 1029
   },
@@ -827,7 +807,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 386.475,
+   "start": 367.42,
    "dur": 12.115,
    "img": 1029
   },
@@ -847,7 +827,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 7.52
     }
    ],
-   "start": 398.59,
+   "start": 379.535,
    "dur": 11.7,
    "img": 1029
   },
@@ -867,7 +847,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 2.19
     }
    ],
-   "start": 410.29,
+   "start": 391.235,
    "dur": 5.36,
    "img": 164
   },
@@ -882,7 +862,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.63
     }
    ],
-   "start": 415.65,
+   "start": 396.595,
    "dur": 9.63,
    "img": 1018
   },
@@ -907,7 +887,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 10.04
     }
    ],
-   "start": 425.28,
+   "start": 406.225,
    "dur": 12.47,
    "img": 1036
   },
@@ -932,7 +912,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 5.67
     }
    ],
-   "start": 437.75,
+   "start": 418.695,
    "dur": 9.17,
    "img": 1018
   },
@@ -947,7 +927,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 3.89
     }
    ],
-   "start": 446.92,
+   "start": 427.865,
    "dur": 3.89,
    "img": 1036
   },
@@ -972,7 +952,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 4.69
     }
    ],
-   "start": 450.81,
+   "start": 431.755,
    "dur": 7.57,
    "img": 1039
   },
@@ -992,7 +972,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.18
     }
    ],
-   "start": 458.38,
+   "start": 439.325,
    "dur": 11.33,
    "img": 1018
   },
@@ -1007,9 +987,29 @@ window.DECK_TEXT_EN_DB = {
      "d": 8.16
     }
    ],
-   "start": 469.71,
+   "start": 450.655,
    "dur": 8.16,
    "img": 1036
+  },
+  {
+   "sec": "MAINTENANCE / INHERITABLE",
+   "kind": "text",
+   "sentences": [
+    {
+     "x": "Was the contract you signed in English or in Spanish?",
+     "s": 127.33,
+     "d": 5.15
+    },
+    {
+     "x": "Because if the presentation was in Spanish and the contract was not also in Spanish, that is discrimination — and it exposes them to a fine.",
+     "s": 132.48,
+     "d": 13.39
+    }
+   ],
+   "panel": null,
+   "start": 458.815,
+   "dur": 18.54,
+   "img": 1048
   },
   {
    "sec": "MAINTENANCE / INHERITABLE",
@@ -1022,7 +1022,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 2.74
     }
    ],
-   "start": 477.87,
+   "start": 477.355,
    "dur": 2.74,
    "img": 1039
   },
@@ -1042,7 +1042,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 5.35
     }
    ],
-   "start": 480.61,
+   "start": 480.095,
    "dur": 12.85,
    "img": 1018
   },
@@ -1057,7 +1057,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 5.67
     }
    ],
-   "start": 493.46,
+   "start": 492.945,
    "dur": 5.67,
    "img": 1039
   },
@@ -1072,7 +1072,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.18
     }
    ],
-   "start": 499.13,
+   "start": 498.615,
    "dur": 6.18,
    "img": 1036
   },
@@ -1087,7 +1087,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 8.24
     }
    ],
-   "start": 505.31,
+   "start": 504.795,
    "dur": 8.24,
    "img": 1036
   },
@@ -1102,7 +1102,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 12.36
     }
    ],
-   "start": 513.55,
+   "start": 513.035,
    "dur": 12.36,
    "img": 1036
   },
@@ -1117,7 +1117,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 3.6
     }
    ],
-   "start": 525.91,
+   "start": 525.395,
    "dur": 3.6,
    "img": 1036
   },
@@ -1132,7 +1132,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.79
     }
    ],
-   "start": 529.51,
+   "start": 528.995,
    "dur": 9.79,
    "img": 1036
   },
@@ -1162,7 +1162,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 2.06
     }
    ],
-   "start": 539.3,
+   "start": 538.785,
    "dur": 26.78,
    "img": 1036
   },
@@ -1177,7 +1177,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 5.34
     }
    ],
-   "start": 566.08,
+   "start": 565.565,
    "dur": 5.34,
    "img": 1039
   },
@@ -1197,7 +1197,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 4.19
     }
    ],
-   "start": 571.42,
+   "start": 570.905,
    "dur": 8.91,
    "img": 1018
   },
@@ -1212,7 +1212,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.36
     }
    ],
-   "start": 580.33,
+   "start": 579.815,
    "dur": 9.36,
    "img": 1036
   },
@@ -1227,7 +1227,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 4.66
     }
    ],
-   "start": 589.69,
+   "start": 589.175,
    "dur": 4.66,
    "img": 1039
   },
@@ -1262,7 +1262,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 1.14
     }
    ],
-   "start": 594.35,
+   "start": 593.835,
    "dur": 8.42,
    "img": 1018
   },
@@ -1277,7 +1277,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 3.8
     }
    ],
-   "start": 602.77,
+   "start": 602.255,
    "dur": 3.8,
    "img": 1036
   },
@@ -1292,7 +1292,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.25
     }
    ],
-   "start": 606.57,
+   "start": 606.055,
    "dur": 9.25,
    "img": 1039
   },
@@ -1307,7 +1307,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 8.6
     }
    ],
-   "start": 615.82,
+   "start": 615.305,
    "dur": 8.6,
    "img": 1018
   },
@@ -1327,7 +1327,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 4.07
     }
    ],
-   "start": 624.42,
+   "start": 623.905,
    "dur": 11.7,
    "img": 1036
   },
@@ -1342,7 +1342,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.29
     }
    ],
-   "start": 636.12,
+   "start": 635.605,
    "dur": 9.29,
    "img": 1039
   },
@@ -1357,7 +1357,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 4.04
     }
    ],
-   "start": 645.41,
+   "start": 644.895,
    "dur": 4.04,
    "img": 1036
   },
@@ -1372,7 +1372,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.27
     }
    ],
-   "start": 649.45,
+   "start": 648.935,
    "dur": 9.27,
    "img": 1039
   },
@@ -1381,7 +1381,7 @@ window.DECK_TEXT_EN_DB = {
    "kind": "break",
    "sentences": [],
    "panel": null,
-   "start": 658.72,
+   "start": 658.205,
    "dur": 2.0,
    "img": 1039
   },
@@ -1406,7 +1406,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 1.09
     }
    ],
-   "start": 660.72,
+   "start": 660.205,
    "dur": 3.51,
    "img": 1041
   },
@@ -1421,7 +1421,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 11.86
     }
    ],
-   "start": 664.23,
+   "start": 663.715,
    "dur": 11.86,
    "img": 1044
   },
@@ -1436,7 +1436,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 3.34
     }
    ],
-   "start": 676.09,
+   "start": 675.575,
    "dur": 3.34,
    "img": 1041
   },
@@ -1451,7 +1451,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 5.95
     }
    ],
-   "start": 679.43,
+   "start": 678.915,
    "dur": 5.95,
    "img": 1044
   },
@@ -1466,7 +1466,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 10.28
     }
    ],
-   "start": 685.38,
+   "start": 684.865,
    "dur": 10.28,
    "img": 1041
   },
@@ -1496,7 +1496,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 4.24
     }
    ],
-   "start": 695.66,
+   "start": 695.145,
    "dur": 11.01,
    "img": 1044
   },
@@ -1516,7 +1516,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 5.63
     }
    ],
-   "start": 706.67,
+   "start": 706.155,
    "dur": 7.98,
    "img": 1041
   },
@@ -1541,7 +1541,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 2.7
     }
    ],
-   "start": 714.65,
+   "start": 714.135,
    "dur": 10.05,
    "img": 1044
   },
@@ -1556,7 +1556,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 3.23
     }
    ],
-   "start": 724.7,
+   "start": 724.185,
    "dur": 3.23,
    "img": 1041
   },
@@ -1571,7 +1571,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 4.35
     }
    ],
-   "start": 727.93,
+   "start": 727.415,
    "dur": 4.35,
    "img": 1044
   },
@@ -1586,7 +1586,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 7.9
     }
    ],
-   "start": 732.28,
+   "start": 731.765,
    "dur": 7.9,
    "img": 1041
   },
@@ -1601,7 +1601,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 8.17
     }
    ],
-   "start": 740.18,
+   "start": 739.665,
    "dur": 8.17,
    "img": 1044
   },
@@ -1626,7 +1626,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 2.31
     }
    ],
-   "start": 748.35,
+   "start": 747.835,
    "dur": 6.56,
    "img": 1041
   },
@@ -1641,7 +1641,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 4.92
     }
    ],
-   "start": 754.91,
+   "start": 754.395,
    "dur": 4.92,
    "img": 1044
   },
@@ -1656,7 +1656,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.75
     }
    ],
-   "start": 759.83,
+   "start": 759.315,
    "dur": 9.75,
    "img": 1041
   },
@@ -1671,7 +1671,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 5.9
     }
    ],
-   "start": 769.58,
+   "start": 769.065,
    "dur": 5.9,
    "img": 1044
   },
@@ -1686,7 +1686,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 5.56
     }
    ],
-   "start": 775.48,
+   "start": 774.965,
    "dur": 5.56,
    "img": 1041
   },
@@ -1701,7 +1701,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 4.17
     }
    ],
-   "start": 781.04,
+   "start": 780.525,
    "dur": 4.17,
    "img": 1044
   },
@@ -1716,7 +1716,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 4.88
     }
    ],
-   "start": 785.21,
+   "start": 784.695,
    "dur": 4.88,
    "img": 1041
   },
@@ -1731,7 +1731,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 790.09,
+   "start": 789.575,
    "dur": 4.63,
    "img": 1041
   },
@@ -1746,7 +1746,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 794.72,
+   "start": 794.205,
    "dur": 9.27,
    "img": 1041
   },
@@ -1761,7 +1761,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 803.99,
+   "start": 803.475,
    "dur": 6.18,
    "img": 1041
   },
@@ -1776,7 +1776,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 810.17,
+   "start": 809.655,
    "dur": 4.63,
    "img": 1041
   },
@@ -1791,7 +1791,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 814.8,
+   "start": 814.285,
    "dur": 11.85,
    "img": 1041
   },
@@ -1800,7 +1800,7 @@ window.DECK_TEXT_EN_DB = {
    "kind": "break",
    "sentences": [],
    "panel": null,
-   "start": 826.65,
+   "start": 826.135,
    "dur": 2.0,
    "img": 1044
   },
@@ -1815,7 +1815,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 828.65,
+   "start": 828.135,
    "dur": 2.58,
    "img": 1050
   },
@@ -1830,7 +1830,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 831.23,
+   "start": 830.715,
    "dur": 5.67,
    "img": 1050
   },
@@ -1845,7 +1845,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 836.9,
+   "start": 836.385,
    "dur": 7.73,
    "img": 1050
   },
@@ -1860,7 +1860,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 844.63,
+   "start": 844.115,
    "dur": 9.79,
    "img": 1050
   },
@@ -1875,7 +1875,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 854.42,
+   "start": 853.905,
    "dur": 6.18,
    "img": 1050
   },
@@ -1895,7 +1895,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 7.73
     }
    ],
-   "start": 860.6,
+   "start": 860.085,
    "dur": 9.58,
    "img": 1050
   },
@@ -1910,7 +1910,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 7.95
     }
    ],
-   "start": 870.18,
+   "start": 869.665,
    "dur": 7.95,
    "img": 1040
   },
@@ -1925,7 +1925,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.46
     }
    ],
-   "start": 878.13,
+   "start": 877.615,
    "dur": 9.46,
    "img": 1050
   },
@@ -1940,7 +1940,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 7.54
     }
    ],
-   "start": 887.59,
+   "start": 887.075,
    "dur": 7.54,
    "img": 1040
   },
@@ -1955,7 +1955,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 10.18
     }
    ],
-   "start": 895.13,
+   "start": 894.615,
    "dur": 10.18,
    "img": 1050
   },
@@ -1980,7 +1980,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 1.14
     }
    ],
-   "start": 905.31,
+   "start": 904.795,
    "dur": 4.15,
    "img": 1040
   },
@@ -1995,7 +1995,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 8.29
     }
    ],
-   "start": 909.46,
+   "start": 908.945,
    "dur": 8.29,
    "img": 1050
   },
@@ -2010,7 +2010,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.56
     }
    ],
-   "start": 917.75,
+   "start": 917.235,
    "dur": 6.56,
    "img": 1040
   },
@@ -2025,7 +2025,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 1.61
     }
    ],
-   "start": 924.31,
+   "start": 923.795,
    "dur": 1.61,
    "img": 1050
   },
@@ -2040,7 +2040,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 14.94
     }
    ],
-   "start": 925.92,
+   "start": 925.405,
    "dur": 14.94,
    "img": 1040
   },
@@ -2065,7 +2065,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 3.23
     }
    ],
-   "start": 940.86,
+   "start": 940.345,
    "dur": 6.74,
    "img": 1050
   },
@@ -2080,7 +2080,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 7.55
     }
    ],
-   "start": 947.6,
+   "start": 947.085,
    "dur": 7.55,
    "img": 1040
   },
@@ -2095,7 +2095,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 3.24
     }
    ],
-   "start": 955.15,
+   "start": 954.635,
    "dur": 3.24,
    "img": 1050
   },
@@ -2110,7 +2110,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.48
     }
    ],
-   "start": 958.39,
+   "start": 957.875,
    "dur": 6.48,
    "img": 1040
   },
@@ -2125,7 +2125,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.37
     }
    ],
-   "start": 964.87,
+   "start": 964.355,
    "dur": 9.37,
    "img": 1050
   },
@@ -2140,7 +2140,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 974.24,
+   "start": 973.725,
    "dur": 6.7,
    "img": 1050
   },
@@ -2155,7 +2155,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 980.94,
+   "start": 980.425,
    "dur": 2.58,
    "img": 1050
   },
@@ -2170,7 +2170,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 983.52,
+   "start": 983.005,
    "dur": 2.58,
    "img": 1050
   },
@@ -2185,7 +2185,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 986.1,
+   "start": 985.585,
    "dur": 3.6,
    "img": 1050
   },
@@ -2210,7 +2210,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 5.78
     }
    ],
-   "start": 989.7,
+   "start": 989.185,
    "dur": 9.63,
    "img": 1040
   },
@@ -2230,7 +2230,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 1.03
     }
    ],
-   "start": 999.33,
+   "start": 998.815,
    "dur": 2.97,
    "img": 1050
   },
@@ -2245,7 +2245,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 10.11
     }
    ],
-   "start": 1002.3,
+   "start": 1001.785,
    "dur": 10.11,
    "img": 1040
   },
@@ -2260,7 +2260,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 8.84
     }
    ],
-   "start": 1012.41,
+   "start": 1011.895,
    "dur": 8.84,
    "img": 1050
   },
@@ -2290,7 +2290,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 2.28
     }
    ],
-   "start": 1021.25,
+   "start": 1020.735,
    "dur": 7.8,
    "img": 1040
   },
@@ -2305,7 +2305,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1029.05,
+   "start": 1028.535,
    "dur": 5.67,
    "img": 1040
   },
@@ -2320,7 +2320,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1034.72,
+   "start": 1034.205,
    "dur": 5.67,
    "img": 1040
   },
@@ -2335,7 +2335,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1040.39,
+   "start": 1039.875,
    "dur": 10.3,
    "img": 1040
   },
@@ -2350,7 +2350,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1050.69,
+   "start": 1050.175,
    "dur": 5.67,
    "img": 1040
   },
@@ -2365,7 +2365,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1056.36,
+   "start": 1055.845,
    "dur": 7.21,
    "img": 1040
   },
@@ -2380,7 +2380,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1063.57,
+   "start": 1063.055,
    "dur": 8.76,
    "img": 1040
   },
@@ -2395,7 +2395,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.99
     }
    ],
-   "start": 1072.33,
+   "start": 1071.815,
    "dur": 6.99,
    "img": 1050
   },
@@ -2415,7 +2415,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 2.37
     }
    ],
-   "start": 1079.32,
+   "start": 1078.805,
    "dur": 3.47,
    "img": 1040
   },
@@ -2430,7 +2430,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 12.35
     }
    ],
-   "start": 1082.79,
+   "start": 1082.275,
    "dur": 12.35,
    "img": 1050
   },
@@ -2445,7 +2445,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.2
     }
    ],
-   "start": 1095.14,
+   "start": 1094.625,
    "dur": 9.2,
    "img": 1040
   },
@@ -2460,7 +2460,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 3.07
     }
    ],
-   "start": 1104.34,
+   "start": 1103.825,
    "dur": 3.07,
    "img": 1050
   },
@@ -2475,7 +2475,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.51
     }
    ],
-   "start": 1107.41,
+   "start": 1106.895,
    "dur": 9.51,
    "img": 1060
   },
@@ -2490,7 +2490,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 3.18
     }
    ],
-   "start": 1116.92,
+   "start": 1116.405,
    "dur": 3.18,
    "img": 1029
   },
@@ -2505,7 +2505,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.55
     }
    ],
-   "start": 1120.1,
+   "start": 1119.585,
    "dur": 9.55,
    "img": 1060
   },
@@ -2525,7 +2525,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 5.73
     }
    ],
-   "start": 1129.65,
+   "start": 1129.135,
    "dur": 12.51,
    "img": 1029
   },
@@ -2545,7 +2545,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 3.79
     }
    ],
-   "start": 1142.16,
+   "start": 1141.645,
    "dur": 9.09,
    "img": 1060
   },
@@ -2560,7 +2560,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 2.37
     }
    ],
-   "start": 1151.25,
+   "start": 1150.735,
    "dur": 2.37,
    "img": 1029
   },
@@ -2575,7 +2575,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 8.48
     }
    ],
-   "start": 1153.62,
+   "start": 1153.105,
    "dur": 8.48,
    "img": 1060
   },
@@ -2590,7 +2590,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.37
     }
    ],
-   "start": 1162.1,
+   "start": 1161.585,
    "dur": 9.37,
    "img": 1029
   },
@@ -2605,7 +2605,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.75
     }
    ],
-   "start": 1171.47,
+   "start": 1170.955,
    "dur": 6.75,
    "img": 1060
   },
@@ -2620,7 +2620,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.61
     }
    ],
-   "start": 1178.22,
+   "start": 1177.705,
    "dur": 6.61,
    "img": 1029
   },
@@ -2635,7 +2635,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 5.83
     }
    ],
-   "start": 1184.83,
+   "start": 1184.315,
    "dur": 5.83,
    "img": 1060
   },
@@ -2650,7 +2650,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 5.17
     }
    ],
-   "start": 1190.66,
+   "start": 1190.145,
    "dur": 5.17,
    "img": 1029
   },
@@ -2665,7 +2665,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.68
     }
    ],
-   "start": 1195.83,
+   "start": 1195.315,
    "dur": 9.68,
    "img": 1039
   },
@@ -2680,7 +2680,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1205.51,
+   "start": 1204.995,
    "dur": 6.18,
    "img": 1016
   },
@@ -2695,7 +2695,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1211.69,
+   "start": 1211.175,
    "dur": 9.79,
    "img": 1016
   },
@@ -2710,7 +2710,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1221.48,
+   "start": 1220.965,
    "dur": 3.6,
    "img": 1016
   },
@@ -2725,7 +2725,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.7
     }
    ],
-   "start": 1225.08,
+   "start": 1224.565,
    "dur": 6.7,
    "img": 1016
   },
@@ -2740,7 +2740,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 11.85
     }
    ],
-   "start": 1231.78,
+   "start": 1231.265,
    "dur": 11.85,
    "img": 1039
   },
@@ -2755,7 +2755,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.18
     }
    ],
-   "start": 1243.63,
+   "start": 1243.115,
    "dur": 6.18,
    "img": 1016
   },
@@ -2775,7 +2775,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 0.62
     }
    ],
-   "start": 1249.81,
+   "start": 1249.295,
    "dur": 6.22,
    "img": 1016
   },
@@ -2800,7 +2800,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 5.86
     }
    ],
-   "start": 1256.03,
+   "start": 1255.515,
    "dur": 10.16,
    "img": 1039
   },
@@ -2825,7 +2825,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 1.58
     }
    ],
-   "start": 1266.19,
+   "start": 1265.675,
    "dur": 5.76,
    "img": 1016
   },
@@ -2840,7 +2840,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 8.43
     }
    ],
-   "start": 1271.95,
+   "start": 1271.435,
    "dur": 8.43,
    "img": 1039
   },
@@ -2855,7 +2855,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 7.37
     }
    ],
-   "start": 1280.38,
+   "start": 1279.865,
    "dur": 7.37,
    "img": 1016
   },
@@ -2875,7 +2875,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 5.48
     }
    ],
-   "start": 1287.75,
+   "start": 1287.235,
    "dur": 9.97,
    "img": 1039
   },
@@ -2900,7 +2900,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 1.66
     }
    ],
-   "start": 1297.72,
+   "start": 1297.205,
    "dur": 7.3,
    "img": 1016
   },
@@ -2920,7 +2920,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 3.58
     }
    ],
-   "start": 1305.02,
+   "start": 1304.505,
    "dur": 13.12,
    "img": 1039
   },
@@ -2935,7 +2935,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.4
     }
    ],
-   "start": 1318.14,
+   "start": 1317.625,
    "dur": 9.4,
    "img": 1016
   },
@@ -2944,7 +2944,7 @@ window.DECK_TEXT_EN_DB = {
    "kind": "break",
    "sentences": [],
    "panel": "stop",
-   "start": 1327.54,
+   "start": 1327.025,
    "dur": 2.0,
    "img": 1016,
    "stop": true,
@@ -2961,7 +2961,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 14.94
     }
    ],
-   "start": 1329.54,
+   "start": 1329.025,
    "dur": 14.94,
    "img": 1041
   },
@@ -2976,7 +2976,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1344.48,
+   "start": 1343.965,
    "dur": 11.85,
    "img": 1047
   },
@@ -2991,7 +2991,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1356.33,
+   "start": 1355.815,
    "dur": 4.63,
    "img": 1047
   },
@@ -3006,7 +3006,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1360.96,
+   "start": 1360.445,
    "dur": 7.73,
    "img": 1047
   },
@@ -3021,7 +3021,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1368.69,
+   "start": 1368.175,
    "dur": 16.48,
    "img": 1047
   },
@@ -3036,7 +3036,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1385.17,
+   "start": 1384.655,
    "dur": 9.79,
    "img": 1047
   },
@@ -3051,7 +3051,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1394.96,
+   "start": 1394.445,
    "dur": 5.15,
    "img": 1047
   },
@@ -3066,7 +3066,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1400.11,
+   "start": 1399.595,
    "dur": 12.36,
    "img": 1047
   },
@@ -3081,7 +3081,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1412.47,
+   "start": 1411.955,
    "dur": 7.73,
    "img": 1047
   },
@@ -3096,7 +3096,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1420.2,
+   "start": 1419.685,
    "dur": 12.36,
    "img": 1047
   },
@@ -3111,7 +3111,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1432.56,
+   "start": 1432.045,
    "dur": 8.76,
    "img": 1047
   },
@@ -3126,7 +3126,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1441.32,
+   "start": 1440.805,
    "dur": 6.18,
    "img": 1047
   },
@@ -3141,7 +3141,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1447.5,
+   "start": 1446.985,
    "dur": 11.85,
    "img": 1047
   },
@@ -3156,7 +3156,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1459.35,
+   "start": 1458.835,
    "dur": 5.15,
    "img": 1047
   },
@@ -3171,7 +3171,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1464.5,
+   "start": 1463.985,
    "dur": 13.91,
    "img": 1047
   },
@@ -3186,7 +3186,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1478.41,
+   "start": 1477.895,
    "dur": 6.18,
    "img": 1047
   },
@@ -3216,7 +3216,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 3.6
     }
    ],
-   "start": 1484.59,
+   "start": 1484.075,
    "dur": 7.22,
    "img": 1054
   },
@@ -3236,7 +3236,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 7.04
     }
    ],
-   "start": 1491.81,
+   "start": 1491.295,
    "dur": 7.74,
    "img": 1047
   },
@@ -3251,7 +3251,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.42
     }
    ],
-   "start": 1499.55,
+   "start": 1499.035,
    "dur": 9.42,
    "img": 1054
   },
@@ -3266,7 +3266,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 7.5
     }
    ],
-   "start": 1508.97,
+   "start": 1508.455,
    "dur": 7.5,
    "img": 1047
   },
@@ -3281,7 +3281,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.44
     }
    ],
-   "start": 1516.47,
+   "start": 1515.955,
    "dur": 6.44,
    "img": 1054
   },
@@ -3296,7 +3296,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 8.48
     }
    ],
-   "start": 1522.91,
+   "start": 1522.395,
    "dur": 8.48,
    "img": 1015
   },
@@ -3311,7 +3311,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 12.78
     }
    ],
-   "start": 1531.39,
+   "start": 1530.875,
    "dur": 12.78,
    "img": 1015
   },
@@ -3331,7 +3331,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 2.06
     }
    ],
-   "start": 1544.17,
+   "start": 1543.655,
    "dur": 10.3,
    "img": 1015
   },
@@ -3351,7 +3351,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 2.47
     }
    ],
-   "start": 1554.47,
+   "start": 1553.955,
    "dur": 4.95,
    "img": 1015
   },
@@ -3366,7 +3366,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.2
     }
    ],
-   "start": 1559.42,
+   "start": 1558.905,
    "dur": 9.2,
    "img": 1048
   },
@@ -3381,7 +3381,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 2.87
     }
    ],
-   "start": 1568.62,
+   "start": 1568.105,
    "dur": 2.87,
    "img": 1048
   },
@@ -3396,7 +3396,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 7.17
     }
    ],
-   "start": 1571.49,
+   "start": 1570.975,
    "dur": 7.17,
    "img": 1048
   },
@@ -3411,7 +3411,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.46
     }
    ],
-   "start": 1578.66,
+   "start": 1578.145,
    "dur": 6.46,
    "img": 1048
   },
@@ -3426,7 +3426,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.29
     }
    ],
-   "start": 1585.12,
+   "start": 1584.605,
    "dur": 6.29,
    "img": 1048
   },
@@ -3441,7 +3441,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.96
     }
    ],
-   "start": 1591.41,
+   "start": 1590.895,
    "dur": 6.96,
    "img": 1048
   },
@@ -3456,7 +3456,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 5.84
     }
    ],
-   "start": 1598.37,
+   "start": 1597.855,
    "dur": 5.84,
    "img": 1048
   },
@@ -3471,7 +3471,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 10.02
     }
    ],
-   "start": 1604.21,
+   "start": 1603.695,
    "dur": 10.02,
    "img": 1048
   },
@@ -3480,7 +3480,7 @@ window.DECK_TEXT_EN_DB = {
    "kind": "break",
    "sentences": [],
    "panel": null,
-   "start": 1614.23,
+   "start": 1613.715,
    "dur": 2.0,
    "img": 1048
   },
@@ -3520,7 +3520,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 3.57
     }
    ],
-   "start": 1616.23,
+   "start": 1615.715,
    "dur": 7.48,
    "img": 1015
   },
@@ -3535,7 +3535,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.74
     }
    ],
-   "start": 1623.71,
+   "start": 1623.195,
    "dur": 6.74,
    "img": 1015
   },
@@ -3555,7 +3555,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 1.89
     }
    ],
-   "start": 1630.45,
+   "start": 1629.935,
    "dur": 8.3,
    "img": 1015
   },
@@ -3575,7 +3575,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 0.44
     }
    ],
-   "start": 1638.75,
+   "start": 1638.235,
    "dur": 9.58,
    "img": 1015
   },
@@ -3590,7 +3590,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 3.33
     }
    ],
-   "start": 1648.33,
+   "start": 1647.815,
    "dur": 3.33,
    "img": 1015
   },
@@ -3599,7 +3599,7 @@ window.DECK_TEXT_EN_DB = {
    "kind": "break",
    "sentences": [],
    "panel": null,
-   "start": 1651.66,
+   "start": 1651.145,
    "dur": 2.0,
    "img": 1015
   },
@@ -3614,7 +3614,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 4.51
     }
    ],
-   "start": 1653.66,
+   "start": 1653.145,
    "dur": 4.51,
    "img": 1015
   },
@@ -3629,7 +3629,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1658.17,
+   "start": 1657.655,
    "dur": 9.79,
    "img": 1015
   },
@@ -3644,7 +3644,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1667.96,
+   "start": 1667.445,
    "dur": 22.66,
    "img": 1015
   },
@@ -3659,7 +3659,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 14.42
     }
    ],
-   "start": 1690.62,
+   "start": 1690.105,
    "dur": 14.42,
    "img": 1015
   },
@@ -3674,7 +3674,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.7
     }
    ],
-   "start": 1705.04,
+   "start": 1704.525,
    "dur": 6.7,
    "img": 1015
   },
@@ -3689,7 +3689,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 4.63
     }
    ],
-   "start": 1711.74,
+   "start": 1711.225,
    "dur": 4.63,
    "img": 1015
   },
@@ -3704,7 +3704,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 7.21
     }
    ],
-   "start": 1716.37,
+   "start": 1715.855,
    "dur": 7.21,
    "img": 1015
   },
@@ -3719,7 +3719,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.27
     }
    ],
-   "start": 1723.58,
+   "start": 1723.065,
    "dur": 9.27,
    "img": 1015
   },
@@ -3734,7 +3734,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 8.76
     }
    ],
-   "start": 1732.85,
+   "start": 1732.335,
    "dur": 8.76,
    "img": 1015
   },
@@ -3749,7 +3749,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 8.24
     }
    ],
-   "start": 1741.61,
+   "start": 1741.095,
    "dur": 8.24,
    "img": 1015
   },
@@ -3764,7 +3764,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 8.76
     }
    ],
-   "start": 1749.85,
+   "start": 1749.335,
    "dur": 8.76,
    "img": 1015
   },
@@ -3779,7 +3779,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.79
     }
    ],
-   "start": 1758.61,
+   "start": 1758.095,
    "dur": 9.79,
    "img": 1015
   },
@@ -3794,7 +3794,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 13.39
     }
    ],
-   "start": 1768.4,
+   "start": 1767.885,
    "dur": 13.39,
    "img": 1015
   },
@@ -3809,7 +3809,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 14.42
     }
    ],
-   "start": 1781.79,
+   "start": 1781.275,
    "dur": 14.42,
    "img": 1015
   },
@@ -3824,7 +3824,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 15.96
     }
    ],
-   "start": 1796.21,
+   "start": 1795.695,
    "dur": 15.96,
    "img": 1015
   },
@@ -3839,7 +3839,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 11.33
     }
    ],
-   "start": 1812.17,
+   "start": 1811.655,
    "dur": 11.33,
    "img": 1015
   },
@@ -3854,7 +3854,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 14.94
     }
    ],
-   "start": 1823.5,
+   "start": 1822.985,
    "dur": 14.94,
    "img": 1015
   },
@@ -3869,7 +3869,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.18
     }
    ],
-   "start": 1838.44,
+   "start": 1837.925,
    "dur": 6.18,
    "img": 1015
   },
@@ -3884,7 +3884,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 7.21
     }
    ],
-   "start": 1844.62,
+   "start": 1844.105,
    "dur": 7.21,
    "img": 1015
   }
