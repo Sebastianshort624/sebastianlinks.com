@@ -244,6 +244,15 @@ function mfTot(mf, r, n){
   if (frac > 0) s += mf * Math.pow(1 + r, full) * frac;
   return Math.round(s * 100) / 100;
 }
+/* Exact geometric sum of the escalating annual maintenance over n years:
+   mf × Σ_{y=0}^{n-1} (1+r)^y, rounded once at the end — the convention
+   behind the case file's verified maintenance figures (Balderas 3-yr MF
+   part $6,362.94). mfTot above stays as-is for the combined ladder. */
+function mfCum(mf, r, n){
+  if (n <= 0 || mf <= 0) return 0;
+  if (r === 0) return Math.round(mf * n * 100) / 100;
+  return Math.round(mf * (Math.pow(1 + r, n) - 1) / r * 100) / 100;
+}
 function fmtC(v){ return '$' + Number(v).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
 function fmtD(v){ return '$' + Math.round(v).toLocaleString('en-US'); }
 function deriveClient(c){
@@ -264,17 +273,40 @@ function deriveClient(c){
   if (fee > 0) price = fee;
   else { var s47 = Math.max(payoff * 0.47, 3500); price = s47 + (s47 < 10000 ? 299 : 399); }
   var mfmo = Math.floor(mf / 12);
+  var mf5 = mfCum(mf, esc, 5), mf10 = mfCum(mf, esc, 10), mf20 = mfCum(mf, esc, 20);
+  var mfy10 = Math.round(mf * Math.pow(1 + esc, 9) * 100) / 100;
   return { mrem: mrem, t3: t3, t5: t5, t10: t10, t20: t20,
     loan: Math.round(loan * 100) / 100, sched: Math.round(sched * 100) / 100,
     intpct: Math.round(intpct * 10) / 10, price: Math.round(price * 100) / 100,
     save20: Math.round((t20 - price) * 100) / 100, mfmo: mfmo,
+    mf5: mf5, mf10: mf10, mf20: mf20, mfy10: mfy10,
     totmo: Math.round((mmo + mfmo) * 100) / 100, totyr: Math.round((mmo * 12 + mf) * 100) / 100,
     f: { payoff: fmtC(payoff), mmo: fmtC(mmo), mfyr: fmtC(mf), mfmo: fmtD(mfmo),
+         mf5: fmtC(mf5), mf10: fmtC(mf10), mf20: fmtC(mf20), mfy10: fmtC(mfy10),
          totmo: fmtC(mmo + mfmo), totyr: fmtC(mmo * 12 + mf), t3: fmtC(t3), t5: fmtC(t5),
          t10: fmtC(t10), t20: fmtC(t20), loan: fmtC(loan), sched: fmtC(sched),
          price: fmtD(price), save20: fmtC(t20 - price) } };
 }
 /* MATH-PORT-END */
+
+/* Maintenance-only figures for clients whose clients.js record carries a
+   PRECOMPUTED derived block (those blocks predate MF5/MF10/MF20/MFY10):
+   merge the four values into derived.f from the record's own mf/esc so the
+   tokens always resolve — a raw {{MF5}} must never reach the screen. */
+function mfFigures(c){
+  if (!c) return null;
+  var mf = +c.mf || 0, esc = (+c.esc || 8) / 100;
+  if (mf <= 0) return null;
+  return { mf5: fmtC(mfCum(mf, esc, 5)), mf10: fmtC(mfCum(mf, esc, 10)),
+           mf20: fmtC(mfCum(mf, esc, 20)), mfy10: fmtC(Math.round(mf * Math.pow(1 + esc, 9) * 100) / 100) };
+}
+function ensureMf(){
+  if (!derived || !client) return;
+  var figs = mfFigures(client);
+  if (!figs) return;
+  if (!derived.f) derived.f = {};
+  for (var k in figs) if (derived.f[k] == null) derived.f[k] = figs[k];
+}
 
 /* ================= engine ================= */
 var $ = function(id){ return document.getElementById(id); };
@@ -329,6 +361,8 @@ function tokens(){
     '{{TERM}}': client.term || 120,
     '{{PAYOFF}}': f ? f.payoff : miss, '{{MMO}}': f ? f.mmo : miss,
     '{{MFYR}}': f ? f.mfyr : miss, '{{MFMO}}': f ? f.mfmo : miss,
+    '{{MF5}}': f && f.mf5 ? f.mf5 : miss, '{{MF10}}': f && f.mf10 ? f.mf10 : miss,
+    '{{MF20}}': f && f.mf20 ? f.mf20 : miss, '{{MFY10}}': f && f.mfy10 ? f.mfy10 : miss,
     '{{TOTMO}}': f ? f.totmo : miss, '{{TOTYR}}': f ? f.totyr : miss,
     '{{T3}}': f ? f.t3 : miss, '{{T5}}': f ? f.t5 : miss,
     '{{T10}}': f ? f.t10 : miss, '{{T20}}': f ? f.t20 : miss,
@@ -846,6 +880,7 @@ function recompute(lastField){
   var d = deriveClient(client);
   if (d){ derived = d; derivedStale = false; railWarn = null; }
   else { derivedStale = true; railWarn = lastField || null; } /* keep previous derived — never crash */
+  ensureMf();
 }
 function railDown(){
   var ov = overrides[clientId] || {};
@@ -962,6 +997,7 @@ baseClient = CLIENTS[clientId];
   } else {
     derived = baseClient.derived || deriveClient(client);
   }
+  ensureMf(); /* stored derived blocks predate the MF figures — merge them in */
 })();
 document.body.classList.add('rail-on');
 $('objbtn').textContent = OBJL[lang].btn;
