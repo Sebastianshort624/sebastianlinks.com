@@ -406,6 +406,8 @@ var DECKS = { es: { MTG: window.DECK_TEXT_ES_MTG || null, DB: window.DECK_TEXT_E
 var lang = (params.get('lang') === 'en' && DECKS.en.MTG) ? 'en' : 'es';
 var typeParam = (params.get('type') || '').toLowerCase();
 var dtype = typeParam === 'db' ? 'DB' : (typeParam === 'mtg' ? 'MTG' : (typeParam === 'fu' ? 'FU' : null)); /* null = follow the record, decided at boot */
+var baseParam = (params.get('base') || '').toLowerCase();
+var recTypeOverride = baseParam === 'db' ? 'DB' : (baseParam === 'mtg' ? 'MTG' : null); /* DTYPEBTN_V1: case-file show buttons pass the type Sebastian just set in the file; it wins over the saved record for deck choice */
 /* deck resolution: FU exists only in English, and it respects the
    open record's deal type (Sebastian, 2026-11-23): an English FU show
    on a deed-back record serves deck-en-fudb.js (DECK_TEXT_EN_FUDB), on
@@ -1131,7 +1133,7 @@ document.addEventListener('keydown', function(e){
    it exists in the new deck (else clamped to the last slide); play
    state is preserved (render + startTimer resume the show). */
 function loadDeck(){
-  DECK = deckFor(lang, dtype, client && client.dtype);
+  DECK = deckFor(lang, dtype, recTypeOverride || (client && client.dtype));
   slides = DECK ? DECK.slides : [];
   idx = Math.max(0, Math.min(slides.length - 1, idx));
   buildRuler(); /* chapter ruler follows the loaded deck */
@@ -1434,7 +1436,7 @@ $('btnEn').classList.toggle('act', lang === 'en');
 if (!dtype) dtype = client.dtype === 'DB' ? 'DB' : 'MTG';
 if (dtype !== 'FU' && !DECKS[lang][dtype]) dtype = dtype === 'DB' ? 'MTG' : 'DB';
 syncTypeBtns();
-if (!deckFor(lang, dtype, client && client.dtype)){
+if (!deckFor(lang, dtype, recTypeOverride || (client && client.dtype))){
   $('stage').innerHTML = '<div class="card"><div class="notice">Deck data missing.</div></div>';
 } else {
   document.body.classList.add('auto');
