@@ -1044,7 +1044,7 @@ function qSetDtype(t){
     try { localStorage.setItem('sl_clients', JSON.stringify(cs)); } catch(e){}
   }
   try { var csD = slClients(); for (var di = 0; di < csD.length; di++) if (cur && csD[di].id === cur.id) syncPushRecord(csD[di], true); } catch(e){}
-  qApplyDtype(); qRecalc();
+  qApplyDtype(); qRecalc(); qUrlLinks(); /* DTYPEBTN_V1 (Sebastian, 2026-11-23): show buttons follow the type flip immediately */
 }
 function amort(pv, apr, n){ var r = apr / 100 / 12; if (!(r > 0)) return n > 0 ? pv / n : 0; return pv * r / (1 - Math.pow(1 + r, -n)); }
 // SHARED MORTGAGE MODEL (SAI 2026-10-20) — the ONLY mortgage math every section consumes.
@@ -2001,10 +2001,11 @@ function qUrlLinks(){
     if (cur && cur.id){
       var sbType = qIsDB() ? 'DB' : 'MTG';
       var sbBase = 'https://sebastianlinks.com/show/?c=' + encodeURIComponent(cur.id);
-      out.push('<a class="urlchip showBtn" href="' + sbBase + '&lang=es" target="_blank" rel="noopener">▶ ES · ' + sbType + '</a>');
-      out.push('<a class="urlchip showBtn" href="' + sbBase + '&lang=en" target="_blank" rel="noopener">▶ EN · ' + sbType + '</a>');
+      var sbTypeP = qIsDB() ? 'db' : 'mtg'; /* DTYPEBTN_V1: buttons carry the type explicitly — the show opens the deck the button names */
+      out.push('<a class="urlchip showBtn" href="' + sbBase + '&lang=es&type=' + sbTypeP + '" target="_blank" rel="noopener">▶ ES · ' + sbType + '</a>');
+      out.push('<a class="urlchip showBtn" href="' + sbBase + '&lang=en&type=' + sbTypeP + '" target="_blank" rel="noopener">▶ EN · ' + sbType + '</a>');
       // FUBTN_V1 (Sebastian, 2026-11-23): follow-up show button — English only (no ES FU decks yet); the player routes type=fu by the record's own type.
-      out.push('<a class="urlchip showBtn" href="' + sbBase + '&lang=en&type=fu" target="_blank" rel="noopener">▶ FU · ' + sbType + '</a>');
+      out.push('<a class="urlchip showBtn" href="' + sbBase + '&lang=en&type=fu&base=' + sbTypeP + '" target="_blank" rel="noopener">▶ FU · ' + sbType + '</a>');
     }
     // GUION_V1 (Sebastian, 2026-11-23): video script (Show-Presentacion-Guion Doc, Work Drive) — same link on every record.
     out.push('<a class="urlchip" href="https://docs.google.com/document/d/1_DLn6M4_2RiWVU4yl3o1E_2aIbSlZ6M96v90kqDTb6g/edit" target="_blank" rel="noopener">📜 Guion</a>');
