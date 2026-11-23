@@ -2001,6 +2001,8 @@ function qUrlLinks(){
       out.push('<a class="urlchip showBtn" href="' + sbBase + '&lang=es" target="_blank" rel="noopener">▶ ES · ' + sbType + '</a>');
       out.push('<a class="urlchip showBtn" href="' + sbBase + '&lang=en" target="_blank" rel="noopener">▶ EN · ' + sbType + '</a>');
     }
+    // GUION_V1 (Sebastian, 2026-11-23): video script (Show-Presentacion-Guion Doc, Work Drive) — same link on every record.
+    out.push('<a class="urlchip" href="https://docs.google.com/document/d/1_DLn6M4_2RiWVU4yl3o1E_2aIbSlZ6M96v90kqDTb6g/edit" target="_blank" rel="noopener">📜 Guion</a>');
     ch.innerHTML = out.join('');
   }
 }
