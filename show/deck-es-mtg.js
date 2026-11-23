@@ -113,11 +113,6 @@ window.DECK_TEXT_ES_MTG = {
      "x": "Ok?",
      "s": 94.67,
      "d": 2.57
-    },
-    {
-     "x": "El objetivo de la llamada de hoy es determinar si el caso de ustedes lo podemos ganar.",
-     "s": 97.24,
-     "d": 7.4
     }
    ],
    "panel": null,
@@ -170,7 +165,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 3.46
     },
     {
-     "x": "Es un contrato de bienes raíces, y está diseñado para una sola cosa: que usted y su familia sigan pagando tarifas de mantenimiento por generaciones.",
+     "x": "Es un contrato de bienes raíces, y está diseñado para una sola cosa: que ustedes y su familia sigan pagando tarifas de mantenimiento por generaciones.",
      "s": 135.94,
      "d": 11.65
     }
@@ -195,7 +190,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 3.84
     },
     {
-     "x": "Y el contrato lo dice claramente: no lo puede vender, no lo puede rentar, y cuando usted ya no esté, pasa a sus herederos.",
+     "x": "Y el contrato lo dice claramente: no lo pueden vender, no lo pueden rentar, y cuando ustedes ya no estén, pasa a sus herederos.",
      "s": 155.66,
      "d": 10.35
     }
@@ -260,7 +255,7 @@ window.DECK_TEXT_ES_MTG = {
      "d": 3.65
     },
     {
-     "x": "De lo que usted me va a contestar ahora.",
+     "x": "De lo que ustedes me van a contestar ahora.",
      "s": 197.26,
      "d": 5.02
     }
@@ -275,12 +270,12 @@ window.DECK_TEXT_ES_MTG = {
    "kind": "text",
    "sentences": [
     {
-     "x": "Porque lo que vamos a demostrar es esto: que usted jamás habría firmado ese contrato si le hubieran dicho la verdad.",
+     "x": "Porque lo que vamos a demostrar es esto: que ustedes jamás habrían firmado ese contrato si les hubieran dicho la verdad.",
      "s": 202.28,
      "d": 7.64
     },
     {
-     "x": "Si ellos hubieran hecho su trabajo y hubieran sido honestos con usted, usted no estaría en este contrato.",
+     "x": "Si ellos hubieran hecho su trabajo y hubieran sido honestos con ustedes, ustedes no estarían en este contrato.",
      "s": 209.92,
      "d": 8.7
     }
@@ -295,12 +290,12 @@ window.DECK_TEXT_ES_MTG = {
    "kind": "text",
    "sentences": [
     {
-     "x": "Por eso le voy a hacer unas preguntas.",
+     "x": "Por eso les voy a hacer unas preguntas.",
      "s": 218.62,
      "d": 3.7
     },
     {
-     "x": "Y en cada una, hágase esta cuenta: si me hubieran dicho esto, ¿habría firmado?",
+     "x": "Y en cada una, háganse esta cuenta: si me hubieran dicho esto, ¿habrían firmado?",
      "s": 222.32,
      "d": 8.1
     }
@@ -315,7 +310,7 @@ window.DECK_TEXT_ES_MTG = {
    "kind": "question",
    "sentences": [
     {
-     "x": "¿Le dijeron que las tarifas de mantenimiento suben cada año — y que nunca terminan, que son de por vida? Si le hubieran dicho la verdad, ¿habría firmado el contrato?",
+     "x": "¿Les dijeron que las tarifas de mantenimiento suben cada año — y que nunca terminan, que son de por vida? Si les hubieran dicho la verdad, ¿habrían firmado el contrato?",
      "s": 230.42,
      "d": 10.9
     },
@@ -341,7 +336,7 @@ window.DECK_TEXT_ES_MTG = {
    "kind": "question",
    "sentences": [
     {
-     "x": "¿Le dijeron que aunque pague toda la deuda, las tarifas de mantenimiento continúan para siempre? Si le hubieran dicho la verdad, ¿habría firmado el contrato?",
+     "x": "¿Les dijeron que aunque paguen toda la deuda, las tarifas de mantenimiento continúan para siempre? Si les hubieran dicho la verdad, ¿habrían firmado el contrato?",
      "s": 246.39,
      "d": 9.91
     },
@@ -367,7 +362,7 @@ window.DECK_TEXT_ES_MTG = {
    "kind": "question",
    "sentences": [
     {
-     "x": "¿Le dijeron que esto es hereditario — que cuando usted ya no esté, esta obligación pasa a sus hijos, a su familia? Si le hubieran dicho la verdad, ¿habría firmado el contrato?",
+     "x": "¿Les dijeron que esto es hereditario — que cuando ustedes ya no estén, esta obligación pasa a sus hijos, a su familia? Si les hubieran dicho la verdad, ¿habrían firmado el contrato?",
      "s": 261.37,
      "d": 11.5
     },
@@ -393,7 +388,7 @@ window.DECK_TEXT_ES_MTG = {
    "kind": "question",
    "sentences": [
     {
-     "x": "¿Le dijeron que no lo puede vender, que no lo puede rentar — que no hay salida? Si le hubieran dicho la verdad, ¿habría firmado el contrato?",
+     "x": "¿Les dijeron que no lo pueden vender, que no lo pueden rentar — que no hay salida? Si les hubieran dicho la verdad, ¿habrían firmado el contrato?",
      "s": 277.94,
      "d": 9.36
     },
@@ -419,7 +414,7 @@ window.DECK_TEXT_ES_MTG = {
    "kind": "question",
    "sentences": [
     {
-     "x": "¿Le mostraron el costo real de este contrato — cuánto interés iba a terminar pagando? Si le hubieran dicho la verdad, ¿habría firmado el contrato?",
+     "x": "¿Les mostraron el costo real de este contrato — cuánto interés iban a terminar pagando? Si les hubieran dicho la verdad, ¿habrían firmado el contrato?",
      "s": 292.37,
      "d": 9.79
     },
@@ -445,7 +440,7 @@ window.DECK_TEXT_ES_MTG = {
    "kind": "question",
    "sentences": [
     {
-     "x": "¿Le dijeron que esto no es una inversión — que usted no iba a hacer dinero con esto? Si le hubieran dicho la verdad, ¿habría firmado el contrato?",
+     "x": "¿Les dijeron que esto no es una inversión — que ustedes no iban a hacer dinero con esto? Si les hubieran dicho la verdad, ¿habrían firmado el contrato?",
      "s": 307.23,
      "d": 9.38
     },
@@ -471,7 +466,7 @@ window.DECK_TEXT_ES_MTG = {
    "kind": "question",
    "sentences": [
     {
-     "x": "¿Le dijeron que ese contrato de {{LOAN}}, a {{MMO}} al mes por {{TERM}} meses, termina costándole {{SCHED}} — más del {{INTPCT}}% en intereses? Si le hubieran dicho la verdad, ¿habría firmado el contrato?",
+     "x": "¿Les dijeron que ese contrato de {{LOAN}}, a {{MMO}} al mes por {{TERM}} meses, termina costándoles {{SCHED}} — más del {{INTPCT}}% en intereses? Si les hubieran dicho la verdad, ¿habrían firmado el contrato?",
      "s": 321.68,
      "d": 16.1
     },
@@ -497,17 +492,17 @@ window.DECK_TEXT_ES_MTG = {
    "kind": "text",
    "sentences": [
     {
-     "x": "¿Ve el patrón?",
+     "x": "¿Ven el patrón?",
      "s": 342.85,
      "d": 2.57
     },
     {
-     "x": "Cada \"no\" es una verdad que le ocultaron.",
+     "x": "Cada \"no\" es una verdad que les ocultaron.",
      "s": 345.42,
      "d": 3.7
     },
     {
-     "x": "Y cada verdad ocultada es una razón por la que usted no debió firmar.",
+     "x": "Y cada verdad ocultada es una razón por la que ustedes no debieron firmar.",
      "s": 349.12,
      "d": 5.43
     },
