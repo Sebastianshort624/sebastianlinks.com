@@ -2555,173 +2555,254 @@ window.DECK_TEXT_ES_DB = {
    "img": 1016
   },
   {
+   "sec": "SILENCIO",
+   "kind": "break",
+   "sentences": [],
+   "panel": "stop",
+   "start": 1154.72,
+   "dur": 2.0,
+   "img": 1016,
+   "stop": true,
+   "note": "Espera a que ellos hablen. Cuando hablen, sigue a la siguiente pantalla — o responde su pregunta."
+  },
+  {
    "sec": "TRANSICIÓN",
    "kind": "text",
    "panel": null,
    "sentences": [
     {
-     "x": "Si no tienen más preguntas, les puedo explicar las tres diferentes maneras en que los clientes hacen esta inversión.",
-     "s": 1154.72,
-     "d": 8.89
+     "x": "Ahora, si no tienen más preguntas sobre nuestro proceso, lo siguiente que les puedo explicar son las diferentes maneras en que la mayoría de las personas pagan por nuestros servicios.",
+     "s": 1156.72,
+     "d": 15.45
     }
    ],
-   "start": 1154.72,
-   "dur": 8.89,
+   "start": 1156.72,
+   "dur": 15.45,
    "img": 1041
   },
   {
    "sec": "OPCIONES DE PAGO",
    "kind": "text",
-   "panel": null,
    "sentences": [
     {
-     "x": "Tenemos clientes que hacen el pago completo con sus ahorros.",
-     "s": 1163.61,
-     "d": 5.15
+     "x": "La manera más rápida, fácil e inteligente de hacerlo financieramente es: si pueden pagarlo de cualquier cuenta de cheques o de ahorros.",
+     "s": 1172.17,
+     "d": 11.33
     }
    ],
-   "start": 1163.61,
-   "dur": 5.15,
+   "panel": null,
+   "start": 1172.17,
+   "dur": 11.33,
    "img": 1047
   },
   {
    "sec": "OPCIONES DE PAGO",
    "kind": "text",
-   "panel": null,
    "sentences": [
     {
-     "x": "Tenemos clientes que hacen el pago completo con una tarjeta de crédito.",
-     "s": 1168.76,
-     "d": 6.18
-    }
-   ],
-   "start": 1168.76,
-   "dur": 6.18,
-   "img": 1047
-  },
-  {
-   "sec": "OPCIONES DE PAGO",
-   "kind": "text",
-   "panel": null,
-   "sentences": [
-    {
-     "x": "Y tenemos clientes que necesitan más ayuda financiera — financiamiento hasta 36 meses.",
-     "s": 1174.94,
-     "d": 6.7
-    }
-   ],
-   "start": 1174.94,
-   "dur": 6.7,
-   "img": 1047
-  },
-  {
-   "sec": "OPCIONES DE PAGO",
-   "kind": "text",
-   "panel": null,
-   "sentences": [
-    {
-     "x": "¿En qué posición sienten que están?",
-     "s": 1181.64,
+     "x": "Si tienen el dinero, pues páguenlo.",
+     "s": 1183.5,
      "d": 3.09
     }
    ],
-   "start": 1181.64,
+   "panel": null,
+   "start": 1183.5,
    "dur": 3.09,
    "img": 1047
   },
   {
    "sec": "OPCIONES DE PAGO",
    "kind": "text",
-   "panel": null,
    "sentences": [
     {
-     "x": "Podemos ofrecerles una financiación.",
-     "s": 1184.73,
-     "d": 3.77
-    },
-    {
-     "x": "Llevamos años trabajando con una financiera.",
-     "s": 1188.5,
-     "d": 5.53
+     "x": "Y de nuevo, no me gusta asumir nada. Así que les voy a preguntar directamente,",
+     "s": 1186.59,
+     "d": 7.73
     }
    ],
-   "start": 1184.73,
-   "dur": 9.3,
+   "panel": null,
+   "start": 1186.59,
+   "dur": 7.73,
    "img": 1047
   },
   {
    "sec": "OPCIONES DE PAGO",
    "kind": "text",
-   "panel": null,
    "sentences": [
     {
-     "x": "Llevamos años trabajando con una financiera,",
-     "s": 1194.03,
-     "d": 2.3
-    },
-    {
-     "x": "y así es que hacemos una aplicación,",
-     "s": 1196.33,
-     "d": 2.68
-    },
-    {
-     "x": "y si la aceptan,",
-     "s": 1199.01,
-     "d": 1.53
+     "x": "¿Lo tienen en su cuenta de cheques, cuenta de ahorros, o cualquier ahorro a largo plazo, acciones, bonos, lo que sea, de donde puedan pasarlo a su cuenta de cheques dentro de cierta cantidad de días?",
+     "s": 1194.32,
+     "d": 18.54
     }
    ],
-   "start": 1194.03,
-   "dur": 6.51,
-   "img": 1054
-  },
-  {
-   "sec": "OPCIONES DE PAGO",
-   "kind": "text",
    "panel": null,
-   "sentences": [
-    {
-     "x": "las mensualidades de la inversión pueden llegar a ser hasta de 36 meses.",
-     "s": 1200.54,
-     "d": 4.97
-    }
-   ],
-   "start": 1200.54,
-   "dur": 4.97,
+   "start": 1194.32,
+   "dur": 18.54,
    "img": 1047
   },
   {
    "sec": "OPCIONES DE PAGO",
    "kind": "text",
-   "panel": null,
    "sentences": [
     {
-     "x": "Ahora, si ustedes quieren más tiempo o menos tiempo, obviamente sería más o menos mensualidad.",
-     "s": 1205.51,
-     "d": 8.58
+     "x": "De nuevo, eso es lo que dice la mayoría de las personas. O sea, si lo tienen, pues… esa es la manera de hacerlo.",
+     "s": 1212.86,
+     "d": 12.36
     }
    ],
-   "start": 1205.51,
-   "dur": 8.58,
-   "img": 1054
+   "panel": null,
+   "start": 1212.86,
+   "dur": 12.36,
+   "img": 1047
   },
   {
    "sec": "OPCIONES DE PAGO",
    "kind": "text",
-   "panel": null,
    "sentences": [
     {
-     "x": "Por 36 meses sería tanto.",
-     "s": 1214.09,
-     "d": 3.68
-    },
-    {
-     "x": "¿Qué les parece?",
-     "s": 1217.77,
-     "d": 3.97
+     "x": "¿Qué tan lejos están de ese número, exactamente?",
+     "s": 1225.22,
+     "d": 4.12
     }
    ],
-   "start": 1214.09,
-   "dur": 7.65,
+   "panel": null,
+   "start": 1225.22,
+   "dur": 4.12,
+   "img": 1047
+  },
+  {
+   "sec": "OPCIONES DE PAGO",
+   "kind": "text",
+   "sentences": [
+    {
+     "x": "Entonces lo que estoy escuchando es que tienen ${{CASH}} que podrían poner para esto. ¿Es eso lo que estoy escuchando?",
+     "s": 1229.34,
+     "d": 10.3
+    }
+   ],
+   "panel": null,
+   "start": 1229.34,
+   "dur": 10.3,
+   "img": 1047
+  },
+  {
+   "sec": "OPCIONES DE PAGO",
+   "kind": "text",
+   "sentences": [
+    {
+     "x": "Bueno, la segunda manera en que la mayoría de las personas pagan por nuestros servicios es con tarjetas de crédito.",
+     "s": 1239.64,
+     "d": 10.3
+    }
+   ],
+   "panel": null,
+   "start": 1239.64,
+   "dur": 10.3,
+   "img": 1047
+  },
+  {
+   "sec": "OPCIONES DE PAGO",
+   "kind": "text",
+   "sentences": [
+    {
+     "x": "¿Tienen el saldo completo o el saldo restante que podrían poner en alguna tarjeta, quizás una, dos, o hasta tres tarjetas?",
+     "s": 1249.94,
+     "d": 10.81
+    }
+   ],
+   "panel": null,
+   "start": 1249.94,
+   "dur": 10.81,
+   "img": 1047
+  },
+  {
+   "sec": "OPCIONES DE PAGO",
+   "kind": "text",
+   "sentences": [
+    {
+     "x": "¿Tienen saldos disponibles en alguna tarjeta de crédito que pueda cubrir una parte de esto?",
+     "s": 1260.75,
+     "d": 7.73
+    }
+   ],
+   "panel": null,
+   "start": 1260.75,
+   "dur": 7.73,
+   "img": 1047
+  },
+  {
+   "sec": "OPCIONES DE PAGO",
+   "kind": "text",
+   "sentences": [
+    {
+     "x": "La tercera opción es financiarlo y dividirlo en pagos mensuales.",
+     "s": 1268.48,
+     "d": 5.15
+    }
+   ],
+   "panel": null,
+   "start": 1268.48,
+   "dur": 5.15,
+   "img": 1047
+  },
+  {
+   "sec": "OPCIONES DE PAGO",
+   "kind": "text",
+   "sentences": [
+    {
+     "x": "Eso va a depender de si califican o no. Solo me toma unos minutos averiguarlo.",
+     "s": 1273.63,
+     "d": 7.73
+    }
+   ],
+   "panel": null,
+   "start": 1273.63,
+   "dur": 7.73,
+   "img": 1047
+  },
+  {
+   "sec": "OPCIONES DE PAGO",
+   "kind": "text",
+   "sentences": [
+    {
+     "x": "¿Tienen alguna idea de cuál es su puntaje de crédito?",
+     "s": 1281.36,
+     "d": 5.15
+    }
+   ],
+   "panel": null,
+   "start": 1281.36,
+   "dur": 5.15,
+   "img": 1047
+  },
+  {
+   "sec": "OPCIONES DE PAGO",
+   "kind": "text",
+   "sentences": [
+    {
+     "x": "Ustedes dijeron que pueden poner ${{CASH}} de inicial. Entonces estaríamos viendo dividir el resto en pagos mensuales.",
+     "s": 1286.51,
+     "d": 8.76
+    }
+   ],
+   "panel": null,
+   "start": 1286.51,
+   "dur": 8.76,
+   "img": 1047
+  },
+  {
+   "sec": "OPCIONES DE PAGO",
+   "kind": "text",
+   "sentences": [
+    {
+     "x": "Vamos a ver para qué los podemos calificar.",
+     "s": 1295.27,
+     "d": 4.12
+    }
+   ],
+   "panel": null,
+   "start": 1295.27,
+   "dur": 4.12,
    "img": 1047
   },
   {
@@ -2731,21 +2812,21 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Perfecto.",
-     "s": 1221.74,
+     "s": 1299.39,
      "d": 0.52
     },
     {
      "x": "Ahora, esto es un préstamo financiero,",
-     "s": 1222.26,
+     "s": 1299.91,
      "d": 3.09
     },
     {
      "x": "así que les van a pedir identificación,",
-     "s": 1225.35,
+     "s": 1303.0,
      "d": 3.61
     }
    ],
-   "start": 1221.74,
+   "start": 1299.39,
    "dur": 7.22,
    "img": 1054
   },
@@ -2756,16 +2837,16 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "documentación,",
-     "s": 1228.96,
+     "s": 1306.61,
      "d": 0.52
     },
     {
      "x": "información de trabajo y de residencia — las preguntas típicas de una solicitud financiera.",
-     "s": 1229.48,
+     "s": 1307.13,
      "d": 7.22
     }
    ],
-   "start": 1228.96,
+   "start": 1306.61,
    "dur": 7.74,
    "img": 1047
   },
@@ -2776,11 +2857,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Chicos, si necesitan hablarlo, algo que siempre recomiendo es que me pongan en silencio y lo debatan entre ustedes.",
-     "s": 1236.7,
+     "s": 1314.35,
      "d": 9.42
     }
    ],
-   "start": 1236.7,
+   "start": 1314.35,
    "dur": 9.42,
    "img": 1054
   },
@@ -2791,11 +2872,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Ya que yo estoy acá en la llamada, cualquier pregunta que surja yo la puedo responder.",
-     "s": 1246.12,
+     "s": 1323.77,
      "d": 7.5
     }
    ],
-   "start": 1246.12,
+   "start": 1323.77,
    "dur": 7.5,
    "img": 1047
   },
@@ -2806,11 +2887,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "La primera mensualidad de la inversión no se hace hasta el mes que viene.",
-     "s": 1253.62,
+     "s": 1331.27,
      "d": 6.44
     }
    ],
-   "start": 1253.62,
+   "start": 1331.27,
    "dur": 6.44,
    "img": 1054
   },
@@ -2821,11 +2902,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Una vez iniciado el proceso de cancelación, nuestros clientes no tienen la obligación de continuar con los pagos al tiempo compartido.",
-     "s": 1260.06,
+     "s": 1337.71,
      "d": 8.48
     }
    ],
-   "start": 1260.06,
+   "start": 1337.71,
    "dur": 8.48,
    "img": 1015
   },
@@ -2836,11 +2917,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Nosotros vamos a ganar la cancelación, nosotros garantizamos el éxito de la cancelación, independientemente de si usted continúa o descontinúa sus pagos al tiempo compartido.",
-     "s": 1268.54,
+     "s": 1346.19,
      "d": 12.78
     }
    ],
-   "start": 1268.54,
+   "start": 1346.19,
    "dur": 12.78,
    "img": 1015
   },
@@ -2851,11 +2932,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Si nosotros iniciamos el proceso y les hace sentido financieramente descontinuar estos pagos, pueden descontinuarse, no afectan en absoluto la cancelación.",
-     "s": 1281.32,
+     "s": 1358.97,
      "d": 10.3
     }
    ],
-   "start": 1281.32,
+   "start": 1358.97,
    "dur": 10.3,
    "img": 1015
   },
@@ -2866,11 +2947,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Yo no les dije que dejaran de pagar.",
-     "s": 1291.62,
+     "s": 1369.27,
      "d": 4.95
     }
    ],
-   "start": 1291.62,
+   "start": 1369.27,
    "dur": 4.95,
    "img": 1015
   },
@@ -2881,11 +2962,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Ok, no tenemos una varita mágica que durante el proceso de cancelación pueda garantizar al 100% que ellos no vayan a tocar su crédito.",
-     "s": 1296.57,
+     "s": 1374.22,
      "d": 9.2
     }
    ],
-   "start": 1296.57,
+   "start": 1374.22,
    "dur": 9.2,
    "img": 1048
   },
@@ -2896,11 +2977,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Lo que sí les puedo decir es que,",
-     "s": 1305.77,
+     "s": 1383.42,
      "d": 2.87
     }
    ],
-   "start": 1305.77,
+   "start": 1383.42,
    "dur": 2.87,
    "img": 1048
   },
@@ -2911,11 +2992,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "una vez que la cancelación está completada al 100% y el tiempo compartido emite la notificación de cancelación a ustedes,",
-     "s": 1308.64,
+     "s": 1386.29,
      "d": 7.17
     }
    ],
-   "start": 1308.64,
+   "start": 1386.29,
    "dur": 7.17,
    "img": 1048
   },
@@ -2926,11 +3007,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "en ese momento se puede eliminar el daño que el tiempo compartido ha estado haciendo en su crédito.",
-     "s": 1315.81,
+     "s": 1393.46,
      "d": 6.46
     }
    ],
-   "start": 1315.81,
+   "start": 1393.46,
    "dur": 6.46,
    "img": 1048
   },
@@ -2941,11 +3022,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Se puede eliminar parte del daño que el tiempo compartido ha estado haciendo en su crédito.",
-     "s": 1322.27,
+     "s": 1399.92,
      "d": 6.29
     }
    ],
-   "start": 1322.27,
+   "start": 1399.92,
    "dur": 6.29,
    "img": 1048
   },
@@ -2956,11 +3037,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Pero no durante el proceso de cancelación: no se puede garantizar que no vayan a afectar su crédito.",
-     "s": 1328.56,
+     "s": 1406.21,
      "d": 6.96
     }
    ],
-   "start": 1328.56,
+   "start": 1406.21,
    "dur": 6.96,
    "img": 1048
   },
@@ -2971,11 +3052,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Después de que termine, se puede eliminar el daño.",
-     "s": 1335.52,
+     "s": 1413.17,
      "d": 5.84
     }
    ],
-   "start": 1335.52,
+   "start": 1413.17,
    "dur": 5.84,
    "img": 1048
   },
@@ -2986,11 +3067,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Una vez completado el proceso de cancelación al 100%, se puede eliminar el daño que el tiempo compartido ha hecho en su crédito.",
-     "s": 1341.36,
+     "s": 1419.01,
      "d": 10.02
     }
    ],
-   "start": 1341.36,
+   "start": 1419.01,
    "dur": 10.02,
    "img": 1048
   },
@@ -2999,7 +3080,7 @@ window.DECK_TEXT_ES_DB = {
    "kind": "break",
    "sentences": [],
    "panel": null,
-   "start": 1351.38,
+   "start": 1429.03,
    "dur": 2.0,
    "img": 1048
   },
@@ -3010,21 +3091,21 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Chicos,",
-     "s": 1353.38,
+     "s": 1431.03,
      "d": 0.36
     },
     {
      "x": "lo que iniciaremos el proceso sería el día de hoy,",
-     "s": 1353.74,
+     "s": 1431.39,
      "d": 3.56
     },
     {
      "x": "y sí es ideal iniciar el proceso lo antes posible,",
-     "s": 1357.3,
+     "s": 1434.95,
      "d": 3.56
     }
    ],
-   "start": 1353.38,
+   "start": 1431.03,
    "dur": 7.48,
    "img": 1015
   },
@@ -3035,11 +3116,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "ya que el día de hoy es que nosotros les podemos ofrecer el servicio que yo les he explicado.",
-     "s": 1360.86,
+     "s": 1438.51,
      "d": 6.74
     }
    ],
-   "start": 1360.86,
+   "start": 1438.51,
    "dur": 6.74,
    "img": 1015
   },
@@ -3050,16 +3131,16 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Cuando ustedes regresen, cómo podrá ser el servicio que les podemos ofrecer, no lo sé.",
-     "s": 1367.6,
+     "s": 1445.25,
      "d": 6.63
     },
     {
      "x": "Pero como les digo,",
-     "s": 1374.23,
+     "s": 1451.88,
      "d": 1.67
     }
    ],
-   "start": 1367.6,
+   "start": 1445.25,
    "dur": 8.3,
    "img": 1015
   },
@@ -3070,16 +3151,16 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "las maneras de hacer la inversión son bastante flexibles: la primera mensualidad de la inversión sería hasta el mes que viene,",
-     "s": 1375.9,
+     "s": 1453.55,
      "d": 8.75
     },
     {
      "x": "sin embargo,",
-     "s": 1384.65,
+     "s": 1462.3,
      "d": 0.83
     }
    ],
-   "start": 1375.9,
+   "start": 1453.55,
    "dur": 9.58,
    "img": 1015
   },
@@ -3090,11 +3171,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "nosotros iniciamos el proceso de cancelación de inmediato.",
-     "s": 1385.48,
+     "s": 1463.13,
      "d": 3.33
     }
    ],
-   "start": 1385.48,
+   "start": 1463.13,
    "dur": 3.33,
    "img": 1015
   },
@@ -3103,7 +3184,7 @@ window.DECK_TEXT_ES_DB = {
    "kind": "break",
    "sentences": [],
    "panel": null,
-   "start": 1388.81,
+   "start": 1466.46,
    "dur": 2.0,
    "img": 1015
   },
@@ -3114,12 +3195,42 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Lo agendamos para otro día, o dentro de dos días cuando más.",
-     "s": 1390.81,
+     "s": 1468.46,
      "d": 4.54
     }
    ],
-   "start": 1390.81,
+   "start": 1468.46,
    "dur": 4.54,
+   "img": 1015
+  },
+  {
+   "sec": "SOLICITUD DE FINANCIAMIENTO — UCFS",
+   "kind": "text",
+   "sentences": [
+    {
+     "x": "Ahora, un par de cosas que voy a necesitar es: ¿pueden enviarme fotos de sus licencias de conducir?",
+     "s": 1473.0,
+     "d": 9.27
+    }
+   ],
+   "panel": null,
+   "start": 1473.0,
+   "dur": 9.27,
+   "img": 1015
+  },
+  {
+   "sec": "SOLICITUD DE FINANCIAMIENTO — UCFS",
+   "kind": "text",
+   "sentences": [
+    {
+     "x": "Les voy a tener que hacer algunas preguntas. Son básicamente las preguntas estándar que se hacen para cualquier tipo de financiamiento: seguro social, fecha de nacimiento, dónde trabajan, cuánto tiempo llevan trabajando ahí, cuánto dinero ganan al mes, total.",
+     "s": 1482.27,
+     "d": 20.09
+    }
+   ],
+   "panel": null,
+   "start": 1482.27,
+   "dur": 20.09,
    "img": 1015
   },
   {
@@ -3129,11 +3240,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Perfecto, eligieron financiarlo. Ahora vamos a llenar la solicitud de financiamiento juntos, paso a paso, y yo los voy guiando en cada pregunta.",
-     "s": 1395.35,
+     "s": 1502.36,
      "d": 11.85
     }
    ],
-   "start": 1395.35,
+   "start": 1502.36,
    "dur": 11.85,
    "img": 1015
   },
@@ -3144,11 +3255,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Primero, los datos personales de cada uno: nombre completo, fecha de nacimiento y número de seguro social.",
-     "s": 1407.2,
+     "s": 1514.21,
      "d": 8.76
     }
    ],
-   "start": 1407.2,
+   "start": 1514.21,
    "dur": 8.76,
    "img": 1015
   },
@@ -3159,11 +3270,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Tengan a la mano una identificación con foto de cada uno.",
-     "s": 1415.96,
+     "s": 1522.97,
      "d": 5.67
     }
    ],
-   "start": 1415.96,
+   "start": 1522.97,
    "dur": 5.67,
    "img": 1015
   },
@@ -3174,11 +3285,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Ahora, la dirección: dónde viven actualmente y cuánto tiempo llevan viviendo ahí.",
-     "s": 1421.63,
+     "s": 1528.64,
      "d": 6.18
     }
    ],
-   "start": 1421.63,
+   "start": 1528.64,
    "dur": 6.18,
    "img": 1015
   },
@@ -3189,11 +3300,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Ahora, el empleo: dónde trabaja cada uno, su puesto y cuánto tiempo lleva en ese trabajo.",
-     "s": 1427.81,
+     "s": 1534.82,
      "d": 8.24
     }
    ],
-   "start": 1427.81,
+   "start": 1534.82,
    "dur": 8.24,
    "img": 1015
   },
@@ -3204,11 +3315,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Ahora, los ingresos: cuánto gana cada uno al mes y si tienen algún otro ingreso.",
-     "s": 1436.05,
+     "s": 1543.06,
      "d": 7.73
     }
    ],
-   "start": 1436.05,
+   "start": 1543.06,
    "dur": 7.73,
    "img": 1015
   },
@@ -3219,11 +3330,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Revisamos que todo esté correcto antes de enviarla. Un error en un número puede atrasar la aprobación.",
-     "s": 1443.78,
+     "s": 1550.79,
      "d": 8.76
     }
    ],
-   "start": 1443.78,
+   "start": 1550.79,
    "dur": 8.76,
    "img": 1015
   },
@@ -3234,11 +3345,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "La respuesta de la financiera es rápida. En cuanto quede aprobada, seguimos con el acuerdo.",
-     "s": 1452.54,
+     "s": 1559.55,
      "d": 7.73
     }
    ],
-   "start": 1452.54,
+   "start": 1559.55,
    "dur": 7.73,
    "img": 1015
   },
@@ -3249,11 +3360,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Ahora les envío el acuerdo por DocuSign y lo repasamos juntos, página por página.",
-     "s": 1460.27,
+     "s": 1567.28,
      "d": 7.21
     }
    ],
-   "start": 1460.27,
+   "start": 1567.28,
    "dur": 7.21,
    "img": 1015
   },
@@ -3264,11 +3375,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Yo no les entrego el contrato para que lo lean solos. Lo leemos juntos, y cualquier pregunta que tengan, me la hacen en el momento.",
-     "s": 1467.48,
+     "s": 1574.49,
      "d": 12.88
     }
    ],
-   "start": 1467.48,
+   "start": 1574.49,
    "dur": 12.88,
    "img": 1015
   },
@@ -3279,11 +3390,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Esta es la parte más importante de todo el acuerdo: si no logramos cancelar su tiempo compartido y sacarlo de su nombre, les devolvemos su dinero.",
-     "s": 1480.36,
+     "s": 1587.37,
      "d": 13.39
     }
    ],
-   "start": 1480.36,
+   "start": 1587.37,
    "dur": 13.39,
    "img": 1015
   },
@@ -3294,11 +3405,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "La meta es llegar juntos a la última página, la de colores. Si llegan antes que yo, me avisan, pero no le den finalizar hasta que estemos todos ahí.",
-     "s": 1493.75,
+     "s": 1600.76,
      "d": 14.94
     }
    ],
-   "start": 1493.75,
+   "start": 1600.76,
    "dur": 14.94,
    "img": 1015
   },
@@ -3309,11 +3420,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Número siete: la tarifa de cancelación. Si no están seguros de que quieren deshacerse de su tiempo compartido, dejen de firmar ahora mismo.",
-     "s": 1508.69,
+     "s": 1615.7,
      "d": 11.85
     }
    ],
-   "start": 1508.69,
+   "start": 1615.7,
    "dur": 11.85,
    "img": 1015
   },
@@ -3324,11 +3435,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Porque una vez que seguimos, si cambian de opinión, hay una tarifa de cancelación de $7,000. Si creen que podrían quedarse con el tiempo compartido, paren de firmar ahora.",
-     "s": 1520.54,
+     "s": 1627.55,
      "d": 14.94
     }
    ],
-   "start": 1520.54,
+   "start": 1627.55,
    "dur": 14.94,
    "img": 1015
   },
@@ -3339,11 +3450,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "Vayan firmando donde el sistema les va marcando, y al final le dan finalizar.",
-     "s": 1535.48,
+     "s": 1642.49,
      "d": 7.21
     }
    ],
-   "start": 1535.48,
+   "start": 1642.49,
    "dur": 7.21,
    "img": 1015
   },
@@ -3354,11 +3465,11 @@ window.DECK_TEXT_ES_DB = {
    "sentences": [
     {
      "x": "En cuanto quede firmado por todos, les llega su copia completa por correo.",
-     "s": 1542.69,
+     "s": 1649.7,
      "d": 6.7
     }
    ],
-   "start": 1542.69,
+   "start": 1649.7,
    "dur": 6.7,
    "img": 1015
   }
