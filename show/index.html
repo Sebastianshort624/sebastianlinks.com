@@ -28,6 +28,22 @@
   .langbtn { font-family: inherit; font-size: 13px; font-weight: 700; padding: 6px 12px; border-radius: 999px;
     border: 1px solid #0b3d91; background: rgba(255,255,255,.9); color: #0b3d91; cursor: pointer; }
   .langbtn.act { background: #0b3d91; color: #fff; }
+  /* ---------- chapter jump row (Sebastian, 2026-11-23): in the SAME
+     header row as the Esp/Eng toggle — one chip per section of the
+     loaded deck (built at runtime from the deck data) + a final
+     objections chip. Dark glass + gold, like the section drawings;
+     scrolls horizontally, never pushes the stage off screen. ---------- */
+  #chips { display: flex; gap: 6px; overflow-x: auto; overflow-y: hidden; max-width: 40vw; padding: 3px 1px;
+    scrollbar-width: thin; scrollbar-color: rgba(255,217,104,.55) transparent; }
+  #chips::-webkit-scrollbar { height: 4px; }
+  #chips::-webkit-scrollbar-thumb { background: rgba(255,217,104,.55); border-radius: 2px; }
+  .chip { flex: 0 0 auto; font-family: inherit; font-size: 11px; font-weight: 700; letter-spacing: .8px;
+    text-transform: uppercase; white-space: nowrap; padding: 5px 10px; border-radius: 999px; cursor: pointer;
+    border: 1px solid rgba(255,217,104,.55); background: rgba(8,17,36,.55); color: #ffd968;
+    backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); text-shadow: 0 1px 5px rgba(0,0,0,.55); }
+  .chip:hover, .chip:active { border-color: #ffd968; }
+  .chip.cur { background: rgba(255,217,104,.28); color: #fff; }
+  .chip.obj { border-color: rgba(255,255,255,.55); color: #fff; }
   /* ---------- stage ---------- */
   #stage { position: fixed; inset: 0; z-index: 2; display: flex; align-items: center; justify-content: center; padding: 64px 18px 108px; }
   /* NO CARD (Sebastian, 2026-11-23): .card is now just a transparent text
@@ -150,6 +166,7 @@
   <div class="spacer"></div>
   <button class="langbtn act" id="btnEs">Esp</button>
   <button class="langbtn" id="btnEn">Eng</button>
+  <div id="chips"></div>
 </header>
 
 <div id="stage"></div>
@@ -245,6 +262,8 @@ var L = {
         confirmT: 'Sus números — confirmados', pyr: 'Año de compra', payoff: 'Saldo (payoff)', mmo: 'Cuota de hipoteca/mes',
         mf: 'Mantenimiento/mes · /año', total: 'Total/mes · /año', perMo: ' / mes', perYr: ' / año',
         buT: 'Su costo verdadero — desde hoy', yrs: ['3 años', '5 años', '10 años', '20 años'],
+        qnT: 'El costo real de este contrato', qnMo: 'Cuota mensual', qnTot: 'Total que terminan pagando',
+        qnLoan: 'Monto original del préstamo', qnRate: 'Tasa de interés del contrato', qnInt: 'Interés total que terminan pagando',
         inv: 'Inversión total', save: 'Ahorro a 20 años', stay: 'Costo de quedarse · 20 años',
         noteInv: 'Inversión total: ', noteSave: ' · Ahorro a 20 años: ' },
   en: { pres: 'Presentation', prepFor: 'Prepared for ', titleSub: 'The complete and legitimate cancellation of your timeshare',
@@ -252,6 +271,8 @@ var L = {
         confirmT: 'Your numbers — confirmed', pyr: 'Purchase year', payoff: 'Payoff', mmo: 'Mortgage payment/mo',
         mf: 'Maintenance/mo · /yr', total: 'Total/mo · /yr', perMo: ' / mo', perYr: ' / yr',
         buT: 'Your true cost — from today', yrs: ['3 years', '5 years', '10 years', '20 years'],
+        qnT: 'The real cost of this contract', qnMo: 'Monthly payment', qnTot: 'Total you end up paying',
+        qnLoan: 'Original loan amount', qnRate: 'Contract interest rate', qnInt: 'Total interest you end up paying',
         inv: 'TOTAL INVESTMENT', save: 'TOTAL SAVINGS', stay: 'Cost of staying · 20 years',
         noteInv: 'Total investment: ', noteSave: ' · Total savings: ' }
 };
@@ -301,6 +322,23 @@ function panelHTML(kind){
       '<tr><td>' + t.yrs[1] + '</td><td>' + f.t5 + '</td></tr>' +
       '<tr><td>' + t.yrs[2] + '</td><td>' + f.t10 + '</td></tr>' +
       '<tr class="tot"><td>' + t.yrs[3] + '</td><td>' + f.t20 + '</td></tr></table></div>';
+  }
+  if (kind === 'qnums'){
+    /* CONTRATO NUMBERS QUESTION (Sebastian, 2026-11-23): cuota × 120 =
+       total they end up paying, vs the original loan amount, then the
+       contract interest rate vs the total interest paid. Computed here
+       from the record: mmo (cuota), loan (derived original loan), apr. */
+    var qmmo = +client.mmo || 0;
+    var qtot = Math.round(qmmo * 120 * 100) / 100;
+    var qint = Math.round((qtot - d.loan) * 100) / 100;
+    var qapr = (Math.round((+client.apr || 0) * 100) / 100) + '%';
+    return '<div class="panel"><h3>' + t.qnT + '</h3><table>' +
+      '<tr><td>' + t.qnMo + ' × 120</td><td>' + fmtC(qmmo) + ' × 120</td></tr>' +
+      '<tr class="tot"><td>' + t.qnTot + '</td><td>' + fmtC(qtot) + '</td></tr>' +
+      '<tr><td>' + t.qnLoan + '</td><td>' + fmtC(d.loan) + '</td></tr>' +
+      '<tr><td>' + t.qnRate + '</td><td>' + qapr + '</td></tr>' +
+      '<tr class="tot"><td>' + t.qnInt + '</td><td>' + fmtC(qint) + '</td></tr>' +
+      '</table></div>';
   }
   if (kind === 'price'){
     return '<div class="panel pricepanel"><div class="lbl">' + t.inv + '</div>' +
@@ -379,6 +417,7 @@ function render(){
   $('prog').style.width = ((idx + 1) / slides.length * 100) + '%';
   elapsed = 0; lastTick = null; chunkIdx = 0;
   applyChunk();
+  syncModeBtn(); markChip();
 }
 /* ---- highlight chunks: windows of 4-6 words, 3-4 steps per slide ---- */
 function wordEls(){ return document.querySelectorAll('#stage .txt .w'); }
@@ -433,17 +472,17 @@ function markCurrent(){
   applyChunk();
 }
 function tick(now){
-  if (objOpen){ rafId = null; return; } /* objections menu open: show is frozen in place */
-  if (!auto || !playing){ rafId = null; return; }
+  if (objOpen){ rafId = null; lastTick = null; return; } /* objections menu open: show is frozen in place */
+  if (!auto || !playing){ rafId = null; lastTick = null; return; } /* lastTick cleared on EVERY stop (Sebastian bug report, 2026-11-23): a stale lastTick made elapsed jump by the whole paused duration on resume, so pause/play and FF/RW skipped and blew through slides */
   if (lastTick == null) lastTick = now;
   elapsed += (now - lastTick) / 1000 * SPEED;
   lastTick = now;
   var sl = slides[idx];
   if (elapsed >= sl.dur){
-    if (sl.panel){ /* NUMBERS HOLD (Sebastian, 2026-11-23): a slide showing a set of numbers stays on screen for as long as it takes him to say his own words about them — no script, no auto-advance; he moves on with the double arrow */
+    if (sl.panel){ /* NUMBERS HOLD (Sebastian, 2026-11-23): a slide showing a set of numbers (panel = confirm / buildup / price / pricenote / qnums — any panel slide) stays on screen for as long as it takes him to say his own words about them — no script, no auto-advance; he moves on with the double arrow */
       elapsed = sl.dur; markCurrent();
-      if (!held){ held = true; toast(lang === 'es' ? 'Numeros en pantalla \u2014 \u23ed para seguir' : 'Numbers on screen \u2014 \u23ed to continue'); }
-      rafId = null; return;
+      if (!held){ held = true; syncModeBtn(); toast(lang === 'es' ? 'Numeros en pantalla \u2014 \u23ed para seguir' : 'Numbers on screen \u2014 \u23ed to continue'); }
+      rafId = null; lastTick = null; return;
     }
     if (idx < slides.length - 1){ idx++; render(); }
     else { playing = false; $('play').textContent = '\u25b6'; rafId = null; return; }
@@ -451,17 +490,24 @@ function tick(now){
   rafId = requestAnimationFrame(tick);
 }
 function startTimer(){
-  if (rafId == null && auto && playing) rafId = requestAnimationFrame(tick);
+  if (rafId == null && auto && playing){ lastTick = null; rafId = requestAnimationFrame(tick); } /* restarting the loop always starts the clock clean */
 }
 function go(n){
   held = false;
   idx = Math.max(0, Math.min(slides.length - 1, n));
   render(); startTimer();
 }
+/* the mode button always tells the truth: while a numbers slide is
+   HELD it says so (Sebastian read "AUTOSCROLL: ON" on a frozen show as
+   broken) — the normal AUTOSCROLL/MANUAL label returns on the next slide */
+function syncModeBtn(){
+  if (held) $('modebtn').textContent = (lang === 'es') ? '⏸ EN PAUSA — NÚMEROS' : '⏸ HELD — NUMBERS';
+  else $('modebtn').textContent = auto ? 'AUTOSCROLL: ON' : 'MANUAL';
+}
 function setAuto(on){
   auto = on;
   document.body.classList.toggle('auto', auto);
-  $('modebtn').textContent = auto ? 'AUTOSCROLL: ON' : 'MANUAL';
+  syncModeBtn();
   if (auto){ playing = true; $('play').textContent = '⏸'; startTimer(); }
   else { applyChunk(); } /* MANUAL keeps the current chunk highlighted */
 }
@@ -489,6 +535,38 @@ function stepChunk(dir){
 function toast(msg){
   var t = $('toast'); t.textContent = msg; t.style.display = 'block';
   clearTimeout(t._h); t._h = setTimeout(function(){ t.style.display = 'none'; }, 4200);
+}
+
+/* ================= CHAPTER JUMP ROW (Sebastian, 2026-11-23) =================
+   Chips in the header row, next to the Esp/Eng toggle: one per section
+   of the CURRENTLY LOADED deck, built from the deck data at runtime
+   (unique section names in deck order — never hard-coded, so new
+   sections like the UCFS application + DocuSign closing pick up
+   automatically), plus a final 🛡️ chip that opens the objections menu.
+   Clicking a section chip jumps to that section's first slide. */
+var chipSecs = [], chipFirst = [];
+function buildChips(){
+  var wrap = $('chips');
+  if (!wrap) return;
+  chipSecs = []; chipFirst = [];
+  slides.forEach(function(sl, i){
+    if (sl.sec && chipSecs.indexOf(sl.sec) === -1){ chipSecs.push(sl.sec); chipFirst.push(i); }
+  });
+  var html = '';
+  chipSecs.forEach(function(sec, k){
+    html += '<button class="chip" data-ci="' + k + '">' + esc(sec) + '</button>';
+  });
+  html += '<button class="chip obj" data-obj="1">' + OBJL[lang].btn + '</button>';
+  wrap.innerHTML = html;
+  markChip();
+}
+function markChip(){
+  var wrap = $('chips');
+  if (!wrap || !slides.length || !slides[idx]) return;
+  var cur = slides[idx].sec;
+  wrap.querySelectorAll('.chip[data-ci]').forEach(function(b){
+    b.classList.toggle('cur', chipSecs[+b.getAttribute('data-ci')] === cur);
+  });
 }
 
 /* background montage — slow Ken Burns crossfade, full-bleed under the
@@ -546,6 +624,13 @@ $('play').addEventListener('click', function(){
   if (playing) startTimer();
 });
 $('modebtn').addEventListener('click', function(){ setAuto(!auto); });
+$('chips').addEventListener('click', function(e){
+  var b = e.target.closest('.chip');
+  if (!b) return;
+  if (b.hasAttribute('data-obj')){ openObj(); return; }
+  var k = +b.getAttribute('data-ci');
+  if (chipFirst[k] != null) go(chipFirst[k]);
+});
 document.addEventListener('keydown', function(e){
   if (objOpen){ if (e.key === 'Escape') closeObj(); return; }
   /* Right/Left = highlight steps; PageDown/PageUp or Shift+Right/Left =
@@ -568,9 +653,10 @@ function setLang(nl){
   $('btnEn').classList.toggle('act', nl === 'en');
   $('objbtn').textContent = OBJL[nl].btn;
   if (objOpen) renderObj(); /* menu follows the show's language */
-  if (client.dtype === 'DB'){ renderDbNotice(); return; }
+  if (client.dtype === 'DB'){ buildChips(); renderDbNotice(); return; }
   slides = DECK.slides;
   idx = Math.max(0, Math.min(slides.length - 1, idx));
+  buildChips(); /* chapter row follows the loaded deck + language */
   resetBg(); /* background pool follows the language */
   render(); startTimer();
 }
@@ -682,12 +768,14 @@ document.documentElement.lang = lang;
 $('btnEs').classList.toggle('act', lang === 'es');
 $('btnEn').classList.toggle('act', lang === 'en');
 if (client.dtype === 'DB'){
+  buildChips();
   renderDbNotice();
 } else if (!DECK){
   $('stage').innerHTML = '<div class="card"><div class="notice">Deck data missing.</div></div>';
 } else {
   slides = DECK.slides;
   document.body.classList.add('auto');
+  buildChips();
   render(); startTimer();
 }
 </script>
