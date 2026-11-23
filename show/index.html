@@ -310,7 +310,7 @@ function deriveClient(c){
   if (mmo <= payoff * r) return null;
   var mrem = Math.ceil(-Math.log(1 - payoff * r / mmo) / Math.log(1 + r));
   function win(y){ return Math.round((mmo * Math.min(y * 12, mrem) + mfTot(mf, esc, y)) * 100) / 100; }
-  var t3 = win(3), t5 = win(5), t10 = win(10), t20 = win(20);
+  var t1 = win(1), t3 = win(3), t5 = win(5), t10 = win(10), t20 = win(20);
   var loan = mmo * (1 - Math.pow(1 + r, -term)) / r;
   var sched = mmo * term;
   var intpct = (sched - loan) / loan * 100;
@@ -321,7 +321,7 @@ function deriveClient(c){
   var mf5 = mfCum(mf, esc, 5), mf10 = mfCum(mf, esc, 10), mf20 = mfCum(mf, esc, 20),
       mf30 = mfCum(mf, esc, 30), mf40 = mfCum(mf, esc, 40);
   var mfy10 = Math.round(mf * Math.pow(1 + esc, 9) * 100) / 100;
-  return { mrem: mrem, t3: t3, t5: t5, t10: t10, t20: t20,
+  return { mrem: mrem, t1: t1, t3: t3, t5: t5, t10: t10, t20: t20,
     loan: Math.round(loan * 100) / 100, sched: Math.round(sched * 100) / 100,
     intpct: Math.round(intpct * 10) / 10, price: Math.round(price * 100) / 100,
     save20: Math.round((t20 - price) * 100) / 100, mfmo: mfmo,
@@ -329,7 +329,7 @@ function deriveClient(c){
     totmo: Math.round((mmo + mfmo) * 100) / 100, totyr: Math.round((mmo * 12 + mf) * 100) / 100,
     f: { payoff: fmtC(payoff), mmo: fmtC(mmo), mfyr: fmtC(mf), mfmo: fmtD(mfmo),
          mf5: fmtC(mf5), mf10: fmtC(mf10), mf20: fmtC(mf20), mf30: fmtC(mf30), mf40: fmtC(mf40), mfy10: fmtC(mfy10),
-         totmo: fmtC(mmo + mfmo), totyr: fmtC(mmo * 12 + mf), t3: fmtC(t3), t5: fmtC(t5),
+         totmo: fmtC(mmo + mfmo), totyr: fmtC(mmo * 12 + mf), t1: fmtC(t1), t3: fmtC(t3), t5: fmtC(t5),
          t10: fmtC(t10), t20: fmtC(t20), loan: fmtC(loan), sched: fmtC(sched),
          price: fmtD(price), save20: fmtC(t20 - price) } };
 }
@@ -353,7 +353,7 @@ function deriveDb(c){
   return { price: price > 0 ? Math.round(price * 100) / 100 : null,
     save20: save20, lista: lista,
     f: { lista: fmtC(lista), price: price > 0 ? fmtD(price) : miss,
-         save20: price > 0 ? fmtC(save20) : miss, t20: fmtC(mf20),
+         save20: price > 0 ? fmtC(save20) : miss, t1: fmtC(mfCum(mf, esc, 1)), t20: fmtC(mf20),
          mfyr: fmtC(mf), mfmo: fmtD(mfmo),
          mf5: fmtC(mfCum(mf, esc, 5)), mf10: fmtC(mfCum(mf, esc, 10)),
          mf20: fmtC(mf20), mf30: fmtC(mfCum(mf, esc, 30)),
@@ -462,6 +462,7 @@ function tokens(){
     '{{MF40}}': f && f.mf40 ? f.mf40 : miss,
     '{{MFY10}}': f && f.mfy10 ? f.mfy10 : miss,
     '{{TOTMO}}': f ? f.totmo : miss, '{{TOTYR}}': f ? f.totyr : miss,
+    '{{T1}}': f ? f.t1 : miss,
     '{{T3}}': f ? f.t3 : miss, '{{T5}}': f ? f.t5 : miss,
     '{{T10}}': f ? f.t10 : miss, '{{T20}}': f ? f.t20 : miss,
     '{{LOAN}}': f ? f.loan : miss, '{{SCHED}}': f ? f.sched : miss,
