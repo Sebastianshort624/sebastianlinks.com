@@ -58,8 +58,11 @@
   body.auto .noans, body.auto .perf { opacity: .62; }
   .noans.cur, .perf.cur { opacity: 1; background: #ffe45e; color: #14213d; text-shadow: none; border-radius: 6px; }
   .qtxt.cur { background: #ffe45e; color: #14213d; text-shadow: none; border-radius: 6px; }
-  .bwimg { margin: 22px auto 4px; display: block; width: min(430px, 80%); height: 190px; object-fit: cover;
-    border-radius: 10px; filter: grayscale(1) contrast(1.06); box-shadow: 0 8px 24px rgba(0,0,0,.18); border: 6px solid #fff; }
+  /* SECTION DRAWING (Sebastian, 2026-11-23): one classy gold-line drawing
+     per section sits under the words, directly on the background — thin
+     gold frame, no white card, no grayscale stock photo. */
+  .drawimg { margin: 22px auto 4px; display: block; width: min(430px, 80%); height: 190px; object-fit: cover;
+    border-radius: 10px; box-shadow: 0 10px 28px rgba(0,0,0,.45); border: 1px solid rgba(255,217,104,.55); }
   .titlecard h1 { font-size: clamp(30px, 5.4vw, 52px); line-height: 1.2; color: #fff; margin: 8px 0 10px; text-shadow: 0 2px 18px rgba(0,0,0,.65), 0 1px 4px rgba(0,0,0,.7); }
   .titlecard .sub { font-size: clamp(17px, 2.6vw, 23px); color: rgba(255,255,255,.92); text-shadow: 0 1px 8px rgba(0,0,0,.65); }
   .titlecard .rule { width: 74px; height: 3px; background: #ffd968; margin: 20px auto; border-radius: 2px; }
@@ -311,6 +314,29 @@ function panelHTML(kind){
   return '';
 }
 
+/* SECTION DRAWINGS (Sebastian, 2026-11-23): one classy drawing per
+   section replaces the rotating B&W stock photos — the same drawing
+   stays up for every slide of its section. ES and EN section names map
+   to the same file. Fallback: the apertura drawing. */
+var SEC_DRAW = {
+  'APERTURA': 'img/draw-apertura.jpg', 'OPENING': 'img/draw-apertura.jpg',
+  'CONFIRMAR NÚMEROS Y COST BUILD-UP': 'img/draw-numeros.jpg', 'CONFIRM NUMBERS AND COST BUILD-UP': 'img/draw-numeros.jpg',
+  'EL CONTRATO IMPENETRABLE': 'img/draw-contrato.jpg', 'THE IMPENETRABLE CONTRACT': 'img/draw-contrato.jpg',
+  'MANTENIMIENTO / HEREDITARIO': 'img/draw-mantenimiento.jpg', 'MAINTENANCE / INHERITABLE': 'img/draw-mantenimiento.jpg',
+  'ACEPTACIÓN DEL CASO': 'img/draw-aceptacion.jpg', 'CASE ACCEPTANCE': 'img/draw-aceptacion.jpg',
+  'PROCESO DE CANCELACIÓN': 'img/draw-proceso.jpg', 'CANCELLATION PROCESS': 'img/draw-proceso.jpg',
+  'REEMBOLSO Y GARANTÍA': 'img/draw-reembolso.jpg', 'REFUND AND GUARANTEE': 'img/draw-reembolso.jpg',
+  'PRECIO, COSTO Y AHORRO': 'img/draw-precio.jpg', 'PRICE, COST AND SAVINGS': 'img/draw-precio.jpg',
+  'TRANSICIÓN': 'img/draw-transicion.jpg', 'TRANSITION': 'img/draw-transicion.jpg',
+  'OPCIONES DE PAGO': 'img/draw-opciones.jpg', 'PAYMENT OPTIONS': 'img/draw-opciones.jpg',
+  'PAGOS AL RESORT': 'img/draw-pagos.jpg', 'PAYMENTS TO THE RESORT': 'img/draw-pagos.jpg',
+  'AFECTAR MI CRÉDITO': 'img/draw-credito.jpg', 'AFFECT MY CREDIT': 'img/draw-credito.jpg',
+  'EMPUJE — SI LO QUIEREN PENSAR': 'img/draw-empuje.jpg', 'PUSH — IF THEY WANT TO THINK ABOUT IT': 'img/draw-empuje.jpg'
+};
+function drawImg(sec){
+  return '<img class="drawimg" src="' + (SEC_DRAW[sec] || 'img/draw-apertura.jpg') + '" alt="">';
+}
+
 function render(){
   var sl = slides[idx];
   var stage = $('stage');
@@ -319,11 +345,11 @@ function render(){
     html = '<div class="card titlecard"><div class="sec">' + L[lang].pres + '</div>' +
       '<h1>' + esc(fill(L[lang].prepFor + '{{NAMES}}')) + '</h1>' +
       '<div class="sub">' + esc(client.resort || '') + '</div><div class="rule"></div>' +
-      '<div class="sub">' + L[lang].titleSub + '</div></div>';
+      '<div class="sub">' + L[lang].titleSub + '</div>' + drawImg(sl.sec) + '</div>';
   } else if (sl.kind === 'break'){
     html = '<div class="card breakcard"><div class="sec">' + L[lang].cont + '</div>' +
       '<div class="bigsec">' + esc(sl.sec) + '</div>' +
-      '<img class="bwimg" src="https://picsum.photos/id/' + sl.img + '/900/420?grayscale" alt="">' + '</div>';
+      drawImg(sl.sec) + '</div>';
   } else if (sl.kind === 'question'){
     var q = sl.sentences[0], no = sl.sentences[1], pf = sl.sentences[2];
     html = '<div class="card"><div class="sec">' + esc(sl.sec) + '</div>' +
@@ -331,7 +357,7 @@ function render(){
       '<div class="qtxt" data-s="' + q.s + '" data-d="' + q.d + '">' + esc(fill(q.x)) + '</div>' +
       '<div class="noans" data-s="' + no.s + '" data-d="' + no.d + '">' + esc(fill(no.x)) + '</div>' +
       '<div class="perf" data-s="' + pf.s + '" data-d="' + pf.d + '">' + esc(fill(pf.x)) + '</div>' +
-      '<img class="bwimg" src="https://picsum.photos/id/' + sl.img + '/900/420?grayscale" alt=""></div>';
+      drawImg(sl.sec) + '</div>';
   } else {
     /* word-level spans: the highlight window moves 4-6 words at a time
        across these; every word is rendered (dimmed) from slide start */
@@ -345,7 +371,7 @@ function render(){
     html = '<div class="card"><div class="sec">' + esc(sl.sec) + '</div>' +
       '<div class="ref">' + (idx + 1) + ' / ' + slides.length + '</div>' +
       '<div class="txt">' + spans + '</div>' + panelHTML(sl.panel) +
-      '<img class="bwimg" src="https://picsum.photos/id/' + sl.img + '/900/420?grayscale" alt=""></div>';
+      drawImg(sl.sec) + '</div>';
   }
   stage.innerHTML = html;
   $('counter').textContent = (idx + 1) + ' / ' + slides.length;
