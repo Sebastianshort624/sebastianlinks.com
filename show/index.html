@@ -86,6 +86,41 @@
   .pricepanel .row2 > div { flex: 1; background: rgba(255,255,255,.1); border-radius: 10px; padding: 10px 6px; }
   .pricestrip { text-align: center; font-size: clamp(15px, 2.2vw, 19px); }
   .pricestrip b { color: #ffd968; }
+  /* ---------- side rail (Sebastian, 2026-11-23): the client's key data,
+     always on screen on the RIGHT of the stage, values editable in
+     place — dark glass like the panels, gold labels, NO white card.
+     Under 900px it collapses to a slim toggleable strip. ---------- */
+  body.rail-on #stage { padding-right: 292px; }
+  #rail { position: fixed; top: 60px; right: 14px; bottom: 148px; width: 252px; z-index: 4;
+    background: rgba(8,17,36,.55); border: 1px solid rgba(255,255,255,.35); border-radius: 12px;
+    padding: 14px 16px; color: #fff; backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+    text-shadow: 0 1px 5px rgba(0,0,0,.55); overflow-y: auto; }
+  #railtoggle { display: none; }
+  .rname { font-size: 17px; font-weight: 700; line-height: 1.25; }
+  .rresort { font-size: 13px; color: rgba(255,255,255,.85); margin: 2px 0 4px; }
+  .rsec { font-size: 11px; font-weight: 700; letter-spacing: 2px; color: #ffd968; text-transform: uppercase;
+    border-top: 1px solid rgba(255,255,255,.22); padding-top: 10px; margin: 8px 0 6px; }
+  .rrow { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 4px 0;
+    border-bottom: 1px solid rgba(255,255,255,.14); }
+  .rlab2 { font-size: 12px; color: #ffd968; letter-spacing: .4px; }
+  .rval { font-size: 14.5px; font-weight: 700; text-align: right; white-space: nowrap; }
+  .rval.ed { cursor: pointer; border-bottom: 1px dashed rgba(255,217,104,.55); }
+  .rval.ed:hover { color: #ffe45e; }
+  .rval.warn { color: #ff9d7a; }
+  .redit { width: 112px; font-family: inherit; font-size: 14px; font-weight: 700; text-align: right;
+    background: rgba(255,255,255,.92); color: #14213d; border: 1px solid #ffd968; border-radius: 6px; padding: 2px 6px; }
+  .rreset { margin-top: 12px; font-size: 12.5px; color: #ffd968; cursor: pointer; text-align: right; }
+  .rreset:hover { text-decoration: underline; }
+  @media (max-width: 900px){
+    body.rail-on #stage { padding-right: 18px; }
+    #rail { width: 38px; padding: 8px 3px; overflow: visible; }
+    #railbody { display: none; }
+    #railtoggle { display: block; width: 100%; font-family: inherit; font-size: 16px; padding: 6px 0;
+      border-radius: 8px; border: 1px solid rgba(255,217,104,.55); background: rgba(8,17,36,.55); color: #ffd968; cursor: pointer; }
+    #rail.open { width: min(262px, 84vw); padding: 14px 16px; overflow-y: auto; }
+    #rail.open #railbody { display: block; }
+    #rail.open #railtoggle { margin-bottom: 10px; }
+  }
   /* ---------- controls ---------- */
   #controls { position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; padding: 10px 16px 14px;
     background: linear-gradient(180deg, rgba(8,15,30,0), rgba(8,15,30,.55) 30%); }
@@ -170,6 +205,7 @@
 </header>
 
 <div id="stage"></div>
+<div id="rail"><button id="railtoggle" title="Datos / Data">☰</button><div id="railbody"></div></div>
 <div id="toast"></div>
 <div id="obj"><div id="objbg"></div><div id="objveil"></div><div class="objwrap" id="objwrap"></div></div>
 
@@ -265,6 +301,8 @@ var L = {
         qnT: 'El costo real de este contrato', qnMo: 'Cuota mensual', qnTot: 'Total que terminan pagando',
         qnLoan: 'Monto original del préstamo', qnRate: 'Tasa de interés del contrato', qnInt: 'Interés total que terminan pagando',
         inv: 'Inversión total', save: 'Ahorro a 20 años', stay: 'Costo de quedarse · 20 años',
+        rInv: 'Inversión total', rDown: 'Pago inicial', rFin: 'Cantidad financiada',
+        rReset: '↺ Restaurar', rEdit: 'Clic para corregir',
         noteInv: 'Inversión total: ', noteSave: ' · Ahorro a 20 años: ' },
   en: { pres: 'Presentation', prepFor: 'Prepared for ', titleSub: 'The complete and legitimate cancellation of your timeshare',
         cont: 'Continuing', qref: 'QUESTION · ', caDef: 'our case analyst', resortDef: 'your resort',
@@ -274,6 +312,8 @@ var L = {
         qnT: 'The real cost of this contract', qnMo: 'Monthly payment', qnTot: 'Total you end up paying',
         qnLoan: 'Original loan amount', qnRate: 'Contract interest rate', qnInt: 'Total interest you end up paying',
         inv: 'TOTAL INVESTMENT', save: 'TOTAL SAVINGS', stay: 'Cost of staying · 20 years',
+        rInv: 'Total investment', rDown: 'Down payment', rFin: 'Amount financed',
+        rReset: '↺ Reset', rEdit: 'Click to correct',
         noteInv: 'Total investment: ', noteSave: ' · Total savings: ' }
 };
 function tokens(){
@@ -418,6 +458,7 @@ function render(){
   elapsed = 0; lastTick = null; chunkIdx = 0;
   applyChunk();
   syncModeBtn(); markRuler();
+  renderRail(); /* side rail values always current for this slide's client */
 }
 /* ---- highlight chunks: windows of 4-6 words, 3-4 steps per slide ---- */
 function wordEls(){ return document.querySelectorAll('#stage .txt .w'); }
@@ -643,6 +684,7 @@ $('seekzone').addEventListener('click', function(e){
   go(Math.floor(frac * slides.length)); /* bar/ruler = proportional jump */
 });
 document.addEventListener('keydown', function(e){
+  if (e.target && e.target.tagName === 'INPUT') return; /* typing in the side-rail editor is not a show shortcut */
   if (objOpen){ if (e.key === 'Escape') closeObj(); return; }
   /* Right/Left = highlight steps; PageDown/PageUp or Shift+Right/Left =
      slides; spacebar = play/pause */
@@ -769,11 +811,159 @@ function renderDbNotice(){
     '(historia de mantenimiento y lista, sin hipoteca) — su archivo de datos es la variante pendiente.<br><br>' +
     esc(client.name) + ' · ' + esc(client.resort || '') + '</div></div>';
   $('counter').textContent = 'DB';
+  renderRail();
 }
 
+/* ================= SIDE RAIL (Sebastian, 2026-11-23) =================
+   Persistent right-hand column: client names, resort, the confirmed
+   numbers, price, down payment and amount financed — on screen for
+   EVERY slide. The money values are EDITABLE in place: click one, type
+   the corrected figure, Enter — the override is saved per client in
+   localStorage ("showOverridesV1") and everything downstream (panels,
+   slide-text tokens, price, ladder, objections rebuttal numbers)
+   recomputes instantly, because they all read the same effective
+   client + derived. clients.js carries NO city field and NO down
+   field on any record: the rail shows the record's resort only, and
+   down starts as "—" (financed too) until Sebastian types one —
+   a down value is never invented. */
+var OV_KEY = 'showOverridesV1';
+var overrides = {};
+try { overrides = JSON.parse(localStorage.getItem(OV_KEY) || '{}') || {}; } catch(e){ overrides = {}; }
+var baseClient = null;      /* the untouched record from clients.js */
+var derivedStale = false;   /* last edit made deriveClient() return null; previous derived kept */
+var railWarn = null;        /* field whose cell shows the warning color while stale */
+var railEditing = false;    /* an input is open in the rail — renders must not clobber it */
+function saveOverrides(){ try { localStorage.setItem(OV_KEY, JSON.stringify(overrides)); } catch(e){} }
+function effClient(){
+  var c = {};
+  for (var k in baseClient) c[k] = baseClient[k];
+  var ov = overrides[clientId] || {};
+  ['pyr','payoff','mmo','mf','fee','down'].forEach(function(f){ if (ov[f] != null) c[f] = ov[f]; });
+  return c;
+}
+function recompute(lastField){
+  client = effClient();
+  var d = deriveClient(client);
+  if (d){ derived = d; derivedStale = false; railWarn = null; }
+  else { derivedStale = true; railWarn = lastField || null; } /* keep previous derived — never crash */
+}
+function railDown(){
+  var ov = overrides[clientId] || {};
+  if (ov.down != null) return +ov.down;
+  if (baseClient && baseClient.down != null) return +baseClient.down;
+  return null;
+}
+function renderRail(){
+  if (railEditing) return; /* never clobber an open editor */
+  var body = $('railbody');
+  if (!body || !client) return;
+  var t = L[lang];
+  var names = client.firstNames || client.name || '';
+  if (lang === 'en' && names) names = names.replace(/ y /g, ' and ');
+  var mf = +client.mf || 0, mmo = +client.mmo || 0;
+  var mfmo = Math.floor(mf / 12);
+  var down = railDown();
+  var price = derived ? derived.price : null;
+  var fin = (price != null && down != null) ? Math.round((price - down) * 100) / 100 : null;
+  var isMTG = client.dtype === 'MTG';
+  function row(label, val, field){
+    var cls = 'rval' + (field ? ' ed' : '') + (field && railWarn === field ? ' warn' : '');
+    return '<div class="rrow"><div class="rlab2">' + label + '</div>' +
+      '<div class="' + cls + '"' + (field ? ' data-f="' + field + '" title="' + t.rEdit + '"' : '') + '>' + val + '</div></div>';
+  }
+  var h = '<div class="rname">' + esc(names) + '</div>' +
+    '<div class="rresort">' + esc(client.resort || '—') + '</div>' +
+    '<div class="rsec">' + t.confirmT + '</div>';
+  if (isMTG || client.pyr) h += row(t.pyr, client.pyr ? String(client.pyr) : '—', 'pyr');
+  if (isMTG){
+    /* confirm rows are direct formats of the effective inputs, so the
+       rail always shows the true current figures even while a full
+       derivation is stale */
+    h += row(t.payoff, fmtC(+client.payoff || 0), 'payoff');
+    h += row(t.mmo, fmtC(mmo), 'mmo');
+    h += row(t.mf, fmtD(mfmo) + ' · ' + fmtC(mf), 'mf');
+    h += row(t.total, fmtC(mmo + mfmo) + ' · ' + fmtC(mmo * 12 + mf), null);
+  } else if (mf > 0){
+    h += row(t.mf, fmtD(mfmo) + ' · ' + fmtC(mf), 'mf');
+  }
+  h += row(t.rInv, price != null ? fmtD(price) : '—', 'fee');
+  h += row(t.rDown, down != null ? fmtC(down) : '—', 'down');
+  h += row(t.rFin, fin != null ? fmtC(fin) : '—', null);
+  h += '<div class="rreset" id="rreset">' + t.rReset + '</div>';
+  body.innerHTML = h;
+  var rs = $('rreset');
+  if (rs) rs.addEventListener('click', function(){
+    delete overrides[clientId];
+    saveOverrides();
+    recompute(null);
+    renderRail();
+    render(); /* record values restored everywhere */
+  });
+}
+function railRaw(field){
+  if (field === 'pyr') return client.pyr || '';
+  if (field === 'payoff') return client.payoff || '';
+  if (field === 'mmo') return client.mmo || '';
+  if (field === 'mf') return client.mf || '';
+  if (field === 'fee') return derived ? derived.price : '';
+  if (field === 'down'){ var d = railDown(); return d != null ? d : ''; }
+  return '';
+}
+function commitRailEdit(field, raw){
+  var v = parseFloat(String(raw).replace(/[$,\s]/g, ''));
+  if (isNaN(v)){ renderRail(); return; } /* not a number: revert the display, keep the prior value */
+  if (field === 'pyr') v = Math.round(v);
+  if (!overrides[clientId]) overrides[clientId] = {};
+  overrides[clientId][field] = v;
+  saveOverrides();
+  recompute(field);
+  renderRail();
+  render(); /* same slide, new numbers — panels, tokens, price, ladder and objections follow */
+}
+function openRailEdit(span){
+  var field = span.getAttribute('data-f');
+  if (!field || railEditing) return;
+  railEditing = true;
+  var inp = document.createElement('input');
+  inp.className = 'redit'; inp.type = 'text'; inp.inputMode = 'decimal';
+  inp.value = railRaw(field);
+  span.textContent = ''; span.appendChild(inp);
+  inp.focus(); inp.select();
+  var done = false;
+  function finish(commit){
+    if (done) return; done = true;
+    railEditing = false;
+    if (commit) commitRailEdit(field, inp.value);
+    else renderRail();
+  }
+  inp.addEventListener('keydown', function(e){
+    e.stopPropagation();
+    if (e.key === 'Enter'){ e.preventDefault(); finish(true); }
+    else if (e.key === 'Escape'){ e.preventDefault(); finish(false); }
+  });
+  inp.addEventListener('blur', function(){ finish(true); });
+  inp.addEventListener('click', function(e){ e.stopPropagation(); });
+}
+$('railbody').addEventListener('click', function(e){
+  var span = e.target.closest ? e.target.closest('.rval.ed') : null;
+  if (span) openRailEdit(span);
+});
+$('railtoggle').addEventListener('click', function(){ $('rail').classList.toggle('open'); });
+
 /* boot */
-client = CLIENTS[clientId];
-derived = client.derived || deriveClient(client);
+baseClient = CLIENTS[clientId];
+(function(){
+  var ov = overrides[clientId];
+  var hasOv = !!(ov && Object.keys(ov).length > 0);
+  client = effClient();
+  if (hasOv){
+    derived = deriveClient(client);
+    if (!derived){ derived = baseClient.derived || null; derivedStale = !!derived; }
+  } else {
+    derived = baseClient.derived || deriveClient(client);
+  }
+})();
+document.body.classList.add('rail-on');
 $('objbtn').textContent = OBJL[lang].btn;
 document.documentElement.lang = lang;
 $('btnEs').classList.toggle('act', lang === 'es');
