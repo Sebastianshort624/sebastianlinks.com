@@ -237,6 +237,8 @@
   <div class="spacer"></div>
   <button class="langbtn act" id="btnEs">Esp</button>
   <button class="langbtn" id="btnEn">Eng</button>
+  <button class="langbtn act" id="btnMtg">MTG</button>
+  <button class="langbtn" id="btnDb">DB</button>
 </header>
 
 <div id="stage"></div>
@@ -266,6 +268,8 @@
 <script src="clients.js"></script>
 <script src="deck-es-mtg.js"></script>
 <script src="deck-en-mtg.js"></script>
+<script src="deck-es-db.js"></script>
+<script src="deck-en-db.js"></script>
 <script src="objections-es.js"></script>
 <script src="objections-en.js"></script>
 <script>
@@ -328,6 +332,33 @@ function deriveClient(c){
 }
 /* MATH-PORT-END */
 
+/* DEED-BACK derivation (Sebastian, 2026-11-23): no mortgage math — the
+   price is the settled fee when one exists, else the lista (sheetFee)
+   + $299 admin + $200 pad. The price panel's 20-year "cost of staying"
+   is the maintenance-only cumulative, so its stay/savings rows stay
+   meaningful on the DB decks. {{LISTA}} = the record's sheetFee. */
+function deriveDb(c){
+  if (!c || c.dtype !== 'DB') return null;
+  var mf = +c.mf || 0, esc = (+c.esc || 8) / 100;
+  var lista = +c.sheetFee || 0, fee = +c.fee || 0;
+  var price = fee > 0 ? fee : (lista > 0 ? lista + 299 + 200 : 0);
+  if (mf <= 0 && price <= 0) return null;
+  var mfmo = Math.floor(mf / 12);
+  var mf20 = mfCum(mf, esc, 20);
+  var save20 = Math.round((mf20 - price) * 100) / 100;
+  var miss = '$X';
+  return { price: price > 0 ? Math.round(price * 100) / 100 : null,
+    save20: save20, lista: lista,
+    f: { lista: fmtC(lista), price: price > 0 ? fmtD(price) : miss,
+         save20: price > 0 ? fmtC(save20) : miss, t20: fmtC(mf20),
+         mfyr: fmtC(mf), mfmo: fmtD(mfmo),
+         mf5: fmtC(mfCum(mf, esc, 5)), mf10: fmtC(mfCum(mf, esc, 10)),
+         mf20: fmtC(mf20), mf30: fmtC(mfCum(mf, esc, 30)),
+         mf40: fmtC(mfCum(mf, esc, 40)),
+         mfy10: fmtC(Math.round(mf * Math.pow(1 + esc, 9) * 100) / 100),
+         totmo: fmtC(mfmo), totyr: fmtC(mf) } };
+}
+
 /* Maintenance-only figures for clients whose clients.js record carries a
    PRECOMPUTED derived block (those blocks predate MF5/MF10/MF20/MF30/MF40/MFY10):
    merge the values into derived.f from the record's own mf/esc so the
@@ -353,9 +384,12 @@ function ensureMf(){
 var $ = function(id){ return document.getElementById(id); };
 var params = new URLSearchParams(location.search);
 var CLIENTS = window.DECK_CLIENTS || {};
-var DECKS = { es: window.DECK_TEXT_ES_MTG || null, en: window.DECK_TEXT_EN_MTG || null };
-var lang = (params.get('lang') === 'en' && DECKS.en) ? 'en' : 'es';
-var DECK = DECKS[lang];
+var DECKS = { es: { MTG: window.DECK_TEXT_ES_MTG || null, DB: window.DECK_TEXT_ES_DB || null },
+              en: { MTG: window.DECK_TEXT_EN_MTG || null, DB: window.DECK_TEXT_EN_DB || null } };
+var lang = (params.get('lang') === 'en' && DECKS.en.MTG) ? 'en' : 'es';
+var typeParam = (params.get('type') || '').toLowerCase();
+var dtype = typeParam === 'db' ? 'DB' : (typeParam === 'mtg' ? 'MTG' : null); /* null = follow the record, decided at boot */
+var DECK = null; /* set by loadDeck() once the record (and so the type) is known */
 var clientId = params.get('c') || 'c-balderas-1122';
 if (!CLIENTS[clientId]) clientId = Object.keys(CLIENTS)[0];
 var client = null, derived = null, slides = [], idx = 0;
@@ -411,7 +445,8 @@ function tokens(){
     '{{T10}}': f ? f.t10 : miss, '{{T20}}': f ? f.t20 : miss,
     '{{LOAN}}': f ? f.loan : miss, '{{SCHED}}': f ? f.sched : miss,
     '{{INTPCT}}': d ? Math.floor(d.intpct) : '100',
-    '{{PRICE}}': f ? f.price : miss, '{{SAVE20}}': f ? f.save20 : miss
+    '{{PRICE}}': f ? f.price : miss, '{{SAVE20}}': f ? f.save20 : miss,
+    '{{LISTA}}': f && f.lista ? f.lista : miss
   };
 }
 function fill(text){
@@ -675,6 +710,18 @@ function audChain(i){
   while (audManifest[e + 1] && audManifest[e + 1].join_in) e++;
   return { start: s, end: e, entry: e0 };
 }
+/* SILENT TOKEN RULE (Sebastian, 2026-11-23 — "just stay silent always
+   during those parts for duration of that data to be spoken"): a slide
+   whose text carries client-specific data (any {{TOKEN}} — names, the
+   CA, figures) plays NO narration voice, even when an mp3 exists for
+   it; it advances on the timer for its full spoken duration instead,
+   highlight chunks stepping as normal. */
+function slideHasTokens(sl){
+  if (!sl || !sl.sentences) return false;
+  for (var i = 0; i < sl.sentences.length; i++)
+    if (/\{\{[A-Z0-9]+\}\}/.test(sl.sentences[i].x || '')) return true;
+  return false;
+}
 function audStop(){
   audMode = false; audChainCur = null;
   if (narr && !narr.paused) narr.pause();
@@ -695,7 +742,10 @@ function audSeekToElapsed(){
 }
 function audSetupSlide(){
   if (!narr) return;
-  if (lang !== 'es' || !audManifest || !slides.length){ audStop(); return; }
+  /* the ES narration was recorded for the MTG deck only — never play it
+     over a deed-back deck (indices would not match the words) */
+  if (lang !== 'es' || dtype !== 'MTG' || !audManifest || !slides.length){ audStop(); return; }
+  if (slideHasTokens(slides[idx])){ audStop(); return; } /* SILENT TOKEN RULE: timer carries the slide for its full duration */
   var ch = audChain(idx);
   if (!ch){ audStop(); return; }
   var sum = 0, k;
@@ -1044,26 +1094,53 @@ document.addEventListener('keydown', function(e){
   else if (e.key === 'ArrowLeft') stepChunk(-1);
   else if (e.key === ' '){ e.preventDefault(); $('play').click(); }
 });
+/* deck loading — ONE path for boot, language switches and type
+   switches: the deck for (lang, dtype); the slide index is kept when
+   it exists in the new deck (else clamped to the last slide); play
+   state is preserved (render + startTimer resume the show). */
+function loadDeck(){
+  DECK = DECKS[lang][dtype] || DECKS[lang].MTG;
+  slides = DECK ? DECK.slides : [];
+  idx = Math.max(0, Math.min(slides.length - 1, idx));
+  buildRuler(); /* chapter ruler follows the loaded deck */
+  render(); startTimer();
+}
 /* language toggle — switches decks BOTH ways, at any slide, landing on the
    corresponding slide (same index; the two decks are slide-for-slide) */
 function setLang(nl){
-  if (nl === lang || !DECKS[nl]) return;
-  lang = nl; DECK = DECKS[nl];
+  if (nl === lang || !DECKS[nl].MTG) return;
+  lang = nl;
   document.documentElement.lang = nl;
   $('btnEs').classList.toggle('act', nl === 'es');
   $('btnEn').classList.toggle('act', nl === 'en');
   $('objbtn').textContent = OBJL[nl].btn;
   if (objOpen) renderObj(); /* menu follows the show's language */
-  if (client.dtype === 'DB'){ buildRuler(); renderDbNotice(); return; }
-  slides = DECK.slides;
-  idx = Math.max(0, Math.min(slides.length - 1, idx));
-  buildRuler(); /* chapter ruler follows the loaded deck + language */
+  if (!DECKS[nl][dtype]) dtype = dtype === 'DB' ? 'MTG' : 'DB'; /* no such deck in this language: fall back */
+  syncTypeBtns();
   resetBg(); /* background pool follows the language */
   setBgVideo(); /* background VIDEO follows the language too (ES folk / EN American) */
-  render(); startTimer();
+  loadDeck();
 }
 $('btnEn').addEventListener('click', function(){ setLang('en'); });
 $('btnEs').addEventListener('click', function(){ setLang('es'); });
+/* TYPE TOGGLE (Sebastian, 2026-11-23): MTG | DB buttons in the top bar
+   beside the language toggle — where he sees the Spanish/English and
+   Mortgage/Deed-back options. A deed-back record opens the DB deck by
+   default (?type=mtg|db overrides); flipping the toggle swaps the deck
+   in the current language, keeping the slide position. */
+function syncTypeBtns(){
+  var bm = $('btnMtg'), bd = $('btnDb');
+  if (bm) bm.classList.toggle('act', dtype === 'MTG');
+  if (bd) bd.classList.toggle('act', dtype === 'DB');
+}
+function setType(nt){
+  if (nt === dtype || !DECKS[lang][nt]) return;
+  dtype = nt;
+  syncTypeBtns();
+  loadDeck();
+}
+$('btnMtg').addEventListener('click', function(){ setType('MTG'); });
+$('btnDb').addEventListener('click', function(){ setType('DB'); });
 
 /* ================= OBJECTIONS (Sebastian, 2026-11-23) =================
    Constant 🛡️ button in the controls. Level 1 = categories, level 2 =
@@ -1156,16 +1233,6 @@ $('objwrap').addEventListener('click', function(e){
   else if (act === 'item'){ objView.item = +b.getAttribute('data-k'); objView.level = 'reb'; renderObj(); }
 });
 
-function renderDbNotice(){
-  audStop(); /* no narration on the deed-back notice */
-  $('stage').innerHTML = '<div class="card"><div class="sec">Deed-back</div>' +
-    '<div class="notice">Este cliente es <b>deed-back</b>. El show de deed-back usa este mismo motor ' +
-    '(historia de mantenimiento y lista, sin hipoteca) — su archivo de datos es la variante pendiente.<br><br>' +
-    esc(client.name) + ' · ' + esc(client.resort || '') + '</div></div>';
-  $('counter').textContent = 'DB';
-  renderRail();
-}
-
 /* ================= SIDE RAIL (Sebastian, 2026-11-23) =================
    Persistent right-hand column: client names, resort, the confirmed
    numbers, price, down payment and amount financed — on screen for
@@ -1195,7 +1262,7 @@ function effClient(){
 }
 function recompute(lastField){
   client = effClient();
-  var d = deriveClient(client);
+  var d = deriveClient(client) || deriveDb(client);
   if (d){ derived = d; derivedStale = false; railWarn = null; }
   else { derivedStale = true; railWarn = lastField || null; } /* keep previous derived — never crash */
   ensureMf();
@@ -1310,10 +1377,10 @@ baseClient = CLIENTS[clientId];
   var hasOv = !!(ov && Object.keys(ov).length > 0);
   client = effClient();
   if (hasOv){
-    derived = deriveClient(client);
+    derived = deriveClient(client) || deriveDb(client);
     if (!derived){ derived = baseClient.derived || null; derivedStale = !!derived; }
   } else {
-    derived = baseClient.derived || deriveClient(client);
+    derived = baseClient.derived || deriveClient(client) || deriveDb(client);
   }
   ensureMf(); /* stored derived blocks predate the MF figures — merge them in */
 })();
@@ -1322,16 +1389,17 @@ $('objbtn').textContent = OBJL[lang].btn;
 document.documentElement.lang = lang;
 $('btnEs').classList.toggle('act', lang === 'es');
 $('btnEn').classList.toggle('act', lang === 'en');
-if (client.dtype === 'DB'){
-  buildRuler();
-  renderDbNotice();
-} else if (!DECK){
+/* deck type: ?type=mtg|db wins; otherwise the record decides (a
+   deed-back record opens the deed-back deck). The header MTG|DB
+   toggle can flip it live from here. */
+if (!dtype) dtype = client.dtype === 'DB' ? 'DB' : 'MTG';
+if (!DECKS[lang][dtype]) dtype = dtype === 'DB' ? 'MTG' : 'DB';
+syncTypeBtns();
+if (!DECKS[lang][dtype]){
   $('stage').innerHTML = '<div class="card"><div class="notice">Deck data missing.</div></div>';
 } else {
-  slides = DECK.slides;
   document.body.classList.add('auto');
-  buildRuler();
-  render(); startTimer();
+  loadDeck();
 }
 </script>
 </body>
