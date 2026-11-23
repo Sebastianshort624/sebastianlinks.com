@@ -332,9 +332,12 @@
   "hash": "df1bfeea6193"
  },
  "57": {
-  "file": "slide-c933a32d50aa.mp3",
-  "dur": 4.512,
-  "hash": "c933a32d50aa"
+  "file": "slide-311c5f2b9f5d.mp3",
+  "dur": 3.6,
+  "hash": "311c5f2b9f5d",
+  "redacted_tokens": [
+   "{{RESORT}}"
+  ]
  },
  "58": {
   "file": "slide-4bf08e4becea.mp3",
