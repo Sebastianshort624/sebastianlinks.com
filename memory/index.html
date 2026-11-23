@@ -54,6 +54,9 @@ main{max-width:860px;margin:0 auto;padding:12px}
 .scene h3{margin:0 0 8px;font-size:16px;color:#7a4d00}
 .srow{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
 .srow select{flex:1 1 30%;min-width:100px;font-size:14.5px;padding:8px 6px;border-radius:8px;border:1.5px solid #c9a45c;background:#fff;color:#17251b}
+.sbtns{display:flex;gap:4px;align-items:flex-start}
+.sbtn{border:1.5px solid #c9a45c;background:#fff;color:#7a4d00;border-radius:8px;padding:7px 9px;font-size:13px;cursor:pointer;font-weight:700}
+.sbtn:disabled{opacity:.3;cursor:default}
 .sadd{margin-top:8px;border:none;border-radius:10px;padding:9px 14px;font-size:14.5px;cursor:pointer;font-weight:700;background:#e8a33d;color:#3a2703}
 .big{text-align:center;font-size:19px;line-height:1.5}
 .small{font-size:13px;color:#bfe3c8;text-align:center;padding:0 18px 26px;line-height:1.6}
@@ -80,6 +83,7 @@ const DATA = [{"index": 1, "section": "APERTURA", "palace_location": "Cabello", 
 const LS='memoryZooV1';
 let state = JSON.parse(localStorage.getItem(LS)||'{"known":[],"missed":[]}');
 if(!state.scenes||typeof state.scenes!=='object'||Array.isArray(state.scenes)) state.scenes={};
+for(const k in state.scenes){ if(Array.isArray(state.scenes[k])) state.scenes[k]=state.scenes[k].map(r=>{ if(Array.isArray(r)&&r.length===5){ const n=r.slice(); n.splice(2,0,''); return n; } return r; }); }
 if(typeof state.hideBody!=='boolean') state.hideBody=false;
 const DEFPARTS=DATA.slice().sort((a,b)=>a.index-b.index).map(b=>b.palace_location);
 if(!Array.isArray(state.bodyMap)||state.bodyMap.length!==68||new Set(state.bodyMap).size!==68||!state.bodyMap.every(p=>DEFPARTS.indexOf(p)>=0)) state.bodyMap=DEFPARTS.slice();
@@ -131,21 +135,40 @@ const SC_NOUN=['León','Elefante','Mono','Perro','Gato','Caballo','Oso','Serpien
 const SC_PLACE=['Casa','Cuarto','Castillo','Patio','Calle','Pueblo','Ciudad','Campo','Planeta','Luna','Playa','Bosque'];
 const SC_ACT=['Corriendo','Nadando','Montando','Colgando','Levantando','Saltando','Bailando','Cocinando','Durmiendo','Volando','Cavando','Pescando'];
 const SC_EMO=['Riendo','Llorando','Gritando','Asustado','Enojado','Feliz','Sorprendido','Nervioso','Orgulloso','Cansado','Confundido','Enamorado'];
-const SC_COLS=[SC_NOUN,SC_PLACE,SC_ACT,SC_EMO,SC_NOUN];
+const SC_OBJ=['Libro','Silla','Mesa','Cuchara','Sombrero','Llave','Teléfono','Espejo','Reloj','Martillo','Tijeras','Vela','Botella','Maleta','Bicicleta','Guitarra','Pelota','Corona','Espada','Mapa'];
+const SC_COLS=[SC_NOUN,SC_PLACE,SC_OBJ,SC_ACT,SC_EMO,SC_NOUN];
 function sceneSel(unit,col,val){
   let h='<select data-unit="'+unit+'" data-col="'+col+'" onchange="sceneChange(this)"><option value="">—</option>';
   for(const o of SC_COLS[col]) h+='<option value="'+esc(o)+'"'+(o===val?' selected':'')+'>'+esc(o)+'</option>';
   return h+'</select>';
 }
-function sceneRowHTML(unit,vals){
-  vals=vals||['','','','',''];
-  return '<div class="srow">'+[0,1,2,3,4].map(c=>sceneSel(unit,c,vals[c]||'')).join('')+'</div>';
+function sceneNormRow(r){
+  r=Array.isArray(r)?r.slice():[];
+  if(r.length===5) r.splice(2,0,'');
+  while(r.length<6) r.push('');
+  return r.slice(0,6);
+}
+function sceneRowHTML(unit,ri,vals,total){
+  vals=sceneNormRow(vals);
+  return '<div class="srow">'+[0,1,2,3,4,5].map(c=>sceneSel(unit,c,vals[c]||'')).join('')
+    +'<span class="sbtns">'
+    +'<button class="sbtn" onclick="sceneMove('+unit+','+ri+',-1)"'+(ri===0?' disabled':'')+'>↑</button>'
+    +'<button class="sbtn" onclick="sceneMove('+unit+','+ri+',1)"'+(ri===total-1?' disabled':'')+'>↓</button>'
+    +'<button class="sbtn" onclick="sceneRemove('+unit+','+ri+')">✕</button>'
+    +'</span></div>';
 }
 function sceneHTML(b){
-  const rows=(state.scenes[b.index]&&state.scenes[b.index].length)?state.scenes[b.index]:[['','','','','']];
+  const has=Object.prototype.hasOwnProperty.call(state.scenes,b.index);
+  const rows=has?(state.scenes[b.index]||[]).map(sceneNormRow):[sceneNormRow([])];
   return '<div class="scene" id="scene-'+b.index+'"><h3>🎨 Crea tu escena</h3>'
-    +'<div class="srows">'+rows.map(r=>sceneRowHTML(b.index,r)).join('')+'</div>'
+    +'<div style="font-size:12px;color:#7a4d00;margin-bottom:6px">Animal/Persona · Lugar · Objeto · Acción · Emoción · Animal/Persona</div>'
+    +'<div class="srows">'+rows.map((r,i)=>sceneRowHTML(b.index,i,r,rows.length)).join('')+'</div>'
     +'<button class="sadd" onclick="sceneAdd('+b.index+')">+ Agregar fila</button></div>';
+}
+function sceneRerender(unit){
+  const box=document.getElementById('scene-'+unit); if(!box)return;
+  const rows=(state.scenes[unit]||[]).map(sceneNormRow);
+  box.querySelector('.srows').innerHTML=rows.map((r,i)=>sceneRowHTML(unit,i,r,rows.length)).join('');
 }
 function sceneCollect(unit){
   if(!state.scenes||typeof state.scenes!=='object') state.scenes={};
@@ -156,11 +179,25 @@ function sceneCollect(unit){
 window.sceneChange=(sel)=>{sceneCollect(+sel.dataset.unit);};
 window.sceneAdd=(unit)=>{
   if(!state.scenes||typeof state.scenes!=='object') state.scenes={};
-  if(!state.scenes[unit]) state.scenes[unit]=[['','','','','']];
-  state.scenes[unit].push(['','','','','']); save();
-  const box=document.getElementById('scene-'+unit); if(!box)return;
-  const d=document.createElement('div'); d.innerHTML=sceneRowHTML(unit,['','','','','']);
-  box.querySelector('.srows').appendChild(d.firstChild);
+  const box=document.getElementById('scene-'+unit);
+  if(box && box.querySelector('.srow')) sceneCollect(unit);
+  if(!Array.isArray(state.scenes[unit])) state.scenes[unit]=[];
+  state.scenes[unit]=state.scenes[unit].map(sceneNormRow);
+  state.scenes[unit].push(['','','','','','']); save();
+  sceneRerender(unit);
+};
+window.sceneRemove=(unit,ri)=>{
+  sceneCollect(unit);
+  if(!Array.isArray(state.scenes[unit])) return;
+  state.scenes[unit].splice(ri,1); save();
+  sceneRerender(unit);
+};
+window.sceneMove=(unit,ri,d)=>{
+  sceneCollect(unit);
+  const rows=state.scenes[unit]; if(!Array.isArray(rows)) return;
+  const j=ri+d; if(j<0||j>=rows.length) return;
+  const t=rows[ri]; rows[ri]=rows[j]; rows[j]=t; save();
+  sceneRerender(unit);
 };
 function fraseDetail(f){return '<div class="ftext">'+esc(f.texto)+'</div><div class="gancho">🔗 '+esc(f.gancho)+'</div>';}
 function chainHTML(b,hideStarters){
