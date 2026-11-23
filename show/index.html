@@ -158,8 +158,11 @@
      ruler markings (two staggered rows, long names shortened); the
      ruler + bar are one padded click target — click anywhere to jump
      to that point of the deck, click a label for its section start -- */
-  #seekzone { cursor: pointer; padding: 10px 0 2px; }
-  #ruler { position: relative; height: 46px; }
+  #seekzone { cursor: pointer; padding: 14px 0 2px; }
+  /* ruler spacing opened up (Sebastian, 2026-11-23): the two label rows
+     were crunched on top of each other — taller zone, upper row raised,
+     clear air between the rows and between labels and the bar */
+  #ruler { position: relative; height: 66px; }
   .rtick { position: absolute; bottom: 0; width: 2px; height: 8px; margin-left: -1px; background: rgba(255,217,104,.55); border-radius: 1px; }
   .rtick.cur { background: #ffe45e; height: 12px; }
   .rlab { position: absolute; transform: translateX(-50%); font-family: inherit; font-size: 10.5px; font-weight: 700;
@@ -167,8 +170,8 @@
     text-overflow: ellipsis; padding: 2px 7px; border-radius: 999px; cursor: pointer;
     border: 1px solid rgba(255,217,104,.4); background: rgba(8,17,36,.55); color: #ffd968;
     backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); text-shadow: 0 1px 5px rgba(0,0,0,.55); }
-  .rlab.row0 { bottom: 13px; }
-  .rlab.row1 { bottom: 27px; }
+  .rlab.row0 { bottom: 16px; }
+  .rlab.row1 { bottom: 43px; }
   .rlab.cur { background: rgba(255,217,104,.3); color: #fff; border-color: #ffd968; z-index: 3; }
   #progwrap { height: 5px; background: rgba(255,255,255,.3); border-radius: 3px; overflow: hidden; margin-bottom: 10px; }
   #prog { height: 100%; width: 0; background: #ffd968; border-radius: 3px; transition: width .3s; }
@@ -178,6 +181,9 @@
   .cbtn.main { background: #0b3d91; color: #fff; }
   #modebtn { font-family: inherit; font-size: 13.5px; font-weight: 700; padding: 11px 16px; border-radius: 999px;
     border: 1px solid #b8860b; background: #fff8e1; color: #7a5b00; cursor: pointer; letter-spacing: .6px; }
+  /* narration mute + volume (YouTube-style, show page only) */
+  #mutebtn { font-size: 19px; flex: none; }
+  #volslider { width: 92px; accent-color: #ffd968; cursor: pointer; flex: none; }
   #counter { font-size: 13.5px; color: rgba(255,255,255,.88); letter-spacing: 1px; text-shadow: 0 1px 6px rgba(0,0,0,.6); }
   #secname { font-size: 13.5px; color: #ffd968; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 1px 6px rgba(0,0,0,.6); }
@@ -248,6 +254,9 @@
     <button class="cbtn" id="nextslide" title="Pantalla siguiente">⏭</button>
     <button id="modebtn">AUTOSCROLL: ON</button>
     <button id="objbtn">🛡️ Objeciones</button>
+    <button class="cbtn" id="mutebtn" title="Voz: silenciar / activar — Voice: mute / unmute">🔊</button>
+    <input type="range" id="volslider" min="0" max="100" step="1" value="100" title="Volumen de la voz / Narration volume">
+    <audio id="narr" preload="auto"></audio>
     <div id="counter"></div>
     <div class="spacer" style="flex:1"></div>
     <div id="secname"></div>
@@ -303,16 +312,16 @@ function deriveClient(c){
   else { var s47 = Math.max(payoff * 0.47, 3500); price = s47 + (s47 < 10000 ? 299 : 399); }
   var mfmo = Math.floor(mf / 12);
   var mf5 = mfCum(mf, esc, 5), mf10 = mfCum(mf, esc, 10), mf20 = mfCum(mf, esc, 20),
-      mf40 = mfCum(mf, esc, 40);
+      mf30 = mfCum(mf, esc, 30), mf40 = mfCum(mf, esc, 40);
   var mfy10 = Math.round(mf * Math.pow(1 + esc, 9) * 100) / 100;
   return { mrem: mrem, t3: t3, t5: t5, t10: t10, t20: t20,
     loan: Math.round(loan * 100) / 100, sched: Math.round(sched * 100) / 100,
     intpct: Math.round(intpct * 10) / 10, price: Math.round(price * 100) / 100,
     save20: Math.round((t20 - price) * 100) / 100, mfmo: mfmo,
-    mf5: mf5, mf10: mf10, mf20: mf20, mf40: mf40, mfy10: mfy10,
+    mf5: mf5, mf10: mf10, mf20: mf20, mf30: mf30, mf40: mf40, mfy10: mfy10,
     totmo: Math.round((mmo + mfmo) * 100) / 100, totyr: Math.round((mmo * 12 + mf) * 100) / 100,
     f: { payoff: fmtC(payoff), mmo: fmtC(mmo), mfyr: fmtC(mf), mfmo: fmtD(mfmo),
-         mf5: fmtC(mf5), mf10: fmtC(mf10), mf20: fmtC(mf20), mf40: fmtC(mf40), mfy10: fmtC(mfy10),
+         mf5: fmtC(mf5), mf10: fmtC(mf10), mf20: fmtC(mf20), mf30: fmtC(mf30), mf40: fmtC(mf40), mfy10: fmtC(mfy10),
          totmo: fmtC(mmo + mfmo), totyr: fmtC(mmo * 12 + mf), t3: fmtC(t3), t5: fmtC(t5),
          t10: fmtC(t10), t20: fmtC(t20), loan: fmtC(loan), sched: fmtC(sched),
          price: fmtD(price), save20: fmtC(t20 - price) } };
@@ -320,15 +329,16 @@ function deriveClient(c){
 /* MATH-PORT-END */
 
 /* Maintenance-only figures for clients whose clients.js record carries a
-   PRECOMPUTED derived block (those blocks predate MF5/MF10/MF20/MF40/MFY10):
-   merge the four values into derived.f from the record's own mf/esc so the
+   PRECOMPUTED derived block (those blocks predate MF5/MF10/MF20/MF30/MF40/MFY10):
+   merge the values into derived.f from the record's own mf/esc so the
    tokens always resolve — a raw {{MF5}} must never reach the screen. */
 function mfFigures(c){
   if (!c) return null;
   var mf = +c.mf || 0, esc = (+c.esc || 8) / 100;
   if (mf <= 0) return null;
   return { mf5: fmtC(mfCum(mf, esc, 5)), mf10: fmtC(mfCum(mf, esc, 10)),
-           mf20: fmtC(mfCum(mf, esc, 20)), mf40: fmtC(mfCum(mf, esc, 40)),
+           mf20: fmtC(mfCum(mf, esc, 20)), mf30: fmtC(mfCum(mf, esc, 30)),
+           mf40: fmtC(mfCum(mf, esc, 40)),
            mfy10: fmtC(Math.round(mf * Math.pow(1 + esc, 9) * 100) / 100) };
 }
 function ensureMf(){
@@ -393,7 +403,8 @@ function tokens(){
     '{{PAYOFF}}': f ? f.payoff : miss, '{{MMO}}': f ? f.mmo : miss,
     '{{MFYR}}': f ? f.mfyr : miss, '{{MFMO}}': f ? f.mfmo : miss,
     '{{MF5}}': f && f.mf5 ? f.mf5 : miss, '{{MF10}}': f && f.mf10 ? f.mf10 : miss,
-    '{{MF20}}': f && f.mf20 ? f.mf20 : miss, '{{MF40}}': f && f.mf40 ? f.mf40 : miss,
+    '{{MF20}}': f && f.mf20 ? f.mf20 : miss, '{{MF30}}': f && f.mf30 ? f.mf30 : miss,
+    '{{MF40}}': f && f.mf40 ? f.mf40 : miss,
     '{{MFY10}}': f && f.mfy10 ? f.mfy10 : miss,
     '{{TOTMO}}': f ? f.totmo : miss, '{{TOTYR}}': f ? f.totyr : miss,
     '{{T3}}': f ? f.t3 : miss, '{{T5}}': f ? f.t5 : miss,
@@ -535,6 +546,7 @@ function render(){
   applyChunk();
   syncModeBtn(); markRuler();
   renderRail(); /* side rail values always current for this slide's client */
+  audSetupSlide(); /* narration companion track follows the slide (ES only) */
 }
 /* ---- highlight chunks: windows of 4-6 words, 3-4 steps per slide ---- */
 function wordEls(){ return document.querySelectorAll('#stage .txt .w'); }
@@ -595,6 +607,16 @@ function tick(now){
   elapsed += (now - lastTick) / 1000 * SPEED;
   lastTick = now;
   var sl = slides[idx];
+  if (audMode && audChainCur && narr && !narr.paused){
+    /* audio-driven slide: the voice's position inside this slide's
+       window sets the progress — highlights scale proportionally.
+       prog >= 1 falls through with elapsed == sl.dur into the normal
+       advance / numbers-hold logic below. If the voice is paused or
+       blocked, this branch is skipped and the timer carries the slide. */
+    var prog = audSeg > 0 ? (narr.currentTime - audOff) / audSeg : 1;
+    elapsed = Math.max(0, Math.min(1, prog)) * sl.dur;
+    if (prog < 1){ markCurrent(); rafId = requestAnimationFrame(tick); return; }
+  }
   if (elapsed >= sl.dur){
     if (sl.panel){ /* NUMBERS HOLD (Sebastian, 2026-11-23): a slide showing a set of numbers (panel = confirm / buildup / price / pricenote / qnums — any panel slide) stays on screen for as long as it takes him to say his own words about them — no script, no auto-advance; he moves on with the double arrow */
       elapsed = sl.dur; markCurrent();
@@ -609,6 +631,121 @@ function tick(now){
 function startTimer(){
   if (rafId == null && auto && playing){ lastTick = null; rafId = requestAnimationFrame(tick); } /* restarting the loop always starts the clock clean */
 }
+
+/* ================= NARRATION AUDIO — ES PILOT (Sebastian, 2026-11-23) ==
+   Ramona's voice speaking IN SYNC with the highlights, with a
+   YouTube-style mute + volume on the show page (never system volume).
+   Assets: audio-es/manifest.json maps slide index -> {file, dur, hash,
+   joined / cross_slide / join_in / skipped_tokens}, built by
+   ~/workspace/apertura-video/show-audio-es/build_show_audio.py — every
+   recording is COMPLETE grammatical sentences only; fragments were
+   joined, and a joined sentence's audio lives in the mp3 of the slide
+   where the sentence STARTS (the following slides are join_in and
+   CONTINUE that same mp3 across the slide change — never restart it).
+   Engine: a per-slide companion track. On an ES slide whose chain has
+   audio, the AUDIO drives the slide timing — highlight chunks advance
+   proportionally across the audio's duration (each chain slide owns
+   the share of the mp3 proportional to its deck duration). Slides
+   with no audio (token slides flagged skipped_tokens, panel / break /
+   title cards) run the timer engine at SPEED 0.85 exactly as before,
+   and a numbers panel still HOLDS silently. EN slides never engage
+   the audio (EN narration comes later). Pause / step / hold pause the
+   voice too; unmuting mid-slide resumes it at the elapsed proportion.
+   Autoplay-with-sound can be blocked before the first user gesture —
+   the timer carries the show until a gesture unlocks the voice. */
+var narr = $('narr');
+var audManifest = null;   /* loaded async; null = timer engine only */
+var audMode = false;      /* the current slide is audio-driven */
+var audChainCur = null;   /* {start, end, entry} of the loaded chain */
+var audOff = 0, audSeg = 0; /* this slide's window inside the chain mp3 */
+var showMuted = false, showVolume = 1;
+try {
+  showMuted = localStorage.getItem('showMuted') === '1';
+  var sv0 = parseFloat(localStorage.getItem('showVolume'));
+  if (!isNaN(sv0)) showVolume = Math.max(0, Math.min(1, sv0));
+} catch(e){}
+if (narr){ narr.muted = showMuted; narr.volume = showVolume; }
+function audChain(i){
+  if (!audManifest) return null;
+  var s = i;
+  while (s > 0 && audManifest[s] && audManifest[s].join_in) s--;
+  var e0 = audManifest[s];
+  if (!e0 || !e0.file) return null;
+  var e = s;
+  while (audManifest[e + 1] && audManifest[e + 1].join_in) e++;
+  return { start: s, end: e, entry: e0 };
+}
+function audStop(){
+  audMode = false; audChainCur = null;
+  if (narr && !narr.paused) narr.pause();
+}
+function audPlay(){
+  if (!narr) return;
+  var p = null;
+  try { p = narr.play(); } catch(e){}
+  if (p && p.catch) p.catch(function(){ /* blocked until first gesture — the timer carries the show */ });
+}
+function audSeekToElapsed(){
+  if (!audMode || !audChainCur || !slides.length) return;
+  var sl = slides[idx];
+  if (!sl || audSeg <= 0) return;
+  var target = audOff + (sl.dur > 0 ? elapsed / sl.dur : 0) * audSeg;
+  var max = audChainCur.entry.dur || target;
+  try { narr.currentTime = Math.max(0, Math.min(max, target)); } catch(e){}
+}
+function audSetupSlide(){
+  if (!narr) return;
+  if (lang !== 'es' || !audManifest || !slides.length){ audStop(); return; }
+  var ch = audChain(idx);
+  if (!ch){ audStop(); return; }
+  var sum = 0, k;
+  for (k = ch.start; k <= ch.end; k++) sum += slides[k].dur;
+  if (sum <= 0){ audStop(); return; }
+  var off = 0;
+  for (k = ch.start; k < idx; k++) off += ch.entry.dur * slides[k].dur / sum;
+  var same = audChainCur && audChainCur.entry.file === ch.entry.file;
+  audChainCur = ch; audOff = off;
+  audSeg = ch.entry.dur * slides[idx].dur / sum;
+  audMode = true;
+  if (!same){
+    narr.src = 'audio-es/' + ch.entry.file;
+    narr._seekOnLoad = off > 0.05 ? off : null;
+    try { narr.load(); } catch(e){}
+  } else if (Math.abs(narr.currentTime - off) > 1.0){
+    try { narr.currentTime = off; } catch(e){} /* jumped into the chain: land on this slide's window */
+  }
+  if (auto && playing && !held) audPlay();
+}
+function audSyncBtn(){
+  var b = $('mutebtn');
+  if (b) b.textContent = showMuted ? '🔇' : '🔊';
+  var s = $('volslider');
+  if (s) s.value = Math.round(showVolume * 100);
+}
+if (narr){
+  narr.addEventListener('loadedmetadata', function(){
+    if (narr._seekOnLoad != null){
+      try { narr.currentTime = narr._seekOnLoad; } catch(e){}
+      narr._seekOnLoad = null;
+    }
+  });
+  narr.addEventListener('ended', function(){
+    if (audMode && audChainCur && idx === audChainCur.end && auto && playing && !held){
+      if (idx < slides.length - 1) go(idx + 1);
+      else { playing = false; syncModeBtn(); }
+    }
+  });
+}
+document.addEventListener('pointerdown', function(){
+  if (audMode && auto && playing && narr && narr.paused){ audSeekToElapsed(); audPlay(); }
+}, true);
+if (window.fetch){
+  fetch('audio-es/manifest.json').then(function(r){ return r.json(); }).then(function(m){
+    audManifest = m;
+    audSetupSlide(); /* the boot render may already have happened */
+  }).catch(function(){ /* no manifest reachable: timer engine, exactly as before */ });
+}
+audSyncBtn();
 function go(n){
   held = false;
   idx = Math.max(0, Math.min(slides.length - 1, n));
@@ -636,8 +773,8 @@ function setAuto(on){
                    AUTOSCROLL is playing; no stale-flag window in between */
   document.body.classList.toggle('auto', auto);
   syncModeBtn();
-  if (auto){ startTimer(); }
-  else { applyChunk(); } /* MANUAL keeps the current chunk highlighted */
+  if (auto){ if (audMode){ audSeekToElapsed(); audPlay(); } startTimer(); }
+  else { if (narr && !narr.paused) narr.pause(); applyChunk(); } /* MANUAL keeps the current chunk highlighted; stepping manually stops the voice */
 }
 /* PLAY/PAUSE — the ONE toggle behind the small button, the BIG mid-stage
    button (the stage delegation routes it to the small one), the spacebar
@@ -657,6 +794,8 @@ function togglePlay(){
   if (!auto){ setAuto(true); return; }
   playing = !playing;
   syncModeBtn();
+  if (!playing){ if (narr && !narr.paused) narr.pause(); } /* the voice pauses with the show */
+  else if (audMode){ audSeekToElapsed(); audPlay(); }
   if (playing) startTimer();
 }
 /* NAVIGATION (Sebastian, 2026-11-23): DOUBLE arrows (⏮/⏭) move between
@@ -756,28 +895,57 @@ function resetBg(){
 cycleBg(); setInterval(cycleBg, 9000);
 
 /* background VIDEO (Sebastian, 2026-11-23) — the rolling watercolor
-   montage from the downloaded karaoke video, web-encoded as
-   img/bg-montage.mp4. It fades in over the photo layers only once it
-   can actually play, and runs continuously across slides (render()
-   never touches it). ANY failure — error event, blocked autoplay, a
-   load that never produces data — hides it and the folk-photo
-   rotation above carries on exactly as before. */
-(function(){
+   montage from the downloaded karaoke video, web-encoded in img/.
+   BY LANGUAGE (Sebastian, 2026-11-23): the SPANISH show runs the
+   South-American folkloric montage (img/bg-montage.mp4); the ENGLISH
+   show runs the AMERICAN montage (img/bg-montage-en.mp4) — the
+   language toggle swaps the video source too (setBgVideo, called from
+   setLang). It fades in over the photo layers only once it can
+   actually play, and runs continuously across slides (render() never
+   touches it). Failure chain: EN file fails -> ES montage -> the
+   folk-photo rotation above carries on exactly as before. */
+var bgvDead = { es: false, en: false };
+function bgSrcFor(l){ return l === 'en' ? 'img/bg-montage-en.mp4' : 'img/bg-montage.mp4'; }
+function setBgVideo(){
   var v = $('bgvid');
   if (!v) return;
-  var dead = false;
-  function fail(){
-    if (dead) return; dead = true;
-    v.classList.remove('on');
-    v.style.display = 'none';
-    try { v.pause(); } catch(e){}
+  var want = bgSrcFor(lang);
+  if (bgvDead[lang]){
+    if (lang === 'en' && !bgvDead.es) want = bgSrcFor('es'); /* EN dead: ES montage carries the EN show */
+    else { v.classList.remove('on'); v.style.display = 'none'; try { v.pause(); } catch(e){} return; }
   }
-  v.addEventListener('error', fail, true);
-  v.addEventListener('canplay', function(){ if (!dead) v.classList.add('on'); });
+  v.style.display = '';
+  if (v.getAttribute('src') !== want){
+    v.setAttribute('src', want);
+    try { v.load(); } catch(e){}
+    setTimeout(function(){
+      if (v.getAttribute('src') === want && v.readyState === 0) bgvFail();
+    }, 20000);
+  }
   var p = null;
   try { p = v.play(); } catch(e){ /* ancient browser: photos carry on */ }
   if (p && p.catch) p.catch(function(){ /* autoplay blocked: stay on the photos */ });
-  setTimeout(function(){ if (v.readyState === 0) fail(); }, 20000);
+}
+function bgvFail(){
+  var v = $('bgvid');
+  if (!v) return;
+  var cur = v.getAttribute('src');
+  if (lang === 'en' && cur === bgSrcFor('en') && !bgvDead.es){
+    bgvDead.en = true; /* the American file failed: fall back to the ES montage */
+    setBgVideo();
+    return;
+  }
+  if (cur === bgSrcFor('es')) bgvDead.es = true; else bgvDead.en = true;
+  v.classList.remove('on');
+  v.style.display = 'none';
+  try { v.pause(); } catch(e){}
+}
+(function(){
+  var v = $('bgvid');
+  if (!v) return;
+  v.addEventListener('error', function(){ bgvFail(); }, true);
+  v.addEventListener('canplay', function(){ if (v.style.display !== 'none') v.classList.add('on'); });
+  setBgVideo();
 })();
 
 /* client select */
@@ -836,6 +1004,30 @@ $('stage').addEventListener('click', function(e){
   toggleStagePlay();
 });
 $('modebtn').addEventListener('click', function(){ setAuto(!auto); });
+/* narration mute + volume — YouTube-style, on the show page only: they
+   drive ONLY the narration <audio> element (the background video is
+   muted by design; system/browser volume is never touched) and
+   persist in localStorage (showMuted / showVolume). Muting silences
+   the voice while the show continues; unmuting mid-slide resumes the
+   voice at the elapsed proportion. */
+$('mutebtn').addEventListener('click', function(){
+  showMuted = !showMuted;
+  try { localStorage.setItem('showMuted', showMuted ? '1' : '0'); } catch(e){}
+  if (narr) narr.muted = showMuted;
+  audSyncBtn();
+  if (!showMuted && audMode && auto && playing){ audSeekToElapsed(); audPlay(); }
+});
+$('volslider').addEventListener('input', function(){
+  showVolume = this.value / 100;
+  try { localStorage.setItem('showVolume', String(showVolume)); } catch(e){}
+  if (narr) narr.volume = showVolume;
+  if (showVolume > 0 && showMuted){
+    showMuted = false;
+    if (narr) narr.muted = false;
+    try { localStorage.setItem('showMuted', '0'); } catch(e){}
+    audSyncBtn();
+  }
+});
 $('seekzone').addEventListener('click', function(e){
   if (!slides.length) return;
   var lab = e.target.closest('.rlab');
@@ -873,6 +1065,7 @@ function setLang(nl){
   idx = Math.max(0, Math.min(slides.length - 1, idx));
   buildRuler(); /* chapter ruler follows the loaded deck + language */
   resetBg(); /* background pool follows the language */
+  setBgVideo(); /* background VIDEO follows the language too (ES folk / EN American) */
   render(); startTimer();
 }
 $('btnEn').addEventListener('click', function(){ setLang('en'); });
@@ -905,6 +1098,7 @@ function openObj(){
   $('objbg').style.backgroundImage = live.style.backgroundImage || ('url(' + bgUrl(0) + ')');
   $('obj').classList.add('open');
   if (rafId != null){ cancelAnimationFrame(rafId); rafId = null; }
+  if (narr && !narr.paused) narr.pause(); /* the voice freezes with the show */
   renderObj();
 }
 function closeObj(){
@@ -912,6 +1106,7 @@ function closeObj(){
   objOpen = false;
   $('obj').classList.remove('open');
   lastTick = null; /* resume the frozen slide cleanly */
+  if (audMode && auto && playing){ audSeekToElapsed(); audPlay(); }
   startTimer();
 }
 function renderObj(){
@@ -968,6 +1163,7 @@ $('objwrap').addEventListener('click', function(e){
 });
 
 function renderDbNotice(){
+  audStop(); /* no narration on the deed-back notice */
   $('stage').innerHTML = '<div class="card"><div class="sec">Deed-back</div>' +
     '<div class="notice">Este cliente es <b>deed-back</b>. El show de deed-back usa este mismo motor ' +
     '(historia de mantenimiento y lista, sin hipoteca) — su archivo de datos es la variante pendiente.<br><br>' +
