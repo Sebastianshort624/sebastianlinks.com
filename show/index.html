@@ -239,6 +239,7 @@
   <button class="langbtn" id="btnEn">Eng</button>
   <button class="langbtn act" id="btnMtg">MTG</button>
   <button class="langbtn" id="btnDb">DB</button>
+  <button class="langbtn" id="btnFu">FU</button>
 </header>
 
 <div id="stage"></div>
@@ -270,6 +271,7 @@
 <script src="deck-en-mtg.js"></script>
 <script src="deck-es-db.js"></script>
 <script src="deck-en-db.js"></script>
+<script src="deck-en-fu.js"></script>
 <script src="objections-es.js"></script>
 <script src="objections-en.js"></script>
 <script>
@@ -385,10 +387,23 @@ var $ = function(id){ return document.getElementById(id); };
 var params = new URLSearchParams(location.search);
 var CLIENTS = window.DECK_CLIENTS || {};
 var DECKS = { es: { MTG: window.DECK_TEXT_ES_MTG || null, DB: window.DECK_TEXT_ES_DB || null },
-              en: { MTG: window.DECK_TEXT_EN_MTG || null, DB: window.DECK_TEXT_EN_DB || null } };
+              en: { MTG: window.DECK_TEXT_EN_MTG || null, DB: window.DECK_TEXT_EN_DB || null,
+                    FU: window.DECK_TEXT_EN_FU || null } };
 var lang = (params.get('lang') === 'en' && DECKS.en.MTG) ? 'en' : 'es';
 var typeParam = (params.get('type') || '').toLowerCase();
-var dtype = typeParam === 'db' ? 'DB' : (typeParam === 'mtg' ? 'MTG' : null); /* null = follow the record, decided at boot */
+var dtype = typeParam === 'db' ? 'DB' : (typeParam === 'mtg' ? 'MTG' : (typeParam === 'fu' ? 'FU' : null)); /* null = follow the record, decided at boot */
+/* deck resolution: FU exists only in English (deck-en-fu.js). FU in
+   English serves the FU deck when the file has loaded; FU in Spanish
+   (no ES FU deck yet) — and FU before the EN file lands — falls back
+   to the current language's MTG deck; the FU option stays visible and
+   selected either way. */
+function deckFor(l, t){
+  if (t === 'FU'){
+    if (l === 'en' && DECKS.en.FU) return DECKS.en.FU;
+    return DECKS[l].MTG;
+  }
+  return DECKS[l][t] || DECKS[l].MTG;
+}
 var DECK = null; /* set by loadDeck() once the record (and so the type) is known */
 var clientId = params.get('c') || 'c-balderas-1122';
 if (!CLIENTS[clientId]) clientId = Object.keys(CLIENTS)[0];
@@ -1095,7 +1110,7 @@ document.addEventListener('keydown', function(e){
    it exists in the new deck (else clamped to the last slide); play
    state is preserved (render + startTimer resume the show). */
 function loadDeck(){
-  DECK = DECKS[lang][dtype] || DECKS[lang].MTG;
+  DECK = deckFor(lang, dtype);
   slides = DECK ? DECK.slides : [];
   idx = Math.max(0, Math.min(slides.length - 1, idx));
   buildRuler(); /* chapter ruler follows the loaded deck */
@@ -1111,7 +1126,7 @@ function setLang(nl){
   $('btnEn').classList.toggle('act', nl === 'en');
   $('objbtn').textContent = OBJL[nl].btn;
   if (objOpen) renderObj(); /* menu follows the show's language */
-  if (!DECKS[nl][dtype]) dtype = dtype === 'DB' ? 'MTG' : 'DB'; /* no such deck in this language: fall back */
+  if (dtype !== 'FU' && !DECKS[nl][dtype]) dtype = dtype === 'DB' ? 'MTG' : 'DB'; /* no such deck in this language: fall back (FU keeps its type; deckFor serves the MTG fallback) */
   syncTypeBtns();
   resetBg(); /* background pool follows the language */
   setBgVideo(); /* background VIDEO follows the language too (ES folk / EN American) */
@@ -1119,24 +1134,29 @@ function setLang(nl){
 }
 $('btnEn').addEventListener('click', function(){ setLang('en'); });
 $('btnEs').addEventListener('click', function(){ setLang('es'); });
-/* TYPE TOGGLE (Sebastian, 2026-11-23): MTG | DB buttons in the top bar
-   beside the language toggle — where he sees the Spanish/English and
-   Mortgage/Deed-back options. A deed-back record opens the DB deck by
-   default (?type=mtg|db overrides); flipping the toggle swaps the deck
-   in the current language, keeping the slide position. */
+/* TYPE TOGGLE (Sebastian, 2026-11-23): MTG | DB | FU buttons in the
+   top bar beside the language toggle — where he sees the Spanish/
+   English and Mortgage/Deed-back/Follow-up options. A deed-back
+   record opens the DB deck by default (?type=mtg|db|fu overrides);
+   flipping the toggle swaps the deck in the current language, keeping
+   the slide position. FU is English-only for now (deck-en-fu.js);
+   FU + Spanish serves the ES MTG deck until an ES FU deck exists. */
 function syncTypeBtns(){
-  var bm = $('btnMtg'), bd = $('btnDb');
+  var bm = $('btnMtg'), bd = $('btnDb'), bf = $('btnFu');
   if (bm) bm.classList.toggle('act', dtype === 'MTG');
   if (bd) bd.classList.toggle('act', dtype === 'DB');
+  if (bf) bf.classList.toggle('act', dtype === 'FU');
 }
 function setType(nt){
-  if (nt === dtype || !DECKS[lang][nt]) return;
+  if (nt === dtype) return;
+  if (nt !== 'FU' && !DECKS[lang][nt]) return; /* FU always selectable: deckFor falls back to MTG until an FU deck exists in this language */
   dtype = nt;
   syncTypeBtns();
   loadDeck();
 }
 $('btnMtg').addEventListener('click', function(){ setType('MTG'); });
 $('btnDb').addEventListener('click', function(){ setType('DB'); });
+$('btnFu').addEventListener('click', function(){ setType('FU'); });
 
 /* ================= OBJECTIONS (Sebastian, 2026-11-23) =================
    Constant 🛡️ button in the controls. Level 1 = categories, level 2 =
@@ -1389,9 +1409,9 @@ $('btnEn').classList.toggle('act', lang === 'en');
    deed-back record opens the deed-back deck). The header MTG|DB
    toggle can flip it live from here. */
 if (!dtype) dtype = client.dtype === 'DB' ? 'DB' : 'MTG';
-if (!DECKS[lang][dtype]) dtype = dtype === 'DB' ? 'MTG' : 'DB';
+if (dtype !== 'FU' && !DECKS[lang][dtype]) dtype = dtype === 'DB' ? 'MTG' : 'DB';
 syncTypeBtns();
-if (!DECKS[lang][dtype]){
+if (!deckFor(lang, dtype)){
   $('stage').innerHTML = '<div class="card"><div class="notice">Deck data missing.</div></div>';
 } else {
   document.body.classList.add('auto');
