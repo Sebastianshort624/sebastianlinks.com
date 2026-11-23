@@ -580,9 +580,9 @@ window.DECK_TEXT_ES_DB = {
      "d": 5.15
     },
     {
-     "x": "—No.",
+     "x": "—Por supuesto que no.",
      "s": 276.4,
-     "d": 1.2,
+     "d": 2.06,
      "beat": true
     },
     {
@@ -593,7 +593,7 @@ window.DECK_TEXT_ES_DB = {
    ],
    "panel": null,
    "start": 271.25,
-   "dur": 10.22,
+   "dur": 11.08,
    "img": 1048
   },
   {
@@ -612,7 +612,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 281.47,
+   "start": 282.33,
    "dur": 9.91,
    "img": 1029
   },
@@ -626,9 +626,9 @@ window.DECK_TEXT_ES_DB = {
      "d": 5.15
     },
     {
-     "x": "—No.",
+     "x": "—Por supuesto que no.",
      "s": 296.53,
-     "d": 1.2,
+     "d": 2.06,
      "beat": true
     },
     {
@@ -638,8 +638,8 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 291.38,
-   "dur": 10.22,
+   "start": 292.24,
+   "dur": 11.08,
    "img": 1029
   },
   {
@@ -658,7 +658,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 301.6,
+   "start": 303.32,
    "dur": 11.5,
    "img": 164
   },
@@ -672,9 +672,9 @@ window.DECK_TEXT_ES_DB = {
      "d": 5.15
     },
     {
-     "x": "—No.",
+     "x": "—Por supuesto que no.",
      "s": 318.25,
-     "d": 1.2,
+     "d": 2.06,
      "beat": true
     },
     {
@@ -684,8 +684,8 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 313.1,
-   "dur": 10.22,
+   "start": 314.82,
+   "dur": 11.08,
    "img": 164
   },
   {
@@ -704,7 +704,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 323.32,
+   "start": 325.9,
    "dur": 9.36,
    "img": 1040
   },
@@ -718,9 +718,9 @@ window.DECK_TEXT_ES_DB = {
      "d": 5.15
     },
     {
-     "x": "—No.",
+     "x": "—Por supuesto que no.",
      "s": 337.83,
-     "d": 1.2,
+     "d": 2.06,
      "beat": true
     },
     {
@@ -730,8 +730,8 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 332.68,
-   "dur": 10.22,
+   "start": 335.26,
+   "dur": 11.08,
    "img": 1040
   },
   {
@@ -750,7 +750,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 342.9,
+   "start": 346.34,
    "dur": 9.79,
    "img": 1048
   },
@@ -764,9 +764,9 @@ window.DECK_TEXT_ES_DB = {
      "d": 4.64
     },
     {
-     "x": "—No.",
+     "x": "—Por supuesto que no.",
      "s": 357.84,
-     "d": 1.2,
+     "d": 2.06,
      "beat": true
     },
     {
@@ -776,8 +776,8 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 352.69,
-   "dur": 9.71,
+   "start": 356.13,
+   "dur": 10.57,
    "img": 1048
   },
   {
@@ -796,7 +796,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 362.4,
+   "start": 366.7,
    "dur": 8.35,
    "img": 1029
   },
@@ -810,9 +810,9 @@ window.DECK_TEXT_ES_DB = {
      "d": 5.15
     },
     {
-     "x": "—No.",
+     "x": "—Por supuesto que no.",
      "s": 375.9,
-     "d": 1.2,
+     "d": 2.06,
      "beat": true
     },
     {
@@ -822,8 +822,8 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 370.75,
-   "dur": 10.22,
+   "start": 375.05,
+   "dur": 11.08,
    "img": 1029
   },
   {
@@ -847,7 +847,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 5.43
     }
    ],
-   "start": 380.97,
+   "start": 386.13,
    "dur": 11.7,
    "img": 1029
   },
@@ -862,7 +862,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 5.36
     }
    ],
-   "start": 392.67,
+   "start": 397.83,
    "dur": 5.36,
    "img": 164
   },
@@ -877,7 +877,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 9.63
     }
    ],
-   "start": 398.03,
+   "start": 403.19,
    "dur": 9.63,
    "img": 1018
   },
@@ -892,7 +892,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 10.04
     }
    ],
-   "start": 407.66,
+   "start": 412.82,
    "dur": 10.04,
    "img": 1039
   },
@@ -912,7 +912,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 8.24
     }
    ],
-   "start": 417.7,
+   "start": 422.86,
    "dur": 9.11,
    "img": 1018
   },
@@ -927,7 +927,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 3.89
     }
    ],
-   "start": 426.81,
+   "start": 431.97,
    "dur": 3.89,
    "img": 1036
   },
@@ -952,7 +952,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 4.69
     }
    ],
-   "start": 430.7,
+   "start": 435.86,
    "dur": 7.57,
    "img": 1039
   },
@@ -977,7 +977,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 2.22
     }
    ],
-   "start": 438.27,
+   "start": 443.43,
    "dur": 15.1,
    "img": 1018
   },
@@ -992,7 +992,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 8.16
     }
    ],
-   "start": 453.37,
+   "start": 458.53,
    "dur": 8.16,
    "img": 1036
   },
@@ -1007,7 +1007,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 2.74
     }
    ],
-   "start": 461.53,
+   "start": 466.69,
    "dur": 2.74,
    "img": 1039
   },
@@ -1027,7 +1027,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 5.36
     }
    ],
-   "start": 464.27,
+   "start": 469.43,
    "dur": 12.85,
    "img": 1018
   },
@@ -1042,7 +1042,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 5.67
     }
    ],
-   "start": 477.12,
+   "start": 482.28,
    "dur": 5.67,
    "img": 1039
   },
@@ -1057,7 +1057,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 5.15
     }
    ],
-   "start": 482.79,
+   "start": 487.95,
    "dur": 5.15,
    "img": 1036
   },
@@ -1072,7 +1072,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 6.18
     }
    ],
-   "start": 487.94,
+   "start": 493.1,
    "dur": 6.18,
    "img": 1036
   },
@@ -1087,7 +1087,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 11.33
     }
    ],
-   "start": 494.12,
+   "start": 499.28,
    "dur": 11.33,
    "img": 1036
   },
@@ -1102,7 +1102,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 3.6
     }
    ],
-   "start": 505.45,
+   "start": 510.61,
    "dur": 3.6,
    "img": 1036
   },
@@ -1117,7 +1117,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 8.76
     }
    ],
-   "start": 509.05,
+   "start": 514.21,
    "dur": 8.76,
    "img": 1036
   },
@@ -1147,7 +1147,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 1.03
     }
    ],
-   "start": 517.81,
+   "start": 522.97,
    "dur": 26.78,
    "img": 1036
   },
@@ -1162,7 +1162,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 5.34
     }
    ],
-   "start": 544.59,
+   "start": 549.75,
    "dur": 5.34,
    "img": 1039
   },
@@ -1182,7 +1182,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 4.25
     }
    ],
-   "start": 549.93,
+   "start": 555.09,
    "dur": 8.91,
    "img": 1018
   },
@@ -1197,7 +1197,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 9.36
     }
    ],
-   "start": 558.84,
+   "start": 564.0,
    "dur": 9.36,
    "img": 1036
   },
@@ -1212,7 +1212,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 4.66
     }
    ],
-   "start": 568.2,
+   "start": 573.36,
    "dur": 4.66,
    "img": 1039
   },
@@ -1247,7 +1247,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 1.26
     }
    ],
-   "start": 572.86,
+   "start": 578.02,
    "dur": 8.42,
    "img": 1018
   },
@@ -1262,7 +1262,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 3.8
     }
    ],
-   "start": 581.28,
+   "start": 586.44,
    "dur": 3.8,
    "img": 1036
   },
@@ -1277,7 +1277,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 9.25
     }
    ],
-   "start": 585.08,
+   "start": 590.24,
    "dur": 9.25,
    "img": 1039
   },
@@ -1292,7 +1292,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 8.6
     }
    ],
-   "start": 594.33,
+   "start": 599.49,
    "dur": 8.6,
    "img": 1018
   },
@@ -1312,7 +1312,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 4.93
     }
    ],
-   "start": 602.93,
+   "start": 608.09,
    "dur": 11.7,
    "img": 1036
   },
@@ -1327,7 +1327,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 9.29
     }
    ],
-   "start": 614.63,
+   "start": 619.79,
    "dur": 9.29,
    "img": 1039
   },
@@ -1342,7 +1342,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 5.67
     }
    ],
-   "start": 623.92,
+   "start": 629.08,
    "dur": 5.67,
    "img": 1036
   },
@@ -1357,7 +1357,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 8.76
     }
    ],
-   "start": 629.59,
+   "start": 634.75,
    "dur": 8.76,
    "img": 1039
   },
@@ -1366,7 +1366,7 @@ window.DECK_TEXT_ES_DB = {
    "kind": "break",
    "sentences": [],
    "panel": null,
-   "start": 638.35,
+   "start": 643.51,
    "dur": 2.0,
    "img": 1039
   },
@@ -1381,7 +1381,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 3.51
     }
    ],
-   "start": 640.35,
+   "start": 645.51,
    "dur": 3.51,
    "img": 1041
   },
@@ -1396,7 +1396,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 11.86
     }
    ],
-   "start": 643.86,
+   "start": 649.02,
    "dur": 11.86,
    "img": 1044
   },
@@ -1411,7 +1411,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 3.34
     }
    ],
-   "start": 655.72,
+   "start": 660.88,
    "dur": 3.34,
    "img": 1041
   },
@@ -1426,7 +1426,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 5.95
     }
    ],
-   "start": 659.06,
+   "start": 664.22,
    "dur": 5.95,
    "img": 1044
   },
@@ -1441,7 +1441,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 10.28
     }
    ],
-   "start": 665.01,
+   "start": 670.17,
    "dur": 10.28,
    "img": 1041
   },
@@ -1471,7 +1471,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 3.81
     }
    ],
-   "start": 675.29,
+   "start": 680.45,
    "dur": 11.01,
    "img": 1044
   },
@@ -1491,7 +1491,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 6.7
     }
    ],
-   "start": 686.3,
+   "start": 691.46,
    "dur": 7.98,
    "img": 1041
   },
@@ -1516,7 +1516,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 2.41
     }
    ],
-   "start": 694.28,
+   "start": 699.44,
    "dur": 10.05,
    "img": 1044
   },
@@ -1531,7 +1531,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 3.23
     }
    ],
-   "start": 704.33,
+   "start": 709.49,
    "dur": 3.23,
    "img": 1041
   },
@@ -1546,7 +1546,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 4.35
     }
    ],
-   "start": 707.56,
+   "start": 712.72,
    "dur": 4.35,
    "img": 1044
   },
@@ -1561,7 +1561,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 7.9
     }
    ],
-   "start": 711.91,
+   "start": 717.07,
    "dur": 7.9,
    "img": 1041
   },
@@ -1576,7 +1576,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 8.17
     }
    ],
-   "start": 719.81,
+   "start": 724.97,
    "dur": 8.17,
    "img": 1044
   },
@@ -1601,7 +1601,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 1.64
     }
    ],
-   "start": 727.98,
+   "start": 733.14,
    "dur": 6.56,
    "img": 1041
   },
@@ -1616,7 +1616,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 4.92
     }
    ],
-   "start": 734.54,
+   "start": 739.7,
    "dur": 4.92,
    "img": 1044
   },
@@ -1631,7 +1631,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 9.75
     }
    ],
-   "start": 739.46,
+   "start": 744.62,
    "dur": 9.75,
    "img": 1041
   },
@@ -1646,7 +1646,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 5.9
     }
    ],
-   "start": 749.21,
+   "start": 754.37,
    "dur": 5.9,
    "img": 1044
   },
@@ -1661,7 +1661,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 5.56
     }
    ],
-   "start": 755.11,
+   "start": 760.27,
    "dur": 5.56,
    "img": 1041
   },
@@ -1676,7 +1676,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 4.17
     }
    ],
-   "start": 760.67,
+   "start": 765.83,
    "dur": 4.17,
    "img": 1044
   },
@@ -1691,7 +1691,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 4.88
     }
    ],
-   "start": 764.84,
+   "start": 770.0,
    "dur": 4.88,
    "img": 1041
   },
@@ -1706,7 +1706,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 769.72,
+   "start": 774.88,
    "dur": 4.12,
    "img": 1041
   },
@@ -1721,7 +1721,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 773.84,
+   "start": 779.0,
    "dur": 9.27,
    "img": 1041
   },
@@ -1736,7 +1736,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 783.11,
+   "start": 788.27,
    "dur": 5.67,
    "img": 1041
   },
@@ -1751,7 +1751,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 788.78,
+   "start": 793.94,
    "dur": 4.63,
    "img": 1041
   },
@@ -1766,7 +1766,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 793.41,
+   "start": 798.57,
    "dur": 8.24,
    "img": 1041
   },
@@ -1775,7 +1775,7 @@ window.DECK_TEXT_ES_DB = {
    "kind": "break",
    "sentences": [],
    "panel": null,
-   "start": 801.65,
+   "start": 806.81,
    "dur": 2.0,
    "img": 1044
   },
@@ -1790,7 +1790,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 803.65,
+   "start": 808.81,
    "dur": 2.06,
    "img": 1050
   },
@@ -1805,7 +1805,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 805.71,
+   "start": 810.87,
    "dur": 5.67,
    "img": 1050
   },
@@ -1820,7 +1820,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 811.38,
+   "start": 816.54,
    "dur": 9.27,
    "img": 1050
   },
@@ -1835,7 +1835,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 820.65,
+   "start": 825.81,
    "dur": 8.24,
    "img": 1050
   },
@@ -1850,7 +1850,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 828.89,
+   "start": 834.05,
    "dur": 5.67,
    "img": 1050
   },
@@ -1870,7 +1870,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 7.21
     }
    ],
-   "start": 834.56,
+   "start": 839.72,
    "dur": 11.08,
    "img": 1050
   },
@@ -1885,7 +1885,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 7.95
     }
    ],
-   "start": 845.64,
+   "start": 850.8,
    "dur": 7.95,
    "img": 1040
   },
@@ -1900,7 +1900,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 9.46
     }
    ],
-   "start": 853.59,
+   "start": 858.75,
    "dur": 9.46,
    "img": 1050
   },
@@ -1915,7 +1915,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 7.54
     }
    ],
-   "start": 863.05,
+   "start": 868.21,
    "dur": 7.54,
    "img": 1040
   },
@@ -1930,7 +1930,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 10.18
     }
    ],
-   "start": 870.59,
+   "start": 875.75,
    "dur": 10.18,
    "img": 1050
   },
@@ -1955,7 +1955,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 0.83
     }
    ],
-   "start": 880.77,
+   "start": 885.93,
    "dur": 4.15,
    "img": 1040
   },
@@ -1970,7 +1970,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 8.29
     }
    ],
-   "start": 884.92,
+   "start": 890.08,
    "dur": 8.29,
    "img": 1050
   },
@@ -1985,7 +1985,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 6.56
     }
    ],
-   "start": 893.21,
+   "start": 898.37,
    "dur": 6.56,
    "img": 1040
   },
@@ -2000,7 +2000,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 1.61
     }
    ],
-   "start": 899.77,
+   "start": 904.93,
    "dur": 1.61,
    "img": 1050
   },
@@ -2015,7 +2015,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 13.39
     }
    ],
-   "start": 901.38,
+   "start": 906.54,
    "dur": 13.39,
    "img": 1040
   },
@@ -2035,7 +2035,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 1.98
     }
    ],
-   "start": 914.77,
+   "start": 919.93,
    "dur": 6.74,
    "img": 1050
   },
@@ -2055,7 +2055,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 2.79
     }
    ],
-   "start": 921.51,
+   "start": 926.67,
    "dur": 7.55,
    "img": 1040
   },
@@ -2070,7 +2070,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 3.24
     }
    ],
-   "start": 929.06,
+   "start": 934.22,
    "dur": 3.24,
    "img": 1050
   },
@@ -2085,7 +2085,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 6.48
     }
    ],
-   "start": 932.3,
+   "start": 937.46,
    "dur": 6.48,
    "img": 1040
   },
@@ -2100,7 +2100,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 9.37
     }
    ],
-   "start": 938.78,
+   "start": 943.94,
    "dur": 9.37,
    "img": 1050
   },
@@ -2115,7 +2115,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 948.15,
+   "start": 953.31,
    "dur": 7.21,
    "img": 1050
   },
@@ -2130,7 +2130,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 955.36,
+   "start": 960.52,
    "dur": 2.58,
    "img": 1050
   },
@@ -2145,7 +2145,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 957.94,
+   "start": 963.1,
    "dur": 3.09,
    "img": 1050
   },
@@ -2160,7 +2160,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 961.03,
+   "start": 966.19,
    "dur": 3.6,
    "img": 1050
   },
@@ -2190,7 +2190,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 5.93
     }
    ],
-   "start": 964.63,
+   "start": 969.79,
    "dur": 9.63,
    "img": 1040
   },
@@ -2205,7 +2205,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 2.97
     }
    ],
-   "start": 974.26,
+   "start": 979.42,
    "dur": 2.97,
    "img": 1050
   },
@@ -2220,7 +2220,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 10.11
     }
    ],
-   "start": 977.23,
+   "start": 982.39,
    "dur": 10.11,
    "img": 1040
   },
@@ -2235,7 +2235,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 8.84
     }
    ],
-   "start": 987.34,
+   "start": 992.5,
    "dur": 8.84,
    "img": 1050
   },
@@ -2260,7 +2260,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 2.05
     }
    ],
-   "start": 996.18,
+   "start": 1001.34,
    "dur": 7.8,
    "img": 1040
   },
@@ -2280,7 +2280,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 3.7
     }
    ],
-   "start": 1003.98,
+   "start": 1009.14,
    "dur": 6.99,
    "img": 1050
   },
@@ -2295,7 +2295,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 1010.97,
+   "start": 1016.13,
    "dur": 5.67,
    "img": 1050
   },
@@ -2310,7 +2310,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 1016.64,
+   "start": 1021.8,
    "dur": 4.12,
    "img": 1050
   },
@@ -2325,7 +2325,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 1020.76,
+   "start": 1025.92,
    "dur": 10.81,
    "img": 1050
   },
@@ -2340,7 +2340,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 1031.57,
+   "start": 1036.73,
    "dur": 5.15,
    "img": 1050
   },
@@ -2355,7 +2355,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 1036.72,
+   "start": 1041.88,
    "dur": 7.21,
    "img": 1050
   },
@@ -2370,7 +2370,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 1043.93,
+   "start": 1049.09,
    "dur": 7.21,
    "img": 1050
   },
@@ -2385,7 +2385,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 3.47
     }
    ],
-   "start": 1051.14,
+   "start": 1056.3,
    "dur": 3.47,
    "img": 1040
   },
@@ -2400,7 +2400,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 12.35
     }
    ],
-   "start": 1054.61,
+   "start": 1059.77,
    "dur": 12.35,
    "img": 1050
   },
@@ -2415,7 +2415,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 9.2
     }
    ],
-   "start": 1066.96,
+   "start": 1072.12,
    "dur": 9.2,
    "img": 1040
   },
@@ -2430,7 +2430,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 3.07
     }
    ],
-   "start": 1076.16,
+   "start": 1081.32,
    "dur": 3.07,
    "img": 1050
   },
@@ -2445,7 +2445,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 9.51
     }
    ],
-   "start": 1079.23,
+   "start": 1084.39,
    "dur": 9.51,
    "img": 1060
   },
@@ -2460,7 +2460,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 3.18
     }
    ],
-   "start": 1088.74,
+   "start": 1093.9,
    "dur": 3.18,
    "img": 1029
   },
@@ -2475,7 +2475,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 9.55
     }
    ],
-   "start": 1091.92,
+   "start": 1097.08,
    "dur": 9.55,
    "img": 1060
   },
@@ -2495,7 +2495,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 5.19
     }
    ],
-   "start": 1101.47,
+   "start": 1106.63,
    "dur": 12.51,
    "img": 1029
   },
@@ -2510,7 +2510,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 9.09
     }
    ],
-   "start": 1113.98,
+   "start": 1119.14,
    "dur": 9.09,
    "img": 1060
   },
@@ -2525,7 +2525,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 2.37
     }
    ],
-   "start": 1123.07,
+   "start": 1128.23,
    "dur": 2.37,
    "img": 1029
   },
@@ -2540,7 +2540,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 8.48
     }
    ],
-   "start": 1125.44,
+   "start": 1130.6,
    "dur": 8.48,
    "img": 1060
   },
@@ -2555,7 +2555,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 9.37
     }
    ],
-   "start": 1133.92,
+   "start": 1139.08,
    "dur": 9.37,
    "img": 1029
   },
@@ -2570,7 +2570,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 6.75
     }
    ],
-   "start": 1143.29,
+   "start": 1148.45,
    "dur": 6.75,
    "img": 1060
   },
@@ -2585,7 +2585,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 6.61
     }
    ],
-   "start": 1150.04,
+   "start": 1155.2,
    "dur": 6.61,
    "img": 1029
   },
@@ -2600,7 +2600,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 5.83
     }
    ],
-   "start": 1156.65,
+   "start": 1161.81,
    "dur": 5.83,
    "img": 1060
   },
@@ -2615,7 +2615,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 5.17
     }
    ],
-   "start": 1162.48,
+   "start": 1167.64,
    "dur": 5.17,
    "img": 1029
   },
@@ -2630,7 +2630,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 9.68
     }
    ],
-   "start": 1167.65,
+   "start": 1172.81,
    "dur": 9.68,
    "img": 1039
   },
@@ -2645,7 +2645,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 1177.33,
+   "start": 1182.49,
    "dur": 5.15,
    "img": 1016
   },
@@ -2660,7 +2660,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 1182.48,
+   "start": 1187.64,
    "dur": 10.81,
    "img": 1016
   },
@@ -2675,7 +2675,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 1193.29,
+   "start": 1198.45,
    "dur": 2.06,
    "img": 1016
   },
@@ -2690,7 +2690,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 5.15
     }
    ],
-   "start": 1195.35,
+   "start": 1200.51,
    "dur": 5.15,
    "img": 1016
   },
@@ -2705,7 +2705,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 8.86
     }
    ],
-   "start": 1200.5,
+   "start": 1205.66,
    "dur": 8.86,
    "img": 1039
   },
@@ -2720,7 +2720,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 4.63
     }
    ],
-   "start": 1209.36,
+   "start": 1214.52,
    "dur": 4.63,
    "img": 1016
   },
@@ -2740,7 +2740,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 2.57
     }
    ],
-   "start": 1213.99,
+   "start": 1219.15,
    "dur": 6.22,
    "img": 1016
   },
@@ -2765,7 +2765,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 5.76
     }
    ],
-   "start": 1220.21,
+   "start": 1225.37,
    "dur": 10.16,
    "img": 1039
   },
@@ -2785,7 +2785,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 3.1
     }
    ],
-   "start": 1230.37,
+   "start": 1235.53,
    "dur": 5.76,
    "img": 1016
   },
@@ -2800,7 +2800,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 8.43
     }
    ],
-   "start": 1236.13,
+   "start": 1241.29,
    "dur": 8.43,
    "img": 1039
   },
@@ -2815,7 +2815,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 7.37
     }
    ],
-   "start": 1244.56,
+   "start": 1249.72,
    "dur": 7.37,
    "img": 1016
   },
@@ -2835,7 +2835,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 5.14
     }
    ],
-   "start": 1251.93,
+   "start": 1257.09,
    "dur": 9.97,
    "img": 1039
   },
@@ -2850,7 +2850,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 7.3
     }
    ],
-   "start": 1261.9,
+   "start": 1267.06,
    "dur": 7.3,
    "img": 1016
   },
@@ -2875,7 +2875,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 5.86
     }
    ],
-   "start": 1269.2,
+   "start": 1274.36,
    "dur": 13.12,
    "img": 1039
   },
@@ -2895,7 +2895,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 5.36
     }
    ],
-   "start": 1282.32,
+   "start": 1287.48,
    "dur": 9.4,
    "img": 1016
   },
@@ -2904,7 +2904,7 @@ window.DECK_TEXT_ES_DB = {
    "kind": "break",
    "sentences": [],
    "panel": "stop",
-   "start": 1291.72,
+   "start": 1296.88,
    "dur": 2.0,
    "img": 1016,
    "stop": true,
@@ -2921,7 +2921,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 15.45
     }
    ],
-   "start": 1293.72,
+   "start": 1298.88,
    "dur": 15.45,
    "img": 1041
   },
@@ -2936,7 +2936,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 1309.17,
+   "start": 1314.33,
    "dur": 11.33,
    "img": 1047
   },
@@ -2951,7 +2951,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 1320.5,
+   "start": 1325.66,
    "dur": 3.09,
    "img": 1047
   },
@@ -2966,7 +2966,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 1323.59,
+   "start": 1328.75,
    "dur": 7.73,
    "img": 1047
   },
@@ -2981,7 +2981,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 1331.32,
+   "start": 1336.48,
    "dur": 18.54,
    "img": 1047
   },
@@ -2996,7 +2996,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 1349.86,
+   "start": 1355.02,
    "dur": 12.36,
    "img": 1047
   },
@@ -3011,7 +3011,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 1362.22,
+   "start": 1367.38,
    "dur": 4.12,
    "img": 1047
   },
@@ -3026,7 +3026,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 1366.34,
+   "start": 1371.5,
    "dur": 10.3,
    "img": 1047
   },
@@ -3041,7 +3041,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 1376.64,
+   "start": 1381.8,
    "dur": 10.3,
    "img": 1047
   },
@@ -3056,7 +3056,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 1386.94,
+   "start": 1392.1,
    "dur": 10.81,
    "img": 1047
   },
@@ -3071,7 +3071,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 1397.75,
+   "start": 1402.91,
    "dur": 7.73,
    "img": 1047
   },
@@ -3086,7 +3086,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 1405.48,
+   "start": 1410.64,
    "dur": 5.15,
    "img": 1047
   },
@@ -3101,7 +3101,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 1410.63,
+   "start": 1415.79,
    "dur": 7.73,
    "img": 1047
   },
@@ -3116,7 +3116,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 1418.36,
+   "start": 1423.52,
    "dur": 5.15,
    "img": 1047
   },
@@ -3131,7 +3131,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 1423.51,
+   "start": 1428.67,
    "dur": 12.88,
    "img": 1047
   },
@@ -3146,7 +3146,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 1436.39,
+   "start": 1441.55,
    "dur": 4.12,
    "img": 1047
   },
@@ -3171,7 +3171,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 3.61
     }
    ],
-   "start": 1440.51,
+   "start": 1445.67,
    "dur": 7.22,
    "img": 1054
   },
@@ -3191,7 +3191,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 7.22
     }
    ],
-   "start": 1447.73,
+   "start": 1452.89,
    "dur": 7.74,
    "img": 1047
   },
@@ -3206,7 +3206,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 9.42
     }
    ],
-   "start": 1455.47,
+   "start": 1460.63,
    "dur": 9.42,
    "img": 1054
   },
@@ -3221,7 +3221,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 7.5
     }
    ],
-   "start": 1464.89,
+   "start": 1470.05,
    "dur": 7.5,
    "img": 1047
   },
@@ -3236,7 +3236,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 6.44
     }
    ],
-   "start": 1472.39,
+   "start": 1477.55,
    "dur": 6.44,
    "img": 1054
   },
@@ -3251,7 +3251,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 8.48
     }
    ],
-   "start": 1478.83,
+   "start": 1483.99,
    "dur": 8.48,
    "img": 1015
   },
@@ -3266,7 +3266,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 12.78
     }
    ],
-   "start": 1487.31,
+   "start": 1492.47,
    "dur": 12.78,
    "img": 1015
   },
@@ -3281,7 +3281,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 10.3
     }
    ],
-   "start": 1500.09,
+   "start": 1505.25,
    "dur": 10.3,
    "img": 1015
   },
@@ -3296,7 +3296,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 4.95
     }
    ],
-   "start": 1510.39,
+   "start": 1515.55,
    "dur": 4.95,
    "img": 1015
   },
@@ -3311,7 +3311,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 9.2
     }
    ],
-   "start": 1515.34,
+   "start": 1520.5,
    "dur": 9.2,
    "img": 1048
   },
@@ -3326,7 +3326,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 2.87
     }
    ],
-   "start": 1524.54,
+   "start": 1529.7,
    "dur": 2.87,
    "img": 1048
   },
@@ -3341,7 +3341,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 7.17
     }
    ],
-   "start": 1527.41,
+   "start": 1532.57,
    "dur": 7.17,
    "img": 1048
   },
@@ -3356,7 +3356,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 6.46
     }
    ],
-   "start": 1534.58,
+   "start": 1539.74,
    "dur": 6.46,
    "img": 1048
   },
@@ -3371,7 +3371,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 6.29
     }
    ],
-   "start": 1541.04,
+   "start": 1546.2,
    "dur": 6.29,
    "img": 1048
   },
@@ -3386,7 +3386,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 6.96
     }
    ],
-   "start": 1547.33,
+   "start": 1552.49,
    "dur": 6.96,
    "img": 1048
   },
@@ -3401,7 +3401,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 5.84
     }
    ],
-   "start": 1554.29,
+   "start": 1559.45,
    "dur": 5.84,
    "img": 1048
   },
@@ -3416,7 +3416,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 10.02
     }
    ],
-   "start": 1560.13,
+   "start": 1565.29,
    "dur": 10.02,
    "img": 1048
   },
@@ -3425,7 +3425,7 @@ window.DECK_TEXT_ES_DB = {
    "kind": "break",
    "sentences": [],
    "panel": null,
-   "start": 1570.15,
+   "start": 1575.31,
    "dur": 2.0,
    "img": 1048
   },
@@ -3450,7 +3450,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 3.56
     }
    ],
-   "start": 1572.15,
+   "start": 1577.31,
    "dur": 7.48,
    "img": 1015
   },
@@ -3465,7 +3465,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 6.74
     }
    ],
-   "start": 1579.63,
+   "start": 1584.79,
    "dur": 6.74,
    "img": 1015
   },
@@ -3485,7 +3485,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 1.67
     }
    ],
-   "start": 1586.37,
+   "start": 1591.53,
    "dur": 8.3,
    "img": 1015
   },
@@ -3505,7 +3505,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 0.83
     }
    ],
-   "start": 1594.67,
+   "start": 1599.83,
    "dur": 9.58,
    "img": 1015
   },
@@ -3520,7 +3520,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 3.33
     }
    ],
-   "start": 1604.25,
+   "start": 1609.41,
    "dur": 3.33,
    "img": 1015
   },
@@ -3529,7 +3529,7 @@ window.DECK_TEXT_ES_DB = {
    "kind": "break",
    "sentences": [],
    "panel": null,
-   "start": 1607.58,
+   "start": 1612.74,
    "dur": 2.0,
    "img": 1015
   },
@@ -3544,7 +3544,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 4.54
     }
    ],
-   "start": 1609.58,
+   "start": 1614.74,
    "dur": 4.54,
    "img": 1015
   },
@@ -3559,7 +3559,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 1614.12,
+   "start": 1619.28,
    "dur": 9.27,
    "img": 1015
   },
@@ -3574,7 +3574,7 @@ window.DECK_TEXT_ES_DB = {
     }
    ],
    "panel": null,
-   "start": 1623.39,
+   "start": 1628.55,
    "dur": 20.09,
    "img": 1015
   },
@@ -3589,7 +3589,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 11.85
     }
    ],
-   "start": 1643.48,
+   "start": 1648.64,
    "dur": 11.85,
    "img": 1015
   },
@@ -3604,7 +3604,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 8.76
     }
    ],
-   "start": 1655.33,
+   "start": 1660.49,
    "dur": 8.76,
    "img": 1015
   },
@@ -3619,7 +3619,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 5.67
     }
    ],
-   "start": 1664.09,
+   "start": 1669.25,
    "dur": 5.67,
    "img": 1015
   },
@@ -3634,7 +3634,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 6.18
     }
    ],
-   "start": 1669.76,
+   "start": 1674.92,
    "dur": 6.18,
    "img": 1015
   },
@@ -3649,7 +3649,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 8.24
     }
    ],
-   "start": 1675.94,
+   "start": 1681.1,
    "dur": 8.24,
    "img": 1015
   },
@@ -3664,7 +3664,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 7.73
     }
    ],
-   "start": 1684.18,
+   "start": 1689.34,
    "dur": 7.73,
    "img": 1015
   },
@@ -3679,7 +3679,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 8.76
     }
    ],
-   "start": 1691.91,
+   "start": 1697.07,
    "dur": 8.76,
    "img": 1015
   },
@@ -3694,7 +3694,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 7.73
     }
    ],
-   "start": 1700.67,
+   "start": 1705.83,
    "dur": 7.73,
    "img": 1015
   },
@@ -3709,7 +3709,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 7.21
     }
    ],
-   "start": 1708.4,
+   "start": 1713.56,
    "dur": 7.21,
    "img": 1015
   },
@@ -3724,7 +3724,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 12.88
     }
    ],
-   "start": 1715.61,
+   "start": 1720.77,
    "dur": 12.88,
    "img": 1015
   },
@@ -3739,7 +3739,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 13.39
     }
    ],
-   "start": 1728.49,
+   "start": 1733.65,
    "dur": 13.39,
    "img": 1015
   },
@@ -3754,7 +3754,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 14.94
     }
    ],
-   "start": 1741.88,
+   "start": 1747.04,
    "dur": 14.94,
    "img": 1015
   },
@@ -3769,7 +3769,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 11.85
     }
    ],
-   "start": 1756.82,
+   "start": 1761.98,
    "dur": 11.85,
    "img": 1015
   },
@@ -3784,7 +3784,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 14.94
     }
    ],
-   "start": 1768.67,
+   "start": 1773.83,
    "dur": 14.94,
    "img": 1015
   },
@@ -3799,7 +3799,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 7.21
     }
    ],
-   "start": 1783.61,
+   "start": 1788.77,
    "dur": 7.21,
    "img": 1015
   },
@@ -3814,7 +3814,7 @@ window.DECK_TEXT_ES_DB = {
      "d": 6.7
     }
    ],
-   "start": 1790.82,
+   "start": 1795.98,
    "dur": 6.7,
    "img": 1015
   }
