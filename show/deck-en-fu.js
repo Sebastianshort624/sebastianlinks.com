@@ -3,7 +3,7 @@ window.DECK_TEXT_EN_FU = {
   "lang": "en",
   "dtype": "FU",
   "version": "v1-2026-11-23",
-  "note": "REPLACEABLE TEXT DATA — English POST-PRICE FOLLOW-UP deck, built 2026-11-23 from FU-Script-PostPrice-EN.txt (Sebastian's approved FU text, wording verbatim, performance order = file order). Replaces the new-lead opening: no Opening/Confirmation/Contract/discovery. The fee is called INVESTMENT throughout, as in the source. Placeholders tokenized with the player's existing token set ({{PYR}} {{PAYOFF}} {{MMO}} {{MFMO}} {{MFYR}} {{TOTMO}} {{TOTYR}} {{T3}} {{T5}} {{T10}} {{T20}} {{SAVE20}} {{PRICE}}). FLAGS: (1) the Recap 1-year ladder amount keeps the source's literal $X — no {{T1}} token exists in the player or any deck, and none was invented; $X is also the player's own missing-value rendering. (2) The FU source text ends at PUSH — it carries no UCFS-application or DocuSign-review sections, so none were added; the MTG deck's closing sections can be appended verbatim later if Sebastian wants them. (3) The one coaching-only blurb (hesitate -> go to the recap) is a break card, same treatment as the MTG deck; the Recap CASE SUMMARY direction is realized as panel=confirm on the numbers slide, with panel=buildup on the ladder, panel=price on TOTAL INVESTMENT and panel=pricenote on the clarifications slide, mirroring the MTG deck. All sentences timed at words x 0.515, slides contiguous (title overlaps slide 2 at 0.0, as in the other decks). No English narration exists yet."
+  "note": "REPLACEABLE TEXT DATA — English POST-PRICE FOLLOW-UP deck, built 2026-11-23 from FU-Script-PostPrice-EN.txt (Sebastian's approved FU text, wording verbatim, performance order = file order). Replaces the new-lead opening: no Opening/Confirmation/Contract/discovery. The fee is called INVESTMENT throughout, as in the source. Placeholders tokenized with the player's existing token set ({{PYR}} {{PAYOFF}} {{MMO}} {{MFMO}} {{MFYR}} {{TOTMO}} {{TOTYR}} {{T3}} {{T5}} {{T10}} {{T20}} {{SAVE20}} {{PRICE}}). FLAGS: (1) the Recap 1-year ladder amount now uses {{T1}} (player token added 2026-11-23, Part 14). (2) The FU source text ends at PUSH — it carries no UCFS-application or DocuSign-review sections, so none were added; the MTG deck's closing sections can be appended verbatim later if Sebastian wants them. (3) The one coaching-only blurb (hesitate -> go to the recap) is a break card, same treatment as the MTG deck; the Recap CASE SUMMARY direction is realized as panel=confirm on the numbers slide, with panel=buildup on the ladder, panel=price on TOTAL INVESTMENT and panel=pricenote on the clarifications slide, mirroring the MTG deck. All sentences timed at words x 0.515, slides contiguous (title overlaps slide 2 at 0.0, as in the other decks). No English narration exists yet."
  },
  "slides": [
   {
@@ -225,7 +225,7 @@ window.DECK_TEXT_EN_FU = {
    "panel": "buildup",
    "sentences": [
     {
-     "x": "Next to the 1 — one year from today — write this amount: $X.",
+     "x": "Next to the 1 — one year from today — write this amount: {{T1}}.",
      "s": 128.69,
      "d": 7.21
     },
