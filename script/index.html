@@ -133,8 +133,10 @@
   .cpanel-trap { border-top: 5px solid #0b3d91; }
   .cpanel-fee { border: 2px solid #0b3d91; background: #f0f6ff; box-shadow: 0 1px 5px rgba(11,61,145,.14); }
   .cpanel .qsec { font-size: 1.02em; }
-  /* Sebastian 2026-11-23: the calculator numbers he reads live on calls — bigger */
-  b[id^="q_"] { font-size: 1.35em; }
+  /* Sebastian 2026-11-23 (corrected 22:41): ONLY the phone numbers are bigger
+     here — the calculator-numbers enlargement was his VIDEO MENU request,
+     misapplied here and reverted the same night. */
+  a[href^="tel:"] { font-size: 1.35em; }
   .sideboxes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 0 0 18px; align-items: start; }
   .sideboxes .sprinkle { margin: 0; }
   .sline { display: block; margin-top: 7px; }
