@@ -2771,7 +2771,7 @@ window.DECK_TEXT_EN_MTG = {
   {
    "sec": "REFUND AND GUARANTEE",
    "kind": "text",
-   "panel": null,
+   "panel": "refund",
    "sentences": [
     {
      "x": "Do you have any doubt, any question?",
