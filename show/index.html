@@ -457,7 +457,8 @@ var L = {
         inv: 'Inversión total', save: 'Ahorro a 20 años', stay: 'Costo de quedarse · 20 años',
         rInv: 'Inversión total', rDown: 'Pago inicial', rFin: 'Cantidad financiada',
         rReset: '↺ Restaurar', rEdit: 'Clic para corregir',
-        noteInv: 'Inversión total: ', noteSave: ' · Ahorro a 20 años: ' },
+        noteInv: 'Inversión total: ', noteSave: ' · Ahorro a 20 años: ',
+        rfT: 'REEMBOLSO MÁXIMO POSIBLE', rfPaid: 'Reembolso máximo posible', rfStay: 'El costo verdadero de quedarse' },
   en: { pres: 'Presentation', prepFor: 'Prepared for ', titleSub: 'The complete and legitimate cancellation of your timeshare',
         cont: 'Continuing', qref: 'QUESTION · ', caDef: 'our case analyst', resortDef: 'your resort',
         confirmT: 'Your numbers — confirmed', pyr: 'Purchase year', payoff: 'Payoff', mmo: 'Mortgage payment/mo',
@@ -468,7 +469,8 @@ var L = {
         inv: 'TOTAL INVESTMENT', save: 'TOTAL SAVINGS', stay: 'Cost of staying · 20 years',
         rInv: 'Total investment', rDown: 'Down payment', rFin: 'Amount financed',
         rReset: '↺ Reset', rEdit: 'Click to correct',
-        noteInv: 'Total investment: ', noteSave: ' · Total savings: ' }
+        noteInv: 'Total investment: ', noteSave: ' · Total savings: ',
+        rfT: 'MAXIMUM POSSIBLE REFUND', rfPaid: 'Maximum possible refund', rfStay: 'The true cost of staying' }
 };
 function tokens(){
   var d = derived, f = d ? d.f : null;
@@ -549,6 +551,26 @@ function panelHTML(kind){
       '<div class="amt">' + f.price + '</div>' +
       '<div class="row2"><div><div class="lbl">' + t.save + '</div><div style="font-size:22px;font-weight:800">' + f.save20 + '</div></div>' +
       '<div><div class="lbl">' + t.stay + '</div><div style="font-size:22px;font-weight:800">' + f.t20 + '</div></div></div></div>';
+  }
+  if (kind === 'refund'){
+    /* REFUND PANEL (Sebastian, 2026-11-24): maximum possible refund =
+       total paid to date (mortgage payments made + maintenance paid,
+       current-year MF not counted — his paid-total formula), then the
+       true cost of staying at 3/5/10/20 years for him to cite from. */
+    var nowY = new Date().getFullYear();
+    var yrs = (client.pyr > 1900) ? Math.max(0, nowY - client.pyr) : 0;
+    var paid = 0;
+    if (client.dtype === 'DB') paid = (+client.mf || 0) * Math.max(0, yrs - 1);
+    else paid = (+client.mmo || 0) * Math.min(yrs * 12, +client.term || 120) + (+client.mf || 0) * Math.max(0, yrs - 1);
+    var c3 = f.t3 || f.mf3, c5 = f.t5 || f.mf5, c10 = f.t10 || f.mf10, c20 = f.t20 || f.mf20;
+    if (!(paid > 0) && !c3) return '';
+    var rh = '<div class="panel"><h3>' + t.rfT + '</h3><table>';
+    if (paid > 0) rh += '<tr class="tot"><td>' + t.rfPaid + '</td><td>' + fmtC(paid) + '</td></tr>';
+    if (c3) rh += '<tr><td>' + t.rfStay + ' · ' + t.yrs[0] + '</td><td>' + c3 + '</td></tr>';
+    if (c5) rh += '<tr><td>' + t.rfStay + ' · ' + t.yrs[1] + '</td><td>' + c5 + '</td></tr>';
+    if (c10) rh += '<tr><td>' + t.rfStay + ' · ' + t.yrs[2] + '</td><td>' + c10 + '</td></tr>';
+    if (c20) rh += '<tr class="tot"><td>' + t.rfStay + ' · ' + t.yrs[3] + '</td><td>' + c20 + '</td></tr>';
+    return rh + '</table></div>';
   }
   if (kind === 'pricenote'){
     return '<div class="panel pricestrip">' + t.noteInv + '<b>' + f.price + '</b>' + t.noteSave + '<b>' + f.save20 + '</b></div>';
