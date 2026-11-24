@@ -127,24 +127,27 @@
      always on screen on the RIGHT of the stage, values editable in
      place — dark glass like the panels, gold labels, NO white card.
      Under 900px it collapses to a slim toggleable strip. ---------- */
-  body.rail-on #stage { padding-right: 292px; }
-  #rail { position: fixed; top: 60px; right: 14px; bottom: 148px; width: 252px; z-index: 4;
+  body.rail-on #stage { padding-right: 316px; }
+  #rail { position: fixed; top: 60px; right: 14px; bottom: 148px; width: 276px; z-index: 4;
     background: rgba(8,17,36,.55); border: 1px solid rgba(255,255,255,.35); border-radius: 12px;
     padding: 14px 16px; color: #fff; backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
     text-shadow: 0 1px 5px rgba(0,0,0,.55); overflow-y: auto; }
   #railtoggle { display: none; }
-  .rname { font-size: 17px; font-weight: 700; line-height: 1.25; }
-  .rresort { font-size: 13px; color: rgba(255,255,255,.85); margin: 2px 0 4px; }
-  .rsec { font-size: 11px; font-weight: 700; letter-spacing: 2px; color: #ffd968; text-transform: uppercase;
+  /* Sebastian 2026-11-23 22:41: the numbers in the video's data menu (this
+     rail) are BIG — this is where his font-enlargement order belonged; it was
+     misapplied to the case file earlier tonight and reverted there. */
+  .rname { font-size: 20px; font-weight: 700; line-height: 1.25; }
+  .rresort { font-size: 15px; color: rgba(255,255,255,.85); margin: 2px 0 4px; }
+  .rsec { font-size: 12.5px; font-weight: 700; letter-spacing: 2px; color: #ffd968; text-transform: uppercase;
     border-top: 1px solid rgba(255,255,255,.22); padding-top: 10px; margin: 8px 0 6px; }
   .rrow { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 4px 0;
     border-bottom: 1px solid rgba(255,255,255,.14); }
-  .rlab2 { font-size: 12px; color: #ffd968; letter-spacing: .4px; }
-  .rval { font-size: 14.5px; font-weight: 700; text-align: right; white-space: nowrap; }
+  .rlab2 { font-size: 15px; color: #ffd968; letter-spacing: .4px; }
+  .rval { font-size: 19px; font-weight: 700; text-align: right; white-space: nowrap; }
   .rval.ed { cursor: pointer; border-bottom: 1px dashed rgba(255,217,104,.55); }
   .rval.ed:hover { color: #ffe45e; }
   .rval.warn { color: #ff9d7a; }
-  .redit { width: 112px; font-family: inherit; font-size: 14px; font-weight: 700; text-align: right;
+  .redit { width: 130px; font-family: inherit; font-size: 18px; font-weight: 700; text-align: right;
     background: rgba(255,255,255,.92); color: #14213d; border: 1px solid #ffd968; border-radius: 6px; padding: 2px 6px; }
   .rreset { margin-top: 12px; font-size: 12.5px; color: #ffd968; cursor: pointer; text-align: right; }
   .rreset:hover { text-decoration: underline; }
