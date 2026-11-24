@@ -2637,7 +2637,7 @@ window.DECK_TEXT_EN_DB = {
   {
    "sec": "REFUND AND GUARANTEE",
    "kind": "text",
-   "panel": null,
+   "panel": "refund",
    "sentences": [
     {
      "x": "Do you have any doubt, any question?",
