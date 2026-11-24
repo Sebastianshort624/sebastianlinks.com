@@ -2741,7 +2741,7 @@ window.DECK_TEXT_ES_MTG = {
   {
    "sec": "REEMBOLSO Y GARANTÍA",
    "kind": "text",
-   "panel": null,
+   "panel": "refund",
    "sentences": [
     {
      "x": "¿Tienen alguna duda, alguna pregunta?",
