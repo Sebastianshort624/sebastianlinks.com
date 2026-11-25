@@ -74,6 +74,12 @@
   body.auto .noans, body.auto .perf { opacity: .62; }
   .noans.cur, .perf.cur { opacity: 1; background: rgba(57,255,20,.20); color: #39FF14; text-shadow: 0 1px 8px rgba(0,0,0,.65); border-radius: 6px; }
   .qtxt.cur { background: rgba(57,255,20,.20); color: #39FF14; text-shadow: 0 2px 14px rgba(0,0,0,.62), 0 1px 3px rgba(0,0,0,.7); border-radius: 6px; }
+  /* NO HIGHLIGHT FOR ENGLISH (Sebastian, 2026-11-25 — "lets try english
+     without the highlight as you go"): with body.nohl every word sits at
+     full white from the start; the chunk classes still toggle underneath
+     but restyle nothing. Spanish keeps the fluorescent-green highlight. */
+  body.nohl .txt .w, body.nohl .txt .w.cur, body.nohl .txt .w.done { color: #fff; background: none; font-weight: inherit; }
+  body.nohl .qtxt.cur, body.nohl .noans.cur, body.nohl .perf.cur { background: none; color: inherit; }
   /* SECTION DRAWING (Sebastian, 2026-11-23): one classy gold-line drawing
      per section sits under the words, directly on the background — thin
      gold frame, no white card, no grayscale stock photo. */
@@ -241,6 +247,20 @@
     color: #ffd968; line-height: 1.35; margin-bottom: 18px; text-shadow: 0 1px 8px rgba(0,0,0,.65); }
   .objreb { width: 100%; max-width: 820px; text-align: center; font-size: clamp(19px, 2.9vw, 26px);
     line-height: 1.55; color: #fff; text-shadow: 0 2px 14px rgba(0,0,0,.62), 0 1px 3px rgba(0,0,0,.7); }
+  /* ---------- reputation view (Sebastian, 2026-11-25): two groups —
+     ONLINE REPUTATION (the videos, each opens in a new window) and the
+     verbatim reputation SCRIPT passages. Same dark glass, no white card. */
+  .repsec { width: 100%; max-width: 760px; text-align: center; font-size: 12.5px; font-weight: 700;
+    letter-spacing: 3px; color: #ffd968; text-transform: uppercase; margin: 20px 0 12px;
+    text-shadow: 0 1px 8px rgba(0,0,0,.65); }
+  .repsec:first-of-type { margin-top: 2px; }
+  a.objitem { display: block; text-decoration: none; box-sizing: border-box; }
+  .reptext { width: 100%; max-width: 760px; box-sizing: border-box; text-align: left;
+    background: rgba(8,17,36,.55); border: 1px solid rgba(255,255,255,.35); border-radius: 12px;
+    padding: 16px 20px; color: #fff; font-size: clamp(16px, 2.4vw, 20px); line-height: 1.5;
+    backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); text-shadow: 0 1px 5px rgba(0,0,0,.55); }
+  .reptext .rept { display: block; color: #ffd968; font-weight: 700; font-size: 13px;
+    letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
 </style>
 </head>
 <body>
@@ -461,6 +481,7 @@ var L = {
         rInv: 'Inversión total', rDown: 'Pago inicial', rFin: 'Cantidad financiada',
         rReset: '↺ Restaurar', rEdit: 'Clic para corregir',
         noteInv: 'Inversión total: ', noteSave: ' · Ahorro a 20 años: ',
+        ladT: 'Costo de quedarse', ladYrs: ['1 año', '3 años', '5 años', '10 años', '20 años'],
         rfT: 'REEMBOLSO MÁXIMO POSIBLE', rfPaid: 'Reembolso máximo posible', rfStay: 'El costo verdadero de quedarse',
         ptT: 'TOTAL PAGADO', ptTot: 'Total pagado', ptMo: 'Pagos de la hipoteca', ptMf: 'Mantenimiento pagado' },
   en: { pres: 'Presentation', prepFor: 'Prepared for ', titleSub: 'The complete and legitimate cancellation of your timeshare',
@@ -474,6 +495,7 @@ var L = {
         rInv: 'Total investment', rDown: 'Down payment', rFin: 'Amount financed',
         rReset: '↺ Reset', rEdit: 'Click to correct',
         noteInv: 'Total investment: ', noteSave: ' · Total savings: ',
+        ladT: 'Cost of staying', ladYrs: ['1 year', '3 years', '5 years', '10 years', '20 years'],
         rfT: 'MAXIMUM POSSIBLE REFUND', rfPaid: 'Maximum possible refund', rfStay: 'The true cost of staying',
         ptT: 'TOTAL PAID', ptTot: 'Total paid', ptMo: 'Mortgage payments', ptMf: 'Maintenance paid' }
 };
@@ -1250,10 +1272,12 @@ function loadDeck(){
 }
 /* language toggle — switches decks BOTH ways, at any slide, landing on the
    corresponding slide (same index; the two decks are slide-for-slide) */
+function syncHl(){ document.body.classList.toggle('nohl', lang === 'en'); } /* English: no highlight-as-you-go (Sebastian, 2026-11-25) */
 function setLang(nl){
   if (nl === lang || !DECKS[nl].MTG) return;
   lang = nl;
   document.documentElement.lang = nl;
+  syncHl();
   $('btnEs').classList.toggle('act', nl === 'es');
   $('btnEn').classList.toggle('act', nl === 'en');
   $('objbtn').textContent = OBJL[nl].btn;
@@ -1300,9 +1324,35 @@ $('btnFu').addEventListener('click', function(){ setType('FU'); });
 var OBJD = { es: window.OBJECTIONS_ES || [], en: window.OBJECTIONS_EN || [] };
 var OBJL = {
   es: { btn: '🛡️ Objeciones', title: 'Objeciones', exit: '✕ Volver a la presentación',
-        cats: '‹ Categorías', subs: '‹ Subcategorías' },
+        cats: '‹ Categorías', subs: '‹ Subcategorías',
+        rep: '⭐ Reputación', repT: 'Reputación', repOnline: 'Reputación en línea', repScript: 'El guion' },
   en: { btn: '🛡️ Objections', title: 'Objections', exit: '✕ Back to the presentation',
-        cats: '‹ Categories', subs: '‹ Subcategories' }
+        cats: '‹ Categories', subs: '‹ Subcategories',
+        rep: '⭐ Reputation', repT: 'Reputation', repOnline: 'Online reputation', repScript: 'The script' }
+};
+var REPD = {
+  videos: [
+    { f: 'rep/bbb.mp4', t: 'BBB — A+ · Accredited' },
+    { f: 'rep/best-company.mp4', t: 'Best Company — #1 in timeshare cancellation' },
+    { f: 'rep/google.mp4', t: 'Google — reviews' },
+    { f: 'rep/linx-legal.mp4', t: 'Linx Legal' },
+    { f: 'rep/proof.mp4', t: 'Proof — cancellations' },
+    { f: 'rep/zillow.mp4', t: 'Zillow — Sebastian, five stars' }
+  ],
+  en: [
+    { t: 'The legitimacy block — Yaz', x: "First of all what we're offering you is a totally legitimate cancellation. In the United States the only company that offers totally legitimate cancellations is our company. We've been doing timeshare cancellations for 17 years and this is the type of cancellations we do. A legitimate cancellation means that we remove the property from your name and we give it back to the timeshare." },
+    { t: 'The guarantee — Yaz', x: "Now, the biggest guarantee our clients have is that if we don't win your case we do a total return of the cost of our service. Now, I explain to you, so you keep in mind in 17 years of experience this has never happened. We have never taken a case which we have not been able to win." },
+    { t: 'The tie-back — Yaz', x: "And I tell them, remember when I told you that we're the only company that's been doing legitimate cancellations and we're number one, well, we want to keep it that way." },
+    { t: 'The lawyer rebuttal — Yaz', x: "What you need is a specialist company specialized and that only does timeshare cancellation and for your luck we are number one in the United States in timeshare cancellation. When we started this nobody was doing it in the United States. We are the company with the most experience and we've been doing only this type of service for 17 years." },
+    { t: 'Positioning vs shoppers — Cesar', x: "It looks like you have talked to several other companies and gotten different quotes. They assigned me to you because I am an expert — not just in the timeshare companies and the lies they tell, but in how all these other companies in this industry actually work. I can help you navigate these offers. Even if you do not go with us, or we cannot take you, I want to make sure you do not get ripped off by someone else." },
+    { t: 'The takeaway — Cesar', x: "We are super busy — we get tens of thousands of calls a month, we are not hurting for business." }
+  ],
+  es: [
+    { t: 'El bloque de legitimidad — Yaz', x: "Primeramente lo que le estamos ofreciendo es una cancelación totalmente legítima. En Estados Unidos la única compañía que ofrecen cancelaciones totalmente legítimas es nuestra compañía. Llevamos 17 años haciendo cancelaciones de tiempo compartido y este es el tipo de cancelaciones que hacemos. Una cancelación legítima significa que retiramos la propiedad de nombre de ustedes y se la devolvemos al tiempo compartido." },
+    { t: 'La garantía — Yaz', x: "Ahora, la mayor garantía que nuestros clientes tienen es que si nosotros no ganamos su caso hacemos una devolución total del costo de nuestro servicio. Ahora, os explico, para que tengan en cuenta en 17 años de experiencia esto nunca ha sucedido. Nosotros nunca hemos tomado un caso el cual no hayamos podido ganar." },
+    { t: 'El enlace — Yaz', x: "Y les digo, recuerden cuando yo les dije que somos la única compañía que hasta haciendo cancelaciones legítimas y somos la número uno, bueno, lo queremos mantener de esa manera." },
+    { t: 'La respuesta al abogado — Yaz', x: "Ustedes lo que necesitan es una compañía especialista especializada y que solamente haga cancelación de tiempo compartidos y para la suerte de ustedes nosotros somos la número uno en estados unidos en cancelación de tiempos compartidos cuando nosotros iniciamos esto nadie estaba haciéndolo en estados unidos nosotros somos la compañía con más experiencia y llevamos 17 años solamente haciendo este tipo de servicio." }
+  ]
 };
 var objOpen = false;
 var objView = { level: 'cats', cat: -1, sub: -1, item: -1 };
@@ -1334,6 +1384,7 @@ function renderObj(){
   if (objView.level === 'subs') nav += '<button class="objpill" data-act="cats">' + t.cats + '</button>';
   if (objView.level === 'items') nav += '<button class="objpill" data-act="subs">' + t.subs + '</button>';
   if (objView.level === 'reb') nav += '<button class="objpill" data-act="items">‹ ' + esc(tree[objView.cat].subs[objView.sub].sub) + '</button>';
+  if (objView.level === 'rep') nav += '<button class="objpill" data-act="cats">' + t.cats + '</button>';
   nav += '<div class="sp"></div><button class="objpill" data-act="exit">' + t.exit + '</button></div>';
   var html = nav;
   if (objView.level === 'cats'){
@@ -1341,6 +1392,18 @@ function renderObj(){
     tree.forEach(function(c, i){
       html += '<button class="objitem" data-act="cat" data-i="' + i + '">' + c.icon + ' ' + esc(c.cat) +
         '<span class="cnt">' + objCount(c) + '</span></button>';
+    });
+    html += '<button class="objitem" data-act="rep">' + t.rep + '</button>';
+    html += '</div>';
+  } else if (objView.level === 'rep'){
+    html += '<div class="objtitle">' + t.repT + '</div>';
+    html += '<div class="repsec">' + t.repOnline + '</div><div class="objlist">';
+    REPD.videos.forEach(function(v){
+      html += '<a class="objitem" href="' + v.f + '" target="_blank" rel="noopener">▶ ' + esc(v.t) + '</a>';
+    });
+    html += '</div><div class="repsec">' + t.repScript + '</div><div class="objlist">';
+    (REPD[lang] || REPD.en).forEach(function(p){
+      html += '<div class="reptext"><span class="rept">' + esc(p.t) + '</span>' + esc(p.x) + '</div>';
     });
     html += '</div>';
   } else if (objView.level === 'subs'){
@@ -1376,6 +1439,7 @@ $('objwrap').addEventListener('click', function(e){
   else if (act === 'cats'){ objView.level = 'cats'; renderObj(); }
   else if (act === 'subs'){ objView.level = 'subs'; renderObj(); }
   else if (act === 'items'){ objView.level = 'items'; renderObj(); }
+  else if (act === 'rep'){ objView.level = 'rep'; renderObj(); }
   else if (act === 'cat'){ objView.cat = +b.getAttribute('data-i'); objView.level = 'subs'; renderObj(); }
   else if (act === 'sub'){ objView.sub = +b.getAttribute('data-j'); objView.level = 'items'; renderObj(); }
   else if (act === 'item'){ objView.item = +b.getAttribute('data-k'); objView.level = 'reb'; renderObj(); }
@@ -1454,6 +1518,15 @@ function renderRail(){
     h += row(t.total, fmtC(mmo + mfmo) + ' · ' + fmtC(mmo * 12 + mf), null);
   } else if (mf > 0){
     h += row(t.mf, fmtD(mfmo) + ' · ' + fmtC(mf), 'mf');
+  }
+  var lad = null;
+  if (derived && derived.f){
+    if (isMTG && derived.f.t1 && derived.f.t3) lad = [derived.f.t1, derived.f.t3, derived.f.t5, derived.f.t10, derived.f.t20];
+    else if (!isMTG && derived.f.mf3) lad = [derived.f.t1, derived.f.mf3, derived.f.mf5, derived.f.mf10, derived.f.mf20];
+  }
+  if (lad){
+    h += '<div class="rsec">' + t.ladT + '</div>';
+    for (var li = 0; li < 5; li++) h += row(t.ladYrs[li], lad[li], null);
   }
   h += row(t.rInv, price != null ? fmtD(price) : '—', 'fee');
   h += row(t.rDown, down != null ? fmtC(down) : '—', 'down');
@@ -1539,6 +1612,7 @@ $('objbtn').textContent = OBJL[lang].btn;
 document.documentElement.lang = lang;
 $('btnEs').classList.toggle('act', lang === 'es');
 $('btnEn').classList.toggle('act', lang === 'en');
+syncHl();
 /* deck type: ?type=mtg|db wins; otherwise the record decides (a
    deed-back record opens the deed-back deck). The header MTG|DB
    toggle can flip it live from here. */
