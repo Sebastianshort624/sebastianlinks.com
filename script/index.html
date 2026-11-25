@@ -493,6 +493,15 @@ body.ds-move .ds-sec .ds-handle { pointer-events: auto !important; }
 .ib-resort { font-size: 1.5em; font-weight: 800; color: #0b3d91; }
 .cbar .ib-resort { font-size: 1.35em; font-weight: 800; color: #0b3d91; }
 </style>
+<style>
+/* TZ_V1 (Sebastian, 2026-11-25): junto a cada telefono del encabezado, la zona
+   horaria del cliente (EST/CST/... con DST via Intl, p.ej. EDT en verano).
+   La zona sale de la DIRECCION del record (loc: ciudad/estado), NUNCA del area
+   code del telefono. Si loc no resuelve, se usa el campo tz del record cuando
+   es una zona IANA valida; si ninguno resuelve, no se muestra nada. Solo
+   presentacion: no se toca ningun dato del record. */
+.tz-lab { font-weight: 700; color: #0b3d91; font-size: .92em; white-space: nowrap; }
+</style>
 </head>
 <body>
 
@@ -5640,6 +5649,167 @@ function mobToggleFn(){
     enhanceAll();
     new MutationObserver(enhanceAll).observe(list, { childList: true });
   }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+</script>
+<script>
+/* TZ_V1 (Sebastian, 2026-11-25): timezone label next to each phone in the
+   client header (#q_idn). Zone from the record's ADDRESS (loc), never the
+   phone area code. Fallback: the record's tz field if a valid IANA name.
+   Display only — no record data is read-modified or written. */
+(function () {
+  'use strict';
+  var SZ = { /* state default zone */
+    ME:'America/New_York', VT:'America/New_York', NH:'America/New_York', MA:'America/New_York',
+    RI:'America/New_York', CT:'America/New_York', NY:'America/New_York', NJ:'America/New_York',
+    PA:'America/New_York', DE:'America/New_York', MD:'America/New_York', DC:'America/New_York',
+    VA:'America/New_York', WV:'America/New_York', OH:'America/New_York', NC:'America/New_York',
+    SC:'America/New_York', GA:'America/New_York', FL:'America/New_York',
+    MI:'America/Detroit', IN:'America/Indiana/Indianapolis', KY:'America/Kentucky/Louisville',
+    IL:'America/Chicago', WI:'America/Chicago', MN:'America/Chicago', IA:'America/Chicago',
+    MO:'America/Chicago', AR:'America/Chicago', LA:'America/Chicago', MS:'America/Chicago',
+    AL:'America/Chicago', TN:'America/Chicago', TX:'America/Chicago', OK:'America/Chicago',
+    KS:'America/Chicago', NE:'America/Chicago', SD:'America/Chicago', ND:'America/Chicago',
+    MT:'America/Denver', WY:'America/Denver', CO:'America/Denver', NM:'America/Denver',
+    UT:'America/Denver', AZ:'America/Phoenix', ID:'America/Boise',
+    CA:'America/Los_Angeles', OR:'America/Los_Angeles', WA:'America/Los_Angeles', NV:'America/Los_Angeles',
+    AK:'America/Anchorage', HI:'Pacific/Honolulu', PR:'America/Puerto_Rico',
+    VI:'America/St_Thomas', GU:'Pacific/Guam'
+  };
+  var CZ = { /* split-state city overrides, key state|city(lowercase) */
+    'FL|pensacola':'America/Chicago','FL|panama city':'America/Chicago','FL|panama city beach':'America/Chicago',
+    'FL|destin':'America/Chicago','FL|fort walton beach':'America/Chicago','FL|milton':'America/Chicago',
+    'FL|crestview':'America/Chicago','FL|niceville':'America/Chicago','FL|gulf breeze':'America/Chicago',
+    'FL|navarre':'America/Chicago','FL|defuniak springs':'America/Chicago','FL|marianna':'America/Chicago',
+    'FL|chipley':'America/Chicago','FL|bonifay':'America/Chicago','FL|santa rosa beach':'America/Chicago',
+    'FL|miramar beach':'America/Chicago','FL|freeport':'America/Chicago','FL|valparaiso':'America/Chicago',
+    'FL|shalimar':'America/Chicago','FL|mary esther':'America/Chicago',
+    'TX|el paso':'America/Denver','TX|socorro':'America/Denver','TX|horizon city':'America/Denver',
+    'TX|canutillo':'America/Denver','TX|anthony':'America/Denver','TX|fabens':'America/Denver',
+    'TX|clint':'America/Denver','TX|san elizario':'America/Denver','TX|vinton':'America/Denver',
+    'IN|gary':'America/Chicago','IN|hammond':'America/Chicago','IN|merrillville':'America/Chicago',
+    'IN|valparaiso':'America/Chicago','IN|michigan city':'America/Chicago','IN|portage':'America/Chicago',
+    'IN|crown point':'America/Chicago','IN|schererville':'America/Chicago','IN|munster':'America/Chicago',
+    'IN|highland':'America/Chicago','IN|griffith':'America/Chicago','IN|east chicago':'America/Chicago',
+    'IN|whiting':'America/Chicago','IN|chesterton':'America/Chicago','IN|la porte':'America/Chicago',
+    'IN|hobart':'America/Chicago','IN|dyer':'America/Chicago','IN|st john':'America/Chicago',
+    'IN|cedar lake':'America/Chicago','IN|lowell':'America/Chicago','IN|evansville':'America/Chicago',
+    'IN|newburgh':'America/Chicago','IN|mount vernon':'America/Chicago','IN|boonville':'America/Chicago',
+    'KY|paducah':'America/Chicago','KY|owensboro':'America/Chicago','KY|bowling green':'America/Chicago',
+    'KY|hopkinsville':'America/Chicago','KY|murray':'America/Chicago','KY|henderson':'America/Chicago',
+    'KY|madisonville':'America/Chicago','KY|morgantown':'America/Chicago','KY|glasgow':'America/Chicago',
+    'KY|russellville':'America/Chicago','KY|central city':'America/Chicago',
+    'TN|knoxville':'America/New_York','TN|chattanooga':'America/New_York','TN|johnson city':'America/New_York',
+    'TN|kingsport':'America/New_York','TN|bristol':'America/New_York','TN|gatlinburg':'America/New_York',
+    'TN|pigeon forge':'America/New_York','TN|sevierville':'America/New_York','TN|maryville':'America/New_York',
+    'TN|oak ridge':'America/New_York','TN|morristown':'America/New_York','TN|greeneville':'America/New_York',
+    'TN|cleveland':'America/New_York','TN|athens':'America/New_York','TN|dayton':'America/New_York',
+    'TN|lenoir city':'America/New_York','TN|farragut':'America/New_York','TN|powell':'America/New_York',
+    'MI|menominee':'America/Chicago','MI|iron mountain':'America/Chicago','MI|iron river':'America/Chicago',
+    'MI|bessemer':'America/Chicago','MI|wakefield':'America/Chicago','MI|ironwood':'America/Chicago',
+    'MI|crystal falls':'America/Chicago','MI|norway':'America/Chicago','MI|kingsford':'America/Chicago',
+    'MI|quinnesec':'America/Chicago','MI|escanaba':'America/Chicago',
+    'OR|ontario':'America/Boise','OR|vale':'America/Boise','OR|nyssa':'America/Boise',
+    'ID|coeur d\'alene':'America/Los_Angeles','ID|post falls':'America/Los_Angeles','ID|hayden':'America/Los_Angeles',
+    'ID|sandpoint':'America/Los_Angeles','ID|moscow':'America/Los_Angeles','ID|lewiston':'America/Los_Angeles',
+    'ID|rathdrum':'America/Los_Angeles','ID|spirit lake':'America/Los_Angeles','ID|bonners ferry':'America/Los_Angeles',
+    'ID|orofino':'America/Los_Angeles','ID|grangeville':'America/Los_Angeles','ID|kamiah':'America/Los_Angeles',
+    'ND|dickinson':'America/Denver','ND|bowman':'America/Denver','ND|hettinger':'America/Denver',
+    'ND|beach':'America/Denver','ND|killdeer':'America/Denver',
+    'SD|rapid city':'America/Denver','SD|spearfish':'America/Denver','SD|sturgis':'America/Denver',
+    'SD|deadwood':'America/Denver','SD|belle fourche':'America/Denver','SD|hot springs':'America/Denver',
+    'SD|custer':'America/Denver','SD|lead':'America/Denver','SD|hill city':'America/Denver',
+    'SD|keystone':'America/Denver','SD|newell':'America/Denver',
+    'NE|scottsbluff':'America/Denver','NE|alliance':'America/Denver','NE|sidney':'America/Denver',
+    'NE|chadron':'America/Denver','NE|gering':'America/Denver','NE|ogallala':'America/Denver',
+    'NE|bayard':'America/Denver','NE|bridgeport':'America/Denver','NE|kimball':'America/Denver',
+    'NE|rushville':'America/Denver','NE|gordon':'America/Denver','NE|imperial':'America/Denver',
+    'NE|grant':'America/Denver',
+    'KS|goodland':'America/Denver','KS|sharon springs':'America/Denver','KS|tribune':'America/Denver',
+    'KS|syracuse':'America/Denver',
+    'AZ|window rock':'America/Shiprock','AZ|chinle':'America/Shiprock','AZ|kayenta':'America/Shiprock',
+    'AZ|tuba city':'America/Shiprock','AZ|fort defiance':'America/Shiprock','AZ|ganado':'America/Shiprock',
+    'AZ|many farms':'America/Shiprock','AZ|teec nos pos':'America/Shiprock',
+    'NV|west wendover':'America/Denver','NV|jackpot':'America/Denver'
+  };
+  var NAMES = { 'new york':'NY','new jersey':'NJ','new hampshire':'NH','new mexico':'NM','north carolina':'NC',
+    'south carolina':'SC','north dakota':'ND','south dakota':'SD','rhode island':'RI','west virginia':'WV',
+    'puerto rico':'PR','virgin islands':'VI','district of columbia':'DC',
+    alabama:'AL', alaska:'AK', arizona:'AZ', arkansas:'AR', california:'CA', colorado:'CO',
+    connecticut:'CT', delaware:'DE', florida:'FL', georgia:'GA', hawaii:'HI', idaho:'ID',
+    illinois:'IL', indiana:'IN', iowa:'IA', kansas:'KS', kentucky:'KY', louisiana:'LA',
+    maine:'ME', maryland:'MD', massachusetts:'MA', michigan:'MI', minnesota:'MN',
+    mississippi:'MS', missouri:'MO', montana:'MT', nebraska:'NE', nevada:'NV', ohio:'OH',
+    oklahoma:'OK', oregon:'OR', pennsylvania:'PA', tennessee:'TN', texas:'TX', utah:'UT',
+    vermont:'VT', virginia:'VA', washington:'WA', wisconsin:'WI', wyoming:'WY', guam:'GU' };
+  function validZone(z) {
+    if (!z || typeof z !== 'string') return null;
+    try { new Intl.DateTimeFormat('en-US', { timeZone: z }); return z; } catch (e) { return null; }
+  }
+  function zoneFromLoc(loc) {
+    if (!loc) return null;
+    var raw = String(loc), up = raw.toUpperCase(), low = raw.toLowerCase();
+    var st = null, city = '';
+    var mEnd = up.match(/(?:^|[\s,])([A-Z]{2})\s*(?:\d{5}(?:-\d{4})?)?\s*$/);
+    if (mEnd && SZ[mEnd[1]]) {
+      st = mEnd[1];
+      city = raw.slice(0, up.lastIndexOf(mEnd[1])).toLowerCase();
+    } else {
+      var names = Object.keys(NAMES).sort(function (a, b) { return b.length - a.length; });
+      for (var i = 0; i < names.length; i++) {
+        var ix = low.indexOf(names[i]);
+        if (ix >= 0) { st = NAMES[names[i]]; city = low.slice(0, ix); break; }
+      }
+      if (!st) {
+        var m = up.match(/\b([A-Z]{2})\b/g) || [];
+        for (var j = m.length - 1; j >= 0; j--) {
+          if (SZ[m[j]]) { st = m[j]; city = raw.slice(0, up.indexOf(m[j])).toLowerCase(); break; }
+        }
+      }
+    }
+    if (!st) return null;
+    city = city.replace(/[,\s]+$/, '').split(',').pop().trim();
+    return CZ[st + '|' + city] || SZ[st] || null;
+  }
+  function resolveZone(rec) {
+    if (!rec) return null;
+    return zoneFromLoc(rec.loc) || validZone(rec.tz) || null;
+  }
+  function label(zone) {
+    try {
+      var parts = new Intl.DateTimeFormat('en-US', { timeZone: zone, timeZoneName: 'short' }).formatToParts(new Date());
+      for (var i = 0; i < parts.length; i++) if (parts[i].type === 'timeZoneName') return parts[i].value;
+    } catch (e) {}
+    return null;
+  }
+  function decorate() {
+    var box = document.getElementById('q_idn');
+    if (!box || typeof cur === 'undefined' || !cur) return;
+    var zone = resolveZone(cur);
+    if (!zone) return;
+    var lab = label(zone);
+    if (!lab) return;
+    var links = box.querySelectorAll('a[href^="tel:"]');
+    for (var i = 0; i < links.length; i++) {
+      var a = links[i], nx = a.nextElementSibling;
+      if (nx && nx.className === 'tz-lab') {
+        if (nx.textContent !== ' ' + lab) nx.textContent = ' ' + lab;
+        continue;
+      }
+      var sp = document.createElement('span');
+      sp.className = 'tz-lab';
+      sp.textContent = ' ' + lab;
+      a.parentNode.insertBefore(sp, a.nextSibling);
+    }
+  }
+  function init() {
+    var box = document.getElementById('q_idn');
+    if (!box) { setTimeout(init, 600); return; }
+    decorate();
+    new MutationObserver(decorate).observe(box, { childList: true, subtree: true });
+  }
+  window.TZ_V1 = { resolveZone: resolveZone, zoneFromLoc: zoneFromLoc };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();
