@@ -192,6 +192,7 @@
     text-overflow: ellipsis; padding: 2px 7px; border-radius: 999px; cursor: pointer;
     border: 1px solid rgba(255,217,104,.4); background: rgba(8,17,36,.55); color: #ffd968;
     backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); text-shadow: 0 1px 5px rgba(0,0,0,.55); }
+  .rdot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 4px; vertical-align: -1px; } /* RULERDOTS_20261125 */
   .rlab.row0 { bottom: 16px; }
   .rlab.row1 { bottom: 43px; }
   .rlab.cur { background: rgba(255,217,104,.3); color: #fff; border-color: #ffd968; z-index: 3; }
@@ -1064,14 +1065,23 @@ function buildRuler(){
   });
   var total = slides.length || 1;
   var html = '';
+  var GDOTS = ['#4285F4', '#EA4335', '#FBBC05', '#34A853']; /* RULERDOTS_20261125: Google colors, repeating */
+  function oneWord(sec){
+    var base = sec, cut = base.indexOf(' — ');
+    if (cut >= 4) base = base.slice(0, cut);
+    var stop = { THE:1, EL:1, LA:1, LOS:1, LAS:1, UN:1, UNA:1, DE:1, DEL:1, OF:1, Y:1, E:1, A:1 };
+    var words = base.replace(/[^A-Za-zÀ-ÿ0-9 ]/g, ' ').split(/\s+/).filter(function(w){ return w && !stop[w.toUpperCase()]; });
+    if (!words.length) return base;
+    var w = words[0];
+    return (w.length <= 5 && w === w.toUpperCase()) ? w : (w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
+  }
   rulerSecs.forEach(function(s, k){
     var pct = s.first / total * 100;
     var tx = pct < 5 ? '-8%' : (pct > 95 ? '-92%' : '-50%');
-    var disp = s.sec, cut = disp.indexOf(' \u2014 ');
-    if (cut >= 4) disp = disp.slice(0, cut); /* "EMPUJE — SI LO QUIEREN PENSAR" -> "EMPUJE" */
-    html += '<div class="rtick" style="left:' + pct + '%"></div>' +
+    var col = GDOTS[k % GDOTS.length];
+    html += '<div class="rtick" style="left:' + pct + '%;background:' + col + '"></div>' +
       '<button class="rlab row' + (k % 2) + '" data-first="' + s.first + '" title="' + esc(s.sec) +
-      '" style="left:' + pct + '%;transform:translateX(' + tx + ')">' + esc(disp) + '</button>';
+      '" style="left:' + pct + '%;transform:translateX(' + tx + ')"><span class="rdot" style="background:' + col + '"></span>' + esc(oneWord(s.sec)) + '</button>';
   });
   r.innerHTML = html;
   markRuler();
