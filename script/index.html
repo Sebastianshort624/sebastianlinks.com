@@ -220,8 +220,8 @@
   .notesBox { background: #fff; border-radius: 10px; width: min(860px, 94vw); height: min(640px, 88vh); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 8px 30px rgba(0,0,0,.4); }
   .notesHead { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #0b3d91; color: #fff; font-size: 1.05em; }
   .notesHead button { background: rgba(255,255,255,.2); color: #fff; border: none; border-radius: 5px; padding: 4px 12px; cursor: pointer; font-size: 1em; font-family: inherit; }
-  #notesArea { flex: 1; border: none; padding: 14px; font-size: 1.05em; line-height: 1.55; font-family: inherit; resize: none; outline: none; }
-  #notesArea { flex: 0 0 108px; border-top: 2px solid #0b3d91; }
+  #notesArea { flex: 1; border: none; padding: 14px; font-size: 1.05em; line-height: 1.55; font-family: inherit; resize: vertical; outline: none; }
+  #notesArea { flex: none; height: 182px; min-height: 182px; border-top: 2px solid #0b3d91; } /* NOTES2_V1: ventana de notas mas grande (182px) */
   #notesList { flex: 1; overflow-y: auto; padding: 10px 14px; background: #fafafa; }
   .noteItem { background: #E2EFDA; border: 1px solid #ddd; border-left: 4px solid #0b3d91; border-radius: 6px; padding: 8px 12px; margin-bottom: 8px; } /* NOTECOLOR_V1: nota ya guardada = verde claro de hoja de datos clasica */
   .noteStamp { font-size: 0.8em; font-weight: 700; color: #0b3d91; margin-bottom: 3px; }
@@ -474,6 +474,16 @@ body.ds-move .ds-sec .ds-handle { pointer-events: auto !important; }
 #ds-bar { position: fixed; left: 50%; transform: translateX(-50%); bottom: 74px; z-index: 99990; background: #111827; color: #fff; border-radius: 999px; padding: 8px 10px 8px 16px; align-items: center; gap: 10px; font: 700 13px Arial, Helvetica, sans-serif; box-shadow: 0 4px 16px rgba(0,0,0,.4); max-width: 94vw; }
 #ds-bar button { background: #0b3d91; color: #fff; border: none; border-radius: 999px; padding: 6px 14px; font: 700 13px Arial, Helvetica, sans-serif; cursor: pointer; white-space: nowrap; }
 #ds-bar button.ds-reset { background: #374151; }
+</style>
+<style>
+/* NOTES2_V1 (Sebastian, 2026-11-25): notas viejas en VERDE sticky-note — SOLO el
+   color de fondo; el rayado aqua y el margen burdeos del legal pad quedan igual
+   (background-image no se toca). Cada nota vieja arranca COLAPSADA a su primera
+   linea, con flecha en el renglon de la fecha para expandir/colapsar. */
+.noteItem { background-color: #C9F2B8; }
+.noteItem.nt-collapsed .noteText { max-height: 26px; overflow: hidden; }
+.noteItem.nt-collapsed .noteMeta, .noteItem.nt-collapsed .noteHist { display: none; }
+.nt-toggle { float: right; border: 1px solid rgba(90, 74, 18, .4); background: rgba(255, 255, 255, .55); color: #4a3d10; border-radius: 6px; font-size: 13px; line-height: 1; padding: 3px 9px; cursor: pointer; }
 </style>
 </head>
 <body>
@@ -5568,6 +5578,62 @@ function mobToggleFn(){
   }
   window.DRAGSECTIONS_V1 = { groups: GROUPS, applyOrder: applyOrder, saveGroup: saveGroup, loadSaved: loadSaved };
   init();
+})();
+</script>
+<script>
+/* NOTES2_V1 (Sebastian, 2026-11-25): older notes start COLLAPSED to their first
+   line, with a small arrow in the stamp row to expand/collapse. Display layer
+   only: note data, storage, saving and notesRender itself are untouched. A
+   MutationObserver re-enhances the list after every notesRender rebuild.
+   Items in editing state (they contain .noteEditArea) are skipped, and the
+   expanded state survives re-renders via a session map keyed by stamp+text. */
+(function () {
+  'use strict';
+  var expanded = {};
+  function keyOf(item) {
+    var st = item.querySelector('.noteStamp');
+    var tx = item.querySelector('.noteText');
+    return (st ? st.textContent : '') + '|' + (tx ? tx.textContent.slice(0, 80) : '');
+  }
+  function enhance(item) {
+    if (item.getAttribute('data-nt2')) return;
+    if (item.querySelector('.noteEditArea')) return; /* editing state: leave alone */
+    var tx = item.querySelector('.noteText');
+    var st = item.querySelector('.noteStamp');
+    if (!tx || !st) return;
+    item.setAttribute('data-nt2', '1');
+    if (tx.scrollHeight <= 27) return; /* fits on one line: no arrow needed */
+    var key = keyOf(item);
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'nt-toggle';
+    function sync() {
+      var open = !!expanded[key];
+      item.classList.toggle('nt-collapsed', !open);
+      btn.textContent = open ? '▾' : '▸';
+    }
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      expanded[key] = !expanded[key];
+      sync();
+    });
+    st.appendChild(btn);
+    sync();
+  }
+  function enhanceAll() {
+    var list = document.getElementById('notesList');
+    if (!list) return;
+    var items = list.querySelectorAll('.noteItem');
+    for (var i = 0; i < items.length; i++) enhance(items[i]);
+  }
+  function init() {
+    var list = document.getElementById('notesList');
+    if (!list) { setTimeout(init, 600); return; }
+    enhanceAll();
+    new MutationObserver(enhanceAll).observe(list, { childList: true });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
 })();
 </script>
 </body>
