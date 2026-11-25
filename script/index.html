@@ -538,6 +538,13 @@ body.ds-move .ds-sec .ds-handle { pointer-events: auto !important; }
   <div id="soldStrip"><span>✅ VENDIDO</span><span>📄 DocuSign firmado: <input type="date" id="soldDate" onchange="soldDateChange()"></span><span>💰 Mi comisión: <span class="soldComm" id="soldComm">$0.00</span></span></div>
 </div>
 <div id="barStrip"><span id="barTitle"></span><span id="barLinks"></span></div>
+<!-- TOPLINKS_20261125 (Sebastian): the link chips + Hipoteca/DEED-BACK toggle back at the TOP of the case file (moved out of the Calculadora card) -->
+<div id="urlChips" style="display:flex;gap:5px;flex-wrap:wrap;margin:2px 0"></div>
+<div id="q_dtypebar" style="display:flex;gap:6px;margin-bottom:10px">
+    <button id="q_btn_mtg" onclick="qSetDtype('MTG')" style="flex:1;padding:6px 6px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:0.95em;background:#0b3d91;color:#fff">🏦 Hipoteca</button>
+    <button id="q_btn_db" onclick="qSetDtype('DB')" style="flex:1;padding:6px 6px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:0.95em;background:#e2e8f0;color:#334155">🔴 DEED-BACK</button>
+  </div>
+<div id="q_dbnote" class="tmin" style="display:none;margin-bottom:8px">DEED-BACK = hipoteca pagada por completo (saldo $0). Un saldo en $0 NO prueba que la escritura ya se haya transferido: la transferencia de la escritura es parte del proceso.</div>
 
 <div class="aptrail" id="railL">
   <div class="apt-head"><span id="railLTitle">Hoy</span><button class="apt-x" onclick="aptToggle('L',false)" title="Ocultar">◀</button></div>
@@ -717,12 +724,7 @@ sideApply();
 </div>
   <div class="cbox calc-head" id="ds-calc"><h3>🧮 Calculadora <button onclick="qSync(cur)" title="Restablecer al cliente">↺</button></h3>
     <div class="qidn" id="q_idn" style="display:none"></div>
-    <div id="urlChips" style="display:flex;gap:5px;flex-wrap:wrap;margin:2px 0"></div><div class="tmin" id="q_cli" style="margin-bottom:3px">Ningún cliente seleccionado</div>
-    <div id="q_dtypebar" style="display:flex;gap:6px;margin-bottom:10px">
-    <button id="q_btn_mtg" onclick="qSetDtype('MTG')" style="flex:1;padding:6px 6px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:0.95em;background:#0b3d91;color:#fff">🏦 Hipoteca</button>
-    <button id="q_btn_db" onclick="qSetDtype('DB')" style="flex:1;padding:6px 6px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:0.95em;background:#e2e8f0;color:#334155">🔴 DEED-BACK</button>
-  </div>
-    <div id="q_dbnote" class="tmin" style="display:none;margin-bottom:8px">DEED-BACK = hipoteca pagada por completo (saldo $0). Un saldo en $0 NO prueba que la escritura ya se haya transferido: la transferencia de la escritura es parte del proceso.</div>
+    <div class="tmin" id="q_cli" style="margin-bottom:3px">Ningún cliente seleccionado</div>
   </div>
 <!-- LAYOUTMOVE_20261125 BEGIN: MARCA LA CITA + save block + email buttons moved below the Calculadora card -->
 <!-- COMPACT_V1 --><div id="eodBar" style="border:1px solid #ddd6c9;border-radius:10px;padding:7px 10px;margin:0 0 8px;background:#fffdf8;box-shadow:0 1px 3px rgba(0,0,0,.05)">
