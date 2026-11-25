@@ -565,7 +565,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.7
     },
     {
-     "x": "—Of course not.",
+     "x": "—No.",
      "s": 278.38,
      "d": 1.545,
      "beat": true
@@ -611,7 +611,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.7
     },
     {
-     "x": "—Of course not.",
+     "x": "—No.",
      "s": 300.06,
      "d": 1.545,
      "beat": true
@@ -657,7 +657,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.7
     },
     {
-     "x": "—Of course not.",
+     "x": "—No.",
      "s": 324.71,
      "d": 1.545,
      "beat": true
@@ -703,7 +703,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.7
     },
     {
-     "x": "—Of course not.",
+     "x": "—No.",
      "s": 347.3,
      "d": 1.545,
      "beat": true
@@ -749,7 +749,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.7
     },
     {
-     "x": "—Of course not.",
+     "x": "—No.",
      "s": 369.89,
      "d": 1.545,
      "beat": true
@@ -795,7 +795,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.7
     },
     {
-     "x": "—Of course not.",
+     "x": "—No.",
      "s": 391.45,
      "d": 1.545,
      "beat": true
@@ -889,6 +889,26 @@ window.DECK_TEXT_EN_DB = {
   {
    "sec": "MAINTENANCE / INHERITABLE",
    "kind": "text",
+   "sentences": [
+    {
+     "x": "Were the contract and the presentation in Spanish or in English?",
+     "s": 127.33,
+     "d": 5.665
+    },
+    {
+     "x": "Because if the presentation was in Spanish and the contract was not also in Spanish, that is discrimination — and it exposes them to a fine.",
+     "s": 132.48,
+     "d": 13.39
+    }
+   ],
+   "panel": null,
+   "start": 424.25,
+   "dur": 19.055,
+   "img": 1048
+  },
+  {
+   "sec": "MAINTENANCE / INHERITABLE",
+   "kind": "text",
    "panel": null,
    "sentences": [
     {
@@ -907,7 +927,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 5.67
     }
    ],
-   "start": 424.25,
+   "start": 443.305,
    "dur": 9.17,
    "img": 1018
   },
@@ -922,7 +942,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 3.89
     }
    ],
-   "start": 433.42,
+   "start": 452.475,
    "dur": 3.89,
    "img": 1036
   },
@@ -947,7 +967,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 4.69
     }
    ],
-   "start": 437.31,
+   "start": 456.365,
    "dur": 7.57,
    "img": 1039
   },
@@ -967,7 +987,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.18
     }
    ],
-   "start": 444.88,
+   "start": 463.935,
    "dur": 11.33,
    "img": 1018
   },
@@ -982,7 +1002,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 8.16
     }
    ],
-   "start": 456.21,
+   "start": 475.265,
    "dur": 8.16,
    "img": 1036
   },
@@ -991,20 +1011,14 @@ window.DECK_TEXT_EN_DB = {
    "kind": "text",
    "sentences": [
     {
-     "x": "Was the contract you signed in English or in Spanish?",
-     "s": 127.33,
+     "x": "So you guys literally didn't know what you were signing.",
+     "s": 0.0,
      "d": 5.15
-    },
-    {
-     "x": "Because if the presentation was in Spanish and the contract was not also in Spanish, that is discrimination — and it exposes them to a fine.",
-     "s": 132.48,
-     "d": 13.39
     }
    ],
-   "panel": null,
-   "start": 464.37,
-   "dur": 18.54,
-   "img": 1048
+   "start": 483.425,
+   "dur": 5.15,
+   "img": 1039
   },
   {
    "sec": "MAINTENANCE / INHERITABLE",
@@ -1017,7 +1031,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 2.74
     }
    ],
-   "start": 482.91,
+   "start": 488.575,
    "dur": 2.74,
    "img": 1039
   },
@@ -1037,7 +1051,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 5.35
     }
    ],
-   "start": 485.65,
+   "start": 491.315,
    "dur": 12.85,
    "img": 1018
   },
@@ -1052,7 +1066,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 5.67
     }
    ],
-   "start": 498.5,
+   "start": 504.165,
    "dur": 5.67,
    "img": 1039
   },
@@ -1067,7 +1081,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.18
     }
    ],
-   "start": 504.17,
+   "start": 509.835,
    "dur": 6.18,
    "img": 1036
   },
@@ -1082,7 +1096,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 8.24
     }
    ],
-   "start": 510.35,
+   "start": 516.015,
    "dur": 8.24,
    "img": 1036
   },
@@ -1097,7 +1111,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 12.36
     }
    ],
-   "start": 518.59,
+   "start": 524.255,
    "dur": 12.36,
    "img": 1036
   },
@@ -1112,7 +1126,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 3.6
     }
    ],
-   "start": 530.95,
+   "start": 536.615,
    "dur": 3.6,
    "img": 1036
   },
@@ -1127,7 +1141,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.79
     }
    ],
-   "start": 534.55,
+   "start": 540.215,
    "dur": 9.79,
    "img": 1036
   },
@@ -1157,24 +1171,9 @@ window.DECK_TEXT_EN_DB = {
      "d": 2.06
     }
    ],
-   "start": 544.34,
+   "start": 550.005,
    "dur": 26.78,
    "img": 1036
-  },
-  {
-   "sec": "MAINTENANCE / INHERITABLE",
-   "kind": "text",
-   "panel": null,
-   "sentences": [
-    {
-     "x": "And remember this: it's hereditary.",
-     "s": 564.01,
-     "d": 4.31
-    }
-   ],
-   "start": 571.12,
-   "dur": 4.31,
-   "img": 1039
   },
   {
    "sec": "MAINTENANCE / INHERITABLE",
@@ -1192,7 +1191,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 4.19
     }
    ],
-   "start": 575.43,
+   "start": 576.785,
    "dur": 8.91,
    "img": 1018
   },
@@ -1207,7 +1206,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.36
     }
    ],
-   "start": 584.34,
+   "start": 585.695,
    "dur": 9.36,
    "img": 1036
   },
@@ -1222,7 +1221,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 4.66
     }
    ],
-   "start": 593.7,
+   "start": 595.055,
    "dur": 4.66,
    "img": 1039
   },
@@ -1257,7 +1256,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 1.14
     }
    ],
-   "start": 598.36,
+   "start": 599.715,
    "dur": 8.42,
    "img": 1018
   },
@@ -1272,7 +1271,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 3.8
     }
    ],
-   "start": 606.78,
+   "start": 608.135,
    "dur": 3.8,
    "img": 1036
   },
@@ -1287,7 +1286,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.25
     }
    ],
-   "start": 610.58,
+   "start": 611.935,
    "dur": 9.25,
    "img": 1039
   },
@@ -1302,7 +1301,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 8.6
     }
    ],
-   "start": 619.83,
+   "start": 621.185,
    "dur": 8.6,
    "img": 1018
   },
@@ -1322,7 +1321,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 4.07
     }
    ],
-   "start": 628.43,
+   "start": 629.785,
    "dur": 11.7,
    "img": 1036
   },
@@ -1337,7 +1336,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.29
     }
    ],
-   "start": 640.13,
+   "start": 641.485,
    "dur": 9.29,
    "img": 1039
   },
@@ -1352,7 +1351,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 4.04
     }
    ],
-   "start": 649.42,
+   "start": 650.775,
    "dur": 4.04,
    "img": 1036
   },
@@ -1367,7 +1366,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.27
     }
    ],
-   "start": 653.46,
+   "start": 654.815,
    "dur": 9.27,
    "img": 1039
   },
@@ -1376,7 +1375,7 @@ window.DECK_TEXT_EN_DB = {
    "kind": "break",
    "sentences": [],
    "panel": null,
-   "start": 662.73,
+   "start": 664.085,
    "dur": 2.0,
    "img": 1039
   },
@@ -1389,7 +1388,17 @@ window.DECK_TEXT_EN_DB = {
      "x": "Ok guys, I understand.",
      "s": 658.65,
      "d": 0.88
-    },
+    }
+   ],
+   "start": 666.085,
+   "dur": 0.88,
+   "img": 1041
+  },
+  {
+   "sec": "CASE ACCEPTANCE",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
     {
      "x": "Those were all the questions I had,",
      "s": 659.53,
@@ -1399,26 +1408,16 @@ window.DECK_TEXT_EN_DB = {
      "x": "as I commented to you,",
      "s": 661.07,
      "d": 1.09
-    }
-   ],
-   "start": 664.73,
-   "dur": 3.51,
-   "img": 1041
-  },
-  {
-   "sec": "CASE ACCEPTANCE",
-   "kind": "text",
-   "panel": null,
-   "sentences": [
+    },
     {
      "x": "to make sure that your case does have the characteristics that we are looking for.",
      "s": 662.16,
      "d": 11.86
     }
    ],
-   "start": 668.24,
-   "dur": 11.86,
-   "img": 1044
+   "start": 666.965,
+   "dur": 14.49,
+   "img": 1041
   },
   {
    "sec": "CASE ACCEPTANCE",
@@ -1429,26 +1428,16 @@ window.DECK_TEXT_EN_DB = {
      "x": "As I commented to you at the beginning of the call,",
      "s": 674.02,
      "d": 3.34
-    }
-   ],
-   "start": 680.1,
-   "dur": 3.34,
-   "img": 1041
-  },
-  {
-   "sec": "CASE ACCEPTANCE",
-   "kind": "text",
-   "panel": null,
-   "sentences": [
+    },
     {
      "x": "we are looking for cases for which we can guarantee the success of the cancellation at 100%.",
      "s": 677.36,
      "d": 5.95
     }
    ],
-   "start": 683.44,
-   "dur": 5.95,
-   "img": 1044
+   "start": 681.455,
+   "dur": 9.29,
+   "img": 1041
   },
   {
    "sec": "CASE ACCEPTANCE",
@@ -1461,7 +1450,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 10.28
     }
    ],
-   "start": 689.39,
+   "start": 690.745,
    "dur": 10.28,
    "img": 1041
   },
@@ -1489,10 +1478,15 @@ window.DECK_TEXT_EN_DB = {
      "x": "because you basically did not know what you were signing,",
      "s": 700.36,
      "d": 4.24
+    },
+    {
+     "x": "they were lying to you.",
+     "s": 704.6,
+     "d": 2.35
     }
    ],
-   "start": 699.67,
-   "dur": 11.01,
+   "start": 701.025,
+   "dur": 13.36,
    "img": 1044
   },
   {
@@ -1501,18 +1495,13 @@ window.DECK_TEXT_EN_DB = {
    "panel": null,
    "sentences": [
     {
-     "x": "they were lying to you.",
-     "s": 704.6,
-     "d": 2.35
-    },
-    {
      "x": "Your case does qualify for us to be able to help you.",
      "s": 706.95,
      "d": 5.63
     }
    ],
-   "start": 710.68,
-   "dur": 7.98,
+   "start": 714.385,
+   "dur": 5.63,
    "img": 1041
   },
   {
@@ -1534,26 +1523,16 @@ window.DECK_TEXT_EN_DB = {
      "x": "what type of cancellation we handle here,",
      "s": 719.93,
      "d": 2.7
-    }
-   ],
-   "start": 718.66,
-   "dur": 10.05,
-   "img": 1044
-  },
-  {
-   "sec": "CASE ACCEPTANCE",
-   "kind": "text",
-   "panel": null,
-   "sentences": [
+    },
     {
      "x": "do you have any question or any doubt for me?",
      "s": 722.63,
      "d": 3.23
     }
    ],
-   "start": 728.71,
-   "dur": 3.23,
-   "img": 1041
+   "start": 720.015,
+   "dur": 13.28,
+   "img": 1044
   },
   {
    "sec": "CASE ACCEPTANCE",
@@ -1564,26 +1543,16 @@ window.DECK_TEXT_EN_DB = {
      "x": "Do you have any doubt about what I was commenting to you before,",
      "s": 725.86,
      "d": 4.35
-    }
-   ],
-   "start": 731.94,
-   "dur": 4.35,
-   "img": 1044
-  },
-  {
-   "sec": "CASE ACCEPTANCE",
-   "kind": "text",
-   "panel": null,
-   "sentences": [
+    },
     {
      "x": "before I go on to explain to you the cancellation process and how the service is that we can offer you?",
      "s": 730.21,
      "d": 7.9
     }
    ],
-   "start": 736.29,
-   "dur": 7.9,
-   "img": 1041
+   "start": 733.295,
+   "dur": 12.25,
+   "img": 1044
   },
   {
    "sec": "CASE ACCEPTANCE",
@@ -1596,7 +1565,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 8.17
     }
    ],
-   "start": 744.19,
+   "start": 745.545,
    "dur": 8.17,
    "img": 1044
   },
@@ -1619,26 +1588,16 @@ window.DECK_TEXT_EN_DB = {
      "x": "as I already explained to you,",
      "s": 750.53,
      "d": 2.31
-    }
-   ],
-   "start": 752.36,
-   "dur": 6.56,
-   "img": 1041
-  },
-  {
-   "sec": "CASE ACCEPTANCE",
-   "kind": "text",
-   "panel": null,
-   "sentences": [
+    },
     {
      "x": "this case has the characteristics we look for to be able to guarantee you the cancellation.",
      "s": 752.84,
      "d": 4.92
     }
    ],
-   "start": 758.92,
-   "dur": 4.92,
-   "img": 1044
+   "start": 753.715,
+   "dur": 11.48,
+   "img": 1041
   },
   {
    "sec": "CASE ACCEPTANCE",
@@ -1651,7 +1610,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.75
     }
    ],
-   "start": 763.84,
+   "start": 765.195,
    "dur": 9.75,
    "img": 1041
   },
@@ -1664,40 +1623,20 @@ window.DECK_TEXT_EN_DB = {
      "x": "Before I go on to explain to you the service we can offer you and how we can help you,",
      "s": 767.51,
      "d": 5.9
-    }
-   ],
-   "start": 773.59,
-   "dur": 5.9,
-   "img": 1044
-  },
-  {
-   "sec": "CASE ACCEPTANCE",
-   "kind": "text",
-   "panel": null,
-   "sentences": [
+    },
     {
      "x": "do you have anything else that you have not commented on up to now and you think has weight,",
      "s": 773.41,
      "d": 5.56
-    }
-   ],
-   "start": 779.49,
-   "dur": 5.56,
-   "img": 1041
-  },
-  {
-   "sec": "CASE ACCEPTANCE",
-   "kind": "text",
-   "panel": null,
-   "sentences": [
+    },
     {
      "x": "or something that bothers you in a particular way and you want to comment to me?",
      "s": 778.97,
      "d": 4.17
     }
    ],
-   "start": 785.05,
-   "dur": 4.17,
+   "start": 774.945,
+   "dur": 15.63,
    "img": 1044
   },
   {
@@ -1711,7 +1650,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 4.88
     }
    ],
-   "start": 789.22,
+   "start": 790.575,
    "dur": 4.88,
    "img": 1041
   },
@@ -1726,7 +1665,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 794.1,
+   "start": 795.455,
    "dur": 4.63,
    "img": 1041
   },
@@ -1741,7 +1680,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 798.73,
+   "start": 800.085,
    "dur": 9.27,
    "img": 1041
   },
@@ -1756,7 +1695,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 808.0,
+   "start": 809.355,
    "dur": 6.18,
    "img": 1041
   },
@@ -1771,7 +1710,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 814.18,
+   "start": 815.535,
    "dur": 4.63,
    "img": 1041
   },
@@ -1786,7 +1725,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 818.81,
+   "start": 820.165,
    "dur": 11.85,
    "img": 1041
   },
@@ -1795,7 +1734,7 @@ window.DECK_TEXT_EN_DB = {
    "kind": "break",
    "sentences": [],
    "panel": null,
-   "start": 830.66,
+   "start": 832.015,
    "dur": 2.0,
    "img": 1044
   },
@@ -1810,7 +1749,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 832.66,
+   "start": 834.015,
    "dur": 2.58,
    "img": 1050
   },
@@ -1825,7 +1764,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 835.24,
+   "start": 836.595,
    "dur": 5.67,
    "img": 1050
   },
@@ -1840,7 +1779,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 840.91,
+   "start": 842.265,
    "dur": 7.73,
    "img": 1050
   },
@@ -1855,7 +1794,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 848.64,
+   "start": 849.995,
    "dur": 9.79,
    "img": 1050
   },
@@ -1870,7 +1809,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 858.43,
+   "start": 859.785,
    "dur": 6.18,
    "img": 1050
   },
@@ -1890,7 +1829,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 7.73
     }
    ],
-   "start": 864.61,
+   "start": 865.965,
    "dur": 9.58,
    "img": 1050
   },
@@ -1905,7 +1844,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 7.95
     }
    ],
-   "start": 874.19,
+   "start": 875.545,
    "dur": 7.95,
    "img": 1040
   },
@@ -1920,7 +1859,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.46
     }
    ],
-   "start": 882.14,
+   "start": 883.495,
    "dur": 9.46,
    "img": 1050
   },
@@ -1935,7 +1874,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 7.54
     }
    ],
-   "start": 891.6,
+   "start": 892.955,
    "dur": 7.54,
    "img": 1040
   },
@@ -1950,7 +1889,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 10.18
     }
    ],
-   "start": 899.14,
+   "start": 900.495,
    "dur": 10.18,
    "img": 1050
   },
@@ -1975,7 +1914,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 1.14
     }
    ],
-   "start": 909.32,
+   "start": 910.675,
    "dur": 4.15,
    "img": 1040
   },
@@ -1990,7 +1929,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 8.29
     }
    ],
-   "start": 913.47,
+   "start": 914.825,
    "dur": 8.29,
    "img": 1050
   },
@@ -2005,7 +1944,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.56
     }
    ],
-   "start": 921.76,
+   "start": 923.115,
    "dur": 6.56,
    "img": 1040
   },
@@ -2020,7 +1959,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 1.61
     }
    ],
-   "start": 928.32,
+   "start": 929.675,
    "dur": 1.61,
    "img": 1050
   },
@@ -2035,7 +1974,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 14.94
     }
    ],
-   "start": 929.93,
+   "start": 931.285,
    "dur": 14.94,
    "img": 1040
   },
@@ -2060,7 +1999,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 3.23
     }
    ],
-   "start": 944.87,
+   "start": 946.225,
    "dur": 6.74,
    "img": 1050
   },
@@ -2075,7 +2014,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 7.55
     }
    ],
-   "start": 951.61,
+   "start": 952.965,
    "dur": 7.55,
    "img": 1040
   },
@@ -2090,7 +2029,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 3.24
     }
    ],
-   "start": 959.16,
+   "start": 960.515,
    "dur": 3.24,
    "img": 1050
   },
@@ -2105,7 +2044,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.48
     }
    ],
-   "start": 962.4,
+   "start": 963.755,
    "dur": 6.48,
    "img": 1040
   },
@@ -2120,8 +2059,22 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.37
     }
    ],
-   "start": 968.88,
+   "start": 970.235,
    "dur": 9.37,
+   "img": 1050
+  },
+  {
+   "sec": "CANCELLATION PROCESS",
+   "kind": "text",
+   "sentences": [
+    {
+     "x": "He handles all the documentation and keeps you up to date with our progress.",
+     "s": 0.0,
+     "d": 7.21
+    }
+   ],
+   "start": 979.605,
+   "dur": 7.21,
    "img": 1050
   },
   {
@@ -2135,7 +2088,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 978.25,
+   "start": 986.815,
    "dur": 6.7,
    "img": 1050
   },
@@ -2150,7 +2103,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 984.95,
+   "start": 993.515,
    "dur": 2.58,
    "img": 1050
   },
@@ -2165,7 +2118,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 987.53,
+   "start": 996.095,
    "dur": 2.58,
    "img": 1050
   },
@@ -2180,7 +2133,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 990.11,
+   "start": 998.675,
    "dur": 3.6,
    "img": 1050
   },
@@ -2203,17 +2156,7 @@ window.DECK_TEXT_EN_DB = {
      "x": "when he communicates with you tomorrow,",
      "s": 991.48,
      "d": 5.78
-    }
-   ],
-   "start": 993.71,
-   "dur": 9.63,
-   "img": 1040
-  },
-  {
-   "sec": "CANCELLATION PROCESS",
-   "kind": "text",
-   "panel": null,
-   "sentences": [
+    },
     {
      "x": "is going to ask you for the only thing we need from you to start the process,",
      "s": 997.26,
@@ -2225,9 +2168,9 @@ window.DECK_TEXT_EN_DB = {
      "d": 1.03
     }
    ],
-   "start": 1003.34,
-   "dur": 2.97,
-   "img": 1050
+   "start": 1002.275,
+   "dur": 12.6,
+   "img": 1040
   },
   {
    "sec": "CANCELLATION PROCESS",
@@ -2240,8 +2183,23 @@ window.DECK_TEXT_EN_DB = {
      "d": 10.11
     }
    ],
-   "start": 1006.31,
+   "start": 1014.875,
    "dur": 10.11,
+   "img": 1040
+  },
+  {
+   "sec": "CANCELLATION PROCESS",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "It's not difficult. It's not complicated. Your case manager is going to email you the instructions.",
+     "s": 0.0,
+     "d": 8.24
+    }
+   ],
+   "start": 1024.985,
+   "dur": 8.24,
    "img": 1040
   },
   {
@@ -2255,7 +2213,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 8.84
     }
    ],
-   "start": 1016.42,
+   "start": 1033.225,
    "dur": 8.84,
    "img": 1050
   },
@@ -2283,116 +2241,16 @@ window.DECK_TEXT_EN_DB = {
      "x": "what the experience you have had was,",
      "s": 1024.7,
      "d": 2.28
-    }
-   ],
-   "start": 1025.26,
-   "dur": 7.8,
-   "img": 1040
-  },
-  {
-   "sec": "EXPLANATION LETTER",
-   "kind": "text",
-   "sentences": [
-    {
-     "x": "It's called an explanation letter. It's not complicated. It's not hard.",
-     "s": 1026.98,
-     "d": 5.67
-    }
-   ],
-   "panel": null,
-   "start": 1033.06,
-   "dur": 5.67,
-   "img": 1040
-  },
-  {
-   "sec": "EXPLANATION LETTER",
-   "kind": "text",
-   "sentences": [
-    {
-     "x": "We are going to give you a format to guide you.",
-     "s": 1032.65,
-     "d": 5.67
-    }
-   ],
-   "panel": null,
-   "start": 1038.73,
-   "dur": 5.67,
-   "img": 1040
-  },
-  {
-   "sec": "EXPLANATION LETTER",
-   "kind": "text",
-   "sentences": [
-    {
-     "x": "It's simply what you explained to me and to my company about why you want out, but in written format.",
-     "s": 1038.32,
-     "d": 10.3
-    }
-   ],
-   "panel": null,
-   "start": 1044.4,
-   "dur": 10.3,
-   "img": 1040
-  },
-  {
-   "sec": "EXPLANATION LETTER",
-   "kind": "text",
-   "sentences": [
-    {
-     "x": "They review it, make corrections and send it back to you.",
-     "s": 1048.62,
-     "d": 5.67
-    }
-   ],
-   "panel": null,
-   "start": 1054.7,
-   "dur": 5.67,
-   "img": 1040
-  },
-  {
-   "sec": "EXPLANATION LETTER",
-   "kind": "text",
-   "sentences": [
-    {
-     "x": "That formal complaint number is the physical document we need as soon as possible.",
-     "s": 1054.29,
-     "d": 7.21
-    }
-   ],
-   "panel": null,
-   "start": 1060.37,
-   "dur": 7.21,
-   "img": 1040
-  },
-  {
-   "sec": "EXPLANATION LETTER",
-   "kind": "text",
-   "sentences": [
-    {
-     "x": "Can you take care of that letter, do it fast and send it to your case manager?",
-     "s": 1061.5,
-     "d": 8.76
-    }
-   ],
-   "panel": null,
-   "start": 1067.58,
-   "dur": 8.76,
-   "img": 1040
-  },
-  {
-   "sec": "CANCELLATION PROCESS",
-   "kind": "text",
-   "panel": null,
-   "sentences": [
+    },
     {
      "x": "why you are discontented and are looking for a cancellation.",
      "s": 1070.26,
      "d": 6.99
     }
    ],
-   "start": 1076.34,
-   "dur": 6.99,
-   "img": 1050
+   "start": 1042.065,
+   "dur": 14.79,
+   "img": 1040
   },
   {
    "sec": "CANCELLATION PROCESS",
@@ -2410,7 +2268,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 2.37
     }
    ],
-   "start": 1083.33,
+   "start": 986.775,
    "dur": 3.47,
    "img": 1040
   },
@@ -2425,39 +2283,108 @@ window.DECK_TEXT_EN_DB = {
      "d": 12.35
     }
    ],
-   "start": 1086.8,
+   "start": 990.245,
    "dur": 12.35,
    "img": 1050
   },
   {
    "sec": "CANCELLATION PROCESS",
    "kind": "text",
-   "panel": null,
    "sentences": [
     {
-     "x": "Once the debt disappears from your credit and you have this cancellation notification from the timeshare,",
-     "s": 1093.07,
-     "d": 9.2
+     "x": "Once we get your mutual release letter, and it clearly states that you have satisfied all the requirements of the ownership, we then send a copy of that to the three credit bureaus: TransUnion, Equifax, and Experian.",
+     "s": 0.0,
+     "d": 19.055
     }
    ],
-   "start": 1099.15,
-   "dur": 9.2,
-   "img": 1040
+   "start": 1002.595,
+   "dur": 19.055,
+   "img": 1050
   },
   {
    "sec": "CANCELLATION PROCESS",
    "kind": "text",
-   "panel": null,
    "sentences": [
     {
-     "x": "we consider the cancellation process completed.",
-     "s": 1102.27,
-     "d": 3.07
+     "x": "Approximately 30 to 60 days after you receive your release letter, not only will the late payment notifications be erased, but you will see a big jump in your credit.",
+     "s": 0.0,
+     "d": 15.45
     }
    ],
-   "start": 1108.35,
-   "dur": 3.07,
+   "start": 1021.65,
+   "dur": 15.45,
    "img": 1050
+  },
+  {
+   "sec": "CANCELLATION PROCESS",
+   "kind": "text",
+   "sentences": [
+    {
+     "x": "Once you receive your mutual release letter from the resort, and your credit has been restored, our cancellation process is complete.",
+     "s": 0.0,
+     "d": 10.815
+    }
+   ],
+   "start": 1037.1,
+   "dur": 10.815,
+   "img": 1040
+  },
+  {
+   "sec": "REFUND AND GUARANTEE",
+   "kind": "text",
+   "sentences": [
+    {
+     "x": "Now, to be clear, recovering the money you have given to the resort is not our main service.",
+     "s": 0.0,
+     "d": 9.27
+    }
+   ],
+   "start": 1047.915,
+   "dur": 9.27,
+   "img": 1060
+  },
+  {
+   "sec": "REFUND AND GUARANTEE",
+   "kind": "text",
+   "sentences": [
+    {
+     "x": "People with timeshares hire us strictly to eliminate all the money, present and future, that you are giving to the resort every month.",
+     "s": 0.0,
+     "d": 11.845
+    }
+   ],
+   "start": 1057.185,
+   "dur": 11.845,
+   "img": 1060
+  },
+  {
+   "sec": "REFUND AND GUARANTEE",
+   "kind": "text",
+   "sentences": [
+    {
+     "x": "But your case manager is going to fight to recover the maximum possible, because we incentivize them with 30% of any money they recover.",
+     "s": 0.0,
+     "d": 12.36
+    }
+   ],
+   "start": 1069.03,
+   "dur": 12.36,
+   "img": 1060
+  },
+  {
+   "sec": "REFUND AND GUARANTEE",
+   "kind": "text",
+   "sentences": [
+    {
+     "x": "All of that is outside our fee — it's like the tip.",
+     "s": 0.0,
+     "d": 6.18
+    }
+   ],
+   "start": 1081.39,
+   "dur": 6.18,
+   "img": 1060,
+   "panel": "refund"
   },
   {
    "sec": "REFUND AND GUARANTEE",
@@ -2470,7 +2397,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.51
     }
    ],
-   "start": 1111.42,
+   "start": 1087.57,
    "dur": 9.51,
    "img": 1060
   },
@@ -2485,7 +2412,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 3.18
     }
    ],
-   "start": 1120.93,
+   "start": 1097.08,
    "dur": 3.18,
    "img": 1029
   },
@@ -2500,7 +2427,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.55
     }
    ],
-   "start": 1124.11,
+   "start": 1100.26,
    "dur": 9.55,
    "img": 1060
   },
@@ -2520,7 +2447,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 5.73
     }
    ],
-   "start": 1133.66,
+   "start": 1109.81,
    "dur": 12.51,
    "img": 1029
   },
@@ -2540,7 +2467,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 3.79
     }
    ],
-   "start": 1146.17,
+   "start": 1122.32,
    "dur": 9.09,
    "img": 1060
   },
@@ -2555,7 +2482,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 2.37
     }
    ],
-   "start": 1155.26,
+   "start": 1131.41,
    "dur": 2.37,
    "img": 1029
   },
@@ -2570,7 +2497,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 8.48
     }
    ],
-   "start": 1157.63,
+   "start": 1133.78,
    "dur": 8.48,
    "img": 1060
   },
@@ -2585,7 +2512,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.37
     }
    ],
-   "start": 1166.11,
+   "start": 1142.26,
    "dur": 9.37,
    "img": 1029
   },
@@ -2600,7 +2527,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.75
     }
    ],
-   "start": 1175.48,
+   "start": 1151.63,
    "dur": 6.75,
    "img": 1060
   },
@@ -2615,7 +2542,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.61
     }
    ],
-   "start": 1182.23,
+   "start": 1158.38,
    "dur": 6.61,
    "img": 1029
   },
@@ -2630,14 +2557,14 @@ window.DECK_TEXT_EN_DB = {
      "d": 5.83
     }
    ],
-   "start": 1188.84,
+   "start": 1164.99,
    "dur": 5.83,
    "img": 1060
   },
   {
    "sec": "REFUND AND GUARANTEE",
    "kind": "text",
-   "panel": "refund",
+   "panel": null,
    "sentences": [
     {
      "x": "Do you have any doubt, any question?",
@@ -2645,7 +2572,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 5.17
     }
    ],
-   "start": 1194.67,
+   "start": 1170.82,
    "dur": 5.17,
    "img": 1029
   },
@@ -2660,7 +2587,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.68
     }
    ],
-   "start": 1199.84,
+   "start": 1175.99,
    "dur": 9.68,
    "img": 1039
   },
@@ -2675,7 +2602,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1209.52,
+   "start": 1185.67,
    "dur": 6.18,
    "img": 1016
   },
@@ -2690,7 +2617,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1215.7,
+   "start": 1191.85,
    "dur": 9.79,
    "img": 1016
   },
@@ -2705,7 +2632,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1225.49,
+   "start": 1201.64,
    "dur": 3.6,
    "img": 1016
   },
@@ -2720,7 +2647,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.7
     }
    ],
-   "start": 1229.09,
+   "start": 1205.24,
    "dur": 6.7,
    "img": 1016
   },
@@ -2735,7 +2662,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 11.85
     }
    ],
-   "start": 1235.79,
+   "start": 1211.94,
    "dur": 11.85,
    "img": 1039
   },
@@ -2750,7 +2677,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.18
     }
    ],
-   "start": 1247.64,
+   "start": 1223.79,
    "dur": 6.18,
    "img": 1016
   },
@@ -2770,7 +2697,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 0.62
     }
    ],
-   "start": 1253.82,
+   "start": 1229.97,
    "dur": 6.22,
    "img": 1016
   },
@@ -2795,7 +2722,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 5.86
     }
    ],
-   "start": 1260.04,
+   "start": 1236.19,
    "dur": 10.16,
    "img": 1039
   },
@@ -2820,7 +2747,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 1.58
     }
    ],
-   "start": 1270.2,
+   "start": 1246.35,
    "dur": 5.76,
    "img": 1016
   },
@@ -2835,7 +2762,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 8.43
     }
    ],
-   "start": 1275.96,
+   "start": 1252.11,
    "dur": 8.43,
    "img": 1039
   },
@@ -2850,7 +2777,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 7.37
     }
    ],
-   "start": 1284.39,
+   "start": 1260.54,
    "dur": 7.37,
    "img": 1016
   },
@@ -2870,7 +2797,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 5.48
     }
    ],
-   "start": 1291.76,
+   "start": 1267.91,
    "dur": 9.97,
    "img": 1039
   },
@@ -2895,7 +2822,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 1.66
     }
    ],
-   "start": 1301.73,
+   "start": 1277.88,
    "dur": 7.3,
    "img": 1016
   },
@@ -2915,7 +2842,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 3.58
     }
    ],
-   "start": 1309.03,
+   "start": 1285.18,
    "dur": 13.12,
    "img": 1039
   },
@@ -2930,7 +2857,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.4
     }
    ],
-   "start": 1322.15,
+   "start": 1298.3,
    "dur": 9.4,
    "img": 1016
   },
@@ -2939,7 +2866,7 @@ window.DECK_TEXT_EN_DB = {
    "kind": "break",
    "sentences": [],
    "panel": "stop",
-   "start": 1331.55,
+   "start": 1307.7,
    "dur": 2.0,
    "img": 1016,
    "stop": true,
@@ -2956,7 +2883,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 14.94
     }
    ],
-   "start": 1333.55,
+   "start": 1309.7,
    "dur": 14.94,
    "img": 1041
   },
@@ -2971,7 +2898,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1348.49,
+   "start": 1324.64,
    "dur": 11.85,
    "img": 1047
   },
@@ -2986,7 +2913,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1360.34,
+   "start": 1336.49,
    "dur": 4.63,
    "img": 1047
   },
@@ -3001,7 +2928,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1364.97,
+   "start": 1341.12,
    "dur": 7.73,
    "img": 1047
   },
@@ -3016,7 +2943,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1372.7,
+   "start": 1348.85,
    "dur": 16.48,
    "img": 1047
   },
@@ -3031,7 +2958,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1389.18,
+   "start": 1365.33,
    "dur": 9.79,
    "img": 1047
   },
@@ -3046,7 +2973,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1398.97,
+   "start": 1375.12,
    "dur": 5.15,
    "img": 1047
   },
@@ -3061,7 +2988,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1404.12,
+   "start": 1380.27,
    "dur": 12.36,
    "img": 1047
   },
@@ -3076,7 +3003,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1416.48,
+   "start": 1392.63,
    "dur": 7.73,
    "img": 1047
   },
@@ -3091,7 +3018,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1424.21,
+   "start": 1400.36,
    "dur": 12.36,
    "img": 1047
   },
@@ -3106,7 +3033,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1436.57,
+   "start": 1412.72,
    "dur": 8.76,
    "img": 1047
   },
@@ -3121,7 +3048,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1445.33,
+   "start": 1421.48,
    "dur": 6.18,
    "img": 1047
   },
@@ -3136,7 +3063,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1451.51,
+   "start": 1427.66,
    "dur": 11.85,
    "img": 1047
   },
@@ -3151,7 +3078,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1463.36,
+   "start": 1439.51,
    "dur": 5.15,
    "img": 1047
   },
@@ -3166,7 +3093,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1468.51,
+   "start": 1444.66,
    "dur": 13.91,
    "img": 1047
   },
@@ -3181,7 +3108,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1482.42,
+   "start": 1458.57,
    "dur": 6.18,
    "img": 1047
   },
@@ -3211,7 +3138,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 3.6
     }
    ],
-   "start": 1488.6,
+   "start": 1464.75,
    "dur": 7.22,
    "img": 1054
   },
@@ -3231,7 +3158,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 7.04
     }
    ],
-   "start": 1495.82,
+   "start": 1471.97,
    "dur": 7.74,
    "img": 1047
   },
@@ -3246,7 +3173,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.42
     }
    ],
-   "start": 1503.56,
+   "start": 1479.71,
    "dur": 9.42,
    "img": 1054
   },
@@ -3261,7 +3188,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 7.5
     }
    ],
-   "start": 1512.98,
+   "start": 1489.13,
    "dur": 7.5,
    "img": 1047
   },
@@ -3276,7 +3203,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.44
     }
    ],
-   "start": 1520.48,
+   "start": 1496.63,
    "dur": 6.44,
    "img": 1054
   },
@@ -3291,7 +3218,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 8.48
     }
    ],
-   "start": 1526.92,
+   "start": 1503.07,
    "dur": 8.48,
    "img": 1015
   },
@@ -3306,7 +3233,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 12.78
     }
    ],
-   "start": 1535.4,
+   "start": 1511.55,
    "dur": 12.78,
    "img": 1015
   },
@@ -3326,7 +3253,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 2.06
     }
    ],
-   "start": 1548.18,
+   "start": 1524.33,
    "dur": 10.3,
    "img": 1015
   },
@@ -3346,7 +3273,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 2.47
     }
    ],
-   "start": 1558.48,
+   "start": 1534.63,
    "dur": 4.95,
    "img": 1015
   },
@@ -3361,7 +3288,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.2
     }
    ],
-   "start": 1563.43,
+   "start": 1539.58,
    "dur": 9.2,
    "img": 1048
   },
@@ -3376,7 +3303,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 2.87
     }
    ],
-   "start": 1572.63,
+   "start": 1548.78,
    "dur": 2.87,
    "img": 1048
   },
@@ -3391,7 +3318,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 7.17
     }
    ],
-   "start": 1575.5,
+   "start": 1551.65,
    "dur": 7.17,
    "img": 1048
   },
@@ -3406,7 +3333,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.46
     }
    ],
-   "start": 1582.67,
+   "start": 1558.82,
    "dur": 6.46,
    "img": 1048
   },
@@ -3421,7 +3348,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.29
     }
    ],
-   "start": 1589.13,
+   "start": 1565.28,
    "dur": 6.29,
    "img": 1048
   },
@@ -3436,7 +3363,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.96
     }
    ],
-   "start": 1595.42,
+   "start": 1571.57,
    "dur": 6.96,
    "img": 1048
   },
@@ -3451,7 +3378,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 5.84
     }
    ],
-   "start": 1602.38,
+   "start": 1578.53,
    "dur": 5.84,
    "img": 1048
   },
@@ -3466,7 +3393,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 10.02
     }
    ],
-   "start": 1608.22,
+   "start": 1584.37,
    "dur": 10.02,
    "img": 1048
   },
@@ -3475,7 +3402,7 @@ window.DECK_TEXT_EN_DB = {
    "kind": "break",
    "sentences": [],
    "panel": null,
-   "start": 1618.24,
+   "start": 1594.39,
    "dur": 2.0,
    "img": 1048
   },
@@ -3515,7 +3442,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 3.57
     }
    ],
-   "start": 1620.24,
+   "start": 1596.39,
    "dur": 7.48,
    "img": 1015
   },
@@ -3530,7 +3457,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.74
     }
    ],
-   "start": 1627.72,
+   "start": 1603.87,
    "dur": 6.74,
    "img": 1015
   },
@@ -3550,7 +3477,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 1.89
     }
    ],
-   "start": 1634.46,
+   "start": 1610.61,
    "dur": 8.3,
    "img": 1015
   },
@@ -3570,7 +3497,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 0.44
     }
    ],
-   "start": 1642.76,
+   "start": 1618.91,
    "dur": 9.58,
    "img": 1015
   },
@@ -3585,7 +3512,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 3.33
     }
    ],
-   "start": 1652.34,
+   "start": 1628.49,
    "dur": 3.33,
    "img": 1015
   },
@@ -3594,7 +3521,7 @@ window.DECK_TEXT_EN_DB = {
    "kind": "break",
    "sentences": [],
    "panel": null,
-   "start": 1655.67,
+   "start": 1631.82,
    "dur": 2.0,
    "img": 1015
   },
@@ -3609,7 +3536,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 4.51
     }
    ],
-   "start": 1657.67,
+   "start": 1633.82,
    "dur": 4.51,
    "img": 1015
   },
@@ -3624,7 +3551,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1662.18,
+   "start": 1638.33,
    "dur": 9.79,
    "img": 1015
   },
@@ -3639,7 +3566,7 @@ window.DECK_TEXT_EN_DB = {
     }
    ],
    "panel": null,
-   "start": 1671.97,
+   "start": 1648.12,
    "dur": 22.66,
    "img": 1015
   },
@@ -3654,7 +3581,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 14.42
     }
    ],
-   "start": 1694.63,
+   "start": 1670.78,
    "dur": 14.42,
    "img": 1015
   },
@@ -3669,7 +3596,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 6.7
     }
    ],
-   "start": 1709.05,
+   "start": 1685.2,
    "dur": 6.7,
    "img": 1015
   },
@@ -3684,7 +3611,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 4.63
     }
    ],
-   "start": 1715.75,
+   "start": 1691.9,
    "dur": 4.63,
    "img": 1015
   },
@@ -3699,7 +3626,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 7.21
     }
    ],
-   "start": 1720.38,
+   "start": 1696.53,
    "dur": 7.21,
    "img": 1015
   },
@@ -3714,7 +3641,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 9.27
     }
    ],
-   "start": 1727.59,
+   "start": 1703.74,
    "dur": 9.27,
    "img": 1015
   },
@@ -3729,7 +3656,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 8.76
     }
    ],
-   "start": 1736.86,
+   "start": 1713.01,
    "dur": 8.76,
    "img": 1015
   },
@@ -3744,7 +3671,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 8.24
     }
    ],
-   "start": 1745.62,
+   "start": 1721.77,
    "dur": 8.24,
    "img": 1015
   },
@@ -3759,7 +3686,7 @@ window.DECK_TEXT_EN_DB = {
      "d": 8.76
     }
    ],
-   "start": 1753.86,
+   "start": 1730.01,
    "dur": 8.76,
    "img": 1015
   },
@@ -3769,13 +3696,13 @@ window.DECK_TEXT_EN_DB = {
    "panel": null,
    "sentences": [
     {
-     "x": "Now I am sending you the agreement through DocuSign, and we will go over it together, page by page.",
-     "s": 1756.54,
-     "d": 9.79
+     "x": "I tell you: in the next step I am going to be sending you the service agreement.",
+     "s": 1738.77,
+     "d": 8.76
     }
    ],
-   "start": 1762.62,
-   "dur": 9.79,
+   "start": 1738.77,
+   "dur": 8.76,
    "img": 1015
   },
   {
@@ -3784,12 +3711,12 @@ window.DECK_TEXT_EN_DB = {
    "panel": null,
    "sentences": [
     {
-     "x": "I do not hand you the contract to read on your own. We read it together, and any question you have, you ask me right then.",
-     "s": 1766.33,
+     "x": "In the service agreement it is explained from beginning to end how the cancellation process is and the service we are going to be providing you.",
+     "s": 1747.53,
      "d": 13.39
     }
    ],
-   "start": 1772.41,
+   "start": 1747.53,
    "dur": 13.39,
    "img": 1015
   },
@@ -3799,13 +3726,13 @@ window.DECK_TEXT_EN_DB = {
    "panel": null,
    "sentences": [
     {
-     "x": "This is the most important part of the whole agreement: if we do not get your timeshare cancelled and removed from your name, you get your money back.",
-     "s": 1779.72,
-     "d": 14.42
+     "x": "And this service agreement once signed by you the clients and by me on behalf of the company gives us the power to represent you obviously in the cancellation process.",
+     "s": 1760.92,
+     "d": 15.45
     }
    ],
-   "start": 1785.8,
-   "dur": 14.42,
+   "start": 1760.92,
+   "dur": 15.45,
    "img": 1015
   },
   {
@@ -3814,13 +3741,18 @@ window.DECK_TEXT_EN_DB = {
    "panel": null,
    "sentences": [
     {
-     "x": "The goal is to get to the last page together, the colorful one. If you beat me there, let me know, but do not click finish until we are all there.",
-     "s": 1794.14,
-     "d": 15.96
+     "x": "That is what I say.",
+     "s": 1776.37,
+     "d": 2.58
+    },
+    {
+     "x": "When you click on this email inside you are going to see a green button that says review document.",
+     "s": 1778.95,
+     "d": 9.79
     }
    ],
-   "start": 1800.22,
-   "dur": 15.96,
+   "start": 1776.37,
+   "dur": 12.37,
    "img": 1015
   },
   {
@@ -3829,12 +3761,27 @@ window.DECK_TEXT_EN_DB = {
    "panel": null,
    "sentences": [
     {
-     "x": "Number seven: the cancellation fee. If you are not sure you want to get rid of your timeshare, stop signing right now.",
-     "s": 1810.1,
+     "x": "When you click on review document you are already going to be seeing the service agreement.",
+     "s": 1788.74,
+     "d": 8.24
+    }
+   ],
+   "start": 1788.74,
+   "dur": 8.24,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Ok guys, so you know throughout the whole service agreement and this is a trick that works 97 percent of the time.",
+     "s": 1796.98,
      "d": 11.33
     }
    ],
-   "start": 1816.18,
+   "start": 1796.98,
    "dur": 11.33,
    "img": 1015
   },
@@ -3844,13 +3791,13 @@ window.DECK_TEXT_EN_DB = {
    "panel": null,
    "sentences": [
     {
-     "x": "Because once we go through with this, if you change your mind, there is a $7,000 cancellation fee. If you think you might keep the timeshare, stop signing now.",
-     "s": 1821.43,
-     "d": 14.94
+     "x": "First I tell you throughout the whole service agreement.",
+     "s": 1808.31,
+     "d": 4.63
     }
    ],
-   "start": 1827.51,
-   "dur": 14.94,
+   "start": 1808.31,
+   "dur": 4.63,
    "img": 1015
   },
   {
@@ -3859,12 +3806,267 @@ window.DECK_TEXT_EN_DB = {
    "panel": null,
    "sentences": [
     {
-     "x": "Sign where the system prompts you, and at the end, click finish.",
-     "s": 1836.37,
+     "x": "There are some little buttons, it comes out like a little pencil blue, dark or purple, because that is how it is, it has a color that you do not know if it is purple or blue, but purple is the first day.",
+     "s": 1812.94,
+     "d": 22.14
+    }
+   ],
+   "start": 1812.94,
+   "dur": 22.14,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Or purple.",
+     "s": 1835.08,
+     "d": 1.03
+    }
+   ],
+   "start": 1835.08,
+   "dur": 1.03,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "When you click on this pencil, it is going to give you the option to draw your signature, to select your signature style however you wish.",
+     "s": 1836.11,
+     "d": 13.39
+    }
+   ],
+   "start": 1836.11,
+   "dur": 13.39,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "If you draw a happy face there it does not work, because this is something that only you can sign.",
+     "s": 1849.5,
+     "d": 10.3
+    },
+    {
+     "x": "No.",
+     "s": 1859.8,
+     "d": 0.52
+    }
+   ],
+   "start": 1849.5,
+   "dur": 10.82,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "So I tell them when you click it is going to give you the option to put the style as automatic or you can draw it by hand.",
+     "s": 1860.32,
+     "d": 14.42
+    }
+   ],
+   "start": 1860.32,
+   "dur": 14.42,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Any signature that you draw there is going to work, because this is a movement that only you from your phone device can do.",
+     "s": 1874.74,
+     "d": 12.36
+    }
+   ],
+   "start": 1874.74,
+   "dur": 12.36,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Ok, guys, I am going to explain to you how we do the contract review.",
+     "s": 1887.1,
+     "d": 7.73
+    },
+    {
+     "x": "More pleasant.",
+     "s": 1894.83,
+     "d": 1.03
+    }
+   ],
+   "start": 1887.1,
+   "dur": 8.76,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Normally I do it this way with all my clients.",
+     "s": 1895.86,
+     "d": 5.15
+    }
+   ],
+   "start": 1895.86,
+   "dur": 5.15,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "They ask me in what area of the document they can find X or Y thing that I was mentioning.",
+     "s": 1901.01,
+     "d": 10.3
+    }
+   ],
+   "start": 1901.01,
+   "dur": 10.3,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "You already put that little seed in them.",
+     "s": 1911.31,
+     "d": 4.12
+    },
+    {
+     "x": "Ok, I also tell you now there are areas of the document that matter to me.",
+     "s": 1915.43,
+     "d": 8.24
+    }
+   ],
+   "start": 1911.31,
+   "dur": 12.36,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "That you know that tomorrow you cannot say that I did not tell you, because they are the most important areas of the document.",
+     "s": 1923.67,
+     "d": 12.36
+    }
+   ],
+   "start": 1923.67,
+   "dur": 12.36,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "I always tell them on the first and on the second page, very important in the non-disclosure and non-disparagement agreement.",
+     "s": 1936.03,
+     "d": 10.3
+    }
+   ],
+   "start": 1936.03,
+   "dur": 10.3,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "You are going to be signing number one that during the cancellation process you are going to learn many tactics.",
+     "s": 1946.33,
+     "d": 10.3
+    }
+   ],
+   "start": 1946.33,
+   "dur": 10.3,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "of sales, commercial tactics of our company and of how we do the cancellation.",
+     "s": 1956.63,
+     "d": 7.21
+    }
+   ],
+   "start": 1956.63,
+   "dur": 7.21,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "You agree, you are signing that you agree not to sell these commercial secrets to any other company.",
+     "s": 1963.84,
+     "d": 9.27
+    }
+   ],
+   "start": 1963.84,
+   "dur": 9.27,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "And I tell you, remember when I told you that we are the only company that is even doing legitimate cancellations and we are number one, well, we want to keep it that way.",
+     "s": 1973.11,
+     "d": 17.51
+    }
+   ],
+   "start": 1973.11,
+   "dur": 17.51,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "We make all our clients sign that they cannot sell this information.",
+     "s": 1990.62,
      "d": 6.18
     }
    ],
-   "start": 1842.45,
+   "start": 1990.62,
    "dur": 6.18,
    "img": 1015
   },
@@ -3874,13 +4076,878 @@ window.DECK_TEXT_EN_DB = {
    "panel": null,
    "sentences": [
     {
-     "x": "As soon as it is signed by everyone, your complete copy arrives by email.",
-     "s": 1842.55,
+     "x": "Then I tell you, now on this first and second page also the following that you are going to be signing is that during the cancellation process you cannot speak anything negative about the timeshare.",
+     "s": 1996.8,
+     "d": 18.03
+    }
+   ],
+   "start": 1996.8,
+   "dur": 18.03,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "If you use Twitter, Instagram, Facebook, you cannot be saying window metaphor and links legally, no.",
+     "s": 2014.83,
+     "d": 8.24
+    }
+   ],
+   "start": 2014.83,
+   "dur": 8.24,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "When the timeshare is cancelled, do whatever you wish, but during the process you cannot.",
+     "s": 2023.07,
+     "d": 7.73
+    },
+    {
+     "x": "Ok.",
+     "s": 2030.8,
+     "d": 0.52
+    },
+    {
+     "x": "Nothing about Facebook.",
+     "s": 2031.32,
+     "d": 1.54
+    }
+   ],
+   "start": 2023.07,
+   "dur": 9.79,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Well, effectively.",
+     "s": 2032.86,
+     "d": 1.03
+    }
+   ],
+   "start": 2032.86,
+   "dur": 1.03,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "If we were to need to meet with you by a video call or record something for the case, for the well-being of the case and the help of the cancellation, you agree.",
+     "s": 2033.89,
+     "d": 17.0
+    }
+   ],
+   "start": 2033.89,
+   "dur": 17.0,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "I always tell you, currently we are not using many tools because it is true, we are no longer recording the cases, nor are we calling anyone by video call, but if it becomes necessary to meet with you by video call, well we agree both parties that this, ok, no, no problem, I do not know what.",
+     "s": 2050.89,
+     "d": 29.87
+    }
+   ],
+   "start": 2050.89,
+   "dur": 29.87,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Ok, on the fourth page, service provision contract.",
+     "s": 2080.76,
+     "d": 4.12
+    },
+    {
+     "x": "I am already on the fourth page.",
+     "s": 2084.88,
+     "d": 3.6
+    },
+    {
+     "x": "I tell them, this is the fourth page, service provision contract.",
+     "s": 2088.48,
+     "d": 5.67
+    }
+   ],
+   "start": 2080.76,
+   "dur": 13.39,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "As the heading says and throughout the whole service agreement there are headings to help the clients' understanding.",
+     "s": 2094.15,
+     "d": 9.27
+    },
+    {
+     "x": "Do you realize it is a simple agreement?",
+     "s": 2103.42,
+     "d": 4.12
+    }
+   ],
+   "start": 2094.15,
+   "dur": 13.39,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Now very big on that page it says warning.",
+     "s": 2107.54,
+     "d": 4.63
+    }
+   ],
+   "start": 2107.54,
+   "dur": 4.63,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Very important that you know guys, during the cancellation process the timeshare is going to want to communicate with you.",
+     "s": 2112.17,
+     "d": 10.3
+    }
+   ],
+   "start": 2112.17,
+   "dur": 10.3,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "They are going to want to call you, they are going to want to offer you deals.",
+     "s": 2122.47,
+     "d": 8.76
+    }
+   ],
+   "start": 2122.47,
+   "dur": 8.76,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "We recommend that you have zero communication, that you do not answer the call and if possible that you block them during the process.",
+     "s": 2131.23,
+     "d": 12.36
+    }
+   ],
+   "start": 2131.23,
+   "dur": 12.36,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "The name of both, the address, phone number, when the last purchase was, etcetera.",
+     "s": 2143.59,
      "d": 7.21
     }
    ],
-   "start": 1848.63,
+   "start": 2143.59,
    "dur": 7.21,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "From here on, in the 1, 2, 3, are clauses of all the explanation that I have given you, guys.",
+     "s": 2150.8,
+     "d": 10.3
+    }
+   ],
+   "start": 2150.8,
+   "dur": 10.3,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "A call of practically one hour is now seen written in a document.",
+     "s": 2161.1,
+     "d": 6.7
+    }
+   ],
+   "start": 2161.1,
+   "dur": 6.7,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "If you have any question about these clauses that you are not understanding, you can ask me.",
+     "s": 2167.8,
+     "d": 8.76
+    }
+   ],
+   "start": 2167.8,
+   "dur": 8.76,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "But well, and these clauses I would direct them to the 7.",
+     "s": 2176.56,
+     "d": 6.18
+    },
+    {
+     "x": "I already skipped them to the 7 on page 7 in the money-back policy.",
+     "s": 2182.74,
+     "d": 7.21
+    }
+   ],
+   "start": 2176.56,
+   "dur": 13.39,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "That is where it talks about the refund, if we do not win your case.",
+     "s": 2189.95,
+     "d": 7.73
+    },
+    {
+     "x": "When you get to number 7, let me know.",
+     "s": 2197.68,
+     "d": 4.63
+    }
+   ],
+   "start": 2189.95,
+   "dur": 12.36,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "There you are asking them when you get to number 7 to know if they are reading, because if they tell you I am already here.",
+     "s": 2202.31,
+     "d": 13.39
+    }
+   ],
+   "start": 2202.31,
+   "dur": 13.39,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "The cancellation can be 5 to 6 months.",
+     "s": 2215.7,
+     "d": 4.12
+    },
+    {
+     "x": "It can become in cases that it takes more than 8 months or a year more or less.",
+     "s": 2219.82,
+     "d": 9.27
+    }
+   ],
+   "start": 2215.7,
+   "dur": 13.39,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "In that more or less it can be several years.",
+     "s": 2229.09,
+     "d": 5.15
+    },
+    {
+     "x": "I tell him, depending on each case.",
+     "s": 2234.24,
+     "d": 3.6
+    },
+    {
+     "x": "In your case, you have few purchases.",
+     "s": 2237.84,
+     "d": 3.6
+    }
+   ],
+   "start": 2229.09,
+   "dur": 12.35,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Nothing, nothing, nothing.",
+     "s": 2241.44,
+     "d": 1.54
+    },
+    {
+     "x": "They are several months.",
+     "s": 2242.98,
+     "d": 2.06
+    },
+    {
+     "x": "Now there are clients who have 800 properties that have been using it for years.",
+     "s": 2245.04,
+     "d": 7.73
+    }
+   ],
+   "start": 2241.44,
+   "dur": 11.33,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "It is harder.",
+     "s": 2252.77,
+     "d": 1.54
+    },
+    {
+     "x": "It can last more years, but you do not apply.",
+     "s": 2254.31,
+     "d": 5.15
+    }
+   ],
+   "start": 2252.77,
+   "dur": 6.69,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Simply our agreement is quite general because we work with thousands of clients a day.",
+     "s": 2259.46,
+     "d": 7.73
+    },
+    {
+     "x": "And the contract has to cover all of them.",
+     "s": 2267.19,
+     "d": 4.63
+    }
+   ],
+   "start": 2259.46,
+   "dur": 12.36,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Adjust to all the clients.",
+     "s": 2271.82,
+     "d": 2.58
+    },
+    {
+     "x": "And I take them, I do not know.",
+     "s": 2274.4,
+     "d": 4.12
+    }
+   ],
+   "start": 2271.82,
+   "dur": 6.7,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Normally I tell you, the other area that I would say is quite important, that the client wants to see, would be the 21, in the communication policy.",
+     "s": 2278.52,
+     "d": 14.42
+    }
+   ],
+   "start": 2278.52,
+   "dur": 14.42,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "And lie I am scrolling.",
+     "s": 2292.94,
+     "d": 2.58
+    },
+    {
+     "x": "And I stop at any one except the 8.",
+     "s": 2295.52,
+     "d": 4.63
+    },
+    {
+     "x": "You know?",
+     "s": 2300.15,
+     "d": 1.03
+    }
+   ],
+   "start": 2292.94,
+   "dur": 8.24,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "I tell you, the client understands that he will receive an initial call from his case manager.",
+     "s": 2301.18,
+     "d": 8.76
+    },
+    {
+     "x": "This is what I explained to you earlier.",
+     "s": 2309.94,
+     "d": 4.12
+    }
+   ],
+   "start": 2301.18,
+   "dur": 12.88,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "That his case manager is going to communicate with you.",
+     "s": 2314.06,
+     "d": 5.15
+    },
+    {
+     "x": "And well guys, that would be everything.",
+     "s": 2319.21,
+     "d": 3.6
+    }
+   ],
+   "start": 2314.06,
+   "dur": 8.75,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "If you have any question about something you tell me.",
+     "s": 2322.81,
+     "d": 5.15
+    }
+   ],
+   "start": 2322.81,
+   "dur": 5.15,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "In the area, on such page is the financial area, where you are going to see how I was dividing all the payments, as I was explaining to you.",
+     "s": 2327.96,
+     "d": 14.94
+    }
+   ],
+   "start": 2327.96,
+   "dur": 14.94,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "When you finish signing the document, at the end there will be a green button that says finish.",
+     "s": 2342.9,
+     "d": 9.27
+    }
+   ],
+   "start": 2342.9,
+   "dur": 9.27,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "When you click on finish, then I receive the document.",
+     "s": 2352.17,
+     "d": 5.15
+    },
+    {
+     "x": "I sign it.",
+     "s": 2357.32,
+     "d": 1.54
+    }
+   ],
+   "start": 2352.17,
+   "dur": 6.69,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "And once it is signed by both parties, you receive a copy of the document signed by both.",
+     "s": 2358.86,
+     "d": 9.27
+    }
+   ],
+   "start": 2358.86,
+   "dur": 9.27,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "And this is the copy already of the document that makes it possible for us to represent you in the cancellation process.",
+     "s": 2368.13,
+     "d": 11.33
+    }
+   ],
+   "start": 2368.13,
+   "dur": 11.33,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "In the whole service agreement what you are going to find guys is what we have been talking about during the whole call.",
+     "s": 2379.46,
+     "d": 11.85
+    }
+   ],
+   "start": 2379.46,
+   "dur": 11.85,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "So you can give it a little review and if you see something out of the ordinary you tell me.",
+     "s": 2391.31,
+     "d": 10.3
+    }
+   ],
+   "start": 2391.31,
+   "dur": 10.3,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "I understand that you want to think about it now, I recommend that you read the document at this moment because in our service agreement there are very specific clauses of how we do our cancellation, clauses and commercial information that is totally confidential of the company.",
+     "s": 2401.61,
+     "d": 24.21
+    }
+   ],
+   "start": 2401.61,
+   "dur": 24.21,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "We do not leave our documents in possession of a client if he is not going to be our client.",
+     "s": 2425.82,
+     "d": 10.3
+    }
+   ],
+   "start": 2425.82,
+   "dur": 10.3,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "If you are not going to sign the document I recommend that at least you read it because once we hang up the call I cancel this document.",
+     "s": 2436.12,
+     "d": 14.42
+    }
+   ],
+   "start": 2436.12,
+   "dur": 14.42,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "I cannot leave the document in your possession so that you can review this document.",
+     "s": 2450.54,
+     "d": 7.73
+    }
+   ],
+   "start": 2450.54,
+   "dur": 7.73,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "You have to have a representative of the company on the call.",
+     "s": 2458.27,
+     "d": 6.18
+    }
+   ],
+   "start": 2458.27,
+   "dur": 6.18,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "We know that they know what to say, they are engaging, they have their tricks, we are afraid that during the process you do not listen to the warning that I already told you, remember up on the first page that you would not talk to them and that you would block them.",
+     "s": 2464.45,
+     "d": 27.3
+    }
+   ],
+   "start": 2464.45,
+   "dur": 27.3,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Well there are clients who do not do it and talk to them and they deceive them again and you want to cancel with us and you fall into a scam again.",
+     "s": 2491.75,
+     "d": 16.48
+    }
+   ],
+   "start": 2491.75,
+   "dur": 16.48,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "This clause we have there to protect you from those bad decisions that already brought us to this point.",
+     "s": 2508.23,
+     "d": 9.79
+    },
+    {
+     "x": "I tell them, ok guys, I understand.",
+     "s": 2518.02,
+     "d": 3.6
+    }
+   ],
+   "start": 2508.23,
+   "dur": 13.39,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "You think, because you do not have knowledge, that a lawyer can help you.",
+     "s": 2521.62,
+     "d": 7.21
+    }
+   ],
+   "start": 2521.62,
+   "dur": 7.21,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "The cancellation of a timeshare does not belong to a lawyer's professional area.",
+     "s": 2528.83,
+     "d": 6.7
+    },
+    {
+     "x": "And we have clients who are lawyers and buy timeshares.",
+     "s": 2535.53,
+     "d": 5.15
+    }
+   ],
+   "start": 2528.83,
+   "dur": 11.85,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "And we help them do the cancellation of the timeshare that they buy.",
+     "s": 2540.68,
+     "d": 6.7
+    },
+    {
+     "x": "Because this has nothing to do with lawyers.",
+     "s": 2547.38,
+     "d": 4.12
+    }
+   ],
+   "start": 2540.68,
+   "dur": 10.82,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "Lawyers do not have knowledge about how to do the cancellation of a timeshare.",
+     "s": 2551.5,
+     "d": 7.21
+    }
+   ],
+   "start": 2551.5,
+   "dur": 7.21,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "What you need is a specialist company, specialized, and that only does timeshare cancellations.",
+     "s": 2558.71,
+     "d": 7.21
+    }
+   ],
+   "start": 2558.71,
+   "dur": 7.21,
+   "img": 1015
+  },
+  {
+   "sec": "GOING OVER THE AGREEMENT — DOCUSIGN",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "shared and for your luck we are number one in the united states in timeshare cancellation when we started this nobody was doing it in the united states we are the company with the most experience and we have been doing only this type of service for 17 years ok, I understand the question is already left ok not not so much of that always I add if we were to need the collaboration hear the word collaboration the collapse we need we were to need which never happens the collaboration of a lawyer we have that type of professional tool in our cancellation team",
+     "s": 2565.92,
+     "d": 54.08
+    }
+   ],
+   "start": 2565.92,
+   "dur": 54.08,
    "img": 1015
   }
  ]
