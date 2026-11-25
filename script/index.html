@@ -452,6 +452,12 @@ body #pegShowBtn { right: auto; left: 8px; }
   body.mobile-mode .mclosed > *:not(.mhead) { display: none !important; }
   body.mobile-mode #notesFab { padding: 9px 14px; bottom: 12px; right: 12px; }
 </style>
+<style>
+/* LAYOUTMOVE_20261125 */
+#emailBtnsMoved{display:flex;flex-wrap:wrap;gap:6px;align-items:stretch}
+#emailBtnsMoved button{flex:1 1 44%;padding:7px 8px;font-weight:700;cursor:pointer;font-family:inherit;border:1px solid #9ca3af;border-radius:6px;background:#eef4ff;color:#14304d;font-size:.92em}
+#emailBtnsMoved #quoteBtn{background:#0b3d91;color:#fff;border:none}
+</style>
 </head>
 <body>
 
@@ -467,22 +473,6 @@ body #pegShowBtn { right: auto; left: 8px; }
     <a href="#coversheet">📝 Contrato</a> <button id="mobToggle" type="button" onclick="mobToggleFn()" style="background:#111827;color:#fff;border:1px solid #374151;border-radius:6px;padding:4px 10px;font-weight:700;cursor:pointer;font-family:inherit">📱 Móvil</button>
     <select id="dispoBig" onchange="setDispo(this.value)" title="Disposición del cliente"><option value="">— Sin marcar</option><option value="NEW">NEW — Sin trabajar</option><option value="FU">FU — Seguimiento</option><option value="HOTTEST FU">🔥 HOTTEST FU</option><option value="NA">NA — No contestó</option><option value="NO">NO — No interesado</option><option value="NO GO">NO GO — No va</option><option value="NQ">NQ — No califica</option><option value="RS">RS — Reprogramado</option><option value="QUOTED">QUOTED — Cotizado</option><option value="APT SET">APT SET — Cita agendada</option><option value="SOLD">SOLD — Vendido</option><option value="CHARGED">CHARGED — Cobrado</option><option value="COM PAID">COM PAID — Comisión pagada</option></select>
     <select id="soldWhen" onchange="soldWhenChange()" title="¿Cuándo se vendió?" style="padding:4px 6px;font-weight:700;font-family:inherit;border-radius:6px;border:1px solid #7f1d1d;background:#fff7ed"><option value="">¿Cuándo?</option><option value="ON APT">EN LA CITA</option><option value="AFTER APT">DESPUÉS DE LA CITA</option></select>
-    <button id="quoteBtn" type="button" onclick="qQuoteHtml()">📄 Cotización</button>
-    <button id="quotecurBtn" type="button" onclick="qQuoteCurHtml()">📧 QUOTE + CURRENT</button>
-    <!-- COMPROMISO_V1 -->
-    <button id="compBtn" type="button" onclick="qCompHtml()">📧 COMPROMISO CONTRACTUAL ACTUAL</button>
-    <!-- INCENTIVO_V1 -->
-    <button id="incBtn" type="button" onclick="qIncHtml()">📧 INCENTIVO FDS</button>
-    <button id="quote48Btn" type="button" onclick="qQuote48Html()">🚀 48-MO PUSH</button>
-    <!-- SENT_QUOTE_V1 -->
-    <button id="sentqBtn" type="button" onclick="qSentqView()" title="Ver la cotizacion que le enviaste a este cliente">📤 ENVIADO</button>
-    <button id="emailBtn" type="button" onclick="qEmailHtml()">📧 EMAIL PRE-CITA</button>
-    <button id="comboBtn" type="button" onclick="qComboHtml()">🧾 EMAIL COMPLETO</button>
-    <button id="walkBtn" type="button" onclick="qWalkHtml()">✉️ EMAIL OUT</button>
-    <!-- INTRO_EMAIL_V1 -->
-    <button id="introBtn" type="button" onclick="qIntroHtml()">📧 INTRO</button>
-    <!-- FU_EMAIL_V1 -->
-    <button id="fuCortoBtn" type="button" onclick="qFuCortoHtml()">📧 FU CORTO — GERENTE DE CASO</button>
     <!-- TEXTS_OUT_V1 -->
     <button id="textsBtn" type="button" onclick="qTextsHtml()">💬 TEXTS OUT</button>
     <button id="caBtn" type="button" onclick="qCaHtml()">📋 CA DISCOVERY</button>
@@ -560,7 +550,18 @@ sideApply();
 <button onclick="document.getElementById('s_impfile').click()" style="margin-left:8px;padding:3px 10px;font-size:0.85em;background:#0b3d91;color:#fff;border:none;border-radius:6px;cursor:pointer;font-family:inherit">Importar JSON</button>
 <input type="file" id="s_impfile" accept=".json,application/json" style="display:none" onchange="importScriptClients(this)"></div>
 
-  <!-- COMPACT_V1 --><div id="eodBar" style="border:1px solid #ddd6c9;border-radius:10px;padding:7px 10px;margin:0 0 8px;background:#fffdf8;box-shadow:0 1px 3px rgba(0,0,0,.05)">
+  <aside class="calcside calcarea" id="calc-anchor">
+  <div class="cbox calc-head"><h3>🧮 Calculadora <button onclick="qSync(cur)" title="Restablecer al cliente">↺</button></h3>
+    <div class="qidn" id="q_idn" style="display:none"></div>
+    <div id="urlChips" style="display:flex;gap:5px;flex-wrap:wrap;margin:2px 0"></div><div class="tmin" id="q_cli" style="margin-bottom:3px">Ningún cliente seleccionado</div>
+    <div id="q_dtypebar" style="display:flex;gap:6px;margin-bottom:10px">
+    <button id="q_btn_mtg" onclick="qSetDtype('MTG')" style="flex:1;padding:6px 6px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:0.95em;background:#0b3d91;color:#fff">🏦 Hipoteca</button>
+    <button id="q_btn_db" onclick="qSetDtype('DB')" style="flex:1;padding:6px 6px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:0.95em;background:#e2e8f0;color:#334155">🔴 DEED-BACK</button>
+  </div>
+    <div id="q_dbnote" class="tmin" style="display:none;margin-bottom:8px">DEED-BACK = hipoteca pagada por completo (saldo $0). Un saldo en $0 NO prueba que la escritura ya se haya transferido: la transferencia de la escritura es parte del proceso.</div>
+  </div>
+<!-- LAYOUTMOVE_20261125 BEGIN: MARCA LA CITA + save block + email buttons moved below the Calculadora card -->
+<!-- COMPACT_V1 --><div id="eodBar" style="border:1px solid #ddd6c9;border-radius:10px;padding:7px 10px;margin:0 0 8px;background:#fffdf8;box-shadow:0 1px 3px rgba(0,0,0,.05)">
   <div style="font-size:.72em;letter-spacing:.16em;color:#6b7280;font-weight:700;margin-bottom:3px">MARCA LA CITA DE HOY <span class="tmin" id="eodWho" style="letter-spacing:normal"></span></div>
   <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center">
   <div style="display:flex;align-items:center;gap:7px">
@@ -586,22 +587,33 @@ sideApply();
   </div>
   <div class="qsm" id="eodSummary" style="margin-top:4px;font-weight:400;color:#6b7280"></div>
   </div>
-<aside class="calcside calcarea" id="calc-anchor">
-  <div class="cbox calc-head"><h3>🧮 Calculadora <button onclick="qSync(cur)" title="Restablecer al cliente">↺</button></h3>
-    <div class="qidn" id="q_idn" style="display:none"></div>
-    <div id="urlChips" style="display:flex;gap:5px;flex-wrap:wrap;margin:2px 0"></div><button id="urlEditBtn" type="button" onclick="urlToggleFn()" style="background:#374151;color:#fff;border:none;border-radius:6px;padding:3px 10px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.82em;margin-bottom:2px">✏️ Editar enlaces</button><div class="urlgrid" id="urlGrid" style="display:none"><label class="qf urlf"><span class="qlab">PIPELINE</span><span class="urow"><input id="q_pipe" type="text" placeholder="https://app.pipelinecrm.com/people/…" onchange="qPipeSave()" oninput="qUrlLinks()"><a id="q_pipe_go" class="urlgo" href="#" target="_blank" rel="noopener" style="display:none">↗ Abrir</a></span></label><label class="qf urlf"><span class="qlab">HOJA PRE-CALL</span><span class="urow"><input id="q_sheet" type="text" placeholder="https://docs.google.com/spreadsheets/…" onchange="qPipeSave()" oninput="qUrlLinks()"><a id="q_sheet_go" class="urlgo" href="#" target="_blank" rel="noopener" style="display:none">↗ Abrir</a></span></label><label class="qf urlf"><span class="qlab">DocuSign</span><span class="urow"><input id="q_dsurl" type="text" placeholder="https://app.docusign.com/documents/details/…" onchange="qPipeSave()" oninput="qUrlLinks()"><a id="q_dsurl_go" class="urlgo" href="#" target="_blank" rel="noopener" style="display:none">↗ Abrir</a></span></label><label class="qf urlf"><span class="qlab">CARPETA</span><span class="urow"><input id="q_folder" type="text" placeholder="~/Desktop/deals/…" onchange="qPipeSave()" oninput="qUrlLinks()"><a id="q_folder_go" class="urlgo" href="#" onclick="qCopyFolderPath(this);return false;" style="display:none">📋 Copiar</a></span></label><label class="qf urlf"><span class="qlab">PRÉSTAMO</span><span class="urow"><input id="q_loannote" type="text" placeholder="Ej.: contrato firmado en la carpeta" onchange="qPipeSave()"></span></label></div>
-    <div class="tmin" id="q_cli" style="margin-bottom:3px">Ningún cliente seleccionado</div>
+<div class="cbox" id="saveBlockMoved">
+<button id="urlEditBtn" type="button" onclick="urlToggleFn()" style="background:#374151;color:#fff;border:none;border-radius:6px;padding:3px 10px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.82em;margin-bottom:2px">✏️ Editar enlaces</button><div class="urlgrid" id="urlGrid" style="display:none"><label class="qf urlf"><span class="qlab">PIPELINE</span><span class="urow"><input id="q_pipe" type="text" placeholder="https://app.pipelinecrm.com/people/…" onchange="qPipeSave()" oninput="qUrlLinks()"><a id="q_pipe_go" class="urlgo" href="#" target="_blank" rel="noopener" style="display:none">↗ Abrir</a></span></label><label class="qf urlf"><span class="qlab">HOJA PRE-CALL</span><span class="urow"><input id="q_sheet" type="text" placeholder="https://docs.google.com/spreadsheets/…" onchange="qPipeSave()" oninput="qUrlLinks()"><a id="q_sheet_go" class="urlgo" href="#" target="_blank" rel="noopener" style="display:none">↗ Abrir</a></span></label><label class="qf urlf"><span class="qlab">DocuSign</span><span class="urow"><input id="q_dsurl" type="text" placeholder="https://app.docusign.com/documents/details/…" onchange="qPipeSave()" oninput="qUrlLinks()"><a id="q_dsurl_go" class="urlgo" href="#" target="_blank" rel="noopener" style="display:none">↗ Abrir</a></span></label><label class="qf urlf"><span class="qlab">CARPETA</span><span class="urow"><input id="q_folder" type="text" placeholder="~/Desktop/deals/…" onchange="qPipeSave()" oninput="qUrlLinks()"><a id="q_folder_go" class="urlgo" href="#" onclick="qCopyFolderPath(this);return false;" style="display:none">📋 Copiar</a></span></label><label class="qf urlf"><span class="qlab">PRÉSTAMO</span><span class="urow"><input id="q_loannote" type="text" placeholder="Ej.: contrato firmado en la carpeta" onchange="qPipeSave()"></span></label></div>
     <div id="q_savestate" class="tmin" style="margin-bottom:2px"></div>
     <button type="button" id="q_submitbtn" onclick="qSubmitSave()" style="width:100%;padding:8px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:1.05em;background:#14304d;color:#fff;margin-bottom:8px">&#128190; SUBMIT — SAVE</button>
     <button type="button" id="q_refreshbtn" onclick="qForceRefresh()" style="width:100%;padding:7px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:1em;background:#1e9e57;color:#fff;margin-bottom:8px">&#128260; ACTUALIZAR — recalcular y guardar</button>
     <button type="button" onclick="qAuditToggle()" style="background:#e2e8f0;color:#334155;border:none;border-radius:6px;padding:4px 10px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.85em;margin-bottom:6px">🕘 Historial de cambios manuales</button>
     <div id="q_audithist" style="display:none;margin-bottom:8px"></div>
-    <div id="q_dtypebar" style="display:flex;gap:6px;margin-bottom:10px">
-    <button id="q_btn_mtg" onclick="qSetDtype('MTG')" style="flex:1;padding:6px 6px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:0.95em;background:#0b3d91;color:#fff">🏦 Hipoteca</button>
-    <button id="q_btn_db" onclick="qSetDtype('DB')" style="flex:1;padding:6px 6px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:0.95em;background:#e2e8f0;color:#334155">🔴 DEED-BACK</button>
-  </div>
-    <div id="q_dbnote" class="tmin" style="display:none;margin-bottom:8px">DEED-BACK = hipoteca pagada por completo (saldo $0). Un saldo en $0 NO prueba que la escritura ya se haya transferido: la transferencia de la escritura es parte del proceso.</div>
-  </div>
+</div>
+<div class="cbox" id="emailBtnsMoved">
+    <button id="quoteBtn" type="button" onclick="qQuoteHtml()">📄 Cotización</button>
+    <button id="quotecurBtn" type="button" onclick="qQuoteCurHtml()">📧 QUOTE + CURRENT</button>
+    <!-- COMPROMISO_V1 -->
+    <button id="compBtn" type="button" onclick="qCompHtml()">📧 COMPROMISO CONTRACTUAL ACTUAL</button>
+    <!-- INCENTIVO_V1 -->
+    <button id="incBtn" type="button" onclick="qIncHtml()">📧 INCENTIVO FDS</button>
+    <button id="quote48Btn" type="button" onclick="qQuote48Html()">🚀 48-MO PUSH</button>
+    <!-- SENT_QUOTE_V1 -->
+    <button id="sentqBtn" type="button" onclick="qSentqView()" title="Ver la cotizacion que le enviaste a este cliente">📤 ENVIADO</button>
+    <button id="emailBtn" type="button" onclick="qEmailHtml()">📧 EMAIL PRE-CITA</button>
+    <button id="comboBtn" type="button" onclick="qComboHtml()">🧾 EMAIL COMPLETO</button>
+    <button id="walkBtn" type="button" onclick="qWalkHtml()">✉️ EMAIL OUT</button>
+    <!-- INTRO_EMAIL_V1 -->
+    <button id="introBtn" type="button" onclick="qIntroHtml()">📧 INTRO</button>
+    <!-- FU_EMAIL_V1 -->
+    <button id="fuCortoBtn" type="button" onclick="qFuCortoHtml()">📧 FU CORTO — GERENTE DE CASO</button>
+</div>
+<!-- LAYOUTMOVE_20261125 END -->
   <div class="calcgrid g3"><div class="cpanel cpanel-trap">
   <div class="qsec" style="margin-top:0">🏨 SITUACIÓN DEL RESORT — LA TRAMPA ACTUAL</div>
   <div id="q_contracts" style="display:none"></div>
