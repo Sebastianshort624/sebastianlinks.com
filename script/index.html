@@ -460,10 +460,11 @@ body #pegShowBtn { right: auto; left: 8px; }
 </style>
 <style>
 /* DRAGSECTIONS_V1 (Sebastian 2026-11-25): reorder case-file sections by dragging.
-   Double-click a section header to arm move mode; drag by the handle; order
-   persists in localStorage cfSectionOrderV1. */
+   EDITMOVE_V1: tap the Edit layout button in the top bar to enter move mode;
+   drag by the handle; order persists in localStorage cfSectionOrderV1. */
 .ds-sec { position: relative; }
-.ds-handle { display: none; position: absolute; top: 4px; left: 6px; z-index: 60; width: 32px; height: 24px; line-height: 24px; text-align: center; font-size: 16px; color: #fff; background: #0b3d91; border-radius: 6px; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; box-shadow: 0 1px 4px rgba(0,0,0,.3); }
+.ds-handle { display: none; position: absolute; top: 6px; left: 6px; z-index: 60; width: 48px; height: 48px; line-height: 48px; text-align: center; font-size: 24px; color: #fff; background: #0b3d91; border-radius: 8px; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; box-shadow: 0 1px 4px rgba(0,0,0,.3); }
+#dsEditBtn.ds-on { background: #0b3d91 !important; border-color: #0b3d91 !important; }
 .ds-handle-r { left: auto; right: 6px; }
 body.ds-move .ds-handle { display: block; }
 body.ds-move .ds-sec { outline: 2px dashed rgba(11,61,145,.65); outline-offset: 2px; }
@@ -514,7 +515,7 @@ body.ds-move .ds-sec .ds-handle { pointer-events: auto !important; }
     <a href="#" onclick="resetOverall();return false;" title="Reiniciar el temporizador general">↺ Reiniciar</a>
     
     
-    <a href="#coversheet">📝 Contrato</a> <button id="mobToggle" type="button" onclick="mobToggleFn()" style="background:#111827;color:#fff;border:1px solid #374151;border-radius:6px;padding:4px 10px;font-weight:700;cursor:pointer;font-family:inherit">📱 Móvil</button>
+    <a href="#coversheet">📝 Contrato</a> <button id="mobToggle" type="button" onclick="mobToggleFn()" style="background:#111827;color:#fff;border:1px solid #374151;border-radius:6px;padding:4px 10px;font-weight:700;cursor:pointer;font-family:inherit">📱 Móvil</button> <button id="dsEditBtn" type="button" title="Mover secciones" style="background:#374151;color:#fff;border:1px solid #374151;border-radius:6px;padding:8px 14px;font-weight:700;cursor:pointer;font-family:inherit;font-size:1em">✏️ Edit layout</button>
     <select id="dispoBig" onchange="setDispo(this.value)" title="Disposición del cliente"><option value="">— Sin marcar</option><option value="NEW">NEW — Sin trabajar</option><option value="FU">FU — Seguimiento</option><option value="HOTTEST FU">🔥 HOTTEST FU</option><option value="NA">NA — No contestó</option><option value="NO">NO — No interesado</option><option value="NO GO">NO GO — No va</option><option value="NQ">NQ — No califica</option><option value="RS">RS — Reprogramado</option><option value="QUOTED">QUOTED — Cotizado</option><option value="APT SET">APT SET — Cita agendada</option><option value="SOLD">SOLD — Vendido</option><option value="CHARGED">CHARGED — Cobrado</option><option value="COM PAID">COM PAID — Comisión pagada</option></select>
     <select id="soldWhen" onchange="soldWhenChange()" title="¿Cuándo se vendió?" style="padding:4px 6px;font-weight:700;font-family:inherit;border-radius:6px;border:1px solid #7f1d1d;background:#fff7ed"><option value="">¿Cuándo?</option><option value="ON APT">EN LA CITA</option><option value="AFTER APT">DESPUÉS DE LA CITA</option></select>
     <!-- TEXTS_OUT_V1 -->
@@ -5360,10 +5361,11 @@ function mobToggleFn(){
 
 <script>
 /* ===== DRAGSECTIONS_V1 (Sebastian 2026-11-25) =====
-   Reorder the case file's sections by dragging. Double-click (or double-tap) a
-   section's header/title area to arm MOVE MODE for the whole page: every section
-   gets a drag handle, section contents go inert, and a small bar appears
-   (Done / Reset layout). Dragging is pointer-based (mouse + touch). Reordering
+   EDITMOVE_V1 (2026-11-25): the double-click/double-tap arming is GONE. Tap the
+   "Edit layout" button in the top bar to enter MOVE MODE for the whole page:
+   every section gets a big drag handle, section contents go inert, and a small
+   bar appears (Done / Reset layout). Dragging is pointer-based (mouse + touch).
+   Reordering
    works WITHIN each container only. The order is a page-level preference saved
    in localStorage cfSectionOrderV1 and re-applied on every load; it survives
    client switches because the sections are static HTML (only their data
@@ -5438,42 +5440,14 @@ function mobToggleFn(){
     return null;
   }
   /* ---------- move mode ---------- */
-  var armLockUntil = 0;
   function toggleMove(on){
-    var now = Date.now();
-    if (now < armLockUntil) return;
-    armLockUntil = now + 400;
     document.body.classList.toggle('ds-move', !!on);
     var bar = $('ds-bar');
     if (bar) bar.style.display = on ? 'flex' : 'none';
-  }
-  function headOf(sec){
-    if (!sec) return null;
-    if (sec.id === 'ds-calc') return sec.querySelector('h3');
-    if (sec.id === 'coversheet') return sec.querySelector('h2');
-    if (sec.id === 'eodBar') return sec.firstElementChild;
-    return sec.querySelector('.qsec'); /* may be null -> whole section is the zone */
-  }
-  function isInteractive(t){
-    return !!(t && t.closest && t.closest('button, a, input, select, textarea, label'));
-  }
-  var lastTap = { t: 0, sec: null };
-  function onClickPair(e){
-    if (document.body.classList.contains('ds-move')) return;
-    var t = e.target;
-    if (!t || !t.closest) return;
-    if (t.closest('#ds-bar') || t.closest('.ds-handle')) return;
-    if (isInteractive(t)) return;
-    var sec = t.closest('.ds-sec');
-    if (!sec) return;
-    var head = headOf(sec);
-    if (head && !head.contains(t)) return;
-    var now = Date.now();
-    if (lastTap.sec === sec && now - lastTap.t < 350){
-      lastTap = { t: 0, sec: null };
-      toggleMove(true);
-    } else {
-      lastTap = { t: now, sec: sec };
+    var eb = $('dsEditBtn');
+    if (eb){
+      eb.textContent = on ? 'Done' : '\u270F\uFE0F Edit layout';
+      eb.classList.toggle('ds-on', !!on);
     }
   }
   /* ---------- dragging ---------- */
@@ -5587,13 +5561,11 @@ function mobToggleFn(){
     var saved = loadSaved();
     for (i = 0; i < GROUPS.length; i++) if (saved[GROUPS[i].key]) applyOrder(GROUPS[i], saved[GROUPS[i].key]);
     buildBar();
-    document.addEventListener('click', onClickPair, true);
+    var eb = $('dsEditBtn');
+    if (eb) eb.addEventListener('click', function(){ toggleMove(!document.body.classList.contains('ds-move')); });
     document.addEventListener('pointerdown', onHandleDown, true);
-    document.addEventListener('dblclick', function(e){
-      if (document.body.classList.contains('ds-move') && e.target && e.target.closest && e.target.closest('.ds-handle')) toggleMove(false);
-    }, true);
   }
-  window.DRAGSECTIONS_V1 = { groups: GROUPS, applyOrder: applyOrder, saveGroup: saveGroup, loadSaved: loadSaved };
+  window.DRAGSECTIONS_V1 = { groups: GROUPS, applyOrder: applyOrder, saveGroup: saveGroup, loadSaved: loadSaved, toggleMove: toggleMove };
   init();
 })();
 </script>
