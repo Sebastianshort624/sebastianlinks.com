@@ -92,6 +92,23 @@ section.sec-collapsed { display:none; }
 #cpanel { border:2px solid #111; border-radius:10px; padding:10px 12px;
   margin-top:10px; font-size:15px; }
 #cpanel b { font-size:17px; }
+.controls button:disabled { opacity:.45; }
+.urow { display:flex; align-items:flex-start; gap:6px; margin:6px 0;
+  padding:6px; border:1px solid #bbb; border-radius:8px; background:#fff; }
+.urow button { border:1px solid #111; border-radius:6px; background:#f2f2f2;
+  color:#111; cursor:pointer; font-size:13px; padding:4px 8px; flex:none; }
+.urow button:disabled { opacity:.45; }
+.urow .utxt { flex:1; min-width:0; font-size:16px; line-height:1.4;
+  padding:6px 8px; border:1px solid #ccc; border-radius:6px;
+  box-sizing:border-box; font-family:inherit; resize:vertical; }
+.urow .ubadge { font-size:11px; }
+.urow .ubadge.tr { background:#39ff14; }
+.urow .unoau { flex:none; font-size:11px; color:#999; align-self:center; }
+.urow .udelcf { flex:none; font-size:12px; color:#a00; align-self:center; }
+.urow .udelcf[hidden] { display:none; }
+.uaddline { font-size:14px; margin:4px 0 8px; border:1px solid #111;
+  border-radius:8px; background:#f2f2f2; color:#111; padding:6px 10px;
+  cursor:pointer; }
 </style>
 </head>
 <body>
@@ -108,10 +125,11 @@ audio real debajo.</p>
 <button type="button" id="vcBtn" title="Play the client version (skips Training)">▶ Client</button>
 <button type="button" id="addBtn">Add</button>
 <button type="button" id="resetBtn">Reset</button>
+<button type="button" id="undoBtn" title="Bring back the last deleted segment or line">Undo</button>
 <div class="clientbar"><input type="text" id="csearch" placeholder="Search client..." autocomplete="off"><button type="button" id="cclear" title="Clear client" hidden>✕</button><div id="cresults" hidden></div></div>
 <div id="cpanel" hidden></div>
 <button type="button" id="helpToggle" aria-expanded="true" title="Hide or show the help text">Hide help</button>
-<p class="note" id="helpText">Edit opens a segment sentence by sentence: tap a sentence to mark it Training (green) or Script. The text itself can never be erased or changed — only new segments (Add) take typed text. Training sentences are also audio cuts: Play skips them, and ▶ Client plays everything skipping the cuts. The original audio is NEVER modified: cuts are playback skips, and the cut list (EDL) is at the end of the downloaded file so Astro can render a hard-spliced audio from it. The numbered dropdown moves a segment — its text, marks, cuts, its own clip and your recordings travel with it. Delete is two-tap and recoverable: deleted originals come back with Reset. Save stores your changes IN THIS BROWSER (localStorage) and downloads the updated transcript — nothing is uploaded to a server. Your voice recordings live in this browser (IndexedDB) and are downloadable; they are not uploaded either. Picking a client only changes what you see: his names and numbers replace Yaz's demo values (highlighted) until you clear it. Each section header has a Hide/Show arrow that collapses or expands the whole section; your choice is saved in this browser, and ▶ Client skips collapsed sections.</p>
+<p class="note" id="helpText">Edit opens a segment line by line: tap into a line to change its words, tap its badge to mark it Training (green) or Script, ✕ deletes a line and ＋ adds one. Edited lines keep Yaz's original audio — the words change, the recording does not — and you can record your own take with My voice. Deleted a segment or a line by accident? Undo in the header brings back the last delete, even after a reload. Training sentences are also audio cuts: Play skips them, and ▶ Client plays everything skipping the cuts. The original audio is NEVER modified: cuts are playback skips, and the cut list (EDL) is at the end of the downloaded file so Astro can render a hard-spliced audio from it. The numbered dropdown moves a segment — its text, marks, cuts, its own clip and your recordings travel with it. Delete is two-tap and recoverable: deleted originals come back with Reset. Save stores your changes IN THIS BROWSER (localStorage) and downloads the updated transcript — nothing is uploaded to a server. Your voice recordings live in this browser (IndexedDB) and are downloadable; they are not uploaded either. Picking a client only changes what you see: his names and numbers replace Yaz's demo values (highlighted) until you clear it. Each section header has a Hide/Show arrow that collapses or expands the whole section; your choice is saved in this browser, and ▶ Client skips collapsed sections.</p>
 </div>
 </header>
 <section id="seg-1" data-seg="1" data-cat="training">
@@ -1305,7 +1323,8 @@ var LS_CAT = 'yazOverridesV1', LS_HIDE = 'yazHideTrainingV1',
     LS_SENT = 'yazSentV1', LS_ORDER = 'yazOrderV1',
     LS_ADDED = 'yazAddedV1', LS_DELETED = 'yazDeletedV1',
     LS_SECHIDE = 'yazSecHideV1', LS_COLLAPSE = 'yazSecCollapseV1',
-    LS_HELPHIDE = 'yazHelpHideV1', LS_SNAP = 'yazMixSnapV1';
+    LS_HELPHIDE = 'yazHelpHideV1', LS_SNAP = 'yazMixSnapV1',
+    LS_UNITS = 'yazUnitsV1', LS_TRASH = 'yazTrashV1';
 function jget(k, d){ try { var v = localStorage.getItem(k);
   return v ? JSON.parse(v) : d; } catch(e){ return d; } }
 function overrides(){ return jget(LS_CAT, {}); }
@@ -1316,6 +1335,12 @@ function secHideState(){ return jget(LS_SECHIDE, {}); }
 function secCollapseState(){ return jget(LS_COLLAPSE, {}); }
 function snapState(){ return jget(LS_SNAP, {}); }
 function saveSnap(st){ localStorage.setItem(LS_SNAP, JSON.stringify(st)); }
+function unitsState(){ return jget(LS_UNITS, {}); }
+function saveUnits(st){ localStorage.setItem(LS_UNITS, JSON.stringify(st)); }
+function trashState(){ return jget(LS_TRASH, []); }
+function saveTrash(t){ localStorage.setItem(LS_TRASH, JSON.stringify(t)); }
+function pushTrash(e){ var t = trashState(); t.push(e); saveTrash(t);
+  refreshUndoBtn(); }
 function segText(n){
   var ad = addedState();
   return ad[n] ? ad[n].text : (SEG.text[n] || '');
@@ -1335,6 +1360,12 @@ function splitUnits(text){
 }
 var _addUnits = {};
 function units(n){
+  var us = unitsState();
+  if (us[n]) return us[n].map(function(e){
+    var a = [e.t0, e.t1, e.tr ? 1 : 0, 0, (e.text || '').length];
+    a.txt = e.text || '';
+    return a;
+  });
   if (SENT[n]) return SENT[n];
   var ad = addedState();
   if (ad[n]){
@@ -1344,12 +1375,16 @@ function units(n){
   }
   return [];
 }
-function unitText(n, u){ return segText(n).slice(u[3], u[4]); }
+function unitText(n, u){
+  return u.txt != null ? u.txt : segText(n).slice(u[3], u[4]);
+}
 function flags(n){
-  var st = sentState(), o = overrides(), us = units(n);
+  var us = unitsState();
+  if (us[n]) return us[n].map(function(e){ return e.tr ? 1 : 0; });
+  var st = sentState(), o = overrides(), uu = units(n);
   if (st[n]) return st[n].slice();
-  if (o[n]) return us.map(function(){ return o[n] === 'training' ? 1 : 0; });
-  return us.map(function(u){ return u[2]; });
+  if (o[n]) return uu.map(function(){ return o[n] === 'training' ? 1 : 0; });
+  return uu.map(function(u){ return u[2]; });
 }
 function catOf(n){
   var f = flags(n);
@@ -1357,8 +1392,12 @@ function catOf(n){
   var t = 0; f.forEach(function(x){ t += x; });
   return t === f.length ? 'training' : (t === 0 ? 'client' : 'mixed');
 }
-function segDur(n){ var us = units(n);
-  return us.length ? us[us.length - 1][1] : 0; }
+function segDur(n){
+  if (SENT[n] && SENT[n].length) return SENT[n][SENT[n].length - 1][1];
+  var m = 0;
+  units(n).forEach(function(u){ if (u[1] != null && u[1] > m) m = u[1]; });
+  return m;
+}
 function mergeRanges(r){
   r = r.slice().sort(function(a, b){ return a[0] - b[0]; });
   var out = [];
@@ -1370,8 +1409,11 @@ function mergeRanges(r){
   return out;
 }
 function cutRanges(n){
-  var f = flags(n), r = [];
-  units(n).forEach(function(u, i){ if (f[i]) r.push([u[0], u[1]]); });
+  var f = flags(n), r = [], us = unitsState();
+  units(n).forEach(function(u, i){
+    if (f[i] && u[0] != null && u[1] != null) r.push([u[0], u[1]]);
+  });
+  (us[n + '#del'] || []).forEach(function(c){ r.push([c[0], c[1]]); });
   return mergeRanges(r);
 }
 function keepRanges(n){
@@ -1503,8 +1545,79 @@ function esc(t){
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 /* ---------- rendering */
+function renderEditUnits(s, n){
+  var p = s.querySelector('p');
+  p.innerHTML = '';
+  effList(n).forEach(function(e, i){
+    var row = document.createElement('div');
+    row.className = 'urow';
+    var pb = document.createElement('button');
+    pb.type = 'button'; pb.className = 'uplay'; pb.textContent = '▶';
+    if (e.t0 == null || e.t1 == null){
+      pb.disabled = true; pb.title = 'No audio';
+    } else {
+      pb.title = 'Play';
+      pb.addEventListener('click', function(){ playUnit(n, i); });
+    }
+    row.appendChild(pb);
+    var bd = document.createElement('button');
+    bd.type = 'button';
+    bd.className = 'ubadge' + (e.tr ? ' tr' : '');
+    bd.textContent = e.tr ? 'Training' : 'Script';
+    bd.title = 'Tap to switch Training / Script';
+    bd.addEventListener('click', function(){ toggleUnit(n, i); });
+    row.appendChild(bd);
+    var ta = document.createElement('textarea');
+    ta.className = 'utxt';
+    ta.value = e.text || '';
+    ta.rows = Math.max(1, Math.ceil((e.text || '').length / 55));
+    ta.setAttribute('data-u', i);
+    ta.addEventListener('input', function(){ setLineText(n, i, ta.value); });
+    row.appendChild(ta);
+    if (e.t0 == null){
+      var nn = document.createElement('span');
+      nn.className = 'unoau'; nn.textContent = 'no audio';
+      row.appendChild(nn);
+    }
+    var ab = document.createElement('button');
+    ab.type = 'button'; ab.className = 'uadd'; ab.textContent = '＋';
+    ab.title = 'Add line after this one';
+    ab.addEventListener('click', function(){ addLine(n, i); });
+    row.appendChild(ab);
+    var db = document.createElement('button');
+    db.type = 'button'; db.className = 'udel'; db.textContent = '✕';
+    db.title = 'Delete line';
+    var cf = document.createElement('span');
+    cf.className = 'udelcf'; cf.hidden = true;
+    cf.appendChild(document.createTextNode('Sure? '));
+    var yb = document.createElement('button');
+    yb.type = 'button'; yb.textContent = 'Yes';
+    yb.addEventListener('click', function(){ deleteLine(n, i); });
+    var nb = document.createElement('button');
+    nb.type = 'button'; nb.textContent = 'No';
+    nb.addEventListener('click', function(){
+      cf.hidden = true; db.hidden = false;
+    });
+    cf.appendChild(yb); cf.appendChild(document.createTextNode(' '));
+    cf.appendChild(nb);
+    db.addEventListener('click', function(){
+      db.hidden = true; cf.hidden = false;
+    });
+    row.appendChild(db); row.appendChild(cf);
+    p.appendChild(row);
+  });
+  var end = document.createElement('button');
+  end.type = 'button'; end.className = 'uaddline';
+  end.textContent = '＋ Add line';
+  end.addEventListener('click', function(){ addLine(n, null); });
+  p.appendChild(end);
+}
 function renderSeg(s){
-  var n = s.getAttribute('data-seg'), f = flags(n), us = units(n);
+  var n = s.getAttribute('data-seg');
+  if (s.classList.contains('editing') && !addedState()[n]){
+    renderEditUnits(s, n); return;
+  }
+  var f = flags(n), us = units(n);
   var p = s.querySelector('p'), editing = s.classList.contains('editing');
   p.innerHTML = '';
   us.forEach(function(u, i){
@@ -1633,8 +1746,14 @@ function applyOrder(){
   refreshSections();
 }
 function setSegFlags(n, f){
-  var st = sentState(); st[n] = f;
-  localStorage.setItem(LS_SENT, JSON.stringify(st));
+  var us = unitsState();
+  if (us[n]){
+    us[n].forEach(function(e, i){ e.tr = f[i] ? 1 : 0; });
+    saveUnits(us);
+  } else {
+    var st = sentState(); st[n] = f;
+    localStorage.setItem(LS_SENT, JSON.stringify(st));
+  }
   var o = overrides(), c = catOf(n);
   if (c === 'training' || c === 'client') o[n] = c; else delete o[n];
   localStorage.setItem(LS_CAT, JSON.stringify(o));
@@ -1644,6 +1763,68 @@ function toggleUnit(n, i){
   var snap = snapState();
   if (snap[n]){ delete snap[n]; saveSnap(snap); }
   setSegFlags(n, f); applyAll();
+}
+/* ---------- per-line editing (yazUnitsV1: full current unit list per
+   segment, materialized on first line edit/delete/add from the segment's
+   CURRENT effective units; deleted-line audio ranges collect under
+   '<id>#del' in the same store and join the segment's cut ranges) */
+function effList(n){
+  var us = unitsState();
+  if (us[n]) return us[n];
+  var f = flags(n), isAdded = !!addedState()[n];
+  return units(n).map(function(u, i){
+    return { text: unitText(n, u), tr: f[i] ? 1 : 0,
+             t0: isAdded ? null : u[0], t1: isAdded ? null : u[1] };
+  });
+}
+function materialize(n){
+  var us = unitsState();
+  if (us[n]) return us[n];
+  var list = effList(n);
+  us[n] = list; saveUnits(us);
+  var st = sentState();
+  if (st[n]){ delete st[n];
+    localStorage.setItem(LS_SENT, JSON.stringify(st)); }
+  return list;
+}
+function clearSnap(n){
+  var snap = snapState();
+  if (snap[n]){ delete snap[n]; saveSnap(snap); }
+}
+function setLineText(n, i, txt){
+  var list = materialize(n);
+  if (!list[i]) return;
+  list[i].text = txt;
+  var us = unitsState(); us[n] = list; saveUnits(us);
+}
+function deleteLine(n, i){
+  var list = materialize(n);
+  if (!list[i]) return;
+  var gone = list[i];
+  pushTrash({ kind: 'line', seg: n, idx: i,
+    unit: { text: gone.text, tr: gone.tr, t0: gone.t0, t1: gone.t1 } });
+  list.splice(i, 1);
+  var us = unitsState(); us[n] = list;
+  if (gone.t0 != null && gone.t1 != null){
+    var dk = n + '#del';
+    us[dk] = (us[dk] || []).concat([[gone.t0, gone.t1]]);
+  }
+  saveUnits(us);
+  clearSnap(n);
+  applyAll();
+}
+function addLine(n, afterIdx){
+  var list = materialize(n);
+  var at = afterIdx == null ? list.length : afterIdx + 1;
+  list.splice(at, 0, { text: '', tr: 0, t0: null, t1: null });
+  var us = unitsState(); us[n] = list; saveUnits(us);
+  clearSnap(n);
+  applyAll();
+  var s = document.getElementById('seg-' + n);
+  if (s){
+    var tas = s.querySelectorAll('.utxt');
+    if (tas[at]) tas[at].focus();
+  }
 }
 /* ---------- spliced playback (playback skipping only; files untouched) */
 var PB = { audio: null, stopAt: null, cuts: null, onDone: null,
@@ -1681,7 +1862,7 @@ function playSegSpliced(n, onDone){
 function playUnit(n, i){
   pbStopAll();
   var a = segAudio(n), u = units(n)[i];
-  if (!a || !u) return;
+  if (!a || !u || u[0] == null || u[1] == null) return;
   PB.audio = a; PB.stopAt = u[1]; PB.cuts = null; PB.onDone = null;
   try { a.currentTime = u[0]; } catch(e){}
   a.play();
@@ -1939,6 +2120,9 @@ function createAdded(afterId){
   if (ta) ta.focus();
 }
 function deleteSegment(n, s){
+  pushTrash({ kind: 'seg', id: n, idx: getOrder().indexOf(n),
+    added: addedState()[n] || null,
+    snap: snapState()[n] || null });
   var snap = snapState();
   if (snap[n]){ delete snap[n]; saveSnap(snap); }
   var ad = addedState();
@@ -1955,6 +2139,105 @@ function deleteSegment(n, s){
   if (PB.audio && PB.audio === segAudio(n)) pbStopAll();
   s.remove();
   applyAll(); applyOrder();
+}
+/* ---------- undo (yazTrashV1 stack, LIFO; falls back to legacy
+   yazDeletedV1 entries made before the trash existed) */
+function fmtT(sec){
+  sec = Math.max(0, Math.round(sec || 0));
+  return Math.floor(sec / 60) + ':' + ('0' + (sec % 60)).slice(-2);
+}
+function buildOrigSection(id){
+  var s = document.createElement('section');
+  s.id = 'seg-' + id;
+  s.setAttribute('data-seg', id);
+  s.setAttribute('data-cat', 'client');
+  var start = SEGSTART[id] || 0, end = start + segDur(id);
+  s.innerHTML =
+    '<div class="shead"><h2>Segmento 0 <small>' + fmtT(start) + ' – ' +
+    fmtT(end) + '</small></h2><span class="badge">GUION</span></div>' +
+    '<p></p>' +
+    '<audio controls preload="none" src="clips/BestJAZ-seg-' +
+    ('00' + id).slice(-3) + '.m4a"></audio>' +
+    '<div class="sbtns">' + BTNS_HTML + '</div>';
+  return s;
+}
+function restoreSegmentEl(id, idx){
+  var s = document.getElementById('seg-' + id);
+  if (!s){
+    s = addedState()[id] ? buildSection(id) : buildOrigSection(id);
+    document.body.insertBefore(s, document.querySelector('script'));
+    wireSection(s);
+    if (s._loadTake){
+      if (_idb) s._loadTake();
+      else idbOpen(function(){ if (s._loadTake) s._loadTake(); });
+    }
+  }
+  var raw = jget(LS_ORDER, null);
+  var ord = raw ? raw.map(String)
+    : allIds().filter(function(x){ return x !== id; });
+  ord = ord.filter(function(x){ return x !== id; });
+  var at;
+  if (idx != null) at = Math.max(0, Math.min(idx, ord.length));
+  else {
+    at = ord.length;
+    for (var i = 0; i < ord.length; i++){
+      if (/^\d+$/.test(ord[i]) && Number(ord[i]) > Number(id)){ at = i; break; }
+    }
+  }
+  ord.splice(at, 0, id);
+  localStorage.setItem(LS_ORDER, JSON.stringify(ord));
+  applyAll(); applyOrder();
+}
+function undoSegmentEntry(e){
+  var id = e.id;
+  if (e.added){
+    var ad = addedState(); ad[id] = e.added;
+    localStorage.setItem(LS_ADDED, JSON.stringify(ad));
+  } else {
+    localStorage.setItem(LS_DELETED, JSON.stringify(
+      deletedList().filter(function(x){ return x !== id; })));
+  }
+  if (e.snap){
+    var snap = snapState(); snap[id] = e.snap; saveSnap(snap);
+  }
+  restoreSegmentEl(id, e.idx);
+}
+function undoLineEntry(e){
+  var list = materialize(e.seg);
+  var at = Math.max(0, Math.min(e.idx, list.length));
+  list.splice(at, 0, { text: e.unit.text, tr: e.unit.tr,
+    t0: e.unit.t0, t1: e.unit.t1 });
+  var us = unitsState(); us[e.seg] = list;
+  if (e.unit.t0 != null && e.unit.t1 != null){
+    var dk = e.seg + '#del', arr = (us[dk] || []).slice();
+    for (var i = 0; i < arr.length; i++){
+      if (arr[i][0] === e.unit.t0 && arr[i][1] === e.unit.t1){
+        arr.splice(i, 1); break;
+      }
+    }
+    if (arr.length) us[dk] = arr; else delete us[dk];
+  }
+  saveUnits(us);
+  applyAll();
+}
+function undoLast(){
+  var t = trashState();
+  if (t.length){
+    var e = t.pop(); saveTrash(t);
+    if (e.kind === 'line') undoLineEntry(e); else undoSegmentEntry(e);
+  } else {
+    var del = deletedList();
+    if (!del.length){ refreshUndoBtn(); return; }
+    var id = del.pop();
+    localStorage.setItem(LS_DELETED, JSON.stringify(del));
+    restoreSegmentEl(id, null);
+  }
+  refreshUndoBtn();
+}
+function refreshUndoBtn(){
+  var b = document.getElementById('undoBtn');
+  if (!b) return;
+  b.disabled = !(trashState().length || deletedList().length);
 }
 /* ---------- header wiring */
 document.getElementById('saveAll').addEventListener('click', saveAll);
@@ -2001,11 +2284,12 @@ document.getElementById('hideTr').addEventListener('change', function(){
 document.getElementById('addBtn').addEventListener('click', function(){
   createAdded(null);
 });
+document.getElementById('undoBtn').addEventListener('click', undoLast);
 document.getElementById('resetBtn').addEventListener('click', function(){
   if (!window.confirm('Reset all your changes? The original 197 segments ' +
       'come back; marks, order, added and deleted segments are cleared. ' +
       'Your voice recordings stay saved in this browser.')) return;
-  [LS_CAT, LS_HIDE, LS_SENT, LS_ORDER, LS_ADDED, LS_DELETED, LS_SECHIDE, LS_COLLAPSE, LS_SNAP]
+  [LS_CAT, LS_HIDE, LS_SENT, LS_ORDER, LS_ADDED, LS_DELETED, LS_SECHIDE, LS_COLLAPSE, LS_SNAP, LS_UNITS, LS_TRASH]
     .forEach(function(k){ localStorage.removeItem(k); });
   location.reload();
 });
@@ -2059,6 +2343,8 @@ function saveAll(){
   localStorage.setItem(LS_ORDER, JSON.stringify(getOrder()));
   localStorage.setItem(LS_ADDED, JSON.stringify(addedState()));
   localStorage.setItem(LS_DELETED, JSON.stringify(deletedList()));
+  localStorage.setItem(LS_UNITS, JSON.stringify(unitsState()));
+  localStorage.setItem(LS_TRASH, JSON.stringify(trashState()));
   var lines = ['TRANSCRIPCION ACTUALIZADA (segun tus marcas en /yaz)',
     'Sesion Best JA-Z 2026-11-25',
     'Las frases con [ENTRENAMIENTO] son entrenamiento: quedan fuera del ' +
@@ -2071,8 +2357,11 @@ function saveAll(){
   getOrder().forEach(function(id, idx){
     var f = flags(id);
     lines.push('[Segmento ' + (idx + 1) + ' · ' + clipName(id) + ']');
+    var uent = unitsState()[id];
     units(id).forEach(function(u, i){
-      lines.push((f[i] ? '[ENTRENAMIENTO] ' : '') + unitText(id, u));
+      lines.push((f[i] ? '[ENTRENAMIENTO] ' : '') +
+        (uent && uent[i] && uent[i].t0 == null ? '[SOLO TEXTO] ' : '') +
+        unitText(id, u));
     });
     lines.push('');
     var cuts = cutRanges(id);
@@ -2084,6 +2373,12 @@ function saveAll(){
         ' · original: ' +
         cuts.map(function(c){ return (base + c[0]) + '-' + (base + c[1]); })
           .join(', '));
+    }
+    if (uent){
+      var na = 0;
+      uent.forEach(function(e2){ if (e2.t0 == null) na++; });
+      if (na) edl.push('[Segmento ' + (idx + 1) + ' · ' + clipName(id) +
+        '] ' + na + ' linea(s) agregada(s) — solo texto, sin audio');
     }
   });
   if (!anyCut) edl.push('(sin cortes)');
@@ -2108,6 +2403,7 @@ Object.keys(addedState()).forEach(function(id){
 document.querySelectorAll('section[data-seg]').forEach(wireSection);
 applyAll();
 applyOrder();
+refreshUndoBtn();
 idbOpen(function(){
   document.querySelectorAll('section[data-seg]').forEach(function(s){
     if (s._loadTake) s._loadTake();
