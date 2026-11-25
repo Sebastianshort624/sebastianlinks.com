@@ -783,7 +783,14 @@ function tick(now){
        prog >= 1 falls through with elapsed == sl.dur into the normal
        advance / numbers-hold logic below. If the voice is paused or
        blocked, this branch is skipped and the timer carries the slide. */
-    var prog = audSeg > 0 ? (narr.currentTime - audOff) / audSeg : 1;
+    var pos = narr.currentTime;
+    if (pos < audOff - 0.30){ /* NAVPRECISION_20261125: voice BEHIND this slide's window (a seek from a jump has not landed yet) — freeze here, never chase */
+      markCurrent(); rafId = requestAnimationFrame(tick); return;
+    }
+    if (pos > audOff + audSeg + 0.30){ /* voice AHEAD of this slide's window (stale position after a jump) — pull the voice back to this slide instead of cascading forward through slides to catch it (Sebastian: the double back arrow "jumps forward like ten minutes") */
+      audSeekToElapsed(); markCurrent(); rafId = requestAnimationFrame(tick); return;
+    }
+    var prog = audSeg > 0 ? (pos - audOff) / audSeg : 1;
     elapsed = Math.max(0, Math.min(1, prog)) * sl.dur;
     if (prog < 1){ markCurrent(); rafId = requestAnimationFrame(tick); return; }
   }
@@ -914,7 +921,7 @@ function audSetupSlide(){
     narr.src = audDir + '/' + ch.entry.file;
     narr._seekOnLoad = off > 0.05 ? off : null;
     try { narr.load(); } catch(e){}
-  } else if (Math.abs(narr.currentTime - off) > 1.0){
+  } else if (Math.abs(narr.currentTime - off) > 0.25){ /* NAVPRECISION_20261125: tighter seek tolerance so a jump lands the voice on the slide's window */
     try { narr.currentTime = off; } catch(e){} /* jumped into the chain: land on this slide's window */
   }
   if (auto && playing && !held) audPlay();
@@ -956,7 +963,7 @@ audSyncBtn();
 function go(n){
   held = false;
   idx = Math.max(0, Math.min(slides.length - 1, n));
-  render(); startTimer();
+  render(); audSeekToElapsed(); startTimer(); /* NAVPRECISION_20261125: one tap = exactly one screen, voice synced to its start */
 }
 /* the mode button always tells the truth: while a numbers slide is
    HELD it says so (Sebastian read "AUTOSCROLL: ON" on a frozen show as
