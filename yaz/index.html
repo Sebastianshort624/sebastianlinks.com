@@ -42,6 +42,10 @@ section.tr-hide[data-cat="mixed"]:not(.editing) .u.tr { display:none; }
 .key { display:inline-block; background:#39ff14; padding:0 6px; }
 .note { font-size:13px; color:#666; }
 #helpText[hidden] { display:none; }
+#toplinks { font-size:11px; line-height:1.4; margin:0 0 6px; }
+#toplinks a { margin-right:10px; color:#0b3d91; text-decoration:none; font-weight:600; }
+#helpFoot { margin:28px 0 12px; border-top:1px solid #ddd; padding-top:10px; }
+#helpFoot button { font-size:15px; padding:8px 12px; }
 #helpToggle { font-size:13px; padding:4px 8px; }
 
 .u { border-radius:3px; }
@@ -143,6 +147,7 @@ coaching). Lo demas es el guion de cara al cliente. Cada segmento trae su
 audio real debajo.</p>
 </header>
 <div class="controls">
+<div id="toplinks"><a href="https://app.docusign.com" target="_blank" rel="noopener">DS</a><a href="https://www.ucfs.net" target="_blank" rel="noopener">UCFS</a><a href="https://uportal360.com/login" target="_blank" rel="noopener">UGA</a><a href="https://sebastianlinks.com/morning/" target="_blank" rel="noopener">AM</a><a href="https://sebastianlinks.com/script/" target="_blank" rel="noopener">CF</a><a href="https://app.pipelinecrm.com/agenda" target="_blank" rel="noopener">CAL</a><a href="https://mail.google.com" target="_blank" rel="noopener">Gmail</a></div>
 <label class="switch" title="Hide all training"><input type="checkbox" id="hideTr"><span class="sl"></span>Training</label>
 <button type="button" id="saveAll">Save all</button>
 <button type="button" id="vcBtn" title="Play the client version (skips Training)">▶ Client</button>
@@ -151,8 +156,6 @@ audio real debajo.</p>
 <button type="button" id="undoBtn" title="Bring back the last deleted segment or line">Undo</button>
 <div class="clientbar"><input type="text" id="csearch" placeholder="Search client..." autocomplete="off"><button type="button" id="cclear" title="Clear client" hidden>✕</button><div id="cresults" hidden></div></div>
 <div id="cpanel" hidden></div>
-<button type="button" id="helpToggle" aria-expanded="true" title="Hide or show the help text">Hide help</button>
-<p class="note" id="helpText">Edit opens a segment line by line: tap into a line to change its words, tap the dot to switch it between Training (fluorescent green dot) and Script (white dot), ＋ adds a line, H hides a line — hidden lines leave the script and the audio but stay visible here in Edit — and ✕ deletes a line. Edited lines keep Yaz's original audio — the words change, the recording does not — and you can record your own take with My voice. Deleted a segment or a line by accident? Undo in the header brings back the last delete, even after a reload. Training sentences are also audio cuts: Play skips them, and ▶ Client plays everything skipping the cuts. The original audio is NEVER modified: cuts are playback skips, and the cut list (EDL) is at the end of the downloaded file so Astro can render a hard-spliced audio from it. The numbered dropdown moves a segment — its text, marks, cuts, its own clip and your recordings travel with it. Delete is two-tap and recoverable: deleted originals come back with Reset. Save stores your changes IN THIS BROWSER (localStorage) and downloads the updated transcript — nothing is uploaded to a server. Your voice recordings live in this browser (IndexedDB) and are downloadable; they are not uploaded either. Picking a client only changes what you see: his names and numbers replace Yaz's demo values (highlighted) until you clear it. Each section header has a Hide/Show arrow that collapses or expands the whole section; your choice is saved in this browser, and ▶ Client skips collapsed sections. Rename, in each segment's heading, gives a segment your own name: it follows the segment wherever it moves, appears in the downloaded file, and clearing the name brings the default back.</p>
 </div>
 <section id="seg-1" data-seg="1" data-cat="training">
 <div class="shead"><h2>Segmento 1 <small>0:00 – 0:19</small></h2><span class="badge">MIXTO</span></div>
@@ -2591,5 +2594,8 @@ idbOpen(function(){
 });
 
 </script>
+
+<div id="helpFoot"><button type="button" id="helpToggle" aria-expanded="true" title="Hide or show the help text">Hide help</button>
+<p class="note" id="helpText">Edit opens a segment line by line: tap into a line to change its words, tap the dot to switch it between Training (fluorescent green dot) and Script (white dot), ＋ adds a line, H hides a line — hidden lines leave the script and the audio but stay visible here in Edit — and ✕ deletes a line. Edited lines keep Yaz's original audio — the words change, the recording does not — and you can record your own take with My voice. Deleted a segment or a line by accident? Undo in the header brings back the last delete, even after a reload. Training sentences are also audio cuts: Play skips them, and ▶ Client plays everything skipping the cuts. The original audio is NEVER modified: cuts are playback skips, and the cut list (EDL) is at the end of the downloaded file so Astro can render a hard-spliced audio from it. The numbered dropdown moves a segment — its text, marks, cuts, its own clip and your recordings travel with it. Delete is two-tap and recoverable: deleted originals come back with Reset. Save stores your changes IN THIS BROWSER (localStorage) and downloads the updated transcript — nothing is uploaded to a server. Your voice recordings live in this browser (IndexedDB) and are downloadable; they are not uploaded either. Picking a client only changes what you see: his names and numbers replace Yaz's demo values (highlighted) until you clear it. Each section header has a Hide/Show arrow that collapses or expands the whole section; your choice is saved in this browser, and ▶ Client skips collapsed sections. Rename, in each segment's heading, gives a segment your own name: it follows the segment wherever it moves, appears in the downloaded file, and clearing the name brings the default back.</p></div>
 </body>
 </html>
