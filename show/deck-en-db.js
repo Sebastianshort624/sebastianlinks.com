@@ -296,21 +296,6 @@ window.DECK_TEXT_EN_DB = {
    "img": 1016
   },
   {
-   "sec": "CONFIRMATION",
-   "kind": "text",
-   "panel": null,
-   "sentences": [
-    {
-     "x": "Your property is on the deed-back list at {{LISTA}}.",
-     "s": 122.7,
-     "d": 4.63
-    }
-   ],
-   "start": 122.7,
-   "dur": 4.63,
-   "img": 1060
-  },
-  {
    "sec": "THE IMPENETRABLE CONTRACT",
    "kind": "text",
    "sentences": [
@@ -323,6 +308,31 @@ window.DECK_TEXT_EN_DB = {
    "panel": null,
    "start": 127.33,
    "dur": 9.275,
+   "img": 1048
+  },
+  {
+   "sec": "THE IMPENETRABLE CONTRACT",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
+     "x": "And I assume you've learned that it can't be sold.",
+     "s": 0.0,
+     "d": 5.15
+    },
+    {
+     "x": "You can't even pay anyone to take it, because of the rising maintenance fees and the actual price per night being so high.",
+     "s": 5.15,
+     "d": 11.85
+    },
+    {
+     "x": "The resort won't put the deed back in their name for any amount of money.",
+     "s": 17.0,
+     "d": 7.73
+    }
+   ],
+   "start": 136.605,
+   "dur": 24.72,
    "img": 1048
   },
   {
