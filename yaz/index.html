@@ -29,6 +29,7 @@ section.force-training p { background:#39ff14; }
 section.force-client span.tr { background:transparent; }
 audio { width:100%; }
 body.hide-training section[data-cat="training"] { display:none; }
+section.tr-hide[data-cat="mixed"]:not(.editing) .u.tr { display:none; }
 .key { display:inline-block; background:#39ff14; padding:0 6px; }
 .note { font-size:13px; color:#666; }
 #helpText[hidden] { display:none; }
@@ -1304,7 +1305,7 @@ var LS_CAT = 'yazOverridesV1', LS_HIDE = 'yazHideTrainingV1',
     LS_SENT = 'yazSentV1', LS_ORDER = 'yazOrderV1',
     LS_ADDED = 'yazAddedV1', LS_DELETED = 'yazDeletedV1',
     LS_SECHIDE = 'yazSecHideV1', LS_COLLAPSE = 'yazSecCollapseV1',
-    LS_HELPHIDE = 'yazHelpHideV1';
+    LS_HELPHIDE = 'yazHelpHideV1', LS_SNAP = 'yazMixSnapV1';
 function jget(k, d){ try { var v = localStorage.getItem(k);
   return v ? JSON.parse(v) : d; } catch(e){ return d; } }
 function overrides(){ return jget(LS_CAT, {}); }
@@ -1313,6 +1314,8 @@ function addedState(){ return jget(LS_ADDED, {}); }
 function deletedList(){ return jget(LS_DELETED, []); }
 function secHideState(){ return jget(LS_SECHIDE, {}); }
 function secCollapseState(){ return jget(LS_COLLAPSE, {}); }
+function snapState(){ return jget(LS_SNAP, {}); }
+function saveSnap(st){ localStorage.setItem(LS_SNAP, JSON.stringify(st)); }
 function segText(n){
   var ad = addedState();
   return ad[n] ? ad[n].text : (SEG.text[n] || '');
@@ -1541,6 +1544,7 @@ function refreshSections(){
     if (!el) return;
     var hidden = segHidden(catOf(id), hideG, !!sh[si]);
     el.classList.toggle('sec-hidden', hidden);
+    el.classList.toggle('tr-hide', hideG || !!sh[si]);
     el.classList.toggle('sec-collapsed', !!col[si]);
     if (!hidden) vis[si] = (vis[si] || 0) + 1;
   });
@@ -1637,6 +1641,8 @@ function setSegFlags(n, f){
 }
 function toggleUnit(n, i){
   var f = flags(n); f[i] = f[i] ? 0 : 1;
+  var snap = snapState();
+  if (snap[n]){ delete snap[n]; saveSnap(snap); }
   setSegFlags(n, f); applyAll();
 }
 /* ---------- spliced playback (playback skipping only; files untouched) */
@@ -1786,7 +1792,20 @@ function wireSection(s){
   s.querySelector('.clipname').textContent = clipName(n);
   s.querySelector('.catsw').addEventListener('change', function(){
     var target = this.checked ? 1 : 0;
-    setSegFlags(n, units(n).map(function(){ return target; }));
+    var cur = flags(n), snap = snapState();
+    var isMix = cur.indexOf(0) >= 0 && cur.indexOf(1) >= 0;
+    if (isMix){
+      /* non-destructive: snapshot the per-sentence mix before blanketing */
+      snap[n] = cur.slice(); saveSnap(snap);
+      setSegFlags(n, units(n).map(function(){ return target; }));
+    } else if (snap[n]){
+      /* flipping back: restore the snapshotted mix exactly */
+      var restore = snap[n].slice();
+      delete snap[n]; saveSnap(snap);
+      setSegFlags(n, restore);
+    } else {
+      setSegFlags(n, units(n).map(function(){ return target; }));
+    }
     applyAll();
   });
   s.querySelector('.sv').addEventListener('click', saveAll);
@@ -1920,6 +1939,8 @@ function createAdded(afterId){
   if (ta) ta.focus();
 }
 function deleteSegment(n, s){
+  var snap = snapState();
+  if (snap[n]){ delete snap[n]; saveSnap(snap); }
   var ad = addedState();
   if (ad[n]){
     delete ad[n];
@@ -1984,7 +2005,7 @@ document.getElementById('resetBtn').addEventListener('click', function(){
   if (!window.confirm('Reset all your changes? The original 197 segments ' +
       'come back; marks, order, added and deleted segments are cleared. ' +
       'Your voice recordings stay saved in this browser.')) return;
-  [LS_CAT, LS_HIDE, LS_SENT, LS_ORDER, LS_ADDED, LS_DELETED, LS_SECHIDE, LS_COLLAPSE]
+  [LS_CAT, LS_HIDE, LS_SENT, LS_ORDER, LS_ADDED, LS_DELETED, LS_SECHIDE, LS_COLLAPSE, LS_SNAP]
     .forEach(function(k){ localStorage.removeItem(k); });
   location.reload();
 });
