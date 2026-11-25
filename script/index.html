@@ -259,6 +259,38 @@
   #notesSection .notesTabs { padding: 0 0 2px; }
   #notesSection .notesTools { border: 1px solid #e3ecfa; border-radius: 6px; margin-top: 10px; }
   #notesSection .notesFoot { background: transparent; padding: 8px 2px 0; }
+  /* LEGALPAD_V1 (Sebastian, 2026-11-25): la seccion de notas es un LEGAL PAD —
+     papel amarillo canario, rayas horizontales sencillas azul aqua, y el margen
+     izquierdo con DOBLE linea burdeos (borgoña). El texto arranca a la derecha
+     del margen. El rayado (26px) = el line-height del texto, para que cada
+     renglon caiga sobre su raya. NOTECOLOR_V1 queda reconciliado: ya no hay
+     papel verde; guardado = amarillo legal pad estandar, y sin guardar
+     (noteDirty) = el mismo pad en un amarillo tan mas profundo + acento
+     burdeos a la izquierda y anillo burdeos suave ("sin guardar"). */
+  #notesSection { background: #FFFDE7; border-color: #E7DC8F; }
+  #notesArea, #notesSection #notesArea, #notesList, #notesSection #notesList, .noteItem, .noteEditArea {
+    background-color: #FFF7AE;
+    background-image:
+      linear-gradient(90deg, rgba(0,0,0,0) 40px, rgba(155,44,61,.85) 40px, rgba(155,44,61,.85) 42px, rgba(0,0,0,0) 42px, rgba(0,0,0,0) 45px, rgba(155,44,61,.85) 45px, rgba(155,44,61,.85) 47px, rgba(0,0,0,0) 47px),
+      repeating-linear-gradient(180deg, rgba(0,0,0,0) 0, rgba(0,0,0,0) 25px, rgba(70,150,190,.45) 25px, rgba(70,150,190,.45) 26px);
+    background-attachment: local;
+  }
+  #notesArea, #notesSection #notesArea { line-height: 26px; padding: 7px 12px 7px 60px; border-color: #D9C766; }
+  #notesList, #notesSection #notesList { padding: 10px 14px; border: 1px solid #D9C766; }
+  .noteItem { border: 1px solid #D9C766; border-left: 6px double #9B2C3D; border-radius: 4px; padding: 8px 12px 8px 46px; margin-bottom: 8px; background-position: -14px 0, 0 0; }
+  .noteStamp { color: #9B2C3D; line-height: 20px; margin-bottom: 6px; }
+  .noteText { line-height: 26px; }
+  .noteDay { color: #9B2C3D; border-bottom: 2px solid #9B2C3D; }
+  .noteHistItem { background: #FFFBD6; }
+  .noteEditArea { line-height: 26px; padding: 7px 12px 7px 60px; border-color: #9B2C3D; }
+  #notesArea.noteDirty, #notesSection #notesArea.noteDirty, .noteEditArea.noteDirty {
+    background-color: #F6E27A;
+    background-image:
+      linear-gradient(90deg, rgba(0,0,0,0) 40px, rgba(155,44,61,.85) 40px, rgba(155,44,61,.85) 42px, rgba(0,0,0,0) 42px, rgba(0,0,0,0) 45px, rgba(155,44,61,.85) 45px, rgba(155,44,61,.85) 47px, rgba(0,0,0,0) 47px),
+      repeating-linear-gradient(180deg, rgba(0,0,0,0) 0, rgba(0,0,0,0) 25px, rgba(70,150,190,.45) 25px, rgba(70,150,190,.45) 26px);
+    background-attachment: local;
+    box-shadow: inset 6px 0 0 rgba(155,44,61,.55), inset 0 0 0 2px rgba(155,44,61,.35);
+  }
   @media print { #notesFab, #notesModal { display: none !important; } }
   #lcModal { position: fixed; inset: 0; z-index: 960; background: rgba(0,0,0,.55); display: none; align-items: center; justify-content: center; padding: 20px; }
   #lcModal.open { display: flex; }
