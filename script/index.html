@@ -498,8 +498,9 @@ body.ds-move .ds-sec .ds-handle { pointer-events: auto !important; }
    mas grande, bold, azul fuerte de alto contraste en el encabezado/resumen del
    cliente, en la barra resumen (.cbar) y en la caja de SITUACION DEL RESORT. */
 .rs-name { font-size: 1.5em; font-weight: 800; color: #0b3d91; line-height: 1.2; }
-.ib-resort { font-size: 1.5em; font-weight: 800; color: #0b3d91; }
-.cbar .ib-resort { font-size: 1.35em; font-weight: 800; color: #0b3d91; }
+.ib-resort { font-size: 1.5em; font-weight: 800; color: #0b3d91; overflow-wrap: normal; word-break: keep-all; } /* RESORTWRAP_20261125: never chop the resort name mid-word */
+.cbar .ib-resort { font-size: 1.35em; font-weight: 800; color: #0b3d91; overflow-wrap: normal; word-break: keep-all; }
+.rs-name { overflow-wrap: normal; word-break: keep-all; }
 </style>
 <style>
 /* TZ_V1 (Sebastian, 2026-11-25): junto a cada telefono del encabezado, la zona
@@ -1890,7 +1891,7 @@ function renderBar(c, n){
   var compLine = (c.pyr > 0 || (c.pmonth >= 1 && c.pmonth <= 12)) ? '<div class="ib-line">Comprado: ' + ((c.pmonth >= 1 && c.pmonth <= 12) ? monNames[c.pmonth - 1] + (c.pyr > 0 ? ' ' : '') : '') + (c.pyr > 0 ? c.pyr : '') + '</div>' : '';
   // FIRSTCONTACT_V2: fcTxt/fcLine/fcBarLine se calculan arriba (antes de ibM); fcLine se reutiliza en ibR.
   dispoTopSync();
-  $('ibR').innerHTML = '<div style="float:right;text-align:right;margin-left:12px"><div class="ib-lab">Costo por noche</div><div class="ib-big">' + perNight + '</div></div>' + '<div class="ib-resort">' + escH(c.resort || '—') + '</div>' +
+  $('ibR').innerHTML = '<div class="ib-resort">' + escH(c.resort || '—') + '</div>' + '<div style="text-align:right;margin:2px 0 4px"><div class="ib-lab">Costo por noche</div><div class="ib-big">' + perNight + '</div></div>' +
       (c.loc ? '<div class="ib-line">📍 ' + escH(c.loc) + '</div>' : '') +
       compLine + fcLine +
       '<div class="ib-line">Contratos: ' + (c.contracts > 0 ? c.contracts : '—') + '</div>' +
