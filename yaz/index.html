@@ -11,7 +11,7 @@ header, section { max-width:720px; margin:0 auto; }
 h1 { font-size:22px; margin:8px 0 4px; }
 header p { color:#444; margin:2px 0; font-size:15px; }
 .controls { position:sticky; top:0; background:#fff; padding:10px 0;
-  border-bottom:2px solid #111; z-index:5; }
+  border-bottom:2px solid #111; z-index:5; max-width:720px; margin:0 auto; }
 .controls button, .sbtns button { font-size:15px; padding:8px 12px;
   margin:4px 6px 4px 0; border:1px solid #111; border-radius:8px;
   background:#f2f2f2; color:#111; }
@@ -64,8 +64,14 @@ section.sec-hidden { display:none; }
 section.sec-collapsed { display:none; }
 .sechead .seccol { background:#fff; border:1px solid #bbb; border-radius:6px;
   font-size:13px; line-height:1; padding:4px 8px; cursor:pointer; flex:none; }
+/* STICKYHDR_V1: section headers pin under the controls bar; --ctrlh is the
+   controls bar height, measured in JS; .secwrap scopes the stickiness to
+   each section so the next header pushes the current one off. */
 .sechead { max-width:720px; margin:18px auto 0; padding:10px 0 4px;
-  border-top:3px solid #111; display:flex; align-items:center; gap:10px; }
+  border-top:3px solid #111; display:flex; align-items:center; gap:10px;
+  position:sticky; top:var(--ctrlh, 0px); background:#fff; z-index:4;
+  border-bottom:1px solid #ddd; }
+.secwrap { display:block; }
 .secname { font-size:18px; font-weight:700; }
 .seccount { font-size:13px; color:#666; }
 .vlab { font-size:12px; color:#666; text-transform:uppercase;
@@ -119,6 +125,7 @@ section.sec-collapsed { display:none; }
 <p>Lo resaltado en <span class="key">verde</span> es ENTRENAMIENTO (su
 coaching). Lo demas es el guion de cara al cliente. Cada segmento trae su
 audio real debajo.</p>
+</header>
 <div class="controls">
 <label class="switch" title="Hide all training"><input type="checkbox" id="hideTr"><span class="sl"></span>Training</label>
 <button type="button" id="saveAll">Save all</button>
@@ -131,7 +138,6 @@ audio real debajo.</p>
 <button type="button" id="helpToggle" aria-expanded="true" title="Hide or show the help text">Hide help</button>
 <p class="note" id="helpText">Edit opens a segment line by line: tap into a line to change its words, tap its badge to mark it Training (green) or Script, ✕ deletes a line and ＋ adds one. Edited lines keep Yaz's original audio — the words change, the recording does not — and you can record your own take with My voice. Deleted a segment or a line by accident? Undo in the header brings back the last delete, even after a reload. Training sentences are also audio cuts: Play skips them, and ▶ Client plays everything skipping the cuts. The original audio is NEVER modified: cuts are playback skips, and the cut list (EDL) is at the end of the downloaded file so Astro can render a hard-spliced audio from it. The numbered dropdown moves a segment — its text, marks, cuts, its own clip and your recordings travel with it. Delete is two-tap and recoverable: deleted originals come back with Reset. Save stores your changes IN THIS BROWSER (localStorage) and downloads the updated transcript — nothing is uploaded to a server. Your voice recordings live in this browser (IndexedDB) and are downloadable; they are not uploaded either. Picking a client only changes what you see: his names and numbers replace Yaz's demo values (highlighted) until you clear it. Each section header has a Hide/Show arrow that collapses or expands the whole section; your choice is saved in this browser, and ▶ Client skips collapsed sections.</p>
 </div>
-</header>
 <section id="seg-1" data-seg="1" data-cat="training">
 <div class="shead"><h2>Segmento 1 <small>0:00 – 0:19</small></h2><span class="badge">MIXTO</span></div>
 <p><span class="tr">a nosotros de representarlo en el proceso de cancelación.</span> <span class="tr">Yo es que lo dijeron exacto.</span> <span class="tr">Yes, yes. Otra vez es el comienzo que ahora sí estoy, está tomando nota.</span> Yo les digo, en el siguiente paso les voy a estar enviando el acuerdo de servicio.</p>
@@ -1646,6 +1652,11 @@ function renderSeg(s){
   });
 }
 function refreshSections(){
+  /* STICKYHDR_V1: unwrap section wrappers so headers/segments re-derive flat */
+  document.querySelectorAll('.secwrap').forEach(function(w){
+    while (w.firstChild) w.parentNode.insertBefore(w.firstChild, w);
+    w.remove();
+  });
   document.querySelectorAll('.sechead').forEach(function(h){ h.remove(); });
   var order = getOrder(), hideG = localStorage.getItem(LS_HIDE) === '1';
   var sh = secHideState(), col = secCollapseState(), totals = {}, vis = {}, posOf = {};
@@ -1692,6 +1703,23 @@ function refreshSections(){
     hd.querySelector('.seccount').textContent =
       (vis[si] || 0) + ' of ' + (totals[si] || 0) + ' visible';
     target.parentNode.insertBefore(hd, target);
+  });
+  /* STICKYHDR_V1: wrap each header with its segments so the sticky header
+     is scoped to its own section and the next header pushes it off */
+  document.querySelectorAll('.sechead').forEach(function(hd){
+    var w = document.createElement('div');
+    w.className = 'secwrap';
+    hd.parentNode.insertBefore(w, hd);
+    w.appendChild(hd);
+    var n = w.nextSibling;
+    while (n){
+      var isSeg = n.nodeType === 1 && n.tagName === 'SECTION';
+      var isWs = n.nodeType === 3 && !/\S/.test(n.textContent);
+      if (!isSeg && !isWs) break;
+      var nx = n.nextSibling;
+      w.appendChild(n);
+      n = nx;
+    }
   });
 }
 function applyAll(){
@@ -2389,6 +2417,20 @@ function saveAll(){
   a.download = 'Yaz-Transcripcion-Actualizada.txt';
   document.body.appendChild(a); a.click(); a.remove();
 }
+/* STICKYHDR_V1: keep --ctrlh equal to the controls bar height so section
+   headers pin directly underneath it; ResizeObserver tracks the bar as the
+   help text / client panel open and close inside it */
+(function(){
+  var ctl = document.querySelector('.controls');
+  if (!ctl) return;
+  function upd(){
+    document.documentElement.style.setProperty('--ctrlh', ctl.offsetHeight + 'px');
+  }
+  upd();
+  if (window.ResizeObserver) new ResizeObserver(upd).observe(ctl);
+  window.addEventListener('resize', upd);
+  window.addEventListener('orientationchange', upd);
+})();
 /* ---------- init */
 deletedList().forEach(function(id){
   var el = document.getElementById('seg-' + id);
