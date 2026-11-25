@@ -31,6 +31,8 @@ audio { width:100%; }
 body.hide-training section[data-cat="training"] { display:none; }
 .key { display:inline-block; background:#39ff14; padding:0 6px; }
 .note { font-size:13px; color:#666; }
+#helpText[hidden] { display:none; }
+#helpToggle { font-size:13px; padding:4px 8px; }
 
 .u { border-radius:3px; }
 mark.sub { background:#ffe58a; font-weight:700; border-radius:3px;
@@ -100,14 +102,15 @@ section.sec-collapsed { display:none; }
 coaching). Lo demas es el guion de cara al cliente. Cada segmento trae su
 audio real debajo.</p>
 <div class="controls">
-<label class="switch"><input type="checkbox" id="hideTr"><span class="sl"></span>Hide</label>
+<label class="switch" title="Hide all training"><input type="checkbox" id="hideTr"><span class="sl"></span>Training</label>
 <button type="button" id="saveAll">Save all</button>
 <button type="button" id="vcBtn" title="Play the client version (skips Training)">▶ Client</button>
 <button type="button" id="addBtn">Add</button>
 <button type="button" id="resetBtn">Reset</button>
 <div class="clientbar"><input type="text" id="csearch" placeholder="Search client..." autocomplete="off"><button type="button" id="cclear" title="Clear client" hidden>✕</button><div id="cresults" hidden></div></div>
 <div id="cpanel" hidden></div>
-<p class="note">Edit opens a segment sentence by sentence: tap a sentence to mark it Training (green) or Script. The text itself can never be erased or changed — only new segments (Add) take typed text. Training sentences are also audio cuts: Play skips them, and ▶ Client plays everything skipping the cuts. The original audio is NEVER modified: cuts are playback skips, and the cut list (EDL) is at the end of the downloaded file so Astro can render a hard-spliced audio from it. The numbered dropdown moves a segment — its text, marks, cuts, its own clip and your recordings travel with it. Delete is two-tap and recoverable: deleted originals come back with Reset. Save stores your changes IN THIS BROWSER (localStorage) and downloads the updated transcript — nothing is uploaded to a server. Your voice recordings live in this browser (IndexedDB) and are downloadable; they are not uploaded either. Picking a client only changes what you see: his names and numbers replace Yaz's demo values (highlighted) until you clear it. Each section header has a Hide/Show arrow that collapses or expands the whole section; your choice is saved in this browser, and ▶ Client skips collapsed sections.</p>
+<button type="button" id="helpToggle" aria-expanded="true" title="Hide or show the help text">Hide help</button>
+<p class="note" id="helpText">Edit opens a segment sentence by sentence: tap a sentence to mark it Training (green) or Script. The text itself can never be erased or changed — only new segments (Add) take typed text. Training sentences are also audio cuts: Play skips them, and ▶ Client plays everything skipping the cuts. The original audio is NEVER modified: cuts are playback skips, and the cut list (EDL) is at the end of the downloaded file so Astro can render a hard-spliced audio from it. The numbered dropdown moves a segment — its text, marks, cuts, its own clip and your recordings travel with it. Delete is two-tap and recoverable: deleted originals come back with Reset. Save stores your changes IN THIS BROWSER (localStorage) and downloads the updated transcript — nothing is uploaded to a server. Your voice recordings live in this browser (IndexedDB) and are downloadable; they are not uploaded either. Picking a client only changes what you see: his names and numbers replace Yaz's demo values (highlighted) until you clear it. Each section header has a Hide/Show arrow that collapses or expands the whole section; your choice is saved in this browser, and ▶ Client skips collapsed sections.</p>
 </div>
 </header>
 <section id="seg-1" data-seg="1" data-cat="training">
@@ -1300,7 +1303,8 @@ var CLIENTS = [{"id":"c-resabala-1009","name":"Felipe & Mary Resabala","n1":"Fel
 var LS_CAT = 'yazOverridesV1', LS_HIDE = 'yazHideTrainingV1',
     LS_SENT = 'yazSentV1', LS_ORDER = 'yazOrderV1',
     LS_ADDED = 'yazAddedV1', LS_DELETED = 'yazDeletedV1',
-    LS_SECHIDE = 'yazSecHideV1', LS_COLLAPSE = 'yazSecCollapseV1';
+    LS_SECHIDE = 'yazSecHideV1', LS_COLLAPSE = 'yazSecCollapseV1',
+    LS_HELPHIDE = 'yazHelpHideV1';
 function jget(k, d){ try { var v = localStorage.getItem(k);
   return v ? JSON.parse(v) : d; } catch(e){ return d; } }
 function overrides(){ return jget(LS_CAT, {}); }
@@ -1546,13 +1550,14 @@ function refreshSections(){
     if (!target) return;
     var hd = document.createElement('div');
     hd.className = 'sechead';
-    hd.innerHTML = '<button type="button" class="seccol" title="Hide section / Show section"></button>' +
+    hd.innerHTML = '<button type="button" class="seccol" title="Collapse section"></button>' +
       '<span class="secname"></span>' +
-      '<label class="switch"><input type="checkbox" class="sehide">' +
-      '<span class="sl"></span>Hide</label><span class="seccount"></span>';
+      '<label class="switch" title="Hide training in this section"><input type="checkbox" class="sehide">' +
+      '<span class="sl"></span>Training</label><span class="seccount"></span>';
     hd.querySelector('.secname').textContent = sec.name;
     var colBtn = hd.querySelector('.seccol');
-    colBtn.textContent = col[si] ? '▸ Show' : '▾ Hide';
+    colBtn.textContent = col[si] ? '▸' : '▾';
+    colBtn.title = col[si] ? 'Expand section' : 'Collapse section';
     colBtn.addEventListener('click', function(){
       var st = secCollapseState();
       st[si] = !st[si];
@@ -1932,6 +1937,24 @@ function deleteSegment(n, s){
 }
 /* ---------- header wiring */
 document.getElementById('saveAll').addEventListener('click', saveAll);
+(function(){
+  var help = document.getElementById('helpText'),
+      btn = document.getElementById('helpToggle');
+  if (!help || !btn) return;
+  function applyHelpHide(){
+    var hide = false;
+    try { hide = localStorage.getItem(LS_HELPHIDE) === '1'; } catch(e){}
+    help.hidden = hide;
+    btn.textContent = hide ? 'Show help' : 'Hide help';
+    btn.setAttribute('aria-expanded', hide ? 'false' : 'true');
+  }
+  btn.addEventListener('click', function(){
+    var hide = !help.hidden;
+    try { localStorage.setItem(LS_HELPHIDE, hide ? '1' : '0'); } catch(e){}
+    applyHelpHide();
+  });
+  applyHelpHide();
+})();
 document.getElementById('vcBtn').addEventListener('click', function(){
   if (PB.vc){ pbStopAll(); return; }
   pbStopAll();
