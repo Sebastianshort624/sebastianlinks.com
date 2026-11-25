@@ -43,6 +43,10 @@ section.tr-hide[data-cat="mixed"]:not(.editing) .u.tr { display:none; }
 .note { font-size:13px; color:#666; }
 #helpText[hidden] { display:none; }
 #toplinks { font-size:11px; line-height:1.4; margin:0 0 6px; }
+/* PERF_V1: iPhone tap lag — skip rendering off-screen segments entirely,
+   and stop the browser waiting for a double-tap before firing clicks. */
+section[data-seg] { content-visibility:auto; contain-intrinsic-size:auto 280px; }
+button, .switch, select, input, textarea, a { touch-action:manipulation; }
 #toplinks a { margin-right:10px; color:#0b3d91; text-decoration:none; font-weight:600; }
 #helpFoot { margin:28px 0 12px; border-top:1px solid #ddd; padding-top:10px; }
 #helpFoot button { font-size:15px; padding:8px 12px; }
@@ -1802,6 +1806,54 @@ function refreshSections(){
     }
   });
 }
+/* PERF_V1: applyAll() re-rendered all 197 segments and rebuilt every
+   section wrapper on EVERY tap — the iPhone lag. applySeg(n) does the
+   same work for the one segment that changed. */
+function applySeg(n){
+  var s = document.getElementById('seg-' + n);
+  if (!s){ applyAll(); return; }
+  var c = catOf(n);
+  s.setAttribute('data-cat', c);
+  s.classList.remove('force-training');
+  s.classList.remove('force-client');
+  var badge = s.querySelector('.badge');
+  if (badge) badge.textContent =
+    c === 'training' ? 'ENTRENAMIENTO' : (c === 'mixed' ? 'MIXTO' : 'GUION');
+  var sw = s.querySelector('.catsw');
+  if (sw) sw.checked = (c === 'training');
+  var sc = s.querySelector('.sc');
+  if (sc) sc.disabled = (c === 'training') || !segAudio(n);
+  renderTitle(s);
+  renderSeg(s);
+  var g = 0, t = 0;
+  document.querySelectorAll('section[data-seg]').forEach(function(x){
+    if (catOf(x.getAttribute('data-seg')) === 'training') t++; else g++;
+  });
+  var cel = document.getElementById('counts');
+  if (cel) cel.textContent = 'Guion: ' + g + ' \u00b7 Entrenamiento: ' + t;
+  var order = getOrder(), hideG = localStorage.getItem(LS_HIDE) === '1';
+  var sh = secHideState(), col = secCollapseState();
+  var idx = order.indexOf(n);
+  if (idx >= 0){
+    var si = sectionIdxForPos(idx + 1);
+    var hidden = segHidden(c, hideG, !!sh[si]);
+    s.classList.toggle('sec-hidden', hidden);
+    s.classList.toggle('tr-hide', hideG || !!sh[si]);
+    s.classList.toggle('sec-collapsed', !!col[si]);
+    var totals = 0, vis = 0;
+    order.forEach(function(id, ix){
+      if (sectionIdxForPos(ix + 1) !== si) return;
+      totals++;
+      var el = document.getElementById('seg-' + id);
+      if (el && !el.classList.contains('sec-hidden')) vis++;
+    });
+    var wrap = s.closest ? s.closest('.secwrap') : null;
+    if (wrap){
+      var cc = wrap.querySelector('.seccount');
+      if (cc) cc.textContent = vis + ' of ' + totals + ' visible';
+    }
+  }
+}
 function applyAll(){
   document.querySelectorAll('section[data-seg]').forEach(function(s){
     var n = s.getAttribute('data-seg'), c = catOf(n);
@@ -1869,7 +1921,7 @@ function toggleUnit(n, i){
   var f = flags(n); f[i] = f[i] ? 0 : 1;
   var snap = snapState();
   if (snap[n]){ delete snap[n]; saveSnap(snap); }
-  setSegFlags(n, f); applyAll();
+  setSegFlags(n, f); applySeg(n);
 }
 /* LINEROW_V1: H — hide/show a single line. Hiding materializes the
    segment's units into yazUnitsV1 with hid on the entry; the line keeps
@@ -1881,7 +1933,7 @@ function toggleHideLine(n, i){
   if (!list[i]) return;
   list[i].hid = list[i].hid ? 0 : 1;
   var us = unitsState(); us[n] = list; saveUnits(us);
-  applyAll();
+  applySeg(n);
 }
 /* ---------- per-line editing (yazUnitsV1: full current unit list per
    segment, materialized on first line edit/delete/add from the segment's
@@ -1930,7 +1982,7 @@ function deleteLine(n, i){
   }
   saveUnits(us);
   clearSnap(n);
-  applyAll();
+  applySeg(n);
 }
 function addLine(n, afterIdx){
   var list = materialize(n);
@@ -1938,7 +1990,7 @@ function addLine(n, afterIdx){
   list.splice(at, 0, { text: '', tr: 0, t0: null, t1: null });
   var us = unitsState(); us[n] = list; saveUnits(us);
   clearSnap(n);
-  applyAll();
+  applySeg(n);
   var s = document.getElementById('seg-' + n);
   if (s){
     var tas = s.querySelectorAll('.utxt');
@@ -2059,7 +2111,7 @@ function exitEdit(s){
   s.classList.remove('editing');
   s.querySelector('.ed').hidden = false;
   s.querySelector('.dn').hidden = true;
-  applyAll();
+  applySeg(n);
 }
 function wireSection(s){
   var n = s.getAttribute('data-seg');
@@ -2106,7 +2158,7 @@ function wireSection(s){
     } else {
       setSegFlags(n, units(n).map(function(){ return target; }));
     }
-    applyAll();
+    applySeg(n);
   });
   /* SEGNAME_V1: Rename control in the heading */
   if (!s.querySelector('.rnbtn')){
@@ -2372,7 +2424,7 @@ function undoLineEntry(e){
     if (arr.length) us[dk] = arr; else delete us[dk];
   }
   saveUnits(us);
-  applyAll();
+  applySeg(e.seg);
 }
 function undoLast(){
   var t = trashState();
