@@ -286,6 +286,31 @@ window.DECK_TEXT_EN_MTG = {
    "panel": null,
    "sentences": [
     {
+     "x": "And I assume you've learned that it can't be sold.",
+     "s": 0.0,
+     "d": 5.15
+    },
+    {
+     "x": "You can't even pay anyone to take it, because of the rising maintenance fees and the actual price per night being so high.",
+     "s": 5.15,
+     "d": 11.85
+    },
+    {
+     "x": "The resort won't put the deed back in their name for any amount of money.",
+     "s": 17.0,
+     "d": 7.73
+    }
+   ],
+   "start": 123.665,
+   "dur": 24.72,
+   "img": 1048
+  },
+  {
+   "sec": "THE IMPENETRABLE CONTRACT",
+   "kind": "text",
+   "panel": null,
+   "sentences": [
+    {
      "x": "Before I ask you the questions, I want you to understand something important about this contract.",
      "s": 142.72,
      "d": 7.69
