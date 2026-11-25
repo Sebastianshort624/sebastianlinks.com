@@ -58,6 +58,9 @@ section.editing .u { display:block; padding:8px 10px; margin:6px 0;
 .switch input:checked + .sl { background:#39ff14; }
 .switch input:checked + .sl:before { transform:translateX(16px); }
 section.sec-hidden { display:none; }
+section.sec-collapsed { display:none; }
+.sechead .seccol { background:#fff; border:1px solid #bbb; border-radius:6px;
+  font-size:13px; line-height:1; padding:4px 8px; cursor:pointer; flex:none; }
 .sechead { max-width:720px; margin:18px auto 0; padding:10px 0 4px;
   border-top:3px solid #111; display:flex; align-items:center; gap:10px; }
 .secname { font-size:18px; font-weight:700; }
@@ -104,7 +107,7 @@ audio real debajo.</p>
 <button type="button" id="resetBtn">Reset</button>
 <div class="clientbar"><input type="text" id="csearch" placeholder="Search client..." autocomplete="off"><button type="button" id="cclear" title="Clear client" hidden>✕</button><div id="cresults" hidden></div></div>
 <div id="cpanel" hidden></div>
-<p class="note">Edit opens a segment sentence by sentence: tap a sentence to mark it Training (green) or Script. The text itself can never be erased or changed — only new segments (Add) take typed text. Training sentences are also audio cuts: Play skips them, and ▶ Client plays everything skipping the cuts. The original audio is NEVER modified: cuts are playback skips, and the cut list (EDL) is at the end of the downloaded file so Astro can render a hard-spliced audio from it. The numbered dropdown moves a segment — its text, marks, cuts, its own clip and your recordings travel with it. Delete is two-tap and recoverable: deleted originals come back with Reset. Save stores your changes IN THIS BROWSER (localStorage) and downloads the updated transcript — nothing is uploaded to a server. Your voice recordings live in this browser (IndexedDB) and are downloadable; they are not uploaded either. Picking a client only changes what you see: his names and numbers replace Yaz's demo values (highlighted) until you clear it.</p>
+<p class="note">Edit opens a segment sentence by sentence: tap a sentence to mark it Training (green) or Script. The text itself can never be erased or changed — only new segments (Add) take typed text. Training sentences are also audio cuts: Play skips them, and ▶ Client plays everything skipping the cuts. The original audio is NEVER modified: cuts are playback skips, and the cut list (EDL) is at the end of the downloaded file so Astro can render a hard-spliced audio from it. The numbered dropdown moves a segment — its text, marks, cuts, its own clip and your recordings travel with it. Delete is two-tap and recoverable: deleted originals come back with Reset. Save stores your changes IN THIS BROWSER (localStorage) and downloads the updated transcript — nothing is uploaded to a server. Your voice recordings live in this browser (IndexedDB) and are downloadable; they are not uploaded either. Picking a client only changes what you see: his names and numbers replace Yaz's demo values (highlighted) until you clear it. Each section header has a Hide/Show arrow that collapses or expands the whole section; your choice is saved in this browser, and ▶ Client skips collapsed sections.</p>
 </div>
 </header>
 <section id="seg-1" data-seg="1" data-cat="training">
@@ -1297,7 +1300,7 @@ var CLIENTS = [{"id":"c-resabala-1009","name":"Felipe & Mary Resabala","n1":"Fel
 var LS_CAT = 'yazOverridesV1', LS_HIDE = 'yazHideTrainingV1',
     LS_SENT = 'yazSentV1', LS_ORDER = 'yazOrderV1',
     LS_ADDED = 'yazAddedV1', LS_DELETED = 'yazDeletedV1',
-    LS_SECHIDE = 'yazSecHideV1';
+    LS_SECHIDE = 'yazSecHideV1', LS_COLLAPSE = 'yazSecCollapseV1';
 function jget(k, d){ try { var v = localStorage.getItem(k);
   return v ? JSON.parse(v) : d; } catch(e){ return d; } }
 function overrides(){ return jget(LS_CAT, {}); }
@@ -1305,6 +1308,7 @@ function sentState(){ return jget(LS_SENT, {}); }
 function addedState(){ return jget(LS_ADDED, {}); }
 function deletedList(){ return jget(LS_DELETED, []); }
 function secHideState(){ return jget(LS_SECHIDE, {}); }
+function secCollapseState(){ return jget(LS_COLLAPSE, {}); }
 function segText(n){
   var ad = addedState();
   return ad[n] ? ad[n].text : (SEG.text[n] || '');
@@ -1524,7 +1528,7 @@ function renderSeg(s){
 function refreshSections(){
   document.querySelectorAll('.sechead').forEach(function(h){ h.remove(); });
   var order = getOrder(), hideG = localStorage.getItem(LS_HIDE) === '1';
-  var sh = secHideState(), totals = {}, vis = {}, posOf = {};
+  var sh = secHideState(), col = secCollapseState(), totals = {}, vis = {}, posOf = {};
   order.forEach(function(id, idx){
     var si = sectionIdxForPos(idx + 1);
     posOf[id] = si;
@@ -1533,6 +1537,7 @@ function refreshSections(){
     if (!el) return;
     var hidden = segHidden(catOf(id), hideG, !!sh[si]);
     el.classList.toggle('sec-hidden', hidden);
+    el.classList.toggle('sec-collapsed', !!col[si]);
     if (!hidden) vis[si] = (vis[si] || 0) + 1;
   });
   SECTIONS.forEach(function(sec, si){
@@ -1541,10 +1546,19 @@ function refreshSections(){
     if (!target) return;
     var hd = document.createElement('div');
     hd.className = 'sechead';
-    hd.innerHTML = '<span class="secname"></span>' +
+    hd.innerHTML = '<button type="button" class="seccol" title="Hide section / Show section"></button>' +
+      '<span class="secname"></span>' +
       '<label class="switch"><input type="checkbox" class="sehide">' +
       '<span class="sl"></span>Hide</label><span class="seccount"></span>';
     hd.querySelector('.secname').textContent = sec.name;
+    var colBtn = hd.querySelector('.seccol');
+    colBtn.textContent = col[si] ? '▸ Show' : '▾ Hide';
+    colBtn.addEventListener('click', function(){
+      var st = secCollapseState();
+      st[si] = !st[si];
+      localStorage.setItem(LS_COLLAPSE, JSON.stringify(st));
+      refreshSections();
+    });
     var cb = hd.querySelector('.sehide');
     cb.checked = !!sh[si];
     cb.addEventListener('change', function(){
@@ -1921,7 +1935,10 @@ document.getElementById('saveAll').addEventListener('click', saveAll);
 document.getElementById('vcBtn').addEventListener('click', function(){
   if (PB.vc){ pbStopAll(); return; }
   pbStopAll();
-  var list = getOrder().filter(function(id){ return catOf(id) !== 'training'; });
+  var colSt = secCollapseState();
+  var list = getOrder().filter(function(id, idx){
+    return catOf(id) !== 'training' && !colSt[sectionIdxForPos(idx + 1)];
+  });
   if (!list.length) return;
   PB.vc = true; PB.queue = list.slice(); vcLabel();
   var step = function(){
@@ -1944,7 +1961,7 @@ document.getElementById('resetBtn').addEventListener('click', function(){
   if (!window.confirm('Reset all your changes? The original 197 segments ' +
       'come back; marks, order, added and deleted segments are cleared. ' +
       'Your voice recordings stay saved in this browser.')) return;
-  [LS_CAT, LS_HIDE, LS_SENT, LS_ORDER, LS_ADDED, LS_DELETED, LS_SECHIDE]
+  [LS_CAT, LS_HIDE, LS_SENT, LS_ORDER, LS_ADDED, LS_DELETED, LS_SECHIDE, LS_COLLAPSE]
     .forEach(function(k){ localStorage.removeItem(k); });
   location.reload();
 });
