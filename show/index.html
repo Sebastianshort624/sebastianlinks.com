@@ -52,25 +52,28 @@
     text-shadow: 0 2px 14px rgba(0,0,0,.62), 0 1px 3px rgba(0,0,0,.7); }
   /* HIGHLIGHT RULE (Sebastian, 2026-11-23): every word of the slide is in the
      DOM from the moment the slide appears and NEVER changes — the highlight
-     below only restyles (dimmed white → bold yellow highlight). No words are
-     ever revealed, hidden, added or removed as the highlight moves.
-     HIGHLIGHT GRANULARITY (Sebastian, 2026-11-23): the highlight window is
-     4-6 WORDS at a time (.w spans), advancing in 3-4 steps per slide —
-     never a whole sentence at once. Same styling in MANUAL: the current
-     chunk stays highlighted while every word remains visible.
-     HIGHLIGHT COLOR (Sebastian, 2026-11-23): NOT bright yellow — the lit
-     chunk is a VERY LIGHT sticky-note yellow (#FFF9C4 text on a translucent
-     rgba(255,249,196,.18) wash), bold, same restyle behavior. */
+     below only restyles (dimmed white → bold fluorescent-green highlight).
+     No words are ever revealed, hidden, added or removed as the highlight
+     moves.
+     HIGHLIGHT GRANULARITY (Sebastian, 2026-11-24 — supersedes the
+     2026-11-23 4-6-word rule): the highlight moves in HALVES of the
+     slide's text (.w spans) — the first half is lit, then the second
+     half: exactly 2 steps per slide. Longer highlights are better.
+     Same styling in MANUAL: the current half stays highlighted while
+     every word remains visible.
+     HIGHLIGHT COLOR (Sebastian, 2026-11-24): FLUORESCENT GREEN — the
+     lit half is #39FF14 text on a translucent rgba(57,255,20,.20)
+     wash, bold, same restyle behavior. */
   .txt .w { transition: background .3s, color .3s; border-radius: 6px; padding: 0 2px; color: rgba(255,255,255,.6); }
-  .txt .w.cur { color: #FFF9C4; background: rgba(255,249,196,.18); font-weight: 700; text-shadow: 0 2px 14px rgba(0,0,0,.62), 0 1px 3px rgba(0,0,0,.7); }
+  .txt .w.cur { color: #39FF14; background: rgba(57,255,20,.20); font-weight: 700; text-shadow: 0 2px 14px rgba(0,0,0,.62), 0 1px 3px rgba(0,0,0,.7); }
   .txt .w.done { color: rgba(255,255,255,.95); }
   .qtxt { font-size: clamp(23.7px, 3.6vw, 33.7px); line-height: 1.5; font-weight: 700; color: #fff;
     text-shadow: 0 2px 14px rgba(0,0,0,.62), 0 1px 3px rgba(0,0,0,.7); }
   .noans { margin-top: 20px; font-size: clamp(21.7px, 2.9vw, 27.7px); color: rgba(255,255,255,.88); font-style: italic; text-shadow: 0 1px 8px rgba(0,0,0,.65); }
   .perf { margin-top: 6px; font-size: clamp(21.7px, 2.9vw, 27.7px); color: #ffd968; font-weight: 700; text-shadow: 0 1px 8px rgba(0,0,0,.65); }
   body.auto .noans, body.auto .perf { opacity: .62; }
-  .noans.cur, .perf.cur { opacity: 1; background: rgba(255,249,196,.18); color: #FFF9C4; text-shadow: 0 1px 8px rgba(0,0,0,.65); border-radius: 6px; }
-  .qtxt.cur { background: rgba(255,249,196,.18); color: #FFF9C4; text-shadow: 0 2px 14px rgba(0,0,0,.62), 0 1px 3px rgba(0,0,0,.7); border-radius: 6px; }
+  .noans.cur, .perf.cur { opacity: 1; background: rgba(57,255,20,.20); color: #39FF14; text-shadow: 0 1px 8px rgba(0,0,0,.65); border-radius: 6px; }
+  .qtxt.cur { background: rgba(57,255,20,.20); color: #39FF14; text-shadow: 0 2px 14px rgba(0,0,0,.62), 0 1px 3px rgba(0,0,0,.7); border-radius: 6px; }
   /* SECTION DRAWING (Sebastian, 2026-11-23): one classy gold-line drawing
      per section sits under the words, directly on the background — thin
      gold frame, no white card, no grayscale stock photo. */
@@ -80,9 +83,11 @@
      interject and expound, so the pitch runs MANUAL — a big play/pause
      flanked by the highlight steppers sits in flow BETWEEN the words
      and the section drawing, reachable without looking down. Round
-     dark-glass, gold glyphs, NO white card; same actions as the small
-     controls row (steppers = single-arrow chunk steps, play = the
-     play/pause toggle). */
+     dark-glass, gold glyphs, NO white card (steppers = DOUBLE-arrow
+     slide jumps — Sebastian,
+     2026-11-24: the big arrow is the double arrow so he jumps to the
+     next screen faster; play = the play/pause toggle). Highlight-half
+     stepping lives on the small ◀/▶ buttons and the keyboard. */
   #bigctl { display: flex; align-items: center; justify-content: center; gap: 18px; margin: 20px auto 2px; }
   .bbtn { font-family: inherit; border-radius: 50%; border: 1px solid rgba(255,217,104,.55);
     background: rgba(8,17,36,.55); color: #ffd968; cursor: pointer; line-height: 1;
@@ -261,11 +266,9 @@
 <div id="controls">
   <div id="seekzone"><div id="ruler"></div><div id="progwrap"><div id="prog"></div></div></div>
   <div class="ctlrow">
-    <button class="cbtn" id="prevslide" title="Pantalla anterior">⏮</button>
     <button class="cbtn" id="prevchunk" title="Resaltado anterior">◀</button>
     <button class="cbtn main" id="play" title="Pausar / continuar">⏸</button>
     <button class="cbtn" id="nextchunk" title="Resaltado siguiente">▶</button>
-    <button class="cbtn" id="nextslide" title="Pantalla siguiente">⏭</button>
     <button id="modebtn">AUTOSCROLL: ON</button>
     <button id="objbtn">🛡️ Objeciones</button>
     <button class="cbtn" id="mutebtn" title="Voz: silenciar / activar — Voice: mute / unmute">🔊</button>
@@ -443,7 +446,7 @@ var client = null, derived = null, slides = [], idx = 0;
 var auto = true, playing = true, elapsed = 0, lastTick = null, rafId = null;
 var SPEED = 0.85;
 var held = false; /* numbers-hold state: a panel slide is frozen on screen until Sebastian advances */ /* pace (Sebastian, 2026-11-23: 'a tiny bit slower' — 0.85 = ~18% more reading time per slide) */
-var chunkIdx = 0; /* current highlight window (4-6 words) on this slide */
+var chunkIdx = 0; /* current highlight half on this slide (0 = first half, 1 = second half) */
 
 /* UI + panel labels per language (deck text itself lives in the data files) */
 var L = {
@@ -622,16 +625,20 @@ var SEC_DRAW = {
 function drawImg(sec){
   return '<img class="drawimg" src="' + (SEC_DRAW[sec] || 'img/draw-apertura.jpg') + '" alt="">';
 }
-/* BIG MANUAL CONTROLS (Sebastian, 2026-11-23): rendered in flow between
-   the words and the drawing on every slide. The buttons carry no
+/* BIG MANUAL CONTROLS (Sebastian, 2026-11-23; NAVIGATION changed
+   2026-11-24): rendered in flow between the words and the drawing on
+   every slide. The BIG steppers are the DOUBLE arrows (⏮/⏭) — they
+   jump between SLIDES/screens, so Sebastian reaches the next screen
+   faster (the single big arrow is gone). The buttons carry no
    handlers of their own — the #stage click delegation routes them to
-   the SAME small-control actions (prevchunk / play / nextchunk), so
-   semantics can never drift apart. #bigplay's glyph is synced from
-   syncModeBtn() alongside the mode button. */
+   go(idx − 1) / go(idx + 1) / the play toggle, the same actions the
+   keyboard Shift+Arrows use. Highlight-half stepping stays on the
+   small ◀/▶ buttons and the plain keyboard arrows. #bigplay's glyph
+   is synced from syncModeBtn() alongside the mode button. */
 var BIGCTL = '<div id="bigctl">' +
-  '<button class="bbtn" id="bigprev" title="Resaltado anterior">◀</button>' +
+  '<button class="bbtn" id="bigprev" title="Pantalla anterior">⏮</button>' +
   '<button class="bbtn main" id="bigplay" title="Pausar / continuar">⏸</button>' +
-  '<button class="bbtn" id="bignext" title="Resaltado siguiente">▶</button></div>';
+  '<button class="bbtn" id="bignext" title="Pantalla siguiente">⏭</button></div>';
 
 function render(){
   var sl = slides[idx];
@@ -666,8 +673,9 @@ function render(){
       '<div class="perf" data-s="' + pf.s + '" data-d="' + pf.d + '">' + esc(fill(pf.x)) + '</div>' +
       BIGCTL + drawImg(sl.sec) + '</div>';
   } else {
-    /* word-level spans: the highlight window moves 4-6 words at a time
-       across these; every word is rendered (dimmed) from slide start */
+    /* word-level spans: the highlight window moves in halves of the
+       slide's text across these; every word is rendered (dimmed)
+       from slide start */
     var words = [];
     sl.sentences.forEach(function(s){
       fill(s.x).split(/\s+/).forEach(function(w){ if (w) words.push(w); });
@@ -690,7 +698,8 @@ function render(){
   renderRail(); /* side rail values always current for this slide's client */
   audSetupSlide(); /* narration companion track follows the slide */
 }
-/* ---- highlight chunks: windows of 4-6 words, 3-4 steps per slide ---- */
+/* ---- highlight halves: 2 steps per slide — the first half of the
+   slide's text, then the second half (Sebastian, 2026-11-24) ---- */
 function wordEls(){ return document.querySelectorAll('#stage .txt .w'); }
 function chunkCount(){
   var sl = slides[idx];
@@ -698,10 +707,7 @@ function chunkCount(){
   if (sl.kind === 'question') return 3; /* question / —No. / Perfecto. */
   var W = wordEls().length;
   if (!W) return 1;
-  var S = Math.round(W / 5);
-  S = Math.max(1, Math.min(4, S));
-  while (Math.ceil(W / S) > 6 && S < W) S++; /* never more than 6 words lit */
-  return S;
+  return W > 1 ? 2 : 1; /* halves: first half, then second half */
 }
 function chunkRange(k){
   var W = wordEls().length, S = chunkCount();
@@ -979,12 +985,16 @@ function togglePlay(){
   else if (audMode){ audSeekToElapsed(); audPlay(); }
   if (playing) startTimer();
 }
-/* NAVIGATION (Sebastian, 2026-11-23): DOUBLE arrows (⏮/⏭) move between
-   SLIDES; SINGLE arrows (◀/▶) step the HIGHLIGHT CHUNK within the slide.
-   Single-next on the last chunk advances to the next slide; single-prev
-   on the first chunk goes back to the previous slide (landing on its
-   last chunk). Stepping a chunk while AUTOSCROLL runs pauses it into
-   MANUAL so the operator controls the pace. */
+/* NAVIGATION (Sebastian, 2026-11-24 — supersedes the 2026-11-23
+   scheme): the BIG steppers are the DOUBLE arrows (⏮/⏭) and jump
+   between SLIDES/screens — the big single arrow is gone, so the next
+   screen is one tap away. SINGLE arrows (◀/▶, small buttons and the
+   plain keyboard arrows) step the HIGHLIGHT HALF within the slide;
+   Shift+Arrow also jumps slides. Single-next on the last half
+   advances to the next slide; single-prev on the first half goes
+   back to the previous slide (landing on its last half). Stepping
+   a half while AUTOSCROLL runs pauses it into MANUAL so the
+   operator controls the pace. */
 function stepChunk(dir){
   if (!slides.length) return;
   if (auto){ markCurrent(); setAuto(false); }
@@ -1143,9 +1153,11 @@ sel.addEventListener('change', function(){
   location.href = url.toString();
 });
 
-/* controls — ⏮/⏭ slides, ◀/▶ highlight chunks (see stepChunk) */
-$('nextslide').addEventListener('click', function(){ go(idx + 1); });
-$('prevslide').addEventListener('click', function(){ go(idx - 1); });
+/* controls — the BIG ⏮/⏭ steppers jump slides (routed through the
+   #stage delegation below to go(idx ± 1)); the small ◀/▶ buttons
+   step the highlight half (see stepChunk). The old small ⏮/⏭
+   slide buttons were removed 2026-11-24: the big steppers are the
+   one and only slide prev/next controls now. */
 $('nextchunk').addEventListener('click', function(){ stepChunk(1); });
 $('prevchunk').addEventListener('click', function(){ stepChunk(-1); });
 $('play').addEventListener('click', togglePlay);
@@ -1154,7 +1166,7 @@ $('play').addEventListener('click', togglePlay);
    is the pause button: one click/tap on the stage pauses; the next
    click re-engages AUTOSCROLL and resumes from the current chunk —
    including out of MANUAL after highlight stepping. The BIG mid-stage
-   buttons are routed first (same actions as the small controls); any
+   buttons are routed first (slide jumps / the play toggle); any
    other interactive element never toggles. Feedback is the existing
    toast, kept brief. ============ */
 function flashToggle(msg){
@@ -1176,8 +1188,8 @@ $('stage').addEventListener('click', function(e){
   if (!t || !t.closest) return;
   var bc = t.closest('#bigprev, #bignext, #bigplay');
   if (bc){
-    if (bc.id === 'bigprev') $('prevchunk').click();
-    else if (bc.id === 'bignext') $('nextchunk').click();
+    if (bc.id === 'bigprev') go(idx - 1);
+    else if (bc.id === 'bignext') go(idx + 1);
     else $('play').click();
     return; /* the big buttons act, they never also toggle */
   }
