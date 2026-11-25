@@ -20,6 +20,15 @@ section { padding:14px 0 18px; border-bottom:1px solid #ddd; }
 .shead { display:flex; align-items:center; gap:10px; }
 h2 { font-size:16px; margin:0; }
 h2 small { color:#666; font-weight:normal; }
+/* SEGNAME_V1: custom segment names in the heading */
+.ctitle { font-size:21px; font-weight:800; }
+.rnbtn { font-size:13px; padding:4px 9px; border:1px solid #111;
+  border-radius:8px; background:#f2f2f2; color:#111; cursor:pointer;
+  flex:none; }
+.rnin { flex:1; min-width:0; font-size:16px; padding:6px 8px;
+  border:1px solid #111; border-radius:8px; box-sizing:border-box;
+  font-family:inherit; }
+.rnin[hidden] { display:none; }
 .badge { font-size:11px; border:1px solid #111; border-radius:6px;
   padding:1px 6px; }
 section[data-cat="training"] .badge { background:#39ff14; }
@@ -136,7 +145,7 @@ audio real debajo.</p>
 <div class="clientbar"><input type="text" id="csearch" placeholder="Search client..." autocomplete="off"><button type="button" id="cclear" title="Clear client" hidden>✕</button><div id="cresults" hidden></div></div>
 <div id="cpanel" hidden></div>
 <button type="button" id="helpToggle" aria-expanded="true" title="Hide or show the help text">Hide help</button>
-<p class="note" id="helpText">Edit opens a segment line by line: tap into a line to change its words, tap its badge to mark it Training (green) or Script, ✕ deletes a line and ＋ adds one. Edited lines keep Yaz's original audio — the words change, the recording does not — and you can record your own take with My voice. Deleted a segment or a line by accident? Undo in the header brings back the last delete, even after a reload. Training sentences are also audio cuts: Play skips them, and ▶ Client plays everything skipping the cuts. The original audio is NEVER modified: cuts are playback skips, and the cut list (EDL) is at the end of the downloaded file so Astro can render a hard-spliced audio from it. The numbered dropdown moves a segment — its text, marks, cuts, its own clip and your recordings travel with it. Delete is two-tap and recoverable: deleted originals come back with Reset. Save stores your changes IN THIS BROWSER (localStorage) and downloads the updated transcript — nothing is uploaded to a server. Your voice recordings live in this browser (IndexedDB) and are downloadable; they are not uploaded either. Picking a client only changes what you see: his names and numbers replace Yaz's demo values (highlighted) until you clear it. Each section header has a Hide/Show arrow that collapses or expands the whole section; your choice is saved in this browser, and ▶ Client skips collapsed sections.</p>
+<p class="note" id="helpText">Edit opens a segment line by line: tap into a line to change its words, tap its badge to mark it Training (green) or Script, ✕ deletes a line and ＋ adds one. Edited lines keep Yaz's original audio — the words change, the recording does not — and you can record your own take with My voice. Deleted a segment or a line by accident? Undo in the header brings back the last delete, even after a reload. Training sentences are also audio cuts: Play skips them, and ▶ Client plays everything skipping the cuts. The original audio is NEVER modified: cuts are playback skips, and the cut list (EDL) is at the end of the downloaded file so Astro can render a hard-spliced audio from it. The numbered dropdown moves a segment — its text, marks, cuts, its own clip and your recordings travel with it. Delete is two-tap and recoverable: deleted originals come back with Reset. Save stores your changes IN THIS BROWSER (localStorage) and downloads the updated transcript — nothing is uploaded to a server. Your voice recordings live in this browser (IndexedDB) and are downloadable; they are not uploaded either. Picking a client only changes what you see: his names and numbers replace Yaz's demo values (highlighted) until you clear it. Each section header has a Hide/Show arrow that collapses or expands the whole section; your choice is saved in this browser, and ▶ Client skips collapsed sections. Rename, in each segment's heading, gives a segment your own name: it follows the segment wherever it moves, appears in the downloaded file, and clearing the name brings the default back.</p>
 </div>
 <section id="seg-1" data-seg="1" data-cat="training">
 <div class="shead"><h2>Segmento 1 <small>0:00 – 0:19</small></h2><span class="badge">MIXTO</span></div>
@@ -1330,7 +1339,8 @@ var LS_CAT = 'yazOverridesV1', LS_HIDE = 'yazHideTrainingV1',
     LS_ADDED = 'yazAddedV1', LS_DELETED = 'yazDeletedV1',
     LS_SECHIDE = 'yazSecHideV1', LS_COLLAPSE = 'yazSecCollapseV1',
     LS_HELPHIDE = 'yazHelpHideV1', LS_SNAP = 'yazMixSnapV1',
-    LS_UNITS = 'yazUnitsV1', LS_TRASH = 'yazTrashV1';
+    LS_UNITS = 'yazUnitsV1', LS_TRASH = 'yazTrashV1',
+    LS_TITLES = 'yazTitlesV1';
 function jget(k, d){ try { var v = localStorage.getItem(k);
   return v ? JSON.parse(v) : d; } catch(e){ return d; } }
 function overrides(){ return jget(LS_CAT, {}); }
@@ -1347,6 +1357,45 @@ function trashState(){ return jget(LS_TRASH, []); }
 function saveTrash(t){ localStorage.setItem(LS_TRASH, JSON.stringify(t)); }
 function pushTrash(e){ var t = trashState(); t.push(e); saveTrash(t);
   refreshUndoBtn(); }
+function titlesState(){ return jget(LS_TITLES, {}); }
+function segTitle(id){
+  var t = titlesState()[id];
+  return (typeof t === 'string' && t.trim()) ? t.trim() : null;
+}
+/* SEGNAME_V1: render a segment heading — the custom name big when one is
+   set, with position + time + clip name small; otherwise the default look.
+   The time range is stashed on the h2 the first time it is seen in its
+   default shape, so re-renders never lose it. */
+function renderTitle(s){
+  var id = s.getAttribute('data-seg');
+  var h = s.querySelector('h2');
+  if (!h) return;
+  var pos = getOrder().indexOf(id) + 1;
+  var small = h.querySelector('small');
+  if (!h.querySelector('.ctitle') && small && h._time == null)
+    h._time = small.textContent;
+  var t = segTitle(id);
+  if (t){
+    h.innerHTML = '';
+    var big = document.createElement('span');
+    big.className = 'ctitle';
+    big.textContent = t;
+    h.appendChild(big);
+    h.appendChild(document.createTextNode(' '));
+    var sm = document.createElement('small');
+    sm.textContent = 'Segmento ' + pos +
+      (h._time ? ' · ' + h._time : '') + ' · ' + clipName(id);
+    h.appendChild(sm);
+  } else if (h.querySelector('.ctitle')){
+    h.innerHTML = '';
+    h.appendChild(document.createTextNode('Segmento ' + pos + ' '));
+    var sm2 = document.createElement('small');
+    sm2.textContent = h._time || '';
+    h.appendChild(sm2);
+  } else if (h.childNodes[0]){
+    h.childNodes[0].textContent = 'Segmento ' + pos + ' ';
+  }
+}
 function segText(n){
   var ad = addedState();
   return ad[n] ? ad[n].text : (SEG.text[n] || '');
@@ -1734,6 +1783,7 @@ function applyAll(){
     if (sw) sw.checked = (c === 'training');
     var sc = s.querySelector('.sc');
     if (sc) sc.disabled = (c === 'training') || !segAudio(n);
+    renderTitle(s);
     renderSeg(s);
   });
   var g = 0, t = 0;
@@ -1753,9 +1803,7 @@ function applyOrder(){
     var s = document.getElementById('seg-' + id);
     if (!s) return;
     document.body.insertBefore(s, anchor);
-    var h = s.querySelector('h2');
-    if (h && h.childNodes[0])
-      h.childNodes[0].textContent = 'Segmento ' + (idx + 1) + ' ';
+    renderTitle(s);
     var sel = s.querySelector('.pos');
     if (sel){
       if (sel.options.length !== order.length){
@@ -2017,6 +2065,41 @@ function wireSection(s){
     }
     applyAll();
   });
+  /* SEGNAME_V1: Rename control in the heading */
+  if (!s.querySelector('.rnbtn')){
+    var shead = s.querySelector('.shead');
+    var rnIn = document.createElement('input');
+    rnIn.type = 'text'; rnIn.className = 'rnin'; rnIn.hidden = true;
+    var rnBtn = document.createElement('button');
+    rnBtn.type = 'button'; rnBtn.className = 'rnbtn';
+    rnBtn.textContent = 'Rename';
+    rnBtn.title = 'Give this segment your own name';
+    shead.appendChild(rnIn);
+    shead.appendChild(rnBtn);
+    var commitTitle = function(){
+      var v = rnIn.value.trim();
+      var st = titlesState();
+      if (v) st[n] = v; else delete st[n];
+      localStorage.setItem(LS_TITLES, JSON.stringify(st));
+      rnIn.hidden = true;
+      s.querySelector('h2').hidden = false;
+      rnBtn.textContent = 'Rename';
+      renderTitle(s);
+    };
+    rnBtn.addEventListener('click', function(){
+      if (rnIn.hidden){
+        rnIn.value = segTitle(n) || '';
+        rnIn.placeholder = 'Segmento ' + (getOrder().indexOf(n) + 1);
+        s.querySelector('h2').hidden = true;
+        rnIn.hidden = false;
+        rnBtn.textContent = 'Done';
+        rnIn.focus();
+      } else commitTitle();
+    });
+    rnIn.addEventListener('keydown', function(ev){
+      if (ev.key === 'Enter'){ ev.preventDefault(); commitTitle(); }
+    });
+  }
   s.querySelector('.sv').addEventListener('click', saveAll);
   s.querySelector('.ed').addEventListener('click', function(){ enterEdit(s); });
   s.querySelector('.dn').addEventListener('click', function(){ exitEdit(s); });
@@ -2317,7 +2400,7 @@ document.getElementById('resetBtn').addEventListener('click', function(){
   if (!window.confirm('Reset all your changes? The original 197 segments ' +
       'come back; marks, order, added and deleted segments are cleared. ' +
       'Your voice recordings stay saved in this browser.')) return;
-  [LS_CAT, LS_HIDE, LS_SENT, LS_ORDER, LS_ADDED, LS_DELETED, LS_SECHIDE, LS_COLLAPSE, LS_SNAP, LS_UNITS, LS_TRASH]
+  [LS_CAT, LS_HIDE, LS_SENT, LS_ORDER, LS_ADDED, LS_DELETED, LS_SECHIDE, LS_COLLAPSE, LS_SNAP, LS_UNITS, LS_TRASH, LS_TITLES]
     .forEach(function(k){ localStorage.removeItem(k); });
   location.reload();
 });
@@ -2384,7 +2467,10 @@ function saveAll(){
   var anyCut = false;
   getOrder().forEach(function(id, idx){
     var f = flags(id);
-    lines.push('[Segmento ' + (idx + 1) + ' · ' + clipName(id) + ']');
+    var ttl = segTitle(id);
+    lines.push(ttl ? '[' + ttl + ' · Segmento ' + (idx + 1) + ' · ' +
+      clipName(id) + ']' : '[Segmento ' + (idx + 1) + ' · ' +
+      clipName(id) + ']');
     var uent = unitsState()[id];
     units(id).forEach(function(u, i){
       lines.push((f[i] ? '[ENTRENAMIENTO] ' : '') +
