@@ -116,8 +116,15 @@ section.sec-collapsed { display:none; }
 .urow .utxt { flex:1; min-width:0; font-size:16px; line-height:1.4;
   padding:6px 8px; border:1px solid #ccc; border-radius:6px;
   box-sizing:border-box; font-family:inherit; resize:vertical; }
-.urow .ubadge { font-size:11px; }
-.urow .ubadge.tr { background:#39ff14; }
+/* LINEROW_V1: narrow left column (category dot over play), H hide state */
+.urow .uleft { display:flex; flex-direction:column; align-items:center;
+  gap:5px; flex:none; }
+.urow .udot { width:24px; height:24px; border-radius:50%; padding:0;
+  background:#fff; border:2px solid #111; }
+.urow .udot.tr { background:#39ff14; }
+.urow .uhide.on { background:#111; color:#fff; }
+.urow.ishid { background:#f2f2f2; }
+.urow.ishid .utxt { opacity:.45; }
 .urow .unoau { flex:none; font-size:11px; color:#999; align-self:center; }
 .urow .udelcf { flex:none; font-size:12px; color:#a00; align-self:center; }
 .urow .udelcf[hidden] { display:none; }
@@ -145,7 +152,7 @@ audio real debajo.</p>
 <div class="clientbar"><input type="text" id="csearch" placeholder="Search client..." autocomplete="off"><button type="button" id="cclear" title="Clear client" hidden>✕</button><div id="cresults" hidden></div></div>
 <div id="cpanel" hidden></div>
 <button type="button" id="helpToggle" aria-expanded="true" title="Hide or show the help text">Hide help</button>
-<p class="note" id="helpText">Edit opens a segment line by line: tap into a line to change its words, tap its badge to mark it Training (green) or Script, ✕ deletes a line and ＋ adds one. Edited lines keep Yaz's original audio — the words change, the recording does not — and you can record your own take with My voice. Deleted a segment or a line by accident? Undo in the header brings back the last delete, even after a reload. Training sentences are also audio cuts: Play skips them, and ▶ Client plays everything skipping the cuts. The original audio is NEVER modified: cuts are playback skips, and the cut list (EDL) is at the end of the downloaded file so Astro can render a hard-spliced audio from it. The numbered dropdown moves a segment — its text, marks, cuts, its own clip and your recordings travel with it. Delete is two-tap and recoverable: deleted originals come back with Reset. Save stores your changes IN THIS BROWSER (localStorage) and downloads the updated transcript — nothing is uploaded to a server. Your voice recordings live in this browser (IndexedDB) and are downloadable; they are not uploaded either. Picking a client only changes what you see: his names and numbers replace Yaz's demo values (highlighted) until you clear it. Each section header has a Hide/Show arrow that collapses or expands the whole section; your choice is saved in this browser, and ▶ Client skips collapsed sections. Rename, in each segment's heading, gives a segment your own name: it follows the segment wherever it moves, appears in the downloaded file, and clearing the name brings the default back.</p>
+<p class="note" id="helpText">Edit opens a segment line by line: tap into a line to change its words, tap the dot to switch it between Training (fluorescent green dot) and Script (white dot), ＋ adds a line, H hides a line — hidden lines leave the script and the audio but stay visible here in Edit — and ✕ deletes a line. Edited lines keep Yaz's original audio — the words change, the recording does not — and you can record your own take with My voice. Deleted a segment or a line by accident? Undo in the header brings back the last delete, even after a reload. Training sentences are also audio cuts: Play skips them, and ▶ Client plays everything skipping the cuts. The original audio is NEVER modified: cuts are playback skips, and the cut list (EDL) is at the end of the downloaded file so Astro can render a hard-spliced audio from it. The numbered dropdown moves a segment — its text, marks, cuts, its own clip and your recordings travel with it. Delete is two-tap and recoverable: deleted originals come back with Reset. Save stores your changes IN THIS BROWSER (localStorage) and downloads the updated transcript — nothing is uploaded to a server. Your voice recordings live in this browser (IndexedDB) and are downloadable; they are not uploaded either. Picking a client only changes what you see: his names and numbers replace Yaz's demo values (highlighted) until you clear it. Each section header has a Hide/Show arrow that collapses or expands the whole section; your choice is saved in this browser, and ▶ Client skips collapsed sections. Rename, in each segment's heading, gives a segment your own name: it follows the segment wherever it moves, appears in the downloaded file, and clearing the name brings the default back.</p>
 </div>
 <section id="seg-1" data-seg="1" data-cat="training">
 <div class="shead"><h2>Segmento 1 <small>0:00 – 0:19</small></h2><span class="badge">MIXTO</span></div>
@@ -1441,6 +1448,13 @@ function flags(n){
   if (o[n]) return uu.map(function(){ return o[n] === 'training' ? 1 : 0; });
   return uu.map(function(u){ return u[2]; });
 }
+/* LINEROW_V1: per-line Hide (H) flags live on materialized yazUnitsV1
+   entries as e.hid; an unmaterialized segment has no hidden lines */
+function hiddenFlags(n){
+  var us = unitsState();
+  if (us[n]) return us[n].map(function(e){ return e.hid ? 1 : 0; });
+  return units(n).map(function(){ return 0; });
+}
 function catOf(n){
   var f = flags(n);
   if (!f.length) return SEG.cat[n] || 'client';
@@ -1464,9 +1478,9 @@ function mergeRanges(r){
   return out;
 }
 function cutRanges(n){
-  var f = flags(n), r = [], us = unitsState();
+  var f = flags(n), hf = hiddenFlags(n), r = [], us = unitsState();
   units(n).forEach(function(u, i){
-    if (f[i] && u[0] != null && u[1] != null) r.push([u[0], u[1]]);
+    if ((f[i] || hf[i]) && u[0] != null && u[1] != null) r.push([u[0], u[1]]);
   });
   (us[n + '#del'] || []).forEach(function(c){ r.push([c[0], c[1]]); });
   return mergeRanges(r);
@@ -1605,7 +1619,16 @@ function renderEditUnits(s, n){
   p.innerHTML = '';
   effList(n).forEach(function(e, i){
     var row = document.createElement('div');
-    row.className = 'urow';
+    row.className = 'urow' + (e.hid ? ' ishid' : '');
+    var left = document.createElement('div');
+    left.className = 'uleft';
+    var bd = document.createElement('button');
+    bd.type = 'button';
+    bd.className = 'udot' + (e.tr ? ' tr' : '');
+    bd.title = e.tr ? 'Training — tap for Script' : 'Script — tap for Training';
+    bd.setAttribute('aria-label', bd.title);
+    bd.addEventListener('click', function(){ toggleUnit(n, i); });
+    left.appendChild(bd);
     var pb = document.createElement('button');
     pb.type = 'button'; pb.className = 'uplay'; pb.textContent = '▶';
     if (e.t0 == null || e.t1 == null){
@@ -1614,14 +1637,8 @@ function renderEditUnits(s, n){
       pb.title = 'Play';
       pb.addEventListener('click', function(){ playUnit(n, i); });
     }
-    row.appendChild(pb);
-    var bd = document.createElement('button');
-    bd.type = 'button';
-    bd.className = 'ubadge' + (e.tr ? ' tr' : '');
-    bd.textContent = e.tr ? 'Training' : 'Script';
-    bd.title = 'Tap to switch Training / Script';
-    bd.addEventListener('click', function(){ toggleUnit(n, i); });
-    row.appendChild(bd);
+    left.appendChild(pb);
+    row.appendChild(left);
     var ta = document.createElement('textarea');
     ta.className = 'utxt';
     ta.value = e.text || '';
@@ -1639,6 +1656,14 @@ function renderEditUnits(s, n){
     ab.title = 'Add line after this one';
     ab.addEventListener('click', function(){ addLine(n, i); });
     row.appendChild(ab);
+    var hb = document.createElement('button');
+    hb.type = 'button';
+    hb.className = 'uhide' + (e.hid ? ' on' : '');
+    hb.textContent = 'H';
+    hb.title = e.hid ? 'Hidden — tap to show this line again'
+                     : 'Hide this line (out of the script and the audio)';
+    hb.addEventListener('click', function(){ toggleHideLine(n, i); });
+    row.appendChild(hb);
     var db = document.createElement('button');
     db.type = 'button'; db.className = 'udel'; db.textContent = '✕';
     db.title = 'Delete line';
@@ -1672,10 +1697,12 @@ function renderSeg(s){
   if (s.classList.contains('editing') && !addedState()[n]){
     renderEditUnits(s, n); return;
   }
-  var f = flags(n), us = units(n);
+  var f = flags(n), us = units(n), hf = hiddenFlags(n);
   var p = s.querySelector('p'), editing = s.classList.contains('editing');
   p.innerHTML = '';
+  var shown = 0;
   us.forEach(function(u, i){
+    if (hf[i]) return; /* LINEROW_V1: H-hidden lines leave the normal view */
     var sp = document.createElement('span');
     sp.className = 'u' + (f[i] ? ' tr' : '');
     sp.setAttribute('data-u', i);
@@ -1696,8 +1723,9 @@ function renderSeg(s){
         sp.appendChild(document.createTextNode(part.t));
       }
     });
+    if (shown) p.appendChild(document.createTextNode(' '));
     p.appendChild(sp);
-    if (i < us.length - 1) p.appendChild(document.createTextNode(' '));
+    shown++;
   });
 }
 function refreshSections(){
@@ -1840,6 +1868,18 @@ function toggleUnit(n, i){
   if (snap[n]){ delete snap[n]; saveSnap(snap); }
   setSegFlags(n, f); applyAll();
 }
+/* LINEROW_V1: H — hide/show a single line. Hiding materializes the
+   segment's units into yazUnitsV1 with hid on the entry; the line keeps
+   its text, category and audio range, leaves the normal view, and its
+   range joins the playback cuts (see cutRanges). Not a delete and not
+   a category change. */
+function toggleHideLine(n, i){
+  var list = materialize(n);
+  if (!list[i]) return;
+  list[i].hid = list[i].hid ? 0 : 1;
+  var us = unitsState(); us[n] = list; saveUnits(us);
+  applyAll();
+}
 /* ---------- per-line editing (yazUnitsV1: full current unit list per
    segment, materialized on first line edit/delete/add from the segment's
    CURRENT effective units; deleted-line audio ranges collect under
@@ -1878,7 +1918,7 @@ function deleteLine(n, i){
   if (!list[i]) return;
   var gone = list[i];
   pushTrash({ kind: 'line', seg: n, idx: i,
-    unit: { text: gone.text, tr: gone.tr, t0: gone.t0, t1: gone.t1 } });
+    unit: { text: gone.text, tr: gone.tr, t0: gone.t0, t1: gone.t1, hid: gone.hid ? 1 : 0 } });
   list.splice(i, 1);
   var us = unitsState(); us[n] = list;
   if (gone.t0 != null && gone.t1 != null){
@@ -2317,7 +2357,7 @@ function undoLineEntry(e){
   var list = materialize(e.seg);
   var at = Math.max(0, Math.min(e.idx, list.length));
   list.splice(at, 0, { text: e.unit.text, tr: e.unit.tr,
-    t0: e.unit.t0, t1: e.unit.t1 });
+    t0: e.unit.t0, t1: e.unit.t1, hid: e.unit.hid ? 1 : 0 });
   var us = unitsState(); us[e.seg] = list;
   if (e.unit.t0 != null && e.unit.t1 != null){
     var dk = e.seg + '#del', arr = (us[dk] || []).slice();
@@ -2461,7 +2501,7 @@ function saveAll(){
     'Las frases con [ENTRENAMIENTO] son entrenamiento: quedan fuera del ' +
     'guion cliente y son los cortes del audio en la version cliente.', ''];
   var edl = ['', '============================================================',
-    'LISTA DE CORTES (EDL) — rangos de ENTRENAMIENTO a cortar del audio',
+    'LISTA DE CORTES (EDL) — rangos de ENTRENAMIENTO y de lineas ocultas (H) a cortar del audio',
     'clip = segundos dentro del clip del segmento · ' +
     'original = segundos en la grabacion completa', ''];
   var anyCut = false;
@@ -2473,6 +2513,7 @@ function saveAll(){
       clipName(id) + ']');
     var uent = unitsState()[id];
     units(id).forEach(function(u, i){
+      if (uent && uent[i] && uent[i].hid) return; /* LINEROW_V1: hidden lines leave the script body; listed in the EDL below */
       lines.push((f[i] ? '[ENTRENAMIENTO] ' : '') +
         (uent && uent[i] && uent[i].t0 == null ? '[SOLO TEXTO] ' : '') +
         unitText(id, u));
@@ -2493,6 +2534,17 @@ function saveAll(){
       uent.forEach(function(e2){ if (e2.t0 == null) na++; });
       if (na) edl.push('[Segmento ' + (idx + 1) + ' · ' + clipName(id) +
         '] ' + na + ' linea(s) agregada(s) — solo texto, sin audio');
+      var hids = uent.filter(function(e2){ return e2.hid; });
+      if (hids.length){
+        var hrg = hids.filter(function(e2){ return e2.t0 != null && e2.t1 != null; });
+        edl.push('[Segmento ' + (idx + 1) + ' · ' + clipName(id) + '] ' +
+          hids.length + ' linea(s) oculta(s) con H — fuera del guion y del audio' +
+          (hrg.length ? ': clip: ' +
+            hrg.map(function(e2){ return e2.t0 + '-' + e2.t1; }).join(', ') +
+            (SEGSTART[id] != null ? ' · original: ' +
+              hrg.map(function(e2){ return (SEGSTART[id] + e2.t0) + '-' + (SEGSTART[id] + e2.t1); }).join(', ') : '')
+           : ' — sin audio'));
+      }
     }
   });
   if (!anyCut) edl.push('(sin cortes)');
