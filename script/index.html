@@ -511,6 +511,11 @@ body.ds-move .ds-sec .ds-handle { pointer-events: auto !important; }
 .ib-resort { font-size: 1.5em; font-weight: 800; color: #0b3d91; overflow-wrap: normal; word-break: keep-all; } /* RESORTWRAP_20261125: never chop the resort name mid-word */
 .cbar .ib-resort { font-size: 1.35em; font-weight: 800; color: #0b3d91; overflow-wrap: normal; word-break: keep-all; }
 .rs-name { overflow-wrap: normal; word-break: keep-all; }
+/* RESORT2_V1 */
+.rs-edit { font-family: inherit; font-size: 1.5em; font-weight: 800; color: #0b3d91; line-height: 1.2; border: none; border-bottom: 2px dashed #b9c4d8; background: transparent; width: 100%; padding: 0; }
+.rs-edit:focus { outline: none; border-bottom: 2px solid #0b3d91; background: #f4f8ff; }
+.rs-edit2 { font-family: inherit; font-size: 1.05em; font-weight: 700; color: #33507e; border: none; border-bottom: 2px dashed #c9d3e6; background: transparent; width: 100%; padding: 1px 0; margin-top: 2px; }
+.rs-edit2:focus { outline: none; border-bottom: 2px solid #0b3d91; background: #f4f8ff; }
 </style>
 <style>
 /* TZ_V1 (Sebastian, 2026-11-25): junto a cada telefono del encabezado, la zona
@@ -1998,6 +2003,21 @@ function applyFills(c, n){
   sumPend();
 }
 function qNum(id){ var v = parseFloat($(id).value); return isNaN(v) ? 0 : v; }
+/* RESORT2_V1: resort + 2nd resort are editable; saves ride the record persist path. */
+function qResortSave(){
+  if (!cur) return;
+  var r1 = $('q_resort1'), r2 = $('q_resort2');
+  var old1 = cur.resort || '', old2 = cur.resort2 || '';
+  if (r1) cur.resort = r1.value.trim();
+  if (r2) cur.resort2 = r2.value.trim();
+  if (cur.resort !== old1) qAuditLog('Resort', old1, cur.resort);
+  if (cur.resort2 !== old2) qAuditLog('Resort 2', old2, cur.resort2);
+  cur._upd = Date.now();
+  try { var cs = slClients(), ix = -1; for (var i = 0; i < cs.length; i++) if (cs[i].id === cur.id){ ix = i; break; } if (ix >= 0){ cs[ix] = cur; localStorage.setItem('sl_clients', JSON.stringify(cs)); } } catch(e){}
+  try { syncPushRecord(cur, true); } catch(e){}
+  try { fillAll('[data-fill="resort"]', cur.resort || '_________'); } catch(e){}
+  qSaveState('✓ Resort guardado · ' + new Date().toLocaleTimeString('es'));
+}
 function qIdn(c){
   var el = $('q_idn');
   if (!c){ el.innerHTML = ''; el.style.display = 'none'; return; }
@@ -2006,7 +2026,8 @@ function qIdn(c){
   if (c.behind === 0 || c.behind === '0') bChip = ' <span class="ib-chip ib-chip-current">✅ AL CORRIENTE</span>';
   else if (c.behind) bChip = ' <span class="ib-chip ib-chip-behind">🔴 ATRASADO: ' + escH(String(c.behind)) + ' MESES</span>';
   el.innerHTML = '<b>' + qNameLink(c) + '</b>' + bChip +
-    (c.resort ? '<br><b class="rs-name">' + escH(c.resort) + '</b>' : '') +
+    '<br><input id="q_resort1" class="rs-edit" value="' + escH(c.resort || '') + '" placeholder="Resort" onchange="qResortSave()">' +
+    '<br><input id="q_resort2" class="rs-edit2" value="' + escH(c.resort2 || '') + '" placeholder="+ 2° resort" onchange="qResortSave()">' +
     (c.address ? '<br>📍 ' + escH(c.address) : '') +
     (ph ? '<br>' + telListHtml(c) : '') +
     (c.notes ? '<br><a href="javascript:void(0)" onclick="document.getElementById(\'q_notes_full\').style.display=document.getElementById(\'q_notes_full\').style.display===\'none\'?\'block\':\'none\'" style="font-size:0.85em;">📋 Notas del cliente (toca para expandir)</a><div id="q_notes_full" style="display:none;margin-top:6px;"><span class="tmin">' + escH(c.notes) + '</span></div>' : '') +
@@ -3866,7 +3887,7 @@ function qCover(){
   function fdate2(s){ return s || '—'; }
   var html = '<div class="csgrid">' +
     '<div><b>Cliente:</b> ' + qNameLink(cur) + '</div>' +
-    '<div><b>Resort:</b> <span class="rs-name">' + escH(cur.resort || '—') + '</span></div>' +
+    '<div><b>Resort:</b> <span class="rs-name">' + escH(cur.resort || '—') + (cur.resort2 ? ' · ' + escH(cur.resort2) : '') + '</span></div>' +
     '<div><b>Teléfono:</b> ' + escH([cur.phone, cur.phone2].filter(Boolean).map(fmtPhone).join(' · ') || '—') + '</div>' +
     '<div><b>Correo:</b> ' + escH([cur.email, cur.email2].filter(Boolean).join(' · ') || '—') + '</div>' +
     '<div><b>Tarifa total:</b> ' + $('q_ftot').textContent + '</div>' +
