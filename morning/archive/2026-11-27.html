@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Morning Board — Friday, November 27, 2026</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:-apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background:#f6f8fa; color:#1c2733; }
+  .wrap { max-width:760px; margin:0 auto; padding:16px 12px 40px; }
+  h1 { font-size:22px; margin:4px 0 2px; }
+  .updated { color:#6a7785; font-size:13px; margin-bottom:12px; }
+  .strip { background:#eaf3ee; border:1px solid #cfe3d6; border-radius:10px; padding:10px 12px; font-size:14px; line-height:1.55; margin-bottom:16px; }
+  .card { display:flex; gap:10px; align-items:flex-start; background:#fff; border:1px solid #dde3e8; border-radius:12px; padding:12px; margin-bottom:10px; }
+  .card.overlap { border-color:#e8a13a; background:#fffaf2; }
+  .time { font-weight:700; font-size:15px; min-width:74px; padding-top:2px; }
+  .main { flex:1; min-width:0; }
+  .client { font-size:16px; font-weight:600; line-height:1.3; }
+  .client a { color:#0b5cad; text-decoration:none; }
+  .flag { color:#9a3412; font-size:13px; margin-top:3px; line-height:1.35; }
+  .money { color:#1c2733; font-size:14px; font-weight:600; margin-top:3px; line-height:1.4; }
+  .ca { color:#5a6b7a; font-size:13px; font-weight:600; margin-top:2px; }
+  .tags { display:flex; flex-direction:column; gap:6px; align-items:flex-end; }
+  .chip { color:#fff; font-size:12px; font-weight:700; padding:4px 9px; border-radius:999px; white-space:nowrap; }
+  .chip.new { background:#2470c2; } .chip.rs { background:#e07b24; }
+  .chip.fu { background:#7b4fc9; } .chip.fust { background:#4b2a85; }
+  .chip.sold { background:#1e9e57; }
+  .stsel { color:#fff; font-size:13px; font-weight:700; padding:8px 10px; border:none; border-radius:999px; white-space:nowrap; min-height:38px; }
+  .stsel.new { background:#2470c2; } .stsel.rs { background:#e07b24; }
+  .stsel.fu { background:#7b4fc9; } .stsel.fust { background:#4b2a85; }
+  .stsel.sold { background:#1e9e57; } .stsel.na { background:#b03a2e; }
+  .stsel.no { background:#5d6d7e; } .stsel.nogo { background:#7b1113; }
+  .stsel.nq { background:#8a8f94; }
+  .search { display:flex; gap:8px; align-items:center; flex-wrap:wrap; background:#fff; border:1px solid #dde3e8; border-radius:10px; padding:10px 12px; margin-bottom:6px; }
+  .search input[type=date] { font-size:15px; padding:8px; border:1px solid #c8d0d8; border-radius:8px; min-height:38px; }
+  .search button { font-size:14px; font-weight:700; padding:9px 16px; border:none; border-radius:8px; background:#2470c2; color:#fff; min-height:38px; }
+  .search a { font-size:14px; font-weight:600; color:#0b5cad; text-decoration:none; padding:8px 2px; }
+  .archnote { color:#6a7785; font-size:12.5px; margin:0 2px 14px; }
+  .refl { background:#fff; border:1px solid #dde3e8; border-left:4px solid #b98a2f; border-radius:12px; padding:14px; margin-bottom:16px; }
+  .reflhead { font-size:16px; font-weight:700; }
+  .reflhead.prayer { margin-top:14px; }
+  .refltitle { font-size:15px; font-weight:600; font-style:italic; margin-top:4px; }
+  .reflexerpt { font-size:14.5px; line-height:1.55; margin:8px 0; }
+  a.refllink { font-size:14px; font-weight:600; color:#0b5cad; text-decoration:none; }
+  .reflaudio { margin-top:10px; }
+  .reflaudio audio { width:100%; max-width:420px; }
+  .prayertext { font-size:14.5px; line-height:1.6; margin:6px 0 0; white-space:pre-line; }
+  .dt { font-size:12px; font-weight:700; color:#51606e; background:#eef1f4; padding:3px 8px; border-radius:6px; }
+  .dt.db { background:#fde8d7; color:#9a4a12; }
+  .phones { font-size:19px; margin-bottom:4px; line-height:1.5; }
+  .phones a { color:#0b7a3e; font-weight:700; text-decoration:none; padding:6px 2px; display:inline-block; }
+  a.cf { font-size:13px; color:#0b5cad; text-decoration:none; padding:6px 2px; white-space:nowrap; }
+  .lap { background:#232946; color:#eef0ff; border-radius:12px; padding:14px; margin-top:18px; }
+  .laphead { font-size:16px; font-weight:700; margin-bottom:6px; }
+  .lapsub { font-size:13px; color:#b9bee8; }
+  .laptally { font-size:19px; font-weight:700; margin:4px 0; letter-spacing:.2px; }
+  .laplist { font-size:14px; margin-top:2px; }
+  .lapnext { font-size:13px; color:#b9bee8; margin-top:8px; }
+  .nav { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px; }
+  .nav a, .nav button { display:flex; align-items:center; justify-content:center; gap:6px; min-height:48px; padding:10px 8px; background:#1c2733; color:#fff; font-size:15px; font-weight:700; text-decoration:none; border:none; border-radius:10px; text-align:center; cursor:pointer; }
+  .nav button { background:#7b4fc9; }
+  .tasks { background:#fff; border:1px solid #dde3e8; border-left:4px solid #7b4fc9; border-radius:12px; padding:14px; margin-bottom:16px; }
+  .taskshead { font-size:16px; font-weight:700; margin-bottom:8px; }
+  .task { font-size:14.5px; line-height:1.45; padding:7px 0; border-top:1px solid #eef1f4; }
+  .tasklegend { font-size:12.5px; color:#5a6b7a; margin:-2px 0 6px; }
+  .tchecks { display:inline-block; margin-left:10px; white-space:nowrap; }
+  .tchk { font-size:12.5px; font-weight:600; margin-right:8px; cursor:pointer; }
+  .tchk input { width:16px; height:16px; vertical-align:-3px; cursor:pointer; }
+  .task.done { opacity:.5; }
+  .task.done .ttitle, .task.done .tname { text-decoration:line-through; }
+  .task:first-of-type { border-top:none; }
+  .tname { font-weight:700; }
+  .tname a { color:#0b5cad; text-decoration:none; }
+  .ttitle a { color:#7b4fc9; font-weight:700; text-decoration:none; }
+  .twhen { color:#6a7785; font-size:13px; }
+  .taskempty { font-size:14.5px; line-height:1.5; }
+  .taskempty a { color:#0b5cad; font-weight:600; text-decoration:none; }
+  .mentions { background:#fff; border:1px solid #dde3e8; border-left:4px solid #2470c2; border-radius:12px; padding:14px; margin-bottom:16px; }
+  .mentionshead { font-size:16px; font-weight:700; margin-bottom:8px; }
+  .mention { padding:8px 0; border-top:1px solid #eef1f4; }
+  .mention:first-of-type { border-top:none; }
+  .mhead { font-size:14px; }
+  .mhead a { color:#0b5cad; text-decoration:none; }
+  .mwhen { color:#6a7785; font-size:12.5px; font-weight:400; }
+  .mtext { font-size:14px; line-height:1.5; margin-top:2px; }
+  @media (max-width:520px) { .time { min-width:64px; font-size:14px; } .client { font-size:15px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>☀️ Morning Board — Friday, November 27, 2026</h1>
+  <div class="updated">Updated 7:46 AM ET · 4 appointments</div>
+  <div class="nav">
+  <a href="https://sebastianlinks.com/board/" target="_blank" rel="noopener noreferrer">🗂️ Board</a>
+  <a href="https://sebastianlinks.com/casefile/" target="_blank" rel="noopener noreferrer">📂 Case File</a>
+  <a href="https://app.pipelinecrm.com/" target="_blank" rel="noopener noreferrer">🔗 Pipeline</a>
+  <a href="https://calendar.google.com/calendar/u/0/r" target="_blank" rel="noopener noreferrer">📅 Calendar</a>
+  <a href="https://docs.google.com/spreadsheets/d/1P-F605ws8W1_XgRNQ2_5caHvl7cwZ-5RouqF4qOwb5I/edit" target="_blank" rel="noopener noreferrer">📊 PRE-CALL Sheet</a>
+  <a href="https://muse.ai/" target="_blank" rel="noopener noreferrer">🤖 Astro</a>
+  <a href="https://12easysteps.org/daily-readings/" target="_blank" rel="noopener noreferrer">📖 Daily Readings</a>
+  <a href="https://voicesofnicotinerecovery.com/speaker-shares" target="_blank" rel="noopener noreferrer">🎧 NicA Speakers</a>
+  <a href="https://sebastianlinks.com/report/" target="_blank" rel="noopener noreferrer">📝 Report Card</a>
+  <a href="https://sebastianlinks.com/am/transcripts" target="_blank" rel="noopener noreferrer">🎙️ Transcripts</a>
+  <a href="https://mail.google.com/mail/u/0/#inbox" target="_blank" rel="noopener noreferrer">✉️ Email</a>
+  <button type="button" id="taskbtn">📋 Today's Tasks (—)</button>
+</div>
+  <div class="tasks" id="tasks" hidden>
+  <div class="taskshead">📋 Today's Tasks</div>
+  <div class="taskempty">The full task list has not been loaded yet today. <a href="https://app.pipelinecrm.com/" target="_blank" rel="noopener noreferrer">Open Pipeline</a> to see today's to-dos.</div>
+</div>
+  
+  <div class="search">
+    <input type="date" id="dsearch" value="2026-11-27" min="2026-11-10" aria-label="Search boards by date">
+    <button type="button" id="dgo">Go</button>
+    <a href="/morning/" target="_blank" rel="noopener noreferrer">Today</a>
+    <a href="/morning/archive/2026-11-28.html" target="_blank" rel="noopener noreferrer">Tomorrow →</a>
+  </div>
+  <div class="archnote">Boards exist from Nov 10, 2026 forward.</div>
+  <div class="strip">💰 Estimated commission (price = 47% of payoff + admin): <b>$42,244.39</b> across 51 records<br>🛠 Systems check: <b>140 exceptions open</b></div>
+  
+  <div class="card">
+  <div class="time">10:00 AM</div>
+  <div class="main">
+    <div class="phones">📞 <a href="tel:+12293959356">229-395-9356</a></div>
+    <div class="client"><a href="https://sebastianlinks.com/casefile/?c=c-smith-1125" target="_blank" rel="noopener noreferrer">Lorey Johnson</a></div>
+    <div class="ca">CA: David Atella</div>
+    <div class="money">💲 Lista $4,550 · Min $4,849 · Price $5,049 · Comm $400</div>
+    
+  </div>
+  <div class="tags"><select class="stsel sold" data-rid="c-smith-1125" aria-label="Status for Lorey Johnson"><option value="NEW">NEW</option><option value="RS">RS</option><option value="FU">FU</option><option value="FU ST">FU ST</option><option value="SOLD" selected>SOLD</option><option value="NA">NA</option><option value="NO">NO</option><option value="NO GO">NO GO</option><option value="NQ">NQ</option></select><span class="dt db">🟧 DEED-BACK</span><a class="cf" href="https://sebastianlinks.com/casefile/?c=c-smith-1125" target="_blank" rel="noopener noreferrer">📂 Case file</a></div>
+</div><div class="card">
+  <div class="time">11:00 AM</div>
+  <div class="main">
+    <div class="phones">📞 <a href="tel:+13123664891">312-366-4891</a> · <a href="tel:+17738124564">773-812-4564</a></div>
+    <div class="client"><a href="https://sebastianlinks.com/casefile/?c=c-aspera-1127" target="_blank" rel="noopener noreferrer">Fabiola Aspera / Ramon Saldan</a></div>
+    <div class="ca">CA: Tennille Smith</div>
+    
+    <div class="flag">Deed-back lista NOT SET — CB2 blank</div>
+  </div>
+  <div class="tags"><select class="stsel new" data-rid="c-aspera-1127" aria-label="Status for Fabiola Aspera / Ramon Saldan"><option value="NEW" selected>NEW</option><option value="RS">RS</option><option value="FU">FU</option><option value="FU ST">FU ST</option><option value="SOLD">SOLD</option><option value="NA">NA</option><option value="NO">NO</option><option value="NO GO">NO GO</option><option value="NQ">NQ</option></select><span class="dt db">🟧 DEED-BACK</span><a class="cf" href="https://sebastianlinks.com/casefile/?c=c-aspera-1127" target="_blank" rel="noopener noreferrer">📂 Case file</a></div>
+</div><div class="card">
+  <div class="time">7:00 PM</div>
+  <div class="main">
+    <div class="phones">📞 <a href="tel:+15166618772">516-661-8772</a> · <a href="tel:+15168519084">516-851-9084</a></div>
+    <div class="client"><a href="https://sebastianlinks.com/casefile/?c=c-salazar-1127" target="_blank" rel="noopener noreferrer">Marco Salazar / Madai Salazar</a> 🇪🇸</div>
+    <div class="ca">CA: Eli Flores</div>
+    
+    <div class="flag">Deed-back lista NOT SET — CB2 blank</div>
+  </div>
+  <div class="tags"><select class="stsel new" data-rid="c-salazar-1127" aria-label="Status for Marco Salazar / Madai Salazar"><option value="NEW" selected>NEW</option><option value="RS">RS</option><option value="FU">FU</option><option value="FU ST">FU ST</option><option value="SOLD">SOLD</option><option value="NA">NA</option><option value="NO">NO</option><option value="NO GO">NO GO</option><option value="NQ">NQ</option></select><span class="dt db">🟧 DEED-BACK</span><a class="cf" href="https://sebastianlinks.com/casefile/?c=c-salazar-1127" target="_blank" rel="noopener noreferrer">📂 Case file</a></div>
+</div><div class="card">
+  <div class="time">8:30 PM</div>
+  <div class="main">
+    <div class="phones">📞 <a href="tel:+17869152543">786-915-2543</a> · <a href="tel:+17548010156">754-801-0156</a></div>
+    <div class="client"><a href="https://sebastianlinks.com/casefile/?c=c-lopez-1127" target="_blank" rel="noopener noreferrer">Jose Lopez / Irais</a> 🇪🇸</div>
+    <div class="ca">CA: Liza Perez</div>
+    <div class="money">💲 Mortgage $197/mo · Bal $6,500 · Price $3,354 @47% · Comm ~$295.44</div>
+    <div class="flag">CB2 blank — price not landed</div>
+  </div>
+  <div class="tags"><select class="stsel new" data-rid="c-lopez-1127" aria-label="Status for Jose Lopez / Irais"><option value="NEW" selected>NEW</option><option value="RS">RS</option><option value="FU">FU</option><option value="FU ST">FU ST</option><option value="SOLD">SOLD</option><option value="NA">NA</option><option value="NO">NO</option><option value="NO GO">NO GO</option><option value="NQ">NQ</option></select><span class="dt">MTG</span><a class="cf" href="https://sebastianlinks.com/casefile/?c=c-lopez-1127" target="_blank" rel="noopener noreferrer">📂 Case file</a></div>
+</div>
+  <div class="lap"><div class="laphead">🌙 pre-Night — Leads Accountability</div>
+<div class="lapnext">No saved tally yet — tonight's pre-Night post runs 9:38 PM.</div></div>
+</div>
+<script>
+var BCFG={url:'https://onyrfjftvtvuwtxozgcc.supabase.co',key:'sb_publishable_0Rl80iGMOWJHINvcCYKU_w_9aTg89Jz'};
+var PAGE_DATE='2026-11-27';
+var TO_OVR={'NEW':'R:CITA / LEAD','RS':'R:RS','FU':'R:FU','FU ST':'R:FU','SOLD':'R:VENDIDO','NA':'R:NA','NO':'R:NO','NO GO':'T:NOGO','NQ':'T:NQ'};
+var FROM_OVR={'R:CITA / LEAD':'NEW','R:RS':'RS','R:FU':'FU','R:VENDIDO':'SOLD','R:FIRMADO':'SOLD','R:NA':'NA','R:NO':'NO','T:NOGO':'NO GO','T:NQ':'NQ','T:FU':'FU','T:RS':'RS','T:NA':'NA','T:HOTFU':'FU','T:FU - HOT':'FU','T:FU - WARM':'FU'};
+var CLS={'NEW':'new','RS':'rs','FU':'fu','FU ST':'fust','SOLD':'sold','NA':'na','NO':'no','NO GO':'nogo','NQ':'nq'};
+var LSKEY='morning_status_v1';
+function lsAll(){ try{ return JSON.parse(localStorage.getItem(LSKEY)||'{}'); }catch(e){ return {}; } }
+function setSel(sel,v){ sel.value=v; sel.className='stsel '+(CLS[v]||'new'); }
+function saveLocal(rid,v){ var a=lsAll(); if(!a[PAGE_DATE]) a[PAGE_DATE]={}; a[PAGE_DATE][rid]=v; try{ localStorage.setItem(LSKEY,JSON.stringify(a)); }catch(e){} }
+function headers(extra){ var h={'apikey':BCFG.key,'Authorization':'Bearer '+BCFG.key,'Content-Type':'application/json'}; if(extra) for(var k in extra) h[k]=extra[k]; return h; }
+function persistStatus(rid,v){ var body={client_key:rid,status_override:(TO_OVR[v]||null),updated_at:new Date().toISOString()};
+  fetch(BCFG.url+'/rest/v1/board_state?on_conflict=client_key',{method:'POST',headers:headers({'Prefer':'resolution=merge-duplicates,return=minimal'}),body:JSON.stringify(body)}).catch(function(){}); }
+document.querySelectorAll('.stsel').forEach(function(sel){
+  sel.addEventListener('change',function(){ var rid=sel.getAttribute('data-rid'); setSel(sel,sel.value); if(rid){ saveLocal(rid,sel.value); persistStatus(rid,sel.value); } });
+});
+(function(){ var mine=(lsAll()[PAGE_DATE]||{});
+  document.querySelectorAll('.stsel').forEach(function(sel){ var rid=sel.getAttribute('data-rid'); if(rid&&mine[rid]) setSel(sel,mine[rid]); });
+  fetch(BCFG.url+'/rest/v1/board_state?select=client_key,status_override',{headers:headers()}).then(function(r){ return r.ok?r.json():[]; }).then(function(rows){
+    var byKey={}; rows.forEach(function(rw){ byKey[rw.client_key]=rw.status_override; });
+    document.querySelectorAll('.stsel').forEach(function(sel){ var rid=sel.getAttribute('data-rid'); var ov=rid?byKey[rid]:null; var v=ov?FROM_OVR[ov]:null; if(v){ setSel(sel,v); saveLocal(rid,v); } });
+  }).catch(function(){});
+})();
+var dgo=document.getElementById('dgo');
+if(dgo) dgo.addEventListener('click',function(){ var d=document.getElementById('dsearch').value; if(d) window.open('/morning/archive/'+d+'.html','_blank','noopener,noreferrer'); });
+var tbtn=document.getElementById('taskbtn');
+if(tbtn) tbtn.addEventListener('click',function(){ var t=document.getElementById('tasks'); if(!t) return; var open=t.hasAttribute('hidden'); if(open){ t.removeAttribute('hidden'); t.scrollIntoView({behavior:'smooth',block:'start'}); } else { t.setAttribute('hidden',''); } });
+// Task checkboxes (Sebastian 2026-11-12): ✅ Done completes the task in
+// Pipeline too (a board_state 'taskstate:' row the sync watcher executes);
+// 🙈 Hide only hides the row here. State persists in board_state.task_done.
+var TSTATE={};
+function tkeyOf(el){ return el.getAttribute('data-tkey'); }
+function tRow(tkey){ return document.querySelector('.task[data-tkey="'+tkey+'"]'); }
+function tApply(tkey){
+  var st=TSTATE[tkey]||{}, row=tRow(tkey); if(!row) return;
+  var d=row.querySelector('.tkdone'), h=row.querySelector('.tkhide');
+  if(d) d.checked=!!st.done;
+  if(h) h.checked=!!st.hidden;
+  row.classList.toggle('done',!!st.done);
+  row.style.display=st.hidden?'none':'';
+}
+function tPersist(tkey){
+  var st=TSTATE[tkey]||{};
+  var body={client_key:'taskstate:'+PAGE_DATE+':'+tkey,task_done:st,updated_at:new Date().toISOString()};
+  fetch(BCFG.url+'/rest/v1/board_state?on_conflict=client_key',{method:'POST',headers:headers({'Prefer':'resolution=merge-duplicates,return=minimal'}),body:JSON.stringify(body)}).catch(function(){});
+}
+document.querySelectorAll('.tkdone').forEach(function(cb){
+  cb.addEventListener('change',function(){
+    var tkey=tkeyOf(cb), st=TSTATE[tkey]||(TSTATE[tkey]={});
+    st.done=cb.checked; st.pid=cb.getAttribute('data-pid')||''; st.title=cb.getAttribute('data-title')||''; st.name=cb.getAttribute('data-name')||''; st.date=PAGE_DATE;
+    if(cb.checked){ st.done_at=new Date().toISOString(); } else { delete st.done_at; delete st.synced; delete st.synced_at; }
+    tApply(tkey); tPersist(tkey);
+  });
+});
+document.querySelectorAll('.tkhide').forEach(function(cb){
+  cb.addEventListener('change',function(){
+    var tkey=tkeyOf(cb), st=TSTATE[tkey]||(TSTATE[tkey]={});
+    st.hidden=cb.checked; st.date=PAGE_DATE;
+    tApply(tkey); tPersist(tkey);
+  });
+});
+(function(){
+  fetch(BCFG.url+'/rest/v1/board_state?select=client_key,task_done&client_key=like.taskstate:*',{headers:headers()}).then(function(r){ return r.ok?r.json():[]; }).then(function(rows){
+    rows.forEach(function(rw){ var ck=rw.client_key||''; if(ck.indexOf('taskstate:'+PAGE_DATE+':')!==0) return; var k=ck.split(':').pop(); if(k&&rw.task_done) TSTATE[k]=rw.task_done; });
+    Object.keys(TSTATE).forEach(tApply);
+  }).catch(function(){});
+})();
+</script>
+</body>
+</html>
