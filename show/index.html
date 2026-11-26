@@ -1289,7 +1289,7 @@ function loadDeck(){
 }
 /* language toggle — switches decks BOTH ways, at any slide, landing on the
    corresponding slide (same index; the two decks are slide-for-slide) */
-function syncHl(){ document.body.classList.toggle('nohl', lang === 'en'); } /* English: no highlight-as-you-go (Sebastian, 2026-11-25) */
+function syncHl(){ document.body.classList.toggle('nohl', true); } /* NO highlight-as-you-go in ANY language (Sebastian, 2026-11-25 evening: shocked Spanish still had green highlights) */
 function setLang(nl){
   if (nl === lang || !DECKS[nl].MTG) return;
   lang = nl;
