@@ -467,7 +467,7 @@ body #pegShowBtn { right: auto; left: 8px; }
 <style>
 /* DRAGSECTIONS_V1 (Sebastian 2026-11-25): reorder case-file sections by dragging.
    EDITMOVE_V1: tap the Edit layout button in the top bar to enter move mode;
-   drag by the handle; order persists in localStorage cfSectionOrderV2
+   drag by the handle; order persists in localStorage cfSectionOrderV3
    (NUMBERED_LAYOUT_V1: V2 starts fresh on Sebastian's numbered default). */
 .ds-sec { position: relative; }
 .ds-handle { display: none; position: absolute; top: 6px; left: 6px; z-index: 60; width: 48px; height: 48px; line-height: 48px; text-align: center; font-size: 24px; color: #fff; background: #0b3d91; border-radius: 8px; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; box-shadow: 0 1px 4px rgba(0,0,0,.3); }
@@ -614,7 +614,123 @@ sideApply();
     </div>
   </div>
 </div>
-<div class="cpanel cpanel-fee" id="ds-fee">
+<!-- TRAPGRID_V1: SITUACION + DESGLOSE side by side above MI FEE (Sebastian 2026-11-25) -->
+<div class="calcgrid" id="ds-trapgrid"><div class="cpanel cpanel-trap" id="ds-situacion">
+  <div class="qsec" style="margin-top:0">🏨 SITUACIÓN DEL RESORT — LA TRAMPA ACTUAL</div>
+  <div id="q_contracts" style="display:none"></div>
+  <div id="q_ncrow" style="display:flex;gap:6px;align-items:center;margin:8px 0">
+    <span style="font-weight:800">NÚMERO DE CONTRATOS:</span>
+    <button type="button" id="q_nc1" onclick="qSetNC(1)" style="padding:6px 16px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;background:#0b3d91;color:#fff">1</button>
+    <button type="button" id="q_nc2" onclick="qSetNC(2)" style="display:none;padding:6px 16px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;background:#e2e8f0;color:#334155">2</button>
+    <button type="button" id="q_nc3" onclick="qSetNC(3)" style="display:none;padding:6px 16px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;background:#e2e8f0;color:#334155">3</button>
+    <span class="qsm">Cada contrato se cobra por separado.</span>
+  </div>
+  <button type="button" id="q_addc" onclick="qAddContract()" style="display:none;margin:2px 0 8px;padding:6px 14px;border:2px dashed #0b3d91;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;background:#eef4ff;color:#0b3d91">➕ Agregar contrato</button>
+  <div id="q_combo" style="display:none;background:#0b3d91;color:#fff;border-radius:8px;padding:10px 12px;margin-bottom:10px">
+    <div style="font-weight:800;font-size:1.05em">🧮 TOTALES COMBINADOS — <span id="q_combo_n">1</span> CONTRATOS</div>
+    <div id="q_combo_lines" style="font-size:.97em;line-height:1.55"></div>
+  </div>
+  <label class="qf mtgOnly">AÑO DE COMPRA <input id="q_pyr" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">MES DE COMPRA <select id="q_pmonth" onchange="qRecalc()"><option value="">—</option><option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option><option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option><option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option></select></label>
+  <label class="qf mtgOnly">HIPOTECA MENSUAL <input id="q_mmo" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">MF <input id="q_mf" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf">OTROS GASTOS <input id="q_ofees" type="number" min="0" value="0" oninput="qRecalc()"></label>
+  <label class="qf">NOCHES <input id="q_nights" type="number" min="0" value="5" oninput="qNightsDef=false;qRecalc()"></label>
+  <label class="qf">$ POR NOCHE <input id="q_pnight" type="number" min="0" value="0" oninput="qRecalc()"></label>
+  <label class="qf mtgOnly">PLAZO (MESES) <input id="q_term" type="number" min="0" value="120" oninput="qTermDef=false;qRecalc()"></label>
+  <label class="qf mtgOnly" style="color:#c62828;font-weight:700">SALDO (PAYOFF) <input id="q_payoff" type="number" min="0" oninput="qRecalc()" style="border:2px solid #c62828;color:#c62828;font-weight:700"></label>
+  <label class="qf">ELEVACIÓN ANUAL % <input id="q_esc" type="number" min="0" oninput="qRecalc()"></label>
+  </div><div class="cpanel" id="ds-desglose">
+  <div class="qsec">📊 DESGLOSE DE GASTOS</div>
+  <div class="qout">
+    <div class="mtgOnly">Hipoteca mensual <b id="q_xmmo">—</b></div>
+    <div>Mantenimiento mensual <b id="q_xmfmo">—</b></div>
+    <div>Otros gastos mensual <b id="q_xofmo">—</b></div>
+    <div style="border-bottom:2px solid #64748b;padding-bottom:5px;margin-bottom:5px">Total mensual <b id="q_xtotmo">—</b></div>
+    <div class="mtgOnly">Hipoteca anual <b id="q_xmoyr">—</b></div>
+    <div>Mantenimiento anual <b id="q_xmfyr">—</b></div>
+    <div>Otros gastos anual <b id="q_xofyr">—</b></div>
+    <div style="border-bottom:2px solid #64748b;padding-bottom:5px;margin-bottom:5px">Total anual <b id="q_xtotyr">—</b></div>
+    <div>Costo por noche <b id="q_xnight">—</b></div>
+    <div>Hospedaje/año ($ × noches) <b id="q_xpnightyr">—</b></div>
+    <div class="mtgOnly">Hipoteca 10 años <b id="q_xmo10">—</b></div>
+    <div class="mtgOnly">Hipoteca programada (pago × plazo) <b id="q_xsch">—</b></div>
+    <div>Mantenimiento 10 años (<span id="q_xescp">8</span>% esc) <b id="q_xmf10">—</b></div>
+    <div>Otros gastos 10 años <b id="q_xof10">—</b></div>
+    <div style="border-bottom:2px solid #64748b;padding-bottom:5px;margin-bottom:5px">Proyección 10 años <b id="q_xproj10">—</b></div>
+  </div>
+  </div><div class="cpanel cpanel-mid" id="ds-mid">
+  <div class="qsec">Compromiso Contractual Actual</div>
+  <div id="q_calcstatus" style="font-size:.92em;line-height:1.5;margin:0 0 8px"></div>
+  <div id="q_conflict" style="display:none;background:#fdecea;border:2px solid #c62828;color:#7f1d1d;border-radius:8px;padding:8px 10px;font-size:.92em;line-height:1.5;margin:0 0 8px"></div>
+  <div class="qout">
+    <div class="qsm"><span class="qhl" data-es="Próximos 30 días" data-en="Next 30 days">Próximos 30 días</span> <b id="q_w30">—</b></div>
+    <div class="qsm"><span class="qhl" data-es="Próximos 90 días" data-en="Next 90 days">Próximos 90 días</span> <b id="q_w90">—</b></div>
+    <div><span class="qhl" data-es="Próximo 1 año" data-en="Next 1 year">Próximo 1 año</span> <b id="q_t1">—</b></div>
+    <div><span class="qhl" data-es="Próximos 3 años" data-en="Next 3 years">Próximos 3 años</span> <b id="q_t3">—</b></div>
+    <div><span class="qhl" data-es="Próximos 5 años" data-en="Next 5 years">Próximos 5 años</span> <b id="q_t5">—</b></div>
+    <div><span class="qhl" data-es="Próximos 10 años" data-en="Next 10 years">Próximos 10 años</span> <b id="q_t10">—</b></div>
+    <div><span class="qhl" data-es="Próximos 20 años" data-en="Next 20 years">Próximos 20 años</span> <b id="q_t20">—</b></div>
+    <div><span class="qhl" data-es="Próximos 30 años" data-en="Next 30 years">Próximos 30 años</span> <b id="q_t30">—</b></div>
+  </div>
+  </div><div class="cpanel" id="ds-prestamo">
+  <div id="q_c2box" style="display:none;border-top:3px solid #0b3d91;margin-top:14px;padding-top:8px">
+    <div class="qsec" style="margin-top:0">📄 CONTRATO 2</div>
+    <label class="qf"><span>MF COMPARTIDO CON CONTRATO 1 (NO SE DUPLICA)</span><input id="q2_mfshared" type="checkbox" style="width:auto" onchange="qRecalc()"></label>
+    <div id="q2_status" style="font-size:.92em;line-height:1.5;margin:0 0 8px"></div>
+    <label class="qf">SALDO <input id="q2_payoff" type="number" min="0" oninput="qRecalc()"></label>
+    <label class="qf">HIPOTECA MENSUAL <input id="q2_mmo" type="number" min="0" oninput="qRecalc()"></label>
+    <label class="qf">MF <input id="q2_mf" type="number" min="0" oninput="qRecalc()"></label>
+    <label class="qf">ESC % <input id="q2_esc" type="number" min="0" oninput="qRecalc()"></label>
+    <label class="qf">APR % <input id="q2_apr" type="number" min="0" oninput="qRecalc()"></label>
+    <label class="qf">PLAZO (MESES) <input id="q2_term" type="number" min="0" oninput="qRecalc()"></label>
+    <label class="qf">FECHA COMPRA/UPGRADE <input id="q2_pdate" type="text" placeholder="Ej.: Ene 2026" oninput="qRecalc()"></label>
+    <label class="qf">PRECIO MANUAL (deed-back / hoja) <input id="q2_fee" type="number" min="0" oninput="qRecalc()"></label>
+    <div class="qout">
+      <div>Meses restantes <b id="q2_mleft">—</b></div>
+      <div>Proyección 10 años <b id="q2_t10">—</b></div>
+      <div>PRECIO CONTRATO 2 <b id="q2_price">—</b></div>
+    </div>
+  </div>
+  <div id="q_c3box" style="display:none;border-top:3px solid #0b3d91;margin-top:14px;padding-top:8px">
+    <div class="qsec" style="margin-top:0">📄 CONTRATO 3</div>
+    <label class="qf"><span>MF COMPARTIDO CON CONTRATO 1 (NO SE DUPLICA)</span><input id="q3_mfshared" type="checkbox" style="width:auto" onchange="qRecalc()"></label>
+    <div id="q3_status" style="font-size:.92em;line-height:1.5;margin:0 0 8px"></div>
+    <label class="qf">SALDO <input id="q3_payoff" type="number" min="0" oninput="qRecalc()"></label>
+    <label class="qf">HIPOTECA MENSUAL <input id="q3_mmo" type="number" min="0" oninput="qRecalc()"></label>
+    <label class="qf">MF <input id="q3_mf" type="number" min="0" oninput="qRecalc()"></label>
+    <label class="qf">ESC % <input id="q3_esc" type="number" min="0" oninput="qRecalc()"></label>
+    <label class="qf">APR % <input id="q3_apr" type="number" min="0" oninput="qRecalc()"></label>
+    <label class="qf">PLAZO (MESES) <input id="q3_term" type="number" min="0" oninput="qRecalc()"></label>
+    <label class="qf">FECHA COMPRA/UPGRADE <input id="q3_pdate" type="text" placeholder="Ej.: Ene 2026" oninput="qRecalc()"></label>
+    <label class="qf">PRECIO MANUAL (deed-back / hoja) <input id="q3_fee" type="number" min="0" oninput="qRecalc()"></label>
+    <div class="qout">
+      <div>Meses restantes <b id="q3_mleft">—</b></div>
+      <div>Proyección 10 años <b id="q3_t10">—</b></div>
+      <div>PRECIO CONTRATO 3 <b id="q3_price">—</b></div>
+    </div>
+  </div>
+  <div class="qsec mtgOnly">DESGLOSE DEL PRÉSTAMO</div>
+  <div class="tmin mtgOnly" id="q_mleft" style="margin-bottom:6px">— meses restantes</div>
+  <label class="qf mtgOnly">MONTO DEL PRÉSTAMO <input id="q_loan" type="number" min="0" oninput="qLoanAuto=false;qRecalc()"></label>
+  <label class="qf mtgOnly">APR % <input id="q_aapr" type="number" min="0" oninput="qRecalc()"></label>
+  <label class="qf mtgOnly">MESES <input id="q_mos" type="number" min="1" max="360" oninput="qRecalc()"></label>
+  <div class="qout mtgOnly">
+    <div>Préstamo original (financiado) <span id="q_ofin_tag"></span> <b id="q_ofin">—</b></div>
+    <div>Total programado (pago × plazo) <b id="q_osch">—</b></div>
+    <div>Interés total (programado) <b id="q_oint">—</b></div>
+    <div>Total pagado <span id="q_paidtag"></span> <b id="q_paid">—</b></div>
+    <div>Capital <b id="q_prin">—</b></div>
+    <div>Interés <b id="q_inte">—</b></div>
+    <div style="font-size:1.12em">PAYOFF EXACTO SEGÚN AMORTIZACIÓN <b id="q_bal2">—</b></div>
+    <div id="q_schtag" class="tmin" style="display:none;margin:2px 0"></div>
+    <div id="q_bal2flag" style="display:none;background:#fdecea;border:2px solid #c62828;color:#7f1d1d;border-radius:8px;padding:6px 8px;font-size:.92em;line-height:1.45;margin:4px 0"></div>
+    <div>Interés del plazo <b id="q_tint">—</b></div>
+    <div>% interés de lo pagado <b id="q_ipct">—</b></div>
+    <button class="lcBtn" onclick="lcOpen()">🏦 Calculadora de préstamo</button>
+  </div>
+  </div></div>
+  <div class="cpanel cpanel-fee" id="ds-fee">
   <div class="qsec" style="margin-top:0">💰 MI FEE Y PAGOS</div>
   <div id="q_sheetfeebox" style="display:none;background:#fef2f2;border:1px solid #f0b4b4;border-radius:6px;padding:10px 12px;margin-bottom:10px">
     <div class="qsec" style="margin-top:0;color:#b91c1c">🔴 FEE DEED-BACK — DESDE LA HOJA PRE-CALL</div>
@@ -781,122 +897,7 @@ sideApply();
     <button id="fuCortoBtn" type="button" onclick="qFuCortoHtml()">📧 FU CORTO — GERENTE DE CASO</button>
 </div>
 <!-- LAYOUTMOVE_20261125 END -->
-  <div class="calcgrid g3" id="ds-grid3"><div class="cpanel cpanel-trap" id="ds-situacion">
-  <div class="qsec" style="margin-top:0">🏨 SITUACIÓN DEL RESORT — LA TRAMPA ACTUAL</div>
-  <div id="q_contracts" style="display:none"></div>
-  <div id="q_ncrow" style="display:flex;gap:6px;align-items:center;margin:8px 0">
-    <span style="font-weight:800">NÚMERO DE CONTRATOS:</span>
-    <button type="button" id="q_nc1" onclick="qSetNC(1)" style="padding:6px 16px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;background:#0b3d91;color:#fff">1</button>
-    <button type="button" id="q_nc2" onclick="qSetNC(2)" style="display:none;padding:6px 16px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;background:#e2e8f0;color:#334155">2</button>
-    <button type="button" id="q_nc3" onclick="qSetNC(3)" style="display:none;padding:6px 16px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;background:#e2e8f0;color:#334155">3</button>
-    <span class="qsm">Cada contrato se cobra por separado.</span>
-  </div>
-  <button type="button" id="q_addc" onclick="qAddContract()" style="display:none;margin:2px 0 8px;padding:6px 14px;border:2px dashed #0b3d91;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;background:#eef4ff;color:#0b3d91">➕ Agregar contrato</button>
-  <div id="q_combo" style="display:none;background:#0b3d91;color:#fff;border-radius:8px;padding:10px 12px;margin-bottom:10px">
-    <div style="font-weight:800;font-size:1.05em">🧮 TOTALES COMBINADOS — <span id="q_combo_n">1</span> CONTRATOS</div>
-    <div id="q_combo_lines" style="font-size:.97em;line-height:1.55"></div>
-  </div>
-  <label class="qf mtgOnly">AÑO DE COMPRA <input id="q_pyr" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf">MES DE COMPRA <select id="q_pmonth" onchange="qRecalc()"><option value="">—</option><option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option><option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option><option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option><option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option></select></label>
-  <label class="qf mtgOnly">HIPOTECA MENSUAL <input id="q_mmo" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf">MF <input id="q_mf" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf">OTROS GASTOS <input id="q_ofees" type="number" min="0" value="0" oninput="qRecalc()"></label>
-  <label class="qf">NOCHES <input id="q_nights" type="number" min="0" value="5" oninput="qNightsDef=false;qRecalc()"></label>
-  <label class="qf">$ POR NOCHE <input id="q_pnight" type="number" min="0" value="0" oninput="qRecalc()"></label>
-  <label class="qf mtgOnly">PLAZO (MESES) <input id="q_term" type="number" min="0" value="120" oninput="qTermDef=false;qRecalc()"></label>
-  <label class="qf mtgOnly" style="color:#c62828;font-weight:700">SALDO (PAYOFF) <input id="q_payoff" type="number" min="0" oninput="qRecalc()" style="border:2px solid #c62828;color:#c62828;font-weight:700"></label>
-  <label class="qf">ELEVACIÓN ANUAL % <input id="q_esc" type="number" min="0" oninput="qRecalc()"></label>
-  </div><div class="cpanel cpanel-mid" id="ds-mid">
-  <div class="qsec">Compromiso Contractual Actual</div>
-  <div id="q_calcstatus" style="font-size:.92em;line-height:1.5;margin:0 0 8px"></div>
-  <div id="q_conflict" style="display:none;background:#fdecea;border:2px solid #c62828;color:#7f1d1d;border-radius:8px;padding:8px 10px;font-size:.92em;line-height:1.5;margin:0 0 8px"></div>
-  <div class="qout">
-    <div class="qsm"><span class="qhl" data-es="Próximos 30 días" data-en="Next 30 days">Próximos 30 días</span> <b id="q_w30">—</b></div>
-    <div class="qsm"><span class="qhl" data-es="Próximos 90 días" data-en="Next 90 days">Próximos 90 días</span> <b id="q_w90">—</b></div>
-    <div><span class="qhl" data-es="Próximo 1 año" data-en="Next 1 year">Próximo 1 año</span> <b id="q_t1">—</b></div>
-    <div><span class="qhl" data-es="Próximos 3 años" data-en="Next 3 years">Próximos 3 años</span> <b id="q_t3">—</b></div>
-    <div><span class="qhl" data-es="Próximos 5 años" data-en="Next 5 years">Próximos 5 años</span> <b id="q_t5">—</b></div>
-    <div><span class="qhl" data-es="Próximos 10 años" data-en="Next 10 years">Próximos 10 años</span> <b id="q_t10">—</b></div>
-    <div><span class="qhl" data-es="Próximos 20 años" data-en="Next 20 years">Próximos 20 años</span> <b id="q_t20">—</b></div>
-    <div><span class="qhl" data-es="Próximos 30 años" data-en="Next 30 years">Próximos 30 años</span> <b id="q_t30">—</b></div>
-  </div>
-  <div class="qsec">📊 DESGLOSE DE GASTOS</div>
-  <div class="qout">
-    <div class="mtgOnly">Hipoteca mensual <b id="q_xmmo">—</b></div>
-    <div>Mantenimiento mensual <b id="q_xmfmo">—</b></div>
-    <div>Otros gastos mensual <b id="q_xofmo">—</b></div>
-    <div style="border-bottom:2px solid #64748b;padding-bottom:5px;margin-bottom:5px">Total mensual <b id="q_xtotmo">—</b></div>
-    <div class="mtgOnly">Hipoteca anual <b id="q_xmoyr">—</b></div>
-    <div>Mantenimiento anual <b id="q_xmfyr">—</b></div>
-    <div>Otros gastos anual <b id="q_xofyr">—</b></div>
-    <div style="border-bottom:2px solid #64748b;padding-bottom:5px;margin-bottom:5px">Total anual <b id="q_xtotyr">—</b></div>
-    <div>Costo por noche <b id="q_xnight">—</b></div>
-    <div>Hospedaje/año ($ × noches) <b id="q_xpnightyr">—</b></div>
-    <div class="mtgOnly">Hipoteca 10 años <b id="q_xmo10">—</b></div>
-    <div class="mtgOnly">Hipoteca programada (pago × plazo) <b id="q_xsch">—</b></div>
-    <div>Mantenimiento 10 años (<span id="q_xescp">8</span>% esc) <b id="q_xmf10">—</b></div>
-    <div>Otros gastos 10 años <b id="q_xof10">—</b></div>
-    <div style="border-bottom:2px solid #64748b;padding-bottom:5px;margin-bottom:5px">Proyección 10 años <b id="q_xproj10">—</b></div>
-  </div>
-  <div id="q_c2box" style="display:none;border-top:3px solid #0b3d91;margin-top:14px;padding-top:8px">
-    <div class="qsec" style="margin-top:0">📄 CONTRATO 2</div>
-    <label class="qf"><span>MF COMPARTIDO CON CONTRATO 1 (NO SE DUPLICA)</span><input id="q2_mfshared" type="checkbox" style="width:auto" onchange="qRecalc()"></label>
-    <div id="q2_status" style="font-size:.92em;line-height:1.5;margin:0 0 8px"></div>
-    <label class="qf">SALDO <input id="q2_payoff" type="number" min="0" oninput="qRecalc()"></label>
-    <label class="qf">HIPOTECA MENSUAL <input id="q2_mmo" type="number" min="0" oninput="qRecalc()"></label>
-    <label class="qf">MF <input id="q2_mf" type="number" min="0" oninput="qRecalc()"></label>
-    <label class="qf">ESC % <input id="q2_esc" type="number" min="0" oninput="qRecalc()"></label>
-    <label class="qf">APR % <input id="q2_apr" type="number" min="0" oninput="qRecalc()"></label>
-    <label class="qf">PLAZO (MESES) <input id="q2_term" type="number" min="0" oninput="qRecalc()"></label>
-    <label class="qf">FECHA COMPRA/UPGRADE <input id="q2_pdate" type="text" placeholder="Ej.: Ene 2026" oninput="qRecalc()"></label>
-    <label class="qf">PRECIO MANUAL (deed-back / hoja) <input id="q2_fee" type="number" min="0" oninput="qRecalc()"></label>
-    <div class="qout">
-      <div>Meses restantes <b id="q2_mleft">—</b></div>
-      <div>Proyección 10 años <b id="q2_t10">—</b></div>
-      <div>PRECIO CONTRATO 2 <b id="q2_price">—</b></div>
-    </div>
-  </div>
-  <div id="q_c3box" style="display:none;border-top:3px solid #0b3d91;margin-top:14px;padding-top:8px">
-    <div class="qsec" style="margin-top:0">📄 CONTRATO 3</div>
-    <label class="qf"><span>MF COMPARTIDO CON CONTRATO 1 (NO SE DUPLICA)</span><input id="q3_mfshared" type="checkbox" style="width:auto" onchange="qRecalc()"></label>
-    <div id="q3_status" style="font-size:.92em;line-height:1.5;margin:0 0 8px"></div>
-    <label class="qf">SALDO <input id="q3_payoff" type="number" min="0" oninput="qRecalc()"></label>
-    <label class="qf">HIPOTECA MENSUAL <input id="q3_mmo" type="number" min="0" oninput="qRecalc()"></label>
-    <label class="qf">MF <input id="q3_mf" type="number" min="0" oninput="qRecalc()"></label>
-    <label class="qf">ESC % <input id="q3_esc" type="number" min="0" oninput="qRecalc()"></label>
-    <label class="qf">APR % <input id="q3_apr" type="number" min="0" oninput="qRecalc()"></label>
-    <label class="qf">PLAZO (MESES) <input id="q3_term" type="number" min="0" oninput="qRecalc()"></label>
-    <label class="qf">FECHA COMPRA/UPGRADE <input id="q3_pdate" type="text" placeholder="Ej.: Ene 2026" oninput="qRecalc()"></label>
-    <label class="qf">PRECIO MANUAL (deed-back / hoja) <input id="q3_fee" type="number" min="0" oninput="qRecalc()"></label>
-    <div class="qout">
-      <div>Meses restantes <b id="q3_mleft">—</b></div>
-      <div>Proyección 10 años <b id="q3_t10">—</b></div>
-      <div>PRECIO CONTRATO 3 <b id="q3_price">—</b></div>
-    </div>
-  </div>
-  <div class="qsec mtgOnly">DESGLOSE DEL PRÉSTAMO</div>
-  <div class="tmin mtgOnly" id="q_mleft" style="margin-bottom:6px">— meses restantes</div>
-  <label class="qf mtgOnly">MONTO DEL PRÉSTAMO <input id="q_loan" type="number" min="0" oninput="qLoanAuto=false;qRecalc()"></label>
-  <label class="qf mtgOnly">APR % <input id="q_aapr" type="number" min="0" oninput="qRecalc()"></label>
-  <label class="qf mtgOnly">MESES <input id="q_mos" type="number" min="1" max="360" oninput="qRecalc()"></label>
-  <div class="qout mtgOnly">
-    <div>Préstamo original (financiado) <span id="q_ofin_tag"></span> <b id="q_ofin">—</b></div>
-    <div>Total programado (pago × plazo) <b id="q_osch">—</b></div>
-    <div>Interés total (programado) <b id="q_oint">—</b></div>
-    <div>Total pagado <span id="q_paidtag"></span> <b id="q_paid">—</b></div>
-    <div>Capital <b id="q_prin">—</b></div>
-    <div>Interés <b id="q_inte">—</b></div>
-    <div style="font-size:1.12em">PAYOFF EXACTO SEGÚN AMORTIZACIÓN <b id="q_bal2">—</b></div>
-    <div id="q_schtag" class="tmin" style="display:none;margin:2px 0"></div>
-    <div id="q_bal2flag" style="display:none;background:#fdecea;border:2px solid #c62828;color:#7f1d1d;border-radius:8px;padding:6px 8px;font-size:.92em;line-height:1.45;margin:4px 0"></div>
-    <div>Interés del plazo <b id="q_tint">—</b></div>
-    <div>% interés de lo pagado <b id="q_ipct">—</b></div>
-    <button class="lcBtn" onclick="lcOpen()">🏦 Calculadora de préstamo</button>
-  </div>
-  </div>
-  </div>
-  
-</aside>
+  </aside>
 
 
 
@@ -5385,7 +5386,7 @@ function mobToggleFn(){
    every section gets a big drag handle, section contents go inert, and a small
    bar appears (Done / Reset layout). Dragging is pointer-based (mouse + touch).
    Reordering works WITHIN each container only. The order is a page-level
-   preference saved in localStorage cfSectionOrderV2 and re-applied on every
+   preference saved in localStorage cfSectionOrderV3 and re-applied on every
    load; it survives client switches because the sections are static HTML
    (only their data re-renders).
    NUMBERED_LAYOUT_V1 (2026-11-25): the built-in default IS Sebastian's numbered
@@ -5394,14 +5395,14 @@ function mobToggleFn(){
    The key bumped V1 -> V2 so his phone drops the experimental V1 order and
    picks up this default; Reset layout restores THIS numbered order. */
 (function(){
-  var LSKEY = 'cfSectionOrderV2';
+  var LSKEY = 'cfSectionOrderV3';
   var GROUPS = [
-    { key: 'lead',       secs: ['ds-identity', 'ds-fee', 'coversheet', 'notesSection'] },
-    { key: 'aside',      secs: ['ds-segfu', 'ds-calc', 'eodBar', 'saveBlockMoved', 'emailBtnsMoved', 'ds-grid3'] },
-    { key: 'grid3',      secs: ['ds-situacion', 'ds-mid'] },
+    { key: 'lead',       secs: ['ds-identity', 'ds-trapgrid', 'ds-fee', 'coversheet', 'notesSection'] },
+    { key: 'aside',      secs: ['ds-segfu', 'ds-calc', 'eodBar', 'saveBlockMoved', 'emailBtnsMoved'] },
+    { key: 'trapgrid',   secs: ['ds-situacion', 'ds-desglose', 'ds-mid', 'ds-prestamo'] },
     { key: 'bottomgrid', secs: ['ds-tareas', 'ds-documentos', 'ds-fisico'] }
   ];
-  var CONTAINER_SECS = { 'ds-grid3': 1, 'ds-grid-bottom': 1 };
+  var CONTAINER_SECS = { 'ds-trapgrid': 1, 'ds-grid-bottom': 1 };
   var ORIG = {};
   function $(id){ return document.getElementById(id); }
   function membersOf(g){
