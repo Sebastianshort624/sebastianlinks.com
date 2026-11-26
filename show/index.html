@@ -248,6 +248,12 @@
     color: #ffd968; line-height: 1.35; margin-bottom: 18px; text-shadow: 0 1px 8px rgba(0,0,0,.65); }
   .objreb { width: 100%; max-width: 820px; text-align: center; font-size: clamp(19px, 2.9vw, 26px);
     line-height: 1.55; color: #fff; text-shadow: 0 2px 14px rgba(0,0,0,.62), 0 1px 3px rgba(0,0,0,.7); }
+  /* ---------- DocuSign legend view (DOCUSIGN_LEGEND_V1, Sebastian, 2026-11-25) */
+  .doctable { width: 100%; max-width: 980px; border-collapse: collapse; }
+  .doctable th, .doctable td { border: 1px solid rgba(255,255,255,.28); padding: 7px 9px; vertical-align: top; font-size: 13.5px; text-align: left; color: #eef2ff; }
+  .doctable th { background: rgba(11,61,145,.85); color: #fff; font-size: 12.5px; letter-spacing: .04em; }
+  .doctable .dlw { font-weight: 700; white-space: nowrap; color: #ffd968; }
+  .docnote { width: 100%; max-width: 980px; font-size: 13px; color: #c9d4ee; margin: 4px 0 10px; text-align: left; }
   /* ---------- reputation view (Sebastian, 2026-11-25): two groups —
      ONLINE REPUTATION (the videos, each opens in a new window) and the
      verbatim reputation SCRIPT passages. Same dark glass, no white card. */
@@ -1342,11 +1348,14 @@ var OBJD = { es: window.OBJECTIONS_ES || [], en: window.OBJECTIONS_EN || [] };
 var OBJL = {
   es: { btn: '🛡️ Objeciones', title: 'Objeciones', exit: '✕ Volver a la presentación',
         cats: '‹ Categorías', subs: '‹ Subcategorías',
-        rep: '⭐ Reputación', repT: 'Reputación', repOnline: 'Reputación en línea', repScript: 'El guion' },
+        rep: '⭐ Reputación', repT: 'Reputación', repOnline: 'Reputación en línea', repScript: 'El guion',
+        docu: '📜 DocuSign — leyenda', docuT: 'DocuSign — leyenda de reglas' },
   en: { btn: '🛡️ Objections', title: 'Objections', exit: '✕ Back to the presentation',
         cats: '‹ Categories', subs: '‹ Subcategories',
-        rep: '⭐ Reputation', repT: 'Reputation', repOnline: 'Online reputation', repScript: 'The script' }
+        rep: '⭐ Reputation', repT: 'Reputation', repOnline: 'Online reputation', repScript: 'The script',
+        docu: '📜 DocuSign — legend', docuT: 'DocuSign — rules legend' }
 };
+var DOCU_LEGEND = {"head": "El documento es EL MISMO acuerdo de servicio en ambos idiomas — lo que cambia es el GUIÓN DE REVISIÓN: cliente en español → revisión ES · cliente en inglés → revisión EN. / The document is the SAME service agreement in both languages — what changes is the REVIEW SCRIPT: Spanish client → ES review · English client → EN review.", "foot": "Filas 15–17 están en la plantilla EN de Yaz; la plantilla ES termina en la página financiera. / Rows 15–17 are in Yaz's EN template; the ES template ends at the financial page.", "rows": [{"w": "1 · Antes de enviar / Before you send", "es": "La semillita va ANTES: la garantía de devolución se planta temprano en la llamada, no cuando llega el documento.", "en": "Plant the seed FIRST: the money-back guarantee goes in early in the call, not when the document arrives.", "d": "La llamada / The call"}, {"w": "2 · El envío / The send", "es": "Es «el acuerdo de servicio» — NUNCA digas «DocuSign». Firmado por ellos y por ti = la potestad de representarlos en la cancelación.", "en": "It's “the service agreement” — NEVER say “DocuSign”. Signed by them and by you = the power to represent them in the cancellation.", "d": "—"}, {"w": "3 · Abrir / Opening", "es": "Botón verde que dice «revisar documento» dentro del email. Al hacer clic ya están viendo el acuerdo.", "en": "The green “review document” button inside the email. Click it and they're already looking at the agreement.", "d": "El email / The email"}, {"w": "4 · Firmar / Signing", "es": "El lapicito (azul/morado): dibujan su firma o eligen el estilo automático. Solo ellos pueden firmar desde su dispositivo — una cara feliz no funciona.", "en": "The little pencil (blue/purple): they draw their signature or pick the auto style. Only they can sign from their device — a happy face doesn't work.", "d": "Todo el documento / Throughout"}, {"w": "5 · La revisión / Who leads", "es": "Tú diriges la revisión y señalas SOLO las áreas que importan — nunca lees el documento entero con el cliente. Ellos preguntan dónde está X o Y: la semillita trabajando.", "en": "You direct the review and point ONLY to the areas that matter — never read the whole document with the client. They ask where X or Y is: the seed working.", "d": "—"}, {"w": "6 · No divulgar / Non-disclosure", "es": "No pueden vender nuestros secretos comerciales ni tácticas a otra compañía — somos la #1 y así se mantiene.", "en": "They can't sell our trade secrets or tactics to another company — we're #1 and it stays that way.", "d": "Págs. 1–2 / Pages 1–2"}, {"w": "7 · No desacreditar / Non-disparagement", "es": "Nada negativo del timeshare en redes DURANTE el proceso; cuando se cancele, lo que quieran. Incluye el consentimiento de videollamada/grabación si el caso lo necesita.", "en": "Nothing negative about the timeshare on social media DURING the process; once it's cancelled, whatever they want. Includes video-call / recording consent if the case needs it.", "d": "Págs. 1–2 / Pages 1–2"}, {"w": "8 · La advertencia / The warning", "es": "El resort VA a llamar y ofrecer tratos: CERO comunicación — no contestar y bloquear durante el proceso.", "en": "The resort WILL call and offer deals: ZERO communication — don't answer, and block them during the process.", "d": "Pág. 4 / Page 4"}, {"w": "9 · Cláusulas 1, 2, 3… / Clauses 1, 2, 3…", "es": "Es toda la llamada escrita en el documento. Si preguntan, respondes — pero tú los llevas a la 7.", "en": "It's the whole call written into the document. If they ask, you answer — but you move them to the 7.", "d": "Cláusulas 1–6 / Clauses 1–6"}, {"w": "10 · Salta la 8 / Skip the 8", "es": "NUNCA pares en la 8. El salto es 7 → 21.", "en": "NEVER stop at the 8. The jump is 7 → 21.", "d": "Cláusula 8 / Clause 8"}, {"w": "11 · El reembolso / Money-back", "es": "La política de devolución: si no ganamos el caso, se devuelve el dinero. Punto de control: «cuando lleguen a la 7 me avisan» — así sabes si están leyendo.", "en": "The money-back policy: if we don't win the case, the money comes back. Checkpoint: “when you get to number 7, let me know” — that's how you know they're reading.", "d": "Cláusula 7 · Pág. 7 / Clause 7 · Page 7"}, {"w": "12 · Los tiempos / The timeline", "es": "La cancelación toma 5–6 meses; puede llegar a 8 meses, un año o más según el caso (pocas compras = meses; muchas propiedades = años). El acuerdo es general porque cubre a miles de clientes.", "en": "Cancellation takes 5–6 months; it can run 8 months, a year or more depending on the case (few purchases = months; many properties = years). The agreement is general because it covers thousands of clients.", "d": "—"}, {"w": "13 · Gerente de caso / Case manager", "es": "Recibirán la llamada inicial de su gerente de caso — lo que ya les explicaste.", "en": "They'll receive the initial call from their case manager — what you already explained to them.", "d": "Cláusula 21 / Clause 21"}, {"w": "14 · Página financiera + Finalizar / Financial page + Finish", "es": "Ahí ven los pagos divididos como se los explicaste. Al final, botón verde «Finalizar»: tú recibes el documento, lo firmas, y ambos reciben la copia firmada — esa copia es la que te permite representarlos.", "en": "That's where they see the payments divided just as you explained. At the end, the green “Finish” button: you receive the document, you sign it, and both sides get the signed copy — that copy is what lets you represent them.", "d": "Página financiera / Financial page"}, {"w": "15 · El documento no se queda / The document doesn't stay", "es": "Si no firman, el documento NO se queda con el cliente: las cláusulas de la compañía son confidenciales. Al colgar sin firmar, lo anulas. La revisión es solo con un representante en la llamada.", "en": "If they don't sign, the document does NOT stay with the client: the company's clauses are confidential. If they hang up unsigned, you annul it. Review only with a company rep on the call.", "d": "Solo plantilla EN / EN template only"}, {"w": "16 · Defensa del 200% / Defending the 200%", "es": "Esa cláusula está para protegerlos a ELLOS: si ignoran la advertencia, hablan con el resort y caen en otra estafa, la cláusula responde.", "en": "That clause is there to protect THEM: if they ignore the warning, talk to the resort and fall into another scam, the clause answers for it.", "d": "Solo plantilla EN / EN template only"}, {"w": "17 · El abogado / A lawyer cannot help", "es": "Un abogado no puede ayudar: la cancelación no es área de un abogado — hasta clientes abogados nos contratan. Y si algún día hiciera falta la colaboración de uno (nunca pasa), ese profesional ya está en nuestro equipo.", "en": "A lawyer cannot help: cancellation is not a lawyer's area — even lawyer clients hire us. And if a lawyer's collaboration were ever needed (it never happens), that professional is already on our team.", "d": "Solo plantilla EN / EN template only"}]};
 var REPD = {
   videos: [
     { f: 'rep/bbb.mp4', t: 'BBB — A+ · Accredited' },
@@ -1402,6 +1411,7 @@ function renderObj(){
   if (objView.level === 'items') nav += '<button class="objpill" data-act="subs">' + t.subs + '</button>';
   if (objView.level === 'reb') nav += '<button class="objpill" data-act="items">‹ ' + esc(tree[objView.cat].subs[objView.sub].sub) + '</button>';
   if (objView.level === 'rep') nav += '<button class="objpill" data-act="cats">' + t.cats + '</button>';
+  if (objView.level === 'docu') nav += '<button class="objpill" data-act="cats">' + t.cats + '</button>';
   nav += '<div class="sp"></div><button class="objpill" data-act="exit">' + t.exit + '</button></div>';
   var html = nav;
   if (objView.level === 'cats'){
@@ -1411,6 +1421,7 @@ function renderObj(){
         '<span class="cnt">' + objCount(c) + '</span></button>';
     });
     html += '<button class="objitem" data-act="rep">' + t.rep + '</button>';
+    html += '<button class="objitem" data-act="docu">' + t.docu + '</button>';
     html += '</div>';
   } else if (objView.level === 'rep'){
     html += '<div class="objtitle">' + t.repT + '</div>';
@@ -1423,6 +1434,14 @@ function renderObj(){
       html += '<div class="reptext"><span class="rept">' + esc(p.t) + '</span>' + esc(p.x) + '</div>';
     });
     html += '</div>';
+  } else if (objView.level === 'docu'){
+    html += '<div class="objtitle">' + t.docuT + '</div>';
+    html += '<div class="docnote">' + esc(DOCU_LEGEND.head) + '</div>';
+    html += '<table class="doctable"><thead><tr><th>CUÁNDO / WHEN</th><th>REGLA — ES</th><th>RULE — EN</th><th>DÓNDE / WHERE</th></tr></thead><tbody>';
+    DOCU_LEGEND.rows.forEach(function(r){
+      html += '<tr><td class="dlw">' + esc(r.w) + '</td><td>' + esc(r.es) + '</td><td>' + esc(r.en) + '</td><td class="dlw">' + esc(r.d) + '</td></tr>';
+    });
+    html += '</tbody></table><div class="docnote">' + esc(DOCU_LEGEND.foot) + '</div>';
   } else if (objView.level === 'subs'){
     var c2 = tree[objView.cat];
     html += '<div class="objtitle">' + t.title + '</div><div class="objhead">' + c2.icon + ' ' + esc(c2.cat) + '</div><div class="objlist">';
@@ -1457,6 +1476,7 @@ $('objwrap').addEventListener('click', function(e){
   else if (act === 'subs'){ objView.level = 'subs'; renderObj(); }
   else if (act === 'items'){ objView.level = 'items'; renderObj(); }
   else if (act === 'rep'){ objView.level = 'rep'; renderObj(); }
+  else if (act === 'docu'){ objView.level = 'docu'; renderObj(); }
   else if (act === 'cat'){ objView.cat = +b.getAttribute('data-i'); objView.level = 'subs'; renderObj(); }
   else if (act === 'sub'){ objView.sub = +b.getAttribute('data-j'); objView.level = 'items'; renderObj(); }
   else if (act === 'item'){ objView.item = +b.getAttribute('data-k'); objView.level = 'reb'; renderObj(); }
