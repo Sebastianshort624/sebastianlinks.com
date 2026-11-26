@@ -338,6 +338,16 @@
   @media print { .aptrail, .apttab { display: none !important; } }
 #dispoBig{font-size:17px;font-weight:600;padding:8px 12px;border-radius:10px;border:2px solid #8a94a6;background:#ffffff;color:#16213a;cursor:pointer;margin-left:10px;font-family:inherit}
 #dispoBig.soldon{background:#e7f6ec;border-color:#1e9e52;color:#14532d}
+/* CFBAR_V1 */
+#cfBar{margin:0 0 10px;background:#f4f6fb;border:1.5px solid #c9d3e6;border-radius:10px;padding:7px 9px}
+.cfbar-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.cfbar-row + .cfbar-row{margin-top:6px}
+.cfbar-lab{font-weight:800;font-size:12px;letter-spacing:.06em;color:#5b6b8c;min-width:86px}
+.cfchip{font-family:inherit;font-weight:800;font-size:13.5px;padding:6px 13px;border-radius:999px;border:2px solid #8a94a6;background:#fff;color:#16213a;cursor:pointer}
+.cfchip.on{background:#0b3d91;border-color:#0b3d91;color:#fff}
+.cfchip.on.sold{background:#1e9e52;border-color:#1e9e52}
+.cfchip.on.fuh{background:#e8590c;border-color:#e8590c}
+.cfchip.on.neg{background:#b02a30;border-color:#b02a30}
 #soldStrip{display:none;background:linear-gradient(90deg,#14532d,#16a34a);color:#fff;padding:10px 18px;font-size:17px;font-weight:700;align-items:center;gap:22px;flex-wrap:wrap}
 #soldStrip.on{display:flex}
 #soldStrip input[type=date]{font-size:15px;font-weight:700;padding:3px 8px;border-radius:8px;border:0}
@@ -546,6 +556,11 @@ body.ds-move .ds-sec .ds-handle { pointer-events: auto !important; }
     <button id="q_btn_db" onclick="qSetDtype('DB')" style="flex:1;padding:6px 6px;border:none;border-radius:6px;font-weight:800;cursor:pointer;font-family:inherit;font-size:0.95em;background:#e2e8f0;color:#334155">🔴 DEED-BACK</button>
   </div>
 <div id="q_dbnote" class="tmin" style="display:none;margin-bottom:8px">DEED-BACK = hipoteca pagada por completo (saldo $0). Un saldo en $0 NO prueba que la escritura ya se haya transferido: la transferencia de la escritura es parte del proceso.</div>
+<!-- CFBAR_V1 (Sebastian, 2026-11-25): TIPO / RESULTADO chip bar at the top of the case file -->
+<div id="cfBar">
+  <div class="cfbar-row"><span class="cfbar-lab">TIPO:</span><button type="button" class="cfchip" data-tipo="NEW" onclick="cfTipoSet('NEW')">NEW APT</button><button type="button" class="cfchip" data-tipo="RS" onclick="cfTipoSet('RS')">RESCH</button><button type="button" class="cfchip" data-tipo="FU" onclick="cfTipoSet('FU')">FU APT</button></div>
+  <div class="cfbar-row"><span class="cfbar-lab">RESULTADO:</span><button type="button" class="cfchip sold" data-manual="SOLD" onclick="cfResSet('SOLD','SOLD')">SOLD</button><button type="button" class="cfchip" data-manual="RS" onclick="cfResSet('RS','RS')">RS</button><button type="button" class="cfchip" data-manual="FU" onclick="cfResSet('FU','FU')">FU</button><button type="button" class="cfchip fuh" data-manual="HOTTEST FU" onclick="cfResSet('HOTTEST FU','FU')">FUH</button><button type="button" class="cfchip neg" data-manual="NA" onclick="cfResSet('NA','NA')">NA</button><button type="button" class="cfchip neg" data-manual="NO GO" onclick="cfResSet('NO GO','NO GO')">NO &middot; NG</button><button type="button" class="cfchip neg" data-manual="NQ" onclick="cfResSet('NQ','NQ')">NQ</button></div>
+</div>
 
 <div class="aptrail" id="railL">
   <div class="apt-head"><span id="railLTitle">Hoy</span><button class="apt-x" onclick="aptToggle('L',false)" title="Ocultar">◀</button></div>
@@ -818,7 +833,7 @@ sideApply();
   </div>
   <label class="qf">DISPOSICIÓN <select id="d_dispo" onchange="dispoSave()"><option value="">Sin marcar</option><option value="activo">Activo</option><option value="en seguimiento">En seguimiento</option><option value="vendido">Vendido</option><option value="reprogramado">Reprogramado</option><option value="no interesado">No interesado</option><option value="no califica">No califica</option><option value="perdido">Perdido</option></select></label>
   <label class="qf">ESTADO DEL LEAD <select id="d_status" onchange="dispoSave()"><option value="">Sin marcar</option><option value="nuevo">Nuevo</option><option value="contactado">Contactado</option><option value="en seguimiento">En seguimiento</option><option value="cerrado">Cerrado</option><option value="perdido">Perdido</option></select></label>
-  <label class="qf">RESULTADO DE LA LLAMADA <select id="d_outcome" onchange="dispoSave()"><option value="">Sin marcar</option><option value="SOLD">SOLD — Vendido</option><option value="FU">FU — Seguimiento</option><option value="RS">RS — Reprogramado</option><option value="NA">NA — No contestó</option><option value="NO">NO — No interesado</option><option value="NQ">NQ — No califica</option></select></label>
+  <label class="qf">RESULTADO DE LA LLAMADA <select id="d_outcome" onchange="dispoSave()"><option value="">Sin marcar</option><option value="SOLD">SOLD — Vendido</option><option value="FU">FU — Seguimiento</option><option value="RS">RS — Reprogramado</option><option value="NA">NA — No contestó</option><option value="NO">NO — No interesado</option><option value="NO GO">NO GO — No va</option><option value="NQ">NQ — No califica</option></select></label>
   <label class="qf">PRÓXIMO SEGUIMIENTO <select id="d_futype" onchange="dispoSave()"><option value="">Sin seguimiento</option><option value="evento">Evento de 15 minutos</option><option value="tarea">Tarea</option><option value="ca">Revisar con el CA</option></select></label>
   <label class="qf">FECHA DEL SEGUIMIENTO <input id="d_fudate" type="date" onchange="dispoSave()"></label>
   <label class="qf">HORA <span><input id="d_futime" type="time" onchange="dispoSave()" style="width:125px"> <select id="d_fuampm" onchange="dispoSave()" style="padding:4px;font-size:0.95em;font-family:inherit;"><option value="">AM/PM</option><option value="AM">AM</option><option value="PM">PM</option></select></span></label>
@@ -1592,7 +1607,7 @@ function eodToday(){ var t = new Date(); return t.getFullYear() + '-' + String(t
     var defM = (cur && typeof DISPO_DEFAULTS !== 'undefined' && DISPO_DEFAULTS[cur.id]) || '';
     var recD = null, recT = 0;
     if (cur && (cur.dispo || cur.outcome || cur.pstatus)){
-      recD = { manual: cur.manual || defM, dispo: cur.dispo || '', status: cur.leadStatus || '', outcome: cur.outcome || cur.pstatus || '', futype: cur.fuType || '', fudate: cur.fuDate || '', futime: cur.fuTime || '', fuampm: cur.fuAmpm || '' };
+      recD = { manual: cur.manual || defM, dispo: cur.dispo || '', status: cur.leadStatus || '', outcome: cur.outcome || cur.pstatus || '', futype: cur.fuType || '', fudate: cur.fuDate || '', futime: cur.fuTime || '', fuampm: cur.fuAmpm || '', tipo: cur.tipo || '' };
       recT = cur.dispoUpdated || cur._upd || 0;
     }
     if (local){
@@ -1602,7 +1617,7 @@ function eodToday(){ var t = new Date(); return t.getFullYear() + '-' + String(t
       return recD;
     }
     if (recD) return recD;
-    return { manual: defM, dispo:'', status:'', outcome:'', futype:'', fudate:'', futime:'', fuampm:'' };
+    return { manual: defM, dispo:'', status:'', outcome:'', futype:'', fudate:'', futime:'', fuampm:'', tipo:'' };
   }
   function soldKey(){ return 'sl_sold_' + (cur ? cur.id : ''); }
 function soldGet(){ try { return JSON.parse(localStorage.getItem(soldKey()) || '{}'); } catch(e){ return {}; } }
@@ -1698,6 +1713,7 @@ function dispoLoad(){
     $('d_futime').value = d.futime || ''; $('d_fuampm').value = d.fuampm || '';
     var w = $('dispoWho'); if (w) w.textContent = cur ? '— ' + (cur.name || '') : '';
     dispoSummary(); dispoDates(); dispoTopSync(); try { eodBarRender(); } catch(e){}
+    try { cfTipoCur = d.tipo || cfTipoInfer(); cfBarRender(); } catch(e){}
     try { hotFuRender(); } catch(e){}
   }
 
@@ -1720,7 +1736,7 @@ function dispoLoad(){
   }
   function dispoSave(){
     var k = dispoKey(); if (!k) return;
-    var d = { manual: ($('d_manual') || {}).value || '', dispo: $('d_dispo').value, status: $('d_status').value, outcome: $('d_outcome').value, futype: $('d_futype').value, fudate: $('d_fudate').value, futime: $('d_futime').value, fuampm: $('d_fuampm').value, updated: new Date().toISOString() };
+    var d = { manual: ($('d_manual') || {}).value || '', dispo: $('d_dispo').value, status: $('d_status').value, outcome: $('d_outcome').value, futype: $('d_futype').value, fudate: $('d_fudate').value, futime: $('d_futime').value, fuampm: $('d_fuampm').value, tipo: (typeof cfTipoCur !== 'undefined' && cfTipoCur) ? cfTipoCur : '', updated: new Date().toISOString() };
     try { localStorage.setItem(k, JSON.stringify(d)); } catch(e){}
     /* DISPO_SYNC_V1: espejo al registro + nube (mismo camino que qAutoSave).
        El outcome (SOLD/FU/RS/NA/NO/NQ) alimenta pstatus, que es el campo
@@ -1729,7 +1745,7 @@ function dispoLoad(){
     try {
       if (cur && cur.id){
         cur.manual = d.manual; cur.dispo = d.dispo; cur.leadStatus = d.status; cur.outcome = d.outcome;
-        cur.fuType = d.futype; cur.fuDate = d.fudate; cur.fuTime = d.futime; cur.fuAmpm = d.fuampm;
+        cur.fuType = d.futype; cur.fuDate = d.fudate; cur.fuTime = d.futime; cur.fuAmpm = d.fuampm; cur.tipo = d.tipo;
         cur.dispoUpdated = Date.parse(d.updated) || Date.now();
         if (d.outcome) cur.pstatus = d.outcome;
         bfHeal(cur); // BLANKFIX_V1: nunca guardar una copia vacia sobre un registro poblado
@@ -1739,6 +1755,54 @@ function dispoLoad(){
       }
     } catch(e){}
     dispoSummary(); dispoDates(); try { hotFuRender(); } catch(e){}
+  }
+  /* CFBAR_V1 (Sebastian, 2026-11-25): TIPO / RESULTADO chip bar.
+     TIPO stamps the record's tipo (NEW APT / RESCH / FU APT) through the same
+     dispo save path; RESULTADO drives the existing manual disposition (via
+     setDispo, so dispoBig / d_manual / t_manual / sold coupling stay in sync)
+     AND the call outcome (which feeds pstatus). Tapping the active chip
+     again clears it. */
+  var cfTipoCur = '';
+  function cfTipoInfer(){
+    if (!cur) return 'NEW';
+    var ps = String(cur.pstatus || '');
+    if (ps === 'RS') return 'RS';
+    if (ps === 'FU' || ps === 'FU ST') return 'FU';
+    var tt = String(cur.taskTitle || '');
+    if (/RS TO/.test(tt)) return 'RS';
+    if (cur.fuDate || /FU/.test(tt)) return 'FU';
+    return 'NEW';
+  }
+  function cfBarRender(){
+    var bar = document.getElementById('cfBar'); if (!bar) return;
+    var tipo = cfTipoCur || 'NEW';
+    var chips = bar.querySelectorAll('[data-tipo]');
+    for (var i = 0; i < chips.length; i++) chips[i].classList.toggle('on', chips[i].getAttribute('data-tipo') === tipo);
+    var man = '';
+    try { man = (dispoRead() || {}).manual || ''; } catch(e){}
+    var rchips = bar.querySelectorAll('[data-manual]');
+    for (var j = 0; j < rchips.length; j++) rchips[j].classList.toggle('on', rchips[j].getAttribute('data-manual') === man);
+  }
+  function cfTipoSet(v){
+    if (!cur) return;
+    cfTipoCur = (cfTipoCur === v) ? '' : v;
+    dispoSave();
+    cfBarRender();
+  }
+  function cfResSet(manual, outcome){
+    if (!cur) return;
+    var curMan = '';
+    try { curMan = (dispoRead() || {}).manual || ''; } catch(e){}
+    if (manual === curMan){
+      setDispo('');
+      var oc0 = $('d_outcome'); if (oc0) oc0.value = '';
+      dispoSave();
+    } else {
+      setDispo(manual);
+      var oc = $('d_outcome'); if (oc) oc.value = outcome;
+      dispoSave();
+    }
+    cfBarRender();
   }
   function dispoSummary(){
     var el = $('d_summary'); if (!el) return;
