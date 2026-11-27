@@ -713,12 +713,12 @@ function render(){
       return '<span class="w" data-w="' + i + '">' + esc(w) + '</span>';
     }).join(' ');
     html = '<div class="card"><div class="sec">' + esc(sl.sec) + '</div>' +
-      '<div class="ref">' + (idx + 1) + ' / ' + slides.length + '</div>' +
+      '<div class="ref">' + secCount(idx) + '</div>' +
       '<div class="txt">' + spans + '</div>' + panelHTML(sl.panel) +
       BIGCTL + drawImg(sl.sec) + '</div>';
   }
   stage.innerHTML = html;
-  $('counter').textContent = (idx + 1) + ' / ' + slides.length;
+  $('counter').textContent = secCount(idx);
   $('secname').textContent = sl.sec || '';
   $('prog').style.width = ((idx + 1) / slides.length * 100) + '%';
   elapsed = 0; lastTick = null; chunkIdx = 0;
@@ -729,6 +729,16 @@ function render(){
 }
 /* ---- highlight halves: 2 steps per slide — the first half of the
    slide's text, then the second half (Sebastian, 2026-11-24) ---- */
+/* SECTION COUNT (Sebastian, 2026-11-27): the counter restarts at
+   every section and reads "k of K" inside the current section;
+   the section name is the title. Never the global slide count. */
+function secCount(i){
+  var s = (slides[i] && slides[i].sec) || '', k = 0, K = 0;
+  for (var j = 0; j < slides.length; j++){
+    if (((slides[j].sec) || '') === s){ K++; if (j <= i) k = K; }
+  }
+  return k + ' of ' + K;
+}
 function wordEls(){ return document.querySelectorAll('#stage .txt .w'); }
 function chunkCount(){
   var sl = slides[idx];
