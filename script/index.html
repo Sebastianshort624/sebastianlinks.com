@@ -919,6 +919,8 @@ sideApply();
     <button id="introBtn" type="button" onclick="qIntroHtml()">📧 INTRO</button>
     <!-- FU_EMAIL_V1 -->
     <button id="fuCortoBtn" type="button" onclick="qFuCortoHtml()">📧 FU CORTO — GERENTE DE CASO</button>
+    <!-- RESEARCH_EMAIL_V1 -->
+    <button id="researchBtn" type="button" onclick="qResearchHtml()">&#128270; RESEARCH LINX LEGAL</button>
 </div>
 <!-- LAYOUTMOVE_20261125 END -->
   </aside>
@@ -2263,6 +2265,7 @@ window.__qDocRender = function(kind, L){
   if (kind === 'cb') return qCbBuild(L);
   if (kind === 'walk') return qWalkBuild(L);
   if (kind === 'intro') return qIntroBuild(L);
+  if (kind === 'research') return qResearchBuild(L);
   if (kind === 'fucorto') return qFuCortoBuild(L);
   if (kind === 'combo') return qComboBuild(L);
   return null;
@@ -3280,6 +3283,52 @@ function qIntroBuild(L){
     'function inGmail(){ var to = document.getElementById("emTo").value, su = document.getElementById("emSubj").value, tx = document.getElementById("eml").innerText; window.open("https://mail.google.com/mail/?view=cm&fs=1&to=" + encodeURIComponent(to) + "&su=" + encodeURIComponent(su) + "&body=" + encodeURIComponent(tx), "_blank"); }' +
     '</scr' + 'ipt>';
   h += qDocToggleJs(en);
+  h += '</body></html>';
+  return h;
+}
+// ===== RESEARCH LINX LEGAL EMAIL (RESEARCH_EMAIL_V1) (Sebastian, 2026-11-27): English email with
+// the six reputation videos (show/rep/*.mp4) for clients who want to research us. Mirrors the
+// INTRO doc pattern: same toolbar (To/Subject, COPY FORMATTED EMAIL, OPEN IN GMAIL, UPDATE DOC),
+// same Linx Legal header band and the SAME signature footer as qIntroBuild. English only.
+// Nothing is ever sent from here.
+function qResearchHtml(){
+  if (!cur){ alert('Selecciona un cliente primero.'); return; }
+  qDocOpen(qResearchBuild('en'));
+}
+function qResearchBuild(L){
+  var first = qWalkFirst();
+  var VIDS = [
+    ['Better Business Bureau', 'Our BBB profile and rating.', 'https://sebastianlinks.com/show/rep/bbb.mp4'],
+    ['Best Company', 'Ranked #1 for timeshare cancellation.', 'https://sebastianlinks.com/show/rep/best-company.mp4'],
+    ['Google Reviews', 'Real Google reviews from our clients.', 'https://sebastianlinks.com/show/rep/google.mp4'],
+    ['Linx Legal', 'Who we are and how we work.', 'https://sebastianlinks.com/show/rep/linx-legal.mp4'],
+    ['Proof', 'Real client exits, documented.', 'https://sebastianlinks.com/show/rep/proof.mp4'],
+    ['Zillow', 'Sebastian — five stars on Zillow.', 'https://sebastianlinks.com/show/rep/zillow.mp4']
+  ];
+  var e = '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f2f5f6;"><tr><td align="center" style="padding:24px 8px;"><table role="presentation" width="640" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:14px;overflow:hidden;box-shadow:0 8px 24px rgba(20,50,60,.10);font-family:Arial,Helvetica,sans-serif;">';
+  e += '<tr><td style="background:#1a5968;padding:22px 30px;"><div style="font-size:25px;font-weight:800;color:#ffffff;">Linx Legal</div><div style="font-size:13px;color:#bfe3ea;">Timeshare cancellation</div></td></tr>';
+  e += '<tr><td style="padding:26px 30px 8px;font-size:15px;color:#23323b;line-height:1.6;"><p style="margin:0 0 12px;">Hi <b>' + escH(first) + '</b>,</p>';
+  e += '<p style="margin:0 0 12px;">Do your homework on us. Here are six short videos that show you who we are, and what our clients say about us.</p>';
+  VIDS.forEach(function(v){
+    e += '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:10px;"><tr><td style="background:#edf5f6;border:1px solid #cfe0e3;border-radius:10px;padding:14px 16px;"><div style="font-size:16px;font-weight:700;color:#1a5968;">' + v[0] + '</div><div style="font-size:13px;color:#536a72;margin:4px 0 11px;">' + v[1] + '</div><a href="' + v[2] + '" style="display:inline-block;background:#1a5968;color:#ffffff;text-decoration:none;font-weight:700;padding:9px 18px;border-radius:6px;font-size:14px;">&#9654; WATCH VIDEO</a><a href="' + v[2] + '" style="display:block;font-size:12px;color:#1f7a8c;text-decoration:underline;margin-top:9px;">' + v[2] + '</a></td></tr></table>';
+  });
+  e += '<p style="margin:18px 0 4px;">Take your time looking at it, and tell me what you think.</p>';
+  e += '<p style="margin:10px 0 4px;">Best regards,</p>';
+  e += '</td></tr>';
+  e += '<tr><td style="padding:19px 30px;background:#f7f9fa;border-top:1px solid #e5ebed;font-size:13px;color:#536a72;line-height:1.55;">Sebastian Short<br><b>Senior Case Builder · Linx Legal Inc.</b><br><a href="mailto:sebastian.short@linxlegal.com" style="color:#1f7a8c;">sebastian.short@linxlegal.com</a> &nbsp;·&nbsp; (689) 326-8754<br><a href="https://investiganos.com/" style="color:#1f7a8c;">investiganos.com</a></td></tr>';
+  e += '</table></td></tr></table>';
+  var h = '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>' + 'RESEARCH LINX LEGAL — ' + escH(cur.name) + '</title></head><body style="margin:0;padding:20px 8px;background:#f2f5f6;font-family:Arial,Helvetica,sans-serif;color:#23323b;">';
+  h += '<div ' + QDOC_BAR + '><b>' + '&#128270; RESEARCH LINX LEGAL' + '</b><span style="font-size:13px">To: <input id="emTo" value="' + escH(cur.email || '') + '" style="padding:5px;border-radius:4px;border:none;min-width:210px"> Subject: <input id="emSubj" value="Research Linx Legal" style="padding:5px;border-radius:4px;border:none;min-width:300px"></span>' +
+    '<button ' + QDOC_BTN + ' onclick="inCopy(this)">&#128203; COPY FORMATTED EMAIL</button>' +
+    '<button ' + QDOC_BTN + ' onclick="inGmail()">&#9993;&#65039; OPEN IN GMAIL</button>' +
+    qDocRefreshBtn('research', true) +
+    '<span style="font-size:12px;opacity:.85">Copy the formatted email and paste it into your Gmail (sebastian.short@linxlegal.com). Nothing is sent automatically — review before sending.</span></div>';
+  h += '<div id="eml" contenteditable="true">' + e + '</div>';
+  h += '<scr' + 'ipt>' +
+    'function inCopy(b){ var n = document.getElementById("eml"); try { navigator.clipboard.write([new ClipboardItem({ "text/html": new Blob([n.innerHTML], { type: "text/html" }), "text/plain": new Blob([n.innerText], { type: "text/plain" }) })]).then(function(){ b.textContent = "✅ COPIADO"; }); } catch (err){ var r = document.createRange(); r.selectNode(n); var s = getSelection(); s.removeAllRanges(); s.addRange(r); document.execCommand("copy"); b.textContent = "✅ COPIADO"; } }' +
+    'function inGmail(){ var to = document.getElementById("emTo").value, su = document.getElementById("emSubj").value, tx = document.getElementById("eml").innerText; window.open("https://mail.google.com/mail/?view=cm&fs=1&to=" + encodeURIComponent(to) + "&su=" + encodeURIComponent(su) + "&body=" + encodeURIComponent(tx), "_blank"); }' +
+    '</scr' + 'ipt>';
+  h += qDocToggleJs(true);
   h += '</body></html>';
   return h;
 }
